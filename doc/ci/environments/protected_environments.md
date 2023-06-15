@@ -30,8 +30,8 @@ Prerequisites:
 
 To protect an environment:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select the environment you want to protect.
 1. In the **Allowed to deploy** list, select the role, users, or groups you
@@ -255,8 +255,8 @@ To protect a group-level environment, make sure your environments have the corre
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select the [deployment tier of environments](index.md#deployment-tier-of-environments) you want to protect.
 1. In the **Allowed to deploy** list, select the [subgroups](../../user/group/subgroups/index.md) you want to give deploy access to.

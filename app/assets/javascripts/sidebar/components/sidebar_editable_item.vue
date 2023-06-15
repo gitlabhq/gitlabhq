@@ -157,7 +157,6 @@ export default {
         :data-track-action="tracking.event"
         :data-track-label="tracking.label"
         :data-track-property="tracking.property"
-        data-qa-selector="edit_link"
         @keyup.esc="toggle"
         @click="toggle"
       >

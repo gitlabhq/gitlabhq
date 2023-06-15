@@ -17,7 +17,7 @@ Provide feedback in
 
 To view the new sidebar:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Turn on the **New navigation** toggle.
 
 To turn off this sidebar, return to your avatar and turn off the toggle.

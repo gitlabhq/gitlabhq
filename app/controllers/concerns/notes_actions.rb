@@ -80,10 +80,16 @@ module NotesActions
       return
     end
 
-    prepare_notes_for_rendering([@note])
-
     respond_to do |format|
-      format.json { render json: note_json(@note) }
+      format.json do
+        if @note.errors.present?
+          render json: { errors: @note.errors.full_messages.to_sentence }, status: :unprocessable_entity
+        else
+          prepare_notes_for_rendering([@note])
+          render json: note_json(@note)
+        end
+      end
+
       format.html { redirect_back_or_default }
     end
   end

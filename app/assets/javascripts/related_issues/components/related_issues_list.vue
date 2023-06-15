@@ -104,7 +104,7 @@ export default {
       {{ heading }}
     </h4>
     <div class="related-issues-token-body" :class="{ 'sortable-container': canReorder }">
-      <div v-if="isFetching" class="gl-mb-2" data-qa-selector="related_issues_loading_placeholder">
+      <div v-if="isFetching" class="gl-mb-2" data-testid="related_issues_loading_placeholder">
         <gl-loading-icon
           ref="loadingIcon"
           size="sm"
@@ -146,7 +146,7 @@ export default {
             :locked-message="issue.lockedMessage"
             :work-item-type="issue.type"
             event-namespace="relatedIssue"
-            data-qa-selector="related_issuable_content"
+            data-testid="related_issuable_content"
             class="gl-mx-n2"
             @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
           />

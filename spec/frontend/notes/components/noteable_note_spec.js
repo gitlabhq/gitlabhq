@@ -1,6 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { GlAvatar } from '@gitlab/ui';
+import { clone } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DiffsModule from '~/diffs/store/modules';
@@ -10,9 +11,13 @@ import NoteHeader from '~/notes/components/note_header.vue';
 import issueNote from '~/notes/components/noteable_note.vue';
 import NotesModule from '~/notes/stores/modules';
 import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
+import { createAlert } from '~/alert';
+import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
+import { sprintf } from '~/locale';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 Vue.use(Vuex);
+jest.mock('~/alert');
 
 const singleLineNotePosition = {
   line_range: {
@@ -54,10 +59,13 @@ describe('issue_note', () => {
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
+    // the component overwrites the `note` prop with every action, hence create a copy
+    const noteCopy = clone(props.note || note);
+
     wrapper = mountExtended(issueNote, {
       store,
       propsData: {
-        note,
+        note: noteCopy,
         ...props,
       },
       stubs: [
@@ -252,7 +260,7 @@ describe('issue_note', () => {
     });
 
     it('should render issue body', () => {
-      expect(findNoteBody().props().note).toBe(note);
+      expect(findNoteBody().props().note).toMatchObject(note);
       expect(findNoteBody().props().line).toBe(null);
       expect(findNoteBody().props().canEdit).toBe(note.current_user.can_edit);
       expect(findNoteBody().props().isEditing).toBe(false);
@@ -297,7 +305,7 @@ describe('issue_note', () => {
     });
 
     it('does not have internal note class for external notes', () => {
-      createWrapper({ note });
+      createWrapper();
 
       expect(wrapper.classes()).not.toContain('internal-note');
     });
@@ -327,7 +335,6 @@ describe('issue_note', () => {
       });
 
       await nextTick();
-
       expect(findNoteBody().props().note.note_html).toBe(`<p dir="auto">${updatedText}</p>\n`);
 
       findNoteBody().vm.$emit('cancelForm', {});
@@ -340,7 +347,7 @@ describe('issue_note', () => {
   describe('formUpdateHandler', () => {
     const updateNote = jest.fn();
     const params = {
-      noteText: '',
+      noteText: 'updated note text',
       parentElement: null,
       callback: jest.fn(),
       resolveDiscussion: false,
@@ -359,28 +366,38 @@ describe('issue_note', () => {
       });
     };
 
+    beforeEach(() => {
+      createWrapper();
+      updateActions();
+    });
+
     afterEach(() => updateNote.mockReset());
 
     it('responds to handleFormUpdate', () => {
-      createWrapper();
-      updateActions();
       findNoteBody().vm.$emit('handleFormUpdate', params);
+
       expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
+    });
+
+    it('updates note content', async () => {
+      findNoteBody().vm.$emit('handleFormUpdate', params);
+
+      await nextTick();
+
+      expect(findNoteBody().props().note.note_html).toBe(`<p dir="auto">${params.noteText}</p>\n`);
+      expect(findNoteBody().props('isEditing')).toBe(false);
     });
 
     it('should not update note with sensitive token', () => {
       const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
-
-      createWrapper();
-      updateActions();
       findNoteBody().vm.$emit('handleFormUpdate', { ...params, noteText: sensitiveMessage });
+
       expect(updateNote).not.toHaveBeenCalled();
     });
 
     it('does not stringify empty position', () => {
-      createWrapper();
-      updateActions();
       findNoteBody().vm.$emit('handleFormUpdate', params);
+
       expect(updateNote.mock.calls[0][1].note.note.position).toBeUndefined();
     });
 
@@ -388,9 +405,34 @@ describe('issue_note', () => {
       const position = { test: true };
       const expectation = JSON.stringify(position);
       createWrapper({ note: { ...note, position } });
+
       updateActions();
       findNoteBody().vm.$emit('handleFormUpdate', params);
+
       expect(updateNote.mock.calls[0][1].note.note.position).toBe(expectation);
+    });
+
+    describe('when updateNote returns errors', () => {
+      beforeEach(() => {
+        updateNote.mockRejectedValue({
+          response: { status: 422, data: { errors: 'error 1 and error 2' } },
+        });
+      });
+
+      beforeEach(() => {
+        findNoteBody().vm.$emit('handleFormUpdate', { ...params, noteText: 'invalid note' });
+      });
+
+      it('renders error message and restores content of updated note', async () => {
+        await waitForPromises();
+        expect(createAlert).toHaveBeenCalledWith({
+          message: sprintf(UPDATE_COMMENT_FORM.error, { reason: 'error 1 and error 2' }, false),
+          parent: wrapper.vm.$el,
+        });
+
+        expect(findNoteBody().props('isEditing')).toBe(true);
+        expect(findNoteBody().props().note.note_html).toBe(note.note_html);
+      });
     });
   });
 

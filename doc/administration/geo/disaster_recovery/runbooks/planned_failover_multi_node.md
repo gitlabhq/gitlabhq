@@ -96,53 +96,8 @@ ensure these processes are close to 100% as possible during active use.
 If the **secondary** site is still replicating data from the **primary** site,
 follow these steps to avoid unnecessary data loss:
 
-1. Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab/-/issues/14609)
-   is implemented, updates must be prevented from happening manually to the
-   **primary**. Your **secondary** site still needs read-only
-   access to the **primary** site during the maintenance window:
-
-   1. At the scheduled time, using your cloud provider or your site's firewall, block
-      all HTTP, HTTPS and SSH traffic to/from the **primary** site, **except** for your IP and
-      the **secondary** site's IP.
-
-      For instance, you can run the following commands on the **primary** site:
-
-      ```shell
-      sudo iptables -A INPUT -p tcp -s <secondary_site_ip> --destination-port 22 -j ACCEPT
-      sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 22 -j ACCEPT
-      sudo iptables -A INPUT --destination-port 22 -j REJECT
-
-      sudo iptables -A INPUT -p tcp -s <secondary_site_ip> --destination-port 80 -j ACCEPT
-      sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 80 -j ACCEPT
-      sudo iptables -A INPUT --tcp-dport 80 -j REJECT
-
-      sudo iptables -A INPUT -p tcp -s <secondary_site_ip> --destination-port 443 -j ACCEPT
-      sudo iptables -A INPUT -p tcp -s <your_ip> --destination-port 443 -j ACCEPT
-      sudo iptables -A INPUT --tcp-dport 443 -j REJECT
-      ```
-
-      From this point, users are unable to view their data or make changes on the
-      **primary** site. They are also unable to sign in to the **secondary** site.
-      However, existing sessions must work for the remainder of the maintenance period, and
-      so public data is accessible throughout.
-
-   1. Verify the **primary** site is blocked to HTTP traffic by visiting it in browser via
-      another IP. The server should refuse connection.
-
-   1. Verify the **primary** site is blocked to Git over SSH traffic by attempting to pull an
-      existing Git repository with an SSH remote URL. The server should refuse
-      connection.
-
-   1. On the **primary** site:
-      1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-      1. Select **Admin Area**.
-      1. On the left sidebar, select **Monitoring > Background Jobs**.
-      1. On the Sidekiq dashboard, select **Cron**.
-      1. Select `Disable All` to disable any non-Geo periodic background jobs.
-      1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
-         This job re-enables several other cron jobs that are essential for planned
-         failover to complete successfully.
-
+1. Enable [maintenance mode](../../../maintenance_mode/index.md) on the **primary** site,
+   and make sure to stop any [background jobs](../../../maintenance_mode/index.md#background-jobs).
 1. Finish replicating and verifying all data:
 
    WARNING:

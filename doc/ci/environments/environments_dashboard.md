@@ -20,8 +20,9 @@ see which pipelines are green and which are red allowing you to
 diagnose if there is a block at a particular point, or if there's
 a more systemic problem you need to investigate.
 
-You can access the dashboard on the top bar by selecting
-**Main menu > Environments**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+1. Select **Environments**.
 
 ![Environments Dashboard with projects](img/environments_dashboard_v12_5.png)
 

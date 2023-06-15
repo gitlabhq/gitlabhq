@@ -248,7 +248,7 @@ export default {
       size="small"
       :disabled="removeDisabled"
       class="js-issue-item-remove-button gl-mr-2"
-      data-qa-selector="remove_related_issue_button"
+      data-testid="remove_related_issue_button"
       :title="__('Remove')"
       :aria-label="__('Remove')"
       @click="onRemoveRequest"

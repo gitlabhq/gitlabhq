@@ -45,8 +45,7 @@ You first create a group, Development, to serve as the parent group for the whol
 software development organization.
 
 1. Open your self-managed GitLab instance.
-1. On the top bar, select **Main menu > Groups > View all groups**, and on the
-   right, select **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. In **Group name**, enter `Development`.
 1. Enter `development-group` for the group in **Group URL**. You see a message
@@ -80,7 +79,8 @@ You will now create subgroups to reflect this organization structure.
 
 > Subgroups and projects must have visibility settings that are at least as restrictive as the visibility setting of their parent group. For example, you cannot have a private parent group and a public subgroup.
 
-1. On the top bar, select **Main menu > Groups > View all groups**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
 1. Select **Development**. You should see an **Owner** label next to the group
    name as you have the Owner role.
 1. On the parent group's overview page, in the upper-right corner, select **New subgroup**.
@@ -106,7 +106,8 @@ for the organization.
 You will now manually create the users for your organization. These are test
 users. To create the first test user, Alex Smith:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select **New user**.
 1. Complete the required fields:
@@ -148,8 +149,8 @@ You can give users access to all projects in a group by adding them to that grou
 
 First, you will add all the users to the parent group, Development.
 
-1. On the top bar, select **Main menu > Groups** and find **Development**.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Development** group.
+1. Select **Manage > Members**.
 1. Select **Invite members**.
 1. Complete the fields for the product manager, Alex Smith.
    - Give Alex the **Owner** role. The role applies to all subgroups projects
@@ -188,7 +189,7 @@ subgroups with the same role.
 You can filter a subgroup to show which users are direct members of that subgroup,
 and which members have inherited membership of that subgroup from the parent group.
 
-1. On the top bar, select **Main menu > Groups** and find **Development**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Development** group.
 1. Select the **User Experience** subgroup.
 1. On the left sidebar, select **Subgroup information > Members**.
 1. On the **Members** page, select the **Filter members** field.
@@ -208,8 +209,8 @@ them from the parent group.
 
 Go back to the parent group and remove everyone except Alex Smith:
 
-1. On the top bar, select **Main menu > Groups** and find the parent group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the parent group.
+1. Select **Manage > Members**.
 1. On the member row you want to remove, select the vertical ellipsis (**{ellipsis_v}**)
    and then select **Remove member**.
 1. In the **Remove member** confirmation box, select the
@@ -227,7 +228,7 @@ You will now add users directly to the different subgroups.
 
 ### Add users to the Product Management subgroup
 
-1. On the top bar, select **Main menu > Groups** and find **Development**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Development** group.
 1. Select the **Product Management** subgroup.
 1. On the left sidebar, select **Subgroup information > Members**.
 
@@ -266,7 +267,7 @@ add users to the Engineering subgroup.
 
 You are now going to invite some users to the Engineering subgroup.
 
-1. On the top bar, select **Main menu > Groups** and find **Development**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Development** group.
 1. Select the **Engineering** subgroup.
 1. On the left sidebar, select **Subgroup information > Members**. The only
    members are you and Alex, both with the Owner role. These are inherited roles.
@@ -311,7 +312,7 @@ included in both nested subgroups due to inherited permissions.
 Therefore, you will add these users to the appropriate nested subgroup directly
 rather than to the User Experience subgroup.
 
-1. On the top bar, select **Main menu > Groups** and find **Development**.
+1. 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Development** group.
 1. Select the **User Experience** subgroup, and then the **UX Design** subgroup.
 1. On the left sidebar, select **Subgroup information > Members**. You and Alex
    Smith are currently the only members. These are inherited roles.
@@ -370,8 +371,8 @@ need to work on, and that piece of work is for the whole organization. To organi
 that work, you are going to create a project in the Development parent group, and
 add different users to that project.
 
-1. On the top bar, select **Main menu > Groups** and find **Development**.
-1. Select **Development**, and in the top-right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Development** group.
+1. Select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter `Release 2.0` as the name of your project.
@@ -399,8 +400,8 @@ directly to the project.
 
 ## Add users to the project and parent group
 
-1. On the top bar, select **Main menu > Projects** and find the **Release 2.0** project.
-1. On the left sidebar, select **Project information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Release 2.0** project.
+1. On the left sidebar, select **Manage > Members**.
 1. Select **Invite members**. Invite the following users:
 
    | User            | Role          | Access expiration date  |
@@ -432,8 +433,8 @@ projects by assigning roles.
 You can also change the visibility of individual features in a project. You cannot
 do this for groups.
 
-1. On the top bar, select **Main menu > Projects** and find the **Release 2.0** project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the **Release 2.0** project.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. In **Project visibility**, you can who can see the project in the public access
    directory. Because the parent group is private, you can only select **Private**.

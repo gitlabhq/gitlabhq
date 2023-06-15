@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Snippets::NotesController do
+RSpec.describe Snippets::NotesController, feature_category: :team_planning do
   let(:user) { create(:user) }
 
   let(:private_snippet)  { create(:personal_snippet, :private) }
@@ -252,6 +252,59 @@ RSpec.describe Snippets::NotesController do
             post :create, params: request_params
           end
         end
+      end
+    end
+  end
+
+  describe 'PUT update' do
+    let(:note_params) { { note: "New comment" } }
+
+    let(:request_params) do
+      {
+        snippet_id: public_snippet,
+        id: note_on_public,
+        format: :json,
+        note: note_params
+      }
+    end
+
+    before do
+      sign_in(note_on_public.author)
+    end
+
+    subject(:update_note) { put :update, params: request_params }
+
+    context "when the note is valid" do
+      it "updates the note" do
+        expect { update_note }.to change { note_on_public.reload.note }
+      end
+
+      it "returns status 200" do
+        post :create, params: request_params
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context "when there are ActiveRecord validation errors" do
+      before do
+        allow(note_on_public).to receive_message_chain(:errors, :full_messages)
+          .and_return(['Error 1', 'Error 2'])
+
+        allow_next_instance_of(Notes::UpdateService) do |service|
+          allow(service).to receive(:execute).and_return(note_on_public)
+        end
+      end
+
+      it "does not update the note" do
+        expect { update_note }.not_to change { note_on_public.reload.note }
+      end
+
+      it "returns status 422", :aggregate_failures do
+        update_note
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response.body).to eq('{"errors":"Error 1 and Error 2"}')
       end
     end
   end

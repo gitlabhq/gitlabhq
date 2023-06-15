@@ -775,32 +775,40 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
   end
 
   describe 'PUT update' do
+    let(:note_params) { { note: "New comment" } }
+
     let(:request_params) do
       {
         namespace_id: project.namespace,
         project_id: project,
         id: note,
         format: :json,
-        note: {
-          note: "New comment"
-        }
+        note: note_params
       }
     end
 
-    specify { expect(put(:update, params: request_params)).to have_request_urgency(:low) }
+    subject(:update_note) { put :update, params: request_params }
 
-    context "should update the note with a valid issue" do
-      before do
-        sign_in(note.author)
-        project.add_developer(note.author)
+    before do
+      sign_in(note.author)
+      project.add_developer(note.author)
+    end
+
+    specify { expect(update_note).to have_request_urgency(:low) }
+
+    context "when the note is valid" do
+      it "updates the note" do
+        expect { update_note }.to change { note.reload.note }
       end
 
-      it "updates the note" do
-        expect { put :update, params: request_params }.to change { note.reload.note }
+      it "returns status 200" do
+        update_note
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
-    context "doesnt update the note" do
+    context "when the issue is confidential and the user has guest permissions" do
       let(:issue)   { create(:issue, :confidential, project: project) }
       let(:note)    { create(:note, noteable: issue, project: project) }
 
@@ -809,18 +817,36 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
         project.add_guest(user)
       end
 
-      it "disallows edits when the issue is confidential and the user has guest permissions" do
-        request_params = {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: note,
-          format: :json,
-          note: {
-            note: "New comment"
-          }
-        }
-        expect { put :update, params: request_params }.not_to change { note.reload.note }
+      it "disallows edits" do
+        expect { update_note }.not_to change { note.reload.note }
+      end
+
+      it "returns status 404" do
+        update_note
+
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context "when there are ActiveRecord validation errors" do
+      before do
+        allow(note).to receive_message_chain(:errors, :full_messages)
+          .and_return(['Error 1', 'Error 2'])
+
+        allow_next_instance_of(Notes::UpdateService) do |service|
+          allow(service).to receive(:execute).and_return(note)
+        end
+      end
+
+      it "does not update the note" do
+        expect { update_note }.not_to change { note.reload.note }
+      end
+
+      it "returns status 422", :aggregate_failures do
+        update_note
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response.body).to eq('{"errors":"Error 1 and Error 2"}')
       end
     end
   end

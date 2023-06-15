@@ -184,10 +184,10 @@ ID token authentication is now always available, and JSON Web Token access is al
 
 To enable automatic ID token authentication:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
-1. Toggle **Limit JSON Web Token (JWT) access** to enabled.
+1. Turn on the **Limit JSON Web Token (JWT) access** toggle.
 
 <!--- end_remove -->
 

@@ -51,8 +51,8 @@ Deployments show up in this list only after a deployment job has created them.
 
 To search environments by name:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. In the search bar, enter your search term.
    - The length of your **search term should be 3 or more characters**.
    - Matching applies from the beginning of the environment name.
@@ -93,9 +93,9 @@ Prerequisites:
 
 To create a static environment in the UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
-1. Select **New environment**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
+1. Select **Create an environment**.
 1. Complete the fields.
 1. Select **Save**.
 
@@ -345,8 +345,8 @@ If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or rollback a deployment:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Select the environment.
 1. To the right of the deployment name:
    - To retry a deployment, select **Re-deploy to environment**.
@@ -560,8 +560,8 @@ you can view its expiration date and time.
 
 To view an environment's expiration date and time:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Select the name of the environment.
 
 The expiration date and time is displayed in the upper-left corner, next to the environment's name.
@@ -573,8 +573,8 @@ you can override its expiration.
 
 To override an environment's expiration:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Select the deployment name.
 1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
 
@@ -600,8 +600,8 @@ Environments view, the stop and deploy jobs must be in the same
 
 To stop an environment in the GitLab UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog box, select **Stop environment**.
 
@@ -664,8 +664,8 @@ Prerequisites:
 
 To delete an environment:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.
@@ -767,8 +767,8 @@ Limitations of GitLab Auto Rollback:
 
 GitLab Auto Rollback is turned off by default. To turn it on:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.

@@ -296,8 +296,8 @@ Use the [Google Play integration](../user/project/integrations/google_play.md),
 to configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console)
 to build and release Android apps. To enable the integration:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Google Play**.
 1. In **Enable integration**, select the **Active** checkbox.
 1. In **Package name**, enter the package name of the app. For example, `com.gitlab.app_name`.
@@ -353,8 +353,8 @@ Use the [Apple App Store integration](../user/project/integrations/apple_app_sto
 to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com/)
 to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS. To enable the integration:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Apple App Store**.
 1. Turn on the **Active** toggle under **Enable Integration**.
 1. Provide the Apple App Store Connect configuration information:

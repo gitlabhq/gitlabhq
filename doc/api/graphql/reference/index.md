@@ -7892,6 +7892,29 @@ The edge type for [`CiGroup`](#cigroup).
 | <a id="cigroupedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cigroupedgenode"></a>`node` | [`CiGroup`](#cigroup) | The item at the end of the edge. |
 
+#### `CiGroupEnvironmentScopeConnection`
+
+The connection type for [`CiGroupEnvironmentScope`](#cigroupenvironmentscope).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cigroupenvironmentscopeconnectionedges"></a>`edges` | [`[CiGroupEnvironmentScopeEdge]`](#cigroupenvironmentscopeedge) | A list of edges. |
+| <a id="cigroupenvironmentscopeconnectionnodes"></a>`nodes` | [`[CiGroupEnvironmentScope]`](#cigroupenvironmentscope) | A list of nodes. |
+| <a id="cigroupenvironmentscopeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiGroupEnvironmentScopeEdge`
+
+The edge type for [`CiGroupEnvironmentScope`](#cigroupenvironmentscope).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cigroupenvironmentscopeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cigroupenvironmentscopeedgenode"></a>`node` | [`CiGroupEnvironmentScope`](#cigroupenvironmentscope) | The item at the end of the edge. |
+
 #### `CiGroupVariableConnection`
 
 The connection type for [`CiGroupVariable`](#cigroupvariable).
@@ -12839,6 +12862,16 @@ Represents a deployment freeze window of a project.
 | <a id="cigroupname"></a>`name` | [`String`](#string) | Name of the job group. |
 | <a id="cigroupsize"></a>`size` | [`Int`](#int) | Size of the group. |
 
+### `CiGroupEnvironmentScope`
+
+Ci/CD environment scope for a group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cigroupenvironmentscopename"></a>`name` | [`String`](#string) | Scope name defininig the enviromnments that can use the variable. |
+
 ### `CiGroupVariable`
 
 CI/CD variables for a group.
@@ -15985,6 +16018,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupdescendantgroupsincludeparentdescendants"></a>`includeParentDescendants` | [`Boolean`](#boolean) | List of descendant groups of the parent group. |
 | <a id="groupdescendantgroupsowned"></a>`owned` | [`Boolean`](#boolean) | Limit result to groups owned by authenticated user. |
 | <a id="groupdescendantgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+
+##### `Group.environmentScopes`
+
+Environment scopes of the group.
+
+Returns [`CiGroupEnvironmentScopeConnection`](#cigroupenvironmentscopeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupenvironmentscopesname"></a>`name` | [`String`](#string) | Name of the environment scope. |
+| <a id="groupenvironmentscopessearch"></a>`search` | [`String`](#string) | Search query for environment scope name. |
 
 ##### `Group.epic`
 

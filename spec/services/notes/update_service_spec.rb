@@ -47,6 +47,24 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
       end
     end
 
+    context 'when the note is invalid' do
+      let(:edit_note_text) { { note: 'new text' } }
+
+      before do
+        allow(note).to receive(:valid?).and_return(false)
+      end
+
+      it 'does not update the note' do
+        travel_to(1.day.from_now) do
+          expect { update_note(edit_note_text) }.not_to change { note.reload.updated_at }
+        end
+      end
+
+      it 'returns the note' do
+        expect(update_note(edit_note_text)).to eq(note)
+      end
+    end
+
     describe 'event tracking', :snowplow do
       let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
 

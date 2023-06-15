@@ -103,13 +103,11 @@ class GroupsFinder < UnionFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_search(groups)
     return groups unless params[:search].present?
 
     groups.search(params[:search], include_parents: params[:parent].blank?)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def owned_groups
     current_user&.owned_groups || Group.none

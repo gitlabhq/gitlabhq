@@ -76,8 +76,9 @@ Prerequisite:
 
 To use the review apps template:
 
-1. On the top bar, select **Main menu > Projects** and find the project you want to create a review app job for.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to
+   find the project you want to create a review app job for.
+1. Select **Build > Environments**.
 1. Select **Enable review apps**.
 1. Copy the provided code snippet and paste it into your
    `.gitlab-ci.yml` file:

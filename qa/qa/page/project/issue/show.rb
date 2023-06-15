@@ -8,6 +8,7 @@ module QA
           include Page::Component::Note
           include Page::Component::DesignManagement
           include Page::Component::Issuable::Sidebar
+          include Page::Component::Issuable::Common
           # We need to check phone_layout? instead of mobile_layout? here
           # since tablets have the regular top navigation bar
           prepend Mobile::Page::Project::Issue::Show if Runtime::Env.phone_layout?
@@ -17,14 +18,9 @@ module QA
           end
 
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
-            element :close_issue_button
-            element :reopen_issue_button
-            element :issue_actions_ellipsis_dropdown
+            element :toggle_issue_state_button
+            element :desktop_dropdown
             element :delete_issue_button
-          end
-
-          view 'app/assets/javascripts/issues/show/components/title.vue' do
-            element :title_content, required: true
           end
 
           view 'app/assets/javascripts/related_issues/components/add_issuable_form.vue' do
@@ -69,18 +65,18 @@ module QA
             # Click by JS is needed to bypass the Moved MR actions popover
             # Change back to regular click_element when moved_mr_sidebar FF is removed
             # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-            click_by_javascript(find_element(:close_issue_button))
+            click_by_javascript(find_element(:toggle_issue_state_button, text: 'Close issue'))
           end
 
           def has_reopen_issue_button?
-            has_element?(:reopen_issue_button)
+            has_element?(:toggle_issue_state_button, text: 'Reopen issue')
           end
 
           def has_delete_issue_button?
             # Click by JS is needed to bypass the Moved MR actions popover
             # Change back to regular click_element when moved_mr_sidebar FF is removed
             # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-            click_by_javascript(find('[data-qa-selector="issue_actions_ellipsis_dropdown"] > button'))
+            click_by_javascript(find('[data-testid="desktop-dropdown"] > button'))
             has_element?(:delete_issue_button)
           end
 

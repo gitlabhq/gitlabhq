@@ -53050,7 +53050,7 @@ msgstr ""
 msgid "Your comment could not be submitted! Please check your network connection and try again."
 msgstr ""
 
-msgid "Your comment could not be updated! Please check your network connection and try again."
+msgid "Your comment could not be updated because %{reason}."
 msgstr ""
 
 msgid "Your comment will be discarded."

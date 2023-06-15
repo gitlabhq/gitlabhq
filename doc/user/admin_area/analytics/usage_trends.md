@@ -19,8 +19,9 @@ Usage Trends data refreshes daily.
 
 To view Usage Trends:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Analytics > Usage Trends**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Analytics > Usage Trends**.
 
 ## Total counts
 

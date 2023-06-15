@@ -1127,10 +1127,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.53.0.tgz#6f952e59db6a3ebb59f034c240d7001a2dc8a92d"
   integrity sha512-WgDZtl3ZmZgP0Fw62/YnNH/VjJbCp0bTU+qaBudic7T/ohu/Ex11RBcwakJyUZ5KWueFChGkulWKxVZz9baaDA==
 
-"@gitlab/ui@64.6.1":
-  version "64.6.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-64.6.1.tgz#36337f6b597319cc4b0b460374b958982c73c1b2"
-  integrity sha512-P3PVed3GpesteJK137VniFXupUtzo8f25ENQYZbJP1FG52/Ajic+RG+DyC0FnIqWcQWKu1rfUCxaULiPZzUIlw==
+"@gitlab/ui@64.6.2":
+  version "64.6.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-64.6.2.tgz#03650ad37a17b40a0a16c279aa3bcf820541e110"
+  integrity sha512-0m+T012DSHks/zsBfrwiFt+LcVTkNKP4z0hnQL0zjZM0nyo+YCv525jDmTFx2sYG4oGLMb5LuIObjH9tQT/ZHw==
   dependencies:
     "@floating-ui/dom" "1.2.9"
     bootstrap-vue "2.23.1"
@@ -1146,10 +1146,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.3.tgz#9ea641146436da388ffbad25d7f2abe0df52c235"
   integrity sha512-NMV++7Ew1FSBDN1xiZaauU9tfeSfgDHcOLpn+8bGpP+O5orUPm2Eu66R5eC5gkjBPaXosNAxNWtriee+aFk4+g==
 
-"@gitlab/web-ide@0.0.1-dev-20230606031511":
-  version "0.0.1-dev-20230606031511"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20230606031511.tgz#8629b7f0267f02f37fda0001503ebb5fb2f69966"
-  integrity sha512-ewxR+3rzJSl8LMIguKC5IQ4AFoQbfypfk3EYPD3INx9Mj+0Ww87G87OZopK9D3VZ2xrpQI6rIGmrl7r5yR2ygA==
+"@gitlab/web-ide@0.0.1-dev-20230614124516":
+  version "0.0.1-dev-20230614124516"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20230614124516.tgz#87ef511112e954dc3614e28fdf635b140bab22b7"
+  integrity sha512-VRKiDzhRNIHsyKbln8YtQjVvsOkF+4N1OUqaldu2gYX4Nfw9g57sTwnnX44aYcHFgPVgo5a/ScRpnCiBl6Phxg==
 
 "@graphql-eslint/eslint-plugin@3.19.1":
   version "3.19.1"

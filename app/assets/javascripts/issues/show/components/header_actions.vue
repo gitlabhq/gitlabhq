@@ -340,7 +340,6 @@ export default {
       class="gl-sm-display-none! w-100"
       block
       :text="dropdownText"
-      data-qa-selector="issue_actions_dropdown"
       data-testid="mobile-dropdown"
       :loading="isToggleStateButtonLoading"
     >
@@ -364,7 +363,7 @@ export default {
       </gl-dropdown-item>
       <gl-dropdown-item
         v-if="showToggleIssueStateButton"
-        :data-qa-selector="`mobile_${qaSelector}`"
+        :data-testid="`mobile_${qaSelector}`"
         @click="toggleIssueState"
       >
         {{ buttonText }}
@@ -434,7 +433,7 @@ export default {
       class="gl-display-none gl-sm-display-inline-flex!"
       :data-qa-selector="qaSelector"
       :loading="isToggleStateButtonLoading"
-      data-testid="toggle-button"
+      data-testid="toggle-issue-state-button"
       @click="toggleIssueState"
     >
       {{ buttonText }}
@@ -447,7 +446,6 @@ export default {
       class="gl-display-none gl-sm-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
-      data-qa-selector="issue_actions_ellipsis_dropdown"
       :text="dropdownText"
       :text-sr-only="true"
       :title="dropdownText"
@@ -510,7 +508,7 @@ export default {
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
-          data-qa-selector="delete_issue_button"
+          data-testid="delete_issue_button"
           @click="track('click_dropdown')"
         >
           {{ deleteButtonText }}

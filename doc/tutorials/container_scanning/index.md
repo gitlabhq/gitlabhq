@@ -24,7 +24,7 @@ Container scanning configuration is added to the pipeline configuration of a pro
 
 To create the new project
 
-1. On the top bar, select **Create new... > New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. In **Project name**, enter `Tutorial container scanning project`.
 1. In **Project URL**, select a namespace for the project.

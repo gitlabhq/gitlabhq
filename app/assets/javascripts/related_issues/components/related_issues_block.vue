@@ -220,7 +220,6 @@ export default {
           <gl-button
             v-if="canAdmin"
             size="small"
-            data-qa-selector="related_issues_plus_button"
             data-testid="related-issues-plus-button"
             :aria-label="addIssuableButtonText"
             class="gl-ml-3"

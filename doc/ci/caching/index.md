@@ -557,8 +557,8 @@ and should only be disabled in an environment where all users with Developer rol
 
 To use the same cache for all branches:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Clear the **Use separate caches for protected branches** checkbox.
 1. Select **Save changes**.
@@ -654,8 +654,8 @@ The next time the pipeline runs, the cache is stored in a different location.
 
 You can clear the cache in the GitLab UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Pipelines**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Build > Pipelines**.
 1. In the upper-right corner, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.

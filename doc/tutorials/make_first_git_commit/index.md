@@ -83,8 +83,7 @@ Here's an overview of what we're going to do:
 
 To start, create a sample project in GitLab.
 
-1. In GitLab, on the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. In GitLab, on the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. For **Project name**, enter `My sample project`. The project slug is generated for you.
    This slug is the URL you can use to access the project after it's created.
 1. Ensure **Initialize repository with a README** is selected.

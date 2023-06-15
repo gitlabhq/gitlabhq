@@ -50,8 +50,7 @@ If you haven't done so already, create a blank GitLab project for your Hugo site
 
 To create a blank project, in GitLab:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.

@@ -9,12 +9,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Several options are available for customizing the appearance of a self-managed instance
 of GitLab. To access these settings:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Appearance**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Appearance**.
 
-## Top bar
+## Navigation bar
 
-By default, the **top bar** has the GitLab logo, but this can be customized with
+By default, the navigation bar has the GitLab logo, but this can be customized with
 any image desired. It is optimized for images 28px high (any width), but any image can be
 used (less than 1 MB) and it is automatically resized.
 
@@ -82,8 +83,9 @@ description, and icon.
 
 To configure the PWA settings:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Appearance**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Appearance**.
 1. Scroll to the **Progressive Web App (PWA)** section.
 1. Complete the fields.
    - **Icon**: If you use the standard GitLab icon, it is available in sizes 192x192 pixels,

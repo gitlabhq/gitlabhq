@@ -23,6 +23,19 @@ module Ci
     scope :by_environment_scope, -> (environment_scope) { where(environment_scope: environment_scope) }
     scope :for_groups, ->(group_ids) { where(group_id: group_ids) }
 
+    scope :for_environment_scope_like, -> (query) do
+      top_level = 'LOWER(ci_group_variables.environment_scope) LIKE LOWER(?) || \'%\''
+      search_like = "%#{sanitize_sql_like(query)}%"
+
+      where(top_level, search_like)
+    end
+
+    scope :environment_scope_names, -> do
+      group(:environment_scope)
+      .order(:environment_scope)
+      .pluck(:environment_scope)
+    end
+
     self.limit_name = 'group_ci_variables'
     self.limit_scope = :group
 

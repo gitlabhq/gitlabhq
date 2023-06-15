@@ -218,7 +218,7 @@ export default {
         type="submit"
         size="small"
         class="gl-mr-2"
-        data-qa-selector="add_issue_button"
+        data-testid="add_issue_button"
       >
         {{ __('Add') }}
       </gl-button>

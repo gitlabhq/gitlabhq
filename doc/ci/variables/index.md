@@ -194,8 +194,9 @@ Prerequisite:
 
 To add an instance variable:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD** and expand the **Variables** section.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD** and expand the **Variables** section.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: In [GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028),

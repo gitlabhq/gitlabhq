@@ -24,8 +24,7 @@ To set up a scan result policy:
 
 ## Create a test project
 
-1. On the top bar, select **Main menu > Projects**.
-1. Select **New project**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Complete the fields.
    - **Project name**: `sast-scan-result-policy`.
@@ -36,8 +35,8 @@ To set up a scan result policy:
 
 Next, you'll add a scan result policy to your test project:
 
-1. On the top bar, select **Main menu > Projects** and find the `sast-scan-result-policy` project.
-1. On the left sidebar, go to **Security and Compliance > Policies**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `sast-scan-result-policy` project.
+1. Select **Secure > Policies**.
 1. Select **New policy**.
 1. In **Scan result policy**, select **Select policy**.
 1. Complete the fields.
@@ -61,8 +60,8 @@ Next, you'll add a scan result policy to your test project:
    The application creates a new project to store the policies linked to it, and creates a merge request to define the policy.
 
 1. Select **Merge**.
-1. On the top bar, select **Main menu > Projects** and select the `sast-scan-result-policy` project.
-1. On the left sidebar, select **Security and Compliance > Policies**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `sast-scan-result-policy` project.
+1. Select **Secure > Policies**.
 
    You can see the list of policies added in the previous steps.
 
@@ -70,8 +69,8 @@ Next, you'll add a scan result policy to your test project:
 
 Nice work, you've created a scan result policy. To test it, create some vulnerabilities and check the result:
 
-1. On the top bar, select **Main menu > Projects** and select the `sast-scan-result-policy` project.
-1. On the left sidebar, select **Repository > Files**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `sast-scan-result-policy` project.
+1. Select **Code > Repository**.
 1. From the **Add** (**{plus}**) dropdown list, select **New file**.
 1. In the **Filename** field enter `main.ts`.
 1. In the file's content, copy the following:

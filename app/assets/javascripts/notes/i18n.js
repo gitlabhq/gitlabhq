@@ -55,3 +55,8 @@ export const EDITED_TEXT = {
   actionWithAuthor: __('%{actionText} %{actionDetail} %{timeago} by %{author}'),
   actionWithoutAuthor: __('%{actionText} %{actionDetail}'),
 };
+
+export const UPDATE_COMMENT_FORM = {
+  error: __('Your comment could not be updated because %{reason}.'),
+  defaultError: __('Something went wrong while editing your comment. Please try again.'),
+};

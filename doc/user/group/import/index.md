@@ -93,7 +93,7 @@ After migration:
   - Stay public when copied into a public group.
   - Become private when copied into a private group.
 
-If used a private network on your source instance to hide content from the general public,
+If you used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
 ### Prerequisites

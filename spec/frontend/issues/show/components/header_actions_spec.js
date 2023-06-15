@@ -103,7 +103,8 @@ describe('HeaderActions component', () => {
     },
   };
 
-  const findToggleIssueStateButton = () => wrapper.find(`[data-testid="toggle-button"]`);
+  const findToggleIssueStateButton = () =>
+    wrapper.find(`[data-testid="toggle-issue-state-button"]`);
   const findEditButton = () => wrapper.find(`[data-testid="edit-button"]`);
 
   const findDropdownBy = (dataTestId) => wrapper.find(`[data-testid="${dataTestId}"]`);

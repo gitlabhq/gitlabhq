@@ -83,6 +83,12 @@ module Types
           description: 'Merge requests for projects in this group.',
           resolver: Resolvers::GroupMergeRequestsResolver
 
+    field :environment_scopes,
+          Types::Ci::GroupEnvironmentScopeType.connection_type,
+          description: 'Environment scopes of the group.',
+          null: true,
+          resolver: Resolvers::GroupEnvironmentScopesResolver
+
     field :milestones,
           description: 'Milestones of the group.',
           extras: [:lookahead],

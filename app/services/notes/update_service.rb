@@ -9,6 +9,8 @@ module Notes
 
       note.assign_attributes(params)
 
+      return note unless note.valid?
+
       track_note_edit_usage_for_issues(note) if note.for_issue?
       track_note_edit_usage_for_merge_requests(note) if note.for_merge_request?
 
@@ -23,11 +25,7 @@ module Notes
         note.note = content
       end
 
-      if note.note_changed?
-        note.assign_attributes(last_edited_at: Time.current, updated_by: current_user)
-        note.check_for_spam(action: :update, user: current_user) unless only_commands
-      end
-
+      update_note(note, only_commands)
       note.save
 
       unless only_commands || note.for_personal_snippet?
@@ -55,6 +53,13 @@ module Notes
     end
 
     private
+
+    def update_note(note, only_commands)
+      return unless note.note_changed?
+
+      note.assign_attributes(last_edited_at: Time.current, updated_by: current_user)
+      note.check_for_spam(action: :update, user: current_user) unless only_commands
+    end
 
     def delete_note(note, message)
       # We must add the error after we call #save because errors are reset
