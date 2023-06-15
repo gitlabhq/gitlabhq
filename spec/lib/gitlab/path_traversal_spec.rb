@@ -44,6 +44,18 @@ RSpec.describe Gitlab::PathTraversal, feature_category: :shared do
       expect { check_path_traversal!('foo\\..') }.to raise_error(/Invalid path/)
     end
 
+    it 'detects path traversal in string with encoded chars' do
+      expect { check_path_traversal!('foo%2F..%2Fbar') }.to raise_error(/Invalid path/)
+      expect { check_path_traversal!('foo%2F%2E%2E%2Fbar') }.to raise_error(/Invalid path/)
+    end
+
+    it 'detects double encoded chars' do
+      expect { check_path_traversal!('foo%252F..%2Fbar') }
+        .to raise_error(Gitlab::Utils::DoubleEncodingError, /is not allowed/)
+      expect { check_path_traversal!('foo%252F%2E%2E%2Fbar') }
+        .to raise_error(Gitlab::Utils::DoubleEncodingError, /is not allowed/)
+    end
+
     it 'does nothing for a safe string' do
       expect(check_path_traversal!('./foo')).to eq('./foo')
       expect(check_path_traversal!('.test/foo')).to eq('.test/foo')

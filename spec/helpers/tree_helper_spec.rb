@@ -271,4 +271,42 @@ RSpec.describe TreeHelper do
       end
     end
   end
+
+  describe '.fork_modal_options' do
+    let_it_be(:blob) { project.repository.blob_at('refs/heads/master', @path) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    subject { helper.fork_modal_options(project, blob) }
+
+    it 'returns correct fork path' do
+      expect(subject).to match a_hash_including(fork_path: '/namespace1/project-1/-/forks/new', fork_modal_id: nil)
+    end
+
+    context 'when show_edit_button true' do
+      before do
+        allow(helper).to receive(:show_edit_button?).and_return(true)
+      end
+
+      it 'returns correct fork path and modal id' do
+        expect(subject).to match a_hash_including(
+          fork_path: '/namespace1/project-1/-/forks/new',
+          fork_modal_id: 'modal-confirm-fork-edit')
+      end
+    end
+
+    context 'when show_web_ide_button true' do
+      before do
+        allow(helper).to receive(:show_web_ide_button?).and_return(true)
+      end
+
+      it 'returns correct fork path and modal id' do
+        expect(subject).to match a_hash_including(
+          fork_path: '/namespace1/project-1/-/forks/new',
+          fork_modal_id: 'modal-confirm-fork-webide')
+      end
+    end
+  end
 end

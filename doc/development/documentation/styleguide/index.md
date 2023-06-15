@@ -984,6 +984,13 @@ To open the Admin Area:
 1. Select **Admin Area**.
 ```
 
+To open the **Your work** menu item:
+
+```markdown
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+```
+
 To select your avatar:
 
 ```markdown

@@ -140,7 +140,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
   end
 
   describe '.table_schemas!' do
-    let(:tables) { %w[namespaces projects ci_builds] }
+    let(:tables) { %w[projects issues ci_builds] }
 
     subject { described_class.table_schemas!(tables) }
 
@@ -196,6 +196,84 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
           "Any new or deleted tables must be added to the database dictionary " \
           "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
         )
+      end
+    end
+  end
+
+  context 'when testing cross schema access' do
+    using RSpec::Parameterized::TableSyntax
+
+    before do
+      allow(Gitlab::Database).to receive(:all_gitlab_schemas).and_return(
+        [
+          Gitlab::Database::GitlabSchemaInfo.new(
+            name: "gitlab_main_clusterwide",
+            allow_cross_joins: %i[gitlab_shared gitlab_main],
+            allow_cross_transactions: %i[gitlab_internal gitlab_shared gitlab_main],
+            allow_cross_foreign_keys: %i[gitlab_main]
+          ),
+          Gitlab::Database::GitlabSchemaInfo.new(
+            name: "gitlab_main",
+            allow_cross_joins: %i[gitlab_shared],
+            allow_cross_transactions: %i[gitlab_internal gitlab_shared],
+            allow_cross_foreign_keys: %i[]
+          ),
+          Gitlab::Database::GitlabSchemaInfo.new(
+            name: "gitlab_ci",
+            allow_cross_joins: %i[gitlab_shared],
+            allow_cross_transactions: %i[gitlab_internal gitlab_shared],
+            allow_cross_foreign_keys: %i[]
+          )
+        ].index_by(&:name)
+      )
+    end
+
+    describe '.cross_joins_allowed?' do
+      where(:schemas, :result) do
+        %i[] | true
+        %i[gitlab_main_clusterwide gitlab_main] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | false
+        %i[gitlab_main gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | true
+        %i[gitlab_main_clusterwide gitlab_shared] | true
+      end
+
+      with_them do
+        it { expect(described_class.cross_joins_allowed?(schemas)).to eq(result) }
+      end
+    end
+
+    describe '.cross_transactions_allowed?' do
+      where(:schemas, :result) do
+        %i[] | true
+        %i[gitlab_main_clusterwide gitlab_main] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | true
+        %i[gitlab_main gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | true
+        %i[gitlab_main_clusterwide gitlab_shared] | true
+      end
+
+      with_them do
+        it { expect(described_class.cross_transactions_allowed?(schemas)).to eq(result) }
+      end
+    end
+
+    describe '.cross_foreign_key_allowed?' do
+      where(:schemas, :result) do
+        %i[] | false
+        %i[gitlab_main_clusterwide gitlab_main] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | false
+        %i[gitlab_main gitlab_ci] | false
+        %i[gitlab_main_clusterwide gitlab_shared] | false
+      end
+
+      with_them do
+        it { expect(described_class.cross_foreign_key_allowed?(schemas)).to eq(result) }
       end
     end
   end

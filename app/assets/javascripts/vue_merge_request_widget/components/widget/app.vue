@@ -14,9 +14,7 @@ export default {
   },
   computed: {
     widgets() {
-      return [window.gon?.features?.refactorSecurityExtension && 'MrSecurityWidget'].filter(
-        (w) => w,
-      );
+      return ['MrSecurityWidget'];
     },
   },
 };

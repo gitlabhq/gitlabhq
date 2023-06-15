@@ -190,19 +190,19 @@ You can check that you were successful:
 ### Update the translation files
 
 English UI strings are localized into many languages.
-These strings are saved in a `.pot` file, which you must update
+These strings are saved in a `.pot` file, which must be regenerated
 any time you update UI text.
 
-To generate the localization file:
+To automatically regenerate the localization file:
 
 1. Ensure you are in the `gitlab-development-kit/gitlab` directory.
 1. Run the following command:
 
    ```shell
-   bin/rake gettext:compile
+   tooling/bin/gettext_extractor locale/gitlab.pot
    ```
 
-   After several minutes, a `.pot` file is generated in the `/locale` directory.
+   The `.pot` file will be generated in the `/locale` directory.
 
 Now, in the `gitlab-development-kit/gitlab` directory, if you type `git status`
 you should have both files listed:

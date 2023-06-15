@@ -111,15 +111,15 @@ module Gitlab
           context[:modified_tables_by_db][database].merge(tables)
           all_tables = context[:modified_tables_by_db].values.flat_map(&:to_a)
           schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(all_tables)
-
           schemas += ApplicationRecord.gitlab_transactions_stack
 
-          if schemas.many?
-            messages = ["Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
-                        "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. " \
-                        "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions for details on how to resolve this exception."]
-
-            messages << cleaned_queries
+          unless ::Gitlab::Database::GitlabSchema.cross_transactions_allowed?(schemas)
+            messages = []
+            messages << "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
+                        "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. "
+            messages << "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions " \
+                        "for details on how to resolve this exception."
+            messages += cleaned_queries
 
             raise CrossDatabaseModificationAcrossUnsupportedTablesError, messages.join("\n\n")
           end
@@ -182,11 +182,11 @@ module Gitlab
         end
 
         def self.cleaned_queries
-          return '' unless dev_or_test_env?
+          return [] unless dev_or_test_env?
 
           context[:queries].last(QUERY_LIMIT).each_with_index.map do |sql, i|
             "#{i}: #{sql}"
-          end.join("\n")
+          end
         end
 
         def self.in_transaction?

@@ -47,7 +47,14 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       profileEnableGitpodPath
       savedReplies
       savedReply
-      user_achievements
+      userAchievements
+      bio
+      linkedin
+      twitter
+      discord
+      organization
+      jobTitle
+      createdAt
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

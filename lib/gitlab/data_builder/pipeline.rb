@@ -65,6 +65,7 @@ module Gitlab
         {
           id: pipeline.id,
           iid: pipeline.iid,
+          name: pipeline.name,
           ref: pipeline.source_ref,
           tag: pipeline.tag,
           sha: pipeline.sha,

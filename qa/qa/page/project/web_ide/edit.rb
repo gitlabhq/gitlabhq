@@ -68,7 +68,7 @@ module QA
             element :delete_button
           end
 
-          view 'app/assets/javascripts/vue_shared/components/confirm_fork_modal.vue' do
+          view 'app/assets/javascripts/vue_shared/components/web_ide/confirm_fork_modal.vue' do
             element :fork_project_button
             element :confirm_fork_modal
           end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DataBuilder::Pipeline do
+RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user, :public_email) }
   let_it_be(:project) { create(:project, :repository) }
 
@@ -26,6 +26,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
 
     it 'has correct attributes', :aggregate_failures do
       expect(attributes).to be_a(Hash)
+      expect(attributes[:name]).to be_nil
       expect(attributes[:ref]).to eq(pipeline.ref)
       expect(attributes[:sha]).to eq(pipeline.sha)
       expect(attributes[:tag]).to eq(pipeline.tag)
@@ -52,6 +53,16 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
         email: user.public_email
         })
       expect(data[:source_pipeline]).to be_nil
+    end
+
+    context 'pipeline with metadata' do
+      let_it_be_with_reload(:pipeline_metadata) do
+        create(:ci_pipeline_metadata, pipeline: pipeline, name: "My Pipeline")
+      end
+
+      it 'has pipeline name', :aggregate_failures do
+        expect(attributes[:name]).to eq("My Pipeline")
+      end
     end
 
     context 'build with runner' do

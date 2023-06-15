@@ -15,6 +15,46 @@ RSpec.describe PlanLimits do
   describe 'validations' do
     it { is_expected.to validate_numericality_of(:notification_limit).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:enforcement_limit).only_integer.is_greater_than_or_equal_to(0) }
+
+    describe 'limits_history' do
+      context 'when does not match the JSON schema' do
+        it 'does not allow invalid json' do
+          expect(subject).not_to allow_value({
+            invalid_key: {
+              enforcement_limit: [
+                {
+                  username: 'mhamda',
+                  timestamp: 1686140606000,
+                  value: 5000
+                }
+              ],
+              another_invalid: [
+                {
+                  username: 'mhamda',
+                  timestamp: 1686140606000,
+                  value: 5000
+                }
+              ]
+            }
+          }).for(:limits_history)
+        end
+      end
+
+      context 'when matches the JSON schema' do
+        it 'allows valid json' do
+          expect(subject).to allow_value({
+            enforcement_limit: [
+              {
+                user_id: 1,
+                username: 'mhamda',
+                timestamp: 1686140606000,
+                value: 5000
+              }
+            ]
+          }).for(:limits_history)
+        end
+      end
+    end
   end
 
   describe '#exceeded?' do
@@ -233,12 +273,17 @@ RSpec.describe PlanLimits do
       %w[dashboard_limit_enabled_at]
     end
 
-    it "has positive values for enabled limits" do
+    let(:history_columns) do
+      %w[limits_history]
+    end
+
+    it 'has positive values for enabled limits' do
       attributes = plan_limits.attributes
       attributes = attributes.except(described_class.primary_key)
       attributes = attributes.except(described_class.reflections.values.map(&:foreign_key))
       attributes = attributes.except(*columns_with_zero)
       attributes = attributes.except(*datetime_columns)
+      attributes = attributes.except(*history_columns)
 
       expect(attributes).to all(include(be_positive))
     end
@@ -254,6 +299,97 @@ RSpec.describe PlanLimits do
   describe '#dashboard_storage_limit_enabled?' do
     it 'returns false' do
       expect(plan_limits.dashboard_storage_limit_enabled?).to be false
+    end
+  end
+
+  describe '#log_limits_changes', :freeze_time do
+    let(:user) { create(:user) }
+    let(:plan_limits) { create(:plan_limits) }
+    let(:current_timestamp) { Time.current.utc.to_i }
+    let(:history) { plan_limits.limits_history }
+
+    it 'logs a single attribute change' do
+      plan_limits.log_limits_changes(user, enforcement_limit: 5_000)
+
+      expect(history).to eq(
+        { 'enforcement_limit' => [{ 'user_id' => user.id, 'username' => user.username,
+                                    'timestamp' => current_timestamp, 'value' => 5_000 }] }
+      )
+    end
+
+    it 'logs multiple attribute changes' do
+      plan_limits.log_limits_changes(user, enforcement_limit: 10_000, notification_limit: 20_000)
+
+      expect(history).to eq(
+        { 'enforcement_limit' => [{ 'user_id' => user.id, 'username' => user.username,
+                                    'timestamp' => current_timestamp, 'value' => 10_000 }],
+          'notification_limit' => [{ 'user_id' => user.id, 'username' => user.username,
+                                     'timestamp' => current_timestamp,
+                                     'value' => 20_000 }] }
+      )
+    end
+
+    it 'allows logging dashboard_limit_enabled_at from console (without user)' do
+      plan_limits.log_limits_changes(nil, dashboard_limit_enabled_at: current_timestamp)
+
+      expect(history).to eq(
+        { 'dashboard_limit_enabled_at' => [{ 'user_id' => nil, 'username' => nil, 'timestamp' => current_timestamp,
+                                             'value' => current_timestamp }] }
+      )
+    end
+
+    context 'with previous history avilable' do
+      let(:plan_limits) do
+        create(:plan_limits,
+          limits_history: { 'enforcement_limit' => [{ user_id: user.id, username: user.username,
+                                                      timestamp: current_timestamp,
+                                                      value: 20_000 },
+            { user_id: user.id, username: user.username, timestamp: current_timestamp,
+              value: 50_000 }] })
+      end
+
+      it 'appends to it' do
+        plan_limits.log_limits_changes(user, enforcement_limit: 60_000)
+        expect(history).to eq(
+          {
+            'enforcement_limit' => [
+              { 'user_id' => user.id, 'username' => user.username, 'timestamp' => current_timestamp,
+                'value' => 20_000 },
+              { 'user_id' => user.id, 'username' => user.username, 'timestamp' => current_timestamp,
+                'value' => 50_000 },
+              { 'user_id' => user.id, 'username' => user.username, 'timestamp' => current_timestamp, 'value' => 60_000 }
+            ]
+          }
+        )
+      end
+    end
+  end
+
+  describe '#limit_attribute_changes', :freeze_time do
+    let(:user) { create(:user) }
+    let(:current_timestamp) { Time.current.utc.to_i }
+    let(:plan_limits) do
+      create(:plan_limits,
+        limits_history: { 'enforcement_limit' => [
+          { user_id: user.id, username: user.username, timestamp: current_timestamp,
+            value: 20_000 }, { user_id: user.id, username: user.username, timestamp: current_timestamp,
+                               value: 50_000 }
+        ] })
+    end
+
+    it 'returns an empty array for attribute with no changes' do
+      changes = plan_limits.limit_attribute_changes(:notification_limit)
+
+      expect(changes).to eq([])
+    end
+
+    it 'returns the changes for a specific attribute' do
+      changes = plan_limits.limit_attribute_changes(:enforcement_limit)
+
+      expect(changes).to eq(
+        [{ timestamp: current_timestamp, value: 20_000, username: user.username, user_id: user.id },
+          { timestamp: current_timestamp, value: 50_000, username: user.username, user_id: user.id }]
+      )
     end
   end
 end

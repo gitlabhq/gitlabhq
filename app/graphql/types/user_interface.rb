@@ -162,6 +162,41 @@ module Types
           extras: [:lookahead],
           resolver: ::Resolvers::Achievements::UserAchievementsResolver
 
+    field :bio,
+          type: ::GraphQL::Types::String,
+          null: true,
+          description: 'Bio of the user.'
+
+    field :linkedin,
+          type: ::GraphQL::Types::String,
+          null: true,
+          description: 'LinkedIn profile name of the user.'
+
+    field :twitter,
+          type: ::GraphQL::Types::String,
+          null: true,
+          description: 'Twitter username of the user.'
+
+    field :discord,
+          type: ::GraphQL::Types::String,
+          null: true,
+          description: 'Discord ID of the user.'
+
+    field :organization,
+          type: ::GraphQL::Types::String,
+          null: true,
+          description: 'Who the user represents or works for.'
+
+    field :job_title,
+          type: ::GraphQL::Types::String,
+          null: true,
+          description: 'Job title of the user.'
+
+    field :created_at,
+          type: Types::TimeType,
+          null: true,
+          description: 'Timestamp of when the user was created.'
+
     definition_methods do
       def resolve_type(object, context)
         # in the absence of other information, we cannot tell - just default to

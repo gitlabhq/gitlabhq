@@ -9608,16 +9608,16 @@ msgstr ""
 msgid "CiCatalog|About this project"
 msgstr ""
 
-msgid "CiCatalog|CI/CD Catalog resource"
+msgid "CiCatalog|CI/CD Catalog"
 msgstr ""
 
-msgid "CiCatalog|CI/CD catalog"
+msgid "CiCatalog|CI/CD Catalog resource"
 msgstr ""
 
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
 msgstr ""
 
-msgid "CiCatalog|Get started with the CI/CD catalog"
+msgid "CiCatalog|Get started with the CI/CD Catalog"
 msgstr ""
 
 msgid "CiCatalog|Go to the project"
@@ -11795,9 +11795,6 @@ msgstr ""
 msgid "Compute quota:"
 msgstr ""
 
-msgid "Confidence"
-msgstr ""
-
 msgid "Confidential"
 msgstr ""
 
@@ -12972,6 +12969,9 @@ msgid "Create a new branch"
 msgstr ""
 
 msgid "Create a new file as there are no files yet. Afterwards, you'll be able to commit your changes."
+msgstr ""
+
+msgid "Create a new fork"
 msgstr ""
 
 msgid "Create a new issue"
@@ -27994,7 +27994,10 @@ msgstr ""
 msgid "Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
-msgid "Maximum number of changes (branches or tags) in a single push for which webhooks and services trigger (default is 3)."
+msgid "Maximum number of changes (branches or tags) in a single push above which a bulk push event is created (default is `3`). Setting to `0` does not disable throttling."
+msgstr ""
+
+msgid "Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered (default is `3`). Setting to `0` does not disable throttling."
 msgstr ""
 
 msgid "Maximum number of comments exceeded"
@@ -28015,7 +28018,7 @@ msgstr ""
 msgid "Maximum number of requests per minute for an unauthenticated IP address"
 msgstr ""
 
-msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
+msgid "Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling."
 msgstr ""
 
 msgid "Maximum number of unique IP addresses per user."
@@ -47258,9 +47261,6 @@ msgstr ""
 msgid "Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs."
 msgstr ""
 
-msgid "Threshold number of changes (branches or tags) in a single push above which a bulk push event is created (default is 3)."
-msgstr ""
-
 msgid "Throughput"
 msgstr ""
 
@@ -47808,6 +47808,12 @@ msgid "To specify the notification level per project of a group you belong to, y
 msgstr ""
 
 msgid "To start using GitLab Enterprise Edition, upload the %{codeOpen}.gitlab-license%{codeClose} file or enter the license key you have received from GitLab Inc."
+msgstr ""
+
+msgid "To submit your changes in a merge request, create a new fork."
+msgstr ""
+
+msgid "To submit your changes in a merge request, switch to one of these forks or create a new fork."
 msgstr ""
 
 msgid "To unsubscribe from this issue, please paste the following link into your browser:"
@@ -52504,6 +52510,9 @@ msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
+msgstr ""
+
+msgid "You can’t edit files directly in this project."
 msgstr ""
 
 msgid "You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."

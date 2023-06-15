@@ -33,6 +33,6 @@ To modify this setting:
 - Through the [Application settings API](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
   as `push_event_activities_limit`.
 
-The default value is 3, but it can be greater than or equal 0.
+The default value is `3`, but the value can be greater than or equal to `0`. Setting this value to `0` does not disable throttling.
 
 ![Push event activities limit](img/push_event_activities_limit_v12_4.png)

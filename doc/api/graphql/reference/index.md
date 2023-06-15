@@ -17668,20 +17668,26 @@ A user assigned to a merge request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneeavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="mergerequestassigneebio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestassigneebot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | <a id="mergerequestassigneecallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneecommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
+| <a id="mergerequestassigneecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestassigneediscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestassigneeemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestassigneeemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestassigneegitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestassigneegroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestassigneegroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneeid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestassigneejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestassigneelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestassigneemergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestassigneename"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="mergerequestassigneenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestassigneenamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
+| <a id="mergerequestassigneeorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestassigneepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestassigneeprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestassigneeprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -17689,6 +17695,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
 | <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -17934,20 +17941,26 @@ The author of the merge request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthoravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="mergerequestauthorbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestauthorbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | <a id="mergerequestauthorcallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorcommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
+| <a id="mergerequestauthorcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestauthordiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestauthoremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestauthoremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestauthorgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestauthorgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestauthorgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestauthorjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestauthorlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestauthorlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestauthormergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestauthorname"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="mergerequestauthornamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestauthornamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
+| <a id="mergerequestauthororganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestauthorpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestauthorprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestauthorprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -17955,6 +17968,7 @@ The author of the merge request.
 | <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
 | <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -18234,20 +18248,26 @@ A user participating in a merge request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="mergerequestparticipantbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestparticipantbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | <a id="mergerequestparticipantcallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantcommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
+| <a id="mergerequestparticipantcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestparticipantdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestparticipantemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestparticipantemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestparticipantgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestparticipantgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestparticipantjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestparticipantlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestparticipantlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestparticipantmergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestparticipantname"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="mergerequestparticipantnamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestparticipantnamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
+| <a id="mergerequestparticipantorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestparticipantpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestparticipantprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestparticipantprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -18255,6 +18275,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
 | <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -18519,20 +18540,26 @@ A user assigned to a merge request as a reviewer.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestrevieweravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="mergerequestreviewerbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestreviewerbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | <a id="mergerequestreviewercallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
+| <a id="mergerequestreviewercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestreviewerdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestrevieweremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestrevieweremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestreviewergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestreviewergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestreviewergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestreviewerjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="mergerequestreviewerlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="mergerequestreviewermergerequestinteraction"></a>`mergeRequestInteraction` | [`UserMergeRequestInteraction`](#usermergerequestinteraction) | Details of this user's interactions with the merge request. |
 | <a id="mergerequestreviewername"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="mergerequestreviewernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="mergerequestreviewernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
+| <a id="mergerequestreviewerorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestreviewerpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestreviewerprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="mergerequestreviewerprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -18540,6 +18567,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
 | <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -23026,19 +23054,25 @@ Core represention of a GitLab user.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercoreavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="usercorebio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="usercorebot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | <a id="usercorecallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="usercorecommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
+| <a id="usercorecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="usercorediscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="usercoreemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="usercoreemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="usercoregitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="usercoregroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usercoregroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="usercorejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="usercorelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="usercorelocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="usercorename"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="usercorenamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usercorenamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
+| <a id="usercoreorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="usercorepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="usercoreprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -23046,6 +23080,7 @@ Core represention of a GitLab user.
 | <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
 | <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -28038,19 +28073,25 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="useravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="userbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="userbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | <a id="usercallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
 | <a id="usercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
+| <a id="usercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="userdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="useremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="useremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="usergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="usergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="userjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="userlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="userlocation"></a>`location` | [`String`](#string) | Location of the user. |
 | <a id="username"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
 | <a id="usernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
 | <a id="usernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
+| <a id="userorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="userpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="userprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
@@ -28058,6 +28099,7 @@ Implementations:
 | <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. Will not return saved replies if `saved_replies` feature flag is disabled. (see [Connections](#connections)) |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="usertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
 | <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |

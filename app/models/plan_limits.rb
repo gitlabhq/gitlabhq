@@ -6,6 +6,9 @@ class PlanLimits < ApplicationRecord
   ignore_column :web_hook_calls_high, remove_with: '15.10', remove_after: '2022-02-22'
   ignore_column :ci_active_pipelines, remove_with: '16.3', remove_after: '2022-07-22'
 
+  attribute :limits_history, :ind_jsonb, default: -> { {} }
+  validates :limits_history, json_schema: { filename: 'plan_limits_history' }
+
   LimitUndefinedError = Class.new(StandardError)
 
   belongs_to :plan
@@ -45,6 +48,34 @@ class PlanLimits < ApplicationRecord
   # Overridden in EE
   def dashboard_storage_limit_enabled?
     false
+  end
+
+  def log_limits_changes(user, new_limits)
+    new_limits.each do |attribute, value|
+      limits_history[attribute] ||= []
+      limits_history[attribute] << {
+        user_id: user&.id,
+        username: user&.username,
+        timestamp: Time.current.utc.to_i,
+        value: value
+      }
+    end
+
+    update(limits_history: limits_history)
+  end
+
+  def limit_attribute_changes(attribute)
+    limit_history = limits_history[attribute]
+    return [] unless limit_history
+
+    limit_history.map do |entry|
+      {
+        timestamp: entry[:timestamp],
+        value: entry[:value],
+        username: entry[:username],
+        user_id: entry[:user_id]
+      }
+    end
   end
 end
 

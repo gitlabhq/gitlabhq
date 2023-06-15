@@ -1,14 +1,18 @@
 import { GlModal } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 
+import getWritableForksResponse from 'test_fixtures/graphql/vue_shared/components/web_ide/get_writable_forks.query.graphql_none.json';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import WebIdeLink, { i18n } from '~/vue_shared/components/web_ide_link.vue';
-import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
+import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 import { visitUrl } from '~/lib/utils/url_utility';
+import getWritableForksQuery from '~/vue_shared/components/web_ide/get_writable_forks.query.graphql';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -77,9 +81,14 @@ const ACTION_PIPELINE_EDITOR = {
 };
 
 describe('vue_shared/components/web_ide_link', () => {
+  Vue.use(VueApollo);
+
   let wrapper;
 
   function createComponent(props, { mountFn = shallowMountExtended, glFeatures = {} } = {}) {
+    const fakeApollo = createMockApollo([
+      [getWritableForksQuery, jest.fn().mockResolvedValue(getWritableForksResponse)],
+    ]);
     wrapper = mountFn(WebIdeLink, {
       propsData: {
         editUrl: TEST_EDIT_URL,
@@ -102,6 +111,7 @@ describe('vue_shared/components/web_ide_link', () => {
             </div>`,
         }),
       },
+      apolloProvider: fakeApollo,
     });
   }
 

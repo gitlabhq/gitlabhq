@@ -4,6 +4,7 @@ gitlab_schemas:
   - gitlab_internal
   - gitlab_shared
   - gitlab_main
+  - gitlab_main_cell
   - gitlab_pm
 # Note that we use ActiveRecord::Base here and not ApplicationRecord.
 # This is deliberate, as: 

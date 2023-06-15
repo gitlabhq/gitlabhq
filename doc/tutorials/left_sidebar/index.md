@@ -25,10 +25,12 @@ To turn off this sidebar, return to your avatar and turn off the toggle.
 ## Layout of the left sidebar
 
 At the top of the left sidebar are several shortcuts. Use these shortcuts to
-quickly create new items, view your profile, search, and view your list of issues,
+show and hide the left sidebar, create new items, search, and view your profile. You can also view your list of issues,
 merge requests, and to-do items.
 
 ![Top of sidebar](img/sidebar_top_v16_1.png)
+
+If you have hidden the left sidebar, you can display it temporarily by hovering your cursor over the left edge of the GitLab window.
 
 The next area of the left sidebar changes based on the information you're viewing. For example,
 you might be viewing a project, exploring projects or groups, or viewing your profile.

@@ -98,7 +98,6 @@ export default {
     MrWidgetRebase: RebaseState,
     SourceBranchRemovalStatus,
     MrWidgetApprovals,
-    SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
     ReadyToMerge: ReadyToMergeState,
     ReportWidgetContainer,
@@ -239,9 +238,6 @@ export default {
         this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
       );
     },
-    shouldRenderSecurityReport() {
-      return Boolean(this.mr?.pipeline?.id);
-    },
     shouldRenderTerraformPlans() {
       return Boolean(this.mr?.terraformReportsPath);
     },
@@ -274,9 +270,6 @@ export default {
     },
     hasAlerts() {
       return this.hasMergeError || this.showMergePipelineForkWarning;
-    },
-    shouldShowSecurityExtension() {
-      return window.gon?.features?.refactorSecurityExtension;
     },
     shouldShowMergeDetails() {
       if (this.mr.state === 'readyToMerge') return true;
@@ -601,15 +594,7 @@ export default {
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
       <extensions-container v-if="hasExtensions" :mr="mr" />
-      <widget-container v-if="mr && shouldShowSecurityExtension" :mr="mr" />
-      <security-reports-app
-        v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
-        :pipeline-id="mr.pipeline.id"
-        :project-id="mr.sourceProjectId"
-        :security-reports-docs-path="mr.securityReportsDocsPath"
-        :target-project-full-path="mr.targetProjectFullPath"
-        :mr-iid="mr.iid"
-      />
+      <widget-container :mr="mr" />
     </report-widget-container>
     <div class="mr-section-container mr-widget-workflow">
       <div v-if="hasAlerts" class="gl-overflow-hidden mr-widget-alert-container">

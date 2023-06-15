@@ -9,6 +9,8 @@ module Gitlab
       @logger ||= Gitlab::AppLogger
     end
 
+    PATH_TRAVERSAL_REGEX = %r{(\A(\.{1,2})\z|\A\.\.[/\\]|[/\\]\.\.\z|[/\\]\.\.[/\\]|\n)}
+
     # Ensure that the relative path will not traverse outside the base directory
     # We url decode the path to avoid passing invalid paths forward in url encoded format.
     # Also see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24223#note_284122580
@@ -20,9 +22,8 @@ module Gitlab
       raise PathTraversalAttackError, 'Invalid path' unless path.is_a?(String)
 
       path = ::Gitlab::Utils.decode_path(path)
-      path_regex = %r{(\A(\.{1,2})\z|\A\.\.[/\\]|[/\\]\.\.\z|[/\\]\.\.[/\\]|\n)}
 
-      if path.match?(path_regex)
+      if path.match?(PATH_TRAVERSAL_REGEX)
         logger.warn(message: "Potential path traversal attempt detected", path: path.to_s)
         raise PathTraversalAttackError, 'Invalid path'
       end

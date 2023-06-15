@@ -10,7 +10,6 @@ import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_stat
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
@@ -30,7 +29,6 @@ import Approvals from '~/vue_merge_request_widget/components/approvals/approvals
 import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_preparing.vue';
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
-import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
 import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
@@ -76,11 +74,6 @@ describe('MrWidgetOptions', () => {
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
   const findApprovalsWidget = () => wrapper.findComponent(Approvals);
   const findPreparingWidget = () => wrapper.findComponent(Preparing);
-  const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
-  const findExtensionToggleButton = () =>
-    wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
-  const findExtensionLink = (linkHref) =>
-    wrapper.find(`[data-testid="widget-extension"] [href="${linkHref}"]`);
 
   beforeEach(() => {
     gl.mrWidgetData = { ...mockData };
@@ -163,9 +156,13 @@ describe('MrWidgetOptions', () => {
     return axios.waitForAll();
   };
 
+  const findExtensionToggleButton = () =>
+    wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
+  const findExtensionLink = (linkHref) =>
+    wrapper.find(`[data-testid="widget-extension"] [href="${linkHref}"]`);
   const findSuggestPipeline = () => wrapper.find('[data-testid="mr-suggest-pipeline"]');
   const findSuggestPipelineButton = () => findSuggestPipeline().find('button');
-  const findSecurityMrWidget = () => wrapper.find('[data-testid="security-mr-widget"]');
+  const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
 
   describe('default', () => {
     beforeEach(() => {
@@ -870,47 +867,6 @@ describe('MrWidgetOptions', () => {
     });
   });
 
-  describe('security widget', () => {
-    const setup = (hasPipeline) => {
-      const mrData = {
-        ...mockData,
-        ...(hasPipeline ? {} : { pipeline: null }),
-      };
-
-      // Override top-level mocked requests, which always use a fresh copy of
-      // mockData, which always includes the full pipeline object.
-      mock.onGet(mockData.merge_request_widget_path).reply(() => [HTTP_STATUS_OK, mrData]);
-      mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [HTTP_STATUS_OK, mrData]);
-
-      return createComponent(mrData, {
-        apolloMock: [
-          [
-            securityReportMergeRequestDownloadPathsQuery,
-            jest
-              .fn()
-              .mockResolvedValue({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
-          ],
-        ],
-      });
-    };
-
-    describe('with a pipeline', () => {
-      it('renders the security widget', async () => {
-        await setup(true);
-
-        expect(findSecurityMrWidget().exists()).toBe(true);
-      });
-    });
-
-    describe('with no pipeline', () => {
-      it('does not render the security widget', async () => {
-        await setup(false);
-
-        expect(findSecurityMrWidget().exists()).toBe(false);
-      });
-    });
-  });
-
   describe('suggestPipeline', () => {
     beforeEach(() => {
       mock.onAny().reply(HTTP_STATUS_OK);
@@ -1179,7 +1135,7 @@ describe('MrWidgetOptions', () => {
       await nextTick();
       await waitForPromises();
 
-      expect(Sentry.captureException).toHaveBeenCalledTimes(2);
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
       expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
       expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
     });
@@ -1271,18 +1227,12 @@ describe('MrWidgetOptions', () => {
         expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
       });
     });
+  });
 
-    describe('widget container', () => {
-      it('should not be displayed when the refactor_security_extension feature flag is turned off', () => {
-        createComponent();
-        expect(findWidgetContainer().exists()).toBe(false);
-      });
-
-      it('should be displayed when the refactor_security_extension feature flag is turned on', () => {
-        window.gon.features.refactorSecurityExtension = true;
-        createComponent();
-        expect(findWidgetContainer().exists()).toBe(true);
-      });
+  describe('widget container', () => {
+    it('renders the widget container when there is MR data', async () => {
+      await createComponent(mockData);
+      expect(findWidgetContainer().props('mr')).not.toBeUndefined();
     });
   });
 

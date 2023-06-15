@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "enforcement_limit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "username": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "username",
+          "timestamp",
+          "value"
+        ]
+      }
+    },
+    "notification_limit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "username": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "username",
+          "timestamp",
+          "value"
+        ]
+      }
+    },
+    "storage_size_limit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "username": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "username",
+          "timestamp",
+          "value"
+        ]
+      }
+    },
+    "dashboard_limit_enabled_at": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "username": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "username",
+          "timestamp",
+          "value"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false
+}

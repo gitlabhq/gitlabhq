@@ -80,6 +80,26 @@ module Gitlab
         # rubocop:enable Gitlab/DocUrl
       end
 
+      private_class_method def self.cross_access_allowed?(type, table_schemas)
+        table_schemas.any? do |schema|
+          extra_schemas = table_schemas - [schema]
+          extra_schemas -= Gitlab::Database.all_gitlab_schemas[schema]&.public_send(type) || [] # rubocop:disable GitlabSecurity/PublicSend
+          extra_schemas.empty?
+        end
+      end
+
+      def self.cross_joins_allowed?(table_schemas)
+        table_schemas.empty? || self.cross_access_allowed?(:allow_cross_joins, table_schemas)
+      end
+
+      def self.cross_transactions_allowed?(table_schemas)
+        table_schemas.empty? || self.cross_access_allowed?(:allow_cross_transactions, table_schemas)
+      end
+
+      def self.cross_foreign_key_allowed?(table_schemas)
+        self.cross_access_allowed?(:allow_cross_foreign_keys, table_schemas)
+      end
+
       def self.dictionary_paths
         Gitlab::Database.all_database_connections
           .values.map(&:db_docs_dir).uniq

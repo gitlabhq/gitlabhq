@@ -157,17 +157,15 @@ module TreeHelper
     }
   end
 
-  def fork_modal_options(project, ref, path, blob)
+  def fork_modal_options(project, blob)
     if show_edit_button?({ blob: blob })
-      fork_path = fork_and_edit_path(project, ref, path)
       fork_modal_id = "modal-confirm-fork-edit"
     elsif show_web_ide_button?
-      fork_path = ide_fork_and_edit_path(project, ref, path)
       fork_modal_id = "modal-confirm-fork-webide"
     end
 
     {
-      fork_path: fork_path,
+      fork_path: new_namespace_project_fork_path(project_id: project.path, namespace_id: project.namespace.full_path),
       fork_modal_id: fork_modal_id
     }
   end

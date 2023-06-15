@@ -1,7 +1,15 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import WebIdeButton from '~/vue_shared/components/web_ide_link.vue';
+import createDefaultClient from '~/lib/graphql';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export default ({ el, router }) => {
   if (!el) return;
@@ -15,6 +23,10 @@ export default ({ el, router }) => {
   new Vue({
     el,
     router,
+    apolloProvider,
+    provide: {
+      projectPath,
+    },
     render(h) {
       return h(WebIdeButton, {
         props: {

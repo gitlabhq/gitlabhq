@@ -3,7 +3,7 @@ import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
-import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
+import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
@@ -152,9 +152,7 @@ export default {
       return this.actions.length > 0;
     },
     editAction() {
-      if (!this.showEditButton) {
-        return null;
-      }
+      if (!this.showEditButton) return null;
 
       const handleOptions = this.needsToFork
         ? {
@@ -194,9 +192,7 @@ export default {
       return __('Web IDE');
     },
     webIdeAction() {
-      if (!this.showWebIdeButton) {
-        return null;
-      }
+      if (!this.showWebIdeButton) return null;
 
       const handleOptions = this.needsToFork
         ? {
@@ -298,6 +294,12 @@ export default {
         },
       };
     },
+    mountForkModal() {
+      const { disableForkModal, showWebIdeButton, showEditButton } = this;
+      if (disableForkModal) return false;
+
+      return showWebIdeButton || showEditButton;
+    },
   },
   methods: {
     showModal(dataKey) {
@@ -330,7 +332,7 @@ export default {
       </gl-sprintf>
     </gl-modal>
     <confirm-fork-modal
-      v-if="showWebIdeButton || showEditButton"
+      v-if="mountForkModal"
       v-model="showForkModal"
       :modal-id="forkModalId"
       :fork-path="forkPath"
