@@ -280,6 +280,9 @@ export default {
     duration() {
       return this.pipeline?.duration || 0;
     },
+    showDuration() {
+      return this.duration && this.isFinished;
+    },
     durationFormatted() {
       return timeIntervalInWords(this.duration);
     },
@@ -560,7 +563,7 @@ export default {
             <gl-icon name="timer" />
             {{ inProgressText }}
           </span>
-          <span v-if="duration" class="gl-ml-2" data-testid="pipeline-duration-text">
+          <span v-if="showDuration" class="gl-ml-2" data-testid="pipeline-duration-text">
             <gl-icon name="timer" />
             {{ durationText }}
           </span>

@@ -246,7 +246,7 @@ table {
 .commit-diff {
   .discussion-reply-holder {
     background-color: $gray-light;
-    border-radius: 0 0 3px 3px;
+    border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
     padding: $gl-padding;
     border-top: 1px solid $gray-50;
 

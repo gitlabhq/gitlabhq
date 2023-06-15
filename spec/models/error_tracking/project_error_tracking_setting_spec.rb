@@ -300,7 +300,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting, feature_category: :er
         it { expect(result[:issue].gitlab_commit_path).to eq(nil) }
       end
 
-      context 'when repo commit matches first relase version' do
+      context 'when repo commit matches first release version' do
         let(:commit) { instance_double(Commit, id: commit_id) }
         let(:repository) { instance_double(Repository, commit: commit) }
 

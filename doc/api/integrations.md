@@ -644,6 +644,17 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | Discord webhook. For example, `https://discord.com/api/webhooks/…` |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is "default" |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
 ### Disable Discord integration
 

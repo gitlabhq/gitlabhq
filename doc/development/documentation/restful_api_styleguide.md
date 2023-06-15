@@ -81,7 +81,7 @@ Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/endpoint?parameters"
+  --url "https://gitlab.example.com/api/v4/endpoint?parameters"
 ```
 
 Example response:
@@ -204,7 +204,7 @@ For information about writing attribute descriptions, see the [GraphQL API descr
   include it.
 - Use long option names (`--header` instead of `-H`) for legibility. (Tested in
   [`scripts/lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
-- Wrap the URL in double quotes (`"`).
+- Declare URLs with the `--url` parameter, and wrap the URL in double quotes (`"`).
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
 - For legibility, use the <code>&#92;</code> character and indentation to break long single-line
@@ -233,7 +233,7 @@ Get the details of a group:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/groups/gitlab-org"
+  --url "https://gitlab.example.com/api/v4/groups/gitlab-org"
 ```
 
 ### cURL example with parameters passed in the URL
@@ -242,7 +242,7 @@ Create a new project under the authenticated user's namespace:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects?name=foo"
+  --url "https://gitlab.example.com/api/v4/projects?name=foo"
 ```
 
 ### Post data using cURL's `--data`
@@ -254,7 +254,7 @@ can use cURL's `--data` option. The example below will create a new project
 ```shell
 curl --data "name=foo" \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects"
+  --url "https://gitlab.example.com/api/v4/projects"
 ```
 
 ### Post data using JSON content
@@ -267,7 +267,7 @@ curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
   --data '{"path": "my-group", "name": "My group"}' \
-  "https://gitlab.example.com/api/v4/groups"
+  --url "https://gitlab.example.com/api/v4/groups"
 ```
 
 For readability, you can also set up the `--data` by using the following format:
@@ -293,7 +293,7 @@ curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --form "title=ssh-key" \
   --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." \
-  "https://gitlab.example.com/api/v4/users/25/keys"
+  --url "https://gitlab.example.com/api/v4/users/25/keys"
 ```
 
 The above example is run by and administrator and will add an SSH public key
@@ -309,7 +309,7 @@ ASCII code.
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20GitLab"
+  --url "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20GitLab"
 ```
 
 Use `%2F` for slashes (`/`).
@@ -325,5 +325,5 @@ curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>"
   --data "skip_users[]=<user_id>" \
   --data "skip_users[]=<user_id>" \
-  "https://gitlab.example.com/api/v4/projects/<project_id>/users"
+  --url "https://gitlab.example.com/api/v4/projects/<project_id>/users"
 ```

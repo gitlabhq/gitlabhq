@@ -1,21 +1,14 @@
 <script>
-import {
-  GlButtonGroup,
-  GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButtonGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { SORT_DIRECTION_UI } from '../constants';
 
 export default {
   name: 'GlobalSearchSort',
   components: {
+    GlCollapsibleListbox,
     GlButtonGroup,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -26,8 +19,19 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      selectedSortOptionTitle: '',
+    };
+  },
   computed: {
     ...mapState(['query']),
+    listboxOptions() {
+      return this.searchSortOptions.map((option) => ({
+        text: option.title,
+        value: option.title,
+      }));
+    },
     selectedSortOption: {
       get() {
         const { sort } = this.query;
@@ -60,14 +64,23 @@ export default {
       return this.query?.sort?.includes('asc') ? SORT_DIRECTION_UI.asc : SORT_DIRECTION_UI.desc;
     },
   },
+  watch: {
+    selectedSortOption: {
+      handler() {
+        this.selectedSortOptionTitle = this.selectedSortOption.title;
+      },
+      immediate: true,
+    },
+  },
   methods: {
     ...mapActions(['applyQuery', 'setQuery']),
-    handleSortChange(option) {
-      if (!option.sortable) {
-        this.selectedSortOption = option.sortParam;
+    handleSortChange(value) {
+      const selectedOption = this.searchSortOptions.find((option) => option.title === value);
+      if (!selectedOption.sortable) {
+        this.selectedSortOption = selectedOption.sortParam;
       } else {
         // Default new sort options to desc
-        this.selectedSortOption = option.sortParam.desc;
+        this.selectedSortOption = selectedOption.sortParam.desc;
       }
     },
     handleSortDirectionChange() {
@@ -82,16 +95,15 @@ export default {
 
 <template>
   <gl-button-group>
-    <gl-dropdown :text="selectedSortOption.title" :right="true" class="w-100">
-      <gl-dropdown-item
-        v-for="sortOption in searchSortOptions"
-        :key="sortOption.title"
-        is-check-item
-        :is-checked="sortOption.title === selectedSortOption.title"
-        @click="handleSortChange(sortOption)"
-        >{{ sortOption.title }}</gl-dropdown-item
-      >
-    </gl-dropdown>
+    <gl-collapsible-listbox
+      v-model="selectedSortOptionTitle"
+      placement="right"
+      class="gl-z-index-1"
+      toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
+      :toggle-text="selectedSortOptionTitle"
+      :items="listboxOptions"
+      @select="handleSortChange"
+    />
     <gl-button
       v-gl-tooltip
       :disabled="!selectedSortOption.sortable"

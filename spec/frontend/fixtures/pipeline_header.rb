@@ -64,6 +64,32 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
     end
   end
 
+  context 'with running pipeline and duration' do
+    let_it_be(:pipeline) do
+      create(
+        :ci_pipeline,
+        project: project,
+        sha: commit.id,
+        ref: 'master',
+        user: user,
+        status: :running,
+        duration: 7210,
+        created_at: 2.hours.ago,
+        started_at: 1.hour.ago
+      )
+    end
+
+    let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline, ref: 'master') }
+
+    it "graphql/pipelines/pipeline_header_running_with_duration.json" do
+      query = get_graphql_query_as_string(query_path)
+
+      post_graphql(query, current_user: user, variables: { fullPath: project.full_path, iid: pipeline.iid })
+
+      expect_graphql_errors_to_be_empty
+    end
+  end
+
   context 'with failed pipeline' do
     let_it_be(:pipeline) do
       create(

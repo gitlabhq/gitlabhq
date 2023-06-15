@@ -181,6 +181,7 @@ module API
         mount ::API::AccessRequests
         mount ::API::Admin::BatchedBackgroundMigrations
         mount ::API::Admin::Ci::Variables
+        mount ::API::Admin::Dictionary
         mount ::API::Admin::InstanceClusters
         mount ::API::Admin::Migrations
         mount ::API::Admin::PlanLimits

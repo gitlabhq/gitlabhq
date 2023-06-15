@@ -196,13 +196,6 @@
     }
   }
 
-  .form-control {
-    &:active,
-    &:focus {
-      background-color: $white;
-    }
-  }
-
   .submit-container {
     margin-top: 16px;
   }
@@ -271,7 +264,7 @@
       left: 0;
       right: 0;
       height: 40px;
-      background: $white;
+      background: var(--white, $white);
     }
 
     .login-page-broadcast {

@@ -16,6 +16,7 @@ import getPipelineDetailsQuery from '~/pipelines/graphql/queries/get_pipeline_he
 import {
   pipelineHeaderSuccess,
   pipelineHeaderRunning,
+  pipelineHeaderRunningWithDuration,
   pipelineHeaderFailed,
   pipelineRetryMutationResponseSuccess,
   pipelineCancelMutationResponseSuccess,
@@ -33,6 +34,7 @@ describe('Pipeline details header', () => {
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
+  const runningHandlerWithDuration = jest.fn().mockResolvedValue(pipelineHeaderRunningWithDuration);
   const failedHandler = jest.fn().mockResolvedValue(pipelineHeaderFailed);
 
   const retryMutationHandlerSuccess = jest
@@ -270,6 +272,18 @@ describe('Pipeline details header', () => {
 
     it('displays pipeline running text', () => {
       expect(findPipelineRunningText()).toBe('In progress, queued for 3,600 seconds');
+    });
+  });
+
+  describe('running pipeline with duration', () => {
+    beforeEach(async () => {
+      createComponent([[getPipelineDetailsQuery, runningHandlerWithDuration]]);
+
+      await waitForPromises();
+    });
+
+    it('does not display pipeline duration text', () => {
+      expect(findPipelineDuration().exists()).toBe(false);
     });
   });
 

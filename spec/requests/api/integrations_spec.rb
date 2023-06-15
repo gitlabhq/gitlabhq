@@ -68,7 +68,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         let(:missing_attributes) do
           {
             datadog: %i[archive_trace_events],
-            discord: %i[branches_to_be_notified notify_only_broken_pipelines],
             hangouts_chat: %i[notify_only_broken_pipelines],
             jira: %i[issues_enabled project_key jira_issue_regex jira_issue_prefix vulnerabilities_enabled vulnerabilities_issuetype],
             mattermost: %i[deployment_channel labels_to_be_notified],

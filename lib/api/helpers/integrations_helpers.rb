@@ -403,8 +403,16 @@ module API
               name: :webhook,
               type: String,
               desc: 'Discord webhook. For example, https://discord.com/api/webhooks/…'
-            }
-          ],
+            },
+            {
+              required: false,
+              name: :branches_to_be_notified,
+              type: String,
+              desc: 'Branches for which notifications are to be sent'
+            },
+            chat_notification_flags,
+            chat_notification_events
+          ].flatten,
           'drone-ci' => [
             {
               required: true,
