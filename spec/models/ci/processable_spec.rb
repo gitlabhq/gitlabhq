@@ -76,7 +76,8 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            job_artifacts_cobertura needs job_artifacts_accessibility
            job_artifacts_requirements job_artifacts_coverage_fuzzing
            job_artifacts_requirements_v2
-           job_artifacts_api_fuzzing terraform_state_versions job_artifacts_cyclonedx].freeze
+           job_artifacts_api_fuzzing terraform_state_versions job_artifacts_cyclonedx
+           job_annotations].freeze
       end
 
       let(:ignore_accessors) do
@@ -102,6 +103,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
         create(:ci_job_variable, :dotenv_source, job: processable)
         create(:terraform_state_version, build: processable)
+        create(:ci_job_annotation, :external_link, job: processable)
       end
 
       before do

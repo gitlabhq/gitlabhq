@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Build annotation",
+  "type": "array",
+  "items": {
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "external_link": {
+            "$ref": "./ci_job_external_link_data.json"
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
+  "maxItems": 1000
+}

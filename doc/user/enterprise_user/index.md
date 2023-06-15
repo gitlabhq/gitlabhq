@@ -63,8 +63,8 @@ Steps:
 
 The custom domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
 
-1. On the top bar, select **Main menu > Groups** and find your top group.
-1. On the left sidebar, select **Settings > Domain Verification**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. Select **Settings > Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. In **Domain**, enter the domain name.
 1. In **Project**, link to a project.
@@ -86,8 +86,8 @@ and paste them in your domain's control panel as a `TXT` record.
 
 After you have added all the DNS records:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Domain Verification**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Domain Verification**.
 1. On the domain table row, Select **Retry verification** (**{retry}**).
 
 ![Verify your domain](../img/retry_domain_verification_v16_0.png)
@@ -114,8 +114,8 @@ from the GitLab project.
 
 To view all configured domains in your group:
 
-1. On the top bar, select **Main menu > Groups** and find your top-level group.
-1. On the left sidebar, select **Settings > Domain Verification**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. Select **Settings > Domain Verification**.
 
 You then see:
 
@@ -139,8 +139,8 @@ Top-level group Owners can disable two-factor authentication (2FA) for enterpris
 
 To disable 2FA:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** (**{ellipsis_v}**) and select **Disable two-factor authentication**.
 

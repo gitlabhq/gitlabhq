@@ -376,7 +376,7 @@ That's all of the required database changes.
   ```ruby
   def replicate_cool_widget_changes(cool_widget)
     if ::Gitlab::Geo.primary?
-      cool_widget.replicator.handle_after_update if cool_widget
+      cool_widget.geo_handle_after_update if cool_widget
     end
   end
   ```
@@ -386,7 +386,7 @@ That's all of the required database changes.
 - [ ] Make sure the repository removal is also handled. You may need to add something like the following in the destroy service of the repository:
 
   ```ruby
-  cool_widget.replicator.handle_after_destroy if cool_widget.repository
+  cool_widget.replicator.geo_handle_after_destroy if cool_widget.repository
   ```
 
 - [ ] Make sure a Geo secondary site can request and download Cool Widgets on the Geo primary site. You may need to make some changes to `Gitlab::GitAccessCoolWidget`. For example, see [this change for Group-level Wikis](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54914/diffs?commit_id=0f2b36f66697b4addbc69bd377ee2818f648dd33).

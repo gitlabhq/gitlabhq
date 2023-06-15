@@ -1930,8 +1930,8 @@ github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f/go
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
 gitlab.com/gitlab-org/gitaly/v16 v16.0.3 h1:13d1DlXBPiWGemF5MaoHqMIhoxZQfROjhkmy4WwrreU=
 gitlab.com/gitlab-org/gitaly/v16 v16.0.3/go.mod h1:GDDfuCzp8ewfG+cPaYJa6czKluTQhsZyEr5WAtaqbbk=
-gitlab.com/gitlab-org/labkit v1.18.0 h1:uYCIqDt/5V1hLIecTR4UNc1sD2+xiYplyKeyfpNN26A=
-gitlab.com/gitlab-org/labkit v1.18.0/go.mod h1:nlLJvKgXcIclqWMI+rga2TckNBVHOtRCHMxBoVByNoE=
+gitlab.com/gitlab-org/labkit v1.19.0 h1:7j5NOHE42R0Eu3Bj2BgfbGf4aN2HXMTmCN7H2wcqqyA=
+gitlab.com/gitlab-org/labkit v1.19.0/go.mod h1:zeATDAaSBelPcPLbTTq8J3ZJEHyPTLVBM1q3nva+/W4=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=

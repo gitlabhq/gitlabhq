@@ -31,6 +31,7 @@ module Ci
         Ci::BuildTraceChunk
         Ci::BuildTraceMetadata
         Ci::BuildPendingState
+        Ci::JobAnnotation
         Ci::JobArtifact
         Ci::JobVariable
         Ci::Pipeline

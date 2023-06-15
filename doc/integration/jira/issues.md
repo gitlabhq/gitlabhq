@@ -55,8 +55,8 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge checks** section, select **Require an associated issue from Jira**.
 1. Select **Save**.
 
@@ -79,8 +79,8 @@ When you don't configure custom rules, the [default behavior](https://gitlab.com
 
 To define a regex pattern for Jira issue keys:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Jira**.
 1. Go to the **Jira issue matching** section.
 1. In the **Jira issue regex** text box, enter a regex pattern.
@@ -92,8 +92,8 @@ For more information, see the [Atlassian documentation](https://confluence.atlas
 
 To define a prefix for Jira issue keys:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Jira**.
 1. Go to the **Jira issue matching** section.
 1. In the **Jira issue prefix** text box, enter a prefix.
@@ -138,8 +138,8 @@ provided your GitLab administrator [has configured the integration](configure.md
 
 To view Jira issues:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > Jira issues**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Plan > Jira issues**.
 
 The issues are sorted by **Created date** by default, with the most recently created issues listed at the top.
 

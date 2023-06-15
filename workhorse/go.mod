@@ -27,7 +27,7 @@ require (
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/stretchr/testify v1.8.4
 	gitlab.com/gitlab-org/gitaly/v16 v16.0.3
-	gitlab.com/gitlab-org/labkit v1.18.0
+	gitlab.com/gitlab-org/labkit v1.19.0
 	gocloud.dev v0.29.0
 	golang.org/x/image v0.7.0
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616

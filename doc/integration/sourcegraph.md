@@ -49,7 +49,8 @@ You can skip this step if you already have your GitLab repositories searchable i
 
 ### Configure your GitLab instance with Sourcegraph
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Sourcegraph** configuration section.
 1. Check **Enable Sourcegraph**.
@@ -63,7 +64,7 @@ If a GitLab administrator has enabled Sourcegraph, you can enable this feature i
 
 In GitLab:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. In the **Integrations** section, select the checkbox under **Sourcegraph**.
 1. Select **Save changes**.

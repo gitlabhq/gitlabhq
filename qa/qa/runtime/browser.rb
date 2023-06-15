@@ -16,8 +16,6 @@ module QA
 
       CAPYBARA_MAX_WAIT_TIME = Env.max_capybara_wait_time
       DEFAULT_WINDOW_SIZE = '1480,2200'
-      PHONE_VIDEO_SIZE = '500x900'
-      TABLET_VIDEO_SIZE = '800x1100'
 
       def self.blank_page?
         ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)
@@ -174,7 +172,7 @@ module QA
           if QA::Runtime::Env.remote_grid
             selenium_options[:browser] = :remote
             selenium_options[:url] = QA::Runtime::Env.remote_grid
-            webdriver_options.browser_version = QA::Runtime::Env.browser_version
+            webdriver_options.browser_version = QA::Runtime::Env.selenoid_browser_version
           end
 
           if QA::Runtime::Env.remote_tunnel_id
@@ -185,9 +183,7 @@ module QA
 
           if QA::Runtime::Env.record_video?
             webdriver_options.add_option('selenoid:options', {
-              enableVideo: true,
-              videoScreenSize: video_screen_size,
-              videoName: "#{QA::Runtime::Env.browser}-#{QA::Runtime::Env.browser_version}-#{Time.now}.mp4"
+              enableVideo: true
             })
           end
 
@@ -240,16 +236,6 @@ module QA
 
       def self.chrome_profile_location
         ::File.expand_path('../../tmp/qa-profile', __dir__)
-      end
-
-      def self.video_screen_size
-        if QA::Runtime::Env.phone_layout?
-          PHONE_VIDEO_SIZE
-        elsif QA::Runtime::Env.tablet_layout?
-          TABLET_VIDEO_SIZE
-        else
-          ''
-        end
       end
 
       class Session

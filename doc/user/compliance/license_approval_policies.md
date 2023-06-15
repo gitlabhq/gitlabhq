@@ -41,8 +41,8 @@ Create a license approval policy to enforce license compliance.
 To create a license approval policy:
 
 1. [Link a security policy project](../application_security/policies/index.md#managing-the-linked-security-policy-project) to your development group, subgroup, or project (the Owner role is required).
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Policies**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Policies**.
 1. Create a new [Scan Result Policy](../application_security/policies/scan-result-policies.md).
 1. In your policy rule, select **License scanning**.
 

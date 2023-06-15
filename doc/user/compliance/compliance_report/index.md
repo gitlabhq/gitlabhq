@@ -43,8 +43,8 @@ Prerequisites:
 
 To view the compliance violations report:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 
 You can sort the compliance report on:
 
@@ -150,8 +150,8 @@ If the commit has a related merge commit, then the following are also included:
 
 To generate the Chain of Custody report:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. Select **List of all merge commits**.
 
 Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
@@ -166,8 +166,8 @@ details for the provided commit SHA.
 
 To generate a commit-specific Chain of Custody report:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. At the top of the compliance report, to the right of **List of all commits**, select the down arrow
    (**{chevron-lg-down}**).
 1. Enter the commit SHA, and then select **Export commit custody report**.
@@ -197,8 +197,8 @@ Prerequisites:
 
 To view the compliance frameworks report:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. On the page, select the **Frameworks** tab.
 
 ### Apply a compliance framework to projects in a group
@@ -214,16 +214,16 @@ Prerequisites:
 
 To apply a compliance framework to one project in a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the project you want to add the compliance framework to, select **{plus}** **Add framework**.
 1. Select an existing compliance framework or create a new one.
 
 To apply a compliance framework to multiple projects in a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. On the page, select the **Frameworks** tab.
 1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Apply framework to selected projects**.
@@ -243,15 +243,15 @@ Prerequisites:
 
 To remove a compliance framework from one project in a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the compliance framework to remove from the project, select **{close}** on the framework label.
 
 To remove a compliance framework from multiple projects in a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. On the page, select the **Frameworks** tab.
 1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
@@ -272,8 +272,8 @@ Prerequisites:
 
 To export a report of compliance frameworks on projects in a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. On the page, select the **Frameworks** tab.
 1. On the Frameworks tab, select the **Export as CSV** action in the top right corner
 
@@ -285,8 +285,8 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 To filter the list of compliance frameworks:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Compliance report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Secure > Compliance report**.
 1. On the page, select the **Frameworks** tab.
 1. In the search field:
    1. Select the attribute you want to filter by.

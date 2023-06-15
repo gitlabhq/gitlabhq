@@ -68,8 +68,9 @@ You must enable OAuth authentication to:
 
 To create an OAuth application:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Applications** (`/admin/applications`).
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Applications**.
 1. Select **New application**.
 1. In **Redirect URI**:
    - If you're installing the app from the official marketplace listing, enter `https://gitlab.com/-/jira_connect/oauth_callbacks`.
@@ -78,7 +79,7 @@ To create an OAuth application:
 1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
 1. Copy the **Application ID** value.
-1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. On the left sidebar, select **Settings > General**.
 1. Expand **GitLab for Jira App**.
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. Select **Save changes**.
@@ -117,8 +118,9 @@ To create branches from Jira Cloud, [install the app manually](#install-the-gitl
 
 To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Proxy URL**, enter `https://gitlab.com`.
 1. Select **Save changes**.
@@ -211,8 +213,9 @@ You might want to use a proxy if you're managing multiple GitLab instances but o
 
 To configure your GitLab instance to serve as a proxy:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand **GitLab for Jira App**.
 1. Select **Enable public key storage**.
 1. Select **Save changes**.
@@ -280,8 +283,9 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.8 and later:
 
-  1. On the top bar, select **Main menu > Admin**.
-  1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
+  1. On the left sidebar, select **Settings > General**.
   1. Expand **GitLab for Jira App**.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.

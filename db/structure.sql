@@ -447,6 +447,17 @@ CREATE TABLE batched_background_migration_job_transition_logs (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE p_ci_job_annotations (
+    id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    job_id bigint NOT NULL,
+    name text NOT NULL,
+    data jsonb DEFAULT '[]'::jsonb NOT NULL,
+    CONSTRAINT check_bac9224e45 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT data_is_array CHECK ((jsonb_typeof(data) = 'array'::text))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_runner_machine_builds (
     partition_id bigint NOT NULL,
     build_id bigint NOT NULL,
@@ -19220,6 +19231,15 @@ CREATE SEQUENCE organizations_id_seq
 
 ALTER SEQUENCE organizations_id_seq OWNED BY organizations.id;
 
+CREATE SEQUENCE p_ci_job_annotations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ci_job_annotations_id_seq OWNED BY p_ci_job_annotations.id;
+
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
     package_id integer NOT NULL,
@@ -25513,6 +25533,8 @@ ALTER TABLE ONLY p_ci_builds ALTER COLUMN id SET DEFAULT nextval('ci_builds_id_s
 
 ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
 
+ALTER TABLE ONLY p_ci_job_annotations ALTER COLUMN id SET DEFAULT nextval('p_ci_job_annotations_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_composer_cache_files ALTER COLUMN id SET DEFAULT nextval('packages_composer_cache_files_id_seq'::regclass);
@@ -27763,6 +27785,9 @@ ALTER TABLE ONLY operations_user_lists
 
 ALTER TABLE ONLY organizations
     ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY p_ci_job_annotations
+    ADD CONSTRAINT p_ci_job_annotations_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_runner_machine_builds
     ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (build_id, partition_id);
@@ -32012,6 +32037,8 @@ CREATE UNIQUE INDEX index_ops_feature_flags_issues_on_feature_flag_id_and_issue_
 CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON operations_strategies_user_lists USING btree (strategy_id, user_list_id);
 
 CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name), id);
+
+CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
 
@@ -37592,6 +37619,9 @@ ALTER TABLE ONLY alert_management_alert_assignees
 
 ALTER TABLE ONLY geo_hashed_storage_attachments_events
     ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_job_annotations
+    ADD CONSTRAINT fk_rails_d4d0c0fa0f FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_rpm_repository_files
     ADD CONSTRAINT fk_rails_d545cfaed2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
