@@ -69,6 +69,12 @@ module API
           },
           {
             required: false,
+            name: :alert_channel,
+            type: String,
+            desc: 'The name of the channel to receive alert_events notifications'
+          },
+          {
+            required: false,
             name: :confidential_issue_channel,
             type: String,
             desc: 'The name of the channel to receive confidential_issues_events notifications'
@@ -90,6 +96,12 @@ module API
             name: :tag_push_channel,
             type: String,
             desc: 'The name of the channel to receive tag_push_events notifications'
+          },
+          {
+            required: false,
+            name: :deployment_channel,
+            type: String,
+            desc: 'The name of the channel to receive deployment_events notifications'
           },
           {
             required: false,
@@ -128,6 +140,12 @@ module API
           },
           {
             required: false,
+            name: :alert_events,
+            type: Boolean,
+            desc: 'Enable notifications for alert_events'
+          },
+          {
+            required: false,
             name: :confidential_issues_events,
             type: Boolean,
             desc: 'Enable notifications for confidential_issues_events'
@@ -155,6 +173,12 @@ module API
             name: :tag_push_events,
             type: Boolean,
             desc: 'Enable notifications for tag_push_events'
+          },
+          {
+            required: false,
+            name: :deployment_events,
+            type: Boolean,
+            desc: 'Enable notifications for deployment_events'
           },
           {
             required: false,

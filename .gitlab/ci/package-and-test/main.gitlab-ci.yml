@@ -347,42 +347,6 @@ object-storage-gcs-selective-parallel:
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
     GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
 
-# ========== packages ===========
-
-packages:
-  extends: .qa
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RSPEC_TAGS: --tag packages
-    GITLAB_QA_OPTS: --omnibus-config packages $EXTRA_GITLAB_QA_OPTS
-  rules:
-    - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Packages/
-
-packages-selective:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RSPEC_TAGS: --tag packages
-    GITLAB_QA_OPTS: --omnibus-config packages $EXTRA_GITLAB_QA_OPTS
-  rules:
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Packages/
-
-packages-selective-parallel:
-  extends: .qa
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RSPEC_TAGS: --tag packages
-    GITLAB_QA_OPTS: --omnibus-config packages $EXTRA_GITLAB_QA_OPTS
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Packages/
-      variables:
-        QA_TESTS: ""
-
 # ------------------------------------------
 # Non parallel jobs
 # ------------------------------------------

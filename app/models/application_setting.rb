@@ -628,6 +628,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :search_rate_limit
     validates :search_rate_limit_unauthenticated
     validates :projects_api_rate_limit_unauthenticated
+    validates :gitlab_shell_operation_limit
   end
 
   validates :notes_create_limit_allowlist,

@@ -15,9 +15,11 @@ module API
       expose :push_events, documentation: { type: 'boolean' }
       expose :issues_events, documentation: { type: 'boolean' }
       expose :incident_events, documentation: { type: 'boolean' }
+      expose :alert_events, documentation: { type: 'boolean' }
       expose :confidential_issues_events, documentation: { type: 'boolean' }
       expose :merge_requests_events, documentation: { type: 'boolean' }
       expose :tag_push_events, documentation: { type: 'boolean' }
+      expose :deployment_events, documentation: { type: 'boolean' }
       expose :note_events, documentation: { type: 'boolean' }
       expose :confidential_note_events, documentation: { type: 'boolean' }
       expose :pipeline_events, documentation: { type: 'boolean' }

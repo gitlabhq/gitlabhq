@@ -2,8 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Package Registry', :skip_live_env, :orchestrated, :packages, :object_storage,
-      product_group: :package_registry do
+    describe 'Package Registry', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
       describe 'npm group level endpoint' do
         using RSpec::Parameterized::TableSyntax
         include Runtime::Fixtures

@@ -16,29 +16,5 @@ RSpec.describe Ci::UpdateLockedUnknownArtifactsWorker, feature_category: :build_
 
       worker.perform
     end
-
-    context 'with the ci_job_artifacts_backlog_work flag shut off' do
-      before do
-        stub_feature_flags(ci_job_artifacts_backlog_work: false)
-      end
-
-      it 'does not instantiate a new Ci::JobArtifacts::UpdateUnknownLockedStatusService' do
-        expect(Ci::JobArtifacts::UpdateUnknownLockedStatusService).not_to receive(:new)
-
-        worker.perform
-      end
-
-      it 'does not log any artifact counts' do
-        expect(worker).not_to receive(:log_extra_metadata_on_done)
-
-        worker.perform
-      end
-
-      it 'does not query the database' do
-        query_count = ActiveRecord::QueryRecorder.new { worker.perform }.count
-
-        expect(query_count).to eq(0)
-      end
-    end
   end
 end

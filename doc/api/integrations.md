@@ -39,9 +39,11 @@ Example response:
     "commit_events": true,
     "push_events": true,
     "issues_events": true,
+    "alert_events": true,
     "confidential_issues_events": true,
     "merge_requests_events": true,
     "tag_push_events": false,
+    "deployment_events": false,
     "note_events": true,
     "confidential_note_events": true,
     "pipeline_events": true,
@@ -59,9 +61,11 @@ Example response:
     "commit_events": true,
     "push_events": true,
     "issues_events": true,
+    "alert_events": true,
     "confidential_issues_events": true,
     "merge_requests_events": true,
     "tag_push_events": true,
+    "deployment_events": false,
     "note_events": true,
     "confidential_note_events": true,
     "pipeline_events": true,
@@ -1393,6 +1397,8 @@ Parameters:
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified` |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is "default" |
+| `alert_channel` | string | false | The name of the channel to receive alert events notifications |
+| `alert_events` | boolean | false | Enable notifications for alert events |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |

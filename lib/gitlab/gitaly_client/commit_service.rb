@@ -159,6 +159,17 @@ module Gitlab
         end
 
         [entries, cursor]
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :path
+          raise Gitlab::Git::Index::IndexError, path_error_message(detailed_error.path)
+        when :resolve_tree
+          raise Gitlab::Git::Index::IndexError, e.details
+        else
+          raise e
+        end
       end
 
       def commit_count(ref, options = {})
@@ -607,6 +618,21 @@ module Gitlab
         end
 
         Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: commit_requests)
+      end
+
+      def path_error_message(path_error)
+        case path_error.error_type
+        when :ERROR_TYPE_EMPTY_PATH
+          "You must provide a file path"
+        when :ERROR_TYPE_RELATIVE_PATH_ESCAPES_REPOSITORY
+          "Path cannot include traversal syntax"
+        when :ERROR_TYPE_ABSOLUTE_PATH
+          "Only relative path is accepted"
+        when :ERROR_TYPE_LONG_PATH
+          "Path is too long"
+        else
+          "Unknown path error"
+        end
       end
     end
   end

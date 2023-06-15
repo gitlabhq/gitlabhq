@@ -81,6 +81,7 @@ class Integration < ApplicationRecord
   attribute :commit_events, default: true
   attribute :confidential_issues_events, default: true
   attribute :confidential_note_events, default: true
+  attribute :deployment_events, default: false
   attribute :issues_events, default: true
   attribute :job_events, default: true
   attribute :merge_requests_events, default: true

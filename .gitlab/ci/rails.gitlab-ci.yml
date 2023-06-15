@@ -261,19 +261,15 @@ rspec:deprecations:
     - .rails:rules:deprecations
   stage: post-test
   allow_failure: true
-  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
-  # so we use `dependencies` here.
-  dependencies:
-    - rspec migration pg14
-    - rspec background_migration pg14
-    - rspec unit pg14
-    - rspec integration pg14
-    - rspec system pg14
-    - rspec-ee migration pg14
-    - rspec-ee background_migration pg14
-    - rspec-ee unit pg14
-    - rspec-ee integration pg14
-    - rspec-ee system pg14
+  needs:
+    - job: rspec:artifact-collector unit
+      optional: true
+    - job: rspec:artifact-collector system
+      optional: true
+    - job: rspec:artifact-collector remainder
+      optional: true
+    - job: rspec:artifact-collector ee
+      optional: true
   variables:
     SETUP_DB: "false"
   script:
@@ -286,41 +282,150 @@ rspec:deprecations:
     paths:
       - deprecations/
 
+# The jobs built upon `.artifact-collector` are to work around the
+# needs: [] limit of a maximum of 50 dependencies.
+# These intermediate jobs allow us to collect the artifacts of
+# more than 50 jobs and still use `needs:` to ensure a timely execution
+.artifact-collector:
+  stage: post-test
+  variables:
+    GIT_STRATEGY: none
+  image: alpine:3.17
+  script:
+    - mkdir -p coverage deprecations rspec
+    - ls coverage/ deprecations/ rspec/
+  artifacts:
+    expire_in: 7d
+    when: always
+    paths:
+      - coverage/
+      - deprecations/
+      - rspec/
+
+rspec:artifact-collector unit:
+  extends:
+    - .artifact-collector
+    - .rails:rules:ee-and-foss-unit
+  needs:
+    - rspec unit pg14 # 28 jobs
+
+rspec:artifact-collector system:
+  extends:
+    - .artifact-collector
+    - .rails:rules:ee-and-foss-system
+  needs:
+    - rspec system pg14 # 28 jobs
+
+rspec:artifact-collector remainder:
+  extends:
+    - .artifact-collector
+  needs:
+    - job: rspec integration pg14 # 12 jobs
+      optional: true
+    - job: rspec migration pg14 # 8 jobs
+      optional: true
+    - job: rspec background_migration pg14 # 4 jobs
+      optional: true
+
+rspec:artifact-collector as-if-foss unit:
+  extends:
+    - .artifact-collector
+    - .rails:rules:as-if-foss-unit
+  needs:
+    - rspec unit pg14-as-if-foss # 28 jobs
+
+rspec:artifact-collector as-if-foss system:
+  extends:
+    - .artifact-collector
+    - .rails:rules:as-if-foss-system
+  needs:
+    - rspec system pg14-as-if-foss  # 28 jobs
+
+rspec:artifact-collector as-if-foss remainder:
+  extends:
+    - .artifact-collector
+  needs:
+    - job: rspec integration pg14-as-if-foss # 12 jobs
+      optional: true
+    - job: rspec migration pg14-as-if-foss # 8 jobs
+      optional: true
+    - job: rspec background_migration pg14-as-if-foss # 4 jobs
+      optional: true
+
+rspec:artifact-collector single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - rspec unit pg14 single-redis # 28 jobs
+    - rspec integration pg14 single-redis # 12 jobs
+
+rspec:artifact-collector system single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - rspec system pg14 single-redis # 28 jobs
+
+rspec:artifact-collector ee single-redis:
+  extends:
+    - .artifact-collector
+  needs:
+    - job: rspec-ee unit pg14 single-redis # 18 jobs
+      optional: true
+    - job: rspec-ee integration pg14 single-redis # 6 jobs
+      optional: true
+    - job: rspec-ee system pg14 single-redis # 10 jobs
+      optional: true
+
+rspec:artifact-collector ee:
+  extends:
+    - .artifact-collector
+  needs:
+    - job: rspec-ee migration pg14 # 2 jobs
+      optional: true
+    - job: rspec-ee background_migration pg14 # 2 jobs
+      optional: true
+    - job: rspec-ee unit pg14 # 18 jobs
+      optional: true
+    - job: rspec-ee integration pg14 # 6 jobs
+      optional: true
+    - job: rspec-ee system pg14 # 10 jobs
+      optional: true
+
 rspec:coverage:
   extends:
     - .coverage-base
     - .rails:rules:rspec-coverage
   stage: post-test
-  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
-  # so we use `dependencies` here.
-  dependencies:
+  needs:
     - setup-test-env
     # FOSS/EE jobs
-    - rspec migration pg14
-    - rspec background_migration pg14
-    - rspec unit pg14
-    - rspec unit pg14 single-redis
-    - rspec integration pg14
-    - rspec integration pg14 single-redis
-    - rspec system pg14
-    - rspec system pg14 single-redis
+    - job: rspec:artifact-collector unit
+      optional: true
+    - job: rspec:artifact-collector system
+      optional: true
+    - job: rspec:artifact-collector remainder
+      optional: true
+    - job: rspec:artifact-collector single-redis
+      optional: true
+    - job: rspec:artifact-collector system single-redis
+      optional: true
     # as-if-foss jobs
-    - rspec migration pg14-as-if-foss
-    - rspec background_migration pg14-as-if-foss
-    - rspec unit pg14-as-if-foss
-    - rspec integration pg14-as-if-foss
-    - rspec system pg14-as-if-foss
+    - job: rspec:artifact-collector as-if-foss unit
+      optional: true
+    - job: rspec:artifact-collector as-if-foss system
+      optional: true
+    - job: rspec:artifact-collector as-if-foss remainder
+      optional: true
     # EE jobs
-    - rspec-ee migration pg14
-    - rspec-ee background_migration pg14
-    - rspec-ee unit pg14
-    - rspec-ee unit pg14 single-redis
-    - rspec-ee integration pg14
-    - rspec-ee integration pg14 single-redis
-    - rspec-ee system pg14
-    - rspec-ee system pg14 single-redis
+    - job: rspec:artifact-collector ee single-redis
+      optional: true
+    - job: rspec:artifact-collector ee
+      optional: true
     # Memory jobs
-    - memory-on-boot
+    - job: memory-on-boot
+      optional: true
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -377,9 +482,7 @@ rspec:flaky-tests-report:
     - .default-retry
     - .rails:rules:flaky-tests-report
   stage: post-test
-  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
-  # so we use `dependencies` here.
-  dependencies: !reference ["rspec:coverage", "dependencies"]
+  needs: !reference ["rspec:coverage", "needs"]
   variables:
     SKIPPED_TESTS_REPORT_PATH: rspec/skipped_tests_report.txt
     RETRIED_TESTS_REPORT_PATH: rspec/flaky/retried_tests_report.txt

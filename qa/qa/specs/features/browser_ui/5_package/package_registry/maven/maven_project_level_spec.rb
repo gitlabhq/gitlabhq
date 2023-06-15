@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :requires_admin, :packages, :object_storage, :reliable do
+  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' } do
     describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

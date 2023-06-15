@@ -206,7 +206,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
 
     %i[notes_create_limit search_rate_limit search_rate_limit_unauthenticated users_get_by_id_limit
-      projects_api_rate_limit_unauthenticated].each do |setting|
+      projects_api_rate_limit_unauthenticated gitlab_shell_operation_limit].each do |setting|
       it { is_expected.to allow_value(400).for(setting) }
       it { is_expected.not_to allow_value('two').for(setting) }
       it { is_expected.not_to allow_value(nil).for(setting) }

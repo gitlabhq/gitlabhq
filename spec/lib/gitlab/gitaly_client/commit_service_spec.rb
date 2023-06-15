@@ -287,6 +287,129 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         is_expected.to eq([[], pagination_cursor])
       end
     end
+
+    context 'with structured errors' do
+      context 'with ResolveTree error' do
+        before do
+          expect_any_instance_of(Gitaly::CommitService::Stub)
+            .to receive(:get_tree_entries)
+                  .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+                  .and_raise(raised_error)
+        end
+
+        let(:raised_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+            "invalid revision or path",
+            Gitaly::GetTreeEntriesError.new(
+              resolve_tree: Gitaly::ResolveRevisionError.new(
+                revision: "incorrect revision"
+              )))
+        end
+
+        it 'raises an IndexError' do
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::Index::IndexError)
+            expect(error.message).to eq("invalid revision or path")
+          end
+        end
+      end
+
+      context 'with Path error' do
+        let(:status_code) { nil }
+        let(:expected_error) { nil }
+
+        let(:structured_error) do
+          new_detailed_error(
+            status_code,
+            "invalid revision or path",
+            expected_error)
+        end
+
+        shared_examples '#get_tree_entries path failure' do
+          it 'raises an IndexError' do
+            expect_any_instance_of(Gitaly::CommitService::Stub)
+              .to receive(:get_tree_entries).with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+                  .and_raise(structured_error)
+
+            expect { subject }.to raise_error do |error|
+              expect(error).to be_a(Gitlab::Git::Index::IndexError)
+              expect(error.message).to eq(expected_message)
+            end
+          end
+        end
+
+        context 'with missing file' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "You must provide a file path" }
+          let(:expected_error) do
+            Gitaly::GetTreeEntriesError.new(
+              path: Gitaly::PathError.new(
+                path: "random path",
+                error_type: :ERROR_TYPE_EMPTY_PATH
+              ))
+          end
+
+          it_behaves_like '#get_tree_entries path failure'
+        end
+
+        context 'with path including traversal' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Path cannot include traversal syntax" }
+          let(:expected_error) do
+            Gitaly::GetTreeEntriesError.new(
+              path: Gitaly::PathError.new(
+                path: "foo/../bar",
+                error_type: :ERROR_TYPE_RELATIVE_PATH_ESCAPES_REPOSITORY
+              ))
+          end
+
+          it_behaves_like '#get_tree_entries path failure'
+        end
+
+        context 'with absolute path' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Only relative path is accepted" }
+          let(:expected_error) do
+            Gitaly::GetTreeEntriesError.new(
+              path: Gitaly::PathError.new(
+                path: "/bar/foo",
+                error_type: :ERROR_TYPE_ABSOLUTE_PATH
+              ))
+          end
+
+          it_behaves_like '#get_tree_entries path failure'
+        end
+
+        context 'with long path' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Path is too long" }
+          let(:expected_error) do
+            Gitaly::GetTreeEntriesError.new(
+              path: Gitaly::PathError.new(
+                path: "long/path/",
+                error_type: :ERROR_TYPE_LONG_PATH
+              ))
+          end
+
+          it_behaves_like '#get_tree_entries path failure'
+        end
+
+        context 'with unkown path error' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Unknown path error" }
+          let(:expected_error) do
+            Gitaly::GetTreeEntriesError.new(
+              path: Gitaly::PathError.new(
+                path: "unkown error",
+                error_type: :ERROR_TYPE_UNSPECIFIED
+              ))
+          end
+
+          it_behaves_like '#get_tree_entries path failure'
+        end
+      end
+    end
   end
 
   describe '#commit_count' do

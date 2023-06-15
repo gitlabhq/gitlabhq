@@ -6,25 +6,46 @@ import { BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import * as ProjectsApi from '~/api/projects_api';
+import eventHub from '~/invite_members/event_hub';
 import ImportProjectMembersModal from '~/invite_members/components/import_project_members_modal.vue';
 import ProjectSelect from '~/invite_members/components/project_select.vue';
 import axios from '~/lib/utils/axios_utils';
+
 import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 
+import {
+  IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY,
+  IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL,
+} from '~/invite_members/constants';
+
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 
 let wrapper;
 let mock;
+let trackingSpy;
 
 const projectId = '1';
 const projectName = 'test name';
 const projectToBeImported = { id: '2' };
 const $toast = {
   show: jest.fn(),
+};
+
+const expectTracking = (action) =>
+  expect(trackingSpy).toHaveBeenCalledWith(IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY, action, {
+    label: IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL,
+    category: IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY,
+    property: undefined,
+  });
+
+const triggerOpenModal = async () => {
+  eventHub.$emit('openProjectMembersModal');
+  await nextTick();
 };
 
 const createComponent = ({ props = {} } = {}) => {
@@ -48,6 +69,8 @@ const createComponent = ({ props = {} } = {}) => {
       $toast,
     },
   });
+
+  trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 };
 
 beforeEach(() => {
@@ -57,6 +80,7 @@ beforeEach(() => {
 
 afterEach(() => {
   mock.restore();
+  unmockTracking();
 });
 
 describe('ImportProjectMembersModal', () => {
@@ -106,6 +130,24 @@ describe('ImportProjectMembersModal', () => {
 
       expect(findGlModal().props('actionPrimary').attributes.loading).toBe(true);
     });
+
+    it('tracks render', async () => {
+      await triggerOpenModal();
+
+      expectTracking('render');
+    });
+
+    it('tracks cancel', () => {
+      findGlModal().vm.$emit('cancel');
+
+      expectTracking('click_cancel');
+    });
+
+    it('tracks close', () => {
+      findGlModal().vm.$emit('close');
+
+      expectTracking('click_x');
+    });
   });
 
   describe('submitting the import', () => {
@@ -144,6 +186,10 @@ describe('ImportProjectMembersModal', () => {
           'Successfully imported',
           wrapper.vm.$options.toastOptions,
         );
+      });
+
+      it('tracks successful import', () => {
+        expectTracking('invite_successful');
       });
     });
 
@@ -188,6 +234,10 @@ describe('ImportProjectMembersModal', () => {
 
       it('sets isLoading to false after success', () => {
         expect(findGlModal().props('actionPrimary').attributes.loading).toBe(false);
+      });
+
+      it('tracks successful import', () => {
+        expectTracking('invite_successful');
       });
     });
 

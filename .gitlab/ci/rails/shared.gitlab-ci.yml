@@ -227,6 +227,9 @@ include:
 
 ############################
 # rspec job parallel configs
+# Adjusting these parallel job counts  has an impact on the
+# rspec:artifact-collector jobs in .gitlab/ci/rails.gitlab-ci.yml
+# Please double-check and adjust accordingly
 .rspec-migration-parallel:
   parallel: 8
 

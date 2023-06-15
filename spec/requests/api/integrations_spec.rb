@@ -70,11 +70,11 @@ RSpec.describe API::Integrations, feature_category: :integrations do
             datadog: %i[archive_trace_events],
             hangouts_chat: %i[notify_only_broken_pipelines],
             jira: %i[issues_enabled project_key jira_issue_regex jira_issue_prefix vulnerabilities_enabled vulnerabilities_issuetype],
-            mattermost: %i[deployment_channel labels_to_be_notified],
+            mattermost: %i[labels_to_be_notified],
             mock_ci: %i[enable_ssl_verification],
             prometheus: %i[manual_configuration],
             pumble: %i[branches_to_be_notified notify_only_broken_pipelines],
-            slack: %i[alert_events alert_channel deployment_channel labels_to_be_notified],
+            slack: %i[labels_to_be_notified],
             unify_circuit: %i[branches_to_be_notified notify_only_broken_pipelines],
             webex_teams: %i[branches_to_be_notified notify_only_broken_pipelines]
           }

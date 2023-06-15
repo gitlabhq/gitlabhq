@@ -45,7 +45,7 @@ module Gitlab
           auto_rollback_deployment: { threshold: 1, interval: 3.minutes },
           search_rate_limit: { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
           search_rate_limit_unauthenticated: { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
-          gitlab_shell_operation: { threshold: 600, interval: 1.minute },
+          gitlab_shell_operation: { threshold: application_settings.gitlab_shell_operation_limit, interval: 1.minute },
           pipelines_create: { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
           temporary_email_failure: { threshold: 300, interval: 1.day },
           permanent_email_failure: { threshold: 5, interval: 1.day },
