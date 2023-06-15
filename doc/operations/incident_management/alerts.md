@@ -179,8 +179,8 @@ To assign an alert:
 
 1. Display the list of current alerts:
 
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Monitor > Alerts**.
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   1. Select **Monitor > Alerts**.
 
 1. Select your desired alert to display its details.
 
@@ -219,8 +219,8 @@ Prerequisites:
 
 To configure the actions:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Monitor**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Monitor**.
 1. Expand the **Alerts** section, then select the **Alert settings** tab.
 1. Select the **Create an incident** checkbox.
 1. Optional. To customize the incident, from the **Incident template**, select a template to be

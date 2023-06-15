@@ -26,7 +26,7 @@ workhorse:test go:
   extends: .workhorse:test
   parallel:
     matrix:
-      - GO_VERSION: ["1.18", "1.19"]
+      - GO_VERSION: ["1.18", "1.19", "1.20"]
   script:
     - make -C workhorse test-coverage
   coverage: '/\d+.\d+%/'
@@ -38,7 +38,7 @@ workhorse:test fips:
   extends: .workhorse:test
   parallel:
     matrix:
-      - GO_VERSION: ["1.18", "1.19"]
+      - GO_VERSION: ["1.18", "1.19", "1.20"]
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ubi-${UBI_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
   variables:
     FIPS_MODE: 1

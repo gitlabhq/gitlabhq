@@ -53,20 +53,5 @@ RSpec.describe ObjectStorage::DeleteStaleDirectUploadsWorker, :direct_uploads, :
       expect_to_have_pending_direct_upload(non_stale_remote_path)
       expect_pending_uploaded_object_to_exist(non_stale_remote_path)
     end
-
-    context 'when stale_pending_direct_uploads_cleaner feature flag is disabled' do
-      before do
-        stub_feature_flags(stale_pending_direct_uploads_cleaner: false)
-      end
-
-      it 'does nothing' do
-        prepare_pending_direct_upload(stale_remote_path, 4.hours.ago)
-
-        subject
-
-        expect_to_have_pending_direct_upload(stale_remote_path)
-        expect_pending_uploaded_object_to_exist(stale_remote_path)
-      end
-    end
   end
 end

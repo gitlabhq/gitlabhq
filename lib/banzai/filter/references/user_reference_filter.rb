@@ -45,7 +45,7 @@ module Banzai
         # have `gfm` and `gfm-project_member` class names attached for styling.
         def object_link_filter(text, pattern, link_content: nil, link_reference: false)
           references_in(text, pattern) do |match, username|
-            if username == 'all' && !skip_project_check?
+            if Feature.disabled?(:disable_all_mention) && username == 'all' && !skip_project_check?
               link_to_all(link_content: link_content)
             else
               cached_call(:banzai_url_for_object, match, path: [User, username.downcase]) do

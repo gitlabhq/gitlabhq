@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class EmailOrEmailList < Grape::Validations::Base
+      class EmailOrEmailList < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
           value = params[attr_name]
 

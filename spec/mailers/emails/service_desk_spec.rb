@@ -298,9 +298,26 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: User.support_bot) }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
-        let(:expected_template_html) { 'Hey , just a ping' }
 
-        it_behaves_like 'a service desk notification email with template content', 'new_note'
+        context 'when `disable_all_mention` is disabled' do
+          let(:expected_template_html) { 'Hey , just a ping' }
+
+          before do
+            stub_feature_flags(disable_all_mention: false)
+          end
+
+          it_behaves_like 'a service desk notification email with template content', 'new_note'
+        end
+
+        context 'when `disable_all_mention` is enabled' do
+          let(:expected_template_html) { 'Hey @all, just a ping' }
+
+          before do
+            stub_feature_flags(disable_all_mention: true)
+          end
+
+          it_behaves_like 'a service desk notification email with template content', 'new_note'
+        end
       end
     end
 

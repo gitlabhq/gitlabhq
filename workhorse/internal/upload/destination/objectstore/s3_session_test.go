@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/endpoints"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/sts"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -20,7 +21,7 @@ func TestS3SessionSetup(t *testing.T) {
 	sess, err := setupS3Session(credentials, cfg)
 	require.NoError(t, err)
 
-	s3Config := sess.ClientConfig(endpoints.S3ServiceID)
+	s3Config := sess.ClientConfig(s3.EndpointsID)
 	require.Equal(t, "https://s3.us-west-1.amazonaws.com", s3Config.Endpoint)
 	require.Equal(t, "us-west-1", s3Config.SigningRegion)
 	require.True(t, aws.BoolValue(sess.Config.S3ForcePathStyle))
@@ -44,11 +45,11 @@ func TestS3SessionEndpointSetup(t *testing.T) {
 	require.NoError(t, err)
 
 	// ClientConfig is what is ultimately used by an S3 client
-	s3Config := sess.ClientConfig(endpoints.S3ServiceID)
+	s3Config := sess.ClientConfig(s3.EndpointsID)
 	require.Equal(t, customS3Endpoint, s3Config.Endpoint)
 	require.Equal(t, region, s3Config.SigningRegion)
 
-	stsConfig := sess.ClientConfig(endpoints.StsServiceID)
+	stsConfig := sess.ClientConfig(sts.EndpointsID)
 	require.Equal(t, "https://sts.amazonaws.com", stsConfig.Endpoint, "STS should use default endpoint")
 }
 

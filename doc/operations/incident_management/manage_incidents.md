@@ -24,8 +24,8 @@ Prerequisites:
 
 To create an incident from the incidents list:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Incidents**.
 1. Select **Create incident**.
 
 ### From the issues list
@@ -38,8 +38,8 @@ Prerequisites:
 
 To create an incident from the issues list:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > List**, and select **New issue**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues**, and select **New issue**.
 1. From the **Type** dropdown list, select **Incident**. Only fields relevant to
    incidents are available on the page.
 1. Select **Create issue**.
@@ -57,8 +57,8 @@ Prerequisites:
 
 To create an incident from an alert:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Alerts**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Alerts**.
 1. Select your desired alert.
 1. Select **Create incident**.
 
@@ -88,8 +88,8 @@ Prerequisites:
 
 To set up a webhook with PagerDuty:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Monitor**
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Monitor**
 1. Expand **Incidents**.
 1. Select the **PagerDuty integration** tab.
 1. Turn on the **Active** toggle.
@@ -104,8 +104,8 @@ check if a GitLab incident is created from the incident.
 
 To view the [incidents list](incidents.md#incidents-list):
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Incidents**.
 
 To view an incident's [details page](incidents.md#incident-details), select it from the list.
 
@@ -239,8 +239,8 @@ Prerequisites:
 
 To configure the setting:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Monitor**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Monitor**.
 1. Expand the **Incidents** section.
 1. Select the **Automatically close associated incident** checkbox.
 1. Select **Save changes**.

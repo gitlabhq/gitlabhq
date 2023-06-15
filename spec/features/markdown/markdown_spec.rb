@@ -221,10 +221,24 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
 
   context 'default pipeline' do
     before do
+      stub_feature_flags(disable_all_mention: false)
+
       @html = markdown(@feat.raw_markdown)
     end
 
     it_behaves_like 'all pipelines'
+
+    context 'when `disable_all_mention` FF is enabled' do
+      before do
+        stub_feature_flags(disable_all_mention: true)
+
+        @html = markdown(@feat.raw_markdown)
+      end
+
+      it 'includes custom filters' do
+        expect(doc).to reference_users_excluding_all
+      end
+    end
 
     it 'includes custom filters' do
       aggregate_failures 'UploadLinkFilter' do
@@ -308,6 +322,8 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
 
   context 'wiki pipeline' do
     before do
+      stub_feature_flags(disable_all_mention: false)
+
       @wiki = @feat.wiki
       @wiki_page = @feat.wiki_page
 
@@ -318,6 +334,27 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
       allow(@wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 
       @html = markdown(@feat.raw_markdown, { pipeline: :wiki, wiki: @wiki, page_slug: @wiki_page.slug })
+    end
+
+    context 'when `disable_all_mention` FF is enabled' do
+      before do
+        stub_feature_flags(disable_all_mention: true)
+
+        @wiki = @feat.wiki
+        @wiki_page = @feat.wiki_page
+
+        name = 'example.jpg'
+        path = "images/#{name}"
+        blob = double(name: name, path: path, mime_type: 'image/jpeg', data: nil)
+        expect(@wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(blob))
+        allow(@wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
+
+        @html = markdown(@feat.raw_markdown, { pipeline: :wiki, wiki: @wiki, page_slug: @wiki_page.slug })
+      end
+
+      it 'includes custom filters' do
+        expect(doc).to reference_users_excluding_all
+      end
     end
 
     it_behaves_like 'all pipelines'

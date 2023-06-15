@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class FilePath < Grape::Validations::Base
+      class FilePath < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
           options = @option.is_a?(Hash) ? @option : {}
           path_allowlist = options.fetch(:allowlist, [])

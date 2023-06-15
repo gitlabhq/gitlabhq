@@ -172,8 +172,8 @@ To enable the Sentry integration:
    `event:read`, and
    `event:write` (for resolving events).
 1. In GitLab, enable and configure Error Tracking:
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Monitor > Error Tracking**.
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   1. Select **Monitor > Error Tracking**.
    1. Under **Enable error tracking**, select the **Active** checkbox.
    1. Under **Error tracking backend**, select **Sentry**.
    1. Under **Sentry API URL**, enter your Sentry hostname. For example,

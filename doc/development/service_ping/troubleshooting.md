@@ -56,9 +56,10 @@ checking the configuration file of your GitLab instance:
 
 - Using the Admin Area:
 
-  1. On the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
-  1. Expand **Usage Statistics**.
+  1. Expand **Usage statistics**.
   1. Are you able to check or uncheck the checkbox to disable Service Ping?
 
      - If _yes_, your GitLab instance is not affected by this bug.
@@ -113,9 +114,10 @@ To work around this bug, you have two options:
      sudo gitlab-ctl reconfigure
      ```
 
-  1. In GitLab, on the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
-  1. Expand **Usage Statistics**.
+  1. Expand **Usage statistics**.
   1. Clear the **Enable Service Ping** checkbox.
   1. Select **Save Changes**.
 

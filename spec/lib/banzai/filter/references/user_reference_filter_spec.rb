@@ -39,10 +39,30 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     end
   end
 
-  context 'mentioning @all' do
+  context 'when `disable_all_mention` FF is enabled' do
+    let(:reference) { User.reference_prefix + 'all' }
+
+    context 'mentioning @all' do
+      before do
+        stub_feature_flags(disable_all_mention: true)
+
+        project.add_developer(project.creator)
+      end
+
+      it 'ignores reference to @all' do
+        doc = reference_filter("Hey #{reference}", author: project.creator)
+
+        expect(doc.css('a').length).to eq 0
+      end
+    end
+  end
+
+  context 'mentioning @all (when `disable_all_mention` FF is disabled)' do
     let(:reference) { User.reference_prefix + 'all' }
 
     before do
+      stub_feature_flags(disable_all_mention: false)
+
       project.add_developer(project.creator)
     end
 
@@ -161,6 +181,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     let(:context) { { author: group_member, project: nil, group: group } }
 
     it 'supports a special @all mention' do
+      stub_feature_flags(disable_all_mention: false)
       reference = User.reference_prefix + 'all'
       doc = reference_filter("Hey #{reference}", context)
 

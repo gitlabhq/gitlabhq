@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class CheckAssigneesCount < Grape::Validations::Base
+      class CheckAssigneesCount < Grape::Validations::Validators::Base
         def self.coerce
           lambda do |value|
             case value

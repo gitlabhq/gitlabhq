@@ -525,8 +525,8 @@ Instead of:
 However, you can make an exception when you are writing a task and you need to refer to all
 of the fields at once. For example:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
 
@@ -1249,7 +1249,7 @@ to the GitLab [reference architectures](../../../administration/reference_archit
 
 ## search
 
-When you search, you type a string in the search box on the top bar.
+When you search, you type a string in the search box on the left sidebar.
 The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).

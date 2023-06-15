@@ -4,7 +4,7 @@ module API
   module Validations
     module Validators
       module BulkImports
-        class DestinationSlugPath < Grape::Validations::Base
+        class DestinationSlugPath < Grape::Validations::Validators::Base
           def validate_param!(attr_name, params)
             if Feature.disabled?(:restrict_special_characters_in_namespace_path)
               return if params[attr_name] =~ Gitlab::Regex.group_path_regex
@@ -29,7 +29,7 @@ module API
           end
         end
 
-        class DestinationNamespacePath < Grape::Validations::Base
+        class DestinationNamespacePath < Grape::Validations::Validators::Base
           def validate_param!(attr_name, params)
             return if params[attr_name].blank?
 
@@ -42,7 +42,7 @@ module API
           end
         end
 
-        class SourceFullPath < Grape::Validations::Base
+        class SourceFullPath < Grape::Validations::Validators::Base
           def validate_param!(attr_name, params)
             return if params[attr_name] =~ Gitlab::Regex.bulk_import_source_full_path_regex
 

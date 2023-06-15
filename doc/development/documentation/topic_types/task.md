@@ -43,13 +43,13 @@ Prerequisites:
 
 To create an issue:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > List**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues**.
 1. In the upper-right corner, select **New issue**.
 1. Complete the fields. (If you have reference content that lists each field, link to it here.)
 1. Select **Create issue**.
 
-The issue is created. You can view it by going to **Issues > List**.
+The issue is created. You can view it by going to **Plan > Issues**.
 ```
 
 ## Task topic titles

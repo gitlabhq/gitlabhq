@@ -181,18 +181,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                   expect(json_response['RemoteObject']['SkipDelete']).to eq(true)
                   expect(json_response['MaximumSize']).not_to be_nil
                 end
-
-                context 'when ci_artifacts_upload_to_final_location flag is disabled' do
-                  before do
-                    stub_feature_flags(ci_artifacts_upload_to_final_location: false)
-                  end
-
-                  it 'does not skip delete' do
-                    subject
-
-                    expect(json_response['RemoteObject']['SkipDelete']).to eq(false)
-                  end
-                end
               end
 
               context 'when direct upload is disabled' do

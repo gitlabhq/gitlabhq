@@ -630,7 +630,7 @@ GitLab Flavored Markdown recognizes the following:
 |:----------------------------------------------------------------------------|:------------------------------|:----------------------------------------|:-------------------------------|
 | specific user                                                               | `@user_name`                  |                                         |                                |
 | specific group                                                              | `@group_name`                 |                                         |                                |
-| entire team                                                                 | `@all`                        |                                         |                                |
+| entire team                                                                 | [`@all`](discussions/index.md#mentioning-all-members)                        |                                         |                                |
 | project                                                                     | `namespace/project>`          |                                         |                                |
 | issue                                                                       | ``#123``                      | `namespace/project#123`                 | `project#123`                  |
 | merge request                                                               | `!123`                        | `namespace/project!123`                 | `project!123`                  |

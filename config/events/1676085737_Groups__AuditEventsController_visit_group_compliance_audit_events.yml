@@ -10,15 +10,15 @@ identifiers:
 #- project
 - user
 - namespace
-product_section: dev
-product_stage: manage
+product_section: sec
+product_stage: govern
 product_group: compliance
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107120
 distributions:
 #- ce
 - ee
-tiers: 
+tiers:
 #- free
 - premium
 - ultimate

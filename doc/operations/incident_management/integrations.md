@@ -144,8 +144,8 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Monitor**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Monitor**.
 1. Expand the **Alerts** section, and select **Add new integration**.
 1. From the **Select integration type** dropdown list, select **Prometheus**.
 1. Turn on the **Active** toggle.

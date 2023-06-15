@@ -17,8 +17,6 @@ module ObjectStorage
     deduplicate :until_executed
 
     def perform
-      return unless Feature.enabled?(:stale_pending_direct_uploads_cleaner)
-
       result = ObjectStorage::DeleteStaleDirectUploadsService.new.execute
 
       log_extra_metadata_on_done(:total_pending_entries, result[:total_pending_entries])

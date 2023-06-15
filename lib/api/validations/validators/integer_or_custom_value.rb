@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class IntegerOrCustomValue < Grape::Validations::Base
+      class IntegerOrCustomValue < Grape::Validations::Validators::Base
         def initialize(attrs, options, required, scope, **opts)
           @custom_values = extract_custom_values(options)
           super

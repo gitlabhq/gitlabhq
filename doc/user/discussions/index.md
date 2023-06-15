@@ -51,9 +51,27 @@ You can quickly see which comments involve you, because
 mentions for yourself (the user who is signed in) are highlighted
 in a different color.
 
-Avoid mentioning `@all` in issues and merge requests. It sends an email notification
-to all members of that project's parent group, not only the participants of the project.
-It might be interpreted as spam.
+### Mentioning all members
+
+> [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the feature is available.
+To make it unavailable, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+named `disable_all_mention`.
+On GitLab.com, this feature is available.
+Disabling this feature on GitLab.com is tracked in [issue 18442](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+
+When this feature flag is enabled, typing `@all` in comments and descriptions
+results in plain text instead of a mention.
+When you disable this feature, existing `@all` mentions in the Markdown texts are not affected
+and remain as links. Only future `@all` mentions appear as plain text.
+
+Avoid mentioning `@all` in comments and descriptions.
+When you do it, you don't only mention the participants of the project, issue, or merge request,
+but to all members of that project's parent group.
+All these users receive an email notification and a to-do item. It might be interpreted as spam.
+
 Notifications and mentions can be disabled in
 [a group's settings](../group/manage.md#disable-email-notifications).
 

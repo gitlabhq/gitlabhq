@@ -27,8 +27,8 @@ Linked resources for an incident are listed under the **Summary** tab.
 
 To view the linked resources of an incident:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Incidents**.
 1. Select an incident.
 
 ## Add a linked resource
@@ -41,8 +41,8 @@ Prerequisites:
 
 To add a linked resource:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Incidents**.
 1. Select an incident.
 1. In the **Linked resources** section, select the plus icon (**{plus-square}**).
 1. Complete the required fields.
@@ -92,7 +92,7 @@ Prerequisites:
 
 To remove a linked resource:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Incidents**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Incidents**.
 1. Select an incident.
 1. In the **Linked resources** section, select **Remove** (**{close}**).
