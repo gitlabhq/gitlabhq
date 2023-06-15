@@ -56,6 +56,38 @@ class Release < ApplicationRecord
 
   MAX_NUMBER_TO_DISPLAY = 3
 
+  class << self
+    # In the future, we should support `order_by=semver`;
+    # see https://gitlab.com/gitlab-org/gitlab/-/issues/352945
+    def latest(order_by: 'released_at')
+      sort_by_attribute("#{order_by}_desc").first
+    end
+
+    # This query uses LATERAL JOIN to find the latest release for each project. To avoid
+    # joining the `releases` table, we build an in-memory table using the project ids.
+    # Example:
+    # SELECT ...
+    # FROM (VALUES (PROJECT_ID_1),(PROJECT_ID_2)) project_ids (id)
+    # INNER JOIN LATERAL (...)
+    def latest_for_projects(projects, order_by: 'released_at')
+      return Release.none if projects.empty?
+
+      projects_table = Project.arel_table
+      releases_table = Release.arel_table
+
+      join_query = Release
+        .where(projects_table[:id].eq(releases_table[:project_id]))
+        .sort_by_attribute("#{order_by}_desc")
+        .limit(1)
+
+      project_ids_list = projects.map { |project| "(#{project.id})" }.join(',')
+
+      Release
+        .from("(VALUES #{project_ids_list}) projects (id)")
+        .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{Release.table_name} ON TRUE")
+    end
+  end
+
   def to_param
     tag
   end

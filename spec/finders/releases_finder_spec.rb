@@ -158,4 +158,71 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
       end
     end
   end
+
+  describe 'latest releases' do
+    let_it_be(:project2) { create(:project, :repository, group: group) }
+    let_it_be(:v2_0_0) { create(:release, project: project2) }
+    let_it_be(:v2_1_0) { create(:release, project: project2) }
+
+    let(:params) { { latest: true } }
+
+    subject { described_class.new([project, project2], user, params).execute(**args) }
+
+    before do
+      v1_0_0.update!(released_at: 4.days.ago, created_at: 1.day.ago)
+      v1_1_0.update!(released_at: 3.days.ago, created_at: 2.days.ago)
+      v2_0_0.update!(released_at: 2.days.ago, created_at: 3.days.ago)
+      v2_1_0.update!(released_at: 1.day.ago,  created_at: 4.days.ago)
+    end
+
+    it_behaves_like 'when the user is not authorized'
+
+    context 'when the user has guest privileges or higher on one project' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'returns the latest release of only the authorized project' do
+        is_expected.to eq([v1_1_0])
+      end
+    end
+
+    context 'when the user has guest privileges or higher on all projects' do
+      before do
+        project.add_guest(user)
+        project2.add_guest(user)
+      end
+
+      it 'returns the latest release by released date for each project' do
+        is_expected.to match_array([v1_1_0, v2_1_0])
+      end
+
+      context 'with order_by_for_latest: created' do
+        let(:params) { { latest: true, order_by_for_latest: 'created_at' } }
+
+        it 'returns the latest release by created date for each project' do
+          is_expected.to match_array([v1_0_0, v2_0_0])
+        end
+      end
+
+      context 'when one project does not have releases' do
+        it 'returns the latest release of only the project with releases' do
+          project.releases.delete_all
+
+          is_expected.to eq([v2_1_0])
+        end
+      end
+
+      context 'when all projects do not have releases' do
+        it 'returns empty response' do
+          project.releases.delete_all
+          project2.releases.delete_all
+
+          is_expected.to be_empty
+        end
+      end
+
+      it_behaves_like 'preload'
+    end
+  end
 end

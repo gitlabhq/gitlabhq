@@ -665,7 +665,7 @@ The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-o
 
 ### Creating a subscription
 
-Use a POST to create a subscription.
+Use a POST command to create a subscription.
 
 ```plaintext
 POST /namespaces/:id/gitlab_subscription
@@ -802,6 +802,107 @@ Example response:
     "subscription_end_date":"2021-07-15",
     "trial_ends_on":null
   }
+}
+```
+
+### Known consumers
+
+- CustomersDot
+
+## Subscription add-on purchases (excluding storage and compute packs)
+
+The subscription add-on purchase endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscription add-on purchases like code suggestions for personal namespaces, or top-level groups within GitLab.com. It is not used to apply storage and compute pack purchases.
+
+### Create a subscription add-on purchase
+
+Use a POST to create a subscription add-on purchase.
+
+```plaintext
+POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a code suggestions add-on) |
+| `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
+| `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a code suggestions add-on) |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=10&expires_on="2024-07-15"&purchase_xid="A-S12345678""
+```
+
+Example response:
+
+```json
+{
+  "namespace_id":1234,
+  "namespace_name":"A Namespace Name",
+  "add_on":"Code Suggestions",
+  "quantity":10,
+  "expires_on":"2024-07-15",
+  "purchase_xid":"A-S12345678"
+}
+```
+
+### Update a subscription add-on purchases
+
+Use a PUT command to update an existing subscription add-on purchase.
+
+```plaintext
+PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a code suggestions add-on) |
+| `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
+| `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a code suggestions add-on) |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=15&expires_on="2024-07-15"&purchase_xid="A-S12345678""
+```
+
+Example response:
+
+```json
+{
+  "namespace_id":1234,
+  "namespace_name":"A Namespace Name",
+  "add_on":"Code Suggestions",
+  "quantity":15,
+  "expires_on":"2024-07-15",
+  "purchase_xid":"A-S12345678"
+}
+```
+
+### Retrieve a subscription add-on purchases
+
+Use a GET command to view an existing subscription add-on purchase.
+
+```plaintext
+GET /namespaces/:id/subscription_add_on_purchase/:add_on_name
+```
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions"
+```
+
+Example response:
+
+```json
+{
+  "namespace_id":1234,
+  "namespace_name":"A Namespace Name",
+  "add_on":"Code Suggestions",
+  "quantity":15,
+  "expires_on":"2024-07-15",
+  "purchase_xid":"A-S12345678"
 }
 ```
 

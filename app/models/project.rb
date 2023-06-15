@@ -475,61 +475,63 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
 
-  delegate :merge_requests_access_level, :forking_access_level, :issues_access_level,
-    :wiki_access_level, :snippets_access_level, :builds_access_level,
-    :repository_access_level, :package_registry_access_level, :pages_access_level,
-    :metrics_dashboard_access_level, :analytics_access_level,
-    :operations_access_level, :security_and_compliance_access_level,
-    :container_registry_access_level, :environments_access_level, :feature_flags_access_level,
-    :monitor_access_level, :releases_access_level, :infrastructure_access_level,
-    :model_experiments_access_level,
-    to: :project_feature, allow_nil: true
-
-  delegate :show_default_award_emojis, :show_default_award_emojis=,
-    :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=,
-    :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=,
-    to: :project_setting, allow_nil: true
-
-  delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?,
-    :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
-    to: :project_setting
-
-  delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
-  delegate :squash_option, :squash_option=, to: :project_setting
-  delegate :mr_default_target_self, :mr_default_target_self=, to: :project_setting
-  delegate :previous_default_branch, :previous_default_branch=, to: :project_setting
+  delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
-  delegate :members, to: :team, prefix: true
-  delegate :add_member, :add_members, :member?, to: :team
-  delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role, to: :team
-  delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
-  delegate :root_ancestor, to: :namespace, allow_nil: true
-  delegate :last_pipeline, to: :commit, allow_nil: true
-  delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
-  delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
-  delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
-  delegate :forward_deployment_enabled, :forward_deployment_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
-  delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci_outbound, allow_nil: true
-  delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
-  delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
-  delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
-  delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
-  delegate :separated_caches, :separated_caches=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
-  delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :ci_cd_settings, allow_nil: true
-  delegate :actual_limits, :actual_plan_name, :actual_plan, to: :namespace, allow_nil: true
-  delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
-    :allow_merge_on_skipped_pipeline=, :has_confluence?, :has_shimo?,
-    to: :project_setting
-  delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
-  delegate :squash_commit_template, :squash_commit_template=, to: :project_setting, allow_nil: true
-  delegate :issue_branch_template, :issue_branch_template=, to: :project_setting, allow_nil: true
-
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
+  delegate :last_pipeline, to: :commit, allow_nil: true
 
-  delegate :maven_package_requests_forwarding,
-    :pypi_package_requests_forwarding,
-    :npm_package_requests_forwarding,
-    to: :namespace
+  with_options to: :team do
+    delegate :members, prefix: true
+    delegate :add_member, :add_members, :member?
+    delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
+  end
+
+  with_options to: :metrics_setting, allow_nil: true, prefix: true do
+    delegate :external_dashboard_url
+    delegate :dashboard_timezone
+  end
+
+  with_options to: :namespace do
+    delegate :actual_limits, :actual_plan_name, :actual_plan, :root_ancestor, allow_nil: true
+    delegate :maven_package_requests_forwarding, :pypi_package_requests_forwarding, :npm_package_requests_forwarding
+  end
+
+  with_options to: :ci_cd_settings, allow_nil: true do
+    delegate :group_runners_enabled, :group_runners_enabled=
+    delegate :keep_latest_artifact, :keep_latest_artifact=
+    delegate :restrict_user_defined_variables, :restrict_user_defined_variables=
+    delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=
+    delegate :job_token_scope_enabled, :job_token_scope_enabled=, prefix: :ci_outbound
+
+    with_options prefix: :ci do
+      delegate :default_git_depth, :default_git_depth=
+      delegate :forward_deployment_enabled, :forward_deployment_enabled=
+      delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=
+      delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=
+      delegate :separated_caches, :separated_caches=
+    end
+  end
+
+  with_options to: :project_setting do
+    delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?, :allow_merge_on_skipped_pipeline=
+    delegate :has_confluence?
+    delegate :has_shimo?
+    delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?
+    delegate :runner_registration_enabled, :runner_registration_enabled=, :runner_registration_enabled?
+    delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?
+    delegate :mr_default_target_self, :mr_default_target_self=
+    delegate :previous_default_branch, :previous_default_branch=
+    delegate :squash_option, :squash_option=
+
+    with_options allow_nil: true do
+      delegate :merge_commit_template, :merge_commit_template=
+      delegate :squash_commit_template, :squash_commit_template=
+      delegate :issue_branch_template, :issue_branch_template=
+      delegate :show_default_award_emojis, :show_default_award_emojis=
+      delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
+      delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
+    end
+  end
 
   # Validations
   validates :creator, presence: true, on: :create

@@ -20,8 +20,8 @@ Use contribution analytics data visualizations to:
 
 To view contribution analytics:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Contribution**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Analyze > Contribution analytics**.
 
 Three bar charts and a table illustrate the number of contributions made by each group member:
 

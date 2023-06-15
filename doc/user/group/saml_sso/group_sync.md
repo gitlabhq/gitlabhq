@@ -125,7 +125,8 @@ When global group memberships lock is enabled:
 To enable global group memberships lock:
 
 1. [Configure SAML](../../../integration/saml.md) for your self-managed GitLab instance.
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to SAML synchronization** checkbox is selected.

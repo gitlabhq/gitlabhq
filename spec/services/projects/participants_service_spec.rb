@@ -179,6 +179,18 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
             end
           end
 
+          context 'when public project maintainer is signed in' do
+            let(:service) { described_class.new(public_project, public_project_maintainer) }
+
+            it 'returns private group members' do
+              expect(usernames).to include(private_group_member.username)
+            end
+
+            it 'returns members of the ancestral groups of the private group' do
+              expect(usernames).to include(group_ancestor_owner.username)
+            end
+          end
+
           context 'when private group owner is signed in' do
             let(:service) { described_class.new(public_project, private_group_owner) }
 

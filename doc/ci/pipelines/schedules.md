@@ -26,8 +26,8 @@ Otherwise, the pipeline is not created. No error message is displayed.
 
 To add a pipeline schedule:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Schedules**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipeline schedules**.
 1. Select **New schedule** and fill in the form.
    - **Interval Pattern**: Select one of the preconfigured intervals, or enter a custom
      interval in [cron notation](../../topics/cron/index.md). You can use any cron value,
@@ -47,8 +47,8 @@ you must delete unused schedules before you can add another.
 
 The owner of a pipeline schedule can edit it:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. In the left sidebar, select **CI/CD > Schedules**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipeline schedules**.
 1. Next to the schedule, select **Edit** (**{pencil}**) and fill in the form.
 
 The user must have the Developer role or above for the project. If the user is
@@ -60,8 +60,8 @@ of the schedule.
 To trigger a pipeline schedule manually, so that it runs immediately instead of
 the next scheduled time:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Schedules**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Build > Pipeline schedules**.
 1. On the right of the list, for
    the pipeline you want to run, select **Play** (**{play}**).
 
@@ -76,8 +76,8 @@ including [protected environments](../environments/protected_environments.md) an
 
 To take ownership of a pipeline created by a different user:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Schedules**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Build > Pipeline schedules**.
 1. On the right of the list, for
    the pipeline you want to become owner of, select **Take ownership**.
 

@@ -54,7 +54,8 @@ Prerequisite:
 
 To change the default quota that applies to all namespaces:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Compute quota** box, enter a limit.
@@ -75,7 +76,8 @@ Prerequisite:
 
 To set a compute quota for a namespace:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
 1. In the **Compute quota** box, enter the maximum number of units of compute.
@@ -105,8 +107,9 @@ Prerequisite:
 
 To view compute usage for your group:
 
-1. On the top bar, select **Main menu > Groups** and find your group. The group must not be a subgroup.
-1. On the left sidebar, select **Settings > Usage Quotas**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to
+   find your group. The group must not be a subgroup.
+1. Select **Settings > Usage Quotas**.
 1. Select the **Pipelines** tab.
 
 The projects list shows projects with compute usage or shared runners usage
@@ -123,7 +126,7 @@ Prerequisite:
 
 You can view the compute usage for a personal namespace:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 
@@ -164,8 +167,8 @@ You can purchase additional units of compute for your group.
 You cannot transfer purchased units of compute from one group to another,
 so be sure to select the correct group.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Usage Quotas**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional units of compute**.
 1. Complete the details of the transaction.
@@ -181,7 +184,7 @@ Prerequisite:
 
 To purchase additional units of compute for your personal namespace:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 1. Select **Buy additional units of compute**. GitLab redirects you to the Customers Portal.

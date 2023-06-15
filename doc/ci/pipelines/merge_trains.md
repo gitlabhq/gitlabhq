@@ -101,8 +101,8 @@ Prerequisites:
 
 To enable merge trains:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge method** section, verify that **Merge commit** is selected.
 1. In the **Merge options** section:
    - In GitLab 13.6 and later, select **Enable merged results pipelines** and **Enable merge trains**.

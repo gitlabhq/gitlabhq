@@ -105,9 +105,7 @@ Checking Geo ... Finished
 You can also specify a custom NTP server using environment variables. For example:
 
 ```shell
-export NTP_HOST="ntp.ubuntu.com"
-export NTP_TIMEOUT="30"
-sudo gitlab-rake gitlab:geo:check
+sudo gitlab-rake gitlab:geo:check NTP_HOST="ntp.ubuntu.com" NTP_TIMEOUT="30"
 ```
 
 The following environment variables are supported.

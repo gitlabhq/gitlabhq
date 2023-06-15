@@ -57,8 +57,8 @@ all projects that have visibility level set to [Internal](../../public_access.md
 
 To create a group access token:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Access Tokens**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Enter an expiry date for the token:
    - The token expires on that date at midnight UTC.
@@ -119,8 +119,8 @@ or API. However, administrators can use a workaround:
 
 To revoke a group access token:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Access Tokens**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Access Tokens**.
 1. Next to the group access token to revoke, select **Revoke**.
 
 ## Revoke a group access token using Rails console
@@ -153,8 +153,8 @@ The scope determines the actions you can perform when you authenticate with a gr
 
 To enable or disable group access token creation for all subgroups in a top-level group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
 

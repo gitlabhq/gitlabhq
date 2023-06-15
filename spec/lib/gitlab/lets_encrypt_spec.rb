@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::LetsEncrypt do
+RSpec.describe ::Gitlab::LetsEncrypt, feature_category: :pages do
   include LetsEncryptHelpers
 
   before do

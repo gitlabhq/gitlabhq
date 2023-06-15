@@ -136,10 +136,10 @@ To ensure GitLab maps users and their contributions correctly:
 Create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
-   - A new group. On the top bar, select **{plus-square}**, then **New group**, and select **Import group**.
+   - A new group. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
-     - On the top bar, Select **{plus-square}** and then **New subgroup**. Then on the left sidebar, select the **import an existing group** link.
+     - On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the URL of a GitLab instance running GitLab 14.0 or later.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
@@ -176,8 +176,7 @@ You can view all groups migrated by you by direct transfer listed on the group i
 To view group import history:
 
 1. Sign in to GitLab.
-1. On the top bar, select **Create new…** (**{plus-square}**).
-1. Select **New group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.
@@ -407,8 +406,8 @@ To solve this, you must change the source group path to include a non-numerical 
 
 - The GitLab UI:
 
-  1. On the top bar, select **Main menu > Groups** and find your group.
-  1. On the left sidebar, select **Settings > General**.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. Select **Settings > General**.
   1. Expand **Advanced**.
   1. Under **Change group URL**, change the group URL to include non-numeric characters.
 
@@ -522,7 +521,8 @@ Prerequisite:
 
 To enable import and export for a group:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In the **Import sources** section, select the checkboxes for the sources you want.
@@ -535,9 +535,9 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
-1. In the **Advanced** section, select **Export Group**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. In the **Advanced** section, select **Export group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in NDJSON format.
 1. Alternatively, you can download the export from the UI:
@@ -550,15 +550,13 @@ You can also export a group [using the API](../../../api/group_import_export.md)
 
 ### Import the group
 
-1. Create a new group:
-   - On the top bar, select **Create new…** (**{plus-square}**) and then **New group**.
-   - On an existing group's page, select **New subgroup**.
-1. Select **Import group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**.
+1. Select the **import an existing group** link.
 1. Enter your group name.
 1. Accept or modify the associated group URL.
-1. Select **Choose file**.
+1. Select **Choose file...**.
 1. Select the file that you exported in the [Export a group](#export-a-group) section.
-1. To begin importing, select **Import group**.
+1. To begin importing, select **Import**.
 
 Your newly imported group page appears after the operation completes.
 

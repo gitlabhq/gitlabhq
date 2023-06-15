@@ -12712,6 +12712,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourceforkscount"></a>`forksCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Number of times the catalog resource has been forked. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
+| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`Release`](#release) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Latest version of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
 | <a id="cicatalogresourcereadmehtml"></a>`readmeHtml` | [`String!`](#string) | GitLab Flavored Markdown rendering of `readme`. |
 | <a id="cicatalogresourcerootnamespace"></a>`rootNamespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Root namespace of the catalog resource. |
@@ -12725,8 +12726,9 @@ Represents the total number of issues and their weights for a particular day.
 Versions of the catalog resource.
 
 WARNING:
-**Introduced** in 16.1.
-This feature is an Experiment. It can be changed or removed at any time.
+**Deprecated** in 16.1.
+Causes performance degradation.
+Use: `latest_version`.
 
 Returns [`ReleaseConnection`](#releaseconnection).
 

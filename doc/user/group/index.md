@@ -47,22 +47,27 @@ the immediate parent group.
 
 ## View groups
 
-To view groups, on the top bar, select **Main menu > Groups > View all groups**.
+To explore all public groups:
 
-The **Groups** page shows a list of groups, sorted by last updated date.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
+1. At the top right, select **Explore groups**.
 
-- To explore all public groups, select **Explore groups**.
-- To view groups where you have a direct or indirect membership, select **Your groups**. This tab shows groups that you are a member of:
-  - Through membership of a subgroup's parent group.
-  - Through direct or inherited membership of a project in the group or subgroup.
+To view groups where you have a direct or indirect membership:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
+
+This page shows groups that you are a member of:
+
+- Through membership of a subgroup's parent group.
+- Through direct or inherited membership of a project in the group or subgroup.
 
 ## Create a group
 
 To create a group:
 
-1. On the top bar, either:
-   - Select **Main menu > Groups > View all groups**, and on the right, select **New group**.
-   - To the left of the search box, select the plus sign and then **New group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).
@@ -83,7 +88,7 @@ For details about groups, watch [GitLab Namespaces (users, groups and subgroups)
 
 To remove a group and its contents:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Remove group** section, select **Remove group**.
@@ -92,8 +97,8 @@ To remove a group and its contents:
 
 A group can also be removed from the groups dashboard:
 
-1. On the top bar, select **Main menu > Groups > View all groups**.
-1. Select **Your Groups**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
 1. Select (**{ellipsis_v}**) for the group you want to delete.
 1. Select **Delete**.
 1. In the Remove group section, select **Remove group**.
@@ -120,8 +125,8 @@ Prerequisites:
 
 To immediately remove a group marked for deletion:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the "Permanently remove group" section, select **Remove group**.
 1. Confirm the action when asked to.
@@ -135,16 +140,18 @@ are deleted.
 
 To restore a group that is marked for deletion:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Settings > General**.
-1. Expand the **Path, transfer, remove** section.
+1. Expand the **Advanced** section.
 1. In the Restore group section, select **Restore group**.
 
 ## Request access to a group
 
 As a user, you can request to be a member of a group, if an administrator allows it.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
+1. At the top right side, select **Explore groups**.
 1. Under the group name, select **Request Access**.
 
 As many as ten of the most-recently-active group owners receive an email with your request.
@@ -170,7 +177,8 @@ In lists of group members, entries can display the following badges:
 - **SAML**, to indicate the member has a [SAML account](saml_sso/index.md) connected to them.
 - **Enterprise**, to indicate that the member is an [enterprise user](../enterprise_user/index.md).
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
 1. Above the list of members, in the **Filter members** box, enter filter criteria.
    - To view members in the group only, select **Membership = Direct**.
    - To view members of the group and its subgroups, select **Membership = Inherited**.
@@ -182,7 +190,7 @@ In lists of group members, entries can display the following badges:
 You can search for members by name, username, or email.
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. On the left sidebar, select **Manage > Members**.
+1. Select **Manage > Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
 
@@ -191,7 +199,7 @@ You can search for members by name, username, or email.
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. On the left sidebar, select **Manage > Members**.
+1. Select **Manage > Members**.
 1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
@@ -206,7 +214,7 @@ Prerequisite:
 - You must have the Owner role.
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. On the left sidebar, select **Manage > Members**.
+1. Select **Manage > Members**.
 1. Select **Invite members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. For more information, see [permissions](../permissions.md).
@@ -232,8 +240,9 @@ Prerequisites:
 To remove a member from a group:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. On the left sidebar, select **Manage > Members**.
-1. Next to the member you want to remove, select **Remove member**.
+1. Select **Manage > Members**.
+1. Next to the member you want to remove, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Remove member**.
 1. Optional. On the **Remove member** confirmation box:
    - To remove direct user membership from subgroups and projects, select the **Also remove direct user membership from subgroups and projects** checkbox.
    - To unassign the user from linked issues and merge requests, select the **Also unassign this user from linked issues and merge requests** checkbox.
@@ -264,10 +273,8 @@ By default, users with at least the Developer role can create projects under a g
 
 To change this setting for a specific group:
 
-1. On the top bar, select **Main menu > Groups > View all groups**.
-1. Select **Your Groups**.
-1. Find the group and select it.
-1. From the left menu, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select the desired option in the **Roles allowed to create projects** dropdown list.
 1. Select **Save changes**.

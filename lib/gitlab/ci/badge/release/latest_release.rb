@@ -19,7 +19,8 @@ module Gitlab::Ci
           @release = ::ReleasesFinder.new(
             project,
             current_user,
-            order_by: opts[:order_by]).execute.first
+            order_by_for_latest: opts[:order_by],
+            latest: true).execute.first
         end
 
         def entity

@@ -95,11 +95,13 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
   private
 
   def create_custom_value_stream!
-    Analytics::CycleAnalytics::ValueStreams::CreateService.new(
-      current_user: admin,
-      namespace: project.group,
-      params: { name: "vs #{suffix}", stages: Gitlab::Analytics::CycleAnalytics::DefaultStages.all }
-    ).execute
+    [project.project_namespace.reload, project.group].each do |parent|
+      Analytics::CycleAnalytics::ValueStreams::CreateService.new(
+        current_user: admin,
+        namespace: parent,
+        params: { name: "vs #{suffix}", stages: Gitlab::Analytics::CycleAnalytics::DefaultStages.all }
+      ).execute
+    end
   end
 
   def seed_dora_metrics!

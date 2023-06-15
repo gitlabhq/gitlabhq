@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::LetsEncrypt::Challenge do
+RSpec.describe ::Gitlab::LetsEncrypt::Challenge, feature_category: :pages do
   include LetsEncryptHelpers
 
   let(:challenge) { described_class.new(acme_challenge_double) }

@@ -56,7 +56,7 @@ the private subgroup.
 
 To view the subgroups of a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select the **Subgroups and projects** tab.
 1. To view a nested subgroup, expand a subgroup in the hierarchy list.
 
@@ -84,7 +84,7 @@ You cannot host a GitLab Pages subgroup website with a top-level domain name. Fo
 
 To create a subgroup:
 
-1. On the top bar, select **Main menu > Groups** and find and select the parent group to add a subgroup to.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find a parent group for the subgroup.
 1. On the parent group's overview page, in the upper-right corner, select **New subgroup**.
 1. Select **Create group**.
 1. Fill in the fields. View a list of [reserved names](../../reserved_names.md) that cannot be used as group names.
@@ -99,13 +99,14 @@ Prerequisite:
 To change who can create subgroups on a group:
 
 - As a user with the Owner role on the group:
-  1. On the top bar, select **Main menu > Groups** and find your group.
-  1. On the left sidebar, select **Settings > General**.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. Select **Settings > General**.
   1. Expand **Permissions and group features**.
   1. Select a role from **Roles allowed to create subgroups**.
   1. Select **Save changes**.
 - As an administrator:
-  1. On the top bar, select **Main menu > Admin**.
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
   1. On the left sidebar, select **Overview > Groups**.
   1. In the group's row select **Edit**.
   1. Select a role from **Allowed to create subgroups**.

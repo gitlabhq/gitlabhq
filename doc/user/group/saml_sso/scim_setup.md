@@ -25,8 +25,8 @@ Prerequisites:
 
 To configure GitLab SAML SSO SCIM:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > SAML SSO**.
 1. Select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
    - Token from the **Your SCIM token** field.

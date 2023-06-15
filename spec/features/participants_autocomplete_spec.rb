@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Member autocomplete', :js, feature_category: :team_planning do
+RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
 
   let(:note) { create(:note, noteable: noteable, project: noteable.project) }
+  let(:noteable) { create(:issue, author: author, project: project) }
 
   before do
     note # actually create the note
@@ -29,9 +30,27 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :team_planning do
     end
   end
 
-  context 'adding a new note on a Issue' do
-    let(:noteable) { create(:issue, author: author, project: project) }
+  context 'for a member of a private group invited to the project' do
+    let_it_be(:private_group) { create(:group, :private) }
+    let_it_be(:private_group_member) { create(:user, username: 'private-a') }
 
+    before_all do
+      project.add_developer user
+
+      private_group.add_developer private_group_member
+
+      create(:project_group_link, group: private_group, project: project)
+    end
+
+    it 'suggests member of private group' do
+      visit project_issue_path(project, noteable)
+      fill_in 'Comment', with: '@priv'
+
+      expect(find_autocomplete_menu).to have_text(private_group_member.username)
+    end
+  end
+
+  context 'adding a new note on a Issue' do
     before do
       visit project_issue_path(project, noteable)
     end

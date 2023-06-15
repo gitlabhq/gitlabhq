@@ -139,8 +139,8 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Pipelines**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipelines**.
 1. Select **Run pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
 1. Enter any [CI/CD variables](../variables/index.md) required for the pipeline to run.
@@ -349,8 +349,8 @@ Prerequisites:
 
 To trigger the pipeline when the upstream project is rebuilt:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
    For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.

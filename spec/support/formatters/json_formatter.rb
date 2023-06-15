@@ -73,7 +73,8 @@ module Support
           screenshot: example.metadata[:screenshot],
           product_group: example.metadata[:product_group],
           feature_category: example.metadata[:feature_category],
-          ci_job_url: ENV['CI_JOB_URL']
+          ci_job_url: ENV['CI_JOB_URL'],
+          retry_attempts: example.metadata[:retry_attempts]
         }
       end
 

@@ -68,8 +68,11 @@ The custom domain must match the email domain exactly. For example, if your emai
 1. In the upper-right corner, select **Add Domain**.
 1. In **Domain**, enter the domain name.
 1. In **Project**, link to a project.
-1. Optional. In **Certificate**, switch the **Manually enter certificate information** toggle to add an SSL/TLS
-   certificate. You can also add the certificate and key later.
+1. In **Certificate**:
+   - If you do not have or do not want to use an SSL certificate, leave **Automatic certificate management using Let's
+     Encrypt** selected.
+   - Optional. Turn on the **Manually enter certificate information** toggle to add an SSL/TLS certificate. You can also
+     add the certificate and key later.
 1. Select **Add Domain**.
 
 NOTE:

@@ -24,7 +24,7 @@ module Ci
       end
 
       def latest_version
-        versions.first
+        project.releases.latest
       end
     end
   end

@@ -366,8 +366,21 @@ hi
             text: '#456',
           }),
         ),
+        paragraph(
+          reference({
+            referenceType: 'command',
+            originalText: '/assign_reviewer',
+            text: '/assign_reviewer',
+          }),
+          reference({
+            referenceType: 'user',
+            originalText: '@johndoe',
+            href: '/johndoe',
+            text: '@johndoe',
+          }),
+        ),
       ),
-    ).toBe('#123 ~foo #456');
+    ).toBe('#123 ~foo #456\n\n/assign_reviewer @johndoe');
   });
 
   it.each`

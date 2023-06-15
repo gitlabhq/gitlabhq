@@ -77,8 +77,9 @@ Prerequisite:
 
 - You must be an administrator of a self-managed GitLab instance.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand the **Analytics** tab and find the **Product analytics** section.
 1. Select **Enable product analytics** and enter the configuration values.
 1. Select **Save changes**.
@@ -93,8 +94,9 @@ Prerequisites:
 - Product analytics must be enabled at the instance-level.
 - You must have at least the Maintainer role for the project or group the project belongs to.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**
 1. Expand **Product Analytics**.
 1. In the **Connect to your instance** section, enter the configuration values.
 1. Select **Save changes**.

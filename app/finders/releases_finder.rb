@@ -11,13 +11,14 @@ class ReleasesFinder
     @params = params
 
     params[:order_by] ||= 'released_at'
+    params[:order_by_for_latest] ||= 'released_at'
     params[:sort] ||= 'desc'
   end
 
   def execute(preload: true)
     return Release.none if authorized_projects.empty?
 
-    releases = get_releases
+    releases = params[:latest] ? get_latest_releases : get_releases
     releases = by_tag(releases)
     releases = releases.preloaded if preload
     order_releases(releases)
@@ -27,6 +28,10 @@ class ReleasesFinder
 
   def get_releases
     Release.where(project_id: authorized_projects).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
+  end
+
+  def get_latest_releases
+    Release.latest_for_projects(authorized_projects, order_by: params[:order_by_for_latest]).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def authorized_projects

@@ -158,6 +158,7 @@ function setIsInBlockTable(table, value) {
 }
 
 function ensureSpace(state) {
+  state.flushClose();
   if (!state.atBlank() && !state.out.endsWith(' ')) state.write(' ');
 }
 
