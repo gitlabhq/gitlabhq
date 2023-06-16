@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.0.5 (2023-06-16)
+
+### Fixed (1 change)
+
+- [Update gitlab-elasticsearch-indexer version](gitlab-org/gitlab@d080c6c9af405b24e65e269ccb7b723cd5510940) ([merge request](gitlab-org/gitlab!122335))
+
+### Changed (1 change)
+
+- [Make MigrateSharedVulnerabilityIdentifiers use slow iteration](gitlab-org/gitlab@252da7be42ec95a5d470c17f43209c27890a7e85) ([merge request](gitlab-org/gitlab!122859)) **GitLab Enterprise Edition**
+
 ## 16.0.4 (2023-06-08)
 
 ### Fixed (1 change)
