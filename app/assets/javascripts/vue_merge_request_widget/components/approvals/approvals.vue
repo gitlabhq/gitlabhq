@@ -7,7 +7,6 @@ import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
 import StateContainer from '../state_container.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
@@ -215,11 +214,6 @@ export default {
       this.clearError();
       return serviceFn()
         .then(() => {
-          if (!window.gon?.features?.realtimeMrStatusChange) {
-            eventHub.$emit('MRWidgetUpdateRequested');
-            eventHub.$emit('ApprovalUpdated');
-          }
-
           // TODO: Remove this line when we move to Apollo subscriptions
           this.$apollo.queries.approvals.refetch();
         })

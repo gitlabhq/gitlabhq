@@ -513,7 +513,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       it 'denies login if sign up is enabled, but block_auto_created_users is set' do
         post :saml, params: { SAMLResponse: mock_saml_response }
-
         expect(flash[:alert]).to start_with 'Your account is pending approval'
       end
 
@@ -607,6 +606,25 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
 
       it { expect { post_action }.not_to raise_error }
+    end
+
+    context 'with a non default SAML provider' do
+      let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+
+      controller(described_class) do
+        alias_method :saml_okta, :handle_omniauth
+      end
+
+      before do
+        allow(AuthHelper).to receive(:saml_providers).and_return([:saml, :saml_okta])
+        allow(@routes).to receive(:generate_extras).and_return(['/users/auth/saml_okta/callback', []])
+      end
+
+      it 'authenticate with SAML module' do
+        expect(@controller).to receive(:omniauth_flow).with(Gitlab::Auth::Saml).and_call_original
+        post :saml_okta, params: { SAMLResponse: mock_saml_response }
+        expect(request.env['warden']).to be_authenticated
+      end
     end
   end
 

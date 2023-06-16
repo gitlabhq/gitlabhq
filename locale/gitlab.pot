@@ -19620,6 +19620,9 @@ msgid_plural "Free groups are limited to %{free_user_limit} members and the rema
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Free top-level groups will soon be limited to %{free_users_limit} users and %{free_storage_limit} of data"
+msgstr ""
+
 msgid "Free trial will expire in %{days}"
 msgstr ""
 
@@ -27646,6 +27649,9 @@ msgstr ""
 msgid "Manage two-factor authentication"
 msgstr ""
 
+msgid "Manage usage"
+msgstr ""
+
 msgid "Manage your project's triggers"
 msgstr ""
 
@@ -33761,6 +33767,9 @@ msgid "Pipelines|Ready to set up CI/CD for your project?"
 msgstr ""
 
 msgid "Pipelines|Rebasing creates a pipeline that runs code originating from a forked project merge request. Consequently there are potential security implications, such as the exposure of CI variables."
+msgstr ""
+
+msgid "Pipelines|Retry %{jobName} Job"
 msgstr ""
 
 msgid "Pipelines|Revoke trigger"
@@ -53241,6 +53250,12 @@ msgid "Your top-level group %{namespace_name} will move to a read-only state soo
 msgstr ""
 
 msgid "Your top-level group is over the user limit and has been placed in a read-only state."
+msgstr ""
+
+msgid "Your top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To ensure that your group does not become read-only, you should contact a user with the Owner role for this group to upgrade to a paid tier, or manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}"
+msgstr ""
+
+msgid "Your top-level group, %{group_name}, has more than %{free_users_limit} users and uses more than %{free_storage_limit} of data. After usage limits are applied to Free top-level groups, projects in this group will be in a %{read_only_link_start}read-only state%{link_end}. To get more seats and additional storage, upgrade to a paid tier. You can also manage your usage. For more information about the upcoming usage limits, see our %{faq_link_start}FAQ%{link_end}"
 msgstr ""
 
 msgid "Your update failed. You can only upload one design when dropping onto an existing design."

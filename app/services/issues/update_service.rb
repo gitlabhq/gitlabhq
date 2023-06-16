@@ -28,11 +28,7 @@ module Issues
 
       return if skip_spam_check || !perform_spam_check
 
-      Spam::SpamActionService.new(
-        spammable: issue,
-        user: current_user,
-        action: :update
-      ).execute
+      issue.check_for_spam(user: current_user, action: :update)
     end
 
     def change_work_item_type(issue)

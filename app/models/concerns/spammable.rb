@@ -105,8 +105,12 @@ module Spammable
       _('issue')
     when MergeRequest
       _('merge request')
+    when Note
+      _('comment')
     when Snippet
       _('snippet')
+    when Note
+      _('comment')
     else
       self.class.model_name.human.downcase
     end
@@ -145,9 +149,9 @@ module Spammable
     (changed & self.class.spammable_attrs.to_h.keys).any?
   end
 
-  def check_for_spam(action:, user:)
-    strong_memoize_with(:check_for_spam, action, user) do
-      Spam::SpamActionService.new(spammable: self, user: user, action: action).execute
+  def check_for_spam(user:, action:, extra_features: {})
+    strong_memoize_with(:check_for_spam, user, action, extra_features) do
+      Spam::SpamActionService.new(spammable: self, user: user, action: action, extra_features: extra_features).execute
     end
   end
 

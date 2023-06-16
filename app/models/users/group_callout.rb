@@ -29,7 +29,8 @@ module Users
       repository_storage_limit_banner_info_threshold: 19, # EE-only
       repository_storage_limit_banner_warning_threshold: 20, # EE-only
       repository_storage_limit_banner_alert_threshold: 21, # EE-only
-      repository_storage_limit_banner_error_threshold: 22 # EE-only
+      repository_storage_limit_banner_error_threshold: 22, # EE-only
+      namespace_over_storage_users_combined_alert: 23 # EE-only
     }
 
     validates :group, presence: true

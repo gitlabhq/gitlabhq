@@ -10,7 +10,7 @@ module Gitlab
             include ::Gitlab::Config::Entry::Attributable
 
             ALLOWED_KEYS = %i[if exists when].freeze
-            ALLOWED_WHEN = %w[never].freeze
+            ALLOWED_WHEN = %w[never always].freeze
 
             attributes :if, :exists, :when
 

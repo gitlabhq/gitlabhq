@@ -19,7 +19,7 @@ module Gitlab
           def evaluate(context)
             if Feature.enabled?(:ci_support_include_rules_when_never, context.project)
               if @rule_list.nil?
-                Result.new(nil)
+                Result.new('always')
               elsif matched_rule = match_rule(context)
                 Result.new(matched_rule.attributes[:when])
               else

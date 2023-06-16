@@ -12,13 +12,15 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
   let(:package_version) { '1.0.0' }
   let(:package_file_name) { 'dummyproject.dummypackage.1.0.0.nupkg' }
 
-  shared_examples 'raising an' do |error_class|
+  shared_examples 'raising an' do |error_class, with_message:|
     it "raises an #{error_class}" do
-      expect { subject }.to raise_error(error_class)
+      expect { subject }.to raise_error(error_class, with_message)
     end
   end
 
   describe '#execute' do
+    using RSpec::Parameterized::TableSyntax
+
     subject { service.execute }
 
     shared_examples 'taking the lease' do
@@ -168,24 +170,24 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       context 'with too long url' do
         let_it_be(:too_long_url) { "http://localhost/#{'bananas' * 50}" }
 
-        let(:metadata) { { package_name: package_name, package_version: package_version, license_url: too_long_url } }
+        let(:metadata) { { package_name: package_name, package_version: package_version, authors: 'Author Test', description: 'Description Test', license_url: too_long_url } }
 
         before do
           allow(service).to receive(:metadata).and_return(metadata)
         end
 
-        it_behaves_like 'raising an', described_class::InvalidMetadataError
+        it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: /Validation failed: License url is too long/
       end
 
       context 'without authors or description' do
         %i[authors description].each do |property|
-          let(:metadata) { { package_name: package_name, package_version: package_version, license_url: 'http://localhost/', property => nil } }
+          let(:metadata) { { package_name: package_name, package_version: package_version, property => nil } }
 
           before do
             allow(service).to receive(:metadata).and_return(metadata)
           end
 
-          it_behaves_like 'raising an', described_class::InvalidMetadataError
+          it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: described_class::INVALID_METADATA_ERROR_MESSAGE
         end
       end
     end
@@ -226,7 +228,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
         end
       end
 
-      it_behaves_like 'raising an', ::Packages::Nuget::MetadataExtractionService::ExtractionError
+      it_behaves_like 'raising an', ::Packages::Nuget::MetadataExtractionService::ExtractionError, with_message: 'nuspec file not found'
     end
 
     context 'with a symbol package' do
@@ -236,16 +238,12 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       context 'with no existing package' do
         let(:package_id) { package.id }
 
-        it_behaves_like 'raising an', described_class::InvalidMetadataError
+        it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: described_class::MISSING_MATCHING_PACKAGE_ERROR_MESSAGE
       end
 
       context 'with existing package' do
         let!(:existing_package) { create(:nuget_package, project: package.project, name: package_name, version: package_version) }
         let(:package_id) { existing_package.id }
-
-        before do
-          allow(service).to receive(:metadata).and_return(service.send(:metadata).merge(authors: 'Author Test'))
-        end
 
         it 'link existing package and updates package file', :aggregate_failures do
           expect(service).to receive(:try_obtain_lease).and_call_original
@@ -269,41 +267,41 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
     end
 
     context 'with an invalid package name' do
-      invalid_names = [
-        '',
-        'My/package',
-        '../../../my_package',
-        '%2e%2e%2fmy_package'
-      ]
+      invalid_name_error_msg = 'Validation failed: Name is invalid'
 
-      invalid_names.each do |invalid_name|
-        context "with #{invalid_name}" do
-          before do
-            allow(service).to receive(:package_name).and_return(invalid_name)
-          end
+      where(:invalid_name, :error_message) do
+        ''                    | described_class::INVALID_METADATA_ERROR_MESSAGE
+        'My/package'          | invalid_name_error_msg
+        '../../../my_package' | invalid_name_error_msg
+        '%2e%2e%2fmy_package' | invalid_name_error_msg
+      end
 
-          it_behaves_like 'raising an', described_class::InvalidMetadataError
+      with_them do
+        before do
+          allow(service).to receive(:package_name).and_return(invalid_name)
         end
+
+        it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: params[:error_message]
       end
     end
 
     context 'with an invalid package version' do
-      invalid_versions = [
-        '',
-        '555',
-        '1./2.3',
-        '../../../../../1.2.3',
-        '%2e%2e%2f1.2.3'
-      ]
+      invalid_version_error_msg = 'Validation failed: Version is invalid'
 
-      invalid_versions.each do |invalid_version|
-        context "with #{invalid_version}" do
-          before do
-            allow(service).to receive(:package_version).and_return(invalid_version)
-          end
+      where(:invalid_version, :error_message) do
+        ''                     | described_class::INVALID_METADATA_ERROR_MESSAGE
+        '555'                  | invalid_version_error_msg
+        '1./2.3'               | invalid_version_error_msg
+        '../../../../../1.2.3' | invalid_version_error_msg
+        '%2e%2e%2f1.2.3'       | invalid_version_error_msg
+      end
 
-          it_behaves_like 'raising an', described_class::InvalidMetadataError
+      with_them do
+        before do
+          allow(service).to receive(:package_version).and_return(invalid_version)
         end
+
+        it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: params[:error_message]
       end
     end
   end

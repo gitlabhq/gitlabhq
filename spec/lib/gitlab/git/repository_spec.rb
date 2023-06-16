@@ -41,8 +41,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'gets the branch name from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:default_branch_name)
-      repository.root_ref
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:default_branch_name).with(head_only: true)
+      repository.root_ref(head_only: true)
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :default_branch_name do

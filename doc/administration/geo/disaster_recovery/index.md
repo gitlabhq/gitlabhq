@@ -542,19 +542,19 @@ Geo on the new **primary** site.
 
 To bring a new **secondary** site online, follow the [Geo setup instructions](../index.md#setup-instructions).
 
-### Step 6. (Optional) Removing the secondary's tracking database
+### Step 6. Removing the secondary's tracking database
 
 Every **secondary** has a special tracking database that is used to save the status of the synchronization of all the items from the **primary**.
 Because the **secondary** is already promoted, that data in the tracking database is no longer required.
 
-The data can be removed with the following command:
+You can remove the data with the following command:
 
 ```shell
 sudo rm -rf /var/opt/gitlab/geo-postgresql
 ```
 
 If you have any `geo_secondary[]` configuration options enabled in your `gitlab.rb`
-file, these can be safely commented out or removed, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
+file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 for the changes to take effect.
 
 ## Promoting secondary Geo replica in multi-secondary configurations

@@ -939,7 +939,6 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#create_wiki_repository' do
-    let(:head_path) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { Rails.root.join(TestEnv.repos_path, "#{wiki.disk_path}.git", 'HEAD') } }
     let(:default_branch) { 'foo' }
 
     before do
@@ -956,7 +955,7 @@ RSpec.shared_examples 'wiki model' do
 
         subject
 
-        expect(File.read(head_path).squish).to eq "ref: refs/heads/#{default_branch}"
+        expect(wiki.repository.raw.root_ref(head_only: true)).to eq default_branch
       end
     end
 
@@ -968,7 +967,7 @@ RSpec.shared_examples 'wiki model' do
 
         subject
 
-        expect(File.read(head_path).squish).to eq "ref: refs/heads/#{default_branch}"
+        expect(wiki.repository.raw.root_ref(head_only: true)).to eq default_branch
       end
     end
   end

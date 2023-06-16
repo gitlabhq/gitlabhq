@@ -578,8 +578,8 @@ always take the latest dependency scanning artifact available.
 
 To enable Dependency Scanning in a project, you can create a merge request:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 1. Review and merge the merge request to enable Dependency Scanning.
 

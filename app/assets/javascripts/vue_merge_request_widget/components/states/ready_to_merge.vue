@@ -97,7 +97,7 @@ export default {
           return readyToMergeSubscription;
         },
         skip() {
-          return !this.mr?.id || this.loading || !window.gon?.features?.realtimeMrStatusChange;
+          return !this.mr?.id || this.loading;
         },
         variables() {
           return {

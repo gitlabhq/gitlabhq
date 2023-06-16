@@ -416,11 +416,12 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
     end
 
     before do
-      expect_next_instance_of(Spam::SpamActionService) do |spam_service|
-        expect(spam_service).to receive_messages(check_for_spam?: true)
+      expect_next_instance_of(Issue) do |instance|
+        expect(instance).to receive(:check_for_spam).with(user: user, action: :create).and_call_original
       end
+
       expect_next_instance_of(Spam::AkismetService) do |akismet_service|
-        expect(akismet_service).to receive_messages(spam?: true)
+        expect(akismet_service).to receive(:spam?).and_return(true)
       end
     end
 

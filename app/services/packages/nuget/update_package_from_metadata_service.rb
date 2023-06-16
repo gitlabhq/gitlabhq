@@ -9,6 +9,9 @@ module Packages
       # used by ExclusiveLeaseGuard
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
       SYMBOL_PACKAGE_IDENTIFIER = 'SymbolsPackage'
+      INVALID_METADATA_ERROR_MESSAGE = 'package name, version, authors and/or description not found in metadata'
+      INVALID_METADATA_ERROR_SYMBOL_MESSAGE = 'package name, version and/or description not found in metadata'
+      MISSING_MATCHING_PACKAGE_ERROR_MESSAGE = 'symbol package is invalid, matching package does not exist'
 
       InvalidMetadataError = Class.new(StandardError)
 
@@ -17,7 +20,10 @@ module Packages
       end
 
       def execute
-        raise InvalidMetadataError, 'package name, version, authors and/or description not found in metadata' unless valid_metadata?
+        unless valid_metadata?
+          error_message = symbol_package? ? INVALID_METADATA_ERROR_SYMBOL_MESSAGE : INVALID_METADATA_ERROR_MESSAGE
+          raise InvalidMetadataError, error_message
+        end
 
         try_obtain_lease do
           @package_file.transaction do
@@ -39,7 +45,7 @@ module Packages
           target_package = existing_package
         else
           if symbol_package?
-            raise InvalidMetadataError, 'symbol package is invalid, matching package does not exist'
+            raise InvalidMetadataError, MISSING_MATCHING_PACKAGE_ERROR_MESSAGE
           end
 
           update_linked_package
@@ -67,7 +73,9 @@ module Packages
       end
 
       def valid_metadata?
-        [package_name, package_version, package_authors, package_description].all?(&:present?)
+        fields = [package_name, package_version, package_description]
+        fields << package_authors unless symbol_package?
+        fields.all?(&:present?)
       end
 
       def link_to_existing_package

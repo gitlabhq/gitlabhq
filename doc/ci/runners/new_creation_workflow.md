@@ -150,3 +150,50 @@ gitlab-runner register \
     --url "https://gitlab.com/" \
     --token "$RUNNER_TOKEN"
 ```
+
+## Installing GitLab Runner with Helm chart
+
+Several runner configuration options cannot be set during runner registration. These options can only be configured:
+
+- When you create a runner in the UI.
+- With the `user/runners` REST API endpoint.
+
+The following configuration options are no longer supported in [`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml):
+
+```yaml
+## All these fields are DEPRECATED and the runner WILL FAIL TO START if you specify them
+runnerRegistrationToken: ""
+locked: true
+tags: ""
+maximumTimeout: ""
+runUntagged: true
+protected: true
+```
+
+If you store the runner token in `secrets`, you must also modify them.
+
+In the legacy runner registration workflow, fields were specified with:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-runner-secret
+type: Opaque
+data:
+  runner-registration-token: "REDACTED" # DEPRECATED, set to ""
+  runner-token: ""
+```
+
+In the new runner registration workflow, you must use `runner-token` instead:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-runner-secret
+type: Opaque
+data:
+  runner-registration-token: "" # need to leave as an empty string for compatibility reasons
+  runner-token: "REDACTED"
+```

@@ -15,7 +15,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   feature_category :system_access
 
   def handle_omniauth
-    omniauth_flow(Gitlab::Auth::OAuth)
+    if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
+      saml
+    else
+      omniauth_flow(Gitlab::Auth::OAuth)
+    end
   end
 
   AuthHelper.providers_for_base_controller.each do |provider|

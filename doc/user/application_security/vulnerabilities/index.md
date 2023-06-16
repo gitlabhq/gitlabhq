@@ -55,8 +55,8 @@ When dismissing a vulnerability, one of the following reasons must be chosen to 
 
 To change a vulnerability's status from its Vulnerability Page:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Status** dropdown list select a status, then select **Change status**.
 
@@ -85,8 +85,8 @@ that when Jira integration is enabled, the GitLab issue feature is not available
 
 To create a GitLab issue for a vulnerability:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create issue**.
 
@@ -104,8 +104,8 @@ Prerequisites:
 
 To create a Jira issue for a vulnerability:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
 1. If you're not already logged in to Jira, sign in.
@@ -137,8 +137,8 @@ Be aware of the following conditions between a vulnerability and a linked issue:
 
 To link a vulnerability to existing issues:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
 1. In the **Linked issues** section, select the plus icon (**{plus}**).
 1. For each issue to be linked, either:
@@ -172,8 +172,8 @@ To resolve a vulnerability, you can either:
 
 To resolve the vulnerability with a merge request:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Resolve with merge request**.
 
@@ -184,8 +184,8 @@ Process the merge request according to your standard workflow.
 
 To manually apply the patch that GitLab generated for a vulnerability:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Download patch to resolve**.
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
@@ -206,8 +206,8 @@ Security training helps your developers learn how to fix vulnerabilities. Develo
 
 To enable security training for vulnerabilities in your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
 
@@ -224,7 +224,7 @@ Vulnerabilities with a CWE are most likely to return a training result.
 
 To view the security training for a vulnerability:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.

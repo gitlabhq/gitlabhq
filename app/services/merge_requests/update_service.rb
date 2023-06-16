@@ -211,7 +211,7 @@ module MergeRequests
 
     override :before_update
     def before_update(merge_request, skip_spam_check: false)
-      Spam::SpamActionService.new(spammable: merge_request, user: current_user, action: :update).execute unless skip_spam_check
+      merge_request.check_for_spam(user: current_user, action: :update) unless skip_spam_check
     end
 
     override :handle_quick_actions

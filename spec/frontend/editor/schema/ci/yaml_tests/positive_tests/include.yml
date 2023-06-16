@@ -5,8 +5,34 @@ stages:
 include:
   - local: builds.yml
     rules:
-      - if: '$INCLUDE_BUILDS == "false"'
+      - if: $DONT_INCLUDE_BUILDS == "true"
         when: never
+  - local: builds.yml
+    rules:
+      - if: $INCLUDE_BUILDS == "true"
+        when: always
+  - local: deploys.yml
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+  - local: builds.yml
+    rules:
+      - exists:
+          - exception-file.md
+        when: never
+  - local: builds.yml
+    rules:
+      - exists:
+          - file.md
+        when: always
+  - local: builds.yml
+    rules:
+      - exists:
+          - file.md
+        when: null
+  - local: deploys.yml
+    rules:
+      - exists:
+          - file.md
 
 # valid trigger:include
 trigger:include accepts project and file properties:

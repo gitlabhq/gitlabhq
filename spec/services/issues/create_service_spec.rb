@@ -833,16 +833,9 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         described_class.new(container: project, current_user: user, params: params, perform_spam_check: perform_spam_check)
       end
 
-      it 'executes SpamActionService' do
-        expect_next_instance_of(
-          Spam::SpamActionService,
-          {
-            spammable: kind_of(Issue),
-            user: an_instance_of(User),
-            action: :create
-          }
-        ) do |instance|
-          expect(instance).to receive(:execute)
+      it 'checks for spam' do
+        expect_next_instance_of(Issue) do |instance|
+          expect(instance).to receive(:check_for_spam).with(user: user, action: :create)
         end
 
         subject.execute
@@ -852,7 +845,9 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         let(:perform_spam_check) { false }
 
         it 'does not execute the SpamActionService' do
-          expect(Spam::SpamActionService).not_to receive(:new)
+          expect_next_instance_of(Issue) do |instance|
+            expect(instance).not_to receive(:check_for_spam)
+          end
 
           subject.execute
         end

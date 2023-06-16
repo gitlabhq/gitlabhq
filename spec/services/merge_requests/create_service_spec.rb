@@ -68,8 +68,8 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
 
       describe 'checking for spam' do
         it 'checks for spam' do
-          expect_next_instance_of(Spam::SpamActionService, spammable: instance_of(MergeRequest), user: user, action: :create) do |instance|
-            expect(instance).to receive(:execute)
+          expect_next_instance_of(MergeRequest) do |instance|
+            expect(instance).to receive(:check_for_spam).with(user: user, action: :create)
           end
 
           service.execute

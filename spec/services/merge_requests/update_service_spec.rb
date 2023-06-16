@@ -428,9 +428,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
       describe 'checking for spam' do
         it 'checks for spam' do
-          expect_next_instance_of(Spam::SpamActionService, spammable: merge_request, user: user, action: :update) do |instance|
-            expect(instance).to receive(:execute)
-          end
+          expect(merge_request).to receive(:check_for_spam).with(user: user, action: :update)
 
           update_merge_request(opts)
         end

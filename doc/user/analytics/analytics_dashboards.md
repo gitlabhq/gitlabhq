@@ -40,41 +40,6 @@ To view a list of dashboards for a project:
 1. Select **Analyze > Dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
-### Change the location of group dashboards
-
-NOTE:
-This feature will be connected to group-level dashboards as part of [issue #411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572).
-
-To change the location of a group's dashboards:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project you want to store your dashboard files in.
-   The project must belong to the group for which you create the dashboards.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
-1. In the **Analytics Dashboards** section, select your dashboard files project.
-1. Select **Save changes**.
-
-### Change the location of project dashboards
-
-Dashboards are usually defined in the project where the analytics data is being retrieved from.
-However, you can also have a separate project for dashboards.
-This is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
-
-NOTE:
-You can share dashboards only between projects that are located in the same group.
-
-To change the location of project dashboards:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project,
-   or select **Create new...** (**{plus}**) and **New project/repository**
-   to create the project to store your dashboard files.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and find the analytics project.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
-1. In the **Analytics Dashboards** section, select your dashboard files project.
-1. Select **Save changes**.
-
 ### Define a dashboard
 
 To define a dashboard:
@@ -125,6 +90,42 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
+
+### Change the location of project dashboards
+
+Dashboards are usually defined in the project where analytics data is being retrieved.
+However, you can also have a separate project for dashboards.
+This is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
+
+NOTE:
+You can share dashboards only between projects that are located in the same group.
+
+To change the location of project dashboards:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project,
+   or select **Create new...** (**{plus}**) and **New project/repository**
+   to create the project to store your dashboard files.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and find the project you want to use the dashboards for.
+1. Select **Settings > General**.
+1. Expand **Analytics**.
+1. In the **Analytics Dashboards** section, select the project that contains the dashboard files.
+1. Select **Save changes**.
+
+### Change the location of group dashboards
+
+NOTE:
+This feature will be connected to group-level dashboards in [issue 411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572).
+
+If you want to use dashboards for a group, you must store the dashboard files in a project that belongs to that group.
+You can change the source project of a group's dashboards at any time.
+
+To change the location of a group's dashboards:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. Expand **Analytics**.
+1. In the **Analytics Dashboards** section, select the project that contains the dashboard files.
+1. Select **Save changes**.
 
 ## Dashboards designer
 

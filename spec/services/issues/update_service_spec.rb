@@ -901,7 +901,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           }
           service = described_class.new(container: project, current_user: user, params: params)
 
-          expect(Spam::SpamActionService).not_to receive(:new)
+          expect(issue).not_to receive(:check_for_spam)
 
           service.execute(issue)
         end

@@ -25,10 +25,6 @@ Both of these use the same [worker matching query](#worker-matching-query)
 syntax. While they can technically be used together, most deployments should
 choose one or the other; there is no particular benefit in combining them.
 
-Routing rules must be the same across all GitLab nodes as they are part of the
-application configuration. Queue selectors can be different across GitLab nodes
-because they only change the arguments to the launched Sidekiq process.
-
 ## Routing rules
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59604) in GitLab 13.12.
@@ -60,6 +56,12 @@ After the Sidekiq routing rules are changed, administrators must take care with
 the migration to avoid losing jobs entirely, especially in a system with long
 queues of jobs. The migration can be done by following the migration steps
 mentioned in [Sidekiq job migration](sidekiq_job_migration.md).
+
+### Routing rules in a scaled architecture
+
+Routing rules must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes) as they are part of the
+application configuration. Queue selectors can be different across GitLab nodes
+because they only change the arguments to the launched Sidekiq process.
 
 ### Detailed example
 

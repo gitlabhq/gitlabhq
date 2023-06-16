@@ -149,16 +149,9 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
       context 'checking spam' do
         let(:perform_spam_check) { true }
 
-        it 'executes SpamActionService' do
-          expect_next_instance_of(
-            Spam::SpamActionService,
-            {
-              spammable: kind_of(WorkItem),
-              user: an_instance_of(User),
-              action: :create
-            }
-          ) do |instance|
-            expect(instance).to receive(:execute)
+        it 'checks for spam' do
+          expect_next_instance_of(WorkItem) do |instance|
+            expect(instance).to receive(:check_for_spam).with(user: current_user, action: :create)
           end
 
           service_result
@@ -167,8 +160,10 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
         context 'when `perform_spam_check` is set to `false`' do
           let(:perform_spam_check) { false }
 
-          it 'does not execute the SpamActionService' do
-            expect(Spam::SpamActionService).not_to receive(:new)
+          it 'does not check for spam' do
+            expect_next_instance_of(WorkItem) do |instance|
+              expect(instance).not_to receive(:check_for_spam)
+            end
 
             service_result
           end

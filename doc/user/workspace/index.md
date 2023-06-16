@@ -37,6 +37,7 @@ Each workspace includes its own set of dependencies, libraries, and tools, which
     dns_zone: "workspaces.example.dev"
   ```
 
+  You can use any agent defined under the root group of your project, provided that remote development is properly configured for that agent.
 - You must have at least the Developer role in the root group.
 - In each public project you want to use this feature for, create a [devfile](#devfile):
   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project
@@ -157,8 +158,3 @@ You can provide your own container image, which can run as any Linux user ID. It
 GitLab uses the Linux root group ID permission to create, update, or delete files in a container. The container runtime used by the Kubernetes cluster must ensure all containers have a default Linux group ID of `0`.
 
 If you have a container image that does not support arbitrary user IDs, you cannot create, update, or delete files in a workspace. To create a container image that supports arbitrary user IDs, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
-
-## Selecting an agent for your workspace
-
-A project can use any agent defined under the root group of the project,
-provided that remote development is properly configured for that agent.

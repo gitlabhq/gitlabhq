@@ -155,8 +155,8 @@ To enable Secret Detection, either:
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Editor**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
    ```yaml
@@ -188,8 +188,8 @@ error may occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manu
 
 To enable Secret Detection:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Secret Detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
 1. Select **Create merge request**.

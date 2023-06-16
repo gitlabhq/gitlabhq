@@ -21,6 +21,7 @@ RSpec.describe Packages::Nuget::Metadatum, type: :model, feature_category: :pack
         it { is_expected.to allow_value('https://sandbox.com').for(url) }
         it { is_expected.not_to allow_value('123').for(url) }
         it { is_expected.not_to allow_value('sandbox.com').for(url) }
+        it { is_expected.to validate_length_of(url).is_at_most(described_class::MAX_URL_LENGTH) }
       end
 
       describe '#ensure_nuget_package_type' do

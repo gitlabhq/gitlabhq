@@ -44,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:deprecate_vulnerabilities_feedback, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_frontend_feature_flag(:realtime_mr_status_change, project)
     push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:code_quality_inline_drawer, project)
     push_frontend_feature_flag(:auto_merge_labels_mr_widget, project)

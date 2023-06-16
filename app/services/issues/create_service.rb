@@ -47,7 +47,7 @@ module Issues
     end
 
     def before_create(issue)
-      Spam::SpamActionService.new(spammable: issue, user: current_user, action: :create).execute if perform_spam_check
+      issue.check_for_spam(user: current_user, action: :create) if perform_spam_check
 
       # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user

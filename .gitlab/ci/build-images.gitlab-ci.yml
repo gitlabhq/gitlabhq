@@ -40,6 +40,9 @@ build-gdk-image:
   script:
     - run_timed_command "scripts/build_gdk_image"
 
+# NOTE: release-tools verifies the presence on this job for a commit that is
+# candidate to an auto-deploy package. This job name can't be changed without
+# changing the code in release-tools.
 build-assets-image:
   extends:
     - .base-image-build

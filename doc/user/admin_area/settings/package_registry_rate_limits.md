@@ -32,7 +32,7 @@ To enable the unauthenticated request rate limit:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
-1. Select **Settings > Network**. 
+1. Select **Settings > Network**.
 1. Expand **Package registry rate limits**.
 1. Select **Enable unauthenticated request rate limit**.
 

@@ -182,7 +182,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/container_expiration_policies/update_service.rb'
     - 'app/services/dependency_proxy/image_ttl_group_policies/update_service.rb'
     - 'app/services/discussions/resolve_service.rb'
-    - 'app/services/error_tracking/collect_error_service.rb'
     - 'app/services/error_tracking/issue_details_service.rb'
     - 'app/services/feature_flags/base_service.rb'
     - 'app/services/git/base_hooks_service.rb'

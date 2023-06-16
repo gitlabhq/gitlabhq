@@ -243,10 +243,6 @@ describe('MRWidget approvals', () => {
           it('calls service approve', () => {
             expect(service.approveMergeRequest).toHaveBeenCalled();
           });
-
-          it('emits to eventHub', () => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
-          });
         });
 
         describe('and error', () => {
@@ -296,10 +292,6 @@ describe('MRWidget approvals', () => {
 
           it('calls service unapprove', () => {
             expect(service.unapproveMergeRequest).toHaveBeenCalled();
-          });
-
-          it('emits to eventHub', () => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
           });
         });
 

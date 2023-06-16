@@ -2635,7 +2635,6 @@ Layout/LineLength:
     - 'lib/bulk_imports/projects/pipelines/repository_pipeline.rb'
     - 'lib/container_registry/base_client.rb'
     - 'lib/declarative_enum.rb'
-    - 'lib/error_tracking/collector/payload_validator.rb'
     - 'lib/feature.rb'
     - 'lib/feature/definition.rb'
     - 'lib/file_size_validator.rb'

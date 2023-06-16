@@ -43,7 +43,7 @@ module Gitlab
         protected
 
         def saml_config
-          Gitlab::Auth::Saml::Config
+          Gitlab::Auth::Saml::Config.new(auth_hash.provider)
         end
 
         def auto_link_saml_user?

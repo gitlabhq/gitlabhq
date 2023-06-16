@@ -830,7 +830,8 @@
                   {
                     "type": "string",
                     "enum": [
-                      "never"
+                      "never",
+                      "always"
                     ]
                   },
                   {

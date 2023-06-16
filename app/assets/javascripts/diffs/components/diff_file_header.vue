@@ -462,7 +462,12 @@ export default {
               v-if="showGenerateTestFileButton"
               @click="setGenerateTestFilePath(diffFile.new_path)"
             >
-              {{ __('Suggest test cases') }}
+              <span
+                class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-mr-n3!"
+              >
+                {{ __('Suggest test cases') }}
+                <gl-icon name="tanuki-ai" class="gl-text-purple-600" />
+              </span>
             </gl-dropdown-item>
             <gl-dropdown-item
               v-if="diffFile.replaced_view_path"

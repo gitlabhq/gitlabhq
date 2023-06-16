@@ -24,10 +24,6 @@
   }
 
   // Line numbers
-  .file-line-num {
-    @include line-link($black, 'link');
-  }
-
   .file-line-blame {
     @include line-link($black, 'git');
   }

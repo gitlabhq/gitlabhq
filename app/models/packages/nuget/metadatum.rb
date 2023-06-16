@@ -3,13 +3,14 @@
 class Packages::Nuget::Metadatum < ApplicationRecord
   MAX_AUTHORS_LENGTH = 255
   MAX_DESCRIPTION_LENGTH = 4000
+  MAX_URL_LENGTH = 255
 
   belongs_to :package, -> { where(package_type: :nuget) }, inverse_of: :nuget_metadatum
 
   validates :package, presence: true
-  validates :license_url, public_url: { allow_blank: true }
-  validates :project_url, public_url: { allow_blank: true }
-  validates :icon_url, public_url: { allow_blank: true }
+  validates :license_url, public_url: { allow_blank: true }, length: { maximum: MAX_URL_LENGTH }
+  validates :project_url, public_url: { allow_blank: true }, length: { maximum: MAX_URL_LENGTH }
+  validates :icon_url, public_url: { allow_blank: true }, length: { maximum: MAX_URL_LENGTH }
   validates :authors, presence: true, length: { maximum: MAX_AUTHORS_LENGTH }
   validates :description, presence: true, length: { maximum: MAX_DESCRIPTION_LENGTH }
 

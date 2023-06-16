@@ -25,7 +25,7 @@ export default {
           };
         },
         skip() {
-          return !this.issuableId || !this.glFeatures.realtimeMrStatusChange;
+          return !this.issuableId;
         },
         result({ data: { mergeRequestMergeStatusUpdated } }) {
           if (mergeRequestMergeStatusUpdated) {

@@ -71,7 +71,8 @@ module Users
       repository_storage_limit_banner_alert_threshold: 69, # EE-only
       repository_storage_limit_banner_error_threshold: 70, # EE-only
       new_navigation_callout: 71,
-      code_suggestions_third_party_callout: 72 # EE-only
+      code_suggestions_third_party_callout: 72, # EE-only
+      namespace_over_storage_users_combined_alert: 73 # EE-only
     }
 
     validates :feature_name,

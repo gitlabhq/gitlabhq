@@ -42,6 +42,8 @@ To generate an authentication token for a shared runner:
 1. Select **Submit**.
 1. Follow the instructions to register the runner from the command line.
 
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
+
 ### For a group runner
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
@@ -64,6 +66,8 @@ To generate an authentication token for a group runner:
 1. Optional. Enter configurations for the runner.
 1. Select **Submit**.
 1. Follow the instructions to register the runner from the command line.
+
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
 
 ### For a project runner
 
@@ -88,6 +92,8 @@ To generate an authentication token for a project runner:
 1. Optional. Enter configurations for the runner.
 1. Select **Submit**.
 1. Follow the instructions to register the runner from the command line.
+
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
 
 ## Generate a registration token (deprecated)
 

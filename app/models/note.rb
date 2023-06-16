@@ -785,7 +785,7 @@ class Note < ApplicationRecord
   # Override method defined in Spammable
   # Wildcard argument because user: argument is not used
   def check_for_spam?(*)
-    return false if system? || !note_changed? || confidential?
+    return false if system? || !spammable_attribute_changed? || confidential?
     return false if noteable.try(:confidential?) == true || noteable.try(:public?) == false
     return false if noteable.try(:group)&.public? == false || project&.public? == false
 

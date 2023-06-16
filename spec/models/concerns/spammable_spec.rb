@@ -97,6 +97,20 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
               .to match_array /Your #{subject.class.model_name.human.downcase} has been recognized as spam./
           end
         end
+
+        context 'when the spammable model is a Note' do
+          subject do
+            Note.new.tap do |m|
+              m.spam!
+              m.invalidate_if_spam
+            end
+          end
+
+          it 'has an error related to spam on the model' do
+            expect(subject.errors.messages[:base])
+              .to match_array /Your comment has been recognized as spam./
+          end
+        end
       end
 
       context 'when the model needs recaptcha' do

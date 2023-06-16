@@ -115,7 +115,7 @@ Related topics:
 ## Optimizing Homebrew
 
 By default, Homebrew checks for updates at the start of any operation. Homebrew has a
-release cycle that may be more frequent than the GitLab MacOS image release cycle. This 
+release cycle that may be more frequent than the GitLab MacOS image release cycle. This
 difference in release cycles may cause steps that call `brew` to take extra time to complete
 while Homebrew makes updates.
 

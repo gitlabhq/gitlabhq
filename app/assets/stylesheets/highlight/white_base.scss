@@ -94,10 +94,6 @@ $white-gc-bg: #eaf2f5;
 }
 
 // Line numbers
-.file-line-num {
-  @include line-link($black, 'link');
-}
-
 .file-line-blame {
   @include line-link($black, 'git');
 }

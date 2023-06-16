@@ -19,12 +19,7 @@ module Snippets
       @snippet.author = current_user
 
       if perform_spam_check
-        Spam::SpamActionService.new(
-          spammable: @snippet,
-          user: current_user,
-          action: :create,
-          extra_features: { files: file_paths_to_commit }
-        ).execute
+        @snippet.check_for_spam(user: current_user, action: :create, extra_features: { files: file_paths_to_commit })
       end
 
       if save_and_commit

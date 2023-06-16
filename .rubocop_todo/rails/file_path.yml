@@ -33,7 +33,6 @@ Rails/FilePath:
     - 'ee/spec/services/ee/merge_requests/refresh_service_spec.rb'
     - 'ee/spec/validators/json_schema_validator_spec.rb'
     - 'lib/api/api.rb'
-    - 'lib/error_tracking/collector/payload_validator.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/audit/type/definition.rb'
     - 'lib/gitlab/ci/parsers/sbom/validators/cyclonedx_schema_validator.rb'

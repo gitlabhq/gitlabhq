@@ -91,12 +91,10 @@ module Gitlab
       end
 
       # Default branch in the repository
-      def root_ref
-        gitaly_ref_client.default_branch_name
-      rescue GRPC::NotFound => e
-        raise NoRepository, e.message
-      rescue GRPC::Unknown => e
-        raise Gitlab::Git::CommandError, e.message
+      def root_ref(head_only: false)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.default_branch_name(head_only: head_only)
+        end
       end
 
       def exists?

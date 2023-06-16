@@ -20,7 +20,7 @@ To do this:
 
 1. [Add `Spammable` support to the ActiveRecord model](#add-spammable-support-to-the-activerecord-model).
 1. [Add support for the `mark_as_spam` action to the controller](#add-support-for-the-mark_as_spam-action-to-the-controller).
-1. [Add a call to SpamActionService to the execute method of services](#add-a-call-to-spamactionservice-to-the-execute-method-of-services).
+1. [Add a call to `check_for_spam` to the execute method of services](#add-a-call-to-check_for_spam-to-the-execute-method-of-services).
 
 ## Add `Spammable` support to the ActiveRecord model
 
@@ -80,13 +80,11 @@ NOTE:
 There may be other changes needed to controllers, depending on how the feature is
 implemented. See [Web UI](web_ui.md) for more details.
 
-## Add a call to SpamActionService to the execute method of services
+## Add a call to `check_for_spam` to the execute method of services
 
 This approach applies to any service which can persist spammable attributes:
 
-1. In the relevant Create or Update service under `app/services`, pass in a populated
-   `Spam::SpamParams` instance. (Refer to instructions later on in this page.)
-1. Use it and the `Spammable` model instance to execute a `Spam::SpamActionService` instance.
+1. In the relevant Create or Update service under `app/services`, call the `check_for_spam` method on the model.
 1. If the spam check fails:
    - An error is added to the model, which causes it to be invalid and prevents it from being saved.
    - The `needs_recaptcha` property is set to `true`.
@@ -95,38 +93,24 @@ This approach applies to any service which can persist spammable attributes:
 
 Make these changes to each relevant service:
 
-1. Change the constructor to take a `spam_params:` argument as a required named argument.
-
-   Using named arguments for the constructor helps you identify all the calls to
-   the constructor that need changing. It's less risky because the interpreter raises
-   type errors unless the caller is changed to pass the `spam_params` argument.
-   If you use an IDE (such as RubyMine) which supports this, your
-   IDE flags it as an error in the editor.
-
-1. In the constructor, set the `@spam_params` instance variable from the `spam_params` constructor
-   argument. Add an `attr_reader: :spam_params` in the `private` section of the class.
-
-1. In the `execute` method, add a call to execute the `Spam::SpamActionService`.
+1. In the `execute` method, call the `check_for_spam` method on the model.
    (You can also use `before_create` or `before_update`, if the service
    uses that pattern.) This method uses named arguments, so its usage is clear if
    you refer to existing examples. However, two important considerations exist:
-   1. The `SpamActionService` must be executed _after_ all necessary changes are made to
+   1. The `check_for_spam` must be executed _after_ all necessary changes are made to
       the unsaved (and dirty) `Spammable` model instance. This ordering ensures
       spammable attributes exist to be spam-checked.
-   1. The `SpamActionService` must be executed _before_ the model is checked for errors and
+   1. The `check_for_spam` must be executed _before_ the model is checked for errors and
       attempting a `save`. If potential spam is detected in the model's changed attributes, we must prevent a save.
 
 ```ruby
 module Widget
   class CreateService < ::Widget::BaseService
-    # NOTE: We require the spam_params and do not default it to nil, because
-    # spam_checking is likely to be necessary.  However, if there is not a request available in scope
-    # in the caller (for example, a note created via email) and the required arguments to the
-    # SpamParams constructor are not otherwise available, spam_params: must be explicitly passed as nil.
-    def initialize(project:, current_user: nil, params: {}, spam_params:)
+    # NOTE: We add a default value of `true` for `perform_spam_check`, because spam checking is likely to be necessary.
+    def initialize(project:, current_user: nil, params: {}, perform_spam_check: true)
       super(project: project, current_user: current_user, params: params)
 
-      @spam_params = spam_params
+      @perform_spam_check = perform_spam_check
     end
 
     def execute
@@ -136,13 +120,7 @@ module Widget
 
       # NOTE: do this AFTER the spammable model is instantiated, but BEFORE
       # it is validated or saved.
-      Spam::SpamActionService.new(
-        spammable: widget,
-        spam_params: spam_params,
-        user: current_user,
-        # Or `action: :update` for a UpdateService or service for an existing model.
-        action: :create
-      ).execute
+      widget.check_for_spam(user: current_user, action: :create) if perform_spam_check
 
       # Possibly more code related to saving model, but should not change any attributes.
 
@@ -151,5 +129,5 @@ module Widget
 
     private
 
-    attr_reader :spam_params
+    attr_reader :perform_spam_check
 ```

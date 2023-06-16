@@ -138,9 +138,11 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_default_branch_name)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(name: 'foo'))
+        .and_return(double(name: 'refs/heads/main'))
 
-      client.default_branch_name
+      response = client.default_branch_name
+
+      expect(response).to eq('main')
     end
   end
 

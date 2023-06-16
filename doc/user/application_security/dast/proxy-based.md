@@ -89,8 +89,8 @@ In this method you manually edit the existing `.gitlab-ci.yml` file. Use this me
 
 To include the DAST template:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Editor**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file.
 
    To use the DAST stable template:
@@ -156,8 +156,8 @@ snippet is created that you paste into the `.gitlab-ci.yml` file.
 
 To configure DAST using the UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Enable DAST** or
    **Configure DAST**.
 1. Select the desired **Scanner profile**, or select **Create scanner profile** and save a
@@ -548,8 +548,8 @@ The on-demand DAST scan runs and the project's dashboard shows the results.
 
 To run a saved on-demand scan:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
 
@@ -567,8 +567,8 @@ The on-demand DAST scan runs, and the project's dashboard shows the results.
 
 To schedule a scan:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > On-demand scans**.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** text boxes.
 1. In GitLab 13.10 and later, from the **Branch** dropdown list, select the desired branch.
@@ -715,8 +715,8 @@ Validating a site is required to run an active scan.
 
 To validate a site profile:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row, select **Validate**.
@@ -752,8 +752,8 @@ page.
 
 To retry a site profile's failed validation:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row, select **Retry validation**.
