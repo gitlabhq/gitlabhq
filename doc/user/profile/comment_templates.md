@@ -38,7 +38,7 @@ To include the text of a comment template in your comment:
 
 To create a comment template for future use:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
 1. Provide a **Name** for your comment template.
@@ -50,7 +50,7 @@ To create a comment template for future use:
 
 To go to your comment templates:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
 1. Scroll to **My comment templates**.
@@ -59,7 +59,7 @@ To go to your comment templates:
 
 To edit or delete a previously comment template:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
 1. Scroll to **My comment templates**, and identify the comment template you want to edit.

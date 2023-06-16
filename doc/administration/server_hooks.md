@@ -33,7 +33,6 @@ alternatives to server hooks include:
 
 :::TabTitle GitLab 15.11 and later
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
 
 Prerequisites:

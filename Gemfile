@@ -173,9 +173,9 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.174.0'
+gem 'aws-sdk-core', '~> 3.175.0'
 gem 'aws-sdk-cloudformation', '~> 1'
-gem 'aws-sdk-s3', '~> 1.124.0'
+gem 'aws-sdk-s3', '~> 1.125.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 
@@ -368,7 +368,7 @@ gem 'prometheus-client-mmap', '~> 0.24', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.4.1', require: false
+  gem 'lefthook', '~> 1.4.2', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 
@@ -376,7 +376,7 @@ group :development do
   gem 'lookbook', '~> 2.0', '>= 2.0.1'
 
   # Better errors handler
-  gem 'better_errors', '~> 2.10.0'
+  gem 'better_errors', '~> 2.10.1'
 
   gem 'sprite-factory', '~> 1.7'
 

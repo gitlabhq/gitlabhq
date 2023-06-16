@@ -114,7 +114,6 @@ module Gitlab
             projects_imported_from_github: count(Project.where(import_type: 'github')),
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
-            projects_with_alerts_created: distinct_count(::AlertManagement::Alert, :project_id),
             projects_with_enabled_alert_integrations: distinct_count(::AlertManagement::HttpIntegration.active, :project_id),
             projects_with_terraform_reports: distinct_count(::Ci::JobArtifact.of_report_type(:terraform), :project_id),
             projects_with_terraform_states: distinct_count(::Terraform::State, :project_id),
@@ -149,8 +148,7 @@ module Gitlab
             failed_deployments: deployment_count(Deployment.failed.where(monthly_time_range_db_params)),
             # rubocop: enable UsageData/LargeTable:
             projects: count(Project.where(monthly_time_range_db_params), start: minimum_id(Project), finish: maximum_id(Project)),
-            packages: count(::Packages::Package.where(monthly_time_range_db_params)),
-            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id)
+            packages: count(::Packages::Package.where(monthly_time_range_db_params))
           }
         }
       end

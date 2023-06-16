@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlLink, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
@@ -43,6 +43,7 @@ export default {
     ReplyPlaceholder,
     TimeAgoTooltip,
     ToggleRepliesWidget,
+    GlFormCheckbox,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -371,10 +372,13 @@ export default {
             @cancel-form="hideForm"
           >
             <template v-if="discussion.resolvable" #resolve-checkbox>
-              <label data-testid="resolve-checkbox">
-                <input v-model="shouldChangeResolvedStatus" type="checkbox" />
+              <gl-form-checkbox
+                v-model="shouldChangeResolvedStatus"
+                class="gl-mt-5 gl-mb-n3"
+                data-testid="resolve-checkbox"
+              >
                 {{ resolveCheckboxText }}
-              </label>
+              </gl-form-checkbox>
             </template>
           </design-reply-form>
         </template>

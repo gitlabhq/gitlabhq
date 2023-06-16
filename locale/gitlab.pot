@@ -37900,18 +37900,6 @@ msgstr ""
 msgid "RegistrationVerification|You can alway verify your account at a later time."
 msgstr ""
 
-msgid "Registration|Checkout"
-msgstr ""
-
-msgid "Registration|Your GitLab group"
-msgstr ""
-
-msgid "Registration|Your first project"
-msgstr ""
-
-msgid "Registration|Your profile"
-msgstr ""
-
 msgid "Registry entry enqueued to be resynced"
 msgstr ""
 

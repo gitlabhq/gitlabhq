@@ -468,16 +468,16 @@ WARNING:
 These AI features use [third-party services](../ai_features.md#data-usage)
 and require transmission of data, including personal data.
 
-You can give all users in the group access to third-party AI features.
+All users in the group have third-party AI features enabled by default.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
 that belong to the group.
 
-To enable third-party AI features for a group:
+To disable third-party AI features for a group:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Third-party AI services**, select the **Use third-party AI services** checkbox.
+1. Under **Third-party AI services**, uncheck the **Use third-party AI services** checkbox.
 1. Select **Save changes**.
 
 ## Group activity analytics **(PREMIUM)**

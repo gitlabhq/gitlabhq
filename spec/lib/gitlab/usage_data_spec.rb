@@ -357,7 +357,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:incident)
         create(:incident, alert_management_alert: create(:alert_management_alert))
         create(:issue, alert_management_alert: create(:alert_management_alert))
-        create(:alert_management_alert)
         create(:alert_management_http_integration, :active, project: project)
       end
 
@@ -541,7 +540,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
       expect(count_data[:projects_with_terraform_states]).to eq(2)
-      expect(count_data[:projects_with_alerts_created]).to eq(1)
       expect(count_data[:protected_branches]).to eq(2)
       expect(count_data[:protected_branches_except_default]).to eq(1)
       expect(count_data[:terraform_reports]).to eq(6)
@@ -633,7 +631,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
         create(:deployment, :failed, deployment_options)
         create(:deployment, :success, deployment_options)
-        create(:alert_management_alert, project: project, created_at: n.days.ago)
       end
 
       for_defined_days_back do
@@ -649,7 +646,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(counts_monthly[:deployments]).to eq(2)
       expect(counts_monthly[:successful_deployments]).to eq(1)
       expect(counts_monthly[:failed_deployments]).to eq(1)
-      expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
     end
