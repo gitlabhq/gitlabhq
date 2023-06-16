@@ -5,9 +5,10 @@ product_section: analytics
 product_stage: analytics
 product_group: analytics_instrumentation
 value_type: string
-status: active
+status: removed
 milestone: "15.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113090
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123348
 time_frame: none
 data_source: database
 data_category: operational

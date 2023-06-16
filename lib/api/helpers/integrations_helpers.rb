@@ -93,6 +93,12 @@ module API
           },
           {
             required: false,
+            name: :confidential_note_channel,
+            type: String,
+            desc: 'The name of the channel to receive confidential_note_events notifications'
+          },
+          {
+            required: false,
             name: :tag_push_channel,
             type: String,
             desc: 'The name of the channel to receive tag_push_events notifications'
@@ -120,6 +126,12 @@ module API
 
       def self.chat_notification_events
         [
+          {
+            required: false,
+            name: :commit_events,
+            type: Boolean,
+            desc: 'Enable notifications for commit_events'
+          },
           {
             required: false,
             name: :push_events,
@@ -179,6 +191,12 @@ module API
             name: :deployment_events,
             type: Boolean,
             desc: 'Enable notifications for deployment_events'
+          },
+          {
+            required: false,
+            name: :job_events,
+            type: Boolean,
+            desc: 'Enable notifications for job_events'
           },
           {
             required: false,

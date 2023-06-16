@@ -21,14 +21,17 @@ You can configure GitLab to send notifications to a Webex Teams space:
 
 ## Configure settings in GitLab
 
-Once you have a webhook URL for your Webex Teams space, you can configure GitLab to send
+After you have a webhook URL for your Webex Teams space, you can configure GitLab to send
 notifications:
 
-1. Navigate to:
-   - **Settings > Integrations** in a project to enable the integration at the project level.
-   - **Settings > Integrations** in a group to enable the integration at the group level.
-   - On the top bar, select **Main menu > Admin**. Then, in the left sidebar,
-     select **Settings > Integrations** to enable an instance-level integration.
+1. To enable integration:
+   - At the project or group level:
+     1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+     1. Select **Settings > Integrations**.
+   - At the instance level:
+     1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+     1. Select **Admin Area**.
+     1. Select **Settings > Integrations**.
 1. Select the **Webex Teams** integration.
 1. Ensure that the **Active** toggle is enabled.
 1. Select the checkboxes corresponding to the GitLab events you want to receive in Webex Teams.

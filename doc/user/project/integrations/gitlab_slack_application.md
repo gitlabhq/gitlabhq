@@ -107,8 +107,9 @@ With Slack notifications, GitLab can send messages to Slack workspace channels f
 
 To configure Slack notifications:
 
-1. On the top bar, select **Main menu > Projects** and find a project for which the GitLab for Slack app has been [installed](#installation).
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find a project for
+   which the GitLab for Slack app has been [installed](#installation).
+1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. In the **Trigger** section, select the checkbox for each GitLab
    event you want to receive a notification for in Slack. For a full list, see
@@ -162,8 +163,9 @@ New releases of the app might require permissions to be authorized before some f
 
 To update your GitLab for Slack app:
 
-1. On the top bar, select **Main menu > Projects** and find a project for which the GitLab for Slack app has been configured.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find a project for
+   which the GitLab for Slack app has been configured.
+1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Reinstall GitLab for Slack app**.
 

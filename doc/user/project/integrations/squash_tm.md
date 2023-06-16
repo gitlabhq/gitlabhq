@@ -26,8 +26,8 @@ are synchronized as requirements in Squash TM and test progress is reported in G
 
 ## Configure GitLab
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Squash TM**.
 1. Ensure that the **Active** toggle is enabled.
 1. In the **Trigger** section, indicate which type of issue is concerned by the real-time synchronization.

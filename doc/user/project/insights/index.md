@@ -24,8 +24,8 @@ Prerequisites:
 
 To view project insights:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Insights**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > Insights**.
 1. To view a report, select the **Select report** dropdown list.
 
 ## Configure project insights
@@ -45,7 +45,7 @@ To configure project insights, either:
 
 - Create a `.gitlab/insights.yml` file locally in the root directory of your project, and push your changes.
 - Create a `.gitlab/insights.yml` file in the UI:
-  1. On the top bar, select **Main menu > Projects** and find your project.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
   1. Above the file list, select the branch you want to commit to, select the plus icon, then select **New file**.
   1. In the **File name** text box, enter `.gitlab/insights.yml`.
   1. In the large text box, update the file contents.

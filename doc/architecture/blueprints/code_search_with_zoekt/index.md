@@ -111,34 +111,30 @@ Elasticsearch option if we find Zoekt is a suitable long term option.
 ### Indexing
 
 Similar to our Elasticsearch integration, GitLab will notify Zoekt every time
-there are updates to a repository. Zoekt, unlike Elasticsearch, is designed to
-clone and index Git repositories so we will simply notify Zoekt of the URL of
-the repository that has changed and it will update its local copy of the Git
-repo and then update its local index files. The Zoekt side of this logic will
-be implemented in a new server-side indexing endpoint we add to Zoekt which is
-currently in
-[an open Pull request](https://github.com/sourcegraph/zoekt/pull/496).
-While the details of
-this pull request are still being debated, we may choose to deploy a fork with
-the functionality we need, but our strongest intention is not to maintain a
-fork of Zoekt and the maintainers have already expressed they are open to this
-new functionality.
+there are updates to a repository. We've introduced a new indexer called
+[`gitlab-zoekt-indexer`](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer) and
+we are going to replace the legacy indexer that needs to clone repositories with it.
+The new indexer expects a payload with all required information to connect to
+Gitaly in order to index the repository.
 
 The rails side of the integration will be a Sidekiq worker that is scheduled
 every time there is an update to a repository and it will simply call this
-`/index` endpoint in Zoekt. This will also need to generate a one-time token
-that can allow Zoekt to clone a private repository.
+`/indexer/index` endpoint in Zoekt. This will also need to send a Gitaly token
+that can allow Zoekt to connect to Gitaly.
+
+We're going to encrypt the connection with SSL and add basic auth in [Add authentication for GitLab -> Zoekt HTTP calls](https://gitlab.com/gitlab-org/gitlab/-/issues/389749)
+before enabling the new indexer since it receives Gitaly secrets from GitLab.
 
 ```mermaid
 sequenceDiagram
    participant user as User
-   participant gitlab_git as GitLab Git
+   participant gitaly as Gitaly
    participant gitlab_sidekiq as GitLab Sidekiq
    participant zoekt as Zoekt
    user->>gitlab_git: git push git@gitlab.com:gitlab-org/gitlab.git
    gitlab_git->>gitlab_sidekiq: ZoektIndexerWorker.perform_async(278964)
-   gitlab_sidekiq->>zoekt: POST /index {"RepoUrl":"https://zoekt:SECRET_TOKEN@gitlab.com/gitlab-org/gitlab.git","RepoId":278964}'
-   zoekt->>gitlab_git: git clone https://zoekt:SECRET_TOKEN@gitlab.com/gitlab-org/gitlab.git
+   gitlab_sidekiq->>zoekt: POST /indexer/index {"GitalyConnectionInfo": {"Address": "tcp://gitaly:2305", "Storage": "default", "Token": "secret_token", "Path": "@hashed/a/b/c.git"}, "RepoId":7}
+   zoekt->>gitaly: go gitaly client
 ```
 
 The Sidekiq worker can leverage de-duplication based on the `project_id`.
@@ -169,19 +165,15 @@ matches all the searched repositories.
 ### Zoekt infrastructure
 
 Each Zoekt node will need to run a
-[zoekt-dynamic-indexserver](https://github.com/sourcegraph/zoekt/pull/496) and
-a
-[zoekt-webserver](https://github.com/sourcegraph/zoekt/blob/main/cmd/zoekt-webserver/main.go).
-These are both webservers with different responsibilities. Considering that the
-Zoekt indexing process needs to keep a full clone of the bare repo
-([unless we come up with a better option](https://gitlab.com/gitlab-org/gitlab/-/issues/384722))
-these bare repos will be stored on spinning disks to save space. These are only
-used as an intermediate step to generate the actual `.zoekt` index files which
-will be stored on an SSD for fast searches. These web servers need to run on
-the same node as they access the same files. The `zoekt-dynamic-indexserver` is
-responsible for writing the `.zoekt` index files. The `zoekt-webserver` is
-responsible for responding to searches that it performs by reading these
-`.zoekt` index files.
+[`gitlab-zoekt-indexer`](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/blob/main/cmd/gitlab-zoekt-indexer/main.go)
+and a
+[`zoekt-webserver`](https://github.com/sourcegraph/zoekt/blob/main/cmd/zoekt-webserver/main.go).
+These are both webservers with different responsibilities.
+The actual `.zoekt` index files will be stored on an SSD for fast searches.
+These web servers need to run on the same node as they access the same files.
+The `gitlab-zoekt-indexer` is responsible for writing the `.zoekt` index files.
+The `zoekt-webserver` is responsible for responding to searches that it performs
+by reading these `.zoekt` index files.
 
 ### Rollout strategy
 

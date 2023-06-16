@@ -15,8 +15,8 @@ copy its URL.
 
 In GitLab:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Unify Circuit**.
 1. Turn on the **Active** toggle.
 1. Select the checkboxes corresponding to the GitLab events you want to receive in Unify Circuit.

@@ -19,11 +19,10 @@ The [Slack notifications integration](slack.md) is configured separately.
 
 ## Configure GitLab and Slack
 
-Slack slash command integrations
-are scoped to a project.
+Slack slash command integrations are scoped to a project.
 
-1. In GitLab, on the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Slack slash commands**. Leave this browser tab open.
 1. Open a new browser tab, sign in to your Slack team, and [start a new Slash Commands integration](https://my.slack.com/services/new/slash-commands).
 1. Enter a trigger command. We suggest you use the project name.

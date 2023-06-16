@@ -18,8 +18,8 @@ Prerequisites:
 
 To view the available integrations for your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 
 You can also view and manage integration settings across [all projects in an instance or group](../../admin_area/settings/project_integration_management.md).
 For a single project, you can choose to inherit the instance or group configuration,
