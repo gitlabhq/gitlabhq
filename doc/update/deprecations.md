@@ -273,6 +273,22 @@ This change is a breaking change. You should use an [authentication token](../ci
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.1</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414236).
+</div>
+
+You can use GraphQL to query the amount of storage used by the GitLab Dependency Proxy. However, the `dependencyProxyTotalSizeInBytes` field is limited to ~2Gb (in bytes), which is not always large enough for the Dependency Proxy. As a result, `dependencyProxyTotalSizeInBytes` is deprecated and will be removed in GitLab 17.0.
+
+Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL type, `RunnerMembershipFilter` renamed to `CiRunnerMembershipFilter`
 
 <div class="deprecation-notes">

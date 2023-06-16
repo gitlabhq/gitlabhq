@@ -27,10 +27,10 @@ can edit group wikis. Group wiki repositories can be moved using the
 
 To access a group wiki:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. To display the wiki, either:
-   - On the left sidebar, select **Wiki**.
-   - On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
+   - On the left sidebar, select **Plan > Wiki**.
+   - On any page in the group, use the <kbd>g</kbd> + <kbd>w</kbd>
      [wiki keyboard shortcut](../../shortcuts.md).
 
 ## Export a group wiki
@@ -67,8 +67,8 @@ can enable or disable a group wiki through the group settings.
 
 To open group settings:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Wiki** and select one of these options:
    - **Enabled**: For public groups, everyone can access the wiki. For internal groups, only authenticated users can access the wiki.

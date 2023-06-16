@@ -87,7 +87,7 @@ The hand-raise lead form accepts the following parameters via provide or inject.
     },
 ```
 
-The `ctaTracking` parameters follow [the `data-track` attributes](../snowplow/implementation.md#data-track-attributes) for implementing Snowplow tracking. The provided tracking attributes are attached to the button inside the `HandRaiseLeadButton` component, which triggers the hand-raise lead modal when selected.
+The `ctaTracking` parameters follow [the `data-track` attributes](../internal_analytics/snowplow/implementation.md#data-track-attributes) for implementing Snowplow tracking. The provided tracking attributes are attached to the button inside the `HandRaiseLeadButton` component, which triggers the hand-raise lead modal when selected.
 
 ### Monitor the lead location
 

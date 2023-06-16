@@ -153,6 +153,7 @@ describe('ProjectsDropdownFilter component', () => {
       beforeEach(() => {
         createComponent({
           mountFn: mountExtended,
+          props: blockDefaultProps,
         });
       });
 
@@ -168,14 +169,16 @@ describe('ProjectsDropdownFilter component', () => {
         expect(findSelectedProjectsLabel().text()).toBe(projects[0].name);
       });
 
-      it('renders the clear all button', () => {
+      it('renders the clear all button', async () => {
+        await selectDropdownItemAtIndex([0], false);
+
         expect(findClearAllButton().exists()).toBe(true);
       });
 
       it('clears all selected items when the clear all button is clicked', async () => {
         createComponent({
           mountFn: mountExtended,
-          props: { multiSelect: true },
+          props: blockDefaultProps,
         });
         await waitForPromises();
 

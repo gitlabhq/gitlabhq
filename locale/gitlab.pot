@@ -6543,9 +6543,6 @@ msgstr ""
 msgid "AuditStreams|Custom HTTP headers (optional)"
 msgstr ""
 
-msgid "AuditStreams|Defines which streaming events are captured"
-msgstr ""
-
 msgid "AuditStreams|Delete %{link}"
 msgstr ""
 
@@ -6564,19 +6561,22 @@ msgstr ""
 msgid "AuditStreams|Event filtering (optional)"
 msgstr ""
 
+msgid "AuditStreams|Filter by stream event"
+msgstr ""
+
 msgid "AuditStreams|Header"
 msgstr ""
 
 msgid "AuditStreams|Maximum of %{number} HTTP headers has been reached."
 msgstr ""
 
-msgid "AuditStreams|No filters available. %{linkStart}How do I add a filter?%{linkEnd}"
-msgstr ""
-
 msgid "AuditStreams|Remove custom header"
 msgstr ""
 
 msgid "AuditStreams|Save external stream destination"
+msgstr ""
+
+msgid "AuditStreams|Select events"
 msgstr ""
 
 msgid "AuditStreams|Setup streaming for audit events"
@@ -42724,9 +42724,6 @@ msgid "Show file browser"
 msgstr ""
 
 msgid "Show file contents"
-msgstr ""
-
-msgid "Show filters"
 msgstr ""
 
 msgid "Show full blame"

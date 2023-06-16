@@ -14,7 +14,7 @@ All usage statistics are [opt-out](#enable-or-disable-usage-statistics).
 ## Service Ping
 
 Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
-For more information, see the [Service Ping guide](../../../development/service_ping/index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../analytics/index.md)
+For more information, see the [Service Ping guide](../../../development/internal_analytics/service_ping/index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../analytics/index.md)
 that are dependent on Service Ping.
 
 ### Why enable Service Ping?
@@ -138,7 +138,7 @@ The payload is available in the [Service Usage data](#manually-upload-service-pi
 
 NOTE:
 The method to disable Service Ping in the GitLab configuration file does not work in
-GitLab versions 9.3 to 13.12.3. For more information about how to disable it, see [troubleshooting](../../../development/service_ping/troubleshooting.md#cannot-disable-service-ping-with-the-configuration-file).
+GitLab versions 9.3 to 13.12.3. For more information about how to disable it, see [troubleshooting](../../../development/internal_analytics/service_ping/troubleshooting.md#cannot-disable-service-ping-with-the-configuration-file).
 
 To disable Service Ping and prevent it from being configured in the future through
 the Admin Area:
@@ -186,7 +186,7 @@ You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To vi
 1. Expand the **Usage statistics** section.
 1. Select **Preview payload**.
 
-For an example payload, see [Example Service Ping payload](../../../development/service_ping/index.md#example-service-ping-payload).
+For an example payload, see [Example Service Ping payload](../../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
 
 ## Manually upload Service Ping payload
 
@@ -194,7 +194,7 @@ For an example payload, see [Example Service Ping payload](../../../development/
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83265) in GitLab 14.10.
 
 You can upload the Service Ping payload to GitLab even if your instance doesn't have internet access,
-or if the Service Ping [cron job](../../../development/service_ping/index.md#how-service-ping-works) is not enabled.
+or if the Service Ping [cron job](../../../development/internal_analytics/service_ping/index.md#how-service-ping-works) is not enabled.
 
 To upload the payload manually:
 

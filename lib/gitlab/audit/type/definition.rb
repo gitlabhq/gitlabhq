@@ -82,6 +82,12 @@ module Gitlab
             definitions.keys.map(&:to_s)
           end
 
+          def names_with_category
+            definitions.map do |event_name, value|
+              { event_name: event_name, feature_category: value.attributes[:feature_category] }
+            end
+          end
+
           def defined?(key)
             get(key).present?
           end

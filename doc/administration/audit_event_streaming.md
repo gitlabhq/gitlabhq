@@ -514,12 +514,25 @@ To list streaming destinations for an instance and see the verification tokens:
 
 ## Event type filters
 
-> Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+> - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+> - Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413581) in GitLab 16.1.
 
-When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
+When this feature is enabled for a group, you can use the GitLab UI or an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
 
 A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+
+### Use the GitLab UI
+
+To update a streaming destination's event filters:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. To the right of the item, select **Edit** (**{pencil}**).
+1. Select **Filter by stream event**.
+1. Select the dropdown list and select or unselect the required event types.
+1. Select **Save** to update the event filters.
 
 ### Use the API to add an event type filter
 

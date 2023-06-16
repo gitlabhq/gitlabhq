@@ -1,0 +1,48 @@
+---
+stage: Verify
+group: Pipeline Security
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+type: reference
+---
+
+# Pipeline security
+
+## Secrets Management
+
+Secrets management is the systems that developers use to securely store sensitive data
+in a secure environment with strict access controls. A **secret** is a sensitive credential
+that should be kept confidential, and includes:
+
+- Passwords
+- SSH keys
+- Access tokens
+- Other types of credentials
+
+## Secrets storage
+
+### Secrets management providers
+
+Secrets that are the most sensitive and under the strictest policies should be stored
+in a separate secrets management provider such as [Vault](https://www.vaultproject.io).
+The secrets are stored outside of the GitLab instance, which is the safest option.
+
+You can use the GitLab [Vault integration](../secrets/index.md#use-vault-secrets-in-a-ci-job)
+to retrieve those secrets in CI/CD pipelines when they are needed.
+
+### CI/CD variables
+
+[CI/CD Variables](../variables/index.md) are a convenient way to store and use data
+in a CI/CD pipeline, but variables are less secure than secrets management providers.
+Variable values:
+
+- Are stored in the GitLab project, group, or instance settings. Users with access
+  to the settings have access to the variables.
+- Can be [overridden](../variables/index.md#override-a-defined-cicd-variable),
+  making it hard to determine which value was used.
+- Are more easily exposed by accidental pipeline misconfiguration.
+
+Sensitive data should be stored in a secrets management solution. If there is low
+sensitivity data that you want to store in a CI/CD variable, be sure to always:
+
+- [Mask the variables](../variables/index.md#mask-a-cicd-variable).
+- [Protect the variables](../variables/index.md#protect-a-cicd-variable) when possible.

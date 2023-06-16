@@ -984,7 +984,17 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       context 'when service data cached', :use_clean_rails_memory_store_caching do
+        let(:usage_data) { { uuid: "1111", hostname: "localhost", counts: { issue: 0 } }.deep_stringify_keys }
+
         before do
+          # We are mocking Gitlab::Usage::ServicePingReport because this dataset generation
+          # takes a very long time, and is not what we're testing in this context.
+          #
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/414929
+          allow(Gitlab::UsageData).to receive(:data).and_return(usage_data)
+          allow(Gitlab::Usage::ServicePingReport).to receive(:with_instrumentation_classes)
+            .with(usage_data, :with_value).and_return(usage_data)
+
           visit usage_data_admin_application_settings_path
           visit service_usage_data_admin_application_settings_path
         end

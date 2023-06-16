@@ -2,6 +2,9 @@
 // Please see the feedback issue for more details and help:
 // https://gitlab.com/gitlab-org/gitlab/-/issues/331812
 @charset "UTF-8";
+:root {
+  --white: #333238;
+}
 *,
 *::before,
 *::after {
