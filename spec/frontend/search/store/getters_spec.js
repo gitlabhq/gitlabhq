@@ -33,10 +33,6 @@ describe('Global Search Store Getters', () => {
     useMockLocationHelper();
   });
 
-  afterEach(() => {
-    state = cloneDeep(defaultState);
-  });
-
   describe('frequentGroups', () => {
     it('returns the correct data', () => {
       state.frequentItems[GROUPS_LOCAL_STORAGE_KEY] = MOCK_GROUPS;

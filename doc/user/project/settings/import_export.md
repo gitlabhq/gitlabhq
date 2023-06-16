@@ -86,8 +86,9 @@ Before you can migrate projects on a self-managed GitLab instance using file exp
 
 To enable file exports as an import source for the destination instance:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Import sources**.
 1. Select the **GitLab export** checkbox.
@@ -112,8 +113,8 @@ Prerequisites:
 
 To export a project and its data, follow these steps:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Export project**.
 1. After the export is generated, you should receive an email with a link to download the file.

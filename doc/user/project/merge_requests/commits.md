@@ -18,8 +18,8 @@ From this tab, you can review commit messages and copy a commit's SHA when you n
 
 To see the commits included in a merge request:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**, then select your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**, then select your merge request.
 1. To show a list of the commits in the merge request, newest first, select **Commits** .
    To read more about the commit, select **Toggle commit description** (**{ellipsis_h}**)
    on any commit.
@@ -48,8 +48,8 @@ if another merge request:
 
 To add previously merged commits to a merge request for more context:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**, then select your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**, then select your merge request.
 1. Select **Commits**.
 1. Scroll to the end of the list of commits, and select **Add previously merged commits**.
 1. Select the commits that you want to add.
@@ -63,8 +63,8 @@ force push.
 
 To add discussion to a specific commit:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Commits**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Commits**.
 1. Below the commits, in the **Comment** field, enter a comment.
 1. Save your comment as either a standalone comment, or a thread:
    - To add a comment, select **Comment**.
@@ -74,8 +74,8 @@ To add discussion to a specific commit:
 
 To view the changes between previously merged commits:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**, then select your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**, then select your merge request.
 1. Select **Changes**.
 1. By **Compare** (**{file-tree}**), select the commits to compare:
 

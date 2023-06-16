@@ -51,7 +51,7 @@ compliance framework using either:
 - The GitLab UI:
   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
   1. Select **Settings** > **General**.
-  1. Expand the **Compliance frameworks** section.
+  1. Expand **Compliance frameworks**.
   1. Select a compliance framework.
   1. Select **Save changes**.
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
@@ -68,7 +68,7 @@ To configure visibility, features, and permissions for a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
-1. Expand the **Visibility, project features, permissions** section.
+1. Expand **Visibility, project features, permissions**.
 1. To change the project visibility, select the dropdown list. If you select to **Public**, you limit access to some features to **Only Project Members**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
 1. Use the [toggles](#project-feature-settings) to enable or disable features in the project.
@@ -135,7 +135,7 @@ To disable the CVE identifier request option in issues in your project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
-1. Expand the **Visibility, project features, permissions** section.
+1. Expand **Visibility, project features, permissions**.
 1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
 1. Select **Save changes**.
 
@@ -147,7 +147,7 @@ Prerequisites:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
-1. Expand the **Visibility, project features, permissions** section.
+1. Expand **Visibility, project features, permissions**.
 1. Clear the **Disable email notifications** checkbox.
 
 ## Configure merge request settings for a project
@@ -231,7 +231,7 @@ To rename a repository:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
-1. Expand the **Advanced** section.
+1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
 
@@ -300,7 +300,7 @@ To delete a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
-1. Expand the **Advanced** section.
+1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
 1. In the confirmation message text field, enter the name of the project as instructed, and select **Yes, delete project**.
 
@@ -336,7 +336,7 @@ To immediately delete a project marked for deletion:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
-1. Expand the **Advanced** section.
+1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
 1. In the confirmation message text field, enter the name of the project as instructed, as select **Yes, delete project**.
 

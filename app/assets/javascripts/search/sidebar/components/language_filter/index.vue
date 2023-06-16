@@ -2,7 +2,6 @@
 import { GlButton, GlAlert, GlForm } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { __, s__, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { HR_DEFAULT_CLASSES, ONLY_SHOW_MD } from '../../constants';
 import { convertFiltersData } from '../../utils';
 import CheckboxFilter from './checkbox_filter.vue';
@@ -24,7 +23,6 @@ export default {
     GlAlert,
     GlForm,
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       showAll: false,

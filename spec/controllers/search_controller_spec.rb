@@ -477,6 +477,12 @@ RSpec.describe SearchController, feature_category: :global_search do
         expect(json_response.first['label']).to match(/User settings/)
       end
 
+      it 'can be scoped with params[:scope]' do
+        expect(controller).to receive(:search_autocomplete_opts).with('setting', filter: nil, scope: 'project')
+
+        get :autocomplete, params: { term: 'setting', scope: 'project' }
+      end
+
       it 'makes a call to search_autocomplete_opts' do
         expect(controller).to receive(:search_autocomplete_opts).once
 

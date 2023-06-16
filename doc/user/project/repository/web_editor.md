@@ -25,7 +25,7 @@ for any change you commit through the Web Editor.
 
 To create a text file in the Web Editor:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. From the project dashboard or repository, next to the branch name,
    select the plus icon (**{plus}**).
 1. From the dropdown list, select **New file**.
@@ -35,8 +35,8 @@ To create a text file in the Web Editor:
 
 ### Create a file from a template
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Files**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Repository**.
 1. Next to the project name, select the plus icon (**{plus}**) to display a
    dropdown list, then select **New file** from the list.
 1. For **Filename**, provide one of the filenames that GitLab provides a template for:
@@ -56,7 +56,7 @@ To create a text file in the Web Editor:
 
 To edit a text file in the Web Editor:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Go to your file.
 1. In the upper right, select **Edit > Edit single file**.
 
@@ -105,7 +105,7 @@ To upload a binary file in the Web Editor:
 <!-- This list is duplicated at doc/gitlab-basics/add-file.md#from-the-ui -->
 <!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
 1. From the dropdown list, select **Upload file**.
 1. Complete the fields. To create a merge request with the uploaded file, ensure the **Start a new merge request with these changes** toggle is turned on.
@@ -115,7 +115,7 @@ To upload a binary file in the Web Editor:
 
 To create a directory in the Web Editor:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
 1. From the dropdown list, select **New directory**.
 1. Complete the fields. To create a merge request with the new directory, ensure the **Start a new merge request with these changes** toggle is turned on.
@@ -125,7 +125,7 @@ To create a directory in the Web Editor:
 
 To create a [branch](branches/index.md) in the Web Editor:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
 1. From the dropdown list, select **New branch**.
 1. Complete the fields.
@@ -136,7 +136,7 @@ To create a [branch](branches/index.md) in the Web Editor:
 You can create [tags](tags/index.md) to mark milestones such as
 production releases and release candidates. To create a tag in the Web Editor:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. From the project dashboard or repository, next to the branch name, select the plus icon (**{plus}**).
 1. From the dropdown list, select **New tag**.
 1. Complete the fields.

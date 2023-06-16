@@ -41,8 +41,11 @@ export const filteredLabels = (state) => {
 export const filteredAppliedSelectedLabels = (state) =>
   filteredLabels(state)?.filter((label) => state?.urlQuery?.labels?.includes(label.key));
 
-export const appliedSelectedLabels = (state) =>
-  labelAggregationBuckets(state)?.filter((label) => state?.urlQuery?.labels?.includes(label.key));
+export const appliedSelectedLabels = (state) => {
+  return labelAggregationBuckets(state)?.filter((label) =>
+    state?.urlQuery?.labels?.includes(label.key),
+  );
+};
 
 export const filteredUnappliedSelectedLabels = (state) =>
   filteredLabels(state)?.filter((label) => state?.query?.labels?.includes(label.key));

@@ -89,6 +89,8 @@ export const initSuperSidebar = () => {
       ...getTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
+      autocompletePath,
+      searchContext,
     },
     store: createStore({
       searchPath,

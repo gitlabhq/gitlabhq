@@ -11,8 +11,7 @@ import FakeSearchInput from '~/super_sidebar/components/global_search/command_pa
 import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
-  COMMAND_HANDLE,
-  USER_HANDLE,
+  COMMON_HANDLES,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
@@ -320,8 +319,8 @@ describe('GlobalSearchModal', () => {
         });
       });
 
-      describe.each([COMMAND_HANDLE, USER_HANDLE])(
-        'when FF `command_palette` is enabled',
+      describe.each(COMMON_HANDLES)(
+        'when FF `command_palette` is enabled and search handle is %s',
         (handle) => {
           beforeEach(() => {
             createComponent({ search: handle }, undefined, undefined, {

@@ -60,8 +60,8 @@ Prerequisite:
   with the `repo` scope. If 2FA is enabled, this personal access
   token serves as your GitHub password.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter the **Git repository URL**. Include the username
    in the URL, if required: `https://MYUSERNAME@gitlab.com/GROUPNAME/PROJECTNAME.git`

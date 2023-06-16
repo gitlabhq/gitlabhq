@@ -37,8 +37,9 @@ Prerequisite:
 
 To create global push rules:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Push Rules**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Push Rules**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.
@@ -49,8 +50,8 @@ The push rule of an individual project overrides the global push rule.
 To override global push rules for a specific project, or to update the rules
 for an existing project to match new global push rules:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
 1. Select **Save push rules**.

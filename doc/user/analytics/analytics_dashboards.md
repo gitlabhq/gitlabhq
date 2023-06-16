@@ -36,8 +36,8 @@ The following data sources are configured for analytics dashboards:
 
 To view a list of dashboards for a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Dashboards**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > Dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
 ### Change the location of group dashboards
@@ -47,10 +47,10 @@ This feature will be connected to group-level dashboards as part of [issue #4115
 
 To change the location of a group's dashboards:
 
-1. On the top bar, select **Main menu > Projects** and find the project you want to store your dashboard files in.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project you want to store your dashboard files in.
    The project must belong to the group for which you create the dashboards.
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
@@ -66,9 +66,11 @@ You can share dashboards only between projects that are located in the same grou
 
 To change the location of project dashboards:
 
-1. On the top bar, select **Main menu > Projects** and find or create the project to store your dashboard files.
-1. On the top bar, select **Main menu > Projects** and find the analytics project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project,
+   or select **Create new...** (**{plus}**) and **New project/repository**
+   to create the project to store your dashboard files.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and find the analytics project.
+1. Select **Settings > General**.
 1. Expand **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
@@ -150,8 +152,8 @@ To edit these dashboards you should create a new custom dashboard which uses the
 
 To create a custom dashboard:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Dashboards**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > Dashboards**.
 1. Select **New dashboard**.
 1. In the **New dashboard** input, enter the name of the dashboard.
 1. From the **Add visualizations** list on the right, select the visualizations to add to the dashboard.
@@ -164,8 +166,8 @@ You can edit your custom dashboard's title and add or resize visualizations with
 
 To edit an existing custom dashboard:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Dashboards**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > Dashboards**.
 1. From the list of available dashboards, select a custom dashboard (one without the `By GitLab` label) you want to edit.
 1. Select **Edit**.
 1. Optional. Change the title of the dashboard.

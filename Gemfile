@@ -474,7 +474,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false
 
-  gem 'gitlab_quality-test_tooling', '~> 0.8.0', require: false
+  gem 'gitlab_quality-test_tooling', '~> 0.8.1', require: false
 end
 
 gem 'octokit', '~> 4.15'

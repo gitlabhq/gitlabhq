@@ -133,7 +133,7 @@ describe('Global Search Store Actions', () => {
 
     describe('when groupId is set', () => {
       it('calls Api.groupProjects with expected parameters', () => {
-        actions.fetchProjects({ commit: mockCommit, state }, undefined);
+        actions.fetchProjects({ commit: mockCommit, state }, MOCK_QUERY.search);
         expect(Api.groupProjects).toHaveBeenCalledWith(state.query.group_id, state.query.search, {
           order_by: 'similarity',
           include_subgroups: true,

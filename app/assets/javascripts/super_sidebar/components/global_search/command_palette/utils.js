@@ -1,8 +1,6 @@
-export const userMapper = ({ name: text, web_url: href, ...user } = {}) => ({
-  text,
-  href,
-  ...user,
-});
+import { isNil, omitBy } from 'lodash';
+import { objectToQuery } from '~/lib/utils/url_utility';
+import { SEARCH_SCOPE } from './constants';
 
 export const commandMapper = ({ name, items }) => {
   // TODO: we filter out invite_members for now, because it is complicated to add the invite members modal here
@@ -32,4 +30,18 @@ export const linksReducer = (acc, menuItem) => {
     acc = [...acc, ...items];
   }
   return acc;
+};
+
+export const autocompleteQuery = ({ path, searchTerm, handle, projectId }) => {
+  const query = omitBy(
+    {
+      term: searchTerm,
+      project_id: projectId,
+      filter: 'search',
+      scope: SEARCH_SCOPE[handle],
+    },
+    isNil,
+  );
+
+  return `${path}?${objectToQuery(query)}`;
 };

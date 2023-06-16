@@ -115,6 +115,7 @@ GET /users?without_project_bots=true
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
+> - The `scim_identities` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324247) in GitLab 16.1.
 
 ```plaintext
 GET /users
@@ -444,6 +445,21 @@ see the `group_saml` option and `provisioned_by_group_id` parameter:
     {"provider": "group_saml", "extern_uid": "123789", "saml_provider_id": 10}
   ],
   "provisioned_by_group_id": 123789
+  ...
+}
+```
+
+Users on [GitLab.com Premium or Ultimate](https://about.gitlab.com/pricing/) also
+see the `scim_identities` parameter:
+
+```json
+{
+  ...
+  "extra_shared_runners_minutes_limit": null,
+  "scim_identities": [
+      {"extern_uid": "2435223452345", "group_id": "3", "active": true},
+      {"extern_uid": "john.smith", "group_id": "42", "active": false}
+    ]
   ...
 }
 ```

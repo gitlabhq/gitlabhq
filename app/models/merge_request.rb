@@ -2055,6 +2055,10 @@ class MergeRequest < ApplicationRecord
     NewMergeRequestWorker.perform_async(id, author_id)
   end
 
+  def check_for_spam?(*)
+    spammable_attribute_changed? && project.public?
+  end
+
   private
 
   attr_accessor :skip_fetch_ref

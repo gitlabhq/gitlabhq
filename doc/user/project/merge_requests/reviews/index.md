@@ -77,8 +77,8 @@ displays next to your name.
 
 To download the changes included in a merge request as a diff:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Select your merge request.
 1. In the upper-right corner, select **Code > Plain diff**.
 
@@ -100,8 +100,8 @@ curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git a
 
 To download the changes included in a merge request as a patch file:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Select your merge request.
 1. In the upper-right corner, select **Code > Patches**.
 

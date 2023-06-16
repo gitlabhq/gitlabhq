@@ -71,8 +71,8 @@ Prerequisites:
 
 To configure the default squashing behavior for all merge requests in your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Squash commits when merging** section, select your desired behavior:
    - **Do not allow**: Squashing is never performed, and the option is not displayed.
    - **Allow**: Squashing is allowed, but cleared by default.

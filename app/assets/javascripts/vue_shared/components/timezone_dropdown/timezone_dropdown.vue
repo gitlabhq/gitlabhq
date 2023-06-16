@@ -9,6 +9,11 @@ export default {
     GlCollapsibleListbox,
   },
   props: {
+    headerText: {
+      type: String,
+      required: false,
+      default: '',
+    },
     value: {
       type: String,
       required: true,
@@ -98,6 +103,7 @@ export default {
       type="hidden"
     />
     <gl-collapsible-listbox
+      :header-text="headerText"
       :items="filteredListboxItems"
       :toggle-text="selectedTimezoneLabel"
       :toggle-class="additionalClass"

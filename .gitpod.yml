@@ -53,6 +53,8 @@ tasks:
         cd /workspace/gitlab-development-kit
         # update GDK
         echo "$(date) – Updating GDK" | tee -a /workspace/startup.log
+        export DEFAULT_BRANCH=$(git branch --show-current)
+        gdk config set gitlab.default_branch "$DEFAULT_BRANCH"
         gdk update
         # ensure gdk.yml has correct instance settings
         gdk config set gitlab.rails.hostname $(gp url 3000 | sed -e 's+^http[s]*://++')
@@ -74,7 +76,7 @@ tasks:
           make gitlab-db-migrate
         fi
         cd /workspace/gitlab-development-kit/gitlab
-        echo "--- on branch: $(git branch --show-current)"
+        echo "--- on branch: $DEFAULT_BRANCH"
         echo "--- installing lefthook"
         bundle exec lefthook install
         echo "--- resetting db/structure.sql"

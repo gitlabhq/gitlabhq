@@ -339,6 +339,17 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             })
           end
         end
+
+        context 'with a search scope' do
+          let(:term) { 'bla' }
+          let(:scope) { 'project' }
+
+          it 'returns scoped resource results' do
+            expect(self).to receive(:resource_results).with(term, scope: scope).and_return([])
+
+            search_autocomplete_opts(term, filter: :search, scope: scope)
+          end
+        end
       end
     end
 
@@ -406,6 +417,57 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
         expect(results.size).to eq(size)
         expect(results.first[:category]).to eq(category) if size == 1
+      end
+    end
+
+    context 'with a search scope' do
+      let(:term) { 'bla' }
+      let(:scope) { 'project' }
+
+      it 'returns only scope-specific results' do
+        expect(self).to receive(:scope_specific_results).with(term, scope).and_return([])
+        expect(self).not_to receive(:groups_autocomplete)
+        expect(self).not_to receive(:projects_autocomplete)
+        expect(self).not_to receive(:users_autocomplete)
+        expect(self).not_to receive(:issue_autocomplete)
+
+        resource_results(term, scope: scope)
+      end
+    end
+  end
+
+  describe 'scope_specific_results' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user, name: 'Searched') }
+    let_it_be(:project) { create(:project, name: 'Searched') }
+    let_it_be(:issue) { create(:issue, title: 'Searched', project: project) }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+      allow_next_instance_of(Gitlab::Search::RecentIssues) do |recent_issues|
+        allow(recent_issues).to receive(:search).and_return([issue])
+      end
+      project.add_developer(user)
+    end
+
+    where(:scope, :category) do
+      'user'    | 'Users'
+      'project' | 'Projects'
+      'issue'   | 'Recent issues'
+    end
+
+    with_them do
+      it 'returns results only for the specific scope' do
+        results = scope_specific_results('sea', scope)
+        expect(results.size).to eq(1)
+        expect(results.first[:category]).to eq(category)
+      end
+    end
+
+    context 'when scope is unknown' do
+      it 'does not return any results' do
+        expect(scope_specific_results('sea', 'other')).to eq([])
       end
     end
   end

@@ -7,6 +7,11 @@ module Resolvers
              default_value: false,
              description: 'Include also subgroup projects.'
 
+    argument :not_aimed_for_deletion, GraphQL::Types::Boolean,
+             required: false,
+             default_value: false,
+             description: 'Include projects that are not aimed for deletion.'
+
     argument :search, GraphQL::Types::String,
              required: false,
              default_value: nil,
@@ -60,6 +65,7 @@ module Resolvers
     def finder_params(args)
       {
         include_subgroups: args.dig(:include_subgroups),
+        not_aimed_for_deletion: args.dig(:not_aimed_for_deletion),
         sort: args.dig(:sort),
         search: args.dig(:search),
         ids: parse_gids(args.dig(:ids)),

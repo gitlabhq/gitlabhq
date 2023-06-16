@@ -39,8 +39,8 @@ To do this when pushing from the command line, use the `merge_request.merge_when
 
 To do this from the GitLab user interface:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
    **Squash commits**, or **Edit commit message**.
@@ -62,8 +62,8 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
 
@@ -88,8 +88,8 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. Scroll to **Merge checks**, and select **Pipelines must succeed**.
    This setting also prevents merge requests from being merged if there is no pipeline,
    which can [conflict with some rules](#merge-requests-dont-merge-when-successful-pipeline-is-required).
@@ -109,9 +109,8 @@ Prerequisite:
 
 To change this behavior:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. Under **Merge checks**:
    - Select **Pipelines must succeed**.
    - Select **Skipped pipelines are considered successful**.

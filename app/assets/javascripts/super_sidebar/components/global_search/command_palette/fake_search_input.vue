@@ -1,5 +1,5 @@
 <script>
-import { COMMON_HANDLES, SEARCH_SCOPE } from './constants';
+import { COMMON_HANDLES, SEARCH_SCOPE_PLACEHOLDER } from './constants';
 
 export default {
   name: 'FakeSearchInput',
@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     placeholder() {
-      return SEARCH_SCOPE[this.scope];
+      return SEARCH_SCOPE_PLACEHOLDER[this.scope];
     },
   },
 };

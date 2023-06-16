@@ -388,9 +388,10 @@ With [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983) we defined th
 
 For tests that are not meeting the thresholds it is recommended to create issues and improve the tests duration.
 
-| Date | Feature tests | Controllers and Requests tests | Other |
-| --- | --- | --- | --- |
-| 2023-02-15 | 67.42 seconds | 44.66 seconds | 76.86 seconds |
+| Date | Feature tests | Controllers and Requests tests | Unit | Other | Method |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+| 2023-02-15 | 67.42 seconds | 44.66 seconds | - | 76.86 seconds | Top slow test eliminating the maximum |
+| 2023-06-15 | 50.13 seconds | 19.20 seconds | 27.12 | 45.40 seconds | Avg for top 100 slow tests|
 
 #### Avoid repeating expensive actions
 

@@ -1,19 +1,20 @@
 <script>
-import { GlAvatar } from '@gitlab/ui';
+import { GlAvatar, GlIcon } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 
 export default {
-  name: 'CommandPaletteUserAutocompleteItem',
+  name: 'CommandPaletteSearchItem',
   components: {
     GlAvatar,
+    GlIcon,
   },
   directives: {
     SafeHtml,
   },
   props: {
-    user: {
+    item: {
       type: Object,
       required: true,
     },
@@ -24,7 +25,7 @@ export default {
   },
   computed: {
     highlightedName() {
-      return highlight(this.user.text, this.searchQuery);
+      return highlight(this.item.text, this.searchQuery);
     },
   },
   AVATAR_SHAPE_OPTION_RECT,
@@ -34,18 +35,23 @@ export default {
 <template>
   <div class="gl-display-flex gl-align-items-center">
     <gl-avatar
-      v-if="user.avatar_url"
+      v-if="item.avatar_url !== undefined"
       class="gl-mr-3"
-      :src="user.avatar_url"
-      :entity-id="user.id"
-      :entity-name="user.text"
-      :size="16"
+      :src="item.avatar_url"
+      :entity-id="item.entity_id"
+      :entity-name="item.entity_name"
+      :size="item.avatar_size"
       :shape="$options.AVATAR_SHAPE_OPTION_RECT"
       aria-hidden="true"
     />
+    <gl-icon v-if="item.icon" class="gl-mr-3" :name="item.icon" />
     <span class="gl-display-flex gl-flex-direction-column">
       <span v-safe-html="highlightedName" class="gl-text-gray-900"></span>
-      <span v-safe-html="user.username" class="gl-font-sm gl-text-gray-500"></span>
+      <span
+        v-if="item.namespace"
+        v-safe-html="item.namespace"
+        class="gl-font-sm gl-text-gray-500"
+      ></span>
     </span>
   </div>
 </template>

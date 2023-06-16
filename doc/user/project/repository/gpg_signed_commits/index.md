@@ -121,7 +121,7 @@ To add a GPG key to your user settings:
 1. Sign in to GitLab.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **GPG Keys** (**{key}**).
+1. Select **GPG Keys** (**{key}**).
 1. In **Key**, paste your _public_ key.
 1. To add the key to your account, select **Add key**. GitLab shows the key's
    fingerprint, email address, and creation date:
@@ -226,11 +226,11 @@ Prerequisites:
 You can review commits for a merge request, or for an entire project:
 
 1. To review commits for a project:
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Repository > Commits**.
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   1. Select **Code > Commits**.
 1. To review commits for a merge request:
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Merge requests**, then select your merge request.
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   1. Select **Merge requests**, then select your merge request.
    1. Select **Commits**.
 1. Identify the commit you want to review. Signed commits show either a **Verified**
    or **Unverified** badge, depending on the verification status of the GPG
@@ -255,7 +255,7 @@ To revoke a GPG key:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **GPG Keys** (**{key}**).
+1. Select **GPG Keys** (**{key}**).
 1. Select **Revoke** next to the GPG key you want to delete.
 
 ## Remove a GPG key
@@ -270,7 +270,7 @@ To remove a GPG key from your account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **GPG Keys** (**{key}**).
+1. Select **GPG Keys** (**{key}**).
 1. Select **Remove** (**{remove}**) next to the GPG key you want to delete.
 
 If you must unverify both future and past commits,

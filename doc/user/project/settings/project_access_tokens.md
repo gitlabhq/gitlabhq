@@ -55,8 +55,8 @@ all projects that have visibility level set to [Internal](../../public_access.md
 
 To create a project access token:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Access Tokens**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Enter an expiry date for the token.
    - The token expires on that date at midnight UTC.
@@ -73,8 +73,8 @@ A project access token is displayed. Save the project access token somewhere saf
 
 To revoke a project access token:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Access Tokens**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Access Tokens**.
 1. Next to the project access token to revoke, select **Revoke**.
 
 ## Scopes for a project access token
@@ -96,8 +96,8 @@ The scope determines the actions you can perform when you authenticate with a pr
 
 To enable or disable project access token creation for all projects in a top-level group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Allow project and group access token creation**.
 

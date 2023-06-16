@@ -26,8 +26,8 @@ Prerequisite:
 
 - You must have at least the Reporter role for the group.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Productivity**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Analyze > Productivity analytics**.
 1. Optional. Filter results:
    1. Select a project from the dropdown list.
    1. To filter results by author, milestone, or label,
@@ -44,8 +44,8 @@ Use the following charts in productivity analytics to view the velocity of your 
 merge requests to merge after they were created.
 - **Trendline**: number of merge requests that were merged in a specific time period.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Productivity**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Analyze > Productivity analytics**.
 
 To filter time metrics:
 
@@ -56,8 +56,8 @@ To filter time metrics:
 
 To view commit statistics for your group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Productivity**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Analyze > Productivity analytics**.
 1. Under the **Trendline** scatterplot, view the commit statistics:
    - The left histogram shows the number of hours between commits, comments, and merges.
    - The right histogram shows the number of commits and changes per merge request.

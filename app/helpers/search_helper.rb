@@ -14,12 +14,12 @@ module SearchHelper
     :project_ids
   ].freeze
 
-  def search_autocomplete_opts(term, filter: nil)
+  def search_autocomplete_opts(term, filter: nil, scope: nil)
     return unless current_user
 
     results = case filter&.to_sym
               when :search
-                resource_results(term)
+                resource_results(term, scope: scope)
               when :generic
                 [
                   recent_items_autocomplete(term),
@@ -36,8 +36,9 @@ module SearchHelper
     results.flatten { |item| item[:label] }
   end
 
-  def resource_results(term)
+  def resource_results(term, scope: nil)
     return [] if term.length < Gitlab::Search::Params::MIN_TERM_LENGTH
+    return scope_specific_results(term, scope) if scope.present?
 
     [
       groups_autocomplete(term),
@@ -45,6 +46,19 @@ module SearchHelper
       users_autocomplete(term),
       issue_autocomplete(term)
     ].flatten
+  end
+
+  def scope_specific_results(term, scope)
+    case scope&.to_sym
+    when :project
+      projects_autocomplete(term)
+    when :user
+      users_autocomplete(term)
+    when :issue
+      recent_issues_autocomplete(term)
+    else
+      []
+    end
   end
 
   def generic_results(term)

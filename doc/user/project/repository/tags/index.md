@@ -44,15 +44,15 @@ In the GitLab UI, each tag displays:
 
 To view all existing tags for a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Tags**.
 
 ## View tagged commits in the commits list
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Commits**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Commits**.
 1. Commits with a tag are labeled with a tag icon (**{tag}**) and the name of the tag.
    This example shows a commit tagged `v1.26.0`:
 
@@ -88,8 +88,8 @@ To create either a lightweight or annotated tag from the command line, and push 
 
 To create a tag from the GitLab UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Tags**.
 1. Select **New tag**.
 1. Provide a **Tag name**.
 1. For **Create from**, select an existing branch name, tag, or commit SHA.

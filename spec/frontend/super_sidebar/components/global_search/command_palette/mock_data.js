@@ -5,17 +5,19 @@ export const COMMANDS = [
       {
         text: 'New project/repository',
         href: '/projects/new',
-        keywords: ['new', 'project', 'repository'],
       },
       {
         text: 'New group',
         href: '/groups/new',
-        keywords: ['new', 'group'],
       },
       {
         text: 'New snippet',
         href: '/-/snippets/new',
-        keywords: ['new', 'snippet'],
+      },
+      {
+        text: 'Invite members',
+        href: '/-/snippets/new',
+        component: 'invite_members',
       },
     ],
   },
@@ -61,6 +63,33 @@ export const LINKS = [
   },
 ];
 
+export const TRANSFORMED_LINKS = [
+  {
+    href: '/flightjs/Flight/activity',
+    icon: 'users',
+    keywords: 'Manage',
+    text: 'Manage',
+  },
+  {
+    href: '/flightjs/Flight/activity',
+    icon: 'users',
+    keywords: 'Activity',
+    text: 'Manage > Activity',
+  },
+  {
+    href: '/flightjs/Flight/-/project_members',
+    icon: 'users',
+    keywords: 'Members',
+    text: 'Manage > Members',
+  },
+  {
+    href: '/flightjs/Flight/-/labels',
+    icon: 'users',
+    keywords: 'Labels',
+    text: 'Manage > Labels',
+  },
+];
+
 export const USERS = [
   {
     id: 37,
@@ -83,3 +112,22 @@ export const USERS = [
     web_url: 'http://127.0.0.1:3000/reported_user_7',
   },
 ];
+
+export const PROJECT = {
+  category: 'Projects',
+  id: 1,
+  label: 'Gitlab Org / MockProject1',
+  value: 'MockProject1',
+  url: 'project/1',
+  avatar_url: '/project/avatar/1/avatar.png',
+};
+
+export const ISSUE = {
+  avatar_url: '',
+  category: 'Recent issues',
+  id: 516,
+  label: 'Dismiss Cipher with no integrity',
+  project_id: 7,
+  project_name: 'Flight',
+  url: '/flightjs/Flight/-/issues/37',
+};

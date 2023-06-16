@@ -34,8 +34,8 @@ displays an error.
 
 To set up push mirroring for an existing project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.
@@ -156,7 +156,7 @@ To set up a mirror from GitLab to AWS CodeCommit:
 1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repository.
 1. Open your new repository, and then select **Clone URL > Clone HTTPS** (not **Clone HTTPS (GRC)**).
 1. In GitLab, open the repository to be push-mirrored.
-1. On the left sidebar, select **Settings > Repository**, and then expand **Mirroring repositories**.
+1. Select **Settings > Repository**, and then expand **Mirroring repositories**.
 1. Fill in the **Git repository URL** field using this format:
 
    ```plaintext

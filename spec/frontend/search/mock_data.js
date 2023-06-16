@@ -8,6 +8,7 @@ export const MOCK_QUERY = {
   group_id: 1,
   language: ['C', 'JavaScript'],
   labels: ['60', '37'],
+  search: '*',
 };
 
 export const MOCK_GROUP = {

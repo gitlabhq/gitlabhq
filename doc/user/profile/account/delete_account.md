@@ -24,7 +24,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 
 As a user, to delete your own account:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
@@ -38,8 +38,9 @@ Unblocking the account does not undo the deletion because the account will still
 
 As an administrator, to delete a user account:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Overview > Users**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Overview > Users**.
 1. Select a user.
 1. Under the **Account** tab, select:
    - **Delete user** to delete only the user but maintain their [associated records](#associated-records). You can't use this option if

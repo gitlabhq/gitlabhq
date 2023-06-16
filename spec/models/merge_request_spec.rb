@@ -5673,4 +5673,31 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.prepare
     end
   end
+
+  describe '#check_for_spam?' do
+    let_it_be(:project) { create(:project, :public) }
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
+
+    subject { merge_request.check_for_spam? }
+
+    before do
+      merge_request.title = 'New title'
+    end
+
+    it { is_expected.to eq(true) }
+
+    context 'when project is private' do
+      let_it_be(:project) { create(:project, :private) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when no spammable attribute has changed' do
+      before do
+        merge_request.title = merge_request.title_was
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

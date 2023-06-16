@@ -29,8 +29,8 @@ Branches are the foundation of development in a project:
 
 To create a new branch from the GitLab UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Branches**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Branches**.
 1. On the top right, select **New branch**.
 1. Enter a **Branch name**.
 1. In **Create from**, select the base of your branch: an existing branch, an existing
@@ -52,7 +52,7 @@ Prerequisites:
 
 To add a [default branch](default.md) to an empty project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Scroll to **The repository for this project is empty** and select the type of
    file you want to add.
 1. In the Web IDE, make any desired changes to this file, then select **Create commit**.
@@ -77,8 +77,8 @@ Prerequisites:
 
 To create a branch from an issue:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues** (**{issues}**) and find your issue.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues** and find your issue.
 1. Below the issue description, find the **Create merge request** dropdown list, and select
    **{chevron-down}** to display the dropdown list.
 1. Select **Create branch**. A default **Branch name** is provided, based on the
@@ -111,8 +111,8 @@ You can manage your branches:
 
 To view and manage your branches in the GitLab user interface:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Branches**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Branches**.
 
 On this page, you can:
 
@@ -149,8 +149,8 @@ Prerequisites:
 
 To view the **Branch rules overview** list:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Branch Rules** to view all branches with protections.
    - To add protections to a new branch:
      1. Select **Add branch rule**.
@@ -200,8 +200,9 @@ Prerequisites:
 
 To change the default pattern for branches created from issues:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository** and expand **Branch defaults**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
+1. Expand **Branch defaults**.
 1. Scroll to **Branch name template** and enter a value. The field supports these variables:
    - `%{id}`: The numeric ID of the issue.
    - `%{title}`: The title of the issue, modified to use only characters acceptable in Git branch names.
@@ -237,8 +238,8 @@ new changes. It uses the merge base, not the actual commit content, to compare b
 
 To compare branches in a repository:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Compare revisions**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Compare revisions**.
 1. Select the **Source** branch to search for your desired branch. Exact matches are
    shown first. You can refine your search with operators:
    - `^` matches the beginning of the branch name: `^feat` matches `feat/user-authentication`.
@@ -262,8 +263,8 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Branches**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Branches**.
 1. On the upper right corner of the page, select **More** **{ellipsis_v}**.
 1. Select **Delete merged branches**.
 1. In the modal window, enter the word `delete` to confirm, then select **Delete merged branches**.
@@ -322,8 +323,8 @@ Error: Could not set the default branch. Do you have a branch named 'HEAD' in yo
 
 To fix this problem:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Branches**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Branches**.
 1. Search for a branch named `HEAD`.
 1. Make sure the branch has no uncommitted changes.
 1. Select **Delete branch**, then **Yes, delete branch**.

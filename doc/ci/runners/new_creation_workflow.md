@@ -139,12 +139,12 @@ or [Personal Access Tokens](../../user/profile/personal_access_tokens.md):
 #   created with `owner` access and `api` scope.
 #
 # The output will be parsed by `jq` to extract the token of the newly created runner
-RUNNER_TOKEN=$(curl --silent --method POST "https://gitlab.com/api/v4/user/runners" \
+RUNNER_TOKEN=$(curl --silent --request POST "https://gitlab.com/api/v4/user/runners" \
     --header "private-token: $GITLAB_TOKEN" \
     --data runner_type=group_type --data group_id=$GROUP_ID --data 'description=My runner' --data 'tag_list=java,linux' \
   | jq -r '.token')
 
-gitlab-runner register
+gitlab-runner register \
     --non-interactive \
     --executor "shell" \
     --url "https://gitlab.com/" \

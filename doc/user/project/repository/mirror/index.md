@@ -40,8 +40,8 @@ Prerequisites:
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
   or you must have a local copy of the key.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a **Git repository URL**. For security reasons, the URL to the original
    repository is only displayed to users with the Maintainer role
@@ -113,8 +113,8 @@ Prerequisite:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
 1. Select **Update now** (**{retry}**):
@@ -156,8 +156,8 @@ When you mirror a repository and select the **SSH public key** as your
 authentication method, GitLab generates a public key for you. The non-GitLab server
 needs this key to establish trust with your GitLab repository. To copy your SSH public key:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories**.
 1. Identify the correct repository, and select **Copy SSH public key** (**{copy-to-clipboard}**).
@@ -265,8 +265,8 @@ If you receive this error after creating a new project using
 
 Check if the repository owner is specified in the URL of your mirrored repository:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. If no repository owner is specified, delete and add the URL again in this format,
    replacing `OWNER`, `ACCOUNTNAME`, `PATH_TO_REPO`, and `REPONAME` with your values:
@@ -346,8 +346,8 @@ Prerequisites:
 To resolve the issue:
 
 1. [Verify the host key](#verify-a-host-key).
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. To refresh the keys, either:
 

@@ -29,8 +29,8 @@ Prerequisite:
 
 To do this:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. Depending on the type of template you want to create, scroll to either
    [**Merge commit message template**](#default-template-for-merge-commits) or
    [**Squash commit message template**](#default-template-for-squash-commits).

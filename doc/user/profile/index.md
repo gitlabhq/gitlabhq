@@ -237,7 +237,7 @@ You can set your local time zone to:
 
 To set your time zone:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Time settings** section, select your time zone from the dropdown list.
 
@@ -283,7 +283,7 @@ so you can keep your email information private.
 
 To use a private commit email:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select **Use a private email**.
 1. Select **Update profile settings**.
@@ -314,7 +314,7 @@ the maximum number of users you can follow is 300.
 
 You can disable following and being followed by other users.
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select **Preferences**.
 1. Clear the **Enable follow users** checkbox.
@@ -331,7 +331,7 @@ When this feature is being disabled, all current followed/following connections 
 
 You can disable searching with Zoekt and use Elasticsearch instead.
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select **Preferences**.
 1. Clear the **Enable advanced code search** checkbox.

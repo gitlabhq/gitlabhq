@@ -59,8 +59,8 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 To update your fork from the GitLab UI:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the secondary menu, select **Personal**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
 1. Select the fork you want to update.
 1. Below the dropdown list for branch name, find the **Forked from** (**{fork}**)
    information box to determine if your fork is ahead, behind, or both. In this example,
@@ -181,8 +181,8 @@ To restore the fork relationship, [use the API](../../../api/projects.md#create-
 
 To remove a fork relationship:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
 1. To confirm, enter the project path and select **Confirm**.

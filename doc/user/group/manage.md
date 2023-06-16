@@ -131,6 +131,22 @@ After sharing the `Frontend` group with the `Engineering` group:
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
 - All direct members of the `Engineering` group have access to the `Frontend` group. Direct members of `Engineering` that gain access to the `Frontend` group keep their same access level as in `Engineering`, but up to the maximum access level selected when sharing the group. Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
+- All direct members of the `Engineering` group count towards the billable members of the `Frontend` group.
+
+## Remove a shared group
+
+To unshare a group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+1. Select the **Groups** tab.
+1. To the right of the account you want to remove, select **Remove group** (**{remove}**).
+
+For example, if the `Engineering` group is shared with the `Frontend` group, when
+you unshare the `Engineering` group:
+
+- All direct members of the `Engineering` group no longer have access to the `Frontend` group.
+- Members of the `Engineering` group no longer count towards the billable members of the `Frontend` group.
 
 ## Transfer a group
 

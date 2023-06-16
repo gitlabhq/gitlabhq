@@ -3,30 +3,29 @@ import { debounce } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { GlDisclosureDropdownGroup, GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { getFormattedItem } from '../utils';
 import {
-  USERS_ENDPOINT,
   COMMON_HANDLES,
   COMMAND_HANDLE,
   USER_HANDLE,
+  PROJECT_HANDLE,
+  ISSUE_HANDLE,
   GLOBAL_COMMANDS_GROUP_TITLE,
-  USERS_GROUP_TITLE,
   PAGES_GROUP_TITLE,
+  GROUP_TITLES,
 } from './constants';
-import { userMapper, commandMapper, linksReducer } from './utils';
-import UserAutocompleteItem from './user_autocomplete_item.vue';
-import CommandAutocompleteItem from './command_autocomplete_item.vue';
+import SearchItem from './search_item.vue';
+import { commandMapper, linksReducer, autocompleteQuery } from './utils';
 
 export default {
   name: 'CommandPaletteItems',
   components: {
     GlDisclosureDropdownGroup,
     GlLoadingIcon,
-    UserAutocompleteItem,
-    CommandAutocompleteItem,
+    SearchItem,
   },
-  inject: ['commandPaletteCommands', 'commandPaletteLinks'],
+  inject: ['commandPaletteCommands', 'commandPaletteLinks', 'autocompletePath', 'searchContext'],
   props: {
     searchQuery: {
       type: String,
@@ -74,7 +73,16 @@ export default {
       return this.groups?.length && this.groups.some((group) => group.items?.length);
     },
     hasSearchQuery() {
-      return this.searchQuery?.length;
+      if (this.isCommandMode) {
+        return this.searchQuery?.length > 0;
+      }
+      return this.searchQuery?.length > 2;
+    },
+    searchTerm() {
+      if (this.handle === ISSUE_HANDLE) {
+        return `${ISSUE_HANDLE}${this.searchQuery}`;
+      }
+      return this.searchQuery;
     },
   },
   watch: {
@@ -85,7 +93,9 @@ export default {
             this.getCommandsAndPages();
             break;
           case USER_HANDLE:
-            this.getUsers();
+          case PROJECT_HANDLE:
+          case ISSUE_HANDLE:
+            this.getScopedItems();
             break;
           default:
             break;
@@ -103,7 +113,6 @@ export default {
         this.groups = [...this.commands];
         return;
       }
-
       const matchedLinks = this.filterBySearchQuery(this.links);
 
       if (this.filteredCommands.length || matchedLinks.length) {
@@ -121,24 +130,22 @@ export default {
         });
       }
     },
-    getUsers: debounce(function debouncedUserSearch() {
+    getScopedItems: debounce(function debouncedSearch() {
       if (this.searchQuery && this.searchQuery.length < 3) return null;
 
       this.loading = true;
 
       return axios
-        .get(joinPaths(gon.relative_url_root || '', USERS_ENDPOINT), {
-          params: {
-            search: this.searchQuery,
-          },
-        })
+        .get(
+          autocompleteQuery({
+            path: this.autocompletePath,
+            searchTerm: this.searchTerm,
+            handle: this.handle,
+            projectId: this.searchContext.project?.id,
+          }),
+        )
         .then(({ data }) => {
-          this.groups = [
-            {
-              name: USERS_GROUP_TITLE,
-              items: data.map(userMapper),
-            },
-          ];
+          this.groups = this.getGroups(data);
         })
         .catch((error) => {
           this.error = error;
@@ -147,6 +154,14 @@ export default {
           this.loading = false;
         });
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
+    getGroups(data) {
+      return [
+        {
+          name: GROUP_TITLES[this.handle],
+          items: data.map(getFormattedItem),
+        },
+      ];
+    },
   },
 };
 </script>
@@ -164,12 +179,7 @@ export default {
         class="{'gl-mt-0!': index===0}"
       >
         <template #list-item="{ item }">
-          <user-autocomplete-item v-if="isUserMode" :user="item" :search-query="searchQuery" />
-          <command-autocomplete-item
-            v-if="isCommandMode"
-            :command="item"
-            :search-query="searchQuery"
-          />
+          <search-item :item="item" :search-query="searchQuery" />
         </template>
       </gl-disclosure-dropdown-group>
     </template>

@@ -3,6 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Spammable, feature_category: :instance_resiliency do
+  before do
+    stub_const('SpammableModel', Class.new(ActiveRecord::Base))
+
+    SpammableModel.class_eval do
+      self.table_name = 'issues'
+
+      include Spammable
+
+      attr_accessor :other_attr
+
+      attr_spammable :title, spam_title: true
+      attr_spammable :description, spam_description: true
+    end
+  end
+
+  let(:spammable_model) { SpammableModel.new }
   let(:issue) { create(:issue, description: 'Test Desc.') }
 
   describe 'Associations' do
@@ -26,16 +42,14 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
 
     describe '#check_for_spam?' do
       context 'when not overriden' do
-        let(:merge_request) { create(:merge_request) }
-
-        subject { merge_request.check_for_spam? }
+        subject { spammable_model.check_for_spam? }
 
         context 'when spammable attributes have changed' do
           where(attr: [:title, :description])
 
           with_them do
             before do
-              merge_request.assign_attributes(attr => 'x')
+              spammable_model.assign_attributes(attr => 'x')
             end
 
             it { is_expected.to eq(true) }
@@ -44,7 +58,7 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
 
         context 'when other attributes have changed' do
           before do
-            merge_request.draft = true
+            spammable_model.other_attr = true
           end
 
           it { is_expected.to eq(false) }
@@ -68,15 +82,6 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
       end
 
       context 'when the model is spam' do
-        before do
-          stub_const('SpammableModel', Class.new(ApplicationRecord))
-
-          SpammableModel.class_eval do
-            include Spammable
-            self.table_name = 'issues'
-          end
-        end
-
         where(model: [:issue, :merge_request, :snippet, :spammable_model])
 
         with_them do

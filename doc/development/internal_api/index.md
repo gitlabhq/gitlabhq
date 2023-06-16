@@ -14,7 +14,7 @@ working on the GitLab codebase.
 This documentation does not yet include the internal API used by
 GitLab Pages.
 
-## Adding new endpoints
+## Add new endpoints
 
 API endpoints should be externally accessible by default, with proper authentication and authorization.
 Before adding a new internal endpoint, consider if the API would potentially be
@@ -663,7 +663,7 @@ Example response:
 
 The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
 
-### Creating a subscription
+### Create a subscription
 
 Use a POST command to create a subscription.
 
@@ -714,7 +714,7 @@ Example response:
 }
 ```
 
-### Updating a subscription
+### Update a subscription
 
 Use a PUT command to update an existing subscription.
 
@@ -765,7 +765,7 @@ Example response:
 }
 ```
 
-### Retrieving a subscription
+### Retrieve a subscription
 
 Use a GET command to view an existing subscription.
 
@@ -815,7 +815,7 @@ The subscription add-on purchase endpoint is used by [CustomersDot](https://gitl
 
 ### Create a subscription add-on purchase
 
-Use a POST to create a subscription add-on purchase.
+Use a POST command to create a subscription add-on purchase.
 
 ```plaintext
 POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
@@ -928,7 +928,7 @@ Example request:
 ```shell
 curl --request GET \
   --url "https://gitlab.com/v4/namespaces/storage/limit_exclusions" \
-  --header 'PRIVATE-TOKEN: <admin access token>' 
+  --header 'PRIVATE-TOKEN: <admin access token>'
 ```
 
 Example response:
@@ -1018,9 +1018,9 @@ Example response:
 The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 to apply additional packs of units of compute, for personal namespaces or top-level groups in GitLab.com.
 
-### Creating an additional pack
+### Create an additional pack
 
-Use a POST to create additional packs.
+Use a POST command to create additional packs.
 
 ```plaintext
 POST /namespaces/:id/minutes
@@ -1064,9 +1064,9 @@ Example response:
 ]
 ```
 
-### Moving additional packs
+### Move additional packs
 
-Use a `PATCH` to move additional packs from one namespace to another.
+Use a `PATCH` command to move additional packs from one namespace to another.
 
 ```plaintext
 PATCH /namespaces/:id/minutes/move/:target_id
@@ -1102,7 +1102,7 @@ Example response:
 The `upcoming_reconciliations` endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 to update upcoming reconciliations for namespaces.
 
-### Updating `upcoming_reconciliations`
+### Update `upcoming_reconciliations`
 
 Use a PUT command to update `upcoming_reconciliations`.
 
@@ -1136,7 +1136,7 @@ Example response:
 200
 ```
 
-### Deleting an `upcoming_reconciliation`
+### Delete an `upcoming_reconciliation`
 
 Use a DELETE command to delete an `upcoming_reconciliation`.
 

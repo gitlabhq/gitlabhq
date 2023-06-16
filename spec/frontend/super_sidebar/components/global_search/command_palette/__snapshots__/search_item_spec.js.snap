@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchItem should render the item 1`] = `
+<div
+  class="gl-display-flex gl-align-items-center"
+>
+  <gl-avatar-stub
+    alt="avatar"
+    aria-hidden="true"
+    class="gl-mr-3"
+    entityid="37"
+    entityname=""
+    shape="rect"
+    size="16"
+    src="https://www.gravatar.com/avatar/a9638f4ec70148d51e56bf05ad41e993?s=80&d=identicon"
+  />
+   
+  <!---->
+   
+  <span
+    class="gl-display-flex gl-flex-direction-column"
+  >
+    <span
+      class="gl-text-gray-900"
+    />
+     
+    <!---->
+  </span>
+</div>
+`;
+
+exports[`SearchItem should render the item 2`] = `
+<div
+  class="gl-display-flex gl-align-items-center"
+>
+  <!---->
+   
+  <gl-icon-stub
+    class="gl-mr-3"
+    name="users"
+    size="16"
+  />
+   
+  <span
+    class="gl-display-flex gl-flex-direction-column"
+  >
+    <span
+      class="gl-text-gray-900"
+    >
+      Manage &gt; Activity
+    </span>
+     
+    <!---->
+  </span>
+</div>
+`;
+
+exports[`SearchItem should render the item 3`] = `
+<div
+  class="gl-display-flex gl-align-items-center"
+>
+  <gl-avatar-stub
+    alt="avatar"
+    aria-hidden="true"
+    class="gl-mr-3"
+    entityid="1"
+    entityname="MockProject1"
+    shape="rect"
+    size="32"
+    src="/project/avatar/1/avatar.png"
+  />
+   
+  <!---->
+   
+  <span
+    class="gl-display-flex gl-flex-direction-column"
+  >
+    <span
+      class="gl-text-gray-900"
+    >
+      MockProject1
+    </span>
+     
+    <span
+      class="gl-font-sm gl-text-gray-500"
+    >
+      Gitlab Org / MockProject1
+    </span>
+  </span>
+</div>
+`;
+
+exports[`SearchItem should render the item 4`] = `
+<div
+  class="gl-display-flex gl-align-items-center"
+>
+  <gl-avatar-stub
+    alt="avatar"
+    aria-hidden="true"
+    class="gl-mr-3"
+    entityid="7"
+    entityname="Flight"
+    shape="rect"
+    size="16"
+    src=""
+  />
+   
+  <!---->
+   
+  <span
+    class="gl-display-flex gl-flex-direction-column"
+  >
+    <span
+      class="gl-text-gray-900"
+    >
+      Dismiss Cipher with no integrity
+    </span>
+     
+    <!---->
+  </span>
+</div>
+`;

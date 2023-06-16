@@ -11250,13 +11250,16 @@ msgstr ""
 msgid "CommandPalette|Pages"
 msgstr ""
 
-msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user or perform generic search..."
-msgstr ""
-
-msgid "CommandPalette|Users"
+msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user, %{projectHandle} for project, %{issueHandle} for issue or perform generic search..."
 msgstr ""
 
 msgid "CommandPalette|command"
+msgstr ""
+
+msgid "CommandPalette|issue (enter at least 3 chars)"
+msgstr ""
+
+msgid "CommandPalette|project (enter at least 3 chars)"
 msgstr ""
 
 msgid "CommandPalette|user (enter at least 3 chars)"
@@ -20872,6 +20875,9 @@ msgstr ""
 msgid "GlobalSearch|Close"
 msgstr ""
 
+msgid "GlobalSearch|Fetching aggregations error."
+msgstr ""
+
 msgid "GlobalSearch|Group"
 msgstr ""
 
@@ -20888,6 +20894,9 @@ msgid "GlobalSearch|Issues I've created"
 msgstr ""
 
 msgid "GlobalSearch|Issues assigned to me"
+msgstr ""
+
+msgid "GlobalSearch|Label(s)"
 msgstr ""
 
 msgid "GlobalSearch|Language"
@@ -20936,6 +20945,9 @@ msgid "GlobalSearch|Search GitLab %{kbdOpen}/%{kbdClose}"
 msgstr ""
 
 msgid "GlobalSearch|Search for projects, issues, etc."
+msgstr ""
+
+msgid "GlobalSearch|Search labels"
 msgstr ""
 
 msgid "GlobalSearch|Search results are loading"
@@ -40333,10 +40345,13 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{period} %{days} at %{time}"
+msgid "ScanExecutionPolicy|%{hostname}'s timezone"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{rules} %{period} for %{scopes} %{branches} %{agents} %{namespaces}"
+msgid "ScanExecutionPolicy|%{period} %{days} at %{time} %{timezoneLabel} %{timezone}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|%{rules} actions for %{scopes} %{branches} %{agents} %{namespaces} %{period}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{agents} %{namespaces}"
@@ -40349,6 +40364,9 @@ msgid "ScanExecutionPolicy|Conditions"
 msgstr ""
 
 msgid "ScanExecutionPolicy|If the field is empty, the runner will be automatically selected"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Kubernetes agent's timezone"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run a %{scan} scan on runner that %{tags}"
@@ -40384,6 +40402,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select site profile"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Select timezone"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Site profile"
 msgstr ""
 
@@ -40403,6 +40424,12 @@ msgid "ScanExecutionPolicy|has specific tag"
 msgstr ""
 
 msgid "ScanExecutionPolicy|in namespaces"
+msgstr ""
+
+msgid "ScanExecutionPolicy|on %{hostname}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|on the Kubernetes agent pod"
 msgstr ""
 
 msgid "ScanExecutionPolicy|scanner profile %{scannerProfile} and site profile %{siteProfile}"
@@ -53211,9 +53238,6 @@ msgid "Your top-level group %{namespace_name} is over the %{free_limit} user lim
 msgstr ""
 
 msgid "Your top-level group %{namespace_name} will move to a read-only state soon"
-msgstr ""
-
-msgid "Your top-level group is over the user and storage limits and has been placed in a read-only state."
 msgstr ""
 
 msgid "Your top-level group is over the user limit and has been placed in a read-only state."

@@ -107,7 +107,7 @@ To select a notification level for a group, use either of these methods:
 
 Or:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
@@ -138,7 +138,7 @@ To select a notification level for a project, use either of these methods:
 
 Or:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 

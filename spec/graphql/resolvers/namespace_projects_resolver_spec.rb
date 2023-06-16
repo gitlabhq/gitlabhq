@@ -7,12 +7,14 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
 
   let(:current_user) { create(:user) }
   let(:include_subgroups) { true }
+  let(:not_aimed_for_deletion) { false }
   let(:sort) { nil }
   let(:search) { nil }
   let(:ids) { nil }
   let(:args) do
     {
       include_subgroups: include_subgroups,
+      not_aimed_for_deletion: not_aimed_for_deletion,
       sort: sort,
       search: search,
       ids: ids
@@ -24,21 +26,37 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
     let(:namespace) { group }
     let(:project1) { create(:project, namespace: namespace) }
     let(:project2) { create(:project, namespace: namespace) }
+    let(:project3) { create(:project, namespace: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
     let(:nested_group) { create(:group, parent: group) }
     let(:nested_project) { create(:project, group: nested_group) }
+    let(:nested_project2) { create(:project, group: nested_group, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
 
     before do
       project1.add_developer(current_user)
       project2.add_developer(current_user)
+      project3.add_developer(current_user)
       nested_project.add_developer(current_user)
+      nested_project2.add_developer(current_user)
     end
 
     describe '#resolve' do
       it 'finds all projects' do
-        expect(resolve_projects).to contain_exactly(project1, project2)
+        expect(resolve_projects).to contain_exactly(project1, project2, project3)
       end
 
       it 'finds all projects including the subgroups' do
+        expect(resolve_projects(args)).to contain_exactly(project1, project2, project3, nested_project, nested_project2)
+      end
+
+      it 'finds all projects not aimed for deletion' do
+        arg = { not_aimed_for_deletion: true }
+
+        expect(resolve_projects(arg)).to contain_exactly(project1, project2)
+      end
+
+      it 'finds all projects not aimed for deletion including the subgroups' do
+        args[:not_aimed_for_deletion] = true
+
         expect(resolve_projects(args)).to contain_exactly(project1, project2, nested_project)
       end
 
@@ -46,11 +64,11 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         let(:namespace) { current_user.namespace }
 
         it 'finds all projects' do
-          expect(resolve_projects).to contain_exactly(project1, project2)
+          expect(resolve_projects).to contain_exactly(project1, project2, project3)
         end
 
         it 'finds all projects including the subgroups' do
-          expect(resolve_projects(args)).to contain_exactly(project1, project2)
+          expect(resolve_projects(args)).to contain_exactly(project1, project2, project3)
         end
       end
     end
@@ -112,13 +130,13 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
       subject(:projects) { resolve_projects(args) }
 
       let(:include_subgroups) { false }
-      let!(:project_3) { create(:project, name: 'Project', path: 'project', namespace: namespace) }
+      let!(:project_4) { create(:project, name: 'Project', path: 'project', namespace: namespace) }
 
       context 'when ids is provided' do
-        let(:ids) { [project_3.to_global_id.to_s] }
+        let(:ids) { [project_4.to_global_id.to_s] }
 
         it 'returns matching project' do
-          expect(projects).to contain_exactly(project_3)
+          expect(projects).to contain_exactly(project_4)
         end
       end
 
@@ -126,7 +144,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         let(:ids) { nil }
 
         it 'returns all projects' do
-          expect(projects).to contain_exactly(project1, project2, project_3)
+          expect(projects).to contain_exactly(project1, project2, project3, project_4)
         end
       end
     end
