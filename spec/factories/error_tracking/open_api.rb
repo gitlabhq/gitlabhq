@@ -12,6 +12,15 @@ FactoryBot.define do
     first_seen_at { Time.now.iso8601 }
     last_seen_at { Time.now.iso8601 }
     status { 'unresolved' }
+    stats do
+      association(:error_tracking_open_api_error_stats)
+    end
+
+    skip_create
+  end
+
+  factory :error_tracking_open_api_error_stats, class: 'ErrorTrackingOpenAPI::ErrorStats' do
+    frequency { { '24h': [[1, 2], [3, 4]] } }
 
     skip_create
   end

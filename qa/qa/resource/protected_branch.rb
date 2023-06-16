@@ -4,10 +4,10 @@ module QA
   module Resource
     class ProtectedBranch < Base
       attr_accessor :branch_name,
-                    :allowed_to_push,
-                    :allowed_to_merge,
-                    :new_branch,
-                    :require_code_owner_approval
+        :allowed_to_push,
+        :allowed_to_merge,
+        :new_branch,
+        :require_code_owner_approval
 
       attribute :project do
         Project.fabricate_via_api! do |resource|

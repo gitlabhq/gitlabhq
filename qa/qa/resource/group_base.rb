@@ -12,12 +12,12 @@ module QA
       attr_accessor :path, :avatar
 
       attributes :id,
-                 :runners_token,
-                 :name,
-                 :full_path,
-                 # Add visibility to enable create private group
-                 :visibility,
-                 :shared_with_groups
+        :runners_token,
+        :name,
+        :full_path,
+        # Add visibility to enable create private group
+        :visibility,
+        :shared_with_groups
 
       # Get group projects
       #

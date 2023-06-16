@@ -1,0 +1,52 @@
+{
+  "depth": 3,
+  "tree_path": [
+    1689,
+    1692,
+    2107
+  ],
+  "tree_cycle": false,
+  "id": 2107,
+  "name": "internal-sub-subgroup",
+  "path": "internal-sub-subgroup",
+  "description": "",
+  "avatar": {
+    "url": null
+  },
+  "membership_lock": false,
+  "share_with_group_lock": false,
+  "visibility_level": 10,
+  "request_access_enabled": true,
+  "ldap_sync_status": "ready",
+  "ldap_sync_error": null,
+  "ldap_sync_last_update_at": null,
+  "ldap_sync_last_successful_update_at": null,
+  "ldap_sync_last_sync_at": null,
+  "lfs_enabled": null,
+  "parent_id": 1692,
+  "shared_runners_minutes_limit": null,
+  "require_two_factor_authentication": false,
+  "two_factor_grace_period": 48,
+  "project_creation_level": 2,
+  "file_template_project_id": null,
+  "custom_project_templates_group_id": null,
+  "auto_devops_enabled": null,
+  "last_ci_minutes_notification_at": null,
+  "last_ci_minutes_usage_notification_level": null,
+  "subgroup_creation_level": 1,
+  "emails_disabled": null,
+  "max_artifacts_size": null,
+  "mentions_disabled": null,
+  "default_branch_protection": 2,
+  "unlock_membership_to_ldap": null,
+  "max_personal_access_token_lifetime": null,
+  "push_rule_id": null,
+  "shared_runners_enabled": true,
+  "allow_descendants_override_disabled_shared_runners": false,
+  "traversal_ids": [
+    1689,
+    1692,
+    2107
+  ],
+  "organization_id": 1
+}

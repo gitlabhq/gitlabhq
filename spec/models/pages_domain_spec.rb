@@ -427,23 +427,27 @@ RSpec.describe PagesDomain do
   end
 
   describe '#user_provided_key=' do
-    include_examples('certificate setter', 'key', 'user_provided_key=',
-                     'gitlab_provided', 'user_provided')
+    include_examples(
+      'certificate setter', 'key', 'user_provided_key=', 'gitlab_provided', 'user_provided'
+    )
   end
 
   describe '#gitlab_provided_key=' do
-    include_examples('certificate setter', 'key', 'gitlab_provided_key=',
-                     'user_provided', 'gitlab_provided')
+    include_examples(
+      'certificate setter', 'key', 'gitlab_provided_key=', 'user_provided', 'gitlab_provided'
+    )
   end
 
   describe '#user_provided_certificate=' do
-    include_examples('certificate setter', 'certificate', 'user_provided_certificate=',
-                     'gitlab_provided', 'user_provided')
+    include_examples(
+      'certificate setter', 'certificate', 'user_provided_certificate=', 'gitlab_provided', 'user_provided'
+    )
   end
 
   describe '#gitlab_provided_certificate=' do
-    include_examples('certificate setter', 'certificate', 'gitlab_provided_certificate=',
-                     'user_provided', 'gitlab_provided')
+    include_examples(
+      'certificate setter', 'certificate', 'gitlab_provided_certificate=', 'user_provided', 'gitlab_provided'
+    )
   end
 
   describe '#save' do

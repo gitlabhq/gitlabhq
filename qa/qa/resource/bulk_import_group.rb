@@ -3,9 +3,7 @@
 module QA
   module Resource
     class BulkImportGroup < Group
-      attributes :source_group,
-                 :destination_group,
-                 :import_id
+      attributes :source_group, :destination_group, :import_id
 
       attribute :import_access_token do
         api_client.personal_access_token

@@ -1103,32 +1103,39 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     let(:project1) do
       create(:project,
-             namespace: namespace,
-             statistics: build(:project_statistics,
-                               namespace: namespace,
-                               repository_size: 101,
-                               wiki_size: 505,
-                               lfs_objects_size: 202,
-                               build_artifacts_size: 303,
-                               pipeline_artifacts_size: 707,
-                               packages_size: 404,
-                               snippets_size: 605,
-                               uploads_size: 808))
+        namespace: namespace,
+        statistics: build(
+          :project_statistics,
+          namespace: namespace,
+          repository_size: 101,
+          wiki_size: 505,
+          lfs_objects_size: 202,
+          build_artifacts_size: 303,
+          pipeline_artifacts_size: 707,
+          packages_size: 404,
+          snippets_size: 605,
+          uploads_size: 808
+        )
+      )
     end
 
     let(:project2) do
-      create(:project,
-             namespace: namespace,
-             statistics: build(:project_statistics,
-                               namespace: namespace,
-                               repository_size: 10,
-                               wiki_size: 50,
-                               lfs_objects_size: 20,
-                               build_artifacts_size: 30,
-                               pipeline_artifacts_size: 70,
-                               packages_size: 40,
-                               snippets_size: 60,
-                               uploads_size: 80))
+      create(
+        :project,
+        namespace: namespace,
+        statistics: build(
+          :project_statistics,
+          namespace: namespace,
+          repository_size: 10,
+          wiki_size: 50,
+          lfs_objects_size: 20,
+          build_artifacts_size: 30,
+          pipeline_artifacts_size: 70,
+          packages_size: 40,
+          snippets_size: 60,
+          uploads_size: 80
+        )
+      )
     end
 
     it "sums all project storage counters in the namespace" do
@@ -1191,8 +1198,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
 
         it 'raises an error about not movable project' do
-          expect { namespace.move_dir }.to raise_error(Gitlab::UpdatePathError,
-                                                       /Namespace .* cannot be moved/)
+          expect { namespace.move_dir }.to raise_error(
+            Gitlab::UpdatePathError, /Namespace .* cannot be moved/
+          )
         end
       end
     end
@@ -1857,16 +1865,12 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
         receive(:bulk_perform_in)
-          .with(1.hour,
-                [[group_one_user.id]],
-                batch_delay: 30.seconds, batch_size: 100)
+          .with(1.hour, [[group_one_user.id]], batch_delay: 30.seconds, batch_size: 100)
       )
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
         receive(:bulk_perform_in)
-          .with(1.hour,
-                [[group_two_user.id]],
-                batch_delay: 30.seconds, batch_size: 100)
+          .with(1.hour, [[group_two_user.id]], batch_delay: 30.seconds, batch_size: 100)
       )
 
       execute_update
@@ -1885,12 +1889,10 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'updates the authorizations in a non-blocking manner' do
         expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async)
-            .with([[group_one_user.id]])).once
+          receive(:bulk_perform_async).with([[group_one_user.id]])).once
 
         expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async)
-            .with([[group_two_user.id]])).once
+          receive(:bulk_perform_async).with([[group_two_user.id]])).once
 
         execute_update
       end

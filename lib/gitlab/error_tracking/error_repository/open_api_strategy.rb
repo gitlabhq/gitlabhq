@@ -134,7 +134,8 @@ module Gitlab
             last_seen: error.last_seen_at,
             status: error.status,
             count: error.event_count,
-            user_count: error.approximated_user_count
+            user_count: error.approximated_user_count,
+            frequency: error.stats&.frequency&.dig(:'24h') || []
           )
         end
 
@@ -155,7 +156,8 @@ module Gitlab
             external_base_url: external_base_url,
             integrated: true,
             first_release_version: release_from(oldest_event_for(error.fingerprint)),
-            last_release_version: release_from(newest_event_for(error.fingerprint))
+            last_release_version: release_from(newest_event_for(error.fingerprint)),
+            frequency: error.stats&.frequency&.dig(:'24h') || []
           )
         end
 

@@ -24,7 +24,7 @@ module Groups
       render_404 unless group.usage_quotas_enabled?
     end
 
-    # To be overriden in ee/app/controllers/ee/groups/usage_quotas_controller.rb
+    # To be overridden in ee/app/controllers/ee/groups/usage_quotas_controller.rb
     def seat_count_data; end
   end
 end

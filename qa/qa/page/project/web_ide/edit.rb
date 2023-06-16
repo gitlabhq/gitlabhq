@@ -111,8 +111,12 @@ module QA
 
           # Used for stablility, due to feature_caching of vscode_web_ide
           def wait_until_ide_loads
-            Support::Waiter.wait_until(sleep_interval: 2, max_duration: 120, reload_page: page,
-                                       retry_on_exception: true) do
+            Support::Waiter.wait_until(
+              sleep_interval: 2,
+              max_duration: 120,
+              reload_page: page,
+              retry_on_exception: true
+            ) do
               has_element?(:commit_mode_tab)
             end
           end

@@ -53,8 +53,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     context 'when noteable and note project differ' do
       subject do
-        build(:note, noteable: build_stubbed(:issue),
-                     project: build_stubbed(:project))
+        build(:note, noteable: build_stubbed(:issue), project: build_stubbed(:project))
       end
 
       it { is_expected.to be_invalid }

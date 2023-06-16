@@ -65,6 +65,15 @@ module Gitlab
           # with existing groups name and/or path.
           group_attributes.delete_attributes('name', 'path')
 
+          if @top_level_group.has_parent?
+            group_attributes.attributes['visibility_level'] = sub_group_visibility_level(
+              group_attributes.attributes['visibility_level'],
+              @top_level_group.parent
+            )
+          elsif Gitlab::VisibilityLevel.restricted_level?(group_attributes.attributes['visibility_level'])
+            group_attributes.delete_attribute('visibility_level')
+          end
+
           restore_group(@top_level_group, group_attributes)
         end
 
@@ -86,6 +95,7 @@ module Gitlab
           parent_id = group_attributes.delete_attribute('parent_id')
           name = group_attributes.delete_attribute('name')
           path = group_attributes.delete_attribute('path')
+          visibility_level = group_attributes.delete_attribute('visibility_level')
 
           parent_group = @groups_mapping.fetch(parent_id) { raise(ArgumentError, 'Parent group not found') }
 
@@ -94,7 +104,7 @@ module Gitlab
             name: name,
             path: path,
             parent_id: parent_group.id,
-            visibility_level: sub_group_visibility_level(group_attributes.attributes, parent_group)
+            visibility_level: sub_group_visibility_level(visibility_level, parent_group)
           ).execute
 
           group.validate!
@@ -124,14 +134,21 @@ module Gitlab
           end
         end
 
-        def sub_group_visibility_level(group_hash, parent_group)
-          original_visibility_level = group_hash['visibility_level'] || Gitlab::VisibilityLevel::PRIVATE
+        def sub_group_visibility_level(visibility_level, parent_group)
+          parent_visibility_level = parent_group.visibility_level
 
-          if parent_group && parent_group.visibility_level < original_visibility_level
-            Gitlab::VisibilityLevel.closest_allowed_level(parent_group.visibility_level)
+          original_visibility_level = visibility_level ||
+            closest_allowed_level(parent_visibility_level)
+
+          if parent_visibility_level < original_visibility_level
+            closest_allowed_level(parent_visibility_level)
           else
-            original_visibility_level
+            closest_allowed_level(original_visibility_level)
           end
+        end
+
+        def closest_allowed_level(visibility_level)
+          Gitlab::VisibilityLevel.closest_allowed_level(visibility_level)
         end
 
         def reader

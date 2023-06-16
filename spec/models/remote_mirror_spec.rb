@@ -252,19 +252,23 @@ RSpec.describe RemoteMirror, :mailer do
 
   context 'stuck mirrors' do
     it 'includes mirrors that were started over an hour ago' do
-      mirror = create_mirror(url: 'http://cantbeblank',
-                             update_status: 'started',
-                             last_update_started_at: 3.hours.ago,
-                             last_update_at: 2.hours.ago)
+      mirror = create_mirror(
+        url: 'http://cantbeblank',
+        update_status: 'started',
+        last_update_started_at: 3.hours.ago,
+        last_update_at: 2.hours.ago
+      )
 
       expect(described_class.stuck.last).to eq(mirror)
     end
 
     it 'includes mirrors started over 3 hours ago for their first sync' do
-      mirror = create_mirror(url: 'http://cantbeblank',
-                             update_status: 'started',
-                             last_update_at: nil,
-                             last_update_started_at: 4.hours.ago)
+      mirror = create_mirror(
+        url: 'http://cantbeblank',
+        update_status: 'started',
+        last_update_at: nil,
+        last_update_started_at: 4.hours.ago
+      )
 
       expect(described_class.stuck.last).to eq(mirror)
     end
@@ -358,11 +362,13 @@ RSpec.describe RemoteMirror, :mailer do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
 
     it 'resets all the columns when URL changes' do
-      remote_mirror.update!(last_error: Time.current,
-                            last_update_at: Time.current,
-                            last_successful_update_at: Time.current,
-                            update_status: 'started',
-                            error_notification_sent: true)
+      remote_mirror.update!(
+        last_error: Time.current,
+        last_update_at: Time.current,
+        last_successful_update_at: Time.current,
+        update_status: 'started',
+        error_notification_sent: true
+      )
 
       expect { remote_mirror.update_attribute(:url, 'http://new.example.com') }
         .to change { remote_mirror.last_error }.to(nil)
@@ -406,11 +412,13 @@ RSpec.describe RemoteMirror, :mailer do
 
   context 'no project' do
     it 'includes mirror with a project in pending_delete' do
-      mirror = create_mirror(url: 'http://cantbeblank',
-                             update_status: 'finished',
-                             enabled: true,
-                             last_update_at: nil,
-                             updated_at: 25.hours.ago)
+      mirror = create_mirror(
+        url: 'http://cantbeblank',
+        update_status: 'finished',
+        enabled: true,
+        last_update_at: nil,
+        updated_at: 25.hours.ago
+      )
       project = mirror.project
       project.pending_delete = true
       project.save!

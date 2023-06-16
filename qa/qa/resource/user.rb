@@ -8,18 +8,18 @@ module QA
       attr_reader :unique_id
       attr_writer :username, :password
       attr_accessor :admin,
-                    :provider,
-                    :extern_uid,
-                    :expect_fabrication_success,
-                    :hard_delete_on_api_removal,
-                    :access_level,
-                    :email_domain
+        :provider,
+        :extern_uid,
+        :expect_fabrication_success,
+        :hard_delete_on_api_removal,
+        :access_level,
+        :email_domain
 
       attributes :id,
-                 :name,
-                 :first_name,
-                 :last_name,
-                 :email
+        :name,
+        :first_name,
+        :last_name,
+        :email
 
       def initialize
         @admin = false
@@ -177,9 +177,10 @@ module QA
       def self.all(per_page: 100)
         response = nil
         Resource::User.init do |user|
-          response = user.get(Runtime::API::Request.new(Runtime::API::Client.as_admin,
-                                                           '/users',
-                                                           per_page: per_page.to_s).url)
+          response = user.get(Runtime::API::Request.new(
+            Runtime::API::Client.as_admin, '/users', per_page: per_page.to_s
+          ).url)
+
           raise ResourceQueryError unless response.code == 200
         end.parse_body(response)
       end

@@ -49,7 +49,7 @@ module QA
       end
 
       it 'integrates and displays build status for MR pipeline in GitLab',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347788' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347788' do
         setup_project_integration
 
         jenkins_integration = project.find_integration('jenkins')

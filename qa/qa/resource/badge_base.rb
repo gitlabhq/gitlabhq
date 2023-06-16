@@ -3,10 +3,7 @@
 module QA
   module Resource
     class BadgeBase < Base
-      attributes :id,
-                 :name,
-                 :link_url,
-                 :image_url
+      attributes :id, :name, :link_url, :image_url
 
       def initialize
         @name = "qa-badge-#{SecureRandom.hex(8)}"

@@ -35,9 +35,6 @@ describe('Experimental new namespace creation app', () => {
         ...DEFAULT_PROPS,
         ...propsData,
       },
-      stubs: {
-        NewTopLevelGroupAlert,
-      },
     });
   };
 

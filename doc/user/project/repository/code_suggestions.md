@@ -82,31 +82,15 @@ Prerequisites:
 
 - Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
 - Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
-- If you use a [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token),
-  the token must have the `read_api` and `read_user` scopes.
+- Completed the [setup instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension#setup) for the GitLab Visual Studio Code Extension.
 
 To enable Code Suggestions in VS Code:
 
-1. Download and configure the
+1. Download and install the
    [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
    for Visual Studio Code.
-1. In **GitLab: Add Account to VS Code on Mac**, add your GitLab work account to the VS Code extension:
-   - In macOS, press <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>P</kbd>.
-   - In Windows, press <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>P</kbd>.
-1. You can Authenticate with OAuth to GitLab.com or you can use a personal access token.
-
-   1. To use OAuth (recommended):
-
-      1. Type `GitLab: Authenticate with GitLab.com`. It appears as a quick action. Select it.
-      1. Follow the alert links to open a GitLab authorization URL in your browser.
-      1. In your browser, select the alert to open the URL with VS Code.
-
-   1. To use a personal access token:
-
-      1. Type `GitLab: Add Account to VS Code`. It appears as a quick action. Select it.
-      1. Provide your GitLab instance URL. A default is provided.
-      1. Provide your personal access token.
-1. Regardless of the method you use to authenticate, after your GitLab account connects successfully, in the left sidebar, select **Extensions**.
+1. Complete the [setup instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension#setup) for the extension.
+1. After your GitLab account connects successfully, in the left sidebar, select **Extensions**.
 1. Find the **GitLab workflow** extension, select **Settings** (**{settings}**), and select **Extension Settings**.
 1. Enable **GitLab > AI Assisted Code Suggestions**.
 

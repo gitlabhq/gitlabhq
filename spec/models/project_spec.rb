@@ -209,9 +209,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = create(:project)
       lfs_object = create(:lfs_object)
       [:project, :design].each do |repository_type|
-        create(:lfs_objects_project, project: project,
-                                     lfs_object: lfs_object,
-                                     repository_type: repository_type)
+        create(
+          :lfs_objects_project,
+          project: project,
+          lfs_object: lfs_object,
+          repository_type: repository_type
+        )
       end
 
       expect(project.lfs_objects_projects.size).to eq(2)
@@ -781,14 +784,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     describe 'project pending deletion' do
       let!(:project_pending_deletion) do
-        create(:project,
-               pending_delete: true)
+        create(:project, pending_delete: true)
       end
 
       let(:new_project) do
-        build(:project,
-              path: project_pending_deletion.path,
-              namespace: project_pending_deletion.namespace)
+        build(:project, path: project_pending_deletion.path, namespace: project_pending_deletion.namespace)
       end
 
       before do
@@ -3397,8 +3397,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         before do
           create(:container_repository, project: project, name: 'image')
 
-          stub_container_registry_tags(repository: /image/,
-                                       tags: %w[latest rc1])
+          stub_container_registry_tags(repository: /image/, tags: %w[latest rc1])
         end
 
         it 'has image tags' do
@@ -3408,8 +3407,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'when tags are present for root repository' do
         before do
-          stub_container_registry_tags(repository: project.full_path,
-                                       tags: %w[latest rc1 pre1])
+          stub_container_registry_tags(repository: project.full_path, tags: %w[latest rc1 pre1])
         end
 
         it 'has image tags' do
@@ -3527,18 +3525,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let(:second_branch) { project.repository.branches[2] }
 
     let!(:pipeline_for_default_branch) do
-      create(:ci_pipeline, project: project, sha: project.commit.id,
-                           ref: project.default_branch)
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
     end
 
     let!(:pipeline_for_second_branch) do
-      create(:ci_pipeline, project: project, sha: second_branch.target,
-                           ref: second_branch.name)
+      create(:ci_pipeline, project: project, sha: second_branch.target, ref: second_branch.name)
     end
 
     let!(:other_pipeline_for_default_branch) do
-      create(:ci_pipeline, project: project, sha: project.commit.parent.id,
-                           ref: project.default_branch)
+      create(:ci_pipeline, project: project, sha: project.commit.parent.id, ref: project.default_branch)
     end
 
     context 'default repository branch' do
@@ -3568,8 +3563,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       context 'with provided sha' do
         let!(:latest_pipeline_for_ref) do
-          create(:ci_pipeline, project: project, sha: pipeline_for_second_branch.sha,
-                               ref: pipeline_for_second_branch.ref)
+          create(
+            :ci_pipeline,
+            project: project,
+            sha: pipeline_for_second_branch.sha,
+            ref: pipeline_for_second_branch.ref
+          )
         end
 
         subject { project.latest_pipeline(second_branch.name, second_branch.target) }
@@ -4442,21 +4441,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:project) { create(:project) }
 
       let!(:default_cluster) do
-        create(:cluster,
-                :not_managed,
-                platform_type: :kubernetes,
-                projects: [project],
-                environment_scope: '*',
-                platform_kubernetes: default_cluster_kubernetes)
+        create(
+          :cluster,
+          :not_managed,
+          platform_type: :kubernetes,
+          projects: [project],
+          environment_scope: '*',
+          platform_kubernetes: default_cluster_kubernetes
+        )
       end
 
       let!(:review_env_cluster) do
-        create(:cluster,
-                :not_managed,
-                platform_type: :kubernetes,
-                projects: [project],
-                environment_scope: 'review/*',
-                platform_kubernetes: review_env_cluster_kubernetes)
+        create(
+          :cluster,
+          :not_managed,
+          platform_type: :kubernetes,
+          projects: [project],
+          environment_scope: 'review/*',
+          platform_kubernetes: review_env_cluster_kubernetes
+        )
       end
 
       let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
@@ -6572,12 +6575,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'does not allow access to branches for which the merge request was closed' do
-        create(:merge_request, :closed,
-               target_project: target_project,
-               target_branch: 'target-branch',
-               source_project: project,
-               source_branch: 'rejected-feature-1',
-               allow_collaboration: true)
+        create(
+          :merge_request, :closed,
+          target_project: target_project,
+          target_branch: 'target-branch',
+          source_project: project,
+          source_branch: 'rejected-feature-1',
+          allow_collaboration: true
+        )
 
         expect(project.branch_allows_collaboration?(user, 'rejected-feature-1'))
           .to be_falsy
@@ -6612,8 +6617,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'returns the classification label if it was configured on the project' do
       enable_external_authorization_service_check
 
-      project = build(:project,
-                      external_authorization_classification_label: 'hello')
+      project = build(:project, external_authorization_classification_label: 'hello')
 
       expect(project.external_authorization_classification_label)
         .to eq('hello')
@@ -9066,16 +9070,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   def create_pipeline(project, status = 'success')
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.sha,
-                         ref: project.default_branch,
-                         status: status)
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: project.commit.sha,
+      ref: project.default_branch,
+      status: status
+    )
   end
 
   def create_build(new_pipeline = pipeline, name = 'test')
-    create(:ci_build, :success, :artifacts,
-           pipeline: new_pipeline,
-           status: new_pipeline.status,
-           name: name)
+    create(
+      :ci_build, :success, :artifacts,
+      pipeline: new_pipeline,
+      status: new_pipeline.status,
+      name: name
+    )
   end
 end

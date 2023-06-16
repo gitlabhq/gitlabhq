@@ -83,9 +83,11 @@ module QA
           def delete_issue
             has_delete_issue_button?
 
-            click_element(:delete_issue_button,
-                          Page::Modal::DeleteIssue,
-                          wait: Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+            click_element(
+              :delete_issue_button,
+              Page::Modal::DeleteIssue,
+              wait: Support::Repeater::DEFAULT_MAX_WAIT_TIME
+            )
 
             Page::Modal::DeleteIssue.perform(&:confirm_delete_issue)
 

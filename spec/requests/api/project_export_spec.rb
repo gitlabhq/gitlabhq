@@ -284,7 +284,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
             stub_application_setting(project_download_export_limit: 1)
           end
 
-          it 'throttles downloads within same namespaces' do
+          it 'throttles downloads within same namespaces', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413230' do
             # simulate prior request to the same namespace, which increments the rate limit counter for that scope
             Gitlab::ApplicationRateLimiter.throttled?(:project_download_export, scope: [user, project_finished.namespace])
 

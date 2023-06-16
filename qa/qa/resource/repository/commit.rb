@@ -5,12 +5,12 @@ module QA
     module Repository
       class Commit < Base
         attr_accessor :author_email,
-                      :author_name,
-                      :branch,
-                      :commit_message,
-                      :file_path,
-                      :sha,
-                      :start_branch
+          :author_name,
+          :branch,
+          :commit_message,
+          :file_path,
+          :sha,
+          :start_branch
 
         attribute :short_id
 

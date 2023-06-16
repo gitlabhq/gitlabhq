@@ -5,8 +5,8 @@ module QA
     module Repository
       class Push < Base
         attr_accessor :file_name, :file_content, :commit_message,
-                      :branch_name, :new_branch, :output, :repository_http_uri,
-                      :repository_ssh_uri, :ssh_key, :user, :use_lfs, :tag_name
+          :branch_name, :new_branch, :output, :repository_http_uri,
+          :repository_ssh_uri, :ssh_key, :user, :use_lfs, :tag_name
 
         attr_writer :remote_branch, :gpg_key_id, :merge_request_push_options
 

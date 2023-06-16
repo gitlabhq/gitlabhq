@@ -26,8 +26,11 @@ RSpec.describe QA::Support::Loglinking do
       context 'and both Sentry and Kibana exist for the logging environment' do
         let(:sentry) { instance_double(QA::Support::SystemLogs::Sentry, url: sentry_url) }
         let(:kibana) do
-          instance_double(QA::Support::SystemLogs::Kibana,
-                          discover_url: discover_url, dashboard_url: dashboard_url)
+          instance_double(
+            QA::Support::SystemLogs::Kibana,
+            discover_url: discover_url,
+            dashboard_url: dashboard_url
+          )
         end
 
         it 'returns both Sentry and Kibana URLs' do
@@ -43,8 +46,11 @@ RSpec.describe QA::Support::Loglinking do
       context 'and only Sentry exists for the logging environment' do
         let(:sentry) { instance_double(QA::Support::SystemLogs::Sentry, url: sentry_url) }
         let(:kibana) do
-          instance_double(QA::Support::SystemLogs::Kibana,
-                          discover_url: nil, dashboard_url: nil)
+          instance_double(
+            QA::Support::SystemLogs::Kibana,
+            discover_url: nil,
+            dashboard_url: nil
+          )
         end
 
         it 'returns only Sentry URL' do
@@ -58,8 +64,11 @@ RSpec.describe QA::Support::Loglinking do
       context 'and only Kibana exists for the logging environment' do
         let(:sentry) { instance_double(QA::Support::SystemLogs::Sentry, url: nil) }
         let(:kibana) do
-          instance_double(QA::Support::SystemLogs::Kibana,
-                          discover_url: discover_url, dashboard_url: dashboard_url)
+          instance_double(
+            QA::Support::SystemLogs::Kibana,
+            discover_url: discover_url,
+            dashboard_url: dashboard_url
+          )
         end
 
         it 'returns only Kibana Discover and Dashboard URLs' do

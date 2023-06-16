@@ -3,8 +3,7 @@
 module QA
   module Resource
     class RegistryRepository < Base
-      attr_accessor :name,
-                    :tag_name
+      attr_accessor :name, :tag_name
 
       attribute :project do
         Project.fabricate_via_api! do |resource|
