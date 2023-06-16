@@ -127,7 +127,7 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
 
     it 'deletes a runner' do
       within_modal do
-        click_on 'Delete runner'
+        click_on 'Permanently delete runner'
       end
 
       expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)

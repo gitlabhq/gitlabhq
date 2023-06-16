@@ -14,7 +14,7 @@ This guide talks about how to read and use these system log files.
 
 Read more about the log system and using the logs:
 
-- [Customize logging on Omnibus GitLab installations](https://docs.gitlab.com/omnibus/settings/logs.html)
+- [Customize logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
 including adjusting log retention, log forwarding,
 switching logs from JSON to plain text logging, and more.
 - [How to parse and analyze JSON logs](../logs/log_parsing.md).
@@ -88,7 +88,7 @@ except those captured by `runit`.
 | [Alertmanager logs](#alertmanager-logs)         | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [crond logs](#crond-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Gitaly](#gitaly-logs)                          | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| [GitLab Exporter for Omnibus](#gitlab-exporter) | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [GitLab Exporter for Linux package installations](#gitlab-exporter) | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [GitLab Pages logs](#pages-logs)                | **{check-circle}** Yes  | **{check-circle}** Yes  |
 | GitLab Rails                                    | **{check-circle}** Yes  | **{dotted-circle}** No  |
 | [GitLab Shell logs](#gitlab-shelllog)           | **{check-circle}** Yes  | **{dotted-circle}** No  |
@@ -107,10 +107,10 @@ except those captured by `runit`.
 
 ## `production_json.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production_json.log`
-- Installations from source: `/home/git/gitlab/log/production_json.log`
+- `/var/log/gitlab/gitlab-rails/production_json.log` on Linux package installations.
+- `/home/git/gitlab/log/production_json.log` on self-compiled installations.
 
 It contains a structured log for Rails controller requests received from
 GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/).
@@ -264,10 +264,10 @@ Starting with GitLab 12.5, if an error occurs, an
 
 ## `production.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/production.log`
-- Installations from source: `/home/git/gitlab/log/production.log`
+- `/var/log/gitlab/gitlab-rails/production.log` on Linux package installations.
+- `/home/git/gitlab/log/production.log` on self-compiled installations.
 
 It contains information about all performed requests. You can see the
 URL and type of request, IP address, and what parts of code were
@@ -300,10 +300,10 @@ The request was processed by `Projects::TreeController`.
 
 ## `api_json.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/api_json.log`
-- Installations from source: `/home/git/gitlab/log/api_json.log`
+- `/var/log/gitlab/gitlab-rails/api_json.log` on Linux package installations.
+- `/home/git/gitlab/log/api_json.log` on self-compiled installations.
 
 It helps you see requests made directly to the API. For example:
 
@@ -354,10 +354,10 @@ process on Redis or external HTTP, not only the serialization process.
 
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111046) in GitLab 15.10.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application.log`
-- Installations from source: `/home/git/gitlab/log/application.log`
+- `/var/log/gitlab/gitlab-rails/application.log` on Linux package installations.
+- `/home/git/gitlab/log/application.log` on self-compiled installations.
 
 It contains a less structured version of the logs in
 [`application_json.log`](#application_jsonlog), like this example:
@@ -374,10 +374,10 @@ October 07, 2014 11:25: Project "project133" was removed
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22812) in GitLab 12.7.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application_json.log`
-- Installations from source: `/home/git/gitlab/log/application_json.log`
+- `/var/log/gitlab/gitlab-rails/application_json.log` on Linux package installations.
+- `/home/git/gitlab/log/application_json.log` on self-compiled installations.
 
 It helps you discover events happening in your instance such as user creation
 and project deletion. For example:
@@ -399,10 +399,10 @@ and project deletion. For example:
 
 ## `integrations_json.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/integrations_json.log`
-- Installations from source: `/home/git/gitlab/log/integrations_json.log`
+- `/var/log/gitlab/gitlab-rails/integrations_json.log` on Linux package installations.
+- `/home/git/gitlab/log/integrations_json.log` on self-compiled installations.
 
 It contains information about [integration](../../user/project/integrations/index.md)
 activities, such as Jira, Asana, and irker services. It uses JSON format,
@@ -434,19 +434,19 @@ like this example:
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/kubernetes.log`
-- Installations from source: `/home/git/gitlab/log/kubernetes.log`
+- `/var/log/gitlab/gitlab-rails/kubernetes.log` on Linux package installations.
+- `/home/git/gitlab/log/kubernetes.log` on self-compiled installations.
 
 It logs information related to [certificate-based clusters](../../user/project/clusters/index.md), such as connectivity errors. Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 
 ## `git_json.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/git_json.log`
-- Installations from source: `/home/git/gitlab/log/git_json.log`
+- `/var/log/gitlab/gitlab-rails/git_json.log` on Linux package installations.
+- `/home/git/gitlab/log/git_json.log` on self-compiled installations.
 
 After GitLab version 12.2, this file was renamed from `githost.log` to
 `git_json.log` and stored in JSON format.
@@ -472,10 +472,10 @@ NOTE:
 GitLab Free tracks a small number of different audit events.
 GitLab Premium tracks many more.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/audit_json.log`
-- Installations from source: `/home/git/gitlab/log/audit_json.log`
+- `/var/log/gitlab/gitlab-rails/audit_json.log` on Linux package installations.
+- `/home/git/gitlab/log/audit_json.log` on self-compiled installations.
 
 Changes to group or project settings and memberships (`target_details`)
 are logged to this file. For example:
@@ -499,18 +499,15 @@ are logged to this file. For example:
 
 ## Sidekiq logs
 
-NOTE:
-In Omnibus GitLab `12.10` or earlier, the Sidekiq log is at `/var/log/gitlab/gitlab-rails/sidekiq.log`.
-
-For Omnibus GitLab installations, some Sidekiq logs are in `/var/log/gitlab/sidekiq/current`
+For Linux package installations, some Sidekiq logs are in `/var/log/gitlab/sidekiq/current`
 and as follows.
 
 ### `sidekiq.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/sidekiq/current`
-- Installations from source: `/home/git/gitlab/log/sidekiq.log`
+- `/var/log/gitlab/sidekiq/current` on Linux package installations.
+- `/home/git/gitlab/log/sidekiq.log` on self-compiled installations.
 
 GitLab uses background jobs for processing tasks which can take a long
 time. All information about processing these jobs are written down to
@@ -549,7 +546,7 @@ Sidekiq. For example:
 }
 ```
 
-For Omnibus GitLab installations, add the configuration option:
+For Linux package installations, add the configuration option:
 
 ```ruby
 sidekiq['log_format'] = 'json'
@@ -568,10 +565,10 @@ For installations from source, edit the `gitlab.yml` and set the Sidekiq
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26586) in GitLab 12.9.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/sidekiq_client.log`
-- Installations from source: `/home/git/gitlab/log/sidekiq_client.log`
+- `/var/log/gitlab/gitlab-rails/sidekiq_client.log` on Linux package installations.
+- `/home/git/gitlab/log/sidekiq_client.log` on self-compiled installations.
 
 This file contains logging information about jobs before Sidekiq starts
 processing them, such as before being enqueued.
@@ -584,8 +581,6 @@ you've configured this for Sidekiq as mentioned above.
 
 GitLab Shell is used by GitLab for executing Git commands and provide SSH
 access to Git repositories.
-
-### For GitLab versions 12.10 and up
 
 Information containing `git-{upload-pack,receive-pack}` requests is at
 `/var/log/gitlab/gitlab-shell/gitlab-shell.log`. Information about hooks to
@@ -640,55 +635,18 @@ Example log entries for `/var/log/gitlab/gitaly/current`:
 }
 ```
 
-### For GitLab versions 12.5 through 12.9
-
-For GitLab 12.5 to 12.9, depending on your installation method, this
-file is located at:
-
-- Omnibus GitLab: `/var/log/gitlab/gitaly/gitlab-shell.log`
-- Installation from source: `/home/git/gitaly/gitlab-shell.log`
-
-Example log entries:
-
-```json
-{
-  "method": "POST",
-  "url": "http://127.0.0.1:8080/api/v4/internal/post_receive",
-  "duration": 0.031809164,
-  "gitaly_embedded": true,
-  "pid": 27056,
-  "level": "info",
-  "msg": "finished HTTP request",
-  "time": "2020-04-17T16:24:38+00:00"
-}
-```
-
-### For GitLab 12.5 and earlier
-
-For GitLab 12.5 and earlier, the file is at `/var/log/gitlab/gitlab-shell/gitlab-shell.log`.
-
-Example log entries:
-
-```plaintext
-I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git at </var/opt/gitlab/git-data/repositories/root/dcdcdcdcd.git>.
-I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and symlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
-```
-
-User clone/fetch activity using SSH transport appears in this log as
-`executing git command <gitaly-upload-pack...`.
-
 ## Gitaly logs
 
 This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/).
-`runit` is packaged with Omnibus GitLab and a brief explanation of its purpose
-is available [in the Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/architecture/#runit).
+`runit` is packaged with the Linux package and a brief explanation of its purpose
+is available [in the Linux package documentation](https://docs.gitlab.com/omnibus/architecture/#runit).
 [Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in
 Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 
 ### `grpc.log`
 
-This file is at `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab
-packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
+This file is at `/var/log/gitlab/gitlab-rails/grpc.log` for Linux
+package installations. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 
 ### `gitaly_hooks.log`
 
@@ -700,34 +658,34 @@ failures received during processing of the responses from GitLab API.
 
 ### `puma_stdout.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/puma/puma_stdout.log`
-- Installations from source: `/home/git/gitlab/log/puma_stdout.log`
+- `/var/log/gitlab/puma/puma_stdout.log` on Linux package installations.
+- `/home/git/gitlab/log/puma_stdout.log` on self-compiled installations.
 
 ### `puma_stderr.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/puma/puma_stderr.log`
-- Installations from source: `/home/git/gitlab/log/puma_stderr.log`
+- `/var/log/gitlab/puma/puma_stderr.log` on Linux package installations.
+- `/home/git/gitlab/log/puma_stderr.log` on self-compiled installations.
 
 ## `repocheck.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/repocheck.log`
-- Installations from source: `/home/git/gitlab/log/repocheck.log`
+- `/var/log/gitlab/gitlab-rails/repocheck.log` on Linux package installations.
+- `/home/git/gitlab/log/repocheck.log` on self-compiled installations.
 
 It logs information whenever a [repository check is run](../repository_checks.md)
 on a project.
 
 ## `importer.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/importer.log`
-- Installations from source: `/home/git/gitlab/log/importer.log`
+- `/var/log/gitlab/gitlab-rails/importer.log` on Linux package installations.
+- `/home/git/gitlab/log/importer.log` on self-compiled installations.
 
 This file logs the progress of [project imports and migrations](../../user/project/import/index.md).
 
@@ -735,10 +693,10 @@ This file logs the progress of [project imports and migrations](../../user/proje
 
 > Introduced in GitLab 13.1.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/exporter.log`
-- Installations from source: `/home/git/gitlab/log/exporter.log`
+- `/var/log/gitlab/gitlab-rails/exporter.log` on Linux package installations.
+- `/home/git/gitlab/log/exporter.log` on self-compiled installations.
 
 It logs the progress of the export process.
 
@@ -746,10 +704,10 @@ It logs the progress of the export process.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 13.7.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/features_json.log`
-- Installations from source: `/home/git/gitlab/log/features_json.log`
+- `/var/log/gitlab/gitlab-rails/features_json.log` on Linux package installations.
+- `/home/git/gitlab/log/features_json.log` on self-compiled installations.
 
 The modification events from [Feature flags in development of GitLab](../../development/feature_flags/index.md)
 are recorded in this file. For example:
@@ -771,10 +729,10 @@ are recorded in this file. For example:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/ci_resource_group_json.log`
-- Installations from source: `/home/git/gitlab/log/ci_resource_group_json.log`
+- `/var/log/gitlab/gitlab-rails/ci_resource_group_json.log` on Linux package installations.
+- `/home/git/gitlab/log/ci_resource_group_json.log` on self-compiled installations.
 
 It contains information about [resource group](../../ci/resource_groups/index.md) acquisition. For example:
 
@@ -789,10 +747,10 @@ The examples show the `resource_group_id`, `processable_id`, `message`, and `suc
 
 > Introduced in GitLab 12.0.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/auth.log`
-- Installations from source: `/home/git/gitlab/log/auth.log`
+- `/var/log/gitlab/gitlab-rails/auth.log` on Linux package installations.
+- `/home/git/gitlab/log/auth.log` on self-compiled installations.
 
 This log records:
 
@@ -803,10 +761,10 @@ This log records:
 
 ## `auth_json.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/auth_json.log`
-- Installations from source: `/home/git/gitlab/log/auth_json.log`
+- `/var/log/gitlab/gitlab-rails/auth_json.log` on Linux package installations.
+- `/home/git/gitlab/log/auth_json.log` on self-compiled installations.
 
 This file contains the JSON version of the logs in `auth.log`, for example:
 
@@ -827,10 +785,10 @@ This file contains the JSON version of the logs in `auth.log`, for example:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 12.0.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/graphql_json.log`
-- Installations from source: `/home/git/gitlab/log/graphql_json.log`
+- `/var/log/gitlab/gitlab-rails/graphql_json.log` on Linux package installations.
+- `/home/git/gitlab/log/graphql_json.log` on self-compiled installations.
 
 GraphQL queries are recorded in the file. For example:
 
@@ -842,10 +800,10 @@ GraphQL queries are recorded in the file. For example:
 
 > Introduced in GitLab 12.3.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/migrations.log`
-- Installations from source: `/home/git/gitlab/log/migrations.log`
+- `/var/log/gitlab/gitlab-rails/migrations.log` on Linux package installations.
+- `/home/git/gitlab/log/migrations.log` on self-compiled installations.
 
 This file logs the progress of [database migrations](../raketasks/maintenance.md#display-status-of-database-migrations).
 
@@ -853,19 +811,19 @@ This file logs the progress of [database migrations](../raketasks/maintenance.md
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/mailroom/current`
-- Installations from source: `/home/git/gitlab/log/mail_room_json.log`
+- `/var/log/gitlab/mailroom/current` on Linux package installations.
+- `/home/git/gitlab/log/mail_room_json.log` on self-compiled installations.
 
 This structured log file records internal activity in the `mail_room` gem.
 Its name and path are configurable, so the name and path may not match the above.
 
 ## Reconfigure logs
 
-Reconfigure log files are in `/var/log/gitlab/reconfigure` for Omnibus GitLab
-packages. Installations from source don't have reconfigure logs. A reconfigure log
-is populated whenever `gitlab-ctl reconfigure` is run manually or as part of an upgrade.
+Reconfigure log files are in `/var/log/gitlab/reconfigure` for Linux package installations. Self-compiled installations
+don't have reconfigure logs. A reconfigure log is populated whenever `gitlab-ctl reconfigure` is run manually or as part
+of an upgrade.
 
 Reconfigure logs files are named according to the UNIX timestamp of when the reconfigure
 was initiated, such as `1509705644.log`
@@ -875,34 +833,32 @@ was initiated, such as `1509705644.log`
 If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq
 starts a Web server and listen to the defined port (default:
 `8082`). By default, Sidekiq Exporter access logs are disabled but can
-be enabled based on your installation method:
+be enabled:
 
-- Omnibus GitLab: Use the `sidekiq['exporter_log_enabled'] = true`
-  option in `/etc/gitlab/gitlab.rb`
-- Installations from source: Use the `sidekiq_exporter.log_enabled` option
-  in `gitlab.yml`
+- Use the `sidekiq['exporter_log_enabled'] = true` option in `/etc/gitlab/gitlab.rb` on Linux package installations.
+- Use the `sidekiq_exporter.log_enabled` option in `gitlab.yml` on self-compiled installations.
 
 When enabled, depending on your installation method, this file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log`
-- Installations from source: `/home/git/gitlab/log/sidekiq_exporter.log`
+- `/var/log/gitlab/gitlab-rails/sidekiq_exporter.log` on Linux package installations.
+- `/home/git/gitlab/log/sidekiq_exporter.log` on self-compiled installations.
 
 If Prometheus metrics and the Web Exporter are both enabled, Puma
 starts a Web server and listen to the defined port (default: `8083`), and access logs
 are generated in a location based on your installation method:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/web_exporter.log`
-- Installations from source: `/home/git/gitlab/log/web_exporter.log`
+- `/var/log/gitlab/gitlab-rails/web_exporter.log` on Linux package installations.
+- `/home/git/gitlab/log/web_exporter.log` on self-compiled installations.
 
 ## `database_load_balancing.log` **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
 Contains details of GitLab [Database Load Balancing](../postgresql/database_load_balancing.md).
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/database_load_balancing.log`
-- Installations from source: `/home/git/gitlab/log/database_load_balancing.log`
+- `/var/log/gitlab/gitlab-rails/database_load_balancing.log` on Linux package installations.
+- `/home/git/gitlab/log/database_load_balancing.log` on self-compiled installations.
 
 ## `zoekt.log` **(PREMIUM SELF)**
 
@@ -912,21 +868,20 @@ This file logs information related to the
 [Exact code search](../../user/search/exact_code_search.md) feature which is
 powered by Zoekt.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/zoekt.log`
-- Installations from source: `/home/git/gitlab/log/zoekt.log`
+- `/var/log/gitlab/gitlab-rails/zoekt.log` on Linux package installations.
+- `/home/git/gitlab/log/zoekt.log` on self-compiled installations.
 
 ## `elasticsearch.log` **(PREMIUM SELF)**
 
 > Introduced in GitLab 12.6.
 
 This file logs information related to the Elasticsearch Integration, including
-errors during indexing or searching Elasticsearch. Depending on your installation
-method, this file is located at:
+errors during indexing or searching Elasticsearch. This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/elasticsearch.log`
-- Installations from source: `/home/git/gitlab/log/elasticsearch.log`
+- `/var/log/gitlab/gitlab-rails/elasticsearch.log` on Linux package installations.
+- `/home/git/gitlab/log/elasticsearch.log` on self-compiled installations.
 
 Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 Line breaks have been added to the following example line for clarity:
@@ -952,10 +907,10 @@ Line breaks have been added to the following example line for clarity:
 This file logs the information about exceptions being tracked by
 `Gitlab::ErrorTracking`, which provides a standard and consistent way of
 [processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/logging.md#exception-handling).
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/exceptions_json.log`
-- Installations from source: `/home/git/gitlab/log/exceptions_json.log`
+- `/var/log/gitlab/gitlab-rails/exceptions_json.log` on Linux package installations.
+- `/home/git/gitlab/log/exceptions_json.log` on self-compiled installations.
 
 Each line contains JSON that can be ingested by Elasticsearch. For example:
 
@@ -980,10 +935,10 @@ Each line contains JSON that can be ingested by Elasticsearch. For example:
 
 > Introduced in GitLab 13.0.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/service_measurement.log`
-- Installations from source: `/home/git/gitlab/log/service_measurement.log`
+- `/var/log/gitlab/gitlab-rails/service_measurement.log` on Linux package installations.
+- `/home/git/gitlab/log/service_measurement.log` on self-compiled installations.
 
 It contains only a single structured log with measurements for each service execution.
 It contains measurements such as the number of SQL calls, `execution_time`, `gc_stats`, and `memory usage`.
@@ -1013,10 +968,10 @@ This message shows that Geo detected that a repository update was needed for pro
 
 ## `update_mirror_service_json.log`
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/update_mirror_service_json.log`
-- Installations from source: `/home/git/gitlab/log/update_mirror_service_json.log`
+- `/var/log/gitlab/gitlab-rails/update_mirror_service_json.log` on Linux package installations.
+- `/home/git/gitlab/log/update_mirror_service_json.log` on self-compiled installations.
 
 This file contains information about LFS errors that occurred during project mirroring.
 While we work to move other project mirroring errors into this log, the [general log](#productionlog)
@@ -1041,18 +996,18 @@ can be used.
 The `llm.log` file logs information related to
 [AI features](../../user/ai_features.md).
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/llm.log`
-- Installations from source: `/home/git/gitlab/log/llm.log`
+- `/var/log/gitlab/gitlab-rails/llm.log` on Linux package installations.
+- `/home/git/gitlab/log/llm.log` on self-compiled installations.
 
 ## Registry logs
 
-For Omnibus GitLab installations, Container Registry logs are in `/var/log/gitlab/registry/current`.
+For Linux package installations, Container Registry logs are in `/var/log/gitlab/registry/current`.
 
 ## NGINX logs
 
-For Omnibus GitLab installations, NGINX logs are in:
+For Linux package installations, NGINX logs are in:
 
 - `/var/log/gitlab/nginx/gitlab_access.log`: A log of requests made to GitLab
 - `/var/log/gitlab/nginx/gitlab_error.log`: A log of NGINX errors for GitLab
@@ -1075,7 +1030,7 @@ for sensitive query string parameters such as secret tokens.
 
 ## Pages logs
 
-For Omnibus GitLab installations, Pages logs are in `/var/log/gitlab/gitlab-pages/current`.
+For Linux package installations, Pages logs are in `/var/log/gitlab/gitlab-pages/current`.
 
 For example:
 
@@ -1104,67 +1059,67 @@ For example:
 
 ## Mattermost logs
 
-For Omnibus GitLab installations, Mattermost logs are in these locations:
+For Linux package installations, Mattermost logs are in these locations:
 
 - `/var/log/gitlab/mattermost/mattermost.log`
 - `/var/log/gitlab/mattermost/current`
 
 ## Workhorse logs
 
-For Omnibus GitLab installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
+For Linux package installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
 
 ## PgBouncer logs
 
-For Omnibus GitLab installations, PgBouncer logs are in `/var/log/gitlab/pgbouncer/current`.
+For Linux package installations, PgBouncer logs are in `/var/log/gitlab/pgbouncer/current`.
 
 ## PostgreSQL logs
 
-For Omnibus GitLab installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/current`.
+For Linux package installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/current`.
 
 ## Prometheus logs
 
-For Omnibus GitLab installations, Prometheus logs are in `/var/log/gitlab/prometheus/current`.
+For Linux package installations, Prometheus logs are in `/var/log/gitlab/prometheus/current`.
 
 ## Redis logs
 
-For Omnibus GitLab installations, Redis logs are in `/var/log/gitlab/redis/current`.
+For Linux package installations, Redis logs are in `/var/log/gitlab/redis/current`.
 
 ## Alertmanager logs
 
-For Omnibus GitLab installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/current`.
+For Linux package installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/current`.
 
 <!-- vale gitlab.Spelling = NO -->
 
 ## crond logs
 
-For Omnibus GitLab installations, crond logs are in `/var/log/gitlab/crond/`.
+For Linux package installations, crond logs are in `/var/log/gitlab/crond/`.
 
 <!-- vale gitlab.Spelling = YES -->
 
 ## Grafana logs
 
-For Omnibus GitLab installations, Grafana logs are in `/var/log/gitlab/grafana/current`.
+For Linux package installations, Grafana logs are in `/var/log/gitlab/grafana/current`.
 
 ## LogRotate logs
 
-For Omnibus GitLab installations, `logrotate` logs are in `/var/log/gitlab/logrotate/current`.
+For Linux package installations, `logrotate` logs are in `/var/log/gitlab/logrotate/current`.
 
 ## GitLab Monitor logs
 
-For Omnibus GitLab installations, GitLab Monitor logs are in `/var/log/gitlab/gitlab-monitor/`.
+For Linux package installations, GitLab Monitor logs are in `/var/log/gitlab/gitlab-monitor/`.
 
 ## GitLab Exporter
 
-For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/current`.
+For Linux package installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/current`.
 
 ## GitLab agent server
 
-For Omnibus GitLab installations, GitLab agent server logs are
+For Linux package installations, GitLab agent server logs are
 in `/var/log/gitlab/gitlab-kas/current`.
 
 ## Praefect logs
 
-For Omnibus GitLab installations, Praefect logs are in `/var/log/gitlab/praefect/`.
+For Linux package installations, Praefect logs are in `/var/log/gitlab/praefect/`.
 
 GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#monitor-gitaly-cluster).
 
@@ -1180,10 +1135,10 @@ This log is populated when a [GitLab backup is created](../../raketasks/backup_r
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
 
-Depending on your installation method, this file is located at:
+This file is located at:
 
-- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/performance_bar_json.log`
-- Installations from source: `/home/git/gitlab/log/performance_bar_json.log`
+- `/var/log/gitlab/gitlab-rails/performance_bar_json.log` on Linux package installations.
+- `/home/git/gitlab/log/performance_bar_json.log` on self-compiled installations.
 
 Performance bar statistics (currently only duration of SQL queries) are recorded
 in that file. For example:

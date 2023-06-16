@@ -155,6 +155,21 @@ These three variables will be removed in GitLab 17.0.
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Deprecate Windows CMD in GitLab Runner
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.1</span>
+- End of Support: GitLab <span class="milestone">17.0</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414864).
+</div>
+
+In GitLab 11.11 the Windows Batch executor, the CMD shell was deprecated in GitLab Runner in favor of PowerShell. Since then, the CMD shell has continued to be supported in GitLab Runner. However this has resulted in additional complexity for both the engineering team and customers using the Runner on Windows. We plan to fully remove support for Windows CMD from GitLab Runner in 17.0. Customers should plan to use PowerShell when using the runner on Windows with the shell executor. Customers can provide feedback or ask questions in the removal issue, [issue 29479](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29479).
+
+</div>
+
 <div class="deprecation " data-milestone="17.0">
 
 ### Deprecate legacy shell escaping and quoting runner shell executor

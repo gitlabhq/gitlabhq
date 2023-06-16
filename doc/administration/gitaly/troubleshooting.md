@@ -86,7 +86,7 @@ check for an SSL or TLS problem:
 ```
 
 Check whether `Verify return code` field indicates a
-[known Omnibus GitLab configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+[known Linux package installation configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
 check [certificate requirements](configure_gitaly.md#certificate-requirements) for Gitaly.
@@ -94,7 +94,7 @@ check [certificate requirements](configure_gitaly.md#certificate-requirements) f
 ### Server side gRPC logs
 
 gRPC tracing can also be enabled in Gitaly itself with the `GODEBUG=http2debug`
-environment variable. To set this in an Omnibus GitLab install:
+environment variable. To set this in a Linux package installation:
 
 1. Add the following to your `gitlab.rb` file:
 

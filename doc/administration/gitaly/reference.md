@@ -7,11 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Gitaly reference **(FREE SELF)**
 
 Gitaly is configured via a [TOML](https://github.com/toml-lang/toml)
-configuration file. Unlike installations from source, in Omnibus GitLab, you
-would not edit this file directly. For Omnibus GitLab installations, the default file location is `/var/opt/gitlab/gitaly/config.toml`.
+configuration file. Unlike self-compiled installations, in Linux package installations you
+would not edit this file directly. For Linux package installations, the default file location is `/var/opt/gitlab/gitaly/config.toml`.
 
-The configuration file is passed as an argument to the `gitaly` executable, which is usually done by either Omnibus
-GitLab or your [init](https://en.wikipedia.org/wiki/Init) script.
+The configuration file is passed as an argument to the `gitaly` executable, which is usually done by either your Linux
+package installation or your [init](https://en.wikipedia.org/wiki/Init) script.
 
 An [example configuration file](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example)
 can be found in the Gitaly project.

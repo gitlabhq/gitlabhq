@@ -109,8 +109,6 @@ module Spammable
       _('comment')
     when Snippet
       _('snippet')
-    when Note
-      _('comment')
     else
       self.class.model_name.human.downcase
     end

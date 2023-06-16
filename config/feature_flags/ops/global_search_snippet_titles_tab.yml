@@ -1,0 +1,8 @@
+---
+name: global_search_snippet_titles_tab
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123668
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415353
+milestone: '16.1'
+type: ops
+group: group::global search
+default_enabled: true

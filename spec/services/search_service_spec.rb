@@ -485,6 +485,8 @@ RSpec.describe SearchService, feature_category: :global_search do
       'issues'         | :global_search_issues_tab         | true  | true
       'merge_requests' | :global_search_merge_requests_tab | false | false
       'merge_requests' | :global_search_merge_requests_tab | true  | true
+      'snippet_titles' | :global_search_snippet_titles_tab | false | false
+      'snippet_titles' | :global_search_snippet_titles_tab | true  | true
       'wiki_blobs'     | :global_search_wiki_tab           | false | false
       'wiki_blobs'     | :global_search_wiki_tab           | true  | true
       'users'          | :global_search_users_tab          | false | false
@@ -496,6 +498,26 @@ RSpec.describe SearchService, feature_category: :global_search do
       it 'returns false when feature_flag is not enabled and returns true when feature_flag is enabled' do
         stub_feature_flags(feature_flag => enabled)
         expect(subject.global_search_enabled_for_scope?).to eq expected
+      end
+    end
+
+    context 'when snippet search is enabled' do
+      let(:scope) { 'snippet_titles' }
+
+      before do
+        allow(described_class).to receive(:show_snippets?).and_return(true)
+      end
+
+      it 'returns false when feature_flag is not enabled' do
+        stub_feature_flags(global_search_snippet_titles_tab: false)
+
+        expect(subject.global_search_enabled_for_scope?).to eq false
+      end
+
+      it 'returns true when feature_flag is enabled' do
+        stub_feature_flags(global_search_snippet_titles_tab: true)
+
+        expect(subject.global_search_enabled_for_scope?).to eq true
       end
     end
   end

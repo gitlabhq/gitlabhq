@@ -42,7 +42,6 @@ module Grafana
 
     private
 
-    # See defaults in Banzai::Filter::InlineGrafanaMetricsFilter.
     def validate_query_params!
       return if [:from, :to].all? { |param| query_params.include?(param) }
 

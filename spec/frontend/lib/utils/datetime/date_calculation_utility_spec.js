@@ -1,5 +1,6 @@
 import {
   getDateWithUTC,
+  getCurrentUtcDate,
   newDateAsLocaleTime,
   nSecondsAfter,
   nSecondsBefore,
@@ -82,5 +83,13 @@ describe('isToday', () => {
     it('returns `false`', () => {
       expect(isToday(new Date(2022, 11, 6))).toBe(false);
     });
+  });
+});
+
+describe('getCurrentUtcDate', () => {
+  useFakeDate(2022, 11, 5, 10, 10);
+
+  it('returns the date at midnight', () => {
+    expect(getCurrentUtcDate()).toEqual(new Date('2022-12-05T00:00:00.000Z'));
   });
 });

@@ -26,7 +26,6 @@ module Banzai
           Filter::AudioLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
-          *metrics_filters,
           Filter::TableOfContentsFilter,
           Filter::TableOfContentsTagFilter,
           Filter::AutolinkFilter,
@@ -41,14 +40,6 @@ module Banzai
           Filter::InlineObservabilityFilter,
           Filter::SetDirectionFilter,
           Filter::SyntaxHighlightFilter # this filter should remain at the end
-        ]
-      end
-
-      def self.metrics_filters
-        [
-          Filter::InlineMetricsFilter,
-          Filter::InlineGrafanaMetricsFilter,
-          Filter::InlineClusterMetricsFilter
         ]
       end
 

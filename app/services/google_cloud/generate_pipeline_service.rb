@@ -4,6 +4,7 @@ module GoogleCloud
   class GeneratePipelineService < ::GoogleCloud::BaseService
     ACTION_DEPLOY_TO_CLOUD_RUN = 'DEPLOY_TO_CLOUD_RUN'
     ACTION_DEPLOY_TO_CLOUD_STORAGE = 'DEPLOY_TO_CLOUD_STORAGE'
+    ACTION_VISION_AI_PIPELINE = 'VISION_AI_PIPELINE'
 
     def execute
       commit_attributes = generate_commit_attributes
@@ -53,6 +54,15 @@ module GoogleCloud
           branch_name: branch_name,
           start_branch: branch_name
         }
+      when ACTION_VISION_AI_PIPELINE
+        branch_name = "vision-ai-pipeline-#{SecureRandom.hex(8)}"
+        {
+          commit_message: 'Enable Vision AI Pipeline',
+          file_path: '.gitlab-ci.yml',
+          file_content: pipeline_content('gcp/vision-ai.gitlab-ci.yml'),
+          branch_name: branch_name,
+          start_branch: branch_name
+        }
       end
     end
 
@@ -67,7 +77,11 @@ module GoogleCloud
 
     def append_remote_include(gitlab_ci_yml, include_url)
       stages = gitlab_ci_yml['stages'] || []
-      gitlab_ci_yml['stages'] = (stages + %w[build test deploy]).uniq
+      gitlab_ci_yml['stages'] = if action == ACTION_VISION_AI_PIPELINE
+                                  (stages + %w[validate detect render]).uniq
+                                else
+                                  (stages + %w[build test deploy]).uniq
+                                end
 
       includes = gitlab_ci_yml['include'] || []
       includes = Array.wrap(includes)

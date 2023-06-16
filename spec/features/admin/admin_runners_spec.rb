@@ -565,7 +565,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         click_on 'Delete runner'
 
         within_modal do
-          click_on 'Delete runner'
+          click_on 'Permanently delete runner'
         end
       end
 

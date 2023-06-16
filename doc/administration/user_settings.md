@@ -18,9 +18,9 @@ ability to create top-level groups (does not affect existing users' setting), Gi
   - The [application setting API](../api/settings.md#change-application-settings).
 - In GitLab 15.4 and earlier, in a configuration file by following the steps in this section.
 
-To disable new users' ability to create top-level groups using the configuration file:
+To disable new users' ability to create top-level groups using the configuration file.
 
-**Omnibus GitLab installations**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -30,7 +30,7 @@ To disable new users' ability to create top-level groups using the configuration
 
 1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-**Source installations**
+For self-compiled installations:
 
 1. Edit `config/gitlab.yml` and uncomment the following line:
 
@@ -50,9 +50,9 @@ Administrators can:
 ## Prevent users from changing their usernames
 
 By default, new users can change their usernames. To disable your users'
-ability to change their usernames:
+ability to change their usernames.
 
-**Omnibus GitLab installations**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -62,7 +62,7 @@ ability to change their usernames:
 
 1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-**Source installations**
+For self-compiled installations:
 
 1. Edit `config/gitlab.yml` and uncomment the following line:
 

@@ -320,7 +320,7 @@ these steps:
 
 - For PlantUML servers running v1.2020.9 and above, such as [plantuml.com](https://plantuml.com),
   you must set the `PLANTUML_ENCODING` environment variable to enable the `deflate`
-  compression. In Omnibus GitLab, you can set this value in `/etc/gitlab.rb` with
+  compression. In Linux package installations, you can set this value in `/etc/gitlab.rb` with
   this command:
 
   ```ruby

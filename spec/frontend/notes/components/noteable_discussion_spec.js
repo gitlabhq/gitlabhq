@@ -177,6 +177,23 @@ describe('noteable_discussion component', () => {
       expect(replyWrapper.exists()).toBe(true);
       expect(replyWrapper.classes('internal-note')).toBe(true);
     });
+
+    it('should add `public-note` class when the discussion is not internal', async () => {
+      const softCopyInternalNotes = [...discussionMock.notes];
+      const mockPublicNotes = softCopyInternalNotes.splice(0, 2);
+      mockPublicNotes[0].internal = false;
+
+      const mockDiscussion = {
+        ...discussionMock,
+        notes: [...mockPublicNotes],
+      };
+      wrapper.setProps({ discussion: mockDiscussion });
+      await nextTick();
+
+      const replyWrapper = wrapper.find('[data-testid="reply-wrapper"]');
+      expect(replyWrapper.exists()).toBe(true);
+      expect(replyWrapper.classes('public-note')).toBe(true);
+    });
   });
 
   describe('for resolved thread', () => {

@@ -13,7 +13,7 @@ files. The files are encrypted before being stored. This feature is enabled by d
 
 The storage location of these files defaults to:
 
-- `/var/opt/gitlab/gitlab-rails/shared/terraform_state` for Omnibus GitLab installations.
+- `/var/opt/gitlab/gitlab-rails/shared/terraform_state` for Linux package installations.
 - `/home/git/gitlab/shared/terraform_state` for source installations.
 
 These locations can be configured using the options described below.
@@ -40,7 +40,7 @@ Prerequisite:
 
 - You must be an administrator.
 
-**In Omnibus installations:**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -50,7 +50,7 @@ Prerequisite:
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-**In installations from source:**
+For self-compiled installations:
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
@@ -66,7 +66,7 @@ Prerequisite:
 The default configuration uses local storage. To change the location where
 Terraform state files are stored locally, follow the steps below.
 
-**In Omnibus installations:**
+For Linux package installations:
 
 1. To change the storage path for example to `/mnt/storage/terraform_state`, edit
    `/etc/gitlab/gitlab.rb` and add the following line:
@@ -77,7 +77,7 @@ Terraform state files are stored locally, follow the steps below.
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-**In installations from source:**
+For self-compiled installations:
 
 1. To change the storage path for example to `/mnt/storage/terraform_state`, edit
    `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
@@ -103,7 +103,7 @@ This configuration relies on valid credentials to be configured already.
 The following settings are:
 
 - Nested under `terraform_state:` and then `object_store:` on source installations.
-- Prefixed by `terraform_state_object_store_` on Omnibus GitLab installations.
+- Prefixed by `terraform_state_object_store_` on Linux package installations.
 
 | Setting | Description | Default |
 |---------|-------------|---------|
@@ -120,15 +120,15 @@ It's not possible to migrate Terraform state files from object storage back to l
 so proceed with caution. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/350187)
 to change this behavior.
 
-To migrate Terraform state files to object storage, follow the instructions below.
+To migrate Terraform state files to object storage:
 
-- For Omnibus package installations:
+- For Linux package installations:
 
   ```shell
   gitlab-rake gitlab:terraform_states:migrate
   ```
 
-- For source installations:
+- For self-compiled installations:
 
   ```shell
   sudo -u git -H bundle exec rake gitlab:terraform_states:migrate RAILS_ENV=production
@@ -152,9 +152,9 @@ For GitLab 13.8 and earlier versions, you can use a workaround for the Rake task
 You can optionally track progress and verify that all Terraform state files migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
-- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+- `sudo gitlab-rails dbconsole` for Linux package installations running GitLab 14.1 and earlier.
+- `sudo gitlab-rails dbconsole --database main` for Linux package installations running GitLab 14.2 and later.
+- `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
 
 Verify `objectstg` below (where `file_store=2`) has count of all states:
 

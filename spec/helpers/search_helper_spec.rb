@@ -1321,16 +1321,22 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'snippet_titles' do
-      where(:global_project, :global_show_snippets, :condition) do
-        ref(:project)         | true                 | false
-        nil                   | false                | false
-        ref(:project)         | false                | false
-        nil                   | true                 | true
+      where(:global_project, :global_show_snippets, :global_feature_flag_enabled, :condition) do
+        ref(:project)         | true        | false      | false
+        nil                   | false       | false      | false
+        ref(:project)         | false       | false      | false
+        nil                   | true        | false      | false
+        ref(:project)         | true        | true       | false
+        nil                   | false       | true       | false
+        ref(:project)         | false       | true       | false
+        nil                   | true        | true       | true
       end
 
       with_them do
         it 'data item condition is set correctly' do
           allow(search_service).to receive(:show_snippets?).and_return(global_show_snippets)
+          allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_snippet_titles_tab)
+            .and_return(global_feature_flag_enabled)
           @project = global_project
 
           expect(search_navigation[:snippet_titles][:condition]).to eq(condition)

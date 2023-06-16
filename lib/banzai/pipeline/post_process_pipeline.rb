@@ -15,7 +15,6 @@ module Banzai
       def self.internal_link_filters
         [
           Filter::ReferenceRedactorFilter,
-          Filter::InlineMetricsRedactorFilter,
           # UploadLinkFilter must come before RepositoryLinkFilter to
           # prevent unnecessary Gitaly calls from being made.
           Filter::UploadLinkFilter,

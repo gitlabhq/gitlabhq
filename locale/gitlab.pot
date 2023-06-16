@@ -5299,6 +5299,9 @@ msgstr ""
 msgid "Analytics|Data Table"
 msgstr ""
 
+msgid "Analytics|Dates and times are displayed in the UTC timezone"
+msgstr ""
+
 msgid "Analytics|Edit"
 msgstr ""
 
@@ -39546,6 +39549,9 @@ msgid_plural "Runners|Delete %d runners"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|Delete %{count} runners?"
+msgstr ""
+
 msgid "Runners|Delete runner"
 msgstr ""
 
@@ -39778,6 +39784,11 @@ msgid "Runners|Paused"
 msgstr ""
 
 msgid "Runners|Permanently delete %d runner"
+msgid_plural "Runners|Permanently delete %d runners"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Runners|Permanently delete runner"
 msgid_plural "Runners|Permanently delete %d runners"
 msgstr[0] ""
 msgstr[1] ""
@@ -40035,7 +40046,9 @@ msgid "Runners|The project, group or instance where the runner was registered. I
 msgstr ""
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
-msgstr ""
+msgid_plural "Runners|%d runners will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Runners|The unique ID for each runner that uses this configuration."
 msgstr ""

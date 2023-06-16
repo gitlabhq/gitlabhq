@@ -38,7 +38,7 @@ alternatives to server hooks include:
 Prerequisites:
 
 - The [storage name](gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage), path to the Gitaly configuration file
-  (default is `/var/opt/gitlab/gitaly/config.toml` on Omnibus GitLab instances), and the
+  (default is `/var/opt/gitlab/gitaly/config.toml` on Linux package instances), and the
   [repository relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
 
 To set server hooks for a repository:
@@ -79,8 +79,8 @@ To create server hooks for a repository:
      [Translate hashed storage paths](repository_storage_types.md#translate-hashed-storage-paths) for information on
      interpreting the relative path.
    - If you are not using [hashed storage](repository_storage_types.md#hashed-storage):
-     - For Omnibus GitLab installations, the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
-     - For an installation from source, the path is usually `/home/git/repositories/<group>/<project>.git`.
+     - For Linux package installations, the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
+     - For self-compiled installations, the path is usually `/home/git/repositories/<group>/<project>.git`.
 1. On the file system, create a new directory in the correct location called `custom_hooks`.
 1. In the new `custom_hooks` directory:
    - To create a single server hook, create a file with a name that matches the hook type. For example, for a
@@ -129,7 +129,7 @@ To create a Git hook that applies to all repositories, set a global server hook.
 
 Before creating a global server hook, you must choose a directory for it.
 
-For Omnibus GitLab installations, the directory is set in `gitlab.rb` under `gitaly['configuration'][:hooks][:custom_hooks_dir]`. You can either:
+For Linux package installations, the directory is set in `gitlab.rb` under `gitaly['configuration'][:hooks][:custom_hooks_dir]`. You can either:
 
 - Use the default suggestion of the `/var/opt/gitlab/gitaly/custom_hooks` directory by uncommenting it.
 - Add your own setting.

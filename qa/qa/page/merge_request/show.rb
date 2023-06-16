@@ -467,10 +467,6 @@ module QA
           click_element(:submit_commit_button)
         end
 
-        def cancel_auto_merge!
-          click_element(:cancel_auto_merge_button)
-        end
-
         def mr_widget_text
           find_element(:mr_widget_content).text
         end

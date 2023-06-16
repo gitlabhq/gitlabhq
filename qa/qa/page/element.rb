@@ -4,6 +4,8 @@ require 'active_support/core_ext/array/extract_options'
 
 module QA
   module Page
+    # Gitlab element css selector builder using data-testid attribute
+    #
     class Element
       attr_reader :name, :attributes
 
