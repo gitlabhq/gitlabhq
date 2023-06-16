@@ -12,6 +12,7 @@ const viewers = {
   sketch: () => import('./sketch_viewer.vue'),
   notebook: () => import('./notebook_viewer.vue'),
   openapi: () => import('./openapi_viewer.vue'),
+  geo_json: () => import('./geo_json/geo_json_viewer.vue'),
 };
 
 export const loadViewer = (type, isUsingLfs) => {

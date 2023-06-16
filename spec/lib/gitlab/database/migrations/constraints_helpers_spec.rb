@@ -679,4 +679,43 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
       end
     end
   end
+
+  describe '#switch_constraint_names' do
+    before do
+      ActiveRecord::Migration.connection.create_table(:_test_table) do |t|
+        t.references :supplier, foreign_key: { to_table: :_test_table, name: :supplier_fk }
+        t.references :customer, foreign_key: { to_table: :_test_table, name: :customer_fk }
+      end
+    end
+
+    context 'when inside a transaction' do
+      it 'raises an error' do
+        expect(model).to receive(:transaction_open?).and_return(true)
+
+        expect do
+          model.switch_constraint_names(:_test_table, :supplier_fk, :customer_fk)
+        end.to raise_error(RuntimeError)
+      end
+    end
+
+    context 'when outside a transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      it 'executes the statement to swap the constraint names' do
+        expect { model.switch_constraint_names(:_test_table, :supplier_fk, :customer_fk) }
+          .to change { constrained_column_for(:customer_fk) }.from(:customer_id).to(:supplier_id)
+          .and change { constrained_column_for(:supplier_fk) }.from(:supplier_id).to(:customer_id)
+      end
+
+      def constrained_column_for(fk_name)
+        Gitlab::Database::PostgresForeignKey
+          .find_by!(referenced_table_name: :_test_table, name: fk_name)
+          .constrained_columns
+          .first
+          .to_sym
+      end
+    end
+  end
 end

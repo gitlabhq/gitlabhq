@@ -16,7 +16,7 @@ Review apps:
 
 - Provide an automatic live preview of changes made in a feature branch by spinning up a dynamic environment for your merge requests.
 - Allow designers and product managers to see your changes without needing to check out your branch and run your changes in a sandbox environment.
-- Are fully integrated with the [GitLab DevOps LifeCycle](../../index.md#the-entire-devops-lifecycle).
+- Are fully integrated with the [GitLab DevOps LifeCycle](https://about.gitlab.com/stages-devops-lifecycle/).
 - Allow you to deploy your changes wherever you want.
 
 ![review apps workflow](img/continuous-delivery-review-apps.svg)

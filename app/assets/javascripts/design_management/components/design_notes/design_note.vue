@@ -152,7 +152,7 @@ export default {
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
           <gl-link
-            class="note-timestamp system-note-separator gl-display-block gl-mb-2"
+            class="note-timestamp system-note-separator gl-display-block gl-mb-2 gl-font-sm"
             :href="`#note_${noteAnchorId}`"
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />

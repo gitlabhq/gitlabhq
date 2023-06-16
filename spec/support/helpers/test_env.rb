@@ -9,7 +9,24 @@ module TestEnv
 
   ComponentFailedToInstallError = Class.new(StandardError)
 
-  # When developing the seed repository, comment out the branch you will modify.
+  # https://gitlab.com/gitlab-org/gitlab-test is used to seed your local gdk
+  # GitLab application and is also used in rspec tests.  Because of this, when
+  # building and testing features that require a specific type of file, you can
+  # add them to the gitlab-test repo in order to access that blob during
+  # development or testing.
+  #
+  # To add new branches
+  #
+  # 1. Push a new branch to gitlab-org/gitlab-test.
+  # 2. Execute rm -rf tmp/tests in your gitlab repo.
+  # 3. Add your branch and its HEAD commit sha to the BRANCH_SHA hash
+  #
+  # To add new commits to an existing branch
+  #
+  # 1. Push a new commit to a branch in gitlab-org/gitlab-test.
+  # 2. Execute rm -rf tmp/tests in your gitlab repo.
+  # 3. Update the HEAD sha value in the BRANCH_SHA hash
+  #
   BRANCH_SHA = {
     'signed-commits' => 'c7794c1',
     'gpg-signed' => '8a852d5',
@@ -94,7 +111,8 @@ module TestEnv
     'smime-signed-commits' => 'ed775cc',
     'Ääh-test-utf-8' => '7975be0',
     'ssh-signed-commit' => '7b5160f',
-    'changes-with-whitespace' => 'f2d141fadb33ceaafc95667c1a0a308ad5edc5f9'
+    'changes-with-whitespace' => 'f2d141fadb33ceaafc95667c1a0a308ad5edc5f9',
+    'lock-detection' => '1ada92f78a19f27cb442a0a205f1c451a3a15432'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

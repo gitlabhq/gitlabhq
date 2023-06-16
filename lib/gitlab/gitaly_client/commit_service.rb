@@ -12,6 +12,11 @@ module Gitlab
         'unspecified' => Gitaly::CommitDiffRequest::WhitespaceChanges::WHITESPACE_CHANGES_UNSPECIFIED
       }.freeze
 
+      MERGE_COMMIT_DIFF_MODES = {
+        all_parents: Gitaly::FindChangedPathsRequest::MergeCommitDiffMode::MERGE_COMMIT_DIFF_MODE_ALL_PARENTS,
+        include_merges: Gitaly::FindChangedPathsRequest::MergeCommitDiffMode::MERGE_COMMIT_DIFF_MODE_INCLUDE_MERGES
+      }.freeze
+
       TREE_ENTRIES_DEFAULT_LIMIT = 100_000
 
       def initialize(repository)
@@ -242,8 +247,35 @@ module Gitlab
         response.flat_map { |rsp| rsp.stats.to_a }
       end
 
-      def find_changed_paths(commits)
-        request = find_changed_paths_request(commits)
+      # When finding changed paths and passing a sha for a merge commit we can
+      # specify how to diff the commit.
+      #
+      # When diffing a merge commit and merge_commit_diff_mode is :all_parents
+      # file paths are only returned if changed in both parents (or all parents
+      # if diffing an octopus merge)
+      #
+      # This means if we create a merge request that includes a merge commit
+      # of changes already existing in the target branch, we can omit those
+      # changes when looking up the changed paths.
+      #
+      # e.g.
+      #   1. User branches from master to new branch named feature/foo_bar
+      #   2. User changes ./foo_bar.rb and commits change to feature/foo_bar
+      #   3. Another user merges a change to ./bar_baz.rb to master
+      #   4. User merges master into feature/foo_bar
+      #   5. User pushes to GitLab
+      #   6. GitLab checks which files have changed
+      #
+      # case merge_commit_diff_mode
+      # when :all_parents
+      #   ['foo_bar.rb']
+      # when :include_merges
+      #   ['foo_bar.rb', 'bar_baz.rb'],
+      # else # defaults to :include_merges behavior
+      #   ['foo_bar.rb', 'bar_baz.rb'],
+      #
+      def find_changed_paths(commits, merge_commit_diff_mode: nil)
+        request = find_changed_paths_request(commits, merge_commit_diff_mode)
 
         response = gitaly_client_call(@repository.storage, :diff_service, :find_changed_paths, request, timeout: GitalyClient.medium_timeout)
         response.flat_map do |msg|
@@ -606,9 +638,11 @@ module Gitlab
         response.commit
       end
 
-      def find_changed_paths_request(commits)
+      def find_changed_paths_request(commits, merge_commit_diff_mode)
+        diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode] if Feature.enabled?(:merge_commit_diff_modes)
+
         if Feature.disabled?(:find_changed_paths_new_format)
-          return Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, commits: commits)
+          return Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, commits: commits, merge_commit_diff_mode: diff_mode)
         end
 
         commit_requests = commits.map do |commit|
@@ -617,7 +651,7 @@ module Gitlab
           )
         end
 
-        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: commit_requests)
+        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: commit_requests, merge_commit_diff_mode: diff_mode)
       end
 
       def path_error_message(path_error)

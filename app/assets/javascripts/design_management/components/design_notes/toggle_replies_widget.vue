@@ -39,31 +39,31 @@ export default {
 
 <template>
   <li
-    class="toggle-comments gl-bg-gray-50 gl-display-flex gl-align-items-center gl-py-3"
+    class="toggle-comments gl-bg-gray-50 gl-display-flex gl-align-items-center gl-py-3 gl-min-h-8"
     :class="{ expanded: !collapsed }"
     data-testid="toggle-comments-wrapper"
   >
     <gl-icon :name="iconName" class="gl-ml-3" @click.stop="$emit('toggle')" />
     <gl-button
       variant="link"
-      class="toggle-comments-button gl-ml-2 gl-mr-2"
+      class="toggle-comments-button gl-ml-2 gl-mr-2 gl-font-sm!"
       @click.stop="$emit('toggle')"
     >
       {{ toggleText }}
     </gl-button>
     <template v-if="collapsed">
-      <span class="gl-text-gray-500">{{ __('Last reply by') }}</span>
+      <span class="gl-text-gray-500 gl-font-sm">{{ __('Last reply by') }}</span>
       <gl-link
         :href="lastReply.author.webUrl"
         target="_blank"
-        class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-ml-2 gl-mr-2"
+        class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-font-sm gl-ml-2 gl-mr-2"
       >
         {{ lastReply.author.name }}
       </gl-link>
       <time-ago-tooltip
         :time="lastReply.createdAt"
         tooltip-placement="bottom"
-        class="gl-text-gray-500"
+        class="gl-text-gray-500 gl-font-sm"
       />
     </template>
   </li>

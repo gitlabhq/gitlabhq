@@ -11,7 +11,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-eoa-bronze-plan-banner',
   '.js-security-newsletter-callout',
   '.js-approaching-seat-count-threshold',
-  '.js-storage-enforcement-banner',
+  '.js-storage-pre-enforcement-alert',
   '.js-user-over-limit-free-plan-alert',
   '.js-minute-limit-banner',
   '.js-submit-license-usage-data-banner',

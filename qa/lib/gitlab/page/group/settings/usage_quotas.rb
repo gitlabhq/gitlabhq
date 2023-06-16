@@ -33,7 +33,7 @@ module Gitlab
           div :project
           div :storage_type_legend
           span :container_registry_size
-          div :purchased_usage_total
+          div :storage_purchased, 'data-testid': 'storage-purchased'
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
 
           # Pending members
@@ -70,7 +70,7 @@ module Gitlab
           def total_purchased_storage
             ::QA::Support::WaitForRequests.wait_for_requests
 
-            purchased_usage_total[/(\d+){2}.\d+/].to_f
+            storage_purchased[/(\d+){2}.\d+/].to_f
           end
 
           # Waits for additional CI minutes to be available on the page

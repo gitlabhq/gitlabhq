@@ -262,6 +262,16 @@ module Gitlab
           SQL
         end
 
+        def switch_constraint_names(table_name, constraint_a, constraint_b)
+          validate_not_in_transaction!(:switch_constraint_names)
+
+          with_lock_retries do
+            rename_constraint(table_name, constraint_a, :temp_name_for_renaming)
+            rename_constraint(table_name, constraint_b, constraint_a)
+            rename_constraint(table_name, :temp_name_for_renaming, constraint_b)
+          end
+        end
+
         def validate_check_constraint_name!(constraint_name)
           return unless constraint_name.to_s.length > MAX_IDENTIFIER_NAME_LENGTH
 

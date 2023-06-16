@@ -22,7 +22,7 @@ export const containsSensitiveToken = (message) => {
     {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       name: 'Feed Token',
-      regex: 'feed_token=[0-9a-zA-Z_-]{20}',
+      regex: 'feed_token=((glft-)?[0-9a-zA-Z_-]{20}|glft-[a-h0-9]+-[0-9]+_)',
     },
   ];
 

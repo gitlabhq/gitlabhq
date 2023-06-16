@@ -138,7 +138,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   }
 
   .design-note-pin {
-    margin-left: $gl-padding;
+    margin-left: 9px;
   }
 
   .design-discussion {
@@ -148,13 +148,13 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       content: '';
       border-left: 1px solid var(--gray-100, $gray-100);
       position: absolute;
-      left: 28px;
+      left: 22px;
       top: -17px;
       height: 17px;
     }
 
     .design-note {
-      padding: $gl-padding;
+      padding: $gl-padding-8;
       list-style: none;
       transition: background $gl-transition-duration-medium $general-hover-transition-curve;
       border-top-left-radius: $border-radius-default; // same border radius used by .bordered-box
@@ -170,7 +170,9 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     }
 
     .reply-wrapper {
-      padding: $gl-padding;
+      padding: $gl-padding-8 $gl-padding-8 $gl-padding-4;
+      background: $gray-10;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
     }
   }
 

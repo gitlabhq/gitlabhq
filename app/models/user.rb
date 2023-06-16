@@ -57,10 +57,14 @@ class User < ApplicationRecord
 
   FORBIDDEN_SEARCH_STATES = %w(blocked banned ldap_blocked).freeze
 
+  INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
+  FEED_TOKEN_PREFIX = 'glft-'
+
   columns_changing_default :notified_of_own_activity
 
-  add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
-  add_authentication_token_field :feed_token
+  # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
+  add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
+  add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
   add_authentication_token_field :static_object_token, encrypted: :optional
 
   attribute :admin, default: false
@@ -967,6 +971,10 @@ class User < ApplicationRecord
 
     def get_ids_by_ids_or_usernames(ids, usernames)
       by_ids_or_usernames(ids, usernames).pluck(:id)
+    end
+
+    def generate_incoming_mail_token
+      "#{INCOMING_MAIL_TOKEN_PREFIX}#{SecureRandom.hex.to_i(16).to_s(36)}"
     end
   end
 
@@ -2595,6 +2603,10 @@ class User < ApplicationRecord
       .shortest_traversal_ids_prefixes
 
     Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
+  end
+
+  def prefix_for_feed_token
+    FEED_TOKEN_PREFIX
   end
 end
 

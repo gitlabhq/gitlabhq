@@ -53,7 +53,7 @@ exports[`Design note component should match the snapshot 1`] = `
         />
          
         <gllink-stub
-          class="note-timestamp system-note-separator gl-display-block gl-mb-2"
+          class="note-timestamp system-note-separator gl-display-block gl-mb-2 gl-font-sm"
           href="#note_123"
         >
           <timeagotooltip-stub

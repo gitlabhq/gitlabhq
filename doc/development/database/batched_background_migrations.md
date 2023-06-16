@@ -56,44 +56,66 @@ in the directory `lib/gitlab/background_migration/`.
 
 ### Execution mechanism
 
-After being enqueued, batched background migrations are picked in sequential order by a Sidekiq worker.
-At this point, batched jobs are created - or retried and iterate over a range of records that are fetched based
-on the configuration defined inside the migration class. Each job instance receives a set of
-arguments based on this migration configuration. After each job execution, the optimization mechanism takes
-place to decide if the migration can be optimized.
+Batched background migrations are picked from the queue in the order they are enqueued. Multiple migrations are fetched
+and executed in parallel, as long they are in active state and do not target the same database table.
+The default number of migrations processed in parallel is 2, for GitLab.com this limit is configured to 4.
+Once migration is picked for execution, a job is created for the specific batch. After each job execution, migration's
+batch size may be increased or decreased, based on the performance of the last 20 jobs.
 
 ```plantuml
 @startuml
 hide empty description
 skinparam ConditionEndStyle hline
-start
-rectangle Queue {
-  :Migration Three;
-  note right: Waiting for Migration Two
-  :Migration Two;
-  note right: Waiting for Migration One
+left to right direction
+rectangle "Batched Background Migration Queue" as migrations {
+  rectangle "Migration N (active)" as migrationn
+  rectangle "Migration 1 (completed)" as migration1
+  rectangle "Migration 2 (active)" as migration2
+  rectangle "Migration 3 (on hold)" as migration3
+  rectangle "Migration 4 (active)" as migration4
+  migration1 -[hidden]> migration2
+  migration2 -[hidden]> migration3
+  migration3 -[hidden]> migration4
+  migration4 -[hidden]> migrationn
 }
+rectangle "Execution Workers" as workers {
+ rectangle "Execution Worker 1 (busy)" as worker1
+ rectangle "Execution Worker 2 (available)" as worker2
+ worker1 -[hidden]> worker2
+}
+migration2 --> [Scheduling Worker]
+migration4 --> [Scheduling Worker]
+[Scheduling Worker] --> worker2
+@enduml
+```
+
+Soon as a worker is available, the BBM is processed by the runner.
+
+```plantuml
+@startuml
+hide empty description
+start
 rectangle Runner {
-  :Migration One;
-  note right: Active migration
-  if (Still have records to migrate?) then (Yes)
-    if (Have a pending batched job?) then (Yes)
-      :Retry batched job;
+  :Migration;
+  if (Have reached batching bounds?) then (Yes)
+    if (Have jobs to retry?) then (Yes)
+      :Fetch the batched job;
     else (No)
-      :Create a batched job;
-    endif
-    :Evaluate DB health;
-    note right: Table autovacuum, Patroni Apdex, Write-ahead logging
-    if (Evaluation signs to stop?) then (Yes)
-      :Put migration on hold;
-    else (No)
-      :Optimize migration;
+      :Finish active migration;
+      stop
     endif
   else (No)
-    :Finish active migration;
+    :Create a batched job;
+  endif
+  :Execute batched job;
+  :Evaluate DB health;
+  note right: Checks for table autovacuum, Patroni Apdex, Write-ahead logging
+  if (Evaluation signs to stop?) then (Yes)
+    :Put migration on hold;
+  else (No)
+    :Optimize migration;
   endif
 }
-stop
 @enduml
 ```
 
@@ -161,13 +183,16 @@ the migration as `failed`) if any of the following is true:
 
 Because batched migrations are update heavy and there were few incidents in the past because of the heavy load from migrations while the database was underperforming, a throttling mechanism exists to mitigate them.
 
-These database indicators are checked to throttle a migration. On getting a stop signal, the migration is paused for a set time (10 minutes):
+These database indicators are checked to throttle a migration. On getting a
+stop signal, the migration is paused for a set time (10 minutes):
 
 - WAL queue pending archival crossing a threshold.
 - Active autovacuum on the tables on which the migration works on.
 - Patroni apdex SLI dropping below the SLO.
 
-It's an ongoing effort to add more indicators to further enhance the database health check framework, more details can be found in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/7594).
+It's an ongoing effort to add more indicators to further enhance the
+database health check framework. For more details, see
+[epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
 
 ### Isolation
 
@@ -347,21 +372,6 @@ class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
   end
 end
 ```
-
-## Throttling batched migrations
-
-Because batched migrations are update heavy and there were few incidents in the past because of the heavy load from migrations while the database was underperforming, a throttling mechanism exists to mitigate them.
-
-These database indicators are checked to throttle a migration. On getting a
-stop signal, the migration is paused for a set time (10 minutes):
-
-- WAL queue pending archival crossing a threshold.
-- Active autovacuum on the tables on which the migration works on.
-- Patroni apdex SLI dropping below the SLO.
-
-It's an ongoing effort to add more indicators to further enhance the
-database health check framework. For more details, see
-[epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
 
 ## Additional filters
 

@@ -38,7 +38,7 @@ class Group < Namespace
   has_many :users, through: :group_members
   has_many :owners,
     -> { where(members: { access_level: Gitlab::Access::OWNER }) },
-    through: :group_members,
+    through: :all_group_members,
     source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent

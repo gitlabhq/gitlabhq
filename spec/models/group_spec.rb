@@ -10,10 +10,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
+    it { is_expected.to have_many(:all_group_members).dependent(:destroy) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
-    it { is_expected.to have_many(:owners).through(:group_members) }
+    it { is_expected.to have_many(:owners).through(:all_group_members) }
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:members_and_requesters) }
@@ -1448,10 +1449,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let(:developer) { create(:user) }
 
     it 'returns the owners of a Group' do
-      group.add_owner(owner)
-      group.add_developer(developer)
+      members = setup_group_members(group)
 
-      expect(group.owners).to eq([owner])
+      expect(group.owners).to eq([members[:owner]])
     end
   end
 

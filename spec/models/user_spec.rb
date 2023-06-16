@@ -2090,7 +2090,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       user = create(:user)
 
-      expect(user.incoming_email_token).to eql('gitlab')
+      expect(user.incoming_email_token).to eql("glimt-gitlab")
     end
   end
 
@@ -2135,6 +2135,12 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(feed_token).not_to be_blank
       expect(user.reload.feed_token).to eq feed_token
+    end
+
+    it 'returns feed tokens with a prefix' do
+      user = create(:user)
+
+      expect(user.feed_token).to start_with('glft-')
     end
 
     it 'ensures no feed token when disabled' do
@@ -2184,7 +2190,7 @@ RSpec.describe User, feature_category: :user_profile do
   describe 'enabled_static_object_token' do
     let_it_be(:static_object_token) { 'ilqx6jm1u945macft4eff0nw' }
 
-    it 'returns incoming email token when supported' do
+    it 'returns static object token when supported' do
       allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(true)
 
       user = create(:user, static_object_token: static_object_token)
@@ -2210,6 +2216,14 @@ RSpec.describe User, feature_category: :user_profile do
       user = create(:user, incoming_email_token: incoming_email_token)
 
       expect(user.enabled_incoming_email_token).to eq(incoming_email_token)
+    end
+
+    it 'returns incoming mail tokens with a prefix' do
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+
+      user = create(:user)
+
+      expect(user.enabled_incoming_email_token).to start_with('glimt-')
     end
 
     it 'returns `nil` when not supported' do

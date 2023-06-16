@@ -40,7 +40,9 @@ else
     # https://gitlab.com/gitlab-org/gitlab/-/issues/369970
     /Passing an Active Record object to `\w+` directly is deprecated/,
     # https://gitlab.com/gitlab-org/gitlab/-/issues/410086
-    /Using `return`, `break` or `throw` to exit a transaction block/
+    /Using `return`, `break` or `throw` to exit a transaction block/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/414556
+    /Merging .* no longer maintain both conditions, and will be replaced by the latter in Rails 7\.0/
   ]
 
   view_component_3_warnings = [

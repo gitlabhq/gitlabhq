@@ -2,7 +2,8 @@
 - project = @project.present(current_user: current_user)
 - ref = local_assigns[:ref] || @ref
 - expanded = params[:expanded].present?
-- if blob.rich_viewer
+-# If the blob has a RichViewer we preload the content except for GeoJSON since it is handled by Vue
+- if blob.rich_viewer && blob.extension != 'geojson'
   - add_page_startup_api_call local_assigns.fetch(:viewer_url) { url_for(safe_params.merge(viewer: blob.rich_viewer.type, format: :json)) }
 
 .info-well.d-none.d-sm-block

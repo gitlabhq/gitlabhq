@@ -27688,6 +27688,9 @@ msgstr ""
 msgid "Map a FogBugz account ID to a GitLab user"
 msgstr ""
 
+msgid "Map data from"
+msgstr ""
+
 msgid "Mar"
 msgstr ""
 
@@ -46012,6 +46015,9 @@ msgid "The license you uploaded is invalid. If the issue persists, contact suppo
 msgstr ""
 
 msgid "The list creation wizard is already open"
+msgstr ""
+
+msgid "The map can not be displayed because there was an error loading the GeoJSON file."
 msgstr ""
 
 msgid "The maximum amount of time users have to set up two-factor authentication before it's enforced."
