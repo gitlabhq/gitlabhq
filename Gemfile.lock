@@ -211,7 +211,7 @@ GEM
     aws-sdk-kms (1.64.0)
       aws-sdk-core (~> 3, >= 3.165.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.125.0)
+    aws-sdk-s3 (1.126.0)
       aws-sdk-core (~> 3, >= 3.174.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.4)
@@ -1681,7 +1681,7 @@ DEPENDENCIES
   awesome_print
   aws-sdk-cloudformation (~> 1)
   aws-sdk-core (~> 3.175.0)
-  aws-sdk-s3 (~> 1.125.0)
+  aws-sdk-s3 (~> 1.126.0)
   axe-core-rspec
   babosa (~> 2.0)
   base32 (~> 0.3.0)

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::ProjectConfig do
-  let(:project) { create(:project, :empty_repo, ci_config_path: ci_config_path) }
+RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_composition do
+  let_it_be(:project) { create(:project, :empty_repo) }
   let(:sha) { '123456' }
   let(:content) { nil }
   let(:source) { :push }
@@ -14,9 +14,13 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
                         custom_content: content, pipeline_source: source, pipeline_source_bridge: bridge)
   end
 
+  before do
+    project.ci_config_path = ci_config_path
+  end
+
   context 'when bridge job is passed in as parameter' do
     let(:ci_config_path) { nil }
-    let(:bridge) { create(:ci_bridge) }
+    let(:bridge) { build_stubbed(:ci_bridge) }
 
     before do
       allow(bridge).to receive(:yaml_for_downstream).and_return('the-yaml')
@@ -25,6 +29,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns the content already available in command' do
       expect(config.source).to eq(:bridge_source)
       expect(config.content).to eq('the-yaml')
+      expect(config.url).to be_nil
     end
   end
 
@@ -48,6 +53,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns root config including the local custom file' do
       expect(config.source).to eq(:repository_source)
       expect(config.content).to eq(config_content_result)
+      expect(config.url).to eq("localhost/#{project.full_path}//path/to/config.yml")
     end
   end
 
@@ -64,6 +70,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns root config including the remote config' do
       expect(config.source).to eq(:remote_source)
       expect(config.content).to eq(config_content_result)
+      expect(config.url).to be_nil
     end
   end
 
@@ -81,6 +88,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns root config including the path to another repository' do
       expect(config.source).to eq(:external_project_source)
       expect(config.content).to eq(config_content_result)
+      expect(config.url).to be_nil
     end
 
     context 'when path specifies a refname' do
@@ -122,6 +130,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns root config including the canonical CI config file' do
       expect(config.source).to eq(:repository_source)
       expect(config.content).to eq(config_content_result)
+      expect(config.url).to eq("localhost/#{project.full_path}//.gitlab-ci.yml")
     end
   end
 
@@ -142,6 +151,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns root config including the auto-devops template' do
       expect(config.source).to eq(:auto_devops_source)
       expect(config.content).to eq(config_content_result)
+      expect(config.url).to be_nil
     end
   end
 
@@ -159,6 +169,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns the parameter content' do
       expect(config.source).to eq(:parameter_source)
       expect(config.content).to eq(content)
+      expect(config.url).to be_nil
     end
   end
 
@@ -172,6 +183,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig do
     it 'returns nil' do
       expect(config.source).to be_nil
       expect(config.content).to be_nil
+      expect(config.url).to be_nil
     end
   end
 end

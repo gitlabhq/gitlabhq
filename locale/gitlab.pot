@@ -11154,10 +11154,7 @@ msgstr ""
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
 msgstr ""
 
-msgid "CodeSuggestions|Subject to the %{link_start}Testing Terms of Use%{link_end}"
-msgstr ""
-
-msgid "CodeSuggestions|Subject to the %{link_start}Testing Terms of Use%{link_end}."
+msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions currently uses third-party AI services unless those are %{third_party_features_link_start}disabled%{link_end}."
 msgstr ""
 
 msgid "Cohorts|Inactive users"
