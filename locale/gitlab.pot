@@ -13265,6 +13265,9 @@ msgstr ""
 msgid "CreateValueStreamForm|Maximum length %{maxLength} characters"
 msgstr ""
 
+msgid "CreateValueStreamForm|Minimum length %{minLength} characters"
+msgstr ""
+
 msgid "CreateValueStreamForm|Name is required"
 msgstr ""
 

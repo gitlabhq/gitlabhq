@@ -1,0 +1,5 @@
+#import "./runner_manager_shared.fragment.graphql"
+
+fragment CiRunnerManager on CiRunnerManager {
+  ...CiRunnerManagerShared
+}

@@ -13,6 +13,8 @@ export default {
     TimeAgo,
     HelpPopover,
     GlIntersperse,
+    RunnerUpgradeStatusIcon: () =>
+      import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
   },
   props: {
     items: {
@@ -49,6 +51,7 @@ export default {
     <template #cell(version)="{ item = {} }">
       {{ item.version }}
       <template v-if="item.revision">({{ item.revision }})</template>
+      <runner-upgrade-status-icon :upgrade-status="item.upgradeStatus" />
     </template>
     <template #cell(architecturePlatform)="{ item = {} }">
       <gl-intersperse separator="/">

@@ -39,19 +39,7 @@ RSpec.describe 'Project group variables', :js, feature_category: :secrets_manage
     group.add_owner(user)
   end
 
-  shared_examples 'renders the haml column headers' do
-    it "shows inherited CI variables table with correct columns" do
-      page.within('.inherited-ci-variable-table') do
-        columns = find_all('th')
-
-        expect(columns[0].text).to eq('Key')
-        expect(columns[1].text).to eq('Environments')
-        expect(columns[2].text).to eq('Group')
-      end
-    end
-  end
-
-  shared_examples 'renders the vue app column headers' do
+  shared_examples 'renders correct column headers' do
     it "shows inherited CI variables table with correct columns" do
       page.within('[data-testid="inherited-ci-variable-table"]') do
         # Wait for vue app to load
@@ -67,129 +55,54 @@ RSpec.describe 'Project group variables', :js, feature_category: :secrets_manage
     end
   end
 
-  context 'when feature flag ci_vueify_inherited_group_variables is disabled' do
+  describe 'project in group' do
     before do
-      stub_feature_flags(ci_vueify_inherited_group_variables: false)
-    end
-
-    describe 'project in group' do
-      before do
-        visit project_path
-      end
-
-      it_behaves_like 'renders the haml column headers'
-
-      it 'shows inherited variable info from ancestor group' do
-        visit project_path
-
-        expect(page).to have_content(key1)
-        expect(page).to have_content(group.name)
-      end
-    end
-
-    describe 'project in subgroup' do
-      before do
-        visit project2_path
-      end
-
-      it_behaves_like 'renders the haml column headers'
-
-      it 'shows inherited variable info from all ancestor groups' do
-        visit project2_path
-
-        expect(page).to have_content(key1)
-        expect(page).to have_content(key2)
-        expect(page).to have_content(group.name)
-        expect(page).to have_content(subgroup.name)
-      end
-    end
-
-    describe 'project in nested subgroup' do
-      before do
-        visit project3_path
-      end
-
-      it_behaves_like 'renders the haml column headers'
-
-      it 'shows inherited variable info from all ancestor groups' do
-        visit project3_path
-
-        expect(page).to have_content(key1)
-        expect(page).to have_content(key2)
-        expect(page).to have_content(key3)
-        expect(page).to have_content(group.name)
-        expect(page).to have_content(subgroup.name)
-        expect(page).to have_content(subgroup_nested.name)
-      end
-    end
-
-    it 'project origin keys link to ancestor groups ci_cd settings' do
       visit project_path
+    end
 
-      find('.group-origin-link').click
+    it_behaves_like 'renders correct column headers'
 
-      wait_for_requests
-
-      page.within('[data-testid="ci-variable-table"]') do
-        expect(find('.js-ci-variable-row:nth-child(1) [data-label="Key"]').text).to eq(key1)
-      end
+    it 'shows inherited variable info from ancestor group' do
+      expect(page).to have_content(key1)
+      expect(page).to have_content(attributes1)
+      expect(page).to have_content(group.name)
     end
   end
 
-  context 'when feature flag ci_vueify_inherited_group_variables is enabled' do
+  describe 'project in subgroup' do
     before do
-      stub_feature_flags(ci_vueify_inherited_group_variables: true)
+      visit project2_path
     end
 
-    describe 'project in group' do
-      before do
-        visit project_path
-      end
+    it_behaves_like 'renders correct column headers'
 
-      it_behaves_like 'renders the vue app column headers'
+    it 'shows inherited variable info from all ancestor groups' do
+      expect(page).to have_content(key1)
+      expect(page).to have_content(key2)
+      expect(page).to have_content(attributes1)
+      expect(page).to have_content(attributes2)
+      expect(page).to have_content(group.name)
+      expect(page).to have_content(subgroup.name)
+    end
+  end
 
-      it 'shows inherited variable info from ancestor group' do
-        expect(page).to have_content(key1)
-        expect(page).to have_content(attributes1)
-        expect(page).to have_content(group.name)
-      end
+  describe 'project in nested subgroup' do
+    before do
+      visit project3_path
     end
 
-    describe 'project in subgroup' do
-      before do
-        visit project2_path
-      end
+    it_behaves_like 'renders correct column headers'
 
-      it_behaves_like 'renders the vue app column headers'
-
-      it 'shows inherited variable info from all ancestor groups' do
-        expect(page).to have_content(key1)
-        expect(page).to have_content(key2)
-        expect(page).to have_content(attributes1)
-        expect(page).to have_content(attributes2)
-        expect(page).to have_content(group.name)
-        expect(page).to have_content(subgroup.name)
-      end
-    end
-
-    describe 'project in nested subgroup' do
-      before do
-        visit project3_path
-      end
-
-      it_behaves_like 'renders the vue app column headers'
-
-      it 'shows inherited variable info from all ancestor groups' do
-        expect(page).to have_content(key1)
-        expect(page).to have_content(key2)
-        expect(page).to have_content(key3)
-        expect(page).to have_content(attributes1)
-        expect(page).to have_content(attributes2)
-        expect(page).to have_content(attributes3)
-        expect(page).to have_content(group.name)
-        expect(page).to have_content(subgroup.name)
-        expect(page).to have_content(subgroup_nested.name)
-      end
+    it 'shows inherited variable info from all ancestor groups' do
+      expect(page).to have_content(key1)
+      expect(page).to have_content(key2)
+      expect(page).to have_content(key3)
+      expect(page).to have_content(attributes1)
+      expect(page).to have_content(attributes2)
+      expect(page).to have_content(attributes3)
+      expect(page).to have_content(group.name)
+      expect(page).to have_content(subgroup.name)
+      expect(page).to have_content(subgroup_nested.name)
     end
   end
 end

@@ -1,0 +1,11 @@
+fragment CiRunnerManagerShared on CiRunnerManager {
+  id
+  systemId
+  version
+  revision
+  executorName
+  architectureName
+  platformName
+  ipAddress
+  contactedAt
+}
