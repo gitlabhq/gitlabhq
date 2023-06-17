@@ -36,7 +36,11 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
       context 'when reading large amount of keys' do
         it 'batches get into pipelines of 100' do
           cache.redis.with do |redis|
-            if Gitlab::Redis::ClusterUtil.cluster?(redis)
+            normal_cluster = !redis.is_a?(Gitlab::Redis::MultiStore) && Gitlab::Redis::ClusterUtil.cluster?(redis)
+            multistore_cluster = redis.is_a?(Gitlab::Redis::MultiStore) &&
+              ::Gitlab::Redis::ClusterUtil.cluster?(redis.default_store)
+
+            if normal_cluster || multistore_cluster
               expect(redis).to receive(:pipelined).at_least(2).and_call_original
             else
               expect(redis).to receive(:mget).and_call_original
@@ -52,6 +56,14 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
 
     context 'when cache is Rails.cache' do
       let(:cache) { Rails.cache }
+
+      context 'when reading using secondary store as default' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_cache: false)
+        end
+
+        it_behaves_like 'reading using cache stores'
+      end
 
       it_behaves_like 'reading using cache stores'
     end

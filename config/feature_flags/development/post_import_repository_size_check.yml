@@ -1,0 +1,8 @@
+---
+name: post_import_repository_size_check
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122814
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414530
+milestone: '16.1'
+type: development
+group: group::import and integrate
+default_enabled: false

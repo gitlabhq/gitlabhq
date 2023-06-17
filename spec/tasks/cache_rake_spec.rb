@@ -10,8 +10,8 @@ RSpec.describe 'clearing redis cache', :clean_gitlab_redis_repository_cache, :cl
 
   let(:keys_size_changed) { -1 }
 
-  shared_examples 'clears the cache' do
-    it { expect { run_rake_task('cache:clear:redis') }.to change { redis_keys.size }.by(keys_size_changed) }
+  shared_examples 'clears the cache' do |redis|
+    it { expect { run_rake_task('cache:clear:redis') }.to change { redis_keys(redis).size }.by(keys_size_changed) }
   end
 
   describe 'clearing pipeline status cache' do
@@ -24,7 +24,7 @@ RSpec.describe 'clearing redis cache', :clean_gitlab_redis_repository_cache, :cl
       allow(pipeline_status).to receive(:loaded).and_return(nil)
     end
 
-    it_behaves_like 'clears the cache'
+    it_behaves_like 'clears the cache', Gitlab::Redis::Cache
   end
 
   describe 'clearing set caches' do
@@ -38,7 +38,7 @@ RSpec.describe 'clearing redis cache', :clean_gitlab_redis_repository_cache, :cl
         cache.write(:foo, [:bar])
       end
 
-      it_behaves_like 'clears the cache'
+      it_behaves_like 'clears the cache', Gitlab::Redis::RepositoryCache
     end
 
     context 'reactive cache set' do
@@ -48,15 +48,15 @@ RSpec.describe 'clearing redis cache', :clean_gitlab_redis_repository_cache, :cl
         cache.write(:foo, :bar)
       end
 
-      it_behaves_like 'clears the cache'
+      it_behaves_like 'clears the cache', Gitlab::Redis::Cache
     end
   end
 
-  def redis_keys
+  def redis_keys(redis_instance)
     # multiple scans to look across different shards if cache is using a Redis Cluster
-    cursor, scanned_keys = Gitlab::Redis::Cache.with { |redis| redis.scan(0, match: "*") }
+    cursor, scanned_keys = redis_instance.with { |redis| redis.scan(0, match: "*") }
     while cursor != "0"
-      cursor, keys = Gitlab::Redis::Cache.with { |redis| redis.scan(cursor, match: "*") }
+      cursor, keys = redis_instance.with { |redis| redis.scan(cursor, match: "*") }
       scanned_keys << keys
     end
     scanned_keys.flatten

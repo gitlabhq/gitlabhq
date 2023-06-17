@@ -9,6 +9,7 @@ module Gitlab
       # https://github.com/rails/rails/blob/v6.1.7.2/activesupport/lib/active_support/cache/redis_cache_store.rb#L361
       def read_multi_mget(*names) # rubocop:disable Style/ArgumentsForwarding
         return super unless enable_rails_cache_pipeline_patch?
+        return super unless use_patched_mget?
 
         patched_read_multi_mget(*names) # rubocop:disable Style/ArgumentsForwarding
       end
@@ -67,6 +68,16 @@ module Gitlab
 
       def enable_rails_cache_pipeline_patch?
         redis.with { |c| ::Gitlab::Redis::ClusterUtil.cluster?(c) }
+      end
+
+      # MultiStore reads ONLY from the default store (no fallback), hence we can use `mget`
+      # if the default store is not a Redis::Cluster. We should do that as pipelining gets on a single redis is slow
+      def use_patched_mget?
+        redis.with do |conn|
+          next true unless conn.is_a?(Gitlab::Redis::MultiStore)
+
+          ::Gitlab::Redis::ClusterUtil.cluster?(conn.default_store)
+        end
       end
     end
   end

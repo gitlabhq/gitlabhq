@@ -2,12 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe 'RedisCommand matchers', :use_clean_rails_redis_caching, feature_category: :source_code_management do
+RSpec.describe 'RedisCommand matchers', :use_clean_rails_repository_cache_store_caching, feature_category: :source_code_management do
+  let_it_be(:cache) { Gitlab::Redis::RepositoryCache.cache_store }
+
   let(:control) do
     RedisCommands::Recorder.new do
-      Rails.cache.read('test')
-      Rails.cache.read('test')
-      Rails.cache.write('test', 1)
+      cache.read('test')
+      cache.read('test')
+      cache.write('test', 1)
     end
   end
 
@@ -31,13 +33,13 @@ RSpec.describe 'RedisCommand matchers', :use_clean_rails_redis_caching, feature_
 
   context 'with Recorder matching only some Redis calls' do
     it 'counts only Redis calls captured by Recorder' do
-      Rails.cache.write('ignored', 1)
+      cache.write('ignored', 1)
 
       control = RedisCommands::Recorder.new do
-        Rails.cache.read('recorded')
+        cache.read('recorded')
       end
 
-      Rails.cache.write('also_ignored', 1)
+      cache.write('also_ignored', 1)
 
       expect(control).not_to exceed_redis_calls_limit(1)
       expect(control).not_to exceed_redis_command_calls_limit(:set, 0)
@@ -48,8 +50,8 @@ RSpec.describe 'RedisCommand matchers', :use_clean_rails_redis_caching, feature_
   context 'when expect part is a function' do
     it 'automatically enables RedisCommand::Recorder for it' do
       func = -> do
-        Rails.cache.read('test')
-        Rails.cache.read('test')
+        cache.read('test')
+        cache.read('test')
       end
 
       expect { func.call }.not_to exceed_redis_calls_limit(2)

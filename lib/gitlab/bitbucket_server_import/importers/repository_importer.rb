@@ -17,6 +17,8 @@ module Gitlab
             project.repository.import_repository(project.import_url)
             project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
 
+            validate_repository_size!
+
             update_clone_time
           end
 
@@ -48,7 +50,13 @@ module Gitlab
         def update_clone_time
           project.touch(:last_repository_updated_at)
         end
+
+        def validate_repository_size!
+          # Defined in EE
+        end
       end
     end
   end
 end
+
+Gitlab::BitbucketServerImport::Importers::RepositoryImporter.prepend_mod

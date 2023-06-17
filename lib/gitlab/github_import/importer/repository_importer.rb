@@ -54,6 +54,8 @@ module Gitlab
 
           project.change_head(default_branch) if default_branch
 
+          validate_repository_size!
+
           # The initial fetch can bring in lots of loose refs and objects.
           # Running a `git gc` will make importing pull requests faster.
           Repositories::HousekeepingService.new(project, :gc).execute
@@ -89,7 +91,13 @@ module Gitlab
         strong_memoize_attr def client_repository
           client.repository(project.import_source)
         end
+
+        def validate_repository_size!
+          # Defined in EE
+        end
       end
     end
   end
 end
+
+Gitlab::GithubImport::Importer::RepositoryImporter.prepend_mod

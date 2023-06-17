@@ -138,6 +138,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     let_it_be(:hvalmapped) { { "item1" => value1 } }
     let_it_be(:sscanargs) { [skey2, 0] }
     let_it_be(:sscanval) { ["0", [value1]] }
+    let_it_be(:scanargs) { ["0"] }
+    let_it_be(:scankwargs) { { match: '*:set:key2*' } }
+    let_it_be(:scanval) { ["0", [skey2]] }
     let_it_be(:sscan_eachval) { [value1] }
     let_it_be(:sscan_each_arg) { { match: '*1*' } }
     let_it_be(:hscan_eachval) { [[hitem1, value1]] }
@@ -162,6 +165,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       'execute :hmget command'        | :hmget        | ref(:hgetargs)    | ref(:hmgetval)   | {} | nil
       'execute :mapped_hmget command' | :mapped_hmget | ref(:mhmgetargs)  | ref(:hvalmapped) | {} | nil
       'execute :sscan command'        | :sscan        | ref(:sscanargs)   | ref(:sscanval)   | {} | nil
+      'execute :scan command'         | :scan         | ref(:scanargs)    | ref(:scanval)    | ref(:scankwargs) | nil
 
       # we run *scan_each here as they are reads too
       'execute :scan_each command'    | :scan_each    | nil         | ref(:scan_each_val) | ref(:scan_each_arg)  | nil
@@ -489,6 +493,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       'execute :setnx command'        | :setnx          | ref(:key1_value2)      | ref(:value1)   | :get      | ref(:key2)
       'execute :setex command'        | :setex          | ref(:key1_ttl_value1)  | ref(:ttl)      | :ttl      | ref(:key1)
       'execute :sadd command'         | :sadd           | ref(:skey_value2)      | ref(:svalues1) | :smembers | ref(:skey)
+      'execute :sadd? command'        | :sadd?          | ref(:skey_value2)      | ref(:svalues1) | :smembers | ref(:skey)
       'execute :srem command'         | :srem           | ref(:skey_value1)      | []             | :smembers | ref(:skey)
       'execute :del command'          | :del            | ref(:key2)             | nil            | :get      | ref(:key2)
       'execute :unlink command'       | :unlink         | ref(:key3)             | nil            | :get      | ref(:key3)

@@ -23269,6 +23269,9 @@ msgstr ""
 msgid "ImportProjects|Re-import creates a new project. It does not sync with the existing project."
 msgstr ""
 
+msgid "ImportProjects|Repository above permitted size limit."
+msgstr ""
+
 msgid "ImportProjects|Requesting namespaces failed"
 msgstr ""
 

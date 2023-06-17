@@ -44,6 +44,7 @@ module Gitlab
         hscan_each
         mapped_hmget
         mget
+        scan
         scan_each
         scard
         sismember
@@ -66,6 +67,7 @@ module Gitlab
         mapped_hmset
         rpush
         sadd
+        sadd?
         set
         setex
         setnx

@@ -3,7 +3,7 @@ development:
   chat:
     cluster:
       - redis://localhost:7001
-  cache:
+  cluster_cache:
     cluster:
       - redis://localhost:7001
   rate_limiting:
@@ -14,7 +14,7 @@ test:
   chat:
     cluster:
       - redis://localhost:7001
-  cache:
+  cluster_cache:
     cluster:
       - redis://localhost:7001
   rate_limiting:

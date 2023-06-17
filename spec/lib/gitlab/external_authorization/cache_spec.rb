@@ -16,7 +16,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Cache, :clean_gitlab_redis_cache d
 
   def set_in_redis(key, value)
     Gitlab::Redis::Cache.with do |redis|
-      redis.hmset(cache_key, key, value)
+      redis.hset(cache_key, key, value)
     end
   end
 
