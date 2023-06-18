@@ -121,12 +121,14 @@ Integrity checks are supported for the following types of file:
 
 - CI artifacts (introduced in GitLab 10.7.0)
 - LFS objects (introduced in GitLab 10.6.0)
+- Project-level Secure Files (introduced in GitLab 16.1.0)
 - User uploads (introduced in GitLab 10.6.0)
 
 **Omnibus Installation**
 
 ```shell
 sudo gitlab-rake gitlab:artifacts:check
+sudo gitlab-rake gitlab:ci_secure_files:check
 sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
 ```
@@ -135,6 +137,7 @@ sudo gitlab-rake gitlab:uploads:check
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:ci_secure_files:check RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
 ```
@@ -151,6 +154,7 @@ Variable  | Type    | Description
 
 ```shell
 sudo gitlab-rake gitlab:artifacts:check BATCH=100 ID_FROM=50 ID_TO=250
+sudo gitlab-rake gitlab:ci_secure_files:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:lfs:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
 ```
@@ -415,3 +419,37 @@ To update these references to point to local storage:
    ```
 
 The script to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) now functions correctly and cleans up the database.
+
+### Delete references to missing secure files
+
+`VERBOSE=1 gitlab-rake gitlab:ci_secure_files:check` detects when secure files:
+
+- Are deleted outside of GitLab.
+- Have references still in the GitLab database.
+
+When this scenario is detected, the Rake task displays an error message. For example:
+
+```shell
+Checking integrity of CI Secure Files
+- 1..15: Failures: 2
+  - Job SecureFile: 9: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /var/opt/gitlab/gitlab-rails/shared/ci_secure_files/4b/22/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/2022_06_30/8/9/distribution.cer>
+  - Job SecureFile: 15: Remote object does not exist
+Done!
+
+```
+
+To delete these references to missing local or remote secure files:
+
+1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following Ruby code:
+
+   ```ruby
+   secure_files_deleted = 0
+   ::Ci::SecureFile.find_each do |secure_file|                    ### Iterate secure files
+     next if secure_file.file.file.exists?                        ### Skip if the file reference is valid
+     secure_files_deleted += 1
+     puts "#{secure_file.id}  #{secure_file.file.path} is missing."     ### Allow verification before destroy
+   #  secure_file.destroy!                                           ### Uncomment to actually destroy
+   end
+   puts "Count of identified/destroyed invalid references: #{secure_files_deleted}"
+   ```

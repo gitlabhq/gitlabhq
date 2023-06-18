@@ -114,6 +114,7 @@ The following table lists the valid `objects` that can be used:
 | `dependency_proxy` | [Dependency Proxy](packages/dependency_proxy.md)                    |
 | `terraform_state`  | [Terraform state files](terraform_state.md)                                |
 | `pages`            | [Pages](pages/index.md)                                             |
+| `ci_secure_files`  | [Project-level Secure Files](secure_files.md)                              |
 
 Within each object type, three parameters can be defined:
 
@@ -161,6 +162,7 @@ supported by consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|
+| [Project-level Secure Files](secure_files.md#using-object-storage) | **{dotted-circle}** No |
 | [Backups](../raketasks/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |
@@ -463,7 +465,6 @@ The following example uses AWS S3 to enable object storage for all supported ser
    gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
    gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
    gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
-   gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
    gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
@@ -726,6 +727,7 @@ To migrate existing local data to object storage see the following guides:
 - [Dependency Proxy](packages/dependency_proxy.md#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage)
 - [Terraform state files](terraform_state.md#migrate-to-object-storage)
 - [Pages content](pages/index.md#migrate-pages-deployments-to-object-storage)
+- [Project-level Secure Files](secure_files.md#migrate-to-object-storage)
 
 ## Transition to consolidated form
 
