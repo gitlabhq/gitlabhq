@@ -219,7 +219,6 @@ export default {
       :fields="fields"
       :items="variablesWithAttributes"
       tbody-tr-class="js-ci-variable-row"
-      data-qa-selector="ci_variable_table_content"
       sort-by="key"
       sort-direction="asc"
       stacked="lg"

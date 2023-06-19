@@ -512,6 +512,14 @@ To list streaming destinations for an instance and see the verification tokens:
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.
 
+## Override default content type header
+
+By default, streaming destinations use a `content-type` header of `application/x-www-form-urlencoded`. However, you might want to set the `content-type` header to something else.
+For example ,`application/json`.
+
+To override the `content-type` header default value for either a top-level group streaming destination or an instance streaming destination, use either the
+[GitLab UI](#use-the-gitlab-ui-2) or using the [GraphQL API](#use-the-api-2).
+
 ## Event type filters
 
 > - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
