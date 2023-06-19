@@ -156,7 +156,7 @@ You can see example adding new Gem: [!121676](https://gitlab.com/gitlab-org/gitl
         paths:
           - gitlab-<name-of-gem>/vendor/ruby
       before_script:
-        - cd vendor/gems/bundler-checksum
+        - cd gems/gitlab-<name-of-gem>
         - ruby -v                                   # Print out ruby version for debugging
         - gem install bundler --no-document         # Bundler is not installed with the image
         - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby

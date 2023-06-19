@@ -32,6 +32,9 @@ module Gitlab
         def execute
           raise ProjectNotFound if project.nil?
 
+          # Verification emails should never create issues
+          return if handled_custom_email_address_verification?
+
           create_issue_or_note
 
           if from_address
@@ -69,6 +72,27 @@ module Gitlab
         private
 
         attr_reader :project_id, :project_path, :service_desk_key
+
+        def contains_custom_email_address_verification_subaddress?
+          return false unless Feature.enabled?(:service_desk_custom_email, project)
+
+          # Verification email only has one recipient
+          mail.to.first.include?(ServiceDeskSetting::CUSTOM_EMAIL_VERIFICATION_SUBADDRESS)
+        end
+
+        def handled_custom_email_address_verification?
+          return false unless contains_custom_email_address_verification_subaddress?
+
+          ::ServiceDesk::CustomEmailVerifications::UpdateService.new(
+            project: project,
+            current_user: nil,
+            params: {
+              mail: mail
+            }
+          ).execute
+
+          true
+        end
 
         def project_from_key
           return unless match = service_desk_key.match(PROJECT_KEY_PATTERN)

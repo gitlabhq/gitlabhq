@@ -5,9 +5,9 @@ require 'gitlab-dangerfiles'
 require 'danger'
 require 'danger/plugins/internal/helper'
 require 'gitlab/dangerfiles/spec_helper'
+require 'gitlab/rspec/all'
 
 require_relative '../../../danger/plugins/project_helper'
-require_relative '../../../spec/support/helpers/stub_env'
 
 RSpec.describe Tooling::Danger::ProjectHelper do
   include StubENV

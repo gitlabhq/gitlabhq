@@ -363,7 +363,7 @@ gem 'snowplow-tracker', '~> 0.8.0'
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false
-gem 'prometheus-client-mmap', '~> 0.24', require: 'prometheus/client'
+gem 'prometheus-client-mmap', '~> 0.25', require: 'prometheus/client'
 
 gem 'warning', '~> 1.3.0'
 
@@ -453,6 +453,7 @@ group :test do
   gem 'rspec_profiling', '~> 0.0.6'
   gem 'rspec-benchmark', '~> 0.6.0'
   gem 'rspec-parameterized', '~> 1.0', require: false
+  gem 'gitlab-rspec', path: 'gems/gitlab-rspec'
 
   gem 'capybara', '~> 3.39', '>= 3.39.1'
   gem 'capybara-screenshot', '~> 1.0.26'

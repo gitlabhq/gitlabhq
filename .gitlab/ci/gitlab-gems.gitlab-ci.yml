@@ -1,0 +1,7 @@
+gems gitlab-rspec:
+  extends:
+    - .gems:rules:gitlab-rspec
+  needs: []
+  trigger:
+    include: gems/gitlab-rspec/.gitlab-ci.yml
+    strategy: depend

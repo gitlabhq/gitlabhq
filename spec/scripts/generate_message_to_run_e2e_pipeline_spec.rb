@@ -3,8 +3,8 @@
 # rubocop:disable RSpec/VerifiedDoubles
 
 require 'fast_spec_helper'
+require 'gitlab/rspec/all'
 require_relative '../../scripts/generate-message-to-run-e2e-pipeline'
-require_relative '../support/helpers/stub_env'
 
 RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
   include StubENV

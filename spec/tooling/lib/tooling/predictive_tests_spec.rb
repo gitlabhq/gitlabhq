@@ -2,8 +2,8 @@
 
 require 'tempfile'
 require 'fileutils'
+require 'gitlab/rspec/all'
 require_relative '../../../../tooling/lib/tooling/predictive_tests'
-require_relative '../../../support/helpers/stub_env'
 
 RSpec.describe Tooling::PredictiveTests, feature_category: :tooling do
   include StubENV

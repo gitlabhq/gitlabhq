@@ -21,6 +21,7 @@ Search/NamespacedClass:
     - 'ee/app/graphql/types/iteration_searchable_field_enum.rb'
     - 'ee/app/helpers/ee/search_helper.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
+    - 'ee/app/models/concerns/elastic/maintain_elasticsearch_on_group_update.rb'
     - 'ee/app/models/concerns/elastic/namespace_update.rb'
     - 'ee/app/models/concerns/elastic/projects_search.rb'
     - 'ee/app/models/concerns/elastic/repositories_search.rb'

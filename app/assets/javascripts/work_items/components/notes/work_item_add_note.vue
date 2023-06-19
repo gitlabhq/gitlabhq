@@ -137,8 +137,8 @@ export default {
     isProjectArchived() {
       return this.workItem?.project?.archived;
     },
-    canUpdate() {
-      return this.workItem?.userPermissions?.updateWorkItem;
+    canCreateNote() {
+      return this.workItem?.userPermissions?.createNote;
     },
     workItemState() {
       return this.workItem?.state;
@@ -243,7 +243,7 @@ export default {
   <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
     <work-item-comment-locked
-      v-else-if="!canUpdate"
+      v-else-if="!canCreateNote"
       :work-item-type="workItemType"
       :is-project-archived="isProjectArchived"
     />

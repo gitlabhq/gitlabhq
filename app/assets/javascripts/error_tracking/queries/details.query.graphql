@@ -20,6 +20,10 @@ query errorDetails($fullPath: ID!, $errorId: GitlabErrorTrackingDetailedErrorID!
         externalUrl
         externalBaseUrl
         firstReleaseVersion
+        frequency {
+          count
+          time
+        }
         lastReleaseVersion
         gitlabCommit
         gitlabCommitPath

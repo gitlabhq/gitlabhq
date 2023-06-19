@@ -22,6 +22,7 @@ require_relative 'rails_autoload'
 
 require_relative '../config/settings'
 require_relative 'support/rspec'
+require_relative '../lib/gitlab'
 require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/utils/strong_memoize'
 

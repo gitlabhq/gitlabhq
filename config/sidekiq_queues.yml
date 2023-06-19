@@ -539,6 +539,8 @@
   - 1
 - - search_project_index_integrity
   - 1
+- - search_wiki_elastic_delete_group_wiki
+  - 1
 - - search_zoekt_namespace_indexer
   - 1
 - - security_auto_fix

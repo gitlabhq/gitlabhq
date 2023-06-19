@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'rspec/parameterized'
+require 'gitlab/rspec/all'
 
 require_relative '../../../../tooling/lib/tooling/gettext_extractor'
-require_relative '../../../support/helpers/stub_env'
 require_relative '../../../support/tmpdir'
 
 RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do

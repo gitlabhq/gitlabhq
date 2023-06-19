@@ -30,10 +30,12 @@ import {
 } from '../events_tracking';
 import { I18N_ERROR_TRACKING_LIST } from '../constants';
 import ErrorTrackingActions from './error_tracking_actions.vue';
+import TimelineChart from './timeline_chart.vue';
 
 const isValidErrorId = (errorId) => {
   return /^[0-9]+$/.test(errorId);
 };
+export const tableDataClass = 'gl-display-flex gl-md-display-table-cell gl-align-items-center';
 export default {
   FIRST_PAGE: 1,
   PREV_PAGE: 1,
@@ -43,30 +45,37 @@ export default {
     {
       key: 'error',
       label: __('Error'),
-      thClass: 'w-60p',
+      thClass: 'gl-w-40p',
+      tdClass: `${tableDataClass}`,
+    },
+    {
+      key: 'timeline',
+      label: __('Timeline'),
+      thClass: 'gl-text-center gl-w-20p',
+      tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'events',
       label: __('Events'),
-      thClass: 'gl-text-right',
-      tdClass: 'gl-text-right',
+      thClass: 'gl-text-center gl-w-10p',
+      tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'users',
       label: __('Users'),
-      thClass: 'gl-text-right',
-      tdClass: 'gl-text-right',
+      thClass: 'gl-text-center gl-w-10p',
+      tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'lastSeen',
       label: __('Last seen'),
-      thClass: 'gl-w-15p',
-      tdClass: 'gl-text-left',
+      thClass: 'gl-text-center gl-w-10p',
+      tdClass: `${tableDataClass} gl-text-center`,
     },
     {
       key: 'status',
       label: '',
-      tdClass: 'gl-text-center',
+      tdClass: `${tableDataClass}`,
     },
   ],
   statusFilters: {
@@ -95,6 +104,7 @@ export default {
     GlPagination,
     TimeAgo,
     ErrorTrackingActions,
+    TimelineChart,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -436,6 +446,14 @@ export default {
                 {{ errors.item.culprit }}
               </span>
             </div>
+          </template>
+
+          <template #cell(timeline)="errors">
+            <timeline-chart
+              v-if="errors.item.frequency"
+              :timeline-data="errors.item.frequency"
+              :height="70"
+            />
           </template>
 
           <template #cell(events)="errors">

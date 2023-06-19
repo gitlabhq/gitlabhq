@@ -1,8 +1,7 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import * as Sentry from '@sentry/browser';
-import { within } from '@testing-library/dom';
-import { mount, createWrapper } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -55,59 +54,50 @@ describe('RoleDropdown', () => {
     });
   };
 
-  const getDropdownMenu = () => within(wrapper.element).getByRole('menu');
-  const getByTextInDropdownMenu = (text, options = {}) =>
-    createWrapper(within(getDropdownMenu()).getByText(text, options));
-  const getDropdownItemByText = (text) =>
-    createWrapper(
-      within(getDropdownMenu())
-        .getByText(text, { selector: '[role="menuitem"] p' })
-        .closest('[role="menuitem"]'),
-    );
-  const getCheckedDropdownItem = () =>
-    wrapper
-      .findAllComponents(GlDropdownItem)
-      .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.props('isChecked'));
-
-  const findDropdownToggle = () => wrapper.find('button[aria-haspopup="menu"]');
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findListboxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findListboxItemByText = (text) =>
+    findListboxItems().wrappers.find((item) => item.text() === text);
 
   beforeEach(() => {
     gon.features = { showOverageOnRolePromotion: true };
   });
 
-  describe('when dropdown is open', () => {
+  it('has correct header text props', () => {
+    createComponent();
+    expect(findListbox().props('headerText')).toBe('Change role');
+  });
+
+  it('has items prop with all valid roles', () => {
+    createComponent();
+    const roles = findListbox()
+      .props('items')
+      .map((item) => item.text);
+    expect(roles).toEqual(Object.keys(member.validRoles));
+  });
+
+  describe('when listbox is open', () => {
     beforeEach(async () => {
       guestOverageConfirmAction.mockReturnValue(true);
       createComponent();
 
-      await findDropdownToggle().trigger('click');
-    });
-
-    it('renders all valid roles', () => {
-      Object.keys(member.validRoles).forEach((role) => {
-        expect(getDropdownItemByText(role).exists()).toBe(true);
-      });
-    });
-
-    it('renders dropdown header', () => {
-      expect(getByTextInDropdownMenu('Change role').exists()).toBe(true);
+      await findListbox().vm.$emit('click');
     });
 
     it('sets dropdown toggle and checks selected role', () => {
-      expect(findDropdownToggle().text()).toBe('Owner');
-      expect(getCheckedDropdownItem().text()).toBe('Owner');
+      expect(findListbox().props('toggleText')).toBe('Owner');
+      expect(findListbox().find('[aria-selected=true]').text()).toBe('Owner');
     });
 
     describe('when dropdown item is selected', () => {
       it('does nothing if the item selected was already selected', async () => {
-        await getDropdownItemByText('Owner').trigger('click');
+        await findListboxItemByText('Owner').trigger('click');
 
         expect(actions.updateMemberRole).not.toHaveBeenCalled();
       });
 
       it('calls `updateMemberRole` Vuex action', async () => {
-        await getDropdownItemByText('Developer').trigger('click');
+        await findListboxItemByText('Developer').trigger('click');
 
         expect(actions.updateMemberRole).toHaveBeenCalledWith(expect.any(Object), {
           memberId: member.id,
@@ -117,7 +107,7 @@ describe('RoleDropdown', () => {
 
       describe('when updateMemberRole is successful', () => {
         it('displays toast', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
           await nextTick();
 
@@ -125,21 +115,21 @@ describe('RoleDropdown', () => {
         });
 
         it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
-          expect(findDropdown().props('loading')).toBe(true);
+          expect(findListbox().props('loading')).toBe(true);
         });
 
         it('enables dropdown after `updateMemberRole` resolves', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
           await waitForPromises();
 
-          expect(findDropdown().props('disabled')).toBe(false);
+          expect(findListbox().props('disabled')).toBe(false);
         });
 
         it('does not log error to Sentry', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
           await waitForPromises();
 
@@ -155,7 +145,7 @@ describe('RoleDropdown', () => {
         });
 
         it('does not display toast', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
           await nextTick();
 
@@ -163,21 +153,21 @@ describe('RoleDropdown', () => {
         });
 
         it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
-          expect(findDropdown().props('loading')).toBe(true);
+          expect(findListbox().props('loading')).toBe(true);
         });
 
         it('enables dropdown after `updateMemberRole` resolves', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
           await waitForPromises();
 
-          expect(findDropdown().props('disabled')).toBe(false);
+          expect(findListbox().props('disabled')).toBe(false);
         });
 
         it('logs error to Sentry', async () => {
-          await getDropdownItemByText('Developer').trigger('click');
+          await findListboxItemByText('Developer').trigger('click');
 
           await waitForPromises();
 
@@ -190,7 +180,7 @@ describe('RoleDropdown', () => {
   it("sets initial dropdown toggle value to member's role", () => {
     createComponent();
 
-    expect(findDropdownToggle().text()).toBe('Owner');
+    expect(findListbox().props('toggleText')).toBe('Owner');
   });
 
   it('sets the dropdown alignment to right on mobile', async () => {
@@ -199,7 +189,7 @@ describe('RoleDropdown', () => {
 
     await nextTick();
 
-    expect(findDropdown().props('right')).toBe(true);
+    expect(findListbox().props('placement')).toBe('right');
   });
 
   it('sets the dropdown alignment to left on desktop', async () => {
@@ -208,7 +198,7 @@ describe('RoleDropdown', () => {
 
     await nextTick();
 
-    expect(findDropdown().props('right')).toBe(false);
+    expect(findListbox().props('placement')).toBe('left');
   });
 
   describe('guestOverageConfirmAction', () => {
@@ -219,7 +209,7 @@ describe('RoleDropdown', () => {
     beforeEach(() => {
       createComponent();
 
-      findDropdownToggle().trigger('click');
+      findListbox().vm.$emit('click');
     });
 
     afterEach(() => {
@@ -230,7 +220,7 @@ describe('RoleDropdown', () => {
       beforeEach(() => {
         mockConfirmAction({ confirmed: true });
 
-        getDropdownItemByText('Reporter').trigger('click');
+        findListboxItemByText('Reporter').trigger('click');
       });
 
       it('calls updateMemberRole', () => {
@@ -242,7 +232,7 @@ describe('RoleDropdown', () => {
       beforeEach(() => {
         mockConfirmAction({ confirmed: false });
 
-        getDropdownItemByText('Reporter').trigger('click');
+        findListboxItemByText('Reporter').trigger('click');
       });
 
       it('does not call updateMemberRole', () => {

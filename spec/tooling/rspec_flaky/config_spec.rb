@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rspec-parameterized'
-require_relative '../../support/helpers/stub_env'
+require 'gitlab/rspec/all'
 
 require_relative '../../../tooling/rspec_flaky/config'
 

@@ -49,6 +49,7 @@ COPY ./config/bundler_setup.rb /home/gitlab/config/
 COPY ./lib/gitlab_edition.rb /home/gitlab/lib/
 COPY ./lib/gitlab/utils.rb /home/gitlab/lib/gitlab/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
+COPY ./gems /home/gitlab/
 
 COPY ./qa /home/gitlab/qa
 

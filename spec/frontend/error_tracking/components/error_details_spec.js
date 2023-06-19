@@ -17,6 +17,7 @@ import ErrorDetailsInfo from '~/error_tracking/components/error_details_info.vue
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import TimelineChart from '~/error_tracking/components/timeline_chart.vue';
 
 jest.mock('~/alert');
 jest.mock('~/tracking');
@@ -159,6 +160,7 @@ describe('ErrorDetails', () => {
       mocks.$apollo.queries.error.loading = false;
       mountComponent();
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         error: {
@@ -183,6 +185,7 @@ describe('ErrorDetails', () => {
       beforeEach(() => {
         store.state.details.loadingStacktrace = false;
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
@@ -204,6 +207,7 @@ describe('ErrorDetails', () => {
     describe('Badges', () => {
       it('should show language and error level badges', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
@@ -216,6 +220,7 @@ describe('ErrorDetails', () => {
 
       it('should NOT show the badge if the tag is not present', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
@@ -230,6 +235,7 @@ describe('ErrorDetails', () => {
         'should set correct severity level variant for %s badge',
         async (level) => {
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             error: {
@@ -245,6 +251,7 @@ describe('ErrorDetails', () => {
 
       it('should fallback for ERROR severityLevelVariant when severityLevel is unknown', async () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {
@@ -265,6 +272,32 @@ describe('ErrorDetails', () => {
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
         expect(wrapper.findComponent(ErrorDetailsInfo).exists()).toBe(true);
         expect(findAlert().exists()).toBe(false);
+      });
+    });
+
+    describe('timeline chart', () => {
+      it('should not show timeline chart if frequency data does not exist', () => {
+        expect(wrapper.findComponent(TimelineChart).exists()).toBe(false);
+        expect(wrapper.text()).not.toContain('Last 24 hours');
+      });
+
+      it('should show timeline chart', async () => {
+        const mockFrequency = [
+          [0, 1],
+          [2, 3],
+        ];
+        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
+        // eslint-disable-next-line no-restricted-syntax
+        wrapper.setData({
+          error: {
+            frequency: mockFrequency,
+          },
+        });
+        await nextTick();
+        expect(wrapper.findComponent(TimelineChart).exists()).toBe(true);
+        expect(wrapper.findComponent(TimelineChart).props('timelineData')).toEqual(mockFrequency);
+        expect(wrapper.text()).toContain('Last 24 hours');
       });
     });
 
@@ -402,6 +435,7 @@ describe('ErrorDetails', () => {
         it('should show alert with closed issueId', async () => {
           const closedIssueId = 123;
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             isAlertVisible: true,
@@ -424,6 +458,7 @@ describe('ErrorDetails', () => {
       describe('is present', () => {
         beforeEach(() => {
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             error: {
@@ -448,6 +483,7 @@ describe('ErrorDetails', () => {
       describe('is not present', () => {
         beforeEach(() => {
           // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+          // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
           // eslint-disable-next-line no-restricted-syntax
           wrapper.setData({
             error: {
@@ -482,6 +518,7 @@ describe('ErrorDetails', () => {
       beforeEach(() => {
         mountComponent({ integratedErrorTrackingEnabled: integrated });
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+        // TODO remove setData usage https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2216
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
           error: {},

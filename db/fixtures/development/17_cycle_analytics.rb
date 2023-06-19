@@ -70,29 +70,35 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       return
     end
 
-    create_developers!
-    create_issues!
-
-    seed_lead_time!
-    seed_issue_stage!
-    seed_plan_stage!
-    seed_code_stage!
-    seed_test_stage!
-    seed_review_stage!
-    seed_staging_stage!
-
-    if Gitlab.ee?
-      create_vulnerabilities_count_report!
-      seed_dora_metrics!
-      create_custom_value_stream!
-      create_value_stream_aggregation(project.group)
-    end
-
-    puts "Successfully seeded '#{project.full_path}' for Value Stream Management!"
-    puts "URL: #{Rails.application.routes.url_helpers.project_url(project)}"
+    seed_data!
   end
 
   private
+
+  def seed_data!
+    Sidekiq::Worker.skipping_transaction_check do
+      create_developers!
+      create_issues!
+
+      seed_lead_time!
+      seed_issue_stage!
+      seed_plan_stage!
+      seed_code_stage!
+      seed_test_stage!
+      seed_review_stage!
+      seed_staging_stage!
+
+      if Gitlab.ee?
+        create_vulnerabilities_count_report!
+        seed_dora_metrics!
+        create_custom_value_stream!
+        create_value_stream_aggregation(project.group)
+      end
+
+      puts "Successfully seeded '#{project.full_path}' for Value Stream Management!"
+      puts "URL: #{Rails.application.routes.url_helpers.project_url(project)}"
+    end
+  end
 
   def create_custom_value_stream!
     [project.project_namespace.reload, project.group].each do |parent|

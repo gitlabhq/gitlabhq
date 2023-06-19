@@ -32,12 +32,14 @@ describe('Work item add note', () => {
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findTextarea = () => wrapper.findByTestId('note-reply-textarea');
+  const findWorkItemLockedComponent = () => wrapper.findComponent(WorkItemCommentLocked);
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
+    canCreateNote = true,
     workItemIid = '1',
-    workItemResponse = workItemByIidResponseFactory({ canUpdate }),
+    workItemResponse = workItemByIidResponseFactory({ canUpdate, canCreateNote }),
     signedIn = true,
     isEditing = true,
     workItemType = 'Task',
@@ -264,5 +266,14 @@ describe('Work item add note', () => {
     await createComponent({ isInternalThread: true });
 
     expect(wrapper.attributes('class')).toContain('internal-note');
+  });
+
+  describe('when work item`createNote` permission false', () => {
+    it('cannot add comment', async () => {
+      await createComponent({ isEditing: false, canCreateNote: false });
+
+      expect(findWorkItemLockedComponent().exists()).toBe(true);
+      expect(findCommentForm().exists()).toBe(false);
+    });
   });
 });

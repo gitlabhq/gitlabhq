@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Groups > Members > Manage members', feature_category: :groups_and_projects do
+  include ListboxHelpers
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers
@@ -35,8 +36,7 @@ RSpec.describe 'Groups > Members > Manage members', feature_category: :groups_an
     visit group_group_members_path(group)
 
     page.within(second_row) do
-      click_button('Developer')
-      click_button('Owner')
+      select_from_listbox('Owner', from: 'Developer')
 
       expect(page).to have_button('Owner')
     end

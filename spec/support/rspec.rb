@@ -5,10 +5,9 @@ require_relative "system_exit_detected"
 require_relative "helpers/stub_configuration"
 require_relative "helpers/stub_metrics"
 require_relative "helpers/stub_object_storage"
-require_relative "helpers/stub_env"
 require_relative "helpers/fast_rails_root"
 
-require_relative "../../lib/gitlab/utils"
+require 'gitlab/rspec/all'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 

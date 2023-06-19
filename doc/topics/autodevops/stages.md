@@ -591,32 +591,14 @@ When using Cloud Native Buildpacks, instead of `/bin/herokuish procfile exec`, u
 /cnb/lifecycle/launcher $COMMAND
 ```
 
-## Auto Monitoring
+<!--- start_remove The following content will be removed on remove_date: '2023-09-22' -->
 
-After your application deploys, Auto Monitoring helps you monitor
-your application's server and response metrics right out of the box. Auto
-Monitoring uses [Prometheus](../../user/project/integrations/prometheus.md) to
-retrieve system metrics, such as CPU and memory usage, directly from
-[Kubernetes](../../user/project/integrations/prometheus_library/kubernetes.md),
-and response metrics, such as HTTP error rates, latency, and throughput, from the
-[NGINX server](../../user/project/integrations/prometheus_library/nginx_ingress.md).
+### Auto Monitoring (removed)
 
-The metrics include:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/10107) in GitLab 14.7
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
 
-- **Response Metrics:** latency, throughput, error rate
-- **System Metrics:** CPU utilization, memory utilization
-
-To use Auto Monitoring:
-
-1. [Install and configure the Auto DevOps requirements](requirements.md).
-1. [Enable Auto DevOps](index.md#enable-or-disable-auto-devops), if you haven't done already.
-1. On the left sidebar, select **CI/CD > Pipelines**.
-1. Select **Run pipeline**.
-1. After the pipeline finishes successfully, open the
-   [monitoring dashboard for a deployed environment](../../ci/environments/index.md#monitor-environments)
-   to view the metrics of your deployed application.
-
-![Auto Metrics](img/auto_monitoring.png)
+<!--- end_remove -->
 
 ## Auto Code Intelligence
 

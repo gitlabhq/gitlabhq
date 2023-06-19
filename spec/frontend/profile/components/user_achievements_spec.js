@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlBadge } from '@gitlab/ui';
 import getUserAchievementsEmptyResponse from 'test_fixtures/graphql/get_user_achievements_empty_response.json';
 import getUserAchievementsLongResponse from 'test_fixtures/graphql/get_user_achievements_long_response.json';
 import getUserAchievementsResponse from 'test_fixtures/graphql/get_user_achievements_with_avatar_and_description_response.json';
@@ -61,6 +62,14 @@ describe('UserAchievements', () => {
     await waitForPromises();
 
     expect(wrapper.findAllByTestId('user-achievement').length).toBe(3);
+  });
+
+  it('renders count for achievements awarded more than once', async () => {
+    createComponent({ queryHandler: jest.fn().mockResolvedValue(getUserAchievementsLongResponse) });
+
+    await waitForPromises();
+
+    expect(achievement().findComponent(GlBadge).text()).toBe('2x');
   });
 
   it('renders correctly if the achievement is from a private namespace', async () => {

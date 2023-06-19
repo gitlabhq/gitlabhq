@@ -12,6 +12,7 @@ import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
+import TimelineChart from '~/error_tracking/components/timeline_chart.vue';
 import Tracking from '~/tracking';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import errorsList from './list_mock.json';
@@ -155,6 +156,30 @@ describe('ErrorTrackingList', () => {
     it('each error in the list should have an action button set', () => {
       findErrorListRows().wrappers.forEach((row) => {
         expect(row.findComponent(ErrorTrackingActions).exists()).toBe(true);
+      });
+    });
+
+    describe('timeline graph', () => {
+      it('should show the timeline chart', () => {
+        findErrorListRows().wrappers.forEach((row, index) => {
+          expect(row.findComponent(TimelineChart).exists()).toBe(true);
+          const mockFrequency = errorsList[index].frequency;
+          expect(row.findComponent(TimelineChart).props('timelineData')).toEqual(mockFrequency);
+        });
+      });
+
+      it('should not show the timeline chart if frequency data does not exist', () => {
+        store.state.list.errors = errorsList.map((e) => ({ ...e, frequency: undefined }));
+        mountComponent({
+          stubs: {
+            GlTable: false,
+            GlLink: false,
+          },
+        });
+
+        findErrorListRows().wrappers.forEach((row) => {
+          expect(row.findComponent(TimelineChart).exists()).toBe(false);
+        });
       });
     });
 

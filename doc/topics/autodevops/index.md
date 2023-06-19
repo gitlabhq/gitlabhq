@@ -40,7 +40,6 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 | Test | [Auto License Compliance](stages.md#auto-license-compliance) |
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
-| Monitor | [Auto Monitoring](stages.md#auto-monitoring) |
 | Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |
 | Secure | [Auto Static Application Security Testing (SAST)](stages.md#auto-sast) |
 | Secure | [Auto Secret Detection](stages.md#auto-secret-detection) |

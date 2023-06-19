@@ -37,8 +37,7 @@ to minimize downtime and risk.
 ## Auto DevOps base domain
 
 The Auto DevOps base domain is required to use
-[Auto Review Apps](stages.md#auto-review-apps), [Auto Deploy](stages.md#auto-deploy), and
-[Auto Monitoring](stages.md#auto-monitoring).
+[Auto Review Apps](stages.md#auto-review-apps) and [Auto Deploy](stages.md#auto-deploy).
 
 To define the base domain, either:
 

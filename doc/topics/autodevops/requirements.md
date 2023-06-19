@@ -54,8 +54,7 @@ to minimize downtime and risk.
 ## Auto DevOps base domain
 
 The Auto DevOps base domain is required to use
-[Auto Review Apps](stages.md#auto-review-apps), [Auto Deploy](stages.md#auto-deploy), and
-[Auto Monitoring](stages.md#auto-monitoring).
+[Auto Review Apps](stages.md#auto-review-apps) and [Auto Deploy](stages.md#auto-deploy).
 
 To define the base domain, either:
 
@@ -91,8 +90,8 @@ to the Kubernetes pods running your application.
 
 To make full use of Auto DevOps with Kubernetes, you need:
 
-- **Kubernetes** (for [Auto Review Apps](stages.md#auto-review-apps),
-  [Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring))
+- **Kubernetes** (for [Auto Review Apps](stages.md#auto-review-apps) and
+  [Auto Deploy](stages.md#auto-deploy))
 
   To enable deployments, you need:
 
@@ -117,8 +116,8 @@ To make full use of Auto DevOps with Kubernetes, you need:
      If your cluster is installed on bare metal, see
      [Auto DevOps Requirements for bare metal](#auto-devops-requirements-for-bare-metal).
 
-- **Base domain** (for [Auto Review Apps](stages.md#auto-review-apps),
-  [Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring))
+- **Base domain** (for [Auto Review Apps](stages.md#auto-review-apps) and
+  [Auto Deploy](stages.md#auto-deploy))
 
   You must [specify the Auto DevOps base domain](#auto-devops-base-domain),
   which all of your Auto DevOps applications use. This domain must be configured
@@ -148,8 +147,8 @@ To make full use of Auto DevOps with Kubernetes, you need:
   certificates are valid and up-to-date.
 
 If you don't have Kubernetes or Prometheus configured, then
-[Auto Review Apps](stages.md#auto-review-apps),
-[Auto Deploy](stages.md#auto-deploy), and [Auto Monitoring](stages.md#auto-monitoring)
+[Auto Review Apps](stages.md#auto-review-apps) and
+[Auto Deploy](stages.md#auto-deploy)
 are skipped.
 
 After all requirements are met, you can [enable Auto DevOps](index.md#enable-or-disable-auto-devops).

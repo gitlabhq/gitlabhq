@@ -2128,6 +2128,15 @@
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
 
+########################
+# GitLab monorepo gems #
+########################
+
+.gems:rules:gitlab-rspec:
+  rules:
+    - <<: *if-merge-request
+      changes: ["gems/gitlab-rspec/**/*"]
+
 #######################
 # Vendored gems rules #
 #######################

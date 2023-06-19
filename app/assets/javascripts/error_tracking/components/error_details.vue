@@ -24,6 +24,7 @@ import {
 import { severityLevel, severityLevelVariant, errorStatus } from '../constants';
 import Stacktrace from './stacktrace.vue';
 import ErrorDetailsInfo from './error_details_info.vue';
+import TimelineChart from './timeline_chart.vue';
 
 const SENTRY_TIMEOUT = 10000;
 
@@ -42,6 +43,7 @@ export default {
     GlDropdownDivider,
     TimeAgoTooltip,
     ErrorDetailsInfo,
+    TimelineChart,
   },
   props: {
     issueUpdatePath: {
@@ -374,6 +376,11 @@ export default {
         </template>
 
         <error-details-info :error="error" />
+
+        <div v-if="error.frequency" class="gl-mt-8">
+          <h3>{{ __('Last 24 hours') }}</h3>
+          <timeline-chart :timeline-data="error.frequency" :height="200" />
+        </div>
 
         <div v-if="loadingStacktrace" class="gl-py-5">
           <gl-loading-icon size="lg" />

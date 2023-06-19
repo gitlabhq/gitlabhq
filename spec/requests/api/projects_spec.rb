@@ -223,14 +223,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       include_examples 'includes container_registry_access_level'
 
-      context 'when projects_preloader_fix is disabled' do
-        before do
-          stub_feature_flags(projects_preloader_fix: false)
-        end
-
-        include_examples 'includes container_registry_access_level'
-      end
-
       it 'includes various project feature fields' do
         get api(path, user)
         project_response = json_response.find { |p| p['id'] == project.id }

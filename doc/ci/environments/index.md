@@ -733,7 +733,7 @@ to get alerts when there are critical issues that need immediate attention.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
-If you [set up alerts for Prometheus metrics](../../operations/metrics/alerts.md),
+If you [set up alerts for Prometheus metrics](../../operations/incident_management/integrations.md#configuration),
 alerts for environments are shown on the environments page. The alert with the highest
 severity is shown, so you can identify which environments need immediate attention.
 
@@ -773,28 +773,14 @@ GitLab Auto Rollback is turned off by default. To turn it on:
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.
 
-### Monitor environments
+<!--- start_remove The following content will be removed on remove_date: '2023-09-22' -->
 
-To monitor the behavior of your app as it runs in each environment,
-enable [Prometheus for monitoring system and response metrics](../../user/project/integrations/prometheus.md).
-For the monitoring dashboard to appear, configure Prometheus to collect at least one
-[supported metric](../../user/project/integrations/prometheus_library/index.md).
+### Monitor environments (removed)
 
-All deployments to an environment are shown on the monitoring dashboard.
-You can view changes in performance for each version of your application.
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/10107) in GitLab 14.7
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
 
-GitLab attempts to retrieve [supported performance metrics](../../user/project/integrations/prometheus_library/index.md)
-for any environment that has had a successful deployment. If monitoring data was
-successfully retrieved, a **Monitoring** button appears for each environment.
-
-To view the last eight hours of performance data, select the **Monitoring** button.
-It may take a minute or two for data to appear after initial deployment.
-
-![Monitoring dashboard](../img/environments_monitoring.png)
-
-#### Embed metrics in GitLab Flavored Markdown
-
-Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metrics in GitLab Flavored Markdown](../../operations/metrics/embed.md) for more details.
+<!--- end_remove -->
 
 ### Web terminals (deprecated)
 

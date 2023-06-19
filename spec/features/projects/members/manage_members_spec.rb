@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :onboarding do
+  include ListboxHelpers
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers
@@ -61,11 +62,8 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
         page.within find_member_row(project_developer) do
           click_button('Developer')
 
-          page.within '.dropdown-menu' do
-            expect(page).not_to have_button('Owner')
-          end
-
-          click_button('Reporter')
+          expect_no_listbox_item('Owner')
+          select_listbox_item('Reporter')
 
           expect(page).to have_button('Reporter')
         end
@@ -87,8 +85,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
         visit_members_page
 
         page.within find_member_row(project_owner) do
-          click_button('Owner')
-          click_button('Reporter')
+          select_from_listbox('Reporter', from: 'Owner')
 
           expect(page).to have_button('Reporter')
         end

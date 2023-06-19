@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../support/helpers/stub_env'
+require 'gitlab/rspec/all'
 require_relative '../../support/time_travel'
 
 require_relative '../../../tooling/rspec_flaky/listener'

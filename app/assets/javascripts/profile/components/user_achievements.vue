@@ -1,6 +1,7 @@
 <script>
-import { GlPopover, GlSprintf } from '@gitlab/ui';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { GlAvatar, GlBadge, GlPopover, GlSprintf } from '@gitlab/ui';
+import { groupBy } from 'lodash';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -8,7 +9,7 @@ import getUserAchievements from './graphql/get_user_achievements.query.graphql';
 
 export default {
   name: 'UserAchievements',
-  components: { GlPopover, GlSprintf },
+  components: { GlAvatar, GlBadge, GlPopover, GlSprintf },
   mixins: [timeagoMixin],
   inject: ['rootUrl', 'userId'],
   apollo: {
@@ -29,24 +30,38 @@ export default {
   },
   methods: {
     processNodes(nodes) {
-      return nodes.slice(0, 3).map(({ achievement, createdAt, achievement: { namespace } }) => {
-        return {
-          id: `user-achievement-${getIdFromGraphQLId(achievement.id)}`,
-          name: achievement.name,
-          timeAgo: this.timeFormatted(createdAt),
-          avatarUrl: achievement.avatarUrl || gon.gitlab_logo,
-          description: achievement.description,
-          namespace: namespace && {
-            fullPath: namespace.fullPath,
-            webUrl: this.rootUrl + namespace.fullPath,
-          },
-        };
-      });
+      return Object.entries(groupBy(nodes, 'achievement.id'))
+        .slice(0, 3)
+        .map(([id, values]) => {
+          const {
+            achievement: { name, avatarUrl, description, namespace },
+            createdAt,
+          } = values[0];
+          const count = values.length;
+          return {
+            id: `user-achievement-${id}`,
+            name,
+            timeAgo: this.timeFormatted(createdAt),
+            avatarUrl: avatarUrl || gon.gitlab_logo,
+            description,
+            namespace: namespace && {
+              fullPath: namespace.fullPath,
+              webUrl: this.rootUrl + namespace.fullPath,
+            },
+            count,
+          };
+        });
     },
     achievementAwardedMessage(userAchievement) {
       return userAchievement.namespace
         ? this.$options.i18n.awardedBy
         : this.$options.i18n.awardedByUnknownNamespace;
+    },
+    showCountBadge(count) {
+      return count > 1;
+    },
+    getCountBadge(count) {
+      return `${count}x`;
     },
   },
   i18n: {
@@ -61,18 +76,28 @@ export default {
     <div
       v-for="userAchievement in userAchievements"
       :key="userAchievement.id"
-      class="gl-display-inline-block"
+      class="gl-display-inline-block gl-vertical-align-top"
       data-testid="user-achievement"
     >
-      <img
+      <gl-avatar
         :id="userAchievement.id"
         :src="userAchievement.avatarUrl"
-        :alt="''"
+        :size="32"
         tabindex="0"
-        class="gl-avatar gl-avatar-s32 gl-mx-2"
+        shape="rect"
+        class="gl-mx-2"
       />
-      <gl-popover triggers="hover focus" placement="top" :target="userAchievement.id">
-        <div class="gl-font-weight-bold">{{ userAchievement.name }}</div>
+      <br />
+      <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{
+        getCountBadge(userAchievement.count)
+      }}</gl-badge>
+      <gl-popover :target="userAchievement.id">
+        <div>
+          <span class="gl-font-weight-bold">{{ userAchievement.name }}</span>
+          <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{
+            getCountBadge(userAchievement.count)
+          }}</gl-badge>
+        </div>
         <div>
           <gl-sprintf :message="achievementAwardedMessage(userAchievement)">
             <template #timeAgo>
