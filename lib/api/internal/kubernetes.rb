@@ -69,7 +69,7 @@ module API
         end
 
         def increment_count_events
-          events = params[:counters]&.slice(:gitops_sync, :k8s_api_proxy_request)
+          events = params[:counters]&.slice(:gitops_sync, :k8s_api_proxy_request, :flux_git_push_notifications_total)
 
           Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(events)
         end
@@ -202,6 +202,7 @@ module API
             optional :counters, type: Hash do
               optional :gitops_sync, type: Integer, desc: 'The count to increment the gitops_sync metric by'
               optional :k8s_api_proxy_request, type: Integer, desc: 'The count to increment the k8s_api_proxy_request metric by'
+              optional :flux_git_push_notifications_total, type: Integer, desc: 'The count to increment the flux_git_push_notifications_total metrics by'
             end
 
             optional :unique_counters, type: Hash do

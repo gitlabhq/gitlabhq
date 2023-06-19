@@ -1,0 +1,25 @@
+---
+key_path: counts.kubernetes_agent_flux_git_push_notifications_total
+description: Count of Flux Git Push notifications from KAS to agentk
+product_section: ops
+product_stage: deploy
+product_group: environments
+value_type: number
+status: active
+milestone: "16.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123782
+time_frame: all
+data_source: redis
+data_category: optional
+instrumentation_class: RedisMetric
+performance_indicator_type: []
+options:
+  prefix: kubernetes_agent
+  event: flux_git_push_notifications_total
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

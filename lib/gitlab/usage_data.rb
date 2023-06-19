@@ -67,9 +67,6 @@ module Gitlab
             auto_devops_disabled: count(::ProjectAutoDevops.disabled),
             deploy_keys: count(DeployKey),
             # rubocop: disable UsageData/LargeTable:
-            deployments: deployment_count(Deployment),
-            successful_deployments: deployment_count(Deployment.success),
-            failed_deployments: deployment_count(Deployment.failed),
             feature_flags: count(Operations::FeatureFlag),
             # rubocop: enable UsageData/LargeTable:
             environments: count(::Environment),
@@ -142,11 +139,6 @@ module Gitlab
       def system_usage_data_monthly
         {
           counts_monthly: {
-            # rubocop: disable UsageData/LargeTable:
-            deployments: deployment_count(Deployment.where(monthly_time_range_db_params)),
-            successful_deployments: deployment_count(Deployment.success.where(monthly_time_range_db_params)),
-            failed_deployments: deployment_count(Deployment.failed.where(monthly_time_range_db_params)),
-            # rubocop: enable UsageData/LargeTable:
             projects: count(Project.where(monthly_time_range_db_params), start: minimum_id(Project), finish: maximum_id(Project)),
             packages: count(::Packages::Package.where(monthly_time_range_db_params))
           }
@@ -616,10 +608,6 @@ module Gitlab
       # no internal details leak via usage ping.
       def filtered_omniauth_provider_names
         omniauth_provider_names.reject { |name| name.starts_with?('ldap') }
-      end
-
-      def deployment_count(relation)
-        count relation, start: minimum_id(Deployment), finish: maximum_id(Deployment)
       end
 
       def project_imports(time_period)

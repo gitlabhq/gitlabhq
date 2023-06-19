@@ -122,11 +122,12 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
       it 'tracks events and unique events', :aggregate_failures do
         request_count = 2
-        counters = { gitops_sync: 10, k8s_api_proxy_request: 5 }
+        counters = { gitops_sync: 10, k8s_api_proxy_request: 5, flux_git_push_notifications_total: 42 }
         unique_counters = { agent_users_using_ci_tunnel: [10, 999, 777, 10] }
         expected_counters = {
           kubernetes_agent_gitops_sync: request_count * counters[:gitops_sync],
-          kubernetes_agent_k8s_api_proxy_request: request_count * counters[:k8s_api_proxy_request]
+          kubernetes_agent_k8s_api_proxy_request: request_count * counters[:k8s_api_proxy_request],
+          kubernetes_agent_flux_git_push_notifications_total: request_count * counters[:flux_git_push_notifications_total]
         }
         expected_hll_count = unique_counters[:agent_users_using_ci_tunnel].uniq.count
 

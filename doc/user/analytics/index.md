@@ -45,6 +45,16 @@ You can use GitLab to review analytics at the project level. Some of these featu
 - [Repository](repository_analytics.md)
 - [Value Stream](value_stream_analytics.md)
 
+### Remove project analytics from the left sidebar
+
+By default, analytics for a project are displayed under the **Analyze** item in the left sidebar. To remove this item:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Turn off the **Analytics** toggle.
+1. Select **Save changes**.
+
 ## User-configurable analytics
 
 The following analytics features are available for users to create personalized views:

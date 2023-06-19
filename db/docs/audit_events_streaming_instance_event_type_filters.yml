@@ -1,0 +1,10 @@
+---
+table_name: audit_events_streaming_instance_event_type_filters
+classes:
+- AuditEvents::Streaming::InstanceEventTypeFilter
+feature_categories:
+- audit_events
+description: Represents an event type filter for audit event streaming
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123330
+milestone: '16.1'
+gitlab_schema: gitlab_main

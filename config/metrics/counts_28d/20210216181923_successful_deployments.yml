@@ -8,6 +8,9 @@ product_group: environments
 value_type: number
 status: active
 time_frame: 28d
+instrumentation_class: CountDeploymentsMetric
+options:
+  type: success
 data_source: database
 distribution:
 - ce

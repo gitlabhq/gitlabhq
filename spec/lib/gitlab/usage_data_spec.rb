@@ -568,9 +568,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:kubernetes_agents]).to eq(2)
       expect(count_data[:kubernetes_agents_with_token]).to eq(1)
 
-      expect(count_data[:deployments]).to eq(4)
-      expect(count_data[:successful_deployments]).to eq(2)
-      expect(count_data[:failed_deployments]).to eq(2)
       expect(count_data[:feature_flags]).to eq(1)
 
       expect(count_data[:projects_creating_incidents]).to eq(2)
@@ -623,15 +620,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     let_it_be(:project) { create(:project, created_at: 3.days.ago) }
 
     before do
-      env = create(:environment)
       create(:package, project: project, created_at: 3.days.ago)
       create(:package, created_at: 2.months.ago, project: project)
-
-      [3, 31].each do |n|
-        deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
-        create(:deployment, :failed, deployment_options)
-        create(:deployment, :success, deployment_options)
-      end
 
       for_defined_days_back do
         create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
@@ -643,9 +633,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'gathers monthly usage counts correctly' do
       counts_monthly = subject[:counts_monthly]
 
-      expect(counts_monthly[:deployments]).to eq(2)
-      expect(counts_monthly[:successful_deployments]).to eq(1)
-      expect(counts_monthly[:failed_deployments]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
     end

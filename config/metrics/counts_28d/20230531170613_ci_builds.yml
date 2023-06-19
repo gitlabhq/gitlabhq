@@ -10,7 +10,7 @@ milestone: "16.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122227
 time_frame: 28d
 data_source: database
-data_category: optional
+data_category: operational
 instrumentation_class: CountAllCiBuildsMetric
 performance_indicator_type: []
 distribution:
