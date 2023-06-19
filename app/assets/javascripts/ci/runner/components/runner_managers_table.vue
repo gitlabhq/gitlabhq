@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { tableField } from '../utils';
 import { I18N_STATUS_NEVER_CONTACTED } from '../constants';
+import RunnerStatusBadge from './runner_status_badge.vue';
 
 export default {
   name: 'RunnerManagersTable',
@@ -13,6 +14,7 @@ export default {
     TimeAgo,
     HelpPopover,
     GlIntersperse,
+    RunnerStatusBadge,
     RunnerUpgradeStatusIcon: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
   },
@@ -25,6 +27,7 @@ export default {
   },
   fields: [
     tableField({ key: 'systemId', label: s__('Runners|System ID') }),
+    tableField({ key: 'status', label: s__('Runners|Status') }),
     tableField({ key: 'version', label: s__('Runners|Version') }),
     tableField({ key: 'ipAddress', label: s__('Runners|IP Address') }),
     tableField({ key: 'executorName', label: s__('Runners|Executor') }),
@@ -47,6 +50,9 @@ export default {
       <help-popover>
         {{ s__('Runners|The unique ID for each runner that uses this configuration.') }}
       </help-popover>
+    </template>
+    <template #cell(status)="{ item = {} }">
+      <runner-status-badge :contacted-at="item.contactedAt" :status="item.status" />
     </template>
     <template #cell(version)="{ item = {} }">
       {{ item.version }}

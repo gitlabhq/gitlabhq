@@ -1,9 +1,9 @@
 ---
 status: accepted
 creation-date: "2022-09-07"
-authors: [ "@ayufan", "@fzimmer", "@DylanGriffith" ]
+authors: [ "@ayufan", "@fzimmer", "@DylanGriffith", "@lohrc" ]
 coach: "@ayufan"
-approvers: [ "@fzimmer" ]
+approvers: [ "@lohrc" ]
 owning-stage: "~devops::enablement"
 participating-stages: []
 ---

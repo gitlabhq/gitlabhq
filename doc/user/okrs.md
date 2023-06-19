@@ -237,6 +237,39 @@ To promote a key result:
 
 Alternatively, use the `/promote_to objective` [quick action](../user/project/quick_actions.md).
 
+## Copy objective or key result reference
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+
+To refer to an objective or key result elsewhere in GitLab, you can use its full URL or a short reference, which looks like
+`namespace/project-name#123`, where `namespace` is either a group or a username.
+
+To copy the objective or key result reference to your clipboard:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues**, then select your objective or key result to view it.
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
+
+You can now paste the reference into another description or comment.
+
+Read more about objective or key result references in [GitLab-Flavored Markdown](markdown.md#gitlab-specific-references).
+
+## Copy objective or key result email address
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+
+You can create a comment in an objective or key result by sending an email.
+Sending an email to this address creates a comment that contains the email body.
+
+For more information about creating comments by sending an email and the necessary configuration, see
+[Reply to a comment by sending email](discussions/index.md#reply-to-a-comment-by-sending-email).
+
+To copy the objective's or key result's email address:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues**, then select your issue to view it.
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy objective email address** or **Copy key result email address**.
+
 ## Close an OKR
 
 When an OKR is achieved, you can close it.

@@ -38,6 +38,7 @@ describe('RunnerJobs', () => {
     createComponent();
     expect(findHeaders().wrappers.map((w) => w.text())).toEqual([
       expect.stringContaining(s__('Runners|System ID')),
+      s__('Runners|Status'),
       s__('Runners|Version'),
       s__('Runners|IP Address'),
       s__('Runners|Executor'),
@@ -55,6 +56,12 @@ describe('RunnerJobs', () => {
     createComponent();
     expect(findCellText({ field: 'systemId', i: 0 })).toBe(mockItems[0].systemId);
     expect(findCellText({ field: 'systemId', i: 1 })).toBe(mockItems[1].systemId);
+  });
+
+  it('shows status', () => {
+    createComponent();
+    expect(findCellText({ field: 'status', i: 0 })).toBe(s__('Runners|Online'));
+    expect(findCellText({ field: 'status', i: 1 })).toBe(s__('Runners|Online'));
   });
 
   it('shows version', () => {

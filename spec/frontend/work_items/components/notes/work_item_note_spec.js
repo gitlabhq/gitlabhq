@@ -20,6 +20,8 @@ import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
+  mockWorkItemCommentNoteByContributor,
+  mockWorkItemCommentByMaintainer,
 } from 'jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -236,8 +238,9 @@ describe('Work Item Note', () => {
     });
 
     describe('main comment', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponent({ isFirstNote: true });
+        await waitForPromises();
       });
 
       it('should have the note header, actions and body', () => {
@@ -249,6 +252,10 @@ describe('Work Item Note', () => {
 
       it('should have the reply button props', () => {
         expect(findNoteActions().props('showReply')).toBe(true);
+      });
+
+      it('should have the project name', () => {
+        expect(findNoteActions().props('projectName')).toBe('Project name');
       });
     });
 
@@ -373,6 +380,28 @@ describe('Work Item Note', () => {
             expect(findNoteActions().props('isWorkItemAuthor')).toBe(isWorkItemAuthor);
           },
         );
+      });
+
+      describe('Max access level badge', () => {
+        it('should pass the max access badge props', async () => {
+          createComponent({ note: mockWorkItemCommentByMaintainer });
+          await waitForPromises();
+
+          expect(findNoteActions().props('maxAccessLevelOfAuthor')).toBe(
+            mockWorkItemCommentByMaintainer.maxAccessLevelOfAuthor,
+          );
+        });
+      });
+
+      describe('Contributor badge', () => {
+        it('should pass the contributor props', async () => {
+          createComponent({ note: mockWorkItemCommentNoteByContributor });
+          await waitForPromises();
+
+          expect(findNoteActions().props('isAuthorContributor')).toBe(
+            mockWorkItemCommentNoteByContributor.authorIsContributor,
+          );
+        });
       });
     });
   });

@@ -84,6 +84,21 @@ export default {
       required: false,
       default: false,
     },
+    isAuthorContributor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    maxAccessLevelOfAuthor: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    projectName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     assignUserActionText() {
@@ -94,6 +109,17 @@ export default {
     displayAuthorBadgeText() {
       return sprintf(__('This user is the author of this %{workItemType}.'), {
         workItemType: this.workItemType.toLowerCase(),
+      });
+    },
+    displayMemberBadgeText() {
+      return sprintf(__('This user has the %{access} role in the %{name} project.'), {
+        access: this.maxAccessLevelOfAuthor.toLowerCase(),
+        name: this.projectName,
+      });
+    },
+    displayContributorBadgeText() {
+      return sprintf(__('This user has previously committed to the %{name} project.'), {
+        name: this.projectName,
       });
     },
   },
@@ -139,6 +165,24 @@ export default {
       data-testid="author-badge"
     >
       {{ __('Author') }}
+    </user-access-role-badge>
+    <user-access-role-badge
+      v-if="maxAccessLevelOfAuthor"
+      v-gl-tooltip
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      :title="displayMemberBadgeText"
+      data-testid="max-access-level-badge"
+    >
+      {{ maxAccessLevelOfAuthor }}
+    </user-access-role-badge>
+    <user-access-role-badge
+      v-else-if="isAuthorContributor"
+      v-gl-tooltip
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      :title="displayContributorBadgeText"
+      data-testid="contributor-badge"
+    >
+      {{ __('Contributor') }}
     </user-access-role-badge>
     <emoji-picker
       v-if="showAwardEmoji && glFeatures.workItemsMvc2"

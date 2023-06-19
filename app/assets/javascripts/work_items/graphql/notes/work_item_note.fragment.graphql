@@ -10,6 +10,8 @@ fragment WorkItemNote on Note {
   createdAt
   lastEditedAt
   url
+  authorIsContributor
+  maxAccessLevelOfAuthor
   lastEditedBy {
     ...User
     webPath

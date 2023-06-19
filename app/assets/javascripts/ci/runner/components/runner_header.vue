@@ -38,7 +38,7 @@ export default {
     <div>
       <h1 class="gl-font-size-h-display gl-my-0">{{ name }}</h1>
       <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-flex-wrap gl-mt-3">
-        <runner-status-badge :runner="runner" />
+        <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />
         <runner-type-badge :type="runner.runnerType" />
         <span v-if="runner.createdAt">
           <gl-sprintf :message="__('%{locked} created %{timeago}')">

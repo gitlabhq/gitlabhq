@@ -326,3 +326,36 @@ You can also filter activity by **Comments only** and **History only** in additi
 ## Comments and threads
 
 You can add [comments](discussions/index.md) and reply to threads in tasks.
+
+## Copy task reference
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+
+To refer to a task elsewhere in GitLab, you can use its full URL or a short reference, which looks like
+`namespace/project-name#123`, where `namespace` is either a group or a username.
+
+To copy the task reference to your clipboard:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues**, then select your task to view it.
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
+
+You can now paste the reference into another description or comment.
+
+For more information about task references, see [GitLab-Flavored Markdown](markdown.md#gitlab-specific-references).
+
+## Copy task email address
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+
+You can create a comment in a task by sending an email.
+Sending an email to this address creates a comment that contains the email body.
+
+For more information about creating comments by sending an email and the necessary configuration, see
+[Reply to a comment by sending email](discussions/index.md#reply-to-a-comment-by-sending-email).
+
+To copy the task's email address:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues**, then select your issue to view it.
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy task email address**.

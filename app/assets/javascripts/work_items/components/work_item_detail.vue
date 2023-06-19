@@ -515,7 +515,6 @@ export default {
             @error="updateError = $event"
           />
           <work-item-actions
-            v-if="canUpdate || canDelete"
             :work-item-id="workItem.id"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
@@ -524,6 +523,9 @@ export default {
             :can-update="canUpdate"
             :is-confidential="workItem.confidential"
             :is-parent-confidential="parentWorkItemConfidentiality"
+            :work-item-reference="workItem.reference"
+            :work-item-create-note-email="workItem.createNoteEmail"
+            :is-modal="isModal"
             @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
             @toggleWorkItemConfidentiality="toggleConfidentiality"
             @error="updateError = $event"

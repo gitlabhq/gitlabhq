@@ -3856,6 +3856,80 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
+
+    context 'when ID tokens are defined with variables' do
+      let(:ci_server_url) { Gitlab.config.gitlab.url }
+
+      let(:ci_server_host) { Gitlab.config.gitlab.host }
+
+      before do
+        rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
+        stub_application_setting(ci_jwt_signing_key: rsa_key)
+        build.metadata.update!(id_tokens: {
+                                 'ID_TOKEN_1' => { aud: '$CI_SERVER_URL' },
+                                 'ID_TOKEN_2' => { aud: 'https://$CI_SERVER_HOST' },
+                                 'ID_TOKEN_3' => { aud: ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
+                               })
+        build.runner = build_stubbed(:ci_runner)
+      end
+
+      subject(:runner_vars) { build.variables.to_runner_variables }
+
+      it 'includes the ID token variables with expanded aud values' do
+        expect(runner_vars).to include(
+          a_hash_including(key: 'ID_TOKEN_1', public: false, masked: true),
+          a_hash_including(key: 'ID_TOKEN_2', public: false, masked: true),
+          a_hash_including(key: 'ID_TOKEN_3', public: false, masked: true)
+        )
+
+        id_token_var_1 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_1' }
+        id_token_var_2 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_2' }
+        id_token_var_3 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_3' }
+        id_token_1 = JWT.decode(id_token_var_1[:value], nil, false).first
+        id_token_2 = JWT.decode(id_token_var_2[:value], nil, false).first
+        id_token_3 = JWT.decode(id_token_var_3[:value], nil, false).first
+        expect(id_token_1['aud']).to eq(ci_server_url)
+        expect(id_token_2['aud']).to eq("https://#{ci_server_host}")
+        expect(id_token_3['aud']).to match_array(['developers', ci_server_url, "https://#{ci_server_host}"])
+      end
+    end
+
+    context 'when ID tokens are defined with variables of an environment' do
+      let!(:envprod) do
+        create(:environment, project: build.project, name: 'production')
+      end
+
+      let!(:varprod) do
+        create(:ci_variable, project: build.project, key: 'ENVIRONMENT_SCOPED_VAR', value: 'https://prod', environment_scope: 'prod*')
+      end
+
+      before do
+        build.update!(environment: 'production')
+        rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
+        stub_application_setting(ci_jwt_signing_key: rsa_key)
+        build.metadata.update!(id_tokens: {
+                                 'ID_TOKEN_1' => { aud: '$ENVIRONMENT_SCOPED_VAR' },
+                                 'ID_TOKEN_2' => { aud: ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
+                               })
+        build.runner = build_stubbed(:ci_runner)
+      end
+
+      subject(:runner_vars) { build.variables.to_runner_variables }
+
+      it 'includes the ID token variables with expanded aud values' do
+        expect(runner_vars).to include(
+          a_hash_including(key: 'ID_TOKEN_1', public: false, masked: true),
+          a_hash_including(key: 'ID_TOKEN_2', public: false, masked: true)
+        )
+
+        id_token_var_1 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_1' }
+        id_token_var_2 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_2' }
+        id_token_1 = JWT.decode(id_token_var_1[:value], nil, false).first
+        id_token_2 = JWT.decode(id_token_var_2[:value], nil, false).first
+        expect(id_token_1['aud']).to eq('https://prod')
+        expect(id_token_2['aud']).to match_array(['production', 'https://prod'])
+      end
+    end
   end
 
   describe '#scoped_variables' do

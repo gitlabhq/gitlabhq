@@ -2023,7 +2023,10 @@ JWTs created this way support OIDC authentication. The required `aud` sub-keywor
 
 **Possible inputs**:
 
-- Token names with their `aud` claims. `aud` can be a single string or as an array of strings.
+- Token names with their `aud` claims. `aud` supports:
+  - A single string.
+  - An array of strings.
+  - [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `id_tokens`**:
 

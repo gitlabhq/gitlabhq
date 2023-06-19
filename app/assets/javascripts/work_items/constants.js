@@ -92,6 +92,17 @@ export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
   'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
 );
 
+export const I18N_WORK_ITEM_ERROR_COPY_REFERENCE = s__(
+  'WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again.',
+);
+export const I18N_WORK_ITEM_ERROR_COPY_EMAIL = s__(
+  'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
+);
+
+export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(
+  'WorkItem|Copy %{workItemType} email address',
+);
+
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
   const workItemType = workItemTypeArg || s__('WorkItem|Work item');
   return capitalizeFirstCharacter(
@@ -217,6 +228,8 @@ export const TEST_ID_NOTIFICATIONS_TOGGLE_ACTION = 'notifications-toggle-action'
 export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
 export const TEST_ID_PROMOTE_ACTION = 'promote-action';
+export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
+export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';
 
 export const ADD = 'ADD';
 export const MARK_AS_DONE = 'MARK_AS_DONE';

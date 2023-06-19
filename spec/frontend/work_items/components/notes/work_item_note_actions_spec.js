@@ -25,6 +25,8 @@ describe('Work Item Note Actions', () => {
   const findAssignUnassignButton = () => wrapper.find('[data-testid="assign-note-action"]');
   const findReportAbuseToAdminButton = () => wrapper.find('[data-testid="abuse-note-action"]');
   const findAuthorBadge = () => wrapper.find('[data-testid="author-badge"]');
+  const findMaxAccessLevelBadge = () => wrapper.find('[data-testid="max-access-level-badge"]');
+  const findContributorBadge = () => wrapper.find('[data-testid="contributor-badge"]');
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -45,6 +47,9 @@ describe('Work Item Note Actions', () => {
     canReportAbuse = false,
     workItemType = 'Task',
     isWorkItemAuthor = false,
+    isAuthorContributor = false,
+    maxAccessLevelOfAuthor = '',
+    projectName = 'Project name',
   } = {}) => {
     wrapper = shallowMount(WorkItemNoteActions, {
       propsData: {
@@ -56,6 +61,9 @@ describe('Work Item Note Actions', () => {
         canReportAbuse,
         workItemType,
         isWorkItemAuthor,
+        isAuthorContributor,
+        maxAccessLevelOfAuthor,
+        projectName,
       },
       provide: {
         glFeatures: {
@@ -249,6 +257,42 @@ describe('Work Item Note Actions', () => {
         expect(findAuthorBadge().exists()).toBe(true);
         expect(findAuthorBadge().text()).toBe('Author');
         expect(findAuthorBadge().attributes('title')).toBe('This user is the author of this task.');
+      });
+    });
+
+    describe('Max access level badge', () => {
+      it('does not show the access level badge by default', () => {
+        createComponent();
+
+        expect(findMaxAccessLevelBadge().exists()).toBe(false);
+      });
+
+      it('shows the access badge when we have a valid value', () => {
+        createComponent({ maxAccessLevelOfAuthor: 'Owner' });
+
+        expect(findMaxAccessLevelBadge().exists()).toBe(true);
+        expect(findMaxAccessLevelBadge().text()).toBe('Owner');
+        expect(findMaxAccessLevelBadge().attributes('title')).toBe(
+          'This user has the owner role in the Project name project.',
+        );
+      });
+    });
+
+    describe('Contributor badge', () => {
+      it('does not show the contributor badge by default', () => {
+        createComponent();
+
+        expect(findContributorBadge().exists()).toBe(false);
+      });
+
+      it('shows the contributor badge the note author is a contributor', () => {
+        createComponent({ isAuthorContributor: true });
+
+        expect(findContributorBadge().exists()).toBe(true);
+        expect(findContributorBadge().text()).toBe('Contributor');
+        expect(findContributorBadge().attributes('title')).toBe(
+          'This user has previously committed to the Project name project.',
+        );
       });
     });
   });

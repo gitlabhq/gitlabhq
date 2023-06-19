@@ -18,7 +18,10 @@ module Gitlab
         return unless should_run_validations?
         return if commits.empty?
 
-        paths = project.repository.find_changed_paths(commits.map(&:sha))
+        paths = project.repository.find_changed_paths(
+          commits.map(&:sha), merge_commit_diff_mode: :all_parents
+        )
+
         paths.each do |path|
           validate_path(path)
         end

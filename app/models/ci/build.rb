@@ -1258,12 +1258,25 @@ module Ci
     def id_tokens_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         id_tokens.each do |var_name, token_data|
-          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['aud'])
+          token = Gitlab::Ci::JwtV2.for_build(self, aud: expanded_id_token_aud(token_data['aud']))
 
           variables.append(key: var_name, value: token, public: false, masked: true)
         end
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
+      end
+    end
+
+    def expanded_id_token_aud(aud)
+      return unless aud
+
+      strong_memoize_with(:expanded_id_token_aud, aud) do
+        # `aud` can be a string or an array of strings.
+        if aud.is_a?(Array)
+          aud.map { |x| ExpandVariables.expand(x, -> { scoped_variables.sort_and_expand_all }) }
+        else
+          ExpandVariables.expand(aud, -> { scoped_variables.sort_and_expand_all })
+        end
       end
     end
 

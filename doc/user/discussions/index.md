@@ -53,14 +53,12 @@ in a different color.
 
 ### Mentioning all members
 
-> [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default.
+> [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
 
 FLAG:
-On self-managed GitLab, by default the feature is available.
-To make it unavailable, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+On self-managed GitLab, by default this flag is not enabled. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
 named `disable_all_mention`.
-On GitLab.com, this feature is available.
-Disabling this feature on GitLab.com is tracked in [issue 18442](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+On GitLab.com, this flag is enabled.
 
 When this feature flag is enabled, typing `@all` in comments and descriptions
 results in plain text instead of a mention.

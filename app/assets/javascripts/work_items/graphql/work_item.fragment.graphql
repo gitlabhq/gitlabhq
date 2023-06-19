@@ -11,10 +11,13 @@ fragment WorkItem on WorkItem {
   createdAt
   updatedAt
   closedAt
+  reference(full: true)
+  createNoteEmail
   project {
     id
     fullPath
     archived
+    name
   }
   author {
     ...Author

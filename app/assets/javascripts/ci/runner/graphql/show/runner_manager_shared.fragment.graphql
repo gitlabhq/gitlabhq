@@ -1,6 +1,7 @@
 fragment CiRunnerManagerShared on CiRunnerManager {
   id
   systemId
+  status
   version
   revision
   executorName

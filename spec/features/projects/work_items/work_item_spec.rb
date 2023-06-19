@@ -35,6 +35,10 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       end
     end
 
+    it 'actions dropdown is displayed' do
+      expect(page).to have_selector('[data-testid="work-item-actions-dropdown"]')
+    end
+
     it_behaves_like 'work items title'
     it_behaves_like 'work items status'
     it_behaves_like 'work items assignees'
@@ -74,10 +78,6 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for user not signed in' do
     before do
       visit work_items_path
-    end
-
-    it 'actions dropdown is not displayed' do
-      expect(page).not_to have_selector('[data-testid="work-item-actions-dropdown"]')
     end
 
     it 'todos action is not displayed' do

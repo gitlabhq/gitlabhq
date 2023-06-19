@@ -22,6 +22,12 @@ export default {
     paused() {
       return this.runner.paused;
     },
+    contactedAt() {
+      return this.runner.contactedAt;
+    },
+    status() {
+      return this.runner.status;
+    },
   },
 };
 </script>
@@ -29,7 +35,8 @@ export default {
 <template>
   <div>
     <runner-status-badge
-      :runner="runner"
+      :contacted-at="contactedAt"
+      :status="status"
       class="gl-display-inline-block gl-max-w-full gl-text-truncate"
     />
     <runner-paused-badge

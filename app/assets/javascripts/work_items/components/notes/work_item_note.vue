@@ -154,6 +154,9 @@ export default {
     isWorkItemAuthor() {
       return getIdFromGraphQLId(this.workItem?.author?.id) === getIdFromGraphQLId(this.author.id);
     },
+    projectName() {
+      return this.workItem?.project?.name;
+    },
   },
   apollo: {
     workItem: {
@@ -329,6 +332,9 @@ export default {
               :can-report-abuse="!isCurrentUserAuthorOfNote"
               :is-work-item-author="isWorkItemAuthor"
               :work-item-type="workItemType"
+              :is-author-contributor="note.authorIsContributor"
+              :max-access-level-of-author="note.maxAccessLevelOfAuthor"
+              :project-name="projectName"
               @startReplying="showReplyForm"
               @startEditing="startEditing"
               @error="($event) => $emit('error', $event)"
