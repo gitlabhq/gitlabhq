@@ -526,8 +526,8 @@ A streaming destination that has an event type filter set has a **filtered** (**
 
 To update a streaming destination's event filters:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Security and Compliance > Audit events**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, select **Edit** (**{pencil}**).
 1. Select **Filter by stream event**.

@@ -48,8 +48,9 @@ Each workspace includes its own set of dependencies, libraries, and tools, which
 
 To create a workspace:
 
-1. On the top bar, select **Main menu > Your work**.
-1. On the left sidebar, select **Workspaces**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+1. Select **Workspaces**.
 1. Select **New workspace**.
 1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites). You can only create workspaces for public projects.
 1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.

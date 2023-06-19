@@ -8,8 +8,9 @@ import {
   SNIPPET_MAX_BLOBS,
   SNIPPET_BLOB_ACTION_CREATE,
   SNIPPET_BLOB_ACTION_MOVE,
+  SNIPPET_LIMITATIONS,
 } from '~/snippets/constants';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import { testEntries, createBlobFromTestEntry } from '../test_utils';
 
 const TEST_BLOBS = [
@@ -40,6 +41,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
     }));
   const findFirstBlobEdit = () => findBlobEdits().at(0);
   const findAddButton = () => wrapper.find('[data-testid="add_button"]');
+  const findLimitationsText = () => wrapper.find('[data-testid="limitations_text"]');
   const getLastActions = () => {
     const events = wrapper.emitted().actions;
 
@@ -95,6 +97,10 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
 
       expect(button.text()).toBe(`Add another file ${TEST_BLOBS.length}/${SNIPPET_MAX_BLOBS}`);
       expect(button.props('disabled')).toBe(false);
+    });
+
+    it('do not show limitations text', () => {
+      expect(findLimitationsText().exists()).toBe(false);
     });
 
     describe('when add is clicked', () => {
@@ -275,6 +281,12 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
 
     it('should disable add button', () => {
       expect(findAddButton().props('disabled')).toBe(true);
+    });
+
+    it('shows limitations text', () => {
+      expect(findLimitationsText().text()).toBe(
+        sprintf(SNIPPET_LIMITATIONS, { total: SNIPPET_MAX_BLOBS }),
+      );
     });
   });
 

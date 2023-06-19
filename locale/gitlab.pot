@@ -43314,6 +43314,9 @@ msgstr ""
 msgid "Snippets|Files"
 msgstr ""
 
+msgid "Snippets|Snippets are limited to %{total} files."
+msgstr ""
+
 msgid "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them."
 msgstr ""
 
