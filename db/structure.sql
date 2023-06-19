@@ -33195,6 +33195,8 @@ CREATE INDEX index_vulnerabilities_on_author_id ON vulnerabilities USING btree (
 
 CREATE INDEX index_vulnerabilities_on_confirmed_by_id ON vulnerabilities USING btree (confirmed_by_id);
 
+CREATE INDEX index_vulnerabilities_on_detected_at_and_id ON vulnerabilities USING btree (id, detected_at);
+
 CREATE INDEX index_vulnerabilities_on_dismissed_by_id ON vulnerabilities USING btree (dismissed_by_id);
 
 CREATE INDEX index_vulnerabilities_on_due_date_sourcing_milestone_id ON vulnerabilities USING btree (due_date_sourcing_milestone_id);
@@ -33314,6 +33316,8 @@ CREATE INDEX index_vulnerability_reads_on_namespace_type_severity_id ON vulnerab
 CREATE INDEX index_vulnerability_reads_on_scanner_id ON vulnerability_reads USING btree (scanner_id);
 
 CREATE UNIQUE INDEX index_vulnerability_reads_on_uuid ON vulnerability_reads USING btree (uuid);
+
+CREATE INDEX index_vulnerability_reads_on_uuid_project_id_and_state ON vulnerability_reads USING btree (uuid, project_id, state);
 
 CREATE UNIQUE INDEX index_vulnerability_reads_on_vulnerability_id ON vulnerability_reads USING btree (vulnerability_id);
 

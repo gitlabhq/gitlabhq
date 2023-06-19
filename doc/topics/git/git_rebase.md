@@ -44,10 +44,9 @@ branch, such as `release-15-3`. You can also specify a different remote reposito
 To back up a branch before taking any destructive action, like a rebase or force push:
 
 1. Open your feature branch in the terminal: `git checkout my-feature`
-1. Check out a new branch from it: `git checkout -b my-feature-backup`
+1. Create a backup branch: `git branch my-feature-backup`
    Any changes added to `my-feature` after this point are lost
    if you restore from the backup branch.
-1. Change back to your original branch: `git checkout my-feature`
 
 Your branch is backed up, and you can try a rebase or a force push.
 If anything goes wrong, restore your branch from its backup:

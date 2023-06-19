@@ -6,15 +6,15 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       class PipelinedDiffError < StandardError
-        def initialize(result_primary, result_secondary)
-          @result_primary = result_primary
-          @result_secondary = result_secondary
+        def initialize(non_default_store_result, default_store_result)
+          @non_default_store_result = non_default_store_result
+          @default_store_result = default_store_result
         end
 
         def message
           "Pipelined command executed on both stores successfully but results differ between them. " \
-            "Result from the primary: #{@result_primary.inspect}. " \
-            "Result from the secondary: #{@result_secondary.inspect}."
+            "Result from the non-default store: #{@non_default_store_result.inspect}. " \
+            "Result from the default store: #{@default_store_result.inspect}."
         end
       end
 
@@ -27,8 +27,8 @@ module Gitlab
       attr_reader :primary_store, :secondary_store, :instance_name
 
       FAILED_TO_READ_ERROR_MESSAGE = 'Failed to read from the redis default_store.'
-      FAILED_TO_WRITE_ERROR_MESSAGE = 'Failed to write to the redis primary_store.'
-      FAILED_TO_RUN_PIPELINE = 'Failed to execute pipeline on the redis primary_store.'
+      FAILED_TO_WRITE_ERROR_MESSAGE = 'Failed to write to the redis non_default_store.'
+      FAILED_TO_RUN_PIPELINE = 'Failed to execute pipeline on the redis non_default_store.'
 
       SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i[info].freeze
 
@@ -192,7 +192,7 @@ module Gitlab
         use_primary_store_as_default? ? primary_store : secondary_store
       end
 
-      def fallback_store
+      def non_default_store
         use_primary_store_as_default? ? secondary_store : primary_store
       end
 
@@ -252,36 +252,39 @@ module Gitlab
       end
 
       def write_both(command_name, *args, **kwargs, &block)
+        result = send_command(default_store, command_name, *args, **kwargs, &block)
+
+        # write to the non-default store only if write on default store is successful
         begin
-          send_command(primary_store, command_name, *args, **kwargs, &block)
+          send_command(non_default_store, command_name, *args, **kwargs, &block)
         rescue StandardError => e
           log_error(e, command_name,
             multi_store_error_message: FAILED_TO_WRITE_ERROR_MESSAGE)
         end
 
-        send_command(secondary_store, command_name, *args, **kwargs, &block)
+        result
       end
 
       # Run the entire pipeline on both stores. We assume that `&block` is idempotent.
       def pipelined_both(command_name, *args, **kwargs, &block)
+        result_default = send_command(default_store, command_name, *args, **kwargs, &block)
+
         begin
-          result_primary = send_command(primary_store, command_name, *args, **kwargs, &block)
+          result_non_default = send_command(non_default_store, command_name, *args, **kwargs, &block)
         rescue StandardError => e
           log_error(e, command_name, multi_store_error_message: FAILED_TO_RUN_PIPELINE)
         end
 
-        result_secondary = send_command(secondary_store, command_name, *args, **kwargs, &block)
-
         # Pipelined commands return an array with all results. If they differ, log an error
-        if result_primary && result_primary != result_secondary
-          error = PipelinedDiffError.new(result_primary, result_secondary)
+        if result_non_default && result_non_default != result_default
+          error = PipelinedDiffError.new(result_non_default, result_default)
           error.set_backtrace(Thread.current.backtrace[1..]) # Manually set backtrace, since the error is not `raise`d
 
           log_error(error, command_name)
           increment_pipelined_command_error_count(command_name)
         end
 
-        result_secondary
+        result_default
       end
 
       def same_redis_store?

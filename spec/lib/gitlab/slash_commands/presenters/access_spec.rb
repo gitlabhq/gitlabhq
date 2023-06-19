@@ -38,7 +38,7 @@ RSpec.describe Gitlab::SlashCommands::Presenters::Access do
     it { is_expected.to be_a(Hash) }
 
     it_behaves_like 'displays an error message' do
-      let(:error_message) { 'your account has been deactivated by your administrator' }
+      let(:error_message) { "your #{Gitlab.config.gitlab.url} account needs to be reactivated" }
     end
   end
 

@@ -776,8 +776,11 @@ echo $( ruby -rsecurerandom -e "puts SecureRandom.base64(32)" ) > ~/.gitlab-mail
 
 If you run GitLab on more than one machine, you need to provide the secret key file for each machine.
 
-We highly encourage GitLab administrators to start using the `webhook` delivery method for
+We encourage GitLab administrators to switch to the webhook delivery method for
 `incoming_email_delivery_method` and `service_desk_email_delivery_method` instead of `sidekiq`.
+
+[Issue 393157](https://gitlab.com/gitlab-org/gitlab/-/issues/393157) tracks improving email ingestion in general.
+We hope this will simplify infrastructure setup and add several improvements to how you manage GitLab in the near future.
 
 </div>
 

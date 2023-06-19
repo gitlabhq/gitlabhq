@@ -19846,6 +19846,7 @@ Represents a product analytics dashboard panel.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="productanalyticsdashboardpanelgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the panel. |
+| <a id="productanalyticsdashboardpanelqueryoverrides"></a>`queryOverrides` | [`JSON`](#json) | Overrides for the visualization query object. |
 | <a id="productanalyticsdashboardpaneltitle"></a>`title` | [`String!`](#string) | Title of the panel. |
 | <a id="productanalyticsdashboardpanelvisualization"></a>`visualization` | [`ProductAnalyticsDashboardVisualization!`](#productanalyticsdashboardvisualization) | Visualization of the panel. |
 
