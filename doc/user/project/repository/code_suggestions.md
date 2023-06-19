@@ -70,6 +70,7 @@ Prerequisites:
 
 - Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
 - Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
+- You must be a GitLab team member.
 
 Code Suggestions work automatically in the [GitLab WebIDE](../../project/web_ide/index.md) if the above prerequisites are met. To disable Code Suggestions in the WebIDE, disable the user account setting.
 

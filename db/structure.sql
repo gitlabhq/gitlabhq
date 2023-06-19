@@ -13646,7 +13646,7 @@ CREATE SEQUENCE ci_pipeline_schedules_id_seq
 ALTER SEQUENCE ci_pipeline_schedules_id_seq OWNED BY ci_pipeline_schedules.id;
 
 CREATE TABLE ci_pipeline_variables (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     key character varying NOT NULL,
     value text,
     encrypted_value text,
@@ -13656,7 +13656,7 @@ CREATE TABLE ci_pipeline_variables (
     variable_type smallint DEFAULT 1 NOT NULL,
     partition_id bigint DEFAULT 100 NOT NULL,
     raw boolean DEFAULT false NOT NULL,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_pipeline_variables_id_seq
@@ -30465,8 +30465,6 @@ CREATE INDEX index_ci_pipeline_schedules_on_owner_id ON ci_pipeline_schedules US
 CREATE INDEX index_ci_pipeline_schedules_on_owner_id_and_id_and_active ON ci_pipeline_schedules USING btree (owner_id, id) WHERE (active = true);
 
 CREATE INDEX index_ci_pipeline_schedules_on_project_id ON ci_pipeline_schedules USING btree (project_id);
-
-CREATE UNIQUE INDEX index_ci_pipeline_variables_on_id_convert_to_bigint ON ci_pipeline_variables USING btree (id_convert_to_bigint);
 
 CREATE UNIQUE INDEX index_ci_pipeline_variables_on_pipeline_id_and_key ON ci_pipeline_variables USING btree (pipeline_id, key);
 

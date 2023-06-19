@@ -269,9 +269,13 @@ There are two different ways to add a new project to a group:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) from GitLab Premium to GitLab Free in 11.10.
 
-By default, users with at least the Developer role can create projects under a group.
+By default, users with:
 
-To change this setting for a specific group:
+- At least the Developer role can create projects under a group. This default can be changed.
+- At least the Maintainer role can fork projects into a group. This default prevents users with the Developer role from forking projects that
+  contain protected branches and cannot be changed.
+
+To change the role that can create projects under a group:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Settings > General**.

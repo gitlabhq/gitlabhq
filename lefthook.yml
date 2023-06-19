@@ -97,6 +97,10 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb}'
       run: bundle exec rake lint:static_verification
+    bundler-checksum-lint:
+      tags: backend bundler
+      glob: 'Gemfile.lock'
+      run: bundle exec bundler-checksum lint
 
   scripts:
     "merge_conflicts":

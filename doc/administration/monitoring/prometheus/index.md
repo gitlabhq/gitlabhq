@@ -231,6 +231,17 @@ To use an external Prometheus server:
    }
    ```
 
+   You can also specify more than one IP address if you have multiple Prometheus servers:
+
+   ```ruby
+   nginx['status']['options'] = {
+         "server_tokens" => "off",
+         "access_log" => "off",
+         "allow" => ["192.168.0.1", "192.168.0.2"]
+         "deny" => "all",
+   }
+   ```
+
 1. To allow the Prometheus server to fetch from the [GitLab metrics](#gitlab-metrics) endpoint, add the Prometheus
 server IP address to the [monitoring IP allowlist](../ip_allowlist.md):
 

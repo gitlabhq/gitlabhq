@@ -369,6 +369,7 @@ The following table lists group permissions available for each role:
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |
 | Create and edit [group wiki](project/wiki/group.md) pages                               |       |          | ✓         | ✓          | ✓     |
 | Create project in group                                                                 |       |          | ✓ (2)(4)  | ✓ (2)      | ✓ (2) |
+| Fork project into a group                                                               |       |          |           | ✓          | ✓     |
 | Create/edit/delete group milestones                                                     |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                                                           |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |
