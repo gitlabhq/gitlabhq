@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
+require 'rails/version'
 require 'gettext_i18n_rails'
 
 RSpec.describe Gitlab::I18n::Pluralization, feature_category: :internationalization do

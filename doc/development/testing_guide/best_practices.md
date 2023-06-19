@@ -1470,19 +1470,17 @@ under `spec/support/helpers/`. Helpers can be placed in a subfolder if they appl
 to a certain type of specs only (such as features or requests) but shouldn't be
 if they apply to multiple type of specs.
 
-Helpers should follow the Rails naming / namespacing convention. For instance
-`spec/support/helpers/cycle_analytics_helpers.rb` should define:
+Helpers should follow the Rails naming / namespacing convention, where
+`spec/support/helpers/` is the root. For instance
+`spec/support/helpers/features/iteration_helpers.rb` should define:
 
 ```ruby
-module Spec
-  module Support
-    module Helpers
-      module CycleAnalyticsHelpers
-        def create_commit_referencing_issue(issue, branch_name: random_git_name)
-          project.repository.add_branch(user, branch_name, 'main')
-          create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
-        end
-      end
+# frozen_string_literal: true
+
+module Features
+  module IterationHelpers
+    def iteration_period(iteration)
+      "#{iteration.start_date.to_s(:medium)} - #{iteration.due_date.to_s(:medium)}"
     end
   end
 end
@@ -1492,8 +1490,14 @@ Helpers should not change the RSpec configuration. For instance, the helpers mod
 described above should not include:
 
 ```ruby
+# bad
 RSpec.configure do |config|
-  config.include Spec::Support::Helpers::CycleAnalyticsHelpers
+  config.include Features::IterationHelpers
+end
+
+# good, include in specific spec
+RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
+  include Features::IterationHelpers
 end
 ```
 

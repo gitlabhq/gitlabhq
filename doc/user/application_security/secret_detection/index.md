@@ -83,7 +83,7 @@ Secret Detection can detect if a secret was added in one commit and removed in a
 
 - Commit range
 
-  If the `SECRET_DETECTION_LOG_OPTS` variable is set, the secrets analyzer fetches the entire
+  If the `SECRET_DETECTION_LOG_OPTIONS` variable is set, the secrets analyzer fetches the entire
   history of the branch or reference the pipeline is being run for. Secret Detection then runs,
   scanning the commit range specified.
 

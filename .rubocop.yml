@@ -925,6 +925,9 @@ Performance/ActiveRecordSubtransactionMethods:
 Migration/BackgroundMigrationBaseClass:
   Enabled: false
 
+BackgroundMigration/AvoidSilentRescueExceptions:
+  Enabled: false
+
 Style/ClassAndModuleChildren:
   Enabled: true
 

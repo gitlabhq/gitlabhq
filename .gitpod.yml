@@ -53,7 +53,7 @@ tasks:
         cd /workspace/gitlab-development-kit
         # update GDK
         echo "$(date) – Updating GDK" | tee -a /workspace/startup.log
-        export DEFAULT_BRANCH=$(git branch --show-current)
+        export DEFAULT_BRANCH=$(git --git-dir=gitlab/.git branch --show-current)
         gdk config set gitlab.default_branch "$DEFAULT_BRANCH"
         gdk update
         # ensure gdk.yml has correct instance settings

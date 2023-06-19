@@ -59,3 +59,8 @@ Migration/BackgroundMigrationBaseClass:
     - 'base_job.rb'
     - 'batched_migration_job.rb'
     - 'logger.rb'
+
+BackgroundMigration/AvoidSilentRescueExceptions:
+  Enabled: true
+  Description: >-
+    Rescuing errors in batched background migration jobs can lead to undesired results
