@@ -15,7 +15,7 @@ RSpec.describe 'getting incident timeline events', feature_category: :incident_m
   let_it_be(:promoted_from_note) { create(:note, project: project, noteable: incident) }
   let_it_be(:issue_url) { project_issue_url(private_project, issue) }
   let_it_be(:issue_ref) { "#{private_project.full_path}##{issue.iid}" }
-  let_it_be(:issue_link) { %Q(<a href="#{issue_url}">#{issue_url}</a>) }
+  let_it_be(:issue_link) { %(<a href="#{issue_url}">#{issue_url}</a>) }
 
   let_it_be(:timeline_event) do
     create(

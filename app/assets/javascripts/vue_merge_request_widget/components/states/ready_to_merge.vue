@@ -511,13 +511,13 @@ export default {
   },
   i18n: {
     mergeCommitTemplateHintText: s__(
-      'mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more.%{linkEnd}',
+      'mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more%{linkEnd}.',
     ),
     squashCommitTemplateHintText: s__(
-      'mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}',
+      'mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more%{linkEnd}.',
     ),
     mergeAndSquashCommitTemplatesHintText: s__(
-      'mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more.%{linkEnd}',
+      'mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more%{linkEnd}.',
     ),
     sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch'),
     divergedCommits: (count) => n__('%d commit behind', '%d commits behind', count),
@@ -619,9 +619,8 @@ export default {
                             :href="commitTemplateHelpPage"
                             class="inline-link"
                             target="_blank"
+                            >{{ content }}</gl-link
                           >
-                            {{ content }}
-                          </gl-link>
                         </template>
                       </gl-sprintf>
                     </p>

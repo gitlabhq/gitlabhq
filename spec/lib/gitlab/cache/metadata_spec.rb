@@ -19,11 +19,11 @@ RSpec.describe Gitlab::Cache::Metadata, feature_category: :source_code_managemen
     context 'when optional arguments are not set' do
       it 'sets default value for them' do
         attributes = described_class.new(
-          cache_identifier: cache_identifier,
           feature_category: feature_category
         )
 
         expect(attributes.backing_resource).to eq(:unknown)
+        expect(attributes.cache_identifier).to be_nil
       end
     end
 

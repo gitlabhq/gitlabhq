@@ -12120,8 +12120,10 @@ CREATE TABLE audit_events_external_audit_event_destinations (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     verification_token text,
+    name text,
     CONSTRAINT check_2feafb9daf CHECK ((char_length(destination_url) <= 255)),
-    CONSTRAINT check_8ec80a7d06 CHECK ((char_length(verification_token) <= 24))
+    CONSTRAINT check_8ec80a7d06 CHECK ((char_length(verification_token) <= 24)),
+    CONSTRAINT check_c52ff8e90e CHECK ((char_length(name) <= 72))
 );
 
 CREATE SEQUENCE audit_events_external_audit_event_destinations_id_seq
@@ -12173,6 +12175,8 @@ CREATE TABLE audit_events_instance_external_audit_event_destinations (
     destination_url text NOT NULL,
     encrypted_verification_token bytea NOT NULL,
     encrypted_verification_token_iv bytea NOT NULL,
+    name text,
+    CONSTRAINT check_433fbb3305 CHECK ((char_length(name) <= 72)),
     CONSTRAINT check_4dc67167ce CHECK ((char_length(destination_url) <= 255))
 );
 
@@ -33580,6 +33584,8 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite 
 
 CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
 
+CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_name ON audit_events_external_audit_event_destinations USING btree (namespace_id, name);
+
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
 
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
@@ -33589,6 +33595,8 @@ CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_i
 CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_settings USING btree (pages_unique_domain) WHERE (pages_unique_domain IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_events USING btree (system_note_metadata_id);
+
+CREATE UNIQUE INDEX unique_instance_audit_event_destination_namespace_id_and_name ON audit_events_instance_external_audit_event_destinations USING btree (name);
 
 CREATE UNIQUE INDEX unique_merge_request_diff_llm_summaries_on_mr_diff_id ON merge_request_diff_llm_summaries USING btree (merge_request_diff_id);
 

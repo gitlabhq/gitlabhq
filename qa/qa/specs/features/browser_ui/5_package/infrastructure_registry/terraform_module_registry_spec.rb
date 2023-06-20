@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', product_group: :package_registry do
+  RSpec.describe 'Package', :requires_admin, product_group: :package_registry do
     describe 'Terraform Module Registry' do
       include Runtime::Fixtures
 
@@ -25,6 +25,7 @@ module QA
       end
 
       before do
+        # Remove 'requires_admin' if below method is removed
         QA::Support::Helpers::ImportSource.enable('git')
 
         Flow::Login.sign_in

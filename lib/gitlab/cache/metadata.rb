@@ -12,8 +12,8 @@ module Gitlab
       # @param backing_resource [Symbol] most affected resource by cache generation (full list: VALID_BACKING_RESOURCES)
       # @return [Gitlab::Cache::Metadata]
       def initialize(
-        cache_identifier:,
         feature_category:,
+        cache_identifier: nil,
         backing_resource: Client::DEFAULT_BACKING_RESOURCE
       )
         @cache_identifier = cache_identifier

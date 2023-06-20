@@ -22,7 +22,7 @@ RSpec.describe 'User uploads avatar to group', feature_category: :user_profile d
 
     visit group_path(group)
 
-    expect(page).to have_selector(%Q(img[data-src$="/uploads/-/system/group/avatar/#{group.id}/dk.png"]))
+    expect(page).to have_selector(%(img[data-src$="/uploads/-/system/group/avatar/#{group.id}/dk.png"]))
 
     # Cheating here to verify something that isn't user-facing, but is important
     expect(group.reload.avatar.file).to exist

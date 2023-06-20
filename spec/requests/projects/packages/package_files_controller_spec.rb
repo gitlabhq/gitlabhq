@@ -22,7 +22,7 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
       subject
 
       expect(response.headers['Content-Disposition'])
-        .to eq(%Q(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+        .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
     end
 
     it_behaves_like 'bumping the package last downloaded at field'

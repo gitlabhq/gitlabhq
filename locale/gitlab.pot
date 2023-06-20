@@ -49746,6 +49746,9 @@ msgstr ""
 msgid "UserProfile|An error occurred loading the followers. Please refresh the page to try again."
 msgstr ""
 
+msgid "UserProfile|An error occurred loading the following. Please refresh the page to try again."
+msgstr ""
+
 msgid "UserProfile|An error occurred loading the personal projects. Please refresh the page to try again."
 msgstr ""
 
@@ -54927,13 +54930,13 @@ msgstr ""
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
 msgstr ""
 
-msgid "mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more.%{linkEnd}"
+msgid "mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more.%{linkEnd}"
+msgid "mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}"
+msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "mrWidget|What is a merge train?"

@@ -9,8 +9,8 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   let(:context) { {} }
 
   def image(path, alt: nil, data_src: nil)
-    alt_tag = alt ? %Q{alt="#{alt}"} : ""
-    data_src_tag = data_src ? %Q{data-src="#{data_src}"} : ""
+    alt_tag = alt ? %{alt="#{alt}"} : ""
+    data_src_tag = data_src ? %{data-src="#{data_src}"} : ""
 
     %(<img src="#{path}" #{alt_tag} #{data_src_tag} />)
   end
@@ -22,7 +22,7 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   end
 
   it 'does not wrap a duplicate link' do
-    doc = filter(%Q(<a href="/whatever">#{image(path)}</a>), context)
+    doc = filter(%(<a href="/whatever">#{image(path)}</a>), context)
 
     expect(doc.to_html).to match %r{^<a href="/whatever"><img[^>]*></a>$}
   end
@@ -34,7 +34,7 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   end
 
   it 'works with inline images' do
-    doc = filter(%Q(<p>test #{image(path)} inline</p>), context)
+    doc = filter(%(<p>test #{image(path)} inline</p>), context)
 
     expect(doc.to_html).to match %r{^<p>test <a[^>]*><img[^>]*></a> inline</p>$}
   end

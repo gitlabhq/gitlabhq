@@ -197,7 +197,7 @@ RSpec.describe 'test coverage badge', feature_category: :code_testing do
   def expect_coverage_badge(coverage)
     svg = Nokogiri::XML.parse(page.body)
     expect(page.response_headers['Content-Type']).to include('image/svg+xml')
-    expect(svg.at(%Q{text:contains("#{coverage}")})).to be_truthy
+    expect(svg.at(%{text:contains("#{coverage}")})).to be_truthy
   end
 
   def expect_coverage_badge_color(color)

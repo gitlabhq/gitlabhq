@@ -17,7 +17,7 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
   end
 
   describe 'POST #callback' do
-    let(:xml_response) { %Q(<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><token><![CDATA[#{token}]]></token></response>) }
+    let(:xml_response) { %(<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><token><![CDATA[#{token}]]></token></response>) }
 
     before do
       stub_request(:post, "https://example.com/api.asp").to_return(status: 200, body: xml_response, headers: {})

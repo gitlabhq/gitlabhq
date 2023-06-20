@@ -51,7 +51,7 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController, feat
       it 'sets Content-Disposition as attachment' do
         filename = design.filename
 
-        expect(response.header['Content-Disposition']).to eq(%Q(attachment; filename=\"#{filename}\"; filename*=UTF-8''#{filename}))
+        expect(response.header['Content-Disposition']).to eq(%(attachment; filename=\"#{filename}\"; filename*=UTF-8''#{filename}))
       end
 
       it 'serves files with Workhorse' do

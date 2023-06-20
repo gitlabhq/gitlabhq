@@ -473,7 +473,7 @@ module GraphqlHelpers
   end
 
   def with_signature(variables, query)
-    %Q[query(#{variables.map(&:sig).join(', ')}) #{wrap_query(query)}]
+    %[query(#{variables.map(&:sig).join(', ')}) #{wrap_query(query)}]
   end
 
   def var(type)

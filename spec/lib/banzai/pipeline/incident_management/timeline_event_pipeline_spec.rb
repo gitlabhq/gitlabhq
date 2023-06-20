@@ -73,7 +73,7 @@ RSpec.describe Banzai::Pipeline::IncidentManagement::TimelineEventPipeline do
 
     context 'when markdown contains labels' do
       let(:label) { create(:label, project: project, title: 'backend') }
-      let(:markdown) { %Q(~"#{label.name}" ~unknown) }
+      let(:markdown) { %(~"#{label.name}" ~unknown) }
 
       it 'replaces existing label to a link' do
         # rubocop:disable Layout/LineLength

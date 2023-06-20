@@ -12,7 +12,7 @@ All other features are considered to be Generally Available (GA).
 
 ## Experiment
 
-Support is not provided for features listed as "Experimental" or "Alpha" or any similar designation. Issues regarding such features should be opened in the GitLab issue tracker.
+Support is not provided for features listed as "Experimental" or "Alpha" or any similar designation. Issues regarding such features should be opened in the GitLab issue tracker. Teams should release features as GA from the start unless there are strong reasons to release them as Experiment or Beta versions first.
 
 - Not ready for production use.
 - No support available.
@@ -20,10 +20,12 @@ Support is not provided for features listed as "Experimental" or "Alpha" or any 
 - Can be removed at any time.
 - Data loss may occur.
 - Documentation may not exist or just be in a blog format.
-- [User interface reflects Experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
-- User experience incomplete, might be just quick action access.
-- Behind a feature flag that is on by default.
-- Behind a toggle that is off by default.
+- Offer an easy way to choose to opt-in to experimental features with minimal friction. For example, needing to flip a feature flag is too much friction, but a group or project-level setting that is in the UI is not.
+- Link out to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
+- Documentation reflects that the feature is subject to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+- [UI reflects experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
+- Feedback issue to engage with team.
+- UX not finalized, might be just quick action access.
 - Not announced in a release post.
 - Can be promoted in the user interface through [discovery moments](https://design.gitlab.com/usability/feature-management#discovery-moments), if needed.
 - Feedback issue to engage with team.
@@ -54,13 +56,13 @@ Generally Available features means that they passed the [Production Readiness Re
 - Fully documented and supported.
 - User experience complete and in line with GitLab design standards.
 
-## Never internal
+## Provide earlier access
 
-Features are never internal (GitLab team-members) only.
+Give users the ability to opt into experimental features when there is enough value.
+Where possible, release an experimental feature externally instead of only testing internally or waiting for the feature to be in a Beta state.
 Our [mission is "everyone can contribute"](https://about.gitlab.com/company/mission/), and that is only possible if people outside the company can try a feature.
 We get higher quality (more diverse) feedback if people from different organizations try something.
-We've also learned that internal only as a state slows us down more than it speeds us up.
-Release the experiment instead of testing internally or waiting for the feature to be in a Beta state.
+We've learned that keeping features internal only for extended periods of time slows us down unnecessarily.
 The experimental features are only shown when people/organizations opt-in to experiments, we are allowed to make mistakes here and literally experiment.
 
 ## All features are in production

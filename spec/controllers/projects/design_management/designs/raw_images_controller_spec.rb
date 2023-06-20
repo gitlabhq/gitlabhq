@@ -129,7 +129,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
       it 'serves files with `Content-Disposition: attachment`' do
         subject
 
-        expect(response.header['Content-Disposition']).to eq(%Q(attachment; filename=\"#{filename}\"; filename*=UTF-8''#{filename}))
+        expect(response.header['Content-Disposition']).to eq(%(attachment; filename=\"#{filename}\"; filename*=UTF-8''#{filename}))
       end
 
       it 'sets appropriate caching headers' do

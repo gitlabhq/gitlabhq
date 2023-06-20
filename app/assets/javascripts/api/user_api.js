@@ -11,6 +11,7 @@ const USER_POST_STATUS_PATH = '/api/:version/user/status';
 const USER_FOLLOW_PATH = '/api/:version/users/:id/follow';
 const USER_UNFOLLOW_PATH = '/api/:version/users/:id/unfollow';
 const USER_FOLLOWERS_PATH = '/api/:version/users/:id/followers';
+const USER_FOLLOWING_PATH = '/api/:version/users/:id/following';
 const USER_ASSOCIATIONS_COUNT_PATH = '/api/:version/users/:id/associations_count';
 
 export function getUsers(query, options) {
@@ -74,6 +75,16 @@ export function unfollowUser(userId) {
 
 export function getUserFollowers(userId, params) {
   const url = buildApiUrl(USER_FOLLOWERS_PATH).replace(':id', encodeURIComponent(userId));
+  return axios.get(url, {
+    params: {
+      per_page: DEFAULT_PER_PAGE,
+      ...params,
+    },
+  });
+}
+
+export function getUserFollowing(userId, params) {
+  const url = buildApiUrl(USER_FOLLOWING_PATH).replace(':id', encodeURIComponent(userId));
   return axios.get(url, {
     params: {
       per_page: DEFAULT_PER_PAGE,

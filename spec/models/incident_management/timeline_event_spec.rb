@@ -76,7 +76,7 @@ RSpec.describe IncidentManagement::TimelineEvent do
     end
 
     let(:expected_note_html) do
-      %Q(<p>note <strong>bold</strong> <em>italic</em> <code>code</code> #{expected_image_html} #{expected_emoji_html}</p>)
+      %(<p>note <strong>bold</strong> <em>italic</em> <code>code</code> #{expected_image_html} #{expected_emoji_html}</p>)
     end
     # rubocop:enable Layout/LineLength
 

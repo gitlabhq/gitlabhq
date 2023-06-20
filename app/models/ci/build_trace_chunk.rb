@@ -242,7 +242,7 @@ module Ci
       ##
       # We need to so persist data then save a new store identifier before we
       # remove data from the previous store to make this operation
-      # trasnaction-safe. `unsafe_set_data! calls `save!` because of this
+      # transaction-safe. `unsafe_set_data! calls `save!` because of this
       # reason.
       #
       # TODO consider using callbacks and state machine to remove old data

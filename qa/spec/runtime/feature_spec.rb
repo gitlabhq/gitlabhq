@@ -59,7 +59,7 @@ RSpec.describe QA::Runtime::Feature do
             .and_return(request)
           expect(described_class)
             .to receive(:get)
-            .and_return(Struct.new(:code, :body).new(200, %Q([{ "name": "a_flag", "state": "conditional", "gates": #{gates} }])))
+            .and_return(Struct.new(:code, :body).new(200, %([{ "name": "a_flag", "state": "conditional", "gates": #{gates} }])))
 
           expect(described_class.enabled?(feature_flag, scope => actor)).to be true
         end

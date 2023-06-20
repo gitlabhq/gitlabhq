@@ -259,7 +259,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
         it 'contains badge with tooltip which contains error' do
           expect(pipeline).to have_yaml_errors
           expect(page).to have_selector(
-            %Q{span[title="#{pipeline.yaml_errors}"]})
+            %{span[title="#{pipeline.yaml_errors}"]})
         end
 
         it 'contains badge that indicates failure reason' do
@@ -269,7 +269,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
         it 'contains badge with tooltip which contains failure reason' do
           expect(pipeline.failure_reason?).to eq true
           expect(page).to have_selector(
-            %Q{span[title="#{pipeline.present.failure_reason}"]})
+            %{span[title="#{pipeline.present.failure_reason}"]})
         end
       end
 
@@ -656,7 +656,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
 
         # header
         expect(page).to have_text("##{pipeline.id}")
-        expect(page).to have_selector(%Q(img[src="#{pipeline.user.avatar_url}"]))
+        expect(page).to have_selector(%(img[src="#{pipeline.user.avatar_url}"]))
         expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
 
         # stages

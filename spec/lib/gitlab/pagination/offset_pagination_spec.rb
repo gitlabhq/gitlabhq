@@ -44,9 +44,9 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
             expect_header('X-Prev-Page', '')
 
             expect_header('Link', anything) do |_key, val|
-              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
-              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+              expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+              expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
+              expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
               expect(val).not_to include('rel="prev"')
             end
 
@@ -91,8 +91,8 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
             expect_header('X-Prev-Page', '')
 
             expect_header('Link', anything) do |_key, val|
-              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+              expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+              expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
               expect(val).not_to include('rel="last"')
               expect(val).not_to include('rel="prev"')
             end
@@ -113,8 +113,8 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
             expect_header('X-Prev-Page', '')
 
             expect_header('Link', anything) do |_key, val|
-              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+              expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+              expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
               expect(val).not_to include('rel="last"')
               expect(val).not_to include('rel="prev"')
             end
@@ -242,9 +242,9 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
           expect_header('X-Prev-Page', '1')
 
           expect_header('Link', anything) do |_key, val|
-            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
-            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="prev"))
+            expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+            expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
+            expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="prev"))
             expect(val).not_to include('rel="next"')
           end
 
@@ -291,8 +291,8 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
           expect_header('X-Prev-Page', '')
 
           expect_header('Link', anything) do |_key, val|
-            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
-            expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="last"))
+            expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+            expect(val).to include(%(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="last"))
             expect(val).not_to include('rel="prev"')
             expect(val).not_to include('rel="next"')
             expect(val).not_to include('page=0')

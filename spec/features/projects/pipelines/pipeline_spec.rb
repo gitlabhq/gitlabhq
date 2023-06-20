@@ -1358,7 +1358,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         page.within(all('.well-segment')[1]) do
           expect(page).to have_selector(
-            %Q{span[title="#{pipeline.yaml_errors}"]})
+            %{span[title="#{pipeline.yaml_errors}"]})
         end
       end
 
@@ -1371,7 +1371,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         page.within(all('.well-segment')[1]) do
           expect(page).to have_selector(
-            %Q{span[title="#{pipeline.present.failure_reason}"]})
+            %{span[title="#{pipeline.present.failure_reason}"]})
         end
       end
 

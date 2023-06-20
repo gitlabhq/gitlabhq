@@ -447,13 +447,17 @@ group :development, :test, :omnibus do
   gem 'license_finder', '~> 7.0', require: false
 end
 
+# Gems required in various pipelines
+group :development, :test, :monorepo do
+  gem 'gitlab-rspec', path: 'gems/gitlab-rspec'
+end
+
 group :test do
   gem 'fuubar', '~> 2.2.0'
   gem 'rspec-retry', '~> 0.6.2'
   gem 'rspec_profiling', '~> 0.0.6'
   gem 'rspec-benchmark', '~> 0.6.0'
   gem 'rspec-parameterized', '~> 1.0', require: false
-  gem 'gitlab-rspec', path: 'gems/gitlab-rspec'
 
   gem 'capybara', '~> 3.39', '>= 3.39.1'
   gem 'capybara-screenshot', '~> 1.0.26'
