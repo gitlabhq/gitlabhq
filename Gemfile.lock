@@ -1425,7 +1425,7 @@ GEM
     sentry-sidekiq (5.8.0)
       sentry-ruby (~> 5.8.0)
       sidekiq (>= 3.0)
-    set (1.0.1)
+    set (1.0.2)
     sexp_processor (4.16.1)
     shellany (0.0.1)
     shoulda-matchers (5.1.0)

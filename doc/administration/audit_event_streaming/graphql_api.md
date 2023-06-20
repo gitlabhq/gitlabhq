@@ -144,6 +144,39 @@ mutation {
 
 The header is created if the returned `errors` object is empty.
 
+### Google Cloud Logging streaming
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisites:
+
+- Owner role for a top-level group.
+- A Google Cloud project with the necessary permissions to create service accounts and enable Google Cloud Logging.
+
+To enable streaming and add a configuration, use the
+`googleCloudLoggingConfigurationCreate` mutation in the GraphQL API.
+
+```graphql
+mutation {
+  googleCloudLoggingConfigurationCreate(input: { groupPath: "my-group", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events" } ) {
+    errors
+    googleCloudLoggingConfiguration {
+      id
+      googleProjectIdName
+      logIdName
+      privateKey
+      clientEmail
+    }
+    errors
+  }
+}
+```
+
+Event streaming is enabled if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ## List streaming destinations
 
 List new streaming destinations for top-level groups or an entire instance.
@@ -217,6 +250,37 @@ query {
 ```
 
 If the resulting list is empty, then audit streaming is not enabled for the instance.
+
+You need the ID values returned by this query for the update and delete mutations.
+
+### Google Cloud Logging configurations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisite:
+
+- Owner role for a top-level group.
+
+You can view a list of streaming configurations for a top-level group using the `googleCloudLoggingConfigurations` query
+type.
+
+```graphql
+query {
+  group(fullPath: "my-group") {
+    id
+    googleCloudLoggingConfigurations {
+      nodes {
+        id
+        logIdName
+        googleProjectIdName
+        privateKey
+      }
+    }
+  }
+}
+```
+
+If the resulting list is empty, then audit streaming is not enabled for the group.
 
 You need the ID values returned by this query for the update and delete mutations.
 
@@ -313,6 +377,39 @@ mutation {
 
 The header is updated if the returned `errors` object is empty.
 
+### Google Cloud Logging configurations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisite:
+
+- Owner role for a top-level group.
+
+To update streaming configuration for a top-level group, use the
+`googleCloudLoggingConfigurationUpdate` mutation type. You can retrieve the configuration ID
+by [listing all the external destinations](#list-streaming-destinations).
+
+```graphql
+mutation {
+  googleCloudLoggingConfigurationUpdate(
+    input: {id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1", groupPath: "my-group", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events"}
+  ) {
+    errors
+    googleCloudLoggingConfiguration {
+      id
+      logIdName
+      privateKey
+      googleProjectIdName
+    }
+  }
+}
+```
+
+Streaming configuration is updated if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ## Delete streaming destinations
 
 Delete streaming destinations for a top-level group or an entire instance.
@@ -380,6 +477,31 @@ mutation {
 ```
 
 Streaming destination is deleted if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+### Google Cloud Logging configurations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+
+Prerequisite:
+
+- Owner role for a top-level group.
+
+Users with the Owner role for a group can delete streaming configurations using the
+`googleCloudLoggingConfigurationDestroy` mutation type. You can retrieve the configurations ID
+by [listing all the streaming destinations](#list-streaming-destinations) for the group.
+
+```graphql
+mutation {
+  googleCloudLoggingConfigurationDestroy(input: { id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1" }) {
+    errors
+  }
+}
+```
+
+Streaming configuration is deleted if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
