@@ -23,9 +23,9 @@ is the [lib/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/) folder.
 
 The **lib/** folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
 
-Ask yourself the question: **can this code also be used in a Ruby project other than the current project?**.
+Ask yourself the question: **is this code generic or universal that can be done as a separate and small project?**.
 If the answer is **Yes** you should strongly consider starting with creating a new Gem [in the same repo](#in-the-same-repo)
-and eventually evaluate whether to extract it as a separate repository.
+and eventually evaluate whether to extract it as a separate repository if its meant to be used by other projects.
 
 ## Advantages of using Gems
 

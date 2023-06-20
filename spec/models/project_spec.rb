@@ -6576,7 +6576,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'does not allow access to branches for which the merge request was closed' do
         create(
-          :merge_request, :closed,
+          :merge_request,
+          :closed,
           target_project: target_project,
           target_branch: 'target-branch',
           source_project: project,
@@ -9081,7 +9082,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   def create_build(new_pipeline = pipeline, name = 'test')
     create(
-      :ci_build, :success, :artifacts,
+      :ci_build,
+      :success,
+      :artifacts,
       pipeline: new_pipeline,
       status: new_pipeline.status,
       name: name

@@ -31,7 +31,7 @@
     - if can_push_code
       = link_to new_project_branch_path(@project), class: 'gl-button btn btn-confirm' do
         = s_('Branches|New branch')
-      .js-delete-merged-branches{ data: {
+      .js-delete-merged-branches.gl-w-7{ data: {
           default_branch: @project.repository.root_ref,
           form_path: project_merged_branches_path(@project) }
         }

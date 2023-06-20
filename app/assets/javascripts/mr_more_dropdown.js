@@ -11,6 +11,7 @@ export const initMrMoreDropdown = () => {
   const {
     mergeRequest,
     projectPath,
+    url,
     editUrl,
     isCurrentUser,
     isLoggedIn,
@@ -20,7 +21,6 @@ export const initMrMoreDropdown = () => {
     sourceProjectMissing,
     clipboardText,
     reportedUserId,
-    reportedFromUrl,
   } = el.dataset;
 
   let mr;
@@ -41,6 +41,7 @@ export const initMrMoreDropdown = () => {
         props: {
           mr,
           projectPath,
+          url,
           editUrl,
           isCurrentUser,
           isLoggedIn: Boolean(isLoggedIn),
@@ -50,7 +51,6 @@ export const initMrMoreDropdown = () => {
           sourceProjectMissing,
           clipboardText,
           reportedUserId: Number(reportedUserId),
-          reportedFromUrl,
         },
       }),
   });

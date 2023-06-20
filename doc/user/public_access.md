@@ -7,18 +7,24 @@ type: reference
 
 # Project and group visibility **(FREE)**
 
-A project in GitLab can be private, internal, or public.
+Projects and groups in GitLab can be private, internal, or public.
+
+The visibility level of the group or project has no influence on whether members within the group or project can see each other.
+A group or project is an object to allow collaborative work. This is only possible if all members know about each other.
+
+Group or project members can see all members of the group or project they belong to.
+Group or project owners can see the origin of membership (the original group or project) of all members.
 
 ## Private projects and groups
 
-For private projects, only project members can:
+For private projects, only members of the private project or group can:
 
 - Clone the project.
 - View the public access directory (`/public`).
 
 Users with the Guest role cannot clone the project.
 
-Private groups can have private subgroups only.
+Private groups can have only private subgroups.
 
 ## Internal projects and groups **(FREE SELF)**
 
@@ -26,6 +32,8 @@ For internal projects, **any authenticated user**, including users with the Gues
 
 - Clone the project.
 - View the public access directory (`/public`).
+
+Only internal members can view internal content.
 
 [External users](admin_area/external_users.md) cannot clone the project.
 

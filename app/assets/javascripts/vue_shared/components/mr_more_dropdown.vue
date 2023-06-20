@@ -71,6 +71,11 @@ export default {
       default: '',
       required: false,
     },
+    url: {
+      type: String,
+      default: '',
+      required: false,
+    },
     editUrl: {
       type: String,
       default: '',
@@ -116,11 +121,6 @@ export default {
       default: 0,
       required: false,
     },
-    reportedFromUrl: {
-      type: String,
-      default: '',
-      required: false,
-    },
   },
   data() {
     return {
@@ -156,7 +156,7 @@ export default {
       this.isLoadingDraft = true;
 
       axios
-        .put(`?merge_request[wip_event]=${this.draftState}`, null, {
+        .put(`${this.url}?merge_request[wip_event]=${this.draftState}`, null, {
           params: { format: 'json' },
         })
         .then(({ data }) => {
@@ -353,7 +353,7 @@ export default {
     <abuse-category-selector
       v-if="!isCurrentUser && isReportAbuseDrawerOpen"
       :reported-user-id="reportedUserId"
-      :reported-from-url="reportedFromUrl"
+      :reported-from-url="url"
       :show-drawer="isReportAbuseDrawerOpen"
       @close-drawer="reportAbuseAction(false)"
     />

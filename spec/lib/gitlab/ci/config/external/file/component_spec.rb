@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
 
           it 'is invalid' do
             expect(subject).to be_falsy
-            expect(external_resource.error_message).to match(/does not have a valid YAML syntax/)
+            expect(external_resource.error_message).to match(/Invalid configuration format/)
           end
         end
       end

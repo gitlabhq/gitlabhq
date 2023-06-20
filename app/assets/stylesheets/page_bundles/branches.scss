@@ -43,3 +43,15 @@
 .branches-list .branch-item:not(:last-of-type) {
   border-bottom: 1px solid $border-color;
 }
+
+.branch-item {
+  .issuable-reference {
+    max-width: 92px;
+  }
+
+  .right-block {
+    @media (min-width: map-get($grid-breakpoints, md)) {
+      min-width: 200px;
+    }
+  }
+}

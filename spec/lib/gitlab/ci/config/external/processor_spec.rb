@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
-          '`lib/gitlab/ci/templates/template.yml`: content does not have a valid YAML syntax'
+          '`lib/gitlab/ci/templates/template.yml`: Invalid configuration format'
         )
       end
     end

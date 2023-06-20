@@ -2,151 +2,58 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_composition do
-  describe '#to_result' do
+RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_composition do
+  describe '#load' do
     let_it_be(:project) { create(:project) }
 
-    subject(:result) { described_class.new(yaml, project: project).to_result }
+    let(:inputs) { { test_input: 'hello test' } }
 
-    context 'when syntax is invalid' do
-      let(:yaml) { 'some: invalid: syntax' }
+    let(:yaml) do
+      <<~YAML
+      ---
+      spec:
+        inputs:
+          test_input:
+      ---
+      test_job:
+        script:
+          - echo "$[[ inputs.test_input ]]"
+      YAML
+    end
 
-      it 'returns an invalid result object' do
+    subject(:result) { described_class.new(yaml, inputs: inputs, current_user: project.creator).load }
+
+    it 'loads and interpolates CI config YAML' do
+      expected_config = { test_job: { script: ['echo "hello test"'] } }
+
+      expect(result).to be_valid
+      expect(result.content).to eq(expected_config)
+    end
+
+    it 'allows the use of YAML reference tags' do
+      expect(Psych).to receive(:add_tag).once.with(
+        ::Gitlab::Ci::Config::Yaml::Tags::Reference.tag,
+        ::Gitlab::Ci::Config::Yaml::Tags::Reference
+      )
+
+      result
+    end
+
+    context 'when there is an error loading the YAML' do
+      let(:yaml) { 'invalid...yaml' }
+
+      it 'returns an error result' do
         expect(result).not_to be_valid
-        expect(result.error).to be_a ::Gitlab::Config::Loader::FormatError
+        expect(result.error).to eq('Invalid configuration format')
       end
     end
 
-    context 'when the first document is a header' do
-      context 'with explicit document start marker' do
-        let(:yaml) do
-          <<~YAML
-            ---
-            spec:
-            ---
-            b: 2
-          YAML
-        end
+    context 'when there is an error interpolating the YAML' do
+      let(:inputs) { {} }
 
-        it 'considers the first document as header and the second as content' do
-          expect(result).to be_valid
-          expect(result.error).to be_nil
-          expect(result.header).to eq({ spec: nil })
-          expect(result.content).to eq({ b: 2 })
-        end
-      end
-    end
-
-    context 'when first document is empty' do
-      let(:yaml) do
-        <<~YAML
-          ---
-          ---
-          b: 2
-        YAML
-      end
-
-      it 'considers the first document as header and the second as content' do
-        expect(result).not_to have_header
-      end
-    end
-
-    context 'when first document is an empty hash' do
-      let(:yaml) do
-        <<~YAML
-          {}
-          ---
-          b: 2
-        YAML
-      end
-
-      it 'returns second document as a content' do
-        expect(result).not_to have_header
-        expect(result.content).to eq({ b: 2 })
-      end
-    end
-
-    context 'when first an array' do
-      let(:yaml) do
-        <<~YAML
-          ---
-           - a
-           - b
-          ---
-          b: 2
-        YAML
-      end
-
-      it 'considers the first document as header and the second as content' do
-        expect(result).not_to have_header
-      end
-    end
-
-    context 'when the first document is not a header' do
-      let(:yaml) do
-        <<~YAML
-          a: 1
-          ---
-          b: 2
-        YAML
-      end
-
-      it 'considers the first document as content for backwards compatibility' do
-        expect(result).to be_valid
-        expect(result.error).to be_nil
-        expect(result).not_to have_header
-        expect(result.content).to eq({ a: 1 })
-      end
-
-      context 'with explicit document start marker' do
-        let(:yaml) do
-          <<~YAML
-            ---
-            a: 1
-            ---
-            b: 2
-          YAML
-        end
-
-        it 'considers the first document as content for backwards compatibility' do
-          expect(result).to be_valid
-          expect(result.error).to be_nil
-          expect(result).not_to have_header
-          expect(result.content).to eq({ a: 1 })
-        end
-      end
-    end
-
-    context 'when the first document is not a header and second document is empty' do
-      let(:yaml) do
-        <<~YAML
-          a: 1
-          ---
-        YAML
-      end
-
-      it 'considers the first document as content' do
-        expect(result).to be_valid
-        expect(result.error).to be_nil
-        expect(result).not_to have_header
-        expect(result.content).to eq({ a: 1 })
-      end
-
-      context 'with explicit document start marker' do
-        let(:yaml) do
-          <<~YAML
-            ---
-            a: 1
-            ---
-          YAML
-        end
-
-        it 'considers the first document as content' do
-          expect(result).to be_valid
-          expect(result.error).to be_nil
-          expect(result).not_to have_header
-          expect(result.content).to eq({ a: 1 })
-        end
+      it 'returns an error result' do
+        expect(result).not_to be_valid
+        expect(result.error).to eq('`test_input` input: required value has not been provided')
       end
     end
   end

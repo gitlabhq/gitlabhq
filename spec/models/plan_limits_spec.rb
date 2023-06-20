@@ -364,32 +364,4 @@ RSpec.describe PlanLimits do
       end
     end
   end
-
-  describe '#limit_attribute_changes', :freeze_time do
-    let(:user) { create(:user) }
-    let(:current_timestamp) { Time.current.utc.to_i }
-    let(:plan_limits) do
-      create(:plan_limits,
-        limits_history: { 'enforcement_limit' => [
-          { user_id: user.id, username: user.username, timestamp: current_timestamp,
-            value: 20_000 }, { user_id: user.id, username: user.username, timestamp: current_timestamp,
-                               value: 50_000 }
-        ] })
-    end
-
-    it 'returns an empty array for attribute with no changes' do
-      changes = plan_limits.limit_attribute_changes(:notification_limit)
-
-      expect(changes).to eq([])
-    end
-
-    it 'returns the changes for a specific attribute' do
-      changes = plan_limits.limit_attribute_changes(:enforcement_limit)
-
-      expect(changes).to eq(
-        [{ timestamp: current_timestamp, value: 20_000, username: user.username, user_id: user.id },
-          { timestamp: current_timestamp, value: 50_000, username: user.username, user_id: user.id }]
-      )
-    end
-  end
 end

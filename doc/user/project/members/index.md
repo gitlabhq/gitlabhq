@@ -69,7 +69,7 @@ If a user is:
 
 ### Membership and visibility rights
 
-Depending on their membership type, members of groups or projects are granted different visibility levels
+Depending on their membership type, members of groups or projects are granted different [visibility levels](../../../user/public_access.md)
 and rights into the group or project.
 
 | Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |

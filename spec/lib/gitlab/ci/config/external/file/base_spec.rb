@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
       it 'is not a valid file' do
         expect(valid?).to be_falsy
         expect(file.error_message)
-          .to eq('`some/file/xxxxxxxxxxxxxxxx.yml`: content does not have a valid YAML syntax')
+          .to eq('`some/file/xxxxxxxxxxxxxxxx.yml`: Invalid configuration format')
       end
     end
 
@@ -125,31 +125,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
 
       it 'raises an error' do
         expect { valid? }.to raise_error(NotImplementedError)
-      end
-    end
-
-    context 'when interpolation is disabled but there is a spec header' do
-      before do
-        stub_feature_flags(ci_includable_files_interpolation: false)
-      end
-
-      let(:location) { 'some-location.yml' }
-
-      let(:content) do
-        <<~YAML
-        spec:
-          include:
-            website:
-        ---
-        run:
-          script: deploy $[[ inputs.website ]]
-        YAML
-      end
-
-      it 'returns an error saying that interpolation is disabled' do
-        expect(valid?).to be_falsy
-        expect(file.errors)
-          .to include('`some-location.yml`: can not evaluate included file because interpolation is disabled')
       end
     end
 
@@ -273,6 +248,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
       let(:context_params) { { sha: 'HEAD', variables: variables } }
 
       it { is_expected.to eq([{ location: location, content: content }, nil, 'HEAD'].hash) }
+    end
+  end
+
+  describe '#load_and_validate_expanded_hash!' do
+    let(:location) { 'some/file/config.yml' }
+    let(:logger) { instance_double(::Gitlab::Ci::Pipeline::Logger, :instrument) }
+    let(:context_params) { { sha: 'HEAD', variables: variables, project: project, logger: logger } }
+
+    it 'includes instrumentation for loading and expanding the content' do
+      expect(logger).to receive(:instrument).once.ordered.with(:config_file_fetch_content_hash).and_yield
+      expect(logger).to receive(:instrument).once.ordered.with(:config_file_expand_content_includes).and_yield
+
+      file.load_and_validate_expanded_hash!
     end
   end
 end

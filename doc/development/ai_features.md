@@ -84,6 +84,43 @@ For features that use the embedding database, additional setup is needed.
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database
 
+### Set up GitLab Chat
+
+1. [Enable Anthropic API features](#configure-anthropic-access).
+1. [Enable OpenAI support](#configure-openai-access).
+1. [Ensure the embedding database is configured](#set-up-the-embedding-database).
+1. Enable feature specific feature flag.
+
+   ```ruby
+   Feature.enable(:gitlab_duo)
+   Feature.enable(:tanuki_bot)
+   Feature.enable(:ai_redis_cache)
+   ```
+
+1. Ensure that your current branch is up-to-date with `master`. 
+1. To access the GitLab Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Chat**.
+
+#### Tips for local development
+
+1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
+1. Alternatively, bypass Sidekiq entirely and run the chat service syncronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
+
+```diff
+diff --git a/ee/app/services/llm/chat_service.rb b/ee/app/services/llm/chat_service.rb
+index 5fa7ae8a2bc1..5fe996ba0345 100644
+--- a/ee/app/services/llm/chat_service.rb
++++ b/ee/app/services/llm/chat_service.rb
+@@ -5,7 +5,7 @@ class ChatService < BaseService
+     private
+
+     def perform
+-      worker_perform(user, resource, :chat, options)
++      worker_perform(user, resource, :chat, options.merge(sync: true))
+     end
+
+     def valid?
+```
+
 ### Setup for GitLab documentation chat (legacy chat)
 
 To populate the embedding database for GitLab chat:

@@ -687,7 +687,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/requests/lfs_http_spec.rb'
     - 'spec/rubocop/cop/migration/complex_indexes_require_name_spec.rb'
     - 'spec/rubocop/cop/migration/refer_to_index_by_name_spec.rb'
-    - 'spec/rubocop/formatter/todo_formatter_spec.rb'
     - 'spec/scripts/lib/glfm/parse_examples_spec.rb'
     - 'spec/scripts/lib/glfm/shared_spec.rb'
     - 'spec/scripts/lib/glfm/update_example_snapshots_spec.rb'

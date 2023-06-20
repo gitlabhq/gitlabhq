@@ -63,20 +63,6 @@ class PlanLimits < ApplicationRecord
 
     update(limits_history: limits_history)
   end
-
-  def limit_attribute_changes(attribute)
-    limit_history = limits_history[attribute]
-    return [] unless limit_history
-
-    limit_history.map do |entry|
-      {
-        timestamp: entry[:timestamp],
-        value: entry[:value],
-        username: entry[:username],
-        user_id: entry[:user_id]
-      }
-    end
-  end
 end
 
 PlanLimits.prepend_mod_with('PlanLimits')
