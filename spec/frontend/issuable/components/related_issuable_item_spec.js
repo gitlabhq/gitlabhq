@@ -236,23 +236,21 @@ describe('RelatedIssuableItem', () => {
     describe('when work item is issue and the related issue title is clicked', () => {
       it('does not open', () => {
         mountComponent({ props: { workItemType: 'ISSUE' } });
-        wrapper.vm.$refs.modal.show = jest.fn();
 
         findTitleLink().vm.$emit('click', { preventDefault: () => {} });
 
-        expect(wrapper.vm.$refs.modal.show).not.toHaveBeenCalled();
+        expect(showModalSpy).not.toHaveBeenCalled();
       });
     });
 
     describe('when work item is task and the related issue title is clicked', () => {
       beforeEach(() => {
         mountComponent({ props: { workItemType: 'TASK' } });
-        wrapper.vm.$refs.modal.show = jest.fn();
         findTitleLink().vm.$emit('click', { preventDefault: () => {} });
       });
 
       it('opens', () => {
-        expect(wrapper.vm.$refs.modal.show).toHaveBeenCalled();
+        expect(showModalSpy).toHaveBeenCalled();
       });
 
       it('updates the url params with the work item id', () => {

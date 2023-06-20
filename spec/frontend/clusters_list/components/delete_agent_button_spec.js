@@ -9,6 +9,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vue';
 import { DELETE_AGENT_BUTTON } from '~/clusters_list/constants';
+import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getAgentResponse, mockDeleteResponse, mockErrorDeleteResponse } from '../mocks/apollo';
 
@@ -84,9 +85,14 @@ describe('DeleteAgentButton', () => {
       },
       propsData,
       mocks: { $toast: { show: toast } },
-      stubs: { GlModal },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            hide: jest.fn(),
+          },
+        }),
+      },
     });
-    wrapper.vm.$refs.modal.hide = jest.fn();
 
     writeQuery();
     await nextTick();

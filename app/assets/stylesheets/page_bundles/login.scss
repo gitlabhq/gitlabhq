@@ -286,7 +286,11 @@
 }
 
 @include media-breakpoint-down(sm) {
-  .sm-bg-gray-10 {
+  .sm-bg-gray {
     @include gl-bg-gray-10;
+
+    .gl-dark & {
+      background-color: var(--gray-100);
+    }
   }
 }

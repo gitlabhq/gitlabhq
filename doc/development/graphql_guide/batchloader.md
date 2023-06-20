@@ -41,8 +41,8 @@ class UserResolver < BaseResolver
 end
 ```
 
-- `project_id` is the `ID` of the current project being queried
-- `loader.call` is used to map the result back to the input key (here a project ID)
+- `username` is the username we want to query. It can be one name or multiple names.
+- `loader.call` is used to map the result back to the input key (here user is mapped to its username)
 - `BatchLoader::GraphQL` returns a lazy object (suspended promise to fetch the data)
 
 Here an [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46549) illustrating how to use our `BatchLoading` mechanism.

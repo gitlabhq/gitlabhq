@@ -546,6 +546,7 @@ RSpec/MissingFeatureCategory:
   Enabled: true
   Exclude:
     - 'qa/**/*.rb'
+    - 'gems/**/*.rb'
 
 RSpec/FactoryBot/AvoidCreate:
   Enabled: true

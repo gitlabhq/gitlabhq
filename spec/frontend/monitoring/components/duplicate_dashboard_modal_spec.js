@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import DuplicateDashboardForm from '~/monitoring/components/duplicate_dashboard_form.vue';
@@ -18,6 +19,8 @@ describe('duplicate dashboard modal', () => {
   let mockSelectedDashboard;
   let duplicateDashboardAction;
   let okEvent;
+
+  const modalHideSpy = jest.fn();
 
   function createComponent() {
     const store = new Vuex.Store({
@@ -41,6 +44,13 @@ describe('duplicate dashboard modal', () => {
         modalId: 'id',
       },
       store,
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            hide: modalHideSpy,
+          },
+        }),
+      },
     });
   }
 
@@ -59,8 +69,6 @@ describe('duplicate dashboard modal', () => {
     };
 
     wrapper = createComponent();
-
-    wrapper.vm.$refs.duplicateDashboardModal.hide = jest.fn();
   });
 
   it('contains a form to duplicate a dashboard', () => {
@@ -75,7 +83,7 @@ describe('duplicate dashboard modal', () => {
     expect(wrapper.emitted('dashboardDuplicated')).toHaveLength(1);
     expect(wrapper.emitted().dashboardDuplicated[0]).toEqual([dashboardGitResponse[0]]);
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
-    expect(wrapper.vm.$refs.duplicateDashboardModal.hide).toHaveBeenCalled();
+    expect(modalHideSpy).toHaveBeenCalled();
     expect(findAlert().exists()).toBe(false);
   });
 
@@ -93,7 +101,7 @@ describe('duplicate dashboard modal', () => {
     expect(findAlert().text()).toBe(errMsg);
 
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
-    expect(wrapper.vm.$refs.duplicateDashboardModal.hide).not.toHaveBeenCalled();
+    expect(modalHideSpy).not.toHaveBeenCalled();
   });
 
   it('updates the form on changes', () => {
