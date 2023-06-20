@@ -1,10 +1,11 @@
 import events from 'test_fixtures/controller/users/activity.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { EVENT_TYPE_APPROVED } from '~/contribution_events/constants';
 import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import ContributionEventApproved from '~/contribution_events/components/contribution_event/contribution_event_approved.vue';
-
-const eventApproved = events.find((event) => event.action === EVENT_TYPE_APPROVED);
+import ContributionEventExpired from '~/contribution_events/components/contribution_event/contribution_event_expired.vue';
+import ContributionEventJoined from '~/contribution_events/components/contribution_event/contribution_event_joined.vue';
+import ContributionEventLeft from '~/contribution_events/components/contribution_event/contribution_event_left.vue';
+import { eventApproved, eventExpired, eventJoined, eventLeft } from '../utils';
 
 describe('ContributionEvents', () => {
   let wrapper;
@@ -19,7 +20,10 @@ describe('ContributionEvents', () => {
 
   it.each`
     expectedComponent            | expectedEvent
-    ${ContributionEventApproved} | ${eventApproved}
+    ${ContributionEventApproved} | ${eventApproved(events)}
+    ${ContributionEventExpired}  | ${eventExpired(events)}
+    ${ContributionEventJoined}   | ${eventJoined(events)}
+    ${ContributionEventLeft}     | ${eventLeft(events)}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

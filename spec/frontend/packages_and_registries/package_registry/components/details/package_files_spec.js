@@ -1,4 +1,13 @@
-import { GlAlert, GlDropdown, GlButton, GlFormCheckbox, GlLoadingIcon, GlModal } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlDropdown,
+  GlButton,
+  GlFormCheckbox,
+  GlLoadingIcon,
+  GlModal,
+  GlKeysetPagination,
+} from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { stubComponent } from 'helpers/stub_component';
@@ -13,6 +22,7 @@ import {
   packageFilesQuery,
   packageDestroyFilesMutation,
   packageDestroyFilesMutationError,
+  pagination,
 } from 'jest/packages_and_registries/package_registry/mock_data';
 import {
   DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
@@ -22,16 +32,22 @@ import {
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
   DELETE_PACKAGE_FILES_ERROR_MESSAGE,
+  GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
 } from '~/packages_and_registries/package_registry/constants';
+import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-
+import { scrollToElement } from '~/lib/utils/common_utils';
 import getPackageFiles from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
+jest.mock('~/lib/utils/common_utils', () => ({
+  ...jest.requireActual('~/lib/utils/common_utils'),
+  scrollToElement: jest.fn(),
+}));
 
 describe('Package Files', () => {
   let wrapper;
@@ -43,6 +59,7 @@ describe('Package Files', () => {
   const findFirstRow = () => extendedWrapper(findAllRows().at(0));
   const findSecondRow = () => extendedWrapper(findAllRows().at(1));
   const findPackageFilesAlert = () => wrapper.findComponent(GlAlert);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findFirstRowDownloadLink = () => findFirstRow().findByTestId('download-link');
   const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
@@ -68,6 +85,7 @@ describe('Package Files', () => {
     stubs,
     resolver = jest.fn().mockResolvedValue(packageFilesQuery({ files: [file] })),
     filesDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFilesMutation()),
+    options = {},
   } = {}) => {
     const requestHandlers = [
       [getPackageFiles, resolver],
@@ -92,8 +110,13 @@ describe('Package Files', () => {
         }),
         ...stubs,
       },
+      ...options,
     });
   };
+
+  beforeEach(() => {
+    jest.spyOn(Sentry, 'captureException').mockImplementation();
+  });
 
   describe('rows', () => {
     it('do not get rendered when query is loading', () => {
@@ -123,6 +146,7 @@ describe('Package Files', () => {
       await waitForPromises();
 
       expect(findPackageFilesAlert().exists()).toBe(false);
+      expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 
     it('renders gl-alert if load fails', async () => {
@@ -133,6 +157,40 @@ describe('Package Files', () => {
       expect(findPackageFilesAlert().text()).toBe(
         s__('PackageRegistry|Something went wrong while fetching package assets.'),
       );
+      expect(Sentry.captureException).toHaveBeenCalled();
+    });
+
+    it('renders pagination', async () => {
+      createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery()) });
+      await waitForPromises();
+
+      const { endCursor, startCursor, hasNextPage, hasPreviousPage } = pagination();
+
+      expect(findPagination().props()).toMatchObject({
+        endCursor,
+        startCursor,
+        hasNextPage,
+        hasPreviousPage,
+        prevText: PREV,
+        nextText: NEXT,
+        disabled: false,
+      });
+    });
+
+    it('hides pagination when only one page', async () => {
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(
+          packageFilesQuery({
+            extendPagination: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+            },
+          }),
+        ),
+      });
+      await waitForPromises();
+
+      expect(findPagination().exists()).toBe(false);
     });
   });
 
@@ -354,7 +412,7 @@ describe('Package Files', () => {
             resolver: jest.fn().mockResolvedValue(
               packageFilesQuery({
                 files: [file],
-                pageInfo: {
+                extendPagination: {
                   hasNextPage: false,
                 },
               }),
@@ -379,7 +437,7 @@ describe('Package Files', () => {
           createComponent({
             resolver: jest.fn().mockResolvedValue(
               packageFilesQuery({
-                pageInfo: {
+                extendPagination: {
                   hasNextPage: false,
                 },
               }),
@@ -421,6 +479,69 @@ describe('Package Files', () => {
     });
   });
 
+  describe('when user interacts with pagination', () => {
+    const resolver = jest.fn().mockResolvedValue(packageFilesQuery());
+
+    beforeEach(async () => {
+      createComponent({ resolver, options: { attachTo: document.body } });
+      await waitForPromises();
+    });
+
+    describe('when list emits next event', () => {
+      beforeEach(() => {
+        findPagination().vm.$emit('next');
+      });
+
+      it('fetches the next set of files', () => {
+        expect(resolver).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            after: pagination().endCursor,
+            first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
+          }),
+        );
+      });
+
+      it('scrolls to top of package files component', async () => {
+        await waitForPromises();
+
+        expect(scrollToElement).toHaveBeenCalledWith(wrapper.vm.$el);
+      });
+
+      it('first row is the active element', async () => {
+        await waitForPromises();
+
+        expect(findFirstRow().element).toBe(document.activeElement);
+      });
+    });
+
+    describe('when list emits prev event', () => {
+      beforeEach(() => {
+        findPagination().vm.$emit('prev');
+      });
+
+      it('fetches the previous set of files', () => {
+        expect(resolver).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            before: pagination().startCursor,
+            last: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
+          }),
+        );
+      });
+
+      it('scrolls to top of package files component', async () => {
+        await waitForPromises();
+
+        expect(scrollToElement).toHaveBeenCalledWith(wrapper.vm.$el);
+      });
+
+      it('first row is the active element', async () => {
+        await waitForPromises();
+
+        expect(findFirstRow().element).toBe(document.activeElement);
+      });
+    });
+  });
+
   describe('deleting a file', () => {
     const doDeleteFile = async () => {
       const first = findAllRowCheckboxes().at(0);
@@ -442,6 +563,7 @@ describe('Package Files', () => {
       await nextTick();
 
       expect(findLoadingIcon().exists()).toBe(true);
+      expect(findPagination().props('disabled')).toBe(true);
     });
 
     it('confirming on the modal deletes the file and shows a success message', async () => {
@@ -474,7 +596,7 @@ describe('Package Files', () => {
       expect(resolver).toHaveBeenCalledTimes(2);
       expect(resolver).toHaveBeenCalledWith({
         id: '1',
-        first: 100,
+        first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
       });
     });
 
@@ -534,6 +656,7 @@ describe('Package Files', () => {
       await nextTick();
 
       expect(findLoadingIcon().exists()).toBe(true);
+      expect(findPagination().props('disabled')).toBe(true);
     });
 
     it('confirming on the modal deletes the file and shows a success message', async () => {
@@ -566,7 +689,7 @@ describe('Package Files', () => {
       expect(resolver).toHaveBeenCalledTimes(2);
       expect(resolver).toHaveBeenCalledWith({
         id: '1',
-        first: 100,
+        first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
       });
     });
 

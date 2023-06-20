@@ -590,6 +590,27 @@ gitlab_pages['redirects_max_path_segments'] = 50
 gitlab_pages['redirects_max_rule_count'] = 2000
 ```
 
+## Use environment variables
+
+You can pass an environment variable to the Pages deamon, for example
+to enable a feature flag.
+
+For example, to enable the configurable directory feature:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['env'] = {
+     'FF_CONFIGURABLE_ROOT_DIR' => "true"
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
 ## Activate verbose logging for daemon
 
 Follow the steps below to configure verbose logging of GitLab Pages daemon.

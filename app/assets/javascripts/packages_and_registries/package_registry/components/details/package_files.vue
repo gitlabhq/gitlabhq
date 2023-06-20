@@ -10,9 +10,13 @@ import {
   GlLoadingIcon,
   GlModal,
   GlSprintf,
+  GlKeysetPagination,
 } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
+import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 import FileSha from '~/packages_and_registries/package_registry/components/details/file_sha.vue';
 import Tracking from '~/tracking';
@@ -53,6 +57,7 @@ export default {
     GlButton,
     GlLoadingIcon,
     GlModal,
+    GlKeysetPagination,
     GlSprintf,
     FileIcon,
     TimeAgoTooltip,
@@ -94,10 +99,17 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data.package?.packageFiles ?? {};
+        return data.package?.packageFiles?.nodes ?? [];
       },
-      error() {
+      result({ data }) {
+        const { packageFiles } = data?.package ?? {};
+        if (packageFiles?.pageInfo) {
+          this.pageInfo = packageFiles.pageInfo;
+        }
+      },
+      error(error) {
         this.fetchPackageFilesError = true;
+        Sentry.captureException(error);
       },
     },
   },
@@ -105,23 +117,21 @@ export default {
     return {
       fetchPackageFilesError: false,
       filesToDelete: [],
-      packageFiles: {},
+      packageFiles: [],
       mutationLoading: false,
       selectedReferences: [],
+      pageInfo: {},
     };
   },
   computed: {
-    files() {
-      return this.packageFiles?.nodes ?? [];
-    },
     areFilesSelected() {
       return this.selectedReferences.length > 0;
     },
     areAllFilesSelected() {
-      return this.files.length > 0 && this.files.every(this.isSelected);
+      return this.packageFiles.length > 0 && this.packageFiles.every(this.isSelected);
     },
     filesTableRows() {
-      return this.files.map((pf) => ({
+      return this.packageFiles.map((pf) => ({
         ...pf,
         size: this.formatSize(pf.size),
       }));
@@ -167,6 +177,10 @@ export default {
         id: this.packageId,
         first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
       };
+    },
+    showPagination() {
+      const { hasPreviousPage, hasNextPage } = this.pageInfo;
+      return hasPreviousPage || hasNextPage;
     },
     tracking() {
       return {
@@ -258,7 +272,7 @@ export default {
     },
     handleFileDelete(files) {
       this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      if (files.length === this.files.length && !this.packageFiles?.pageInfo?.hasNextPage) {
+      if (files.length === this.packageFiles.length && !this.pageInfo.hasNextPage) {
         this.$emit(
           'delete-all-files',
           this.hasOneItem(files)
@@ -281,6 +295,41 @@ export default {
       }
       this.deletePackageFiles(this.filesToDelete.map((file) => file.id));
     },
+    fetchPreviousFilesPage() {
+      return this.$apollo.queries.packageFiles
+        .fetchMore({
+          variables: {
+            first: null,
+            last: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
+            before: this.pageInfo.startCursor,
+          },
+        })
+        .then(() => {
+          this.scrollAndFocus();
+        });
+    },
+    fetchNextFilesPage() {
+      return this.$apollo.queries.packageFiles
+        .fetchMore({
+          variables: {
+            first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
+            last: null,
+            after: this.pageInfo.endCursor,
+          },
+        })
+        .then(() => {
+          this.scrollAndFocus();
+        });
+    },
+    scrollAndFocus() {
+      scrollToElement(this.$el);
+
+      // get first focusable row
+      const focusable = this.$el.querySelector('tbody tr');
+      if (focusable) {
+        focusable.focus();
+      }
+    },
   },
   i18n: {
     deleteFile: s__('PackageRegistry|Delete asset'),
@@ -295,6 +344,8 @@ export default {
     deleteSelected: s__('PackageRegistry|Delete selected'),
     moreActionsText: __('More actions'),
     fetchPackageFilesErrorMessage: FETCH_PACKAGE_FILES_ERROR_MESSAGE,
+    prev: PREV,
+    next: NEXT,
   },
   modal: {
     fileDeletePrimaryAction: {
@@ -334,102 +385,116 @@ export default {
     >
       {{ $options.i18n.fetchPackageFilesErrorMessage }}
     </gl-alert>
-    <gl-table
-      v-else
-      :busy="isLoading"
-      :fields="filesTableHeaderFields"
-      :items="filesTableRows"
-      show-empty
-      selectable
-      select-mode="multi"
-      selected-variant="primary"
-      :tbody-tr-attr="{ 'data-testid': 'file-row' }"
-      @row-selected="updateSelectedReferences"
-    >
-      <template #table-busy>
-        <gl-loading-icon size="lg" class="gl-my-5" />
-      </template>
-      <template #head(checkbox)="{ selectAllRows, clearSelected }">
-        <gl-form-checkbox
-          v-if="canDelete"
-          data-testid="package-files-checkbox-all"
-          :checked="areAllFilesSelected"
-          :indeterminate="hasSelectedSomeFiles"
-          @change="areAllFilesSelected ? clearSelected() : selectAllRows()"
-        />
-      </template>
-
-      <template #cell(checkbox)="{ rowSelected, selectRow, unselectRow }">
-        <gl-form-checkbox
-          v-if="canDelete"
-          class="gl-mt-1"
-          :checked="rowSelected"
-          data-testid="package-files-checkbox"
-          @change="rowSelected ? unselectRow() : selectRow()"
-        />
-      </template>
-
-      <template #cell(name)="{ item, toggleDetails, detailsShowing }">
-        <gl-button
-          v-if="hasDetails(item)"
-          :icon="detailsShowing ? 'chevron-up' : 'chevron-down'"
-          :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
-          category="tertiary"
-          size="small"
-          @click="
-            toggleDetails();
-            trackToggleDetails(detailsShowing);
-          "
-        />
-        <gl-link
-          :href="item.downloadPath"
-          class="gl-text-gray-500"
-          data-testid="download-link"
-          @click="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
-        >
-          <file-icon
-            :file-name="item.fileName"
-            css-classes="gl-relative file-icon"
-            class="gl-mr-1 gl-relative"
+    <template v-else>
+      <gl-table
+        ref="table"
+        :busy="isLoading"
+        :fields="filesTableHeaderFields"
+        :items="filesTableRows"
+        show-empty
+        selectable
+        select-mode="multi"
+        selected-variant="primary"
+        :tbody-tr-attr="{ 'data-testid': 'file-row' }"
+        @row-selected="updateSelectedReferences"
+      >
+        <template #table-busy>
+          <gl-loading-icon size="lg" class="gl-my-5" />
+        </template>
+        <template #head(checkbox)="{ selectAllRows, clearSelected }">
+          <gl-form-checkbox
+            v-if="canDelete"
+            data-testid="package-files-checkbox-all"
+            :checked="areAllFilesSelected"
+            :indeterminate="hasSelectedSomeFiles"
+            @change="areAllFilesSelected ? clearSelected() : selectAllRows()"
           />
-          <span>{{ item.fileName }}</span>
-        </gl-link>
-      </template>
+        </template>
 
-      <template #cell(created)="{ item }">
-        <time-ago-tooltip :time="item.createdAt" />
-      </template>
-
-      <template #cell(actions)="{ item }">
-        <gl-dropdown
-          category="tertiary"
-          icon="ellipsis_v"
-          :text-sr-only="true"
-          :text="$options.i18n.moreActionsText"
-          no-caret
-          right
-        >
-          <gl-dropdown-item data-testid="delete-file" @click="handleFileDelete([item])">
-            {{ $options.i18n.deleteFile }}
-          </gl-dropdown-item>
-        </gl-dropdown>
-      </template>
-
-      <template #row-details="{ item }">
-        <div
-          class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100"
-        >
-          <file-sha
-            v-if="item.fileSha256"
-            data-testid="sha-256"
-            title="SHA-256"
-            :sha="item.fileSha256"
+        <template #cell(checkbox)="{ rowSelected, selectRow, unselectRow }">
+          <gl-form-checkbox
+            v-if="canDelete"
+            class="gl-mt-1"
+            :checked="rowSelected"
+            data-testid="package-files-checkbox"
+            @change="rowSelected ? unselectRow() : selectRow()"
           />
-          <file-sha v-if="item.fileMd5" data-testid="md5" title="MD5" :sha="item.fileMd5" />
-          <file-sha v-if="item.fileSha1" data-testid="sha-1" title="SHA-1" :sha="item.fileSha1" />
-        </div>
-      </template>
-    </gl-table>
+        </template>
+
+        <template #cell(name)="{ item, toggleDetails, detailsShowing }">
+          <gl-button
+            v-if="hasDetails(item)"
+            :icon="detailsShowing ? 'chevron-up' : 'chevron-down'"
+            :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
+            category="tertiary"
+            size="small"
+            @click="
+              toggleDetails();
+              trackToggleDetails(detailsShowing);
+            "
+          />
+          <gl-link
+            :href="item.downloadPath"
+            class="gl-text-gray-500"
+            data-testid="download-link"
+            @click="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
+          >
+            <file-icon
+              :file-name="item.fileName"
+              css-classes="gl-relative file-icon"
+              class="gl-mr-1 gl-relative"
+            />
+            <span>{{ item.fileName }}</span>
+          </gl-link>
+        </template>
+
+        <template #cell(created)="{ item }">
+          <time-ago-tooltip :time="item.createdAt" />
+        </template>
+
+        <template #cell(actions)="{ item }">
+          <gl-dropdown
+            category="tertiary"
+            icon="ellipsis_v"
+            :text-sr-only="true"
+            :text="$options.i18n.moreActionsText"
+            no-caret
+            right
+          >
+            <gl-dropdown-item data-testid="delete-file" @click="handleFileDelete([item])">
+              {{ $options.i18n.deleteFile }}
+            </gl-dropdown-item>
+          </gl-dropdown>
+        </template>
+
+        <template #row-details="{ item }">
+          <div
+            class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-bg-gray-10 gl-rounded-base gl-inset-border-1-gray-100"
+          >
+            <file-sha
+              v-if="item.fileSha256"
+              data-testid="sha-256"
+              title="SHA-256"
+              :sha="item.fileSha256"
+            />
+            <file-sha v-if="item.fileMd5" data-testid="md5" title="MD5" :sha="item.fileMd5" />
+            <file-sha v-if="item.fileSha1" data-testid="sha-1" title="SHA-1" :sha="item.fileSha1" />
+          </div>
+        </template>
+      </gl-table>
+      <div class="gl-display-flex gl-justify-content-center">
+        <gl-keyset-pagination
+          v-if="showPagination"
+          :disabled="isLoading"
+          v-bind="pageInfo"
+          :prev-text="$options.i18n.prev"
+          :next-text="$options.i18n.next"
+          class="gl-mt-3"
+          @prev="fetchPreviousFilesPage"
+          @next="fetchNextFilesPage"
+        />
+      </div>
+    </template>
 
     <gl-modal
       ref="deleteFilesModal"

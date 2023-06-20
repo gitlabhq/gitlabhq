@@ -23,8 +23,6 @@ In brief, this is what you need to upload your website in GitLab Pages:
 1. Domain of the instance: domain name that is used for GitLab Pages
    (ask your administrator).
 1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/index.md#pages) in the root directory of your repository.
-1. A directory called `public` in your site's repository containing the content
-   to be published.
 1. GitLab Runner enabled for the project.
 
 ## GitLab Pages on GitLab.com
@@ -277,6 +275,39 @@ instead. Here are some examples of what happens given the above Pages site:
 
 When `public/data/index.html` exists, it takes priority over the `public/data.html` file
 for both the `/data` and `/data/` URL paths.
+
+## Customize the default folder
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/859) in GitLab 16.1 with a Pages flag named `FF_CONFIGURABLE_ROOT_DIR`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1073) in GitLab 16.1.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the Pages feature flag](../../../administration/pages/index.md#use-environment-variables)
+`FF_CONFIGURABLE_ROOT_DIR="true"`. On GitLab.com, this feature is available.
+
+By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder
+that contains the static files of your site needs to have the name `public`.
+
+To change that folder name to any other value, add a `publish` property to your
+`pages` job configuration in `.gitlab-ci.yml`.
+
+The following example publishes a folder named `dist` instead:
+
+```yaml
+pages:
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist
+  publish: dist
+```
+
+If you're using a folder name other than `public`you must specify
+the directory to be deployed with Pages both as an artifact, and under the
+`publish` property. The reason you need both is that you can define multiple paths
+as artifacts, and GitLab doesn't know which one you want to deploy.
 
 ## Known issues
 

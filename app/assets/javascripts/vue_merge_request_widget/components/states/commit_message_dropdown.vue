@@ -1,10 +1,9 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
   },
   props: {
     commits: {
@@ -13,28 +12,36 @@ export default {
       default: () => [],
     },
   },
+  computed: {
+    dropdownItems() {
+      return this.commits.map((commit) => ({
+        text: commit.title,
+        extraAttrs: {
+          text: commit.shortId || commit.short_Id,
+        },
+        action: () => {
+          this.$emit('input', commit.message);
+        },
+      }));
+    },
+  },
 };
 </script>
 
 <template>
   <div>
-    <gl-dropdown
-      right
-      text="Use an existing commit message"
+    <gl-disclosure-dropdown
+      placement="right"
+      toggle-text="Use an existing commit message"
       category="tertiary"
-      variant="confirm"
+      :items="dropdownItems"
       size="small"
       class="mr-commit-dropdown"
     >
-      <gl-dropdown-item
-        v-for="(commit, index) in commits"
-        :key="index"
-        class="text-nowrap text-truncate"
-        @click="$emit('input', commit.message)"
-      >
-        <span class="monospace mr-2">{{ commit.shortId || commit.short_id }}</span>
-        {{ commit.title }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      <template #list-item="{ item }">
+        <span class="gl-mr-2">{{ item.extraAttrs.text }}</span>
+        {{ item.text }}
+      </template>
+    </gl-disclosure-dropdown>
   </div>
 </template>

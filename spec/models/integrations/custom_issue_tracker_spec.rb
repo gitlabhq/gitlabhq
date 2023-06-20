@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::CustomIssueTracker do
+RSpec.describe Integrations::CustomIssueTracker, feature_category: :integrations do
   describe 'Validations' do
     context 'when integration is active' do
       before do

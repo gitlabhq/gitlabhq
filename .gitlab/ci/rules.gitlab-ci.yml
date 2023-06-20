@@ -412,14 +412,13 @@
   - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
+  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   # CI changes
   - ".gitlab-ci.yml"
@@ -448,6 +447,9 @@
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
+  - "doc/index.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -455,9 +457,6 @@
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
-  # Mapped patterns (see tests.yml)
-  - "data/whats_new/*.yml"
-  - "doc/index.md"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -533,8 +532,7 @@
   - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
-  - ".gitlab-ci.yml"
+  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -545,6 +543,9 @@
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
+  # Mapped patterns (see tests.yml)
+  - "data/whats_new/*.yml"
+  - "doc/index.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -555,9 +556,6 @@
   # QA changes
   - ".dockerignore"
   - "{,jh/}qa/**/*"
-  # Mapped patterns (see tests.yml)
-  - "data/whats_new/*.yml"
-  - "doc/index.md"
   # Workhorse changes
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"

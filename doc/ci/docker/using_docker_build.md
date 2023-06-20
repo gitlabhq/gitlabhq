@@ -352,9 +352,10 @@ Docker-in-Docker is the recommended configuration, but you should be aware of th
 To use Docker commands in your CI/CD jobs, you can bind-mount `/var/run/docker.sock` into the
 container. Docker is then available in the context of the image.
 
-> If you bind the Docker socket and you are [using GitLab Runner 11.11 or later](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
-> you can no longer use `docker:20.10.16-dind` as a service.
-> Volume bindings also affect services, making them incompatible.
+If you bind the Docker socket and you are
+[using GitLab Runner 11.11 or later](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
+you can no longer use `docker:20.10.16-dind` as a service. Volume bindings also affect services,
+making them incompatible.
 
 To make Docker available in the context of the image, you need to mount
 `/var/run/docker.sock` into the launched containers. To do this with the Docker
@@ -390,11 +391,10 @@ sudo gitlab-runner register -n \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
-> If you want to use more complex Docker-in-Docker configurations, like it is necessary to run Code Quality checks with
-> Code Climate, you need to ensure that the paths to the build directory are the same on the host as well as inside the
-> Docker container.
-> See section "[Improve Code Quality performance with private runners](../testing/code_quality.md#improve-code-quality-performance-with-private-runners)"
-> in the Code Quality documentation.
+To use more complex Docker-in-Docker configurations, such as is necessary to run Code Quality checks
+with Code Climate, you need to ensure that the paths to the build directory are the same on the host
+as well as inside the Docker container. For more details, see
+[Improve Code Quality performance with private runners](../testing/code_quality.md#improve-code-quality-performance-with-private-runners).
 
 #### Enable registry mirror for `docker:dind` service
 

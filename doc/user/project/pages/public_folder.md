@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Pages public folder **(FREE)**
 
-All the files that should be accessible by the browser must be in a root-level folder called `public`.
+> With GitLab 16.1 we introduced the ability to configure the published folder in `.gitlab-ci.yml`, so you longer need to change your framework config. For more information, see how to [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
 
 Follow these instructions to configure the `public` folder
 for the following frameworks.

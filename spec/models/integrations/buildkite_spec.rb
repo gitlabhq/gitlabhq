@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
+RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching, feature_category: :integrations do
   include ReactiveCachingHelpers
   include StubRequests
 
@@ -71,9 +71,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
     describe '#hook_url' do
       it 'returns the webhook url' do
-        expect(integration.hook_url).to eq(
-          'https://webhook.buildkite.com/deliver/{webhook_token}'
-        )
+        expect(integration.hook_url).to eq('https://webhook.buildkite.com/deliver/{webhook_token}')
       end
     end
 
@@ -103,9 +101,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
 
     describe '#calculate_reactive_cache' do
       describe '#commit_status' do
-        let(:buildkite_full_url) do
-          'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=123'
-        end
+        let(:buildkite_full_url) { 'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=123' }
 
         subject { integration.calculate_reactive_cache('123', 'unused')[:commit_status] }
 

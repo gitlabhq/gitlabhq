@@ -12581,6 +12581,15 @@ msgstr ""
 msgid "ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
+msgid "ContributionEvent|Joined project %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Left project %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Removed due to membership expiration from %{resourceParentLink}."
+msgstr ""
+
 msgid "Contributions for %{calendar_date}"
 msgstr ""
 

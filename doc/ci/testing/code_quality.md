@@ -541,8 +541,8 @@ for more details.
 ### The code cannot be found and the pipeline runs always with default configuration
 
 You are probably using a private runner with the Docker-in-Docker socket-binding configuration.
-You should configure Code Quality checks to run on your worker as documented in section
-"[Improve Code Quality performance with private runners](#improve-code-quality-performance-with-private-runners)".
+You should configure Code Quality checks to run on your worker as documented in
+[Improve Code Quality performance with private runners](#improve-code-quality-performance-with-private-runners)".
 
 ### Changing the default configuration has no effect
 

@@ -1,20 +1,19 @@
 import events from 'test_fixtures/controller/users/activity.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import ContributionEventApproved from '~/contribution_events/components/contribution_event/contribution_event_approved.vue';
+import ContributionEventLeft from '~/contribution_events/components/contribution_event/contribution_event_left.vue';
 import ContributionEventBase from '~/contribution_events/components/contribution_event/contribution_event_base.vue';
-import TargetLink from '~/contribution_events/components/target_link.vue';
 import ResourceParentLink from '~/contribution_events/components/resource_parent_link.vue';
-import { eventApproved } from '../../utils';
+import { eventLeft } from '../../utils';
 
 const defaultPropsData = {
-  event: eventApproved(events),
+  event: eventLeft(events),
 };
 
-describe('ContributionEventApproved', () => {
+describe('ContributionEventLeft', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = mountExtended(ContributionEventApproved, {
+    wrapper = mountExtended(ContributionEventLeft, {
       propsData: defaultPropsData,
     });
   };
@@ -24,21 +23,16 @@ describe('ContributionEventApproved', () => {
   });
 
   it('renders `ContributionEventBase`', () => {
-    expect(wrapper.findComponent(ContributionEventBase).props()).toEqual({
+    expect(wrapper.findComponent(ContributionEventBase).props()).toMatchObject({
       event: defaultPropsData.event,
-      iconName: 'approval-solid',
-      iconClass: 'gl-text-green-500',
+      iconName: 'leave',
     });
   });
 
   it('renders message', () => {
     expect(wrapper.findByTestId('event-body').text()).toBe(
-      `Approved merge request ${defaultPropsData.event.target.reference_link_text} in ${defaultPropsData.event.resource_parent.full_name}.`,
+      `Left project ${defaultPropsData.event.resource_parent.full_name}.`,
     );
-  });
-
-  it('renders target link', () => {
-    expect(wrapper.findComponent(TargetLink).props('event')).toEqual(defaultPropsData.event);
   });
 
   it('renders resource parent link', () => {

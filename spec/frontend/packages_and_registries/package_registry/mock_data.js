@@ -278,15 +278,12 @@ export const packagePipelinesQuery = (pipelines = packagePipelines()) => ({
   },
 });
 
-export const packageFilesQuery = ({ files = packageFiles(), pageInfo = {} } = {}) => ({
+export const packageFilesQuery = ({ files = packageFiles(), extendPagination = {} } = {}) => ({
   data: {
     package: {
       id: 'gid://gitlab/Packages::Package/111',
       packageFiles: {
-        pageInfo: {
-          hasNextPage: true,
-          ...pageInfo,
-        },
+        pageInfo: pagination(extendPagination),
         nodes: files,
         __typename: 'PackageFileConnection',
       },

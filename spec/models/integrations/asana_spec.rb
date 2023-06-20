@@ -2,20 +2,24 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Asana do
+RSpec.describe Integrations::Asana, feature_category: :integrations do
   describe 'Validations' do
-    context 'active' do
+    context 'when active' do
       before do
         subject.active = true
       end
 
       it { is_expected.to validate_presence_of :api_key }
     end
+
+    context 'when inactive' do
+      it { is_expected.not_to validate_presence_of :api_key }
+    end
   end
 
-  describe 'Execute' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:project) { create(:project) }
+  describe '#execute' do
+    let_it_be(:user) { build(:user) }
+    let_it_be(:project) { build(:project) }
 
     let(:gid) { "123456789ABCD" }
     let(:asana_task) { double(::Asana::Resources::Task) }

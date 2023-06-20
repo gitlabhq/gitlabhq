@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::BaseIssueTracker do
-  let(:integration) { Integrations::Redmine.new(project: project, active: true, issue_tracker_data: build(:issue_tracker_data)) }
+RSpec.describe Integrations::BaseIssueTracker, feature_category: :integrations do
+  let(:integration) { build(:redmine_integration, project: project, active: true, issue_tracker_data: build(:issue_tracker_data)) }
 
-  let_it_be_with_refind(:project) { create :project }
+  let_it_be_with_refind(:project) { create(:project) }
 
   describe 'default values' do
     it { expect(subject.category).to eq(:issue_tracker) }

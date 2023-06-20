@@ -90,10 +90,19 @@ FactoryBot.define do
     end
   end
 
+  factory :bamboo_integration, class: 'Integrations::Bamboo' do
+    project
+    active { true }
+    bamboo_url { 'https://bamboo.example.com' }
+    build_key { 'foo' }
+    username { 'mic' }
+    password { 'password' }
+  end
+
   factory :drone_ci_integration, class: 'Integrations::DroneCi' do
     project
     active { true }
-    drone_url { 'https://bamboo.example.com' }
+    drone_url { 'https://drone.example.com' }
     token { 'test' }
   end
 

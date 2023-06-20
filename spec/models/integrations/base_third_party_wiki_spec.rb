@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::BaseThirdPartyWiki do
+RSpec.describe Integrations::BaseThirdPartyWiki, feature_category: :integrations do
   describe 'default values' do
     it { expect(subject.category).to eq(:third_party_wiki) }
   end
@@ -11,7 +11,7 @@ RSpec.describe Integrations::BaseThirdPartyWiki do
     let_it_be_with_reload(:project) { create(:project) }
 
     describe 'only one third party wiki per project' do
-      subject(:integration) { create(:shimo_integration, project: project, active: true) }
+      subject(:integration) { build(:shimo_integration, project: project, active: true) }
 
       before_all do
         create(:confluence_integration, project: project, active: true)
@@ -35,7 +35,7 @@ RSpec.describe Integrations::BaseThirdPartyWiki do
       end
 
       context 'when integration is not on the project level' do
-        subject(:integration) { create(:shimo_integration, :instance, active: true) }
+        subject(:integration) { build(:shimo_integration, :instance, active: true) }
 
         it 'executes the validation' do
           expect(integration.valid?(:manual_change)).to be_truthy

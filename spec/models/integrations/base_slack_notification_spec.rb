@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::BaseSlackNotification do
+RSpec.describe Integrations::BaseSlackNotification, feature_category: :integrations do
   # This spec should only contain tests that cannot be tested through
   # `base_slack_notification_shared_examples.rb`.
 
