@@ -22303,6 +22303,7 @@ CREATE TABLE scan_result_policies (
     age_value integer,
     age_operator smallint,
     age_interval smallint,
+    vulnerability_attributes jsonb DEFAULT '{}'::jsonb,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0)))
 );
 

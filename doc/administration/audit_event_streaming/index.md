@@ -226,6 +226,25 @@ To list streaming destinations for an instance and see the verification tokens:
 1. On the main area, select the **Streams**.
 1. View the verification token on the right side of each item.
 
+## Event type filters
+
+> Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413581) in GitLab 16.1.
+
+When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
+If the feature is enabled with no filters, the destination receives all audit events.
+
+A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+
+To update a streaming destination's event filters:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. To the right of the item, select **Edit** (**{pencil}**).
+1. Select **Filter by stream event**.
+1. Select the dropdown list and select or clear the required event types.
+1. Select **Save** to update the event filters.
+
 ## Override default content type header
 
 By default, streaming destinations use a `content-type` header of `application/x-www-form-urlencoded`. However, you

@@ -115,7 +115,7 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
 ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
 
-Whenever an approval rule cannot be satisfied, the rule is displayed as **(!) Auto approved**. This applies to the following conditions:
+Whenever an approval rule cannot be satisfied, the rule is displayed as **Auto approved**. This applies to the following conditions:
 
 - The only eligible approver is the author of the merge request.
 - No eligible approvers (either groups or users) have been assigned to the approval rule.
@@ -124,7 +124,7 @@ Whenever an approval rule cannot be satisfied, the rule is displayed as **(!) Au
 These rules are automatically approved to unblock their respective merge requests, unless they were
 created through a [scan result policy](../../../application_security/policies/scan-result-policies.md).
 Invalid approval rules created through a scan result policy are presented with
-**(!) Action Required** and are not automatically approved, blocking their respective merge requests.
+**Action required** and are not automatically approved, blocking their respective merge requests.
 
 ## Related topics
 

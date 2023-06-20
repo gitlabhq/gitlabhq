@@ -139,7 +139,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
     end
 
     context 'when an upload belongs to a legacy_diff_note' do
-      let!(:merge_request) { create(:merge_request, source_project: project) }
+      let!(:merge_request) { create(:merge_request, :skip_diff_creation, source_project: project) }
 
       let!(:note) do
         create(:legacy_diff_note_on_merge_request,

@@ -59,7 +59,7 @@ RSpec.describe API::Statistics, 'Statistics', :aggregate_failures, feature_categ
         create_list(:note, 2, author: admin, project: projects.first, noteable: issues.first)
         create_list(:milestone, 3, project: projects.first)
         create(:key, user: admin)
-        create(:merge_request, source_project: projects.first)
+        create(:merge_request, :skip_diff_creation, source_project: projects.first)
         fork_project(projects.first, admin)
 
         # Make sure the reltuples have been updated

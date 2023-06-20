@@ -2,9 +2,6 @@
 
 require 'spec_helper'
 
-class FakeLogger
-end
-
 class LoggerA < Gitlab::Logger
   def self.file_name_noext
     'loggerA'

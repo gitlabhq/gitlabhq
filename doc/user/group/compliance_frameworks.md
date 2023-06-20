@@ -12,7 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can create a compliance framework that is a label to identify that your project has certain compliance
 requirements or needs additional oversight. The label can optionally enforce
 [compliance pipeline configuration](#compliance-pipelines) to the projects on which it is
-[applied](../project/settings/index.md#add-a-compliance-framework-to-a-project).
+applied. Refer to our
+applied. For more information, see [Add a compliance framework to a project](../project/settings/index.md#add-a-compliance-framework-to-a-project).
 
 Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
 
