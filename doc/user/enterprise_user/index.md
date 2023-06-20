@@ -47,17 +47,29 @@ Prerequisites:
 - A project in the group.
 - You must have the Owner role in the top-level group.
 
-Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you must:
+Domain verification applies at the top-level group and to all subgroups and projects
+nested under that top-level parent group.
 
-- Link the domain to a single project.
-- Configure the `TXT` only in the DNS record to verify the domain's ownership.
+Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you:
 
-Domain verification is tied to the project you choose. A project is required because domain verification reuses the GitLab Pages verification feature, which requires a project. Domain verification applies at the top-level group and to all subgroups and projects nested under that top-level parent group.
-A member in the chosen project with [at least the Maintainer role](../permissions.md#project-members-permissions) can modify or remove the domain verification.
-If needed, you can create a new project to set up domain verification directly under your top-level group. This limits the ability to modify the domain verification to members with at least the Maintainer role.
+- Do not need to have a GitLab Pages website.
+- Must link the domain to a single project, despite domain verification applying
+  at the top-level group and to all nested subgroups and projects, because domain
+  verification:
+  - Is tied to the project you choose.
+  - Reuses the GitLab Pages custom domain verification feature, which requires a project.
+- Must configure the `TXT` only in the DNS record to verify the domain's ownership.
+
+In addition to appearing in the top-level group Domain Verification list, the
+domain will also appear in the chosen project. A member in this project with
+[at least the Maintainer role](../permissions.md#project-members-permissions)
+can modify or remove the domain verification.
+
+If needed, you can create a new project to set up domain verification directly
+under your top-level group. This limits the ability to modify the domain verification
+to members with at least the Maintainer role.
+
 For more information on group-level domain verification, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
-
-Steps:
 
 #### 1. Add a custom domain for the matching email domain
 
@@ -96,21 +108,13 @@ After you have added all the DNS records:
 ![Verify your domain](../img/retry_domain_verification_v16_0.png)
 
 WARNING:
-For GitLab instances with domain verification enabled,
-if the domain cannot be verified for 7 days, that domain is removed
-from the GitLab project.
+For GitLab instances with domain verification enabled, if the domain cannot be verified for 7 days, that domain is removed from the GitLab project.
 
 > **Notes:**
 >
-> - Domain verification is **required for GitLab.com users**;
-  for GitLab self-managed instances, your GitLab administrator has the option
-  to [disabled custom domain verification](../../administration/pages/index.md#custom-domain-verification).
-> - [DNS propagation may take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
-  although it's usually a matter of minutes to complete. Until it does, verification
-  fails, and attempts to visit your domain result in a 404.
-> - Once your domain has been verified, leave the verification record
-  in place. Your domain is periodically reverified, and may be
-  disabled if the record is removed.
+> - Domain verification is **required for GitLab.com users** to be marked as enterprise users.
+> - [DNS propagation can take up to 24 hours](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/), although it's usually a couple of minutes to complete. Until it completes, the domain shows as unverified.
+> - Once your domain has been verified, leave the verification record in place. Your domain is periodically reverified, and may be disabled if the record is removed.
 > - A valid certificate is not required for domain verification.
 
 ### View domains in group

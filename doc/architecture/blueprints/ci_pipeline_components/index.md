@@ -12,6 +12,9 @@ participating-stages: []
 
 # CI/CD Catalog
 
+NOTE:
+This document covers the future plans for the CI/CD Catalog feature. For information on the features already available for use in GitLab, see the [CI/CD Components documentation](../../../ci/components/index.md).
+
 ## Summary
 
 ## Goals

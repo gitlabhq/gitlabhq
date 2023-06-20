@@ -10692,9 +10692,6 @@ msgstr ""
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
 msgstr ""
 
-msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Prometheus for metrics."
-msgstr ""
-
 msgid "ClusterIntegration|Amazon EKS"
 msgstr ""
 
@@ -10779,9 +10776,6 @@ msgstr ""
 msgid "ClusterIntegration|Elastic Kubernetes Service"
 msgstr ""
 
-msgid "ClusterIntegration|Enable Prometheus integration"
-msgstr ""
-
 msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
 msgstr ""
 
@@ -10840,9 +10834,6 @@ msgid "ClusterIntegration|Integration disabled"
 msgstr ""
 
 msgid "ClusterIntegration|Integration enabled"
-msgstr ""
-
-msgid "ClusterIntegration|Integrations allow you to use applications installed in your cluster as part of your GitLab workflow."
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created..."
@@ -29592,9 +29583,6 @@ msgid "More information"
 msgstr ""
 
 msgid "More information is available|here"
-msgstr ""
-
-msgid "More information."
 msgstr ""
 
 msgid "More options"
