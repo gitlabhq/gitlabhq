@@ -33,10 +33,9 @@ module Packages
       private
 
       def packages
-        strong_memoize(:packages) do
-          project.packages.with_name(gem_name)
-        end
+        project.packages.with_name(gem_name)
       end
+      strong_memoize_attr :packages
 
       def gem_name
         params[:gem_name]

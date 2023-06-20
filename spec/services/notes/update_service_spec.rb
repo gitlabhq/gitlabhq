@@ -47,6 +47,24 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
       end
     end
 
+    context 'when the note is invalid' do
+      let(:edit_note_text) { { note: 'new text' } }
+
+      before do
+        allow(note).to receive(:valid?).and_return(false)
+      end
+
+      it 'does not update the note' do
+        travel_to(1.day.from_now) do
+          expect { update_note(edit_note_text) }.not_to change { note.reload.updated_at }
+        end
+      end
+
+      it 'returns the note' do
+        expect(update_note(edit_note_text)).to eq(note)
+      end
+    end
+
     describe 'event tracking', :snowplow do
       let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
 
@@ -89,6 +107,23 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
           expect { edit_note_text }.to change { note.reload.updated_by }
         end
       end
+
+      it 'checks for spam' do
+        expect(note).to receive(:check_for_spam).with(action: :update, user: user)
+        edit_note_text
+      end
+
+      context 'when quick action only update' do
+        it "delete note and return commands_only error" do
+          updated_note = described_class.new(project, user, { note: "/close\n" }).execute(note)
+
+          expect(updated_note.destroyed?).to eq(true)
+          expect(updated_note.errors).to match_array([
+            "Note can't be blank",
+            "Commands only Closed this issue."
+          ])
+        end
+      end
     end
 
     context 'when note text was not changed' do
@@ -105,6 +140,11 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         travel_to(1.day.from_now) do
           expect { does_not_edit_note_text }.not_to change { note.reload.updated_by }
         end
+      end
+
+      it 'does not check for spam' do
+        expect(note).not_to receive(:check_for_spam)
+        does_not_edit_note_text
       end
     end
 

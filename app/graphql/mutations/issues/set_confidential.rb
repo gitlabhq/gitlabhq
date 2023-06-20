@@ -15,11 +15,8 @@ module Mutations
       def resolve(project_path:, iid:, confidential:)
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
-        # Changing confidentiality affects spam checking rules, therefore we need to provide
-        # spam_params so a check can be performed.
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-
-        ::Issues::UpdateService.new(container: project, current_user: current_user, params: { confidential: confidential }, spam_params: spam_params)
+        # Changing confidentiality affects spam checking rules, therefore we need to perform a spam check
+        ::Issues::UpdateService.new(container: project, current_user: current_user, params: { confidential: confidential }, perform_spam_check: true)
           .execute(issue)
         check_spam_action_response!(issue)
 

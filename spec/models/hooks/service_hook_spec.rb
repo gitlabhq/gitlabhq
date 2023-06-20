@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ServiceHook, feature_category: :integrations do
+RSpec.describe ServiceHook, feature_category: :webhooks do
   it_behaves_like 'a hook that does not get automatically disabled on failure' do
     let(:hook) { create(:service_hook) }
     let(:hook_factory) { :service_hook }

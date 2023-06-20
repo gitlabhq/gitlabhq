@@ -95,7 +95,8 @@ module BroadcastMessagesHelper
       target_path: broadcast_message.target_path,
       starts_at: broadcast_message.starts_at.iso8601,
       ends_at: broadcast_message.ends_at.iso8601,
-      target_access_level_options: target_access_level_options.to_json
+      target_access_level_options: target_access_level_options.to_json,
+      show_in_cli: broadcast_message.show_in_cli.to_s
     }
   end
 

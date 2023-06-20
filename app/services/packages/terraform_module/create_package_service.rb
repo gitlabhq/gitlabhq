@@ -43,16 +43,14 @@ module Packages
       end
 
       def name
-        strong_memoize(:name) do
-          "#{params[:module_name]}/#{params[:module_system]}"
-        end
+        "#{params[:module_name]}/#{params[:module_system]}"
       end
+      strong_memoize_attr :name
 
       def file_name
-        strong_memoize(:file_name) do
-          "#{params[:module_name]}-#{params[:module_system]}-#{params[:module_version]}.tgz"
-        end
+        "#{params[:module_name]}-#{params[:module_system]}-#{params[:module_version]}.tgz"
       end
+      strong_memoize_attr :file_name
 
       def file_params
         {

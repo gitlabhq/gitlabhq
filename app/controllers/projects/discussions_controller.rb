@@ -34,7 +34,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_discussion
     if serialize_notes?
-      prepare_notes_for_rendering(discussion.notes, merge_request)
+      prepare_notes_for_rendering(discussion.notes)
       render_json_with_discussions_serializer
     else
       render_json_with_html

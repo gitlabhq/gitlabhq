@@ -5,7 +5,7 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      # Cop that checks that no background batched migration helpers are called by regular migrations.
+      # Cop that checks that no schema migration methods are called by post-deployment migrations.
       class SchemaAdditionMethodsNoPost < RuboCop::Cop::Base
         include MigrationHelpers
 
@@ -22,12 +22,24 @@ module RuboCop
           (send nil? {#{SYMBOLIZED_MATCHER}} ...)
         PATTERN
 
+        def_node_matcher :rolling_back_migration, <<~PATTERN
+          (def :down  ...)
+        PATTERN
+
         def on_send(node)
           return unless time_enforced?(node)
+
+          return if rolling_back_migration?(node)
 
           on_forbidden_method(node) do
             add_offense(node, message: MSG)
           end
+        end
+
+        private
+
+        def rolling_back_migration?(node)
+          node.each_ancestor(:def).any? { |a| rolling_back_migration(a) }
         end
       end
     end

@@ -18,6 +18,9 @@ module Resolvers
     argument :ref, GraphQL::Types::String,
               required: false,
               description: 'Commit ref to get the tree for. Default value is HEAD.'
+    argument :ref_type, Types::RefTypeEnum,
+              required: false,
+              description: 'Type of ref.'
 
     alias_method :repository, :object
 
@@ -25,7 +28,6 @@ module Resolvers
       return if repository.empty?
 
       cursor = args.delete(:after)
-      args[:ref] ||= :head
 
       pagination_params = {
         limit: @field.max_page_size || 100,
@@ -33,9 +35,11 @@ module Resolvers
       }
 
       tree = repository.tree(
-        args[:ref], args[:path], recursive: args[:recursive],
-                                 skip_flat_paths: false,
-                                 pagination_params: pagination_params
+        args[:ref].presence || :head,
+        args[:path], recursive: args[:recursive],
+        skip_flat_paths: false,
+        pagination_params: pagination_params,
+        ref_type: args[:ref_type]
       )
 
       next_cursor = tree.cursor&.next_cursor

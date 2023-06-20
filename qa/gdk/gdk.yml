@@ -6,12 +6,15 @@ webpack:
   live_reload: false
   sourcemaps: false
   incremental: false
+  static: true
 gdk:
   ask_to_restart_after_update: false
   auto_reconfigure: false
   overwrite_changes: true
   quiet: false
 gitlab:
+  cache_classes: true
+  lefthook_enabled: false
   rails:
     bootsnap: false
     hostname: gdk.test

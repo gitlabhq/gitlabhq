@@ -90,9 +90,9 @@ RSpec.describe FileUploader do
     shared_examples 'returns a valid uploader' do
       describe 'returned uploader' do
         it 'generates a new secret' do
-          expect(subject).to be
+          expect(subject).to be_present
           expect(described_class).to receive(:generate_secret).once.and_call_original
-          expect(moved).to be
+          expect(moved).to be_present
         end
 
         it 'creates new upload correctly' do

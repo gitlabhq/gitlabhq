@@ -1,0 +1,9 @@
+- title: "Adding non-LDAP synced members to a locked LDAP group is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "16.0"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.5"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: false  # (required) Change to false if this is not a breaking change.
+  reporter: hsutor  # (required) GitLab username of the person reporting the change
+  stage: manage  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/213311  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Enabling the `ldap_settings_unlock_groups_by_owners` feature flag allowed non-LDAP synced users to be added to a locked LDAP group. This [feature](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) has always been disabled by default and behind a feature flag. We are removing this feature to keep continuity with our SAML integration, and because allowing non-synced group members defeats the "single source of truth" principle of using a directory service. Once this feature is removed, any LDAP group members that are not synced with LDAP will lose access to that group.

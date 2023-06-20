@@ -47,8 +47,13 @@ RSpec.shared_examples 'MLflow|shared error cases' do
     end
   end
 
-  context 'when ff is disabled' do
-    let(:ff_value) { false }
+  context 'when model experiments is unavailable' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+                          .with(current_user, :read_model_experiments, project)
+                          .and_return(false)
+    end
 
     it "is Not Found" do
       is_expected.to have_gitlab_http_status(:not_found)

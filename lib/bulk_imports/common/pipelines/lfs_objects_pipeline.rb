@@ -18,8 +18,8 @@ module BulkImports
 
         # rubocop: disable CodeReuse/ActiveRecord
         def load(_context, file_path)
-          Gitlab::Utils.check_path_traversal!(file_path)
-          Gitlab::Utils.check_allowed_absolute_path!(file_path, [Dir.tmpdir])
+          Gitlab::PathTraversal.check_path_traversal!(file_path)
+          Gitlab::PathTraversal.check_allowed_absolute_path!(file_path, [Dir.tmpdir])
 
           return if tar_filepath?(file_path)
           return if lfs_json_filepath?(file_path)

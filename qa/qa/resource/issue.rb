@@ -14,11 +14,11 @@ module QA
       end
 
       attributes :id,
-                 :iid,
-                 :assignee_ids,
-                 :labels,
-                 :title,
-                 :description
+        :iid,
+        :assignee_ids,
+        :labels,
+        :title,
+        :description
 
       def initialize
         @assignee_ids = []

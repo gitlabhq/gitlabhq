@@ -4,8 +4,7 @@ classes:
 - Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::Route
 - Route
 feature_categories:
-- projects
-- subgroups
+- groups_and_projects
 - user_profile
 description: Stores routes per namespaces and projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7121

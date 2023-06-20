@@ -6,9 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Dedicated
 
-NOTE:
-GitLab Dedicated is currently in limited availability. You can learn more and join the waitlist [on our website](https://about.gitlab.com/single-tenant-saas).
-
 GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
 
 - Hosted and managed by GitLab, Inc.
@@ -164,6 +161,6 @@ The following AWS regions are not available:
 For more information about the planned improvements to GitLab Dedicated,
 see the [category direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/).
 
-## Join the GitLab Dedicated waitlist
+## Interested in GitLab Dedicated?
 
-As we scale this new offering, we are making GitLab Dedicated available by inviting customers to [join our waitlist](https://about.gitlab.com/dedicated/).
+Learn more about GitLab Dedicated and [talk to an expert](https://about.gitlab.com/dedicated/).

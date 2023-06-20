@@ -12,27 +12,30 @@ WARNING:
 Deleting container images is a destructive action and can't be undone. To restore
 a deleted container image, you must rebuild and re-upload it.
 
+## Garbage collection
+
 Deleting a container image on self-managed instances doesn't free up storage space, it only marks the image
 as eligible for deletion. To actually delete unreferenced container images and recover storage space, administrators
 must run [garbage collection](../../../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 On GitLab.com, the latest version of the Container Registry includes an automatic online garbage
 collector. For more information, see [this blog post](https://about.gitlab.com/blog/2021/10/25/gitlab-com-container-registry-update/).
-The automatic online garbage collector is an instance-wide feature, rolling out gradually to a subset
-of the user base. Some new container image repositories created from GitLab 14.5 onward are served by this
-new version of the Container Registry. In this new version of the Container Registry, layers that aren't
-referenced by any image manifest, and image manifests that have no tags and aren't referenced by another
-manifest (such as multi-architecture images), are automatically scheduled for deletion after 24 hours if
-left unreferenced.
+In this new version of the Container Registry, the following are automatically scheduled
+for deletion in 24 hours if left unreferenced:
+
+- Layers that aren't referenced by any image manifest.
+- Image manifests that have no tags and aren't referenced by another manifest (like multi-architecture images).
+
+The online garbage collector is an instance-wide feature, and applies to all namespaces.
 
 ## Use the GitLab UI
 
 To delete container images using the GitLab UI:
 
-1. On the top bar, select **Main menu**, and:
-   - For a project, select **Projects** and find your project.
-   - For a group, select **Groups** and find your group.
-1. On the left sidebar, select **Packages and registries > Container Registry**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. For:
+   - A group, select **Operate > Container Registry**.
+   - A project, select **Deploy > Container Registry**.
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 

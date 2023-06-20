@@ -1,6 +1,6 @@
 - if outdated_browser?
   = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       = s_('OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser.')
       %br
       - browser_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('install/requirements', anchor: 'supported-web-browsers') }

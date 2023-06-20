@@ -20,6 +20,8 @@ import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
+  mockWorkItemCommentNoteByContributor,
+  mockWorkItemCommentByMaintainer,
 } from 'jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -32,6 +34,23 @@ describe('Work Item Note', () => {
   const updatedNoteText = '# Some title';
   const updatedNoteBody = '<h1 data-sourcepos="1:1-1:12" dir="auto">Some title</h1>';
   const mockWorkItemId = workItemQueryResponse.data.workItem.id;
+
+  const mockWorkItemByDifferentUser = {
+    data: {
+      workItem: {
+        ...workItemQueryResponse.data.workItem,
+        author: {
+          avatarUrl:
+            'http://127.0.0.1:3000/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          id: 'gid://gitlab/User/2',
+          name: 'User 1',
+          username: 'user1',
+          webUrl: 'http://127.0.0.1:3000/user1',
+          __typename: 'UserCore',
+        },
+      },
+    },
+  };
 
   const successHandler = jest.fn().mockResolvedValue({
     data: {
@@ -47,6 +66,9 @@ describe('Work Item Note', () => {
   });
 
   const workItemResponseHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
+  const workItemByAuthoredByDifferentUser = jest
+    .fn()
+    .mockResolvedValue(mockWorkItemByDifferentUser);
 
   const updateWorkItemMutationSuccessHandler = jest
     .fn()
@@ -69,6 +91,7 @@ describe('Work Item Note', () => {
     workItemId = mockWorkItemId,
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
     assignees = mockAssignees,
+    workItemByIidResponseHandler = workItemResponseHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       provide: {
@@ -85,7 +108,7 @@ describe('Work Item Note', () => {
         assignees,
       },
       apolloProvider: mockApollo([
-        [workItemByIidQuery, workItemResponseHandler],
+        [workItemByIidQuery, workItemByIidResponseHandler],
         [updateWorkItemNoteMutation, updateNoteMutationHandler],
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),
@@ -133,7 +156,7 @@ describe('Work Item Note', () => {
       findNoteActions().vm.$emit('startEditing');
       await nextTick();
 
-      findCommentForm().vm.$emit('submitForm', updatedNoteText);
+      findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
 
       expect(successHandler).toHaveBeenCalledWith({
         input: {
@@ -148,7 +171,7 @@ describe('Work Item Note', () => {
       findNoteActions().vm.$emit('startEditing');
       await nextTick();
 
-      findCommentForm().vm.$emit('submitForm', updatedNoteText);
+      findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
       await waitForPromises();
 
       expect(findCommentForm().exists()).toBe(false);
@@ -161,7 +184,7 @@ describe('Work Item Note', () => {
         findNoteActions().vm.$emit('startEditing');
         await nextTick();
 
-        findCommentForm().vm.$emit('submitForm', updatedNoteText);
+        findCommentForm().vm.$emit('submitForm', { commentText: updatedNoteText });
         await waitForPromises();
       });
 
@@ -215,8 +238,9 @@ describe('Work Item Note', () => {
     });
 
     describe('main comment', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponent({ isFirstNote: true });
+        await waitForPromises();
       });
 
       it('should have the note header, actions and body', () => {
@@ -228,6 +252,10 @@ describe('Work Item Note', () => {
 
       it('should have the reply button props', () => {
         expect(findNoteActions().props('showReply')).toBe(true);
+      });
+
+      it('should have the project name', () => {
+        expect(findNoteActions().props('projectName')).toBe('Project name');
       });
     });
 
@@ -317,6 +345,64 @@ describe('Work Item Note', () => {
           expect(findNoteActions().props('canReportAbuse')).toBe(canReportAbuse);
         },
       );
+    });
+
+    describe('internal note', () => {
+      it('does not have the internal note class set by default', () => {
+        createComponent();
+        expect(findTimelineEntryItem().classes()).not.toContain('internal-note');
+      });
+
+      it('timeline entry item and note header has the class for internal notes', () => {
+        createComponent({
+          note: {
+            ...mockWorkItemCommentNote,
+            internal: true,
+          },
+        });
+        expect(findTimelineEntryItem().classes()).toContain('internal-note');
+        expect(findNoteHeader().props('isInternalNote')).toBe(true);
+      });
+    });
+
+    describe('author and user role badges', () => {
+      describe('author badge props', () => {
+        it.each`
+          isWorkItemAuthor | sameAsCurrentUser | workItemByIidResponseHandler
+          ${true}          | ${'same as'}      | ${workItemResponseHandler}
+          ${false}         | ${'not same as'}  | ${workItemByAuthoredByDifferentUser}
+        `(
+          'should pass correct isWorkItemAuthor `$isWorkItemAuthor` to note actions when author is $sameAsCurrentUser as current note',
+          async ({ isWorkItemAuthor, workItemByIidResponseHandler }) => {
+            createComponent({ workItemByIidResponseHandler });
+            await waitForPromises();
+
+            expect(findNoteActions().props('isWorkItemAuthor')).toBe(isWorkItemAuthor);
+          },
+        );
+      });
+
+      describe('Max access level badge', () => {
+        it('should pass the max access badge props', async () => {
+          createComponent({ note: mockWorkItemCommentByMaintainer });
+          await waitForPromises();
+
+          expect(findNoteActions().props('maxAccessLevelOfAuthor')).toBe(
+            mockWorkItemCommentByMaintainer.maxAccessLevelOfAuthor,
+          );
+        });
+      });
+
+      describe('Contributor badge', () => {
+        it('should pass the contributor props', async () => {
+          createComponent({ note: mockWorkItemCommentNoteByContributor });
+          await waitForPromises();
+
+          expect(findNoteActions().props('isAuthorContributor')).toBe(
+            mockWorkItemCommentNoteByContributor.authorIsContributor,
+          );
+        });
+      });
     });
   });
 });

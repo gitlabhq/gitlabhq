@@ -3,6 +3,7 @@
  *
  */
 .file-holder {
+  background: $white;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
@@ -99,8 +100,6 @@
   }
 
   .file-content {
-    background: $white;
-
     &.image_file,
     &.audio,
     &.video {
@@ -246,7 +245,6 @@ span.idiff {
     justify-content: space-between;
     background-color: $gray-light;
     border-bottom: 1px solid $border-color;
-    border-top: 1px solid $border-color;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     border-radius: $border-radius-default $border-radius-default 0 0;
@@ -472,6 +470,8 @@ span.idiff {
 }
 
 .mr-tree-list:not(.tree-list-blobs) {
+  overflow: hidden;
+
   .tree-list-parent::before {
     @include gl-content-empty;
     @include gl-absolute;
@@ -514,7 +514,6 @@ span.idiff {
   }
 
   .blame-commit {
-    padding: 5px 10px;
     width: 400px;
     flex: none;
     background: $gray-light;

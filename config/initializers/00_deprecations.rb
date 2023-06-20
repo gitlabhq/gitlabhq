@@ -18,7 +18,15 @@ if Rails.env.production?
 else
   ActiveSupport::Deprecation.silenced = false
   ActiveSupport::Deprecation.behavior = [:stderr, :notify]
-  ActiveSupport::Deprecation.disallowed_behavior = :raise
+
+  # rubocop:disable Lint/RaiseException
+  # Raising an `Exception` instead of `DeprecationException` or `StandardError`
+  # increases the probability that this exception is not caught in application
+  # code.
+  raise_exception = ->(message, _, _, _) { raise Exception, message }
+  # rubocop:enable Lint/RaiseException
+
+  ActiveSupport::Deprecation.disallowed_behavior = [:stderr, raise_exception]
 
   rails7_deprecation_warnings = [
     # https://gitlab.com/gitlab-org/gitlab/-/issues/366910
@@ -30,10 +38,17 @@ else
     # https://gitlab.com/gitlab-org/gitlab/-/issues/333086
     /default_hash is deprecated/,
     # https://gitlab.com/gitlab-org/gitlab/-/issues/369970
-    /Passing an Active Record object to `\w+` directly is deprecated/
+    /Passing an Active Record object to `\w+` directly is deprecated/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/410086
+    /Using `return`, `break` or `throw` to exit a transaction block/,
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/414556
+    /Merging .* no longer maintain both conditions, and will be replaced by the latter in Rails 7\.0/
   ]
 
-  ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings
+  view_component_3_warnings = [
+    /Setting a slot with `#\w+` is deprecated and will be removed from ViewComponent 3.0.0/
+  ]
+  ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings + view_component_3_warnings
 end
 
 unless ActiveSupport::Deprecation.silenced

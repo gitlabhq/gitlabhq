@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupsFinder do
+RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
   include AdminModeHelper
 
-  shared_examples '#execute' do
+  describe '#execute' do
     let(:user) { create(:user) }
 
     describe 'root level groups' do
@@ -374,18 +374,6 @@ RSpec.describe GroupsFinder do
           )
         end
       end
-    end
-  end
-
-  describe '#execute' do
-    include_examples '#execute'
-
-    context 'when use_traversal_ids_groups_finder feature flags is disabled' do
-      before do
-        stub_feature_flags(use_traversal_ids_groups_finder: false)
-      end
-
-      include_examples '#execute'
     end
   end
 end

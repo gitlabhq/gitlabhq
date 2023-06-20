@@ -40,7 +40,7 @@ GitLab tracks the following contribution events:
 
 To view your daily contributions:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select your name from the dropdown list.
 1. In the contributions calendar:
    - To view the number of contributions for a specific day, hover over a tile.
@@ -53,7 +53,7 @@ The contributions calendar graph and recent activity list displays your
 
 To view private contributions:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, select the **Include private contributions on my profile** checkbox.
 1. Select **Update profile settings**.
@@ -96,7 +96,7 @@ If you think your feed token has been exposed, you should reset it.
 
 To reset your feed token:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. Scroll down. In the **Feed token** section, select the

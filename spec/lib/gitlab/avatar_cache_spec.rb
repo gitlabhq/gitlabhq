@@ -62,52 +62,54 @@ RSpec.describe Gitlab::AvatarCache, :clean_gitlab_redis_cache do
   end
 
   describe "#delete_by_email" do
-    shared_examples 'delete emails' do
-      subject { described_class.delete_by_email(*emails) }
+    subject { described_class.delete_by_email(*emails) }
 
-      before do
-        perform_fetch
-      end
+    before do
+      perform_fetch
+    end
 
-      context "no emails, somehow" do
-        let(:emails) { [] }
+    context "no emails, somehow" do
+      let(:emails) { [] }
 
-        it { is_expected.to eq(0) }
-      end
+      it { is_expected.to eq(0) }
+    end
 
-      context "single email" do
-        let(:emails) { "foo@bar.com" }
+    context "single email" do
+      let(:emails) { "foo@bar.com" }
 
-        it "removes the email" do
-          expect(read(key, "20:2:true")).to eq(avatar_path)
+      it "removes the email" do
+        expect(read(key, "20:2:true")).to eq(avatar_path)
 
-          expect(subject).to eq(1)
+        expect(subject).to eq(1)
 
-          expect(read(key, "20:2:true")).to eq(nil)
-        end
-      end
-
-      context "multiple emails" do
-        let(:emails) { ["foo@bar.com", "missing@baz.com"] }
-
-        it "removes the emails it finds" do
-          expect(read(key, "20:2:true")).to eq(avatar_path)
-
-          expect(subject).to eq(1)
-
-          expect(read(key, "20:2:true")).to eq(nil)
-        end
+        expect(read(key, "20:2:true")).to eq(nil)
       end
     end
 
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(use_pipeline_over_multikey: false)
-      end
+    context "multiple emails" do
+      let(:emails) { ["foo@bar.com", "missing@baz.com"] }
 
-      it_behaves_like 'delete emails'
+      it "removes the emails it finds" do
+        expect(read(key, "20:2:true")).to eq(avatar_path)
+
+        expect(subject).to eq(1)
+
+        expect(read(key, "20:2:true")).to eq(nil)
+      end
     end
 
-    it_behaves_like 'delete emails'
+    context 'when deleting over 1000 emails' do
+      it 'deletes in batches of 1000' do
+        Gitlab::Redis::Cache.with do |redis|
+          if Gitlab::Redis::ClusterUtil.cluster?(redis)
+            expect(redis).to receive(:pipelined).at_least(2).and_call_original
+          else
+            expect(redis).to receive(:unlink).and_call_original
+          end
+        end
+
+        described_class.delete_by_email(*(Array.new(1001) { |i| i }))
+      end
+    end
   end
 end

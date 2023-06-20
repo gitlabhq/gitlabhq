@@ -1,0 +1,9 @@
+---
+table_name: p_ci_job_annotations
+classes:
+- Ci::JobAnnotation
+feature_categories:
+- build_artifacts
+description: Stores user provided annotations for jobs. Currently storing extra information for a given job feed by API.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117319
+gitlab_schema: gitlab_ci

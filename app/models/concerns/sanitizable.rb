@@ -48,11 +48,11 @@ module Sanitizable
 
           # This method raises an exception on failure so perform this
           # last if multiple errors should be returned.
-          Gitlab::Utils.check_path_traversal!(input.to_s)
+          Gitlab::PathTraversal.check_path_traversal!(input.to_s)
 
         rescue Gitlab::Utils::DoubleEncodingError
           record.errors.add(attr, 'cannot contain escaped components')
-        rescue Gitlab::Utils::PathTraversalAttackError
+        rescue Gitlab::PathTraversal::PathTraversalAttackError
           record.errors.add(attr, "cannot contain a path traversal component")
         end
       end

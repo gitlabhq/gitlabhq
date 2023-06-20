@@ -3,7 +3,7 @@ table_name: namespace_details
 classes:
 - Namespace::Detail
 feature_categories:
-- subgroups
+- groups_and_projects
 description: Used to store details for namespaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82958
 milestone: '15.3'

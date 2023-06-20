@@ -45,4 +45,7 @@ export default {
   [types.RECEIVE_AGGREGATIONS_ERROR](state) {
     state.aggregations = { fetching: false, error: true, data: [] };
   },
+  [types.SET_LABEL_SEARCH_STRING](state, value) {
+    state.searchLabelString = value;
+  },
 };

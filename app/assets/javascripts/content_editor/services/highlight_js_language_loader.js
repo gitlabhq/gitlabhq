@@ -47,6 +47,10 @@ export default {
   'clojure-repl': () =>
     import(/* webpackChunkName: 'hl-clojure-repl' */ 'highlight.js/lib/languages/clojure-repl'),
   clojure: () => import(/* webpackChunkName: 'hl-clojure' */ 'highlight.js/lib/languages/clojure'),
+  codeowners: () =>
+    import(
+      /* webpackChunkName: 'hl-codeowners' */ '~/vue_shared/components/source_viewer/languages/codeowners'
+    ),
   cmake: () => import(/* webpackChunkName: 'hl-cmake' */ 'highlight.js/lib/languages/cmake'),
   coffeescript: () =>
     import(/* webpackChunkName: 'hl-coffeescript' */ 'highlight.js/lib/languages/coffeescript'),

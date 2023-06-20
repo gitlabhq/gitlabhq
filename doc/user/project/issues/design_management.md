@@ -70,7 +70,7 @@ Support for PDF files is tracked in [issue 32811](https://gitlab.com/gitlab-org/
   - [A project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429).
   - [An issue is deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427).
 - In GitLab 12.7 and later, Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
-  by Geo but [not verified](https://gitlab.com/gitlab-org/gitlab/-/issues/32467).
+  and in GitLab 16.1 and later it can be [verified by Geo as well](https://gitlab.com/gitlab-org/gitlab/-/issues/355660).
 
 ## View a design
 
@@ -119,9 +119,7 @@ To move around the image while zoomed in, drag the image.
 
 ## Add a design to an issue
 
-> - Drag and drop uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab 12.9.
-> - New version creation on upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab 12.9.
-> - Copy and paste uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634) in GitLab 12.10.
+> Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
 
 Prerequisites:
 
@@ -198,6 +196,21 @@ NOTE:
 Only the latest version of the designs can be archived.
 Archived designs are not permanently lost. You can browse
 [previous versions](#add-a-new-version-of-a-design).
+
+<!-- When content_editor_on_issues flag is removed, move version notes
+     to "Add a design to an issue", update that topic, and delete the one below. -->
+
+## Markdown and rich text editors for descriptions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+When this feature is enabled, you can use the Markdown and rich text editor in design descriptions.
+It's the same editor you use for comments across GitLab.
 
 ## Reorder designs
 

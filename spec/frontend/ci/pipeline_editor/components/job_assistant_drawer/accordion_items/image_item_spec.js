@@ -1,10 +1,15 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import ImageItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/image_item.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { JOB_TEMPLATE } from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
+import {
+  HELP_PATHS,
+  JOB_TEMPLATE,
+} from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
 
 describe('Image item', () => {
   let wrapper;
 
+  const findLink = () => wrapper.findComponent(GlLink);
   const findImageNameInput = () => wrapper.findByTestId('image-name-input');
   const findImageEntrypointInput = () => wrapper.findByTestId('image-entrypoint-input');
 
@@ -16,11 +21,20 @@ describe('Image item', () => {
       propsData: {
         job,
       },
+      stubs: {
+        GlSprintf,
+      },
     });
   };
 
   beforeEach(() => {
     createComponent();
+  });
+
+  it('should render help link with correct href', () => {
+    createComponent();
+
+    expect(findLink().attributes('href')).toEqual(HELP_PATHS.imageHelpPath);
   });
 
   it('should emit update job event when filling inputs', () => {

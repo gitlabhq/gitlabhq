@@ -3,7 +3,7 @@ key_path: uuid
 description: GitLab instance unique identifier
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: string
 status: active
 milestone: "9.1"

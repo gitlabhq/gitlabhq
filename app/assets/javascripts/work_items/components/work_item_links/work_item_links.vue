@@ -3,7 +3,6 @@ import { GlDropdown, GlDropdownItem, GlIcon, GlLoadingIcon, GlTooltipDirective }
 import { isEmpty } from 'lodash';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey } from '~/lib/utils/common_utils';
@@ -11,10 +10,8 @@ import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 import { FORM_TYPES, WIDGET_ICONS, WORK_ITEM_STATUS_TEXT } from '../../constants';
-import { findHierarchyWidgetChildren, getWorkItemQuery } from '../../utils';
-import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
-import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
-import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
+import { findHierarchyWidgetChildren } from '../../utils';
+import { removeHierarchyChild } from '../../graphql/cache_utils';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
@@ -40,25 +37,30 @@ export default {
   props: {
     issuableId: {
       type: Number,
-      required: false,
-      default: null,
+      required: true,
+    },
+    issuableIid: {
+      type: Number,
+      required: true,
     },
   },
   apollo: {
     workItem: {
-      query() {
-        return getWorkItemQuery(this.fetchByIid);
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
-          id: this.issuableGid,
+          fullPath: this.fullPath,
+          iid: this.iid,
         };
+      },
+      update(data) {
+        return data.workspace.workItems.nodes[0] ?? {};
       },
       context: {
         isSingleRequest: true,
       },
       skip() {
-        return !this.issuableId;
+        return !this.iid;
       },
       error(e) {
         this.error = e.message || this.$options.i18n.fetchError;
@@ -88,8 +90,6 @@ export default {
     return {
       isShownAddForm: false,
       activeChild: {},
-      activeToast: null,
-      prefetchedWorkItem: null,
       error: undefined,
       parentIssue: null,
       formType: null,
@@ -100,11 +100,11 @@ export default {
     };
   },
   computed: {
-    fetchByIid() {
-      return false;
-    },
     confidential() {
       return this.parentIssue?.confidential || this.workItem?.confidential || false;
+    },
+    iid() {
+      return String(this.issuableIid);
     },
     issuableIteration() {
       return this.parentIssue?.iteration;
@@ -138,9 +138,6 @@ export default {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
   },
-  mounted() {
-    this.addWorkItemQuery(getParameterByName('work_item_iid'));
-  },
   methods: {
     showAddForm(formType) {
       this.$refs.wrapper.show();
@@ -167,81 +164,12 @@ export default {
       this.updateWorkItemIdUrlQuery();
     },
     handleWorkItemDeleted(child) {
-      this.removeHierarchyChild(child);
-      this.activeToast = this.$toast.show(s__('WorkItem|Task deleted'));
+      const { defaultClient: cache } = this.$apollo.provider.clients;
+      removeHierarchyChild(cache, this.fullPath, this.iid, child);
+      this.$toast.show(s__('WorkItem|Task deleted'));
     },
     updateWorkItemIdUrlQuery({ iid } = {}) {
       updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
-    },
-    async addHierarchyChild(workItem) {
-      return this.$apollo.mutate({
-        mutation: addHierarchyChildMutation,
-        variables: { id: this.issuableGid, workItem },
-      });
-    },
-    async removeHierarchyChild(workItem) {
-      return this.$apollo.mutate({
-        mutation: removeHierarchyChildMutation,
-        variables: { id: this.issuableGid, workItem },
-      });
-    },
-    async undoChildRemoval(workItem, childId) {
-      const { data } = await this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId: this.issuableGid } } },
-      });
-
-      await this.addHierarchyChild(workItem);
-
-      if (data.workItemUpdate.errors.length === 0) {
-        this.activeToast?.hide();
-      }
-    },
-    async removeChild(workItem) {
-      const childId = workItem.id;
-      const { data } = await this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId: null } } },
-      });
-
-      await this.removeHierarchyChild(workItem);
-
-      if (data.workItemUpdate.errors.length === 0) {
-        this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
-          action: {
-            text: s__('WorkItem|Undo'),
-            onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, childId),
-          },
-        });
-      }
-    },
-    addWorkItemQuery(iid) {
-      if (!iid) {
-        return;
-      }
-
-      this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: workItemByIidQuery,
-        variables: {
-          fullPath: this.fullPath,
-          iid,
-        },
-        update(data) {
-          return data.workspace.workItems.nodes[0];
-        },
-        context: {
-          isSingleRequest: true,
-        },
-      });
-    },
-    prefetchWorkItem({ iid }) {
-      this.prefetch = setTimeout(
-        () => this.addWorkItemQuery(iid),
-        DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-      );
-    },
-    clearPrefetching() {
-      clearTimeout(this.prefetch);
     },
     toggleReportAbuseDrawer(isOpen, reply = {}) {
       this.isReportDrawerOpen = isOpen;
@@ -321,6 +249,7 @@ export default {
           ref="wiLinksForm"
           data-testid="add-links-form"
           :issuable-gid="issuableGid"
+          :work-item-iid="iid"
           :children-ids="childrenIds"
           :parent-confidential="confidential"
           :parent-iteration="issuableIteration"
@@ -328,13 +257,13 @@ export default {
           :form-type="formType"
           :parent-work-item-type="workItem.workItemType.name"
           @cancel="hideAddForm"
-          @addWorkItemChild="addHierarchyChild"
         />
         <work-item-children-wrapper
           :children="children"
           :can-update="canUpdate"
           :work-item-id="issuableGid"
-          @removeChild="removeChild"
+          :work-item-iid="iid"
+          @error="error = $event"
           @show-modal="openChild"
         />
         <work-item-detail-modal

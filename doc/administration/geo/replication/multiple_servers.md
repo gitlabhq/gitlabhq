@@ -35,7 +35,7 @@ The **primary** and **secondary** Geo sites must be able to communicate to each 
 Because of the additional complexity involved in setting up this configuration
 for PostgreSQL and Redis, it is not covered by this Geo multi-node documentation.
 
-For more information on setting up a multi-node PostgreSQL cluster and Redis cluster using the Omnibus GitLab package, see:
+For more information on setting up a multi-node PostgreSQL cluster and Redis cluster using the Linux package, see:
 
 - [Geo multi-node database replication](../setup/database.md#multi-node-database-replication)
 - [Redis multi-node documentation](../../redis/replication_and_failover.md)
@@ -77,7 +77,15 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
    gitlab_rails['auto_migrate'] = false
    ```
 
-After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
+
+### Step 2: Define the site as the **primary** site
+
+1. Execute the following command on one of the frontend nodes:
+
+   ```shell
+   sudo gitlab-ctl set-geo-primary-node
+   ```
 
 NOTE:
 PostgreSQL and Redis should have already been disabled on the
@@ -171,7 +179,7 @@ the instructions below.
    gitlab_rails['auto_migrate'] = false
    ```
 
-After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](../setup/external_database.md).
@@ -252,7 +260,7 @@ then make the following modifications:
    ```
 
 NOTE:
-If you had set up PostgreSQL cluster using the omnibus package and had set
+If you had set up PostgreSQL cluster using the Linux package and had set
 `postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
 mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
 contains the plaintext passwords. This is used to let the Rails
@@ -263,7 +271,7 @@ Make sure that current node's IP is listed in
 `postgresql['md5_auth_cidr_addresses']` setting of the read-replica database to
 allow Rails on this node to connect to PostgreSQL.
 
-After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so the changes take effect.
+After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 
 In the [architecture overview](#architecture-overview) topology, the following GitLab
 services are enabled on the "frontend" nodes:

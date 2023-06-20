@@ -80,10 +80,9 @@ module Packages
       def package_files
         return unless @package
 
-        strong_memoize(:package_files) do
-          @package.installable_package_files.preload_conan_file_metadata
-        end
+        @package.installable_package_files.preload_conan_file_metadata
       end
+      strong_memoize_attr :package_files
 
       def matching_reference?(package_file)
         package_file.conan_file_metadatum.conan_package_reference == conan_package_reference

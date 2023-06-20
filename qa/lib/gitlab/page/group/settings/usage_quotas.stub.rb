@@ -533,51 +533,27 @@ module Gitlab
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
-          # @note Defined as +div :purchased_usage_total_free+
-          # @return [String] The text content or value of +purchased_usage_total_free+
-          def purchased_usage_total_free
+          # @note Defined as +div :storage_purchased+
+          # @return [String] The text content or value of +storage_purchased+
+          def storage_purchased
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
           # @example
           #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.purchased_usage_total_free_element).to exist
+          #     expect(usage_quotas.storage_purchased_element).to exist
           #   end
           # @return [Watir::Div] The raw +Div+ element
-          def purchased_usage_total_free_element
+          def storage_purchased_element
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
           # @example
           #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_purchased_usage_total_free
+          #     expect(usage_quotas).to be_storage_purchased
           #   end
-          # @return [Boolean] true if the +purchased_usage_total_free+ element is present on the page
-          def purchased_usage_total_free?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @note Defined as +span :purchased_usage_total+
-          # @return [String] The text content or value of +purchased_usage_total+
-          def purchased_usage_total
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.purchased_usage_total_element).to exist
-          #   end
-          # @return [Watir::Span] The raw +Span+ element
-          def purchased_usage_total_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_purchased_usage_total
-          #   end
-          # @return [Boolean] true if the +purchased_usage_total+ element is present on the page
-          def purchased_usage_total?
+          # @return [Boolean] true if the +storage_purchased+ element is present on the page
+          def storage_purchased?
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 

@@ -16,9 +16,17 @@ import { runnerData } from '../mock_data';
 // Vue Test Utils `stubs` option does not stub components mounted
 // in <router-view>. Use mocking instead:
 jest.mock('~/ci/runner/components/runner_jobs.vue', () => {
-  const ActualRunnerJobs = jest.requireActual('~/ci/runner/components/runner_jobs.vue').default;
+  const { props } = jest.requireActual('~/ci/runner/components/runner_jobs.vue').default;
   return {
-    props: ActualRunnerJobs.props,
+    props,
+    render() {},
+  };
+});
+
+jest.mock('~/ci/runner/components/runner_managers_detail.vue', () => {
+  const { props } = jest.requireActual('~/ci/runner/components/runner_managers_detail.vue').default;
+  return {
+    props,
     render() {},
   };
 });

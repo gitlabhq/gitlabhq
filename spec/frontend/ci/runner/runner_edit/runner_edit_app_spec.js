@@ -21,6 +21,7 @@ jest.mock('~/ci/runner/sentry_utils');
 const mockRunner = runnerFormData.data.runner;
 const mockRunnerGraphqlId = mockRunner.id;
 const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
+const mockRunnerSha = mockRunner.shortSha;
 const mockRunnerPath = `/admin/runners/${mockRunnerId}`;
 
 Vue.use(VueApollo);
@@ -62,7 +63,7 @@ describe('RunnerEditApp', () => {
   it('displays the runner id and creation date', async () => {
     await createComponentWithApollo({ mountFn: mount });
 
-    expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
+    expect(findRunnerHeader().text()).toContain(`#${mockRunnerId} (${mockRunnerSha})`);
     expect(findRunnerHeader().text()).toContain('created');
   });
 

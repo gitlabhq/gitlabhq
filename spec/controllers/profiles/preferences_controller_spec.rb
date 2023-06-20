@@ -53,6 +53,7 @@ RSpec.describe Profiles::PreferencesController do
           first_day_of_week: '1',
           preferred_language: 'jp',
           tab_width: '5',
+          project_shortcut_buttons: 'true',
           render_whitespace_in_code: 'true'
         }.with_indifferent_access
 

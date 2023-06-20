@@ -66,8 +66,8 @@ You can configure redirects for your site using a `_redirects` file. For more in
 
 To remove your pages:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
    [This location is part of an experiment](index.md#menu-position-test).
@@ -93,6 +93,25 @@ the group must be at the top level and not a subgroup.
 
 For [project websites](../../project/pages/getting_started_part_one.md#project-website-examples),
 you can create your project first and access it under `http(s)://namespace.example.io/projectname`.
+
+## Enable unique domains
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9347) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `pages_unique_domain`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388151) in GitLab 15.11.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `pages_unique_domain`.
+On GitLab.com, by default this feature is available.
+
+By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
+
+To ensure your project uses a unique Pages domain, enable the unique domains feature for the project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Pages**.
+1. Select the **Use unique domain** checkbox.
+1. Select **Save changes**.
 
 ## Specific configuration options for Pages
 

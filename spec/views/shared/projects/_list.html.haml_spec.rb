@@ -7,7 +7,6 @@ RSpec.describe 'shared/projects/_list' do
 
   before do
     allow(view).to receive(:projects).and_return(projects)
-    allow(view).to receive(:project_list_cache_key).and_return('fake_cache_key')
   end
 
   context 'with projects' do

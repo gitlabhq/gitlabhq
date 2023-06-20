@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader do
 
         context 'when artifact archive size is greater than the limit' do
           let(:expected_error) do
-            "Artifacts archive for job `#{job.name}` is too large: max 1 KB"
+            "Artifacts archive for job `#{job.name}` is too large: max 1 KiB"
           end
 
           before do
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader do
 
         context 'when metadata entry shows size greater than the limit' do
           let(:expected_error) do
-            "Artifacts archive for job `#{job.name}` is too large: max 5 MB"
+            "Artifacts archive for job `#{job.name}` is too large: max 5 MiB"
           end
 
           before do

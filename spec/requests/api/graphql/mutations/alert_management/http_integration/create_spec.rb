@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creating a new HTTP Integration', feature_category: :integrations do
+RSpec.describe 'Creating a new HTTP Integration', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

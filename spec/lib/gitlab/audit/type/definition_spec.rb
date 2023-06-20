@@ -281,6 +281,30 @@ RSpec.describe Gitlab::Audit::Type::Definition do
     end
   end
 
+  describe '.names_with_category' do
+    let(:store1) { Dir.mktmpdir('path1') }
+
+    before do
+      allow(described_class).to receive(:paths).and_return(
+        [
+          File.join(store1, '**', '*.yml')
+        ]
+      )
+    end
+
+    subject { described_class.names_with_category }
+
+    after do
+      FileUtils.rm_rf(store1)
+    end
+
+    it "returns an array with just the event name and feature category" do
+      write_audit_event_type(store1, path, yaml_content)
+
+      expect(subject).to eq([{ event_name: :group_deploy_token_destroyed, feature_category: 'continuous_delivery' }])
+    end
+  end
+
   def write_audit_event_type(store, path, content)
     path = File.join(store, path)
     dir = File.dirname(path)

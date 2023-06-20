@@ -1,3 +1,0 @@
-mutation addHierarchyChild($id: WorkItemID!, $workItem: WorkItem!) {
-  addHierarchyChild(id: $id, workItem: $workItem) @client
-}

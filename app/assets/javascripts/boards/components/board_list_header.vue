@@ -108,6 +108,9 @@ export default {
     listType() {
       return this.list.listType;
     },
+    isLabelList() {
+      return this.listType === ListType.label;
+    },
     itemsCount() {
       return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
@@ -258,9 +261,6 @@ export default {
   },
   methods: {
     ...mapActions(['updateList', 'setActiveId', 'toggleListCollapsed']),
-    closeListActions() {
-      this.$refs.headerListActions?.close();
-    },
     openSidebarSettings() {
       if (this.activeId === inactiveId) {
         sidebarEventHub.$emit('sidebar.closeAll');
@@ -277,8 +277,6 @@ export default {
       }
 
       this.track('click_button', { label: 'list_settings' });
-
-      this.closeListActions();
     },
     showScopedLabels(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
@@ -292,13 +290,9 @@ export default {
       } else {
         eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
       }
-
-      this.closeListActions();
     },
     showNewEpicForm() {
       eventHub.$emit(`${toggleFormEventPrefix.epic}${this.list.id}`);
-
-      this.closeListActions();
     },
     toggleExpanded() {
       const collapsed = !this.list.collapsed;
@@ -382,7 +376,8 @@ export default {
   <header
     :class="{
       'gl-h-full': list.collapsed,
-      'board-inner gl-rounded-top-left-base gl-rounded-top-right-base gl-bg-gray-50': isSwimlanesHeader,
+      'board-inner gl-bg-gray-50': isSwimlanesHeader,
+      'gl-border-t-solid gl-border-4 gl-rounded-top-left-base gl-rounded-top-right-base': isLabelList,
     }"
     :style="headerStyle"
     class="board-header gl-relative"
@@ -532,7 +527,6 @@ export default {
       </div>
       <gl-disclosure-dropdown
         v-if="showListHeaderActions"
-        ref="headerListActions"
         v-gl-tooltip.hover.top="{
           title: $options.i18n.listActions,
           boundary: 'viewport',

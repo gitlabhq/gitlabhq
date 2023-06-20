@@ -87,8 +87,6 @@ module NavHelper
   end
 
   def show_super_sidebar?(user = current_user)
-    return false unless Feature.enabled?(:super_sidebar_nav, user)
-
     # The new sidebar is not enabled for anonymous use
     # Once we enable the new sidebar by default, this
     # should return true

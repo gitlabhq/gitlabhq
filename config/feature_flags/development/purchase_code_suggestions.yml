@@ -1,0 +1,8 @@
+---
+name: purchase_code_suggestions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123382
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415047
+milestone: '16.1'
+type: development
+group: group::provision
+default_enabled: false

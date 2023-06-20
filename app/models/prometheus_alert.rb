@@ -25,7 +25,7 @@ class PrometheusAlert < ApplicationRecord
 
   validates :environment, :project, :prometheus_metric, :threshold, :operator, presence: true
   validates :runbook_url, length: { maximum: 255 }, allow_blank: true,
-                          addressable_url: { enforce_sanitization: true, ascii_only: true }
+    addressable_url: { enforce_sanitization: true, ascii_only: true }
   validate :require_valid_environment_project!
   validate :require_valid_metric_project!
 

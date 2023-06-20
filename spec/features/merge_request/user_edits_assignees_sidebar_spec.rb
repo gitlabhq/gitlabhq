@@ -5,7 +5,17 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_category: :code_review_workflow do
   include Features::InviteMembersModalHelpers
 
-  let(:project) { create(:project, :public, :repository) }
+  let(:owner) { create(:user) }
+  let(:shared_into_ancestor_user) { create(:user) }
+  let(:invited_group) { create(:group) { |group| group.add_maintainer(shared_into_ancestor_user) } }
+  let(:parent_group) do
+    create(:group) { |group| create(:group_group_link, shared_group: group, shared_with_group: invited_group) }
+  end
+
+  let(:project) do
+    create(:project, :public, :repository, group: parent_group) { |project| project.add_owner(owner) }
+  end
+
   let(:protected_branch) { create(:protected_branch, :maintainers_can_push, name: 'master', project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, target_branch: protected_branch.name) }
 
@@ -38,7 +48,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
       before do
         stub_const('Autocomplete::UsersFinder::LIMIT', users_find_limit)
 
-        sign_in(project.first_owner)
+        sign_in(owner)
 
         merge_request.assignees << assignee
 
@@ -82,6 +92,24 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
       end
     end
 
+    context 'with members shared into ancestors of the project' do
+      before do
+        sign_in(owner)
+
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+
+        sidebar_assignee_block.click_link('Edit')
+        wait_for_requests
+      end
+
+      it 'contains the members shared into ancestors of the projects' do
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content shared_into_ancestor_user.name
+        end
+      end
+    end
+
     context 'with invite members considerations' do
       let_it_be(:user) { create(:user) }
 
@@ -103,7 +131,7 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
       before do
         stub_const('Autocomplete::UsersFinder::LIMIT', users_find_limit)
 
-        sign_in(project.first_owner)
+        sign_in(owner)
 
         merge_request.assignees << assignee
 
@@ -142,6 +170,23 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
         let(:assignee) { project_developers.last }
 
         it_behaves_like 'when assigned', expected_tooltip: 'Cannot merge'
+      end
+    end
+
+    context 'with members shared into ancestors of the project' do
+      before do
+        sign_in(owner)
+
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
+
+        open_assignees_dropdown
+      end
+
+      it 'contains the members shared into ancestors of the projects' do
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content shared_into_ancestor_user.name
+        end
       end
     end
 

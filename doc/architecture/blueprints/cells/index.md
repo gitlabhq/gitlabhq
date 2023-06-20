@@ -1,9 +1,9 @@
 ---
 status: accepted
 creation-date: "2022-09-07"
-authors: [ "@ayufan", "@fzimmer", "@DylanGriffith" ]
+authors: [ "@ayufan", "@fzimmer", "@DylanGriffith", "@lohrc" ]
 coach: "@ayufan"
-approvers: [ "@fzimmer" ]
+approvers: [ "@lohrc" ]
 owning-stage: "~devops::enablement"
 participating-stages: []
 ---
@@ -119,7 +119,7 @@ would be required to define a general split of data and build required tooling.
 
 1. **User can push to Git repository.**
 
-    The purpose is to ensure that essential joins from the projects table are properly attributed to be 
+    The purpose is to ensure that essential joins from the projects table are properly attributed to be
     Cell-local, and as a result the essential Git workflow is supported.
 
 1. **User can run CI pipeline.**
@@ -159,7 +159,7 @@ This list is not exhaustive of work needed to be done.
 ### 4. Routing layer
 
 The routing layer is meant to offer a consistent user experience where all Cells are presented
-under a single domain (for example, `gitlab.com`), instead of 
+under a single domain (for example, `gitlab.com`), instead of
 having to navigate to separate domains.
 
 The user will able to use `https://gitlab.com` to access Cell-enabled GitLab. Depending
@@ -231,7 +231,7 @@ to be able to divide big Cells into many smaller ones.
 
 ## Availability of the feature
 
-We are following the [Support for Experiment, Beta, and Generally Available features](../../../policy/alpha-beta-support.md).
+We are following the [Support for Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
 
 ### 1. Experiment
 
@@ -345,6 +345,33 @@ This is the list of known affected features with the proposed solutions.
 - [Cells: Uploads](cells-feature-uploads.md)
 - [Cells: GitLab Pages](cells-feature-gitlab-pages.md)
 - [Cells: Agent for Kubernetes](cells-feature-agent-for-kubernetes.md)
+
+## Frequently Asked Questions
+
+### What's the difference between Cells architecture and GitLab Dedicated?
+
+The new Cells architecture is meant to scale GitLab.com. And the way to achieve this is by moving
+organizations into cells, but different organizations can still share each other server resources, even
+if the application provides isolation from other organizations. But all of them still operate under the
+existing GitLab SaaS domain name `gitlab.com`. Also, cells still share some common data, like `users`, and
+routing information of groups and projects. For example, no two users can have the same username
+even if they belong to different organizations that exist on different cells.
+
+With the aforementioned differences, GitLab Dedicated is still offered at higher costs due to the fact
+that it's provisioned via dedicated server resources for each customer, while Cells use shared resources. Which
+makes GitLab Dedicated more suited for bigger customers, and GitLab Cells more suitable for small to mid size
+companies that are starting on GitLab.com.
+
+On the other hand, [GitLab Dedicated](https://about.gitlab.com/dedicated/) is meant to provide completely
+isolated GitLab instance for any organization. Where this instance is running on its own custom domain name, and
+totally isolated from any other GitLab instance, including GitLab SaaS. For example, users on GitLab dedicated
+don't have to have a different and unique username that was already taken on GitLab.com.
+
+### Can different cells communicate with each other?
+
+Up until iteration 3, cells communicate with each other only via a shared database that contains common
+data. In iteration 4 we are going to evaluate the option of cells calling each other via API to provide more
+isolation and reliability.
 
 ## Decision log
 

@@ -28,8 +28,7 @@ module QA
           praefect_manager.query_read_distribution.each_with_index do |data, index|
             pre_read_count = praefect_manager.value_for_node(pre_read_data, data[:node])
             QA::Runtime::Logger.debug("Node: #{data[:node]}; before: #{pre_read_count}; now: #{data[:value]}")
-            expect(data[:value]).to be > pre_read_count,
-                                    "Read counts did not differ for node #{data[:node]}"
+            expect(data[:value]).to be > pre_read_count, "Read counts did not differ for node #{data[:node]}"
           end
         end
       end
@@ -45,7 +44,7 @@ module QA
         end
 
         it 'does not read from the unhealthy node',
-           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347834' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347834' do
           pre_read_data = praefect_manager.query_read_distribution
 
           read_from_project(project, number_of_reads_per_loop * 10)

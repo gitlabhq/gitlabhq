@@ -11,7 +11,7 @@ module WebHooks
 
       respond_to :html
 
-      feature_category :integrations
+      feature_category :webhooks
       urgency :low, [:retry]
     end
 

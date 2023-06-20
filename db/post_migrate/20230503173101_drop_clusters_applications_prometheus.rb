@@ -10,7 +10,6 @@ class DropClustersApplicationsPrometheus < Gitlab::Database::Migration[2.1]
 
   # Based on init schema:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/b237f836df215a4ada92b9406733e6cd2483ca2d/db/migrate/20181228175414_init_schema.rb#L742-L750
-  # rubocop:disable Migration/SchemaAdditionMethodsNoPost
   def down
     create_table "clusters_applications_prometheus", id: :serial, force: :cascade do |t|
       t.integer "cluster_id", null: false
@@ -26,5 +25,4 @@ class DropClustersApplicationsPrometheus < Gitlab::Database::Migration[2.1]
       t.boolean "healthy"
     end
   end
-  # rubocop:enable Migration/SchemaAdditionMethodsNoPost
 end

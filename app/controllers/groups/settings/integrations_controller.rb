@@ -12,7 +12,9 @@ module Groups
       layout 'group_settings'
 
       def index
-        @integrations = Integration.find_or_initialize_all_non_project_specific(Integration.for_group(group)).sort_by(&:title)
+        @integrations = Integration
+          .find_or_initialize_all_non_project_specific(Integration.for_group(group))
+          .sort_by(&:title)
       end
 
       def edit

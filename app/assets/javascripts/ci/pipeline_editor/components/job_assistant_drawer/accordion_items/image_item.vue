@@ -1,15 +1,25 @@
 <script>
-import { GlFormGroup, GlAccordionItem, GlFormInput, GlFormTextarea } from '@gitlab/ui';
-import { i18n } from '../constants';
+import {
+  GlFormGroup,
+  GlAccordionItem,
+  GlFormInput,
+  GlFormTextarea,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
+import { i18n, HELP_PATHS } from '../constants';
 
 export default {
   i18n,
+  helpPath: HELP_PATHS.imageHelpPath,
   placeholderText: i18n.ENTRYPOINT_PLACEHOLDER_TEXT,
   components: {
     GlAccordionItem,
     GlFormInput,
     GlFormTextarea,
     GlFormGroup,
+    GlLink,
+    GlSprintf,
   },
   props: {
     job: {
@@ -26,6 +36,13 @@ export default {
 </script>
 <template>
   <gl-accordion-item :title="$options.i18n.IMAGE">
+    <div class="gl-pb-5">
+      <gl-sprintf :message="$options.i18n.IMAGE_DESCRIPTION">
+        <template #link="{ content }">
+          <gl-link :href="$options.helpPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
     <gl-form-group :label="$options.i18n.IMAGE_NAME">
       <gl-form-input
         :value="job.image.name"

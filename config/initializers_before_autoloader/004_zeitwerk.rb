@@ -41,6 +41,7 @@ Rails.autoloaders.each do |autoloader|
     'chunked_io' => 'ChunkedIO',
     'http_io' => 'HttpIO',
     'jetbrains_plugin_activity_unique_counter' => 'JetBrainsPluginActivityUniqueCounter',
+    'jetbrains_bundled_plugin_activity_unique_counter' => 'JetBrainsBundledPluginActivityUniqueCounter',
     'json_formatter' => 'JSONFormatter',
     'json_web_token' => 'JSONWebToken',
     'as_json' => 'AsJSON',

@@ -3,8 +3,9 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Doxygen.gitlab-ci.yml
 
-# Full project: https://gitlab.com/pages/doxygen
-image: alpine
+default:
+  # Full project: https://gitlab.com/pages/doxygen
+  image: alpine
 
 pages:
   script:

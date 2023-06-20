@@ -17,9 +17,11 @@ The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 `gitlab.com/customer-success`. You can use bulk actions in the rails console to move projects to
 different namespaces.
 
-If you are importing to a self-managed GitLab instance, you can use the
-[GitHub Rake task](../../../administration/raketasks/github_import.md) instead. This allows you to import projects
-without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
+- If you are importing to a self-managed GitLab instance, you can use the [GitHub Rake task](../../../administration/raketasks/github_import.md) instead. The
+  Rake task imports projects without the constraints of a [Sidekiq](../../../development/sidekiq/index.md) worker.
+- If you are importing from GitHub Enterprise to GitLab.com, use the
+  [GitLab Import API](../../../api/import.md#import-repository-from-github) GitHub endpoint instead. This allows you to provide a different domain to import the project from.
+  Using the UI, the GitHub importer always imports from the `github.com` domain.
 
 When importing projects:
 
@@ -30,6 +32,7 @@ When importing projects:
 - The importer also imports branches on forks of projects related to open pull requests. These branches are
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
   a discrepancy in branches compared to those of the GitHub repository.
+- The organization the repository belongs to must not impose restrictions of a [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions) on the GitLab instance you import to.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of the import process, see [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
@@ -137,11 +140,12 @@ Use one of the following tabs to filter the list of repositories:
 - **Collaborated**: Filter the list to the repositories that you have contributed to.
 - **Organization**: Filter the list to the repositories that belong to an organization you are a member of.
 
-When the **Organization** tab is selected, you can further narrow down your search by selecting an available GitHub organization from a dropdown.
+When the **Organization** tab is selected, you can further narrow down your search by selecting an available GitHub organization from a dropdown list.
 
 ### Select additional items to import
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
+> - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
@@ -183,17 +187,17 @@ To open an repository in GitLab URL after it has been imported, select its GitLa
 
 Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
 
-![GitHub importer page](img/import_projects_from_github_importer_v12_3.png)
+![GitHub importer page](img/import_projects_from_github_importer_v16_0.png)
 
 ### Check status of imports
 
-> Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.0.
+> Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.1.
 
 After imports are completed, they can be in one of three states:
 
-- **Completed**: GitLab imported all repository entities.
+- **Complete**: GitLab imported all repository entities.
 - **Partially completed**: GitLab failed to import some repository entities.
-- **Failed**: GitLab imported no repository entities.
+- **Failed**: GitLab aborted the import after a critical error occurred.
 
 Expand **Details** to see a list of [repository entities](#imported-data) that failed to import.
 
@@ -280,12 +284,12 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 
 | GitHub rule                                                                         | GitLab rule                                                                                                                                                 | Introduced in                                                       |
 | :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
-| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
-| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
+| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
+| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
 | **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches) **(PREMIUM)**. Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue

@@ -8,7 +8,7 @@ describe('Timeago component', () => {
 
   const defaultProps = { duration: 0, finished_at: '' };
 
-  const createComponent = (props = defaultProps, stuck = false) => {
+  const createComponent = (props = defaultProps, extraProps) => {
     wrapper = extendedWrapper(
       shallowMount(TimeAgo, {
         propsData: {
@@ -16,10 +16,8 @@ describe('Timeago component', () => {
             details: {
               ...props,
             },
-            flags: {
-              stuck,
-            },
           },
+          ...extraProps,
         },
         data() {
           return {
@@ -32,10 +30,7 @@ describe('Timeago component', () => {
 
   const duration = () => wrapper.find('.duration');
   const finishedAt = () => wrapper.find('.finished-at');
-  const findInProgress = () => wrapper.findByTestId('pipeline-in-progress');
-  const findSkipped = () => wrapper.findByTestId('pipeline-skipped');
-  const findHourGlassIcon = () => wrapper.findByTestId('hourglass-icon');
-  const findWarningIcon = () => wrapper.findByTestId('warning-icon');
+  const findCalendarIcon = () => wrapper.findByTestId('calendar-icon');
 
   describe('with duration', () => {
     beforeEach(() => {
@@ -61,17 +56,30 @@ describe('Timeago component', () => {
   });
 
   describe('with finishedTime', () => {
-    beforeEach(() => {
+    it('should render time', () => {
       createComponent({ duration: 0, finished_at: '2017-04-26T12:40:23.277Z' });
-    });
 
-    it('should render time and calendar icon', () => {
-      const icon = finishedAt().findComponent(GlIcon);
       const time = finishedAt().find('time');
 
       expect(finishedAt().exists()).toBe(true);
-      expect(icon.props('name')).toBe('calendar');
       expect(time.exists()).toBe(true);
+    });
+
+    it('should display calendar icon by default', () => {
+      createComponent({ duration: 0, finished_at: '2017-04-26T12:40:23.277Z' });
+
+      expect(findCalendarIcon().exists()).toBe(true);
+    });
+
+    it('should hide calendar icon if correct prop is passed', () => {
+      createComponent(
+        { duration: 0, finished_at: '2017-04-26T12:40:23.277Z' },
+        {
+          displayCalendarIcon: false,
+        },
+      );
+
+      expect(findCalendarIcon().exists()).toBe(false);
     });
   });
 
@@ -82,47 +90,7 @@ describe('Timeago component', () => {
 
     it('should not render time and calendar icon', () => {
       expect(finishedAt().exists()).toBe(false);
-    });
-  });
-
-  describe('in progress', () => {
-    it.each`
-      durationTime | finishedAtTime                | shouldShow
-      ${10}        | ${'2017-04-26T12:40:23.277Z'} | ${false}
-      ${10}        | ${''}                         | ${false}
-      ${0}         | ${'2017-04-26T12:40:23.277Z'} | ${false}
-      ${0}         | ${''}                         | ${true}
-    `(
-      'progress state shown: $shouldShow when pipeline duration is $durationTime and finished_at is $finishedAtTime',
-      ({ durationTime, finishedAtTime, shouldShow }) => {
-        createComponent({
-          duration: durationTime,
-          finished_at: finishedAtTime,
-        });
-
-        expect(findInProgress().exists()).toBe(shouldShow);
-        expect(findSkipped().exists()).toBe(false);
-      },
-    );
-
-    it('should show warning icon beside in progress if pipeline is stuck', () => {
-      const stuck = true;
-
-      createComponent(defaultProps, stuck);
-
-      expect(findWarningIcon().exists()).toBe(true);
-      expect(findHourGlassIcon().exists()).toBe(false);
-    });
-  });
-
-  describe('skipped', () => {
-    it('should show skipped if pipeline was skipped', () => {
-      createComponent({
-        status: { label: 'skipped' },
-      });
-
-      expect(findSkipped().exists()).toBe(true);
-      expect(findInProgress().exists()).toBe(false);
+      expect(findCalendarIcon().exists()).toBe(false);
     });
   });
 });

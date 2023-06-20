@@ -12,13 +12,13 @@
 # Inclusions and exclusions
 <!-- These would be the rules for which given context (and are limited to context or resolvable at experiment time details) is included or excluded from the test. An example of this would be to only run an experiment on groups less than N number of days old. -->
 
-# Segmentation 
+# Segmentation
 <!-- Rules for always saying context with these criteria always get this variant. For instance, if you want to always give groups less than N number of days old the experiment experience, they are specified here. This is different from the exclusion rules above. -->
 
 # Tracking Details
 
 - [json schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/0-3-0) used in `gitlab-experiment` tracking.
-- see [event schema](https://docs.gitlab.com/ee/development/snowplow/index.html#event-schema) for a guide.
+- see [event schema](../../doc/development/internal_analytics/snowplow/index.md#event-schema) for a guide.
 
 | sequence | activity | category | action | label | property | value |
 | -------- | -------- | ------ | ----- | ------- | -------- | ----- |

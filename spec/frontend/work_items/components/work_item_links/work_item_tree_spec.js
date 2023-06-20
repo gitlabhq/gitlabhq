@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
@@ -19,6 +20,7 @@ describe('WorkItemTree', () => {
   const findEmptyState = () => wrapper.findByTestId('tree-empty');
   const findToggleFormSplitButton = () => wrapper.findComponent(OkrActionsSplitButton);
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
+  const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
 
   const createComponent = ({
@@ -68,6 +70,16 @@ describe('WorkItemTree', () => {
     createComponent();
 
     expect(findForm().exists()).toBe(false);
+  });
+
+  it('shows an error message on error', async () => {
+    const errorMessage = 'Some error';
+    createComponent();
+
+    findWorkItemLinkChildrenWrapper().vm.$emit('error', errorMessage);
+    await nextTick();
+
+    expect(findWidgetWrapper().props('error')).toBe(errorMessage);
   });
 
   it.each`

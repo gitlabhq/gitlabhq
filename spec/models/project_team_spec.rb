@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ProjectTeam, feature_category: :subgroups do
+RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
   include ProjectForksHelper
 
   let(:maintainer) { create(:user) }
@@ -126,9 +126,12 @@ RSpec.describe ProjectTeam, feature_category: :subgroups do
 
       it 'returns invited members of a group' do
         group_member = create(:group_member)
-        create(:project_group_link, group: group_member.group,
-                                    project: project,
-                                    group_access: Gitlab::Access::GUEST)
+        create(
+          :project_group_link,
+          group: group_member.group,
+          project: project,
+          group_access: Gitlab::Access::GUEST
+        )
 
         expect(project.team.members)
           .to contain_exactly(group_member.user, project.first_owner)
@@ -136,9 +139,12 @@ RSpec.describe ProjectTeam, feature_category: :subgroups do
 
       it 'returns invited members of a group of a specified level' do
         group_member = create(:group_member)
-        create(:project_group_link, group: group_member.group,
-                                    project: project,
-                                    group_access: Gitlab::Access::REPORTER)
+        create(
+          :project_group_link,
+          group: group_member.group,
+          project: project,
+          group_access: Gitlab::Access::REPORTER
+        )
 
         expect(project.team.guests).to be_empty
         expect(project.team.reporters).to contain_exactly(group_member.user)
@@ -579,8 +585,7 @@ RSpec.describe ProjectTeam, feature_category: :subgroups do
       all_users = users + [new_contributor.id, second_new_user.id]
       create(:merge_request, :merged, author: new_contributor, target_project: project, source_project: new_fork_project, target_branch: project.default_branch.to_s)
 
-      expected_all = expected.merge(new_contributor.id => true,
-                                    second_new_user.id => false)
+      expected_all = expected.merge(new_contributor.id => true, second_new_user.id => false)
 
       contributors(users)
 
@@ -677,8 +682,10 @@ RSpec.describe ProjectTeam, feature_category: :subgroups do
         second_new_user = create(:user)
         all_users = users + [new_user.id, second_new_user.id]
 
-        expected_all = expected.merge(new_user.id => Gitlab::Access::NO_ACCESS,
-                                      second_new_user.id => Gitlab::Access::NO_ACCESS)
+        expected_all = expected.merge(
+          new_user.id => Gitlab::Access::NO_ACCESS,
+          second_new_user.id => Gitlab::Access::NO_ACCESS
+        )
 
         access_levels(users)
 

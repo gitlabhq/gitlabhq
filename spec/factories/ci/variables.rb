@@ -11,6 +11,10 @@ FactoryBot.define do
       add_attribute(:protected) { true }
     end
 
+    trait(:file) do
+      variable_type { :file }
+    end
+
     project
   end
 end

@@ -14,7 +14,10 @@ query searchUsers($fullPath: ID!, $search: String, $isProject: Boolean = false) 
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
     id
-    projectMembers(search: $search, relations: [DIRECT, INHERITED, INVITED_GROUPS]) {
+    projectMembers(
+      search: $search
+      relations: [DIRECT, INHERITED, INVITED_GROUPS, SHARED_INTO_ANCESTORS]
+    ) {
       nodes {
         id
         user {

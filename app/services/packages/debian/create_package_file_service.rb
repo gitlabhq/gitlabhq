@@ -14,7 +14,7 @@ module Packages
         raise ArgumentError, "Invalid user" unless current_user.present?
 
         # Debian package file are first uploaded to incoming with empty metadata,
-        # and are moved later by Packages::Debian::ProcessChangesService
+        # and are moved later by Packages::Debian::ProcessPackageFileService
         package_file = package.package_files.create!(
           file: params[:file],
           size: params[:file]&.size,
@@ -29,14 +29,12 @@ module Packages
           }
         )
 
-        if params[:distribution].present? && params[:component].present?
+        if end_of_new_upload?
           ::Packages::Debian::ProcessPackageFileWorker.perform_async(
             package_file.id,
             params[:distribution],
             params[:component]
           )
-        elsif params[:file_name].end_with? '.changes'
-          ::Packages::Debian::ProcessChangesWorker.perform_async(package_file.id, current_user.id)
         end
 
         package_file
@@ -45,6 +43,10 @@ module Packages
       private
 
       attr_reader :package, :current_user, :params
+
+      def end_of_new_upload?
+        params[:distribution].present? || params[:file_name].end_with?('.changes')
+      end
     end
   end
 end

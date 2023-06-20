@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/NegateInclude:
-  Details: grace period
   Exclude:
     - 'app/finders/projects_finder.rb'
     - 'app/helpers/application_settings_helper.rb'

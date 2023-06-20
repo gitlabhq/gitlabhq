@@ -1,0 +1,22 @@
+---
+key_path: counts_monthly.ci_builds
+description: Total monthly (28D) ci builds in Gitlab repositories for all project and project types
+product_section: ops
+product_stage: verify
+product_group: pipeline_execution
+value_type: number
+status: active
+milestone: "16.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122227
+time_frame: 28d
+data_source: database
+data_category: operational
+instrumentation_class: CountAllCiBuildsMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

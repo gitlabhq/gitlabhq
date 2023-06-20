@@ -87,10 +87,13 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
 
     context 'when failure' do
       context 'when importer raised an error' do
-        it 'raises an error' do
-          exception = StandardError.new('_some_error_')
+        let(:exception) { StandardError.new('_some_error_') }
 
-          expect(importer).to receive(:execute).and_raise(exception)
+        before do
+          allow(importer).to receive(:execute).and_raise(exception)
+        end
+
+        it 'raises an error' do
           expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
             .with(log_attributes.merge('message' => 'importer failed', 'error.message' => '_some_error_'))
@@ -103,8 +106,11 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
       context 'when importer returns error' do
         let(:importer_result) { instance_double('ServiceResponse', errors: 'error_message', success?: false) }
 
+        before do
+          allow(importer).to receive(:execute).and_return(importer_result)
+        end
+
         it 'tracks and logs error' do
-          expect(importer).to receive(:execute).and_return(importer_result)
           expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
             .with(log_attributes.merge('message' => 'importer failed', 'error.message' => 'error_message'))
@@ -120,14 +126,56 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
             status: 'failed'
           )
         end
+
+        it 'persists failure' do
+          expect { subject.perform(user.id, gist_hash, 'some_key') }
+            .to change { ImportFailure.where(user: user).count }.from(0).to(1)
+
+          expect(ImportFailure.where(user_id: user.id).first).to have_attributes(
+            source: 'Gitlab::GithubGistsImport::Importer::GistImporter',
+            exception_class: 'Gitlab::GithubGistsImport::Importer::GistImporter::FileCountLimitError',
+            exception_message: 'Snippet maximum file count exceeded',
+            external_identifiers: {
+              'id' => '055b70'
+            }
+          )
+        end
       end
     end
 
     describe '.sidekiq_retries_exhausted' do
-      it 'sends snowplow event' do
-        job = { 'args' => [user.id, 'some_key', '1'], 'jid' => '123' }
+      subject(:sidekiq_retries_exhausted) do
+        described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
+      end
 
-        described_class.sidekiq_retries_exhausted_block.call(job)
+      let(:args) { [user.id, gist_hash, '1'] }
+
+      let(:job) do
+        {
+          'args' => args,
+          'jid' => '123',
+          'correlation_id' => 'abc',
+          'error_class' => 'StandardError',
+          'error_message' => 'Some error'
+        }
+      end
+
+      it 'persists failure' do
+        expect { sidekiq_retries_exhausted }.to change { ImportFailure.where(user: user).count }.from(0).to(1)
+
+        expect(ImportFailure.where(user_id: user.id).first).to have_attributes(
+          source: 'Gitlab::GithubGistsImport::Importer::GistImporter',
+          exception_class: 'StandardError',
+          exception_message: 'Some error',
+          correlation_id_value: 'abc',
+          external_identifiers: {
+            'id' => '055b70'
+          }
+        )
+      end
+
+      it 'sends snowplow event' do
+        sidekiq_retries_exhausted
 
         expect_snowplow_event(
           category: 'Gitlab::GithubGistsImport::ImportGistWorker',
@@ -136,6 +184,24 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
           user: user,
           status: 'failed'
         )
+      end
+
+      it 'notifies the JobWaiter' do
+        expect(Gitlab::JobWaiter)
+          .to receive(:notify)
+          .with(job['args'].last, job['jid'])
+
+        sidekiq_retries_exhausted
+      end
+
+      context 'when not all arguments are given' do
+        let(:args) { [user.id, gist_hash] }
+
+        it 'does not notify the JobWaiter' do
+          expect(Gitlab::JobWaiter).not_to receive(:notify)
+
+          sidekiq_retries_exhausted
+        end
       end
     end
   end

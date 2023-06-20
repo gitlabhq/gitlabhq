@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::AcceptingProjectSharesFinder, feature_category: :subgroups do
+RSpec.describe Groups::AcceptingProjectSharesFinder, feature_category: :groups_and_projects do
   subject(:result) { described_class.new(current_user, project, params).execute }
 
   let_it_be_with_reload(:current_user) { create(:user) }

@@ -18,10 +18,12 @@ export default () => {
     errorTrackingEnabled,
     userCanEnableErrorTracking,
     showIntegratedTrackingDisabledAlert,
+    integratedErrorTrackingEnabled,
   } = domEl.dataset;
 
   errorTrackingEnabled = parseBoolean(errorTrackingEnabled);
   userCanEnableErrorTracking = parseBoolean(userCanEnableErrorTracking);
+  integratedErrorTrackingEnabled = parseBoolean(integratedErrorTrackingEnabled);
   showIntegratedTrackingDisabledAlert = parseBoolean(showIntegratedTrackingDisabledAlert);
 
   // eslint-disable-next-line no-new
@@ -42,6 +44,7 @@ export default () => {
           projectPath,
           listPath,
           showIntegratedTrackingDisabledAlert,
+          integratedErrorTrackingEnabled,
         },
       });
     },

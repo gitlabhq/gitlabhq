@@ -7,7 +7,7 @@ fragment ListItemShared on CiRunner {
   shortSha
   version
   ipAddress
-  active
+  paused
   locked
   jobCount
   tagList
@@ -21,6 +21,9 @@ fragment ListItemShared on CiRunner {
   userPermissions {
     updateRunner
     deleteRunner
+  }
+  managers {
+    count
   }
   groups(first: 1) {
     nodes {

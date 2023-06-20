@@ -55,7 +55,9 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
 
   describe '#lock_writes' do
     it 'prevents any writes on the table' do
-      subject.lock_writes
+      expect(subject.lock_writes).to eq(
+        { action: "locked", database: "main", dry_run: dry_run, table: test_table }
+      )
 
       expect do
         connection.execute("delete from #{test_table}")
@@ -116,17 +118,11 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       expect(connection).not_to receive(:execute).with(/CREATE TRIGGER/)
 
       expect do
-        subject.lock_writes
+        result = subject.lock_writes
+        expect(result).to eq({ action: "skipped", database: "main", dry_run: false, table: test_table })
       end.not_to change {
         number_of_triggers_on(connection, test_table)
       }
-    end
-
-    it 'returns result hash with action skipped' do
-      subject.lock_writes
-
-      expect(subject.lock_writes).to eq({ action: "skipped", database: "main", dry_run: false,
-table: test_table })
     end
 
     context 'when running in dry_run mode' do
@@ -154,9 +150,10 @@ table: test_table })
         end.not_to raise_error
       end
 
-      it 'returns result hash with action locked' do
-        expect(subject.lock_writes).to eq({ action: "locked", database: "main", dry_run: dry_run,
-table: test_table })
+      it 'returns result hash with action needs_lock' do
+        expect(subject.lock_writes).to eq(
+          { action: "needs_lock", database: "main", dry_run: true, table: test_table }
+        )
       end
     end
   end
@@ -175,11 +172,22 @@ table: test_table })
     end
 
     it 'allows writing on the table again' do
-      subject.unlock_writes
+      expect(subject.unlock_writes).to eq(
+        { action: "unlocked", database: "main", dry_run: dry_run, table: test_table }
+      )
 
       expect do
         connection.execute("delete from #{test_table}")
       end.not_to raise_error
+    end
+
+    it 'skips unlocking the table if the table was already unlocked for writes' do
+      subject.unlock_writes
+
+      expect(subject).not_to receive(:execute_sql_statement)
+      expect(subject.unlock_writes).to eq(
+        { action: "skipped", database: "main", dry_run: dry_run, table: test_table }
+      )
     end
 
     it 'removes the write protection triggers from the gitlab_main tables on the ci database' do
@@ -196,11 +204,6 @@ table: test_table })
       expect(logger).to receive(:info).with("Database: 'main', Table: '_test_table': Allow Writes")
 
       subject.unlock_writes
-    end
-
-    it 'returns result hash with action unlocked' do
-      expect(subject.unlock_writes).to eq({ action: "unlocked", database: "main", dry_run: dry_run,
-table: test_table })
     end
 
     context 'when running in dry_run mode' do
@@ -225,8 +228,9 @@ table: test_table })
       end
 
       it 'returns result hash with dry_run true' do
-        expect(subject.unlock_writes).to eq({ action: "unlocked", database: "main", dry_run: dry_run,
-table: test_table })
+        expect(subject.unlock_writes).to eq(
+          { action: "needs_unlock", database: "main", dry_run: true, table: test_table }
+        )
       end
     end
   end

@@ -92,4 +92,4 @@ Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md
 
 ## Generate Service Ping
 
-This content has been moved to [Service Ping Troubleshooting](../../development/service_ping/troubleshooting.md).
+This content has been moved to [Service Ping Troubleshooting](../../development/internal_analytics/service_ping/troubleshooting.md).

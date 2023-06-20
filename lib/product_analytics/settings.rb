@@ -2,9 +2,16 @@
 
 module ProductAnalytics
   class Settings
-    CONFIG_KEYS = (%w[jitsu_host jitsu_project_xid jitsu_administrator_email jitsu_administrator_password] +
-    %w[product_analytics_data_collector_host product_analytics_clickhouse_connection_string] +
-    %w[cube_api_base_url cube_api_key]).freeze
+    BASE_CONFIG_KEYS = %w[product_analytics_data_collector_host cube_api_base_url cube_api_key].freeze
+
+    JITSU_CONFIG_KEYS = (%w[jitsu_host jitsu_project_xid jitsu_administrator_email jitsu_administrator_password] +
+    %w[product_analytics_clickhouse_connection_string] + BASE_CONFIG_KEYS).freeze
+
+    SNOWPLOW_CONFIG_KEYS = (%w[product_analytics_configurator_connection_string] +
+      BASE_CONFIG_KEYS).freeze
+
+    ALL_CONFIG_KEYS = (ProductAnalytics::Settings::BASE_CONFIG_KEYS + ProductAnalytics::Settings::JITSU_CONFIG_KEYS +
+      ProductAnalytics::Settings::SNOWPLOW_CONFIG_KEYS).freeze
 
     def initialize(project:)
       @project = project
@@ -14,25 +21,39 @@ module ProductAnalytics
       ::Gitlab::CurrentSettings.product_analytics_enabled? && configured?
     end
 
-    # rubocop:disable GitlabSecurity/PublicSend
     def configured?
-      CONFIG_KEYS.all? do |key|
-        @project.project_setting.public_send(key).present? ||
-          ::Gitlab::CurrentSettings.public_send(key).present?
+      return configured_snowplow? if Feature.enabled?(:product_analytics_snowplow_support, @project)
+
+      JITSU_CONFIG_KEYS.all? do |key|
+        get_setting_value(key).present?
       end
     end
 
-    CONFIG_KEYS.each do |key|
-      define_method key.to_sym do
-        @project.project_setting.public_send(key).presence || ::Gitlab::CurrentSettings.public_send(key)
+    def configured_snowplow?
+      SNOWPLOW_CONFIG_KEYS.all? do |key|
+        get_setting_value(key).present?
       end
     end
-    # rubocop:enable GitlabSecurity/PublicSend
+
+    ALL_CONFIG_KEYS.each do |key|
+      define_method key.to_sym do
+        get_setting_value(key)
+      end
+    end
 
     class << self
       def for_project(project)
         ProductAnalytics::Settings.new(project: project)
       end
     end
+
+    private
+
+    # rubocop:disable GitlabSecurity/PublicSend
+    def get_setting_value(key)
+      @project.project_setting.public_send(key).presence ||
+        ::Gitlab::CurrentSettings.public_send(key)
+    end
+    # rubocop:enable GitlabSecurity/PublicSend
   end
 end

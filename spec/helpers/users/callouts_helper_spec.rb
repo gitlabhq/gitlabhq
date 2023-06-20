@@ -185,7 +185,7 @@ RSpec.describe Users::CalloutsHelper do
     end
   end
 
-  describe '#web_hook_disabled_dismissed?', feature_category: :integrations do
+  describe '#web_hook_disabled_dismissed?', feature_category: :webhooks do
     context 'without a project' do
       it 'is false' do
         expect(helper).not_to be_web_hook_disabled_dismissed(nil)

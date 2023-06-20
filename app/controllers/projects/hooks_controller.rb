@@ -12,7 +12,6 @@ class Projects::HooksController < Projects::ApplicationController
 
   layout "project_settings"
 
-  feature_category :integrations
   urgency :low, [:test]
 
   def test

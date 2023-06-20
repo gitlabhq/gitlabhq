@@ -73,7 +73,7 @@ Check visual design properties using your browser's _elements inspector_ ([Chrom
   guidelines.
 - _Optionally_ consider [dark mode](../../user/profile/preferences.md#dark-mode). [^1]
 
- [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is an [Experiment](../../policy/alpha-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+ [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is an [Experiment](../../policy/experiment-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
 
 ### States
 
@@ -110,8 +110,8 @@ Check accessibility using your browser's _accessibility inspector_ ([Chrome](htt
 
 When the design is ready, _before_ starting its implementation:
 
-- Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#copy-link)
-  link or [GitLab Designs feature](../../user/project/issues/design_management.md).
+- Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#Copy_link)
+  or [GitLab Designs feature](../../user/project/issues/design_management.md).
   See [when you should use each tool](https://about.gitlab.com/handbook/product/ux/product-designer/#deliver).
 - Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
 - Document animations and transitions.

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser';
+
 export const DASH_SCOPE = '-';
 
 export const PATH_SEPARATOR = '/';
@@ -8,11 +10,17 @@ const SHA_REGEX = /[\da-f]{40}/gi;
 // GitLab default domain (override in jh)
 export const DOMAIN = 'gitlab.com';
 
-// About GitLab default host (overwrite in jh)
+// Following URLs will be overwritten in jh
+export const FORUM_URL = `https://forum.${DOMAIN}/`; // forum.gitlab.com
+export const DOCS_URL = `https://docs.${DOMAIN}`; // docs.gitlab.com
+
+// About GitLab default host
 export const PROMO_HOST = `about.${DOMAIN}`; // about.gitlab.com
 
-// About Gitlab default url (overwrite in jh)
+// About Gitlab default url
 export const PROMO_URL = `https://${PROMO_HOST}`;
+
+export const DOCS_URL_IN_EE_DIR = `${DOCS_URL}/ee`;
 
 // Reset the cursor in a Regex so that multiple uses before a recompile don't fail
 function resetRegExp(regex) {
@@ -271,36 +279,6 @@ export const setUrlFragment = (url, fragment) => {
   const encodedFragment = encodeURIComponent(fragment.replace(/^#/, ''));
   return `${rootUrl}#${encodedFragment}`;
 };
-
-/**
- * Navigates to a URL
- * @param {*} url - url to navigate to
- * @param {*} external - if true, open a new page or tab
- */
-export function visitUrl(url, external = false) {
-  if (external) {
-    // Simulate `target="_blank" rel="noopener noreferrer"`
-    // See https://mathiasbynens.github.io/rel-noopener/
-    const otherWindow = window.open();
-    otherWindow.opener = null;
-    otherWindow.location = url;
-  } else {
-    window.location.href = url;
-  }
-}
-
-export function refreshCurrentPage() {
-  visitUrl(window.location.href);
-}
-
-/**
- * Navigates to a URL
- * @deprecated Use visitUrl from ~/lib/utils/url_utility.js instead
- * @param {*} url
- */
-export function redirectTo(url) {
-  return window.location.assign(url);
-}
 
 export function updateHistory({ state = {}, title = '', url, replace = false, win = window } = {}) {
   if (win.history) {
@@ -697,3 +675,41 @@ export const removeUrlProtocol = (url) => url.replace(/^\w+:\/?\/?/, '');
  */
 export const removeLastSlashInUrlPath = (url) =>
   url.replace(/\/$/, '').replace(/\/(\?|#){1}([^/]*)$/, '$1$2');
+
+/**
+ * Navigates to a URL
+ * @deprecated Use visitUrl from ~/lib/utils/url_utility.js instead
+ * @param {*} url
+ */
+export function redirectTo(url) {
+  return window.location.assign(url);
+}
+
+/**
+ * Navigates to a URL
+ * @param {*} url - url to navigate to
+ * @param {*} external - if true, open a new page or tab
+ */
+export function visitUrl(url, external = false) {
+  if (!isSafeURL(url)) {
+    // For now log this to Sentry and do not block the execution.
+    // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121551#note_1408873600
+    // for more context. Once we're sure that it's not breaking functionality, we can use
+    // a RangeError here (throw new RangeError('Only http and https protocols are allowed')).
+    Sentry.captureException(new RangeError(`Only http and https protocols are allowed: ${url}`));
+  }
+
+  if (external) {
+    // Simulate `target="_blank" rel="noopener noreferrer"`
+    // See https://mathiasbynens.github.io/rel-noopener/
+    const otherWindow = window.open();
+    otherWindow.opener = null;
+    otherWindow.location.assign(url);
+  } else {
+    window.location.assign(url);
+  }
+}
+
+export function refreshCurrentPage() {
+  visitUrl(window.location.href);
+}

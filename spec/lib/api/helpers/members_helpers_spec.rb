@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers::MembersHelpers, feature_category: :subgroups do
+RSpec.describe API::Helpers::MembersHelpers, feature_category: :groups_and_projects do
   let(:helper) do
     Class.new.include(described_class).new
   end

@@ -40,7 +40,7 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
 - In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
-- Copy groups with projects (in [Beta](../../../policy/alpha-beta-support.md#beta) and not ready for production
+- Copy groups with projects (in [Beta](../../../policy/experiment-beta-support.md#beta) and not ready for production
   use) or without projects. Copying projects with groups is available:
   - On GitLab.com by default.
 
@@ -50,7 +50,7 @@ Not all group and project resources are copied. See list of copied resources bel
 - [Migrated project items](#migrated-project-items-beta).
 
 WARNING:
-Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta). This feature is not
+Importing groups with projects is in [Beta](../../../policy/experiment-beta-support.md#beta). This feature is not
 ready for production use.
 
 We invite you to leave your feedback about migrating by direct transfer in
@@ -77,6 +77,13 @@ transfer.
 | 8 hours     | Time until migration times out.                                                                                                                                                 |
 | 90 minutes  | Time the destination is waiting for export to complete.                                                                                                                         |
 
+You can test the maximum relation size limit using these APIs:
+
+- [Group relations export API](../../../api/group_relations_export.md).
+- [Project relations export API](../../../api/project_relations_export.md)
+
+If either API produces files larger than the maximum relation size limit, group migration by direct transfer fails.
+
 ### Visibility rules
 
 After migration:
@@ -86,7 +93,7 @@ After migration:
   - Stay public when copied into a public group.
   - Become private when copied into a private group.
 
-If used a private network on your source instance to hide content from the general public,
+If you used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
 ### Prerequisites
@@ -129,10 +136,10 @@ To ensure GitLab maps users and their contributions correctly:
 Create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
-   - A new group. On the top bar, select **{plus-square}**, then **New group**, and select **Import group**.
+   - A new group. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
-     - On the top bar, Select **{plus-square}** and then **New subgroup**. Then on the left sidebar, select the **import an existing group** link.
+     - On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the URL of a GitLab instance running GitLab 14.0 or later.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
@@ -153,7 +160,7 @@ role.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta). This feature is not
+Importing groups with projects is in [Beta](../../../policy/experiment-beta-support.md#beta). This feature is not
 ready for production use.
 
 ### Group import history
@@ -169,8 +176,7 @@ You can view all groups migrated by you by direct transfer listed on the group i
 To view group import history:
 
 1. Sign in to GitLab.
-1. On the top bar, select **Create new…** (**{plus-square}**).
-1. Select **New group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.
@@ -220,6 +226,13 @@ Group items that are migrated to the destination GitLab instance include:
    - Already exists in the destination GitLab instance.
    - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
 
+#### Excluded items
+
+Some group items are excluded from migration because they either:
+
+- May contain sensitive information: CI/CD variables, webhooks, and deploy tokens.
+- Are not supported: push rules.
+
 ### Migrated project items (Beta)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
@@ -251,7 +264,7 @@ If you choose not to migrate projects along with groups or if you want to retry 
 initiate project-only migrations using the [API](../../../api/bulk_imports.md).
 
 WARNING:
-Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta)
+Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/experiment-beta-support.md#beta)
 and is not ready for production use.
 
 Project items that are migrated to the destination GitLab instance include:
@@ -325,9 +338,24 @@ Setting-related project items that are migrated to the destination GitLab instan
 
 #### Excluded items
 
-Project items excluded from migration because they contain sensitive information:
+Some project items are excluded from migration because they either:
 
-- Pipeline triggers.
+- May contain sensitive information:
+  - CI/CD variables
+  - Deploy keys
+  - Deploy tokens
+  - Pipeline schedule variables
+  - Pipeline triggers
+  - Webhooks
+- Are not supported:
+  - Agents
+  - Container Registry
+  - Environments
+  - Feature flags
+  - Infrastructure Registry
+  - Package Registry
+  - Pages domains
+  - Remote mirrors
 
 ### Troubleshooting
 
@@ -378,8 +406,8 @@ To solve this, you must change the source group path to include a non-numerical 
 
 - The GitLab UI:
 
-  1. On the top bar, select **Main menu > Groups** and find your group.
-  1. On the left sidebar, select **Settings > General**.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. Select **Settings > General**.
   1. Expand **Advanced**.
   1. Under **Change group URL**, change the group URL to include non-numeric characters.
 
@@ -493,7 +521,8 @@ Prerequisite:
 
 To enable import and export for a group:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In the **Import sources** section, select the checkboxes for the sources you want.
@@ -506,9 +535,9 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
-1. In the **Advanced** section, select **Export Group**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. In the **Advanced** section, select **Export group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in NDJSON format.
 1. Alternatively, you can download the export from the UI:
@@ -521,15 +550,13 @@ You can also export a group [using the API](../../../api/group_import_export.md)
 
 ### Import the group
 
-1. Create a new group:
-   - On the top bar, select **Create new…** (**{plus-square}**) and then **New group**.
-   - On an existing group's page, select **New subgroup**.
-1. Select **Import group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**.
+1. Select the **import an existing group** link.
 1. Enter your group name.
 1. Accept or modify the associated group URL.
-1. Select **Choose file**.
+1. Select **Choose file...**.
 1. Select the file that you exported in the [Export a group](#export-a-group) section.
-1. To begin importing, select **Import group**.
+1. To begin importing, select **Import**.
 
 Your newly imported group page appears after the operation completes.
 

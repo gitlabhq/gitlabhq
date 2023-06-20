@@ -1,0 +1,16 @@
+---
+description: <%= args.last %>
+category: GitlabInternalEvents
+action: <%= event %>
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:<%= event_identifiers %>
+product_section: <%= options.fetch(:section) %>
+product_stage: <%= options.fetch(:stage) %>
+product_group: <%= options.fetch(:group) %>
+milestone: "<%= milestone %>"
+introduced_by_url: <%= options.fetch(:mr) %>
+distributions:<%= distributions %>
+tiers:<%= tiers %>

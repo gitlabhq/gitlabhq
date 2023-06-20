@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupMember do
+RSpec.describe GroupMember, feature_category: :cell do
   describe 'default values' do
     subject(:goup_member) { build(:group_member) }
 
@@ -21,8 +21,7 @@ RSpec.describe GroupMember do
       group_1.add_owner(user_2)
       group_2.add_owner(user_1)
 
-      expect(described_class.count_users_by_group_id).to eq(group_1.id => 2,
-                                                            group_2.id => 1)
+      expect(described_class.count_users_by_group_id).to eq(group_1.id => 2, group_2.id => 1)
     end
 
     describe '.of_ldap_type' do
@@ -121,34 +120,70 @@ RSpec.describe GroupMember do
   end
 
   describe '#last_owner_of_the_group?' do
-    context 'when member is an owner' do
-      let_it_be(:group_member) { build(:group_member, :owner) }
+    let_it_be(:parent_group) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent_group) }
+    let_it_be(:group_member) { create(:group_member, :owner, source: group) }
 
-      using RSpec::Parameterized::TableSyntax
+    subject { group_member.last_owner_of_the_group? }
 
-      where(:member_last_owner?, :member_last_blocked_owner?, :expected) do
-        false | false | false
-        true  | false | true
-        false | true  | true
-        true  | true  | true
+    context 'when overridden by last_owner instance variable' do
+      before do
+        group_member.last_owner = last_owner
       end
 
-      with_them do
-        it "returns expected" do
-          allow(group_member.group).to receive(:member_last_owner?).with(group_member).and_return(member_last_owner?)
-          allow(group_member.group).to receive(:member_last_blocked_owner?)
-            .with(group_member)
-            .and_return(member_last_blocked_owner?)
+      after do
+        group_member.last_owner = nil
+      end
 
-          expect(group_member.last_owner_of_the_group?).to be(expected)
+      context 'and it is set to true' do
+        let(:last_owner) { true }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'and it is set to false' do
+        let(:last_owner) { false }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when member is an owner' do
+      context 'and there are no other owners' do
+        it { is_expected.to be(true) }
+
+        context 'and member is also owner of a parent group' do
+          before do
+            parent_group.add_owner(group_member.user)
+          end
+
+          after do
+            parent_group.members.delete_all
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
+
+      context 'and there is another owner' do
+        context 'and that other owner is a project bot' do
+          let(:project_bot) { create(:user, :project_bot) }
+          let!(:other_owner_bot) { create(:group_member, :owner, source: group, user: project_bot) }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'and that other owner is not a project bot' do
+          let(:other_user) { create(:user) }
+          let!(:other_owner) { create(:group_member, :owner, source: group, user: other_user) }
+
+          it { is_expected.to be(false) }
         end
       end
     end
 
     context 'when member is not an owner' do
       let_it_be(:group_member) { build(:group_member, :guest) }
-
-      subject { group_member.last_owner_of_the_group? }
 
       it { is_expected.to be(false) }
     end

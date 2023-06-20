@@ -35,6 +35,7 @@ GitLab supports the following OmniAuth providers.
 | [OpenID Connect](../administration/auth/oidc.md)                    | `openid_connect`           |
 | [Salesforce](salesforce.md)                                         | `salesforce`               |
 | [SAML](saml.md)                                                     | `saml`                     |
+| [Shibboleth](shibboleth.md)                                         | `shibboleth`               |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
 ## Configure common settings
@@ -234,7 +235,7 @@ created, you can activate an OmniAuth provider. For example, if you originally s
 provider like Twitter.
 
 1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Connected Accounts** section, select the OmniAuth provider, such as Twitter.
@@ -252,8 +253,9 @@ By default, sign-in is enabled for all the OAuth providers configured in `config
 
 To enable or disable an OmniAuth provider:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand **Sign-in restrictions**.
 1. In the **Enabled OAuth authentication sources** section, select or clear the checkbox for each provider you want to enable or disable.
 

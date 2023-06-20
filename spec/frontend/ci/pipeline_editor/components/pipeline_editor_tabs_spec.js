@@ -1,5 +1,3 @@
-// TODO
-
 import { GlAlert, GlBadge, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
@@ -55,7 +53,7 @@ describe('Pipeline editor tabs component', () => {
         ciFileContent: mockCiYml,
         currentTab: CREATE_TAB,
         isNewCiConfigFile: true,
-        showDrawer: false,
+        showHelpDrawer: false,
         showJobAssistantDrawer: false,
         showAiAssistantDrawer: false,
         ...props,

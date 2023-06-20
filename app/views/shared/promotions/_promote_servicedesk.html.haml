@@ -2,7 +2,7 @@
   close_options: {'aria-label' => s_('Promotions|Dismiss Service Desk promotion'), class: 'js-close-callout'},
   svg_path: 'illustrations/service_desk_callout.svg',
   button_text: s_('Promotions|Configure Service Desk'), button_link: help_page_path('user/project/service_desk.html', anchor: 'configuring-service-desk')) do |c|
-  - c.title do
+  - c.with_title do
     = _('Improve customer support with Service Desk')
   %p
     = _('Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email.')

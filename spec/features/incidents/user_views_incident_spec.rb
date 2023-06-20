@@ -18,6 +18,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
 
   before do
     sign_in(user)
+    stub_feature_flags(moved_mr_sidebar: false)
 
     visit(incident_project_issues_path(project, incident))
   end

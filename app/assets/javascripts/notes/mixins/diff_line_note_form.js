@@ -1,6 +1,10 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
-import { TEXT_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import {
+  TEXT_DIFF_POSITION_TYPE,
+  IMAGE_DIFF_POSITION_TYPE,
+  FILE_DIFF_POSITION_TYPE,
+} from '~/diffs/constants';
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { s__ } from '~/locale';
@@ -15,10 +19,10 @@ export default {
     }),
     ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters('batchComments', ['shouldRenderDraftRowInDiscussion', 'draftForDiscussion']),
-    ...mapState('diffs', ['commit']),
+    ...mapState('diffs', ['commit', 'showWhitespace']),
   },
   methods: {
-    ...mapActions('diffs', ['cancelCommentForm']),
+    ...mapActions('diffs', ['cancelCommentForm', 'toggleFileCommentForm']),
     ...mapActions('batchComments', ['addDraftToReview', 'saveDraft', 'insertDraftIntoDrafts']),
     addReplyToReview(noteText, isResolving) {
       const postData = getDraftReplyFormData({
@@ -47,14 +51,14 @@ export default {
           });
         });
     },
-    addToReview(note) {
+    addToReview(note, positionType = null) {
       const lineRange =
         (this.line && this.commentLineStart && formatLineRange(this.commentLineStart, this.line)) ||
         {};
-      const positionType = this.diffFileCommentForm
-        ? IMAGE_DIFF_POSITION_TYPE
-        : TEXT_DIFF_POSITION_TYPE;
-      const selectedDiffFile = this.getDiffFileByHash(this.diffFileHash);
+      const position =
+        positionType ||
+        (this.diffFileCommentForm ? IMAGE_DIFF_POSITION_TYPE : TEXT_DIFF_POSITION_TYPE);
+      const diffFile = this.diffFile || this.file;
       const postData = getDraftFormData({
         note,
         notesData: this.notesData,
@@ -62,23 +66,26 @@ export default {
         noteableType: this.noteableType,
         noteTargetLine: this.noteTargetLine,
         diffViewType: this.diffViewType,
-        diffFile: selectedDiffFile,
+        diffFile,
         linePosition: this.position,
-        positionType,
+        positionType: position,
         ...this.diffFileCommentForm,
         lineRange,
+        showWhitespace: this.showWhitespace,
       });
 
-      const diffFileHeadSha = this.commit && this?.diffFile?.diff_refs?.head_sha;
+      const diffFileHeadSha = this.commit && diffFile?.diff_refs?.head_sha;
 
       postData.data.note.commit_id = diffFileHeadSha || null;
 
       return this.saveDraft(postData)
         .then(() => {
-          if (positionType === IMAGE_DIFF_POSITION_TYPE) {
+          if (position === IMAGE_DIFF_POSITION_TYPE) {
             this.closeDiffFileCommentForm(this.diffFileHash);
-          } else {
+          } else if (this.line?.line_code) {
             this.handleClearForm(this.line.line_code);
+          } else if (position === FILE_DIFF_POSITION_TYPE) {
+            this.toggleFileCommentForm(diffFile.file_path);
           }
         })
         .catch(() => {

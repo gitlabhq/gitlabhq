@@ -104,7 +104,7 @@ supports multiple default rules:
 When an [eligible approver](#eligible-approvers) approves a merge request, it
 reduces the number of approvals left (the **Approvals** column) for all rules that the approver belongs to:
 
-![Approvals premium merge request widget](img/approvals_premium_mr_widget_v13_3.png)
+![Approvals premium merge request widget](img/approvals_premium_mr_widget_16_0.png)
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ5821FrA).
@@ -186,8 +186,8 @@ oversight on proposed work. To enable approval permissions for these users witho
 granting them push access:
 
 1. [Create a protected branch](../../protected_branches.md)
-1. [Create a new group](../../../group/manage.md#create-a-group).
-1. [Add the user to the group](../../../group/manage.md#add-users-to-a-group),
+1. [Create a new group](../../../group/index.md#create-a-group).
+1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
    and select the Reporter role for the user.
 1. [Share the project with your group](../../members/share_project_with_groups.md#share-a-project-with-a-group),
    based on the Reporter role.
@@ -195,7 +195,7 @@ granting them push access:
 1. In the **Merge request approvals** section, scroll to **Approval rules**, and either:
    - For a new rule, select **Add approval rule** and target the protected branch.
    - For an existing rule, select **Edit** and target the protected branch.
-1. [Add the group](../../../group/manage.md#create-a-group) to the permission list.
+1. [Add the group](../../../group/index.md#create-a-group) to the permission list.
 
    ![Update approval rule](img/update_approval_rule_v13_10.png)
 
@@ -216,6 +216,14 @@ on a merge request, you can either add or remove approvers:
 
 Administrators can change the [merge request approvals settings](settings.md#prevent-editing-approval-rules-in-merge-requests)
 to prevent users from overriding approval rules for merge requests.
+
+## Require multiple approvals for a rule
+
+To create an approval rule which requires more than one approval:
+
+- When you [create or edit a rule](#edit-an-approval-rule), set **Approvals required** to `2` or more.
+- Use the [Merge requests approvals API](../../../../api/merge_request_approvals.md#update-merge-request-level-rule)
+  to set the `approvals_required` attribute to `2` or more.
 
 ## Configure optional approval rules
 

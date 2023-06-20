@@ -68,6 +68,10 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator, feature_cate
     end
 
     context 'for add metrics' do
+      before do
+        pending 'https://gitlab.com/gitlab-org/gitlab/-/issues/414887'
+      end
+
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with add(data[:personal_snippets], data[:project_snippets])
         let(:key_path) { 'counts.snippets' }

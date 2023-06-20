@@ -334,7 +334,7 @@ module MergeRequests
       strong_memoize(:issue_iid) do
         @params_issue_iid || begin
           id = if target_project.external_issue_tracker
-                 source_branch.match(target_project.external_issue_reference_pattern).try(:[], 0)
+                 target_project.external_issue_reference_pattern.match(source_branch).try(:[], 0)
                end
 
           id || source_branch.match(/\A(\d+)-/).try(:[], 1)

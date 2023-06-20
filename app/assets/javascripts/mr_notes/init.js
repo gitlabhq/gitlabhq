@@ -1,12 +1,14 @@
 import { parseBoolean } from '~/lib/utils/common_utils';
-import store from '~/mr_notes/stores';
+import mrNotes from '~/mr_notes/stores';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import { initReviewBar } from '~/batch_comments';
 import { initDiscussionCounter } from '~/mr_notes/discussion_counter';
 import { initOverviewTabCounter } from '~/mr_notes/init_count';
+import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
+import { getReviewsForMergeRequest } from '~/diffs/utils/file_reviews';
 
-function setupMrNotesState(notesDataset) {
+function setupMrNotesState(store, notesDataset, diffsDataset) {
   const noteableData = JSON.parse(notesDataset.noteableData);
   noteableData.noteableType = notesDataset.noteableType;
   noteableData.targetType = notesDataset.targetType;
@@ -15,26 +17,43 @@ function setupMrNotesState(notesDataset) {
   const currentUserData = JSON.parse(notesDataset.currentUserData);
   const endpoints = { metadata: notesDataset.endpointMetadata };
 
+  const { mrPath } = getDerivedMergeRequestInformation({ endpoint: diffsDataset.endpoint });
+
   store.dispatch('setNotesData', notesData);
   store.dispatch('setNoteableData', noteableData);
   store.dispatch('setUserData', currentUserData);
   store.dispatch('setTargetNoteHash', getLocationHash());
   store.dispatch('setEndpoints', endpoints);
+  store.dispatch('diffs/setBaseConfig', {
+    endpoint: diffsDataset.endpoint,
+    endpointMetadata: diffsDataset.endpointMetadata,
+    endpointBatch: diffsDataset.endpointBatch,
+    endpointDiffForPath: diffsDataset.endpointDiffForPath,
+    endpointCoverage: diffsDataset.endpointCoverage,
+    endpointUpdateUser: diffsDataset.updateCurrentUserPath,
+    projectPath: diffsDataset.projectPath,
+    dismissEndpoint: diffsDataset.dismissEndpoint,
+    showSuggestPopover: parseBoolean(diffsDataset.showSuggestPopover),
+    viewDiffsFileByFile: parseBoolean(diffsDataset.fileByFileDefault),
+    defaultSuggestionCommitMessage: diffsDataset.defaultSuggestionCommitMessage,
+    mrReviews: getReviewsForMergeRequest(mrPath),
+  });
 }
 
-export function initMrStateLazyLoad({ reviewBarParams } = {}) {
+export function initMrStateLazyLoad(store = mrNotes, { reviewBarParams } = {}) {
   store.dispatch('setActiveTab', window.mrTabs.getCurrentAction());
   window.mrTabs.eventHub.$on('MergeRequestTabChange', (value) =>
     store.dispatch('setActiveTab', value),
   );
 
   const discussionsEl = document.getElementById('js-vue-mr-discussions');
-  const notesDataset = discussionsEl.dataset;
+  const diffsEl = document.getElementById('js-diffs-app');
+
   let stop = () => {};
   stop = store.watch(
     (state) => state.page.activeTab,
     (activeTab) => {
-      setupMrNotesState(notesDataset);
+      setupMrNotesState(store, discussionsEl.dataset, diffsEl.dataset);
 
       // prevent loading MR state on commits and pipelines pages
       // this is due to them having a shared controller with the Overview page

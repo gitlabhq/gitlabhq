@@ -43,7 +43,8 @@ export default {
             this.$emit('hidden', ...args);
             this.menuVisible = false;
           },
-          appendTo: () => document.body,
+          strategy: 'fixed',
+          maxWidth: 'auto',
         },
       }),
     );

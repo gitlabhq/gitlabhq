@@ -1,7 +1,14 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlButton,
+  GlIcon,
+  GlTooltipDirective,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
+import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import addAwardEmojiMutation from '../../graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
@@ -20,10 +27,11 @@ export default {
   components: {
     GlButton,
     GlIcon,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     ReplyButton,
-    GlDropdown,
-    GlDropdownItem,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    UserAccessRoleBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -67,6 +75,30 @@ export default {
       required: false,
       default: false,
     },
+    workItemType: {
+      type: String,
+      required: true,
+    },
+    isWorkItemAuthor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isAuthorContributor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    maxAccessLevelOfAuthor: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    projectName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     assignUserActionText() {
@@ -74,7 +106,24 @@ export default {
         ? this.$options.i18n.unassignUserText
         : this.$options.i18n.assignUserText;
     },
+    displayAuthorBadgeText() {
+      return sprintf(__('This user is the author of this %{workItemType}.'), {
+        workItemType: this.workItemType.toLowerCase(),
+      });
+    },
+    displayMemberBadgeText() {
+      return sprintf(__('This user has the %{access} role in the %{name} project.'), {
+        access: this.maxAccessLevelOfAuthor.toLowerCase(),
+        name: this.projectName,
+      });
+    },
+    displayContributorBadgeText() {
+      return sprintf(__('This user has previously committed to the %{name} project.'), {
+        name: this.projectName,
+      });
+    },
   },
+
   methods: {
     async setAwardEmoji(name) {
       try {
@@ -98,12 +147,43 @@ export default {
         Sentry.captureException(error);
       }
     },
+    emitEvent(eventName) {
+      this.$emit(eventName);
+      this.$refs.dropdown.close();
+    },
   },
 };
 </script>
 
 <template>
   <div class="note-actions">
+    <user-access-role-badge
+      v-if="isWorkItemAuthor"
+      v-gl-tooltip
+      :title="displayAuthorBadgeText"
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      data-testid="author-badge"
+    >
+      {{ __('Author') }}
+    </user-access-role-badge>
+    <user-access-role-badge
+      v-if="maxAccessLevelOfAuthor"
+      v-gl-tooltip
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      :title="displayMemberBadgeText"
+      data-testid="max-access-level-badge"
+    >
+      {{ maxAccessLevelOfAuthor }}
+    </user-access-role-badge>
+    <user-access-role-badge
+      v-else-if="isAuthorContributor"
+      v-gl-tooltip
+      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      :title="displayContributorBadgeText"
+      data-testid="contributor-badge"
+    >
+      {{ __('Contributor') }}
+    </user-access-role-badge>
     <emoji-picker
       v-if="showAwardEmoji && glFeatures.workItemsMvc2"
       toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
@@ -135,46 +215,54 @@ export default {
       :aria-label="$options.i18n.editButtonText"
       @click="$emit('startEditing')"
     />
-    <gl-dropdown
+    <gl-disclosure-dropdown
+      ref="dropdown"
       v-gl-tooltip
       data-testid="work-item-note-actions"
       icon="ellipsis_v"
       text-sr-only
-      right
-      :text="$options.i18n.moreActionsText"
+      placement="right"
+      :toggle-text="$options.i18n.moreActionsText"
       :title="$options.i18n.moreActionsText"
       category="tertiary"
       no-caret
     >
-      <gl-dropdown-item
+      <gl-disclosure-dropdown-item
         v-if="canReportAbuse"
         data-testid="abuse-note-action"
-        @click="$emit('reportAbuse')"
+        @action="emitEvent('reportAbuse')"
       >
-        {{ $options.i18n.reportAbuseText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
+        <template #list-item>
+          {{ $options.i18n.reportAbuseText }}
+        </template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
         data-testid="copy-link-action"
         :data-clipboard-text="noteUrl"
-        @click="$emit('notifyCopyDone')"
+        @action="emitEvent('notifyCopyDone')"
       >
-        <span>{{ $options.i18n.copyLinkText }}</span>
-      </gl-dropdown-item>
-      <gl-dropdown-item
+        <template #list-item>
+          {{ $options.i18n.copyLinkText }}
+        </template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
         v-if="showAssignUnassign"
         data-testid="assign-note-action"
-        @click="$emit('assignUser')"
+        @action="emitEvent('assignUser')"
       >
-        {{ assignUserActionText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
+        <template #list-item>
+          {{ assignUserActionText }}
+        </template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
         v-if="showEdit"
-        variant="danger"
         data-testid="delete-note-action"
-        @click="$emit('deleteNote')"
+        @action="emitEvent('deleteNote')"
       >
-        {{ $options.i18n.deleteNoteText }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+        <template #list-item>
+          <span class="gl-text-red-500">{{ $options.i18n.deleteNoteText }}</span>
+        </template>
+      </gl-disclosure-dropdown-item>
+    </gl-disclosure-dropdown>
   </div>
 </template>

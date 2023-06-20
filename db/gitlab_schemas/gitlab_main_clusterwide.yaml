@@ -1,0 +1,17 @@
+name: gitlab_main_clusterwide
+description: Schema for all Cluster-wide tables, ex. application_settings, etc.
+allow_cross_joins:
+  - gitlab_shared
+  # temporarily allow cross-joins between clusterwide till all tables
+  # are moved to either _clusterwide or _cell
+  - gitlab_main
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared
+  # temporarily allow cross-transaction between clusterwide till all tables
+  # are moved to either _clusterwide or _cell
+  - gitlab_main
+allow_cross_foreign_keys:
+  # temporarily allow FKs between clusterwide till all tables
+  # are moved to either _clusterwide or _cell
+  - gitlab_main

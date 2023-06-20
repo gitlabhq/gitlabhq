@@ -48,7 +48,7 @@ const i18n = {
   ),
 };
 
-const helpUrlSecrets = helpPagePath('ee/ci/secrets');
+const helpUrlSecrets = helpPagePath('ci/secrets/index');
 
 export default {
   components: { GlAlert, GlButton, GlLink, GlSprintf, GlTable },

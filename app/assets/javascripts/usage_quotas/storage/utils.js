@@ -1,17 +1,23 @@
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { PROJECT_STORAGE_TYPES } from './constants';
 
-export const getStorageTypesFromProjectStatistics = (projectStatistics, helpLinks = {}) =>
+export const getStorageTypesFromProjectStatistics = (
+  projectStatistics,
+  helpLinks = {},
+  statisticsDetailsPaths = {},
+) =>
   PROJECT_STORAGE_TYPES.reduce((types, currentType) => {
-    const helpPathKey = currentType.id.replace(`Size`, ``);
-    const helpPath = helpLinks[helpPathKey];
+    const helpPath = helpLinks[currentType.id];
+    const value = projectStatistics[`${currentType.id}Size`];
+    const detailsPath = statisticsDetailsPaths[currentType.id];
 
     return types.concat({
       storageType: {
         ...currentType,
         helpPath,
+        detailsPath,
       },
-      value: projectStatistics[currentType.id],
+      value,
     });
   }, []);
 
@@ -27,7 +33,11 @@ export const parseGetProjectStorageResults = (data, helpLinks) => {
     return {};
   }
   const { storageSize } = projectStatistics;
-  const storageTypes = getStorageTypesFromProjectStatistics(projectStatistics, helpLinks);
+  const storageTypes = getStorageTypesFromProjectStatistics(
+    projectStatistics,
+    helpLinks,
+    data?.project?.statisticsDetailsPaths,
+  );
 
   return {
     storage: {

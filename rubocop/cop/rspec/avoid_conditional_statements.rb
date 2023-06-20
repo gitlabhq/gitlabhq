@@ -7,6 +7,8 @@ module RuboCop
     module RSpec
       # This cop checks for the usage of conditional statements in specs.
       #
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/410138
+      #
       # @example
       #
       # # bad

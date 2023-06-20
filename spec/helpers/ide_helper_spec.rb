@@ -104,9 +104,9 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
             help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
           'csp-nonce' => 'test-csp-nonce',
           'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path'),
-          'editor-font-family' => 'JetBrains Mono',
+          'editor-font-family' => 'GitLab Mono',
           'editor-font-format' => 'woff2',
-          'editor-font-src-url' => a_string_matching(%r{jetbrains-mono/JetBrainsMono})
+          'editor-font-src-url' => a_string_matching(%r{gitlab-mono/GitLabMono})
         }
       end
 

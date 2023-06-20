@@ -14,8 +14,9 @@ module Packages
       end
 
       def versions
-        strong_memoize(:versions) { Packages::Go::VersionFinder.new(self).execute }
+        Packages::Go::VersionFinder.new(self).execute
       end
+      strong_memoize_attr :versions
 
       def version_by(ref: nil, commit: nil)
         raise ArgumentError, 'no filter specified' unless ref || commit

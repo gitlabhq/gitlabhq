@@ -786,7 +786,7 @@ Payload example:
     "noteable_id": 53,
     "system": false,
     "st_diff": null,
-    "url": "http://example.com/gitlab-org/gitlab-test/snippets/53#note_1245"
+    "url": "http://example.com/gitlab-org/gitlab-test/-/snippets/53#note_1245"
   },
   "snippet": {
     "id": 53,
@@ -799,7 +799,8 @@ Payload example:
     "file_name": "test.rb",
     "expires_at": null,
     "type": "ProjectSnippet",
-    "visibility_level": 0
+    "visibility_level": 0,
+    "url": "http://example.com/gitlab-org/gitlab-test/-/snippets/53"
   }
 }
 ```
@@ -1109,6 +1110,9 @@ and later, the pipeline webhook returns only the latest jobs.
 In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
 and later, pipeline webhooks triggered by blocked users are not processed.
 
+In [GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123639)
+and later, pipeline webhooks started to expose `object_attributes.name`.
+
 Request header:
 
 ```plaintext
@@ -1123,6 +1127,7 @@ Payload example:
    "object_attributes":{
       "id": 31,
       "iid": 3,
+      "name": "Pipeline for branch: master",
       "ref": "master",
       "tag": false,
       "sha": "bcbb5ec396a2c0f828686f14fac9b80b780504f2",
@@ -1142,7 +1147,8 @@ Payload example:
           "key": "NESTOR_PROD_ENVIRONMENT",
           "value": "us-west-1"
         }
-      ]
+      ],
+      "url": "http://example.com/gitlab-org/gitlab-test/-/pipelines/31"
    },
     "merge_request": {
       "id": 1,

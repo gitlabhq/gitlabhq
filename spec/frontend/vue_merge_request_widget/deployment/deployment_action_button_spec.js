@@ -5,6 +5,7 @@ import {
   RUNNING,
   DEPLOYING,
   REDEPLOYING,
+  WILL_DEPLOY,
 } from '~/vue_merge_request_widget/components/deployment/constants';
 import DeploymentActionButton from '~/vue_merge_request_widget/components/deployment/deployment_action_button.vue';
 import { actionButtonMocks } from './deployment_mock_data';
@@ -116,6 +117,22 @@ describe('Deployment action button', () => {
     it('is not disabled nor does it show the loading icon', () => {
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.findComponent(GlButton).props('disabled')).toBe(false);
+    });
+  });
+
+  describe('when the deployment status is will_deploy', () => {
+    beforeEach(() => {
+      factory({
+        propsData: {
+          ...baseProps,
+          actionInProgress: actionButtonMocks[REDEPLOYING].actionName,
+          computedDeploymentStatus: WILL_DEPLOY,
+        },
+      });
+    });
+    it('is disabled and shows the loading icon', () => {
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlButton).props('disabled')).toBe(true);
     });
   });
 });

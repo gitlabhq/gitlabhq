@@ -2,7 +2,7 @@ glfm-verify:
   extends:
     - .rails-job-base
     - .glfm:rules:glfm-verify
-    - .use-pg13
+    - .use-pg14
   stage: test
   needs: ["setup-test-env"]
   script:

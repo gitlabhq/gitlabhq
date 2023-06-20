@@ -4,7 +4,6 @@ import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlSprintf, GlTooltipDirective 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { getTimeago } from '~/lib/utils/datetime_utility';
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
@@ -91,7 +90,7 @@ export default {
       return this.issuable.assignees?.nodes || this.issuable.assignees || [];
     },
     createdAt() {
-      return getTimeago().format(this.issuable.createdAt);
+      return this.timeFormatted(this.issuable.createdAt);
     },
     timestamp() {
       if (this.issuable.state === STATUS_CLOSED && this.issuable.closedAt) {
@@ -102,11 +101,11 @@ export default {
     formattedTimestamp() {
       if (this.issuable.state === STATUS_CLOSED && this.issuable.closedAt) {
         return sprintf(__('closed %{timeago}'), {
-          timeago: getTimeago().format(this.issuable.closedAt),
+          timeago: this.timeFormatted(this.issuable.closedAt),
         });
       } else if (this.issuable.updatedAt !== this.issuable.createdAt) {
         return sprintf(__('updated %{timeAgo}'), {
-          timeAgo: getTimeago().format(this.issuable.updatedAt),
+          timeAgo: this.timeFormatted(this.issuable.updatedAt),
         });
       }
       return undefined;

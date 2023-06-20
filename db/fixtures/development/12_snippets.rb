@@ -9,7 +9,7 @@ class Gitlab::Seeder::SnippetRepository
   end
 
   def import
-    if File.exists?(BUNDLE_PATH)
+    if File.exist?(BUNDLE_PATH)
       @snippet.repository.create_from_bundle(BUNDLE_PATH)
     else
       @snippet.repository.import_repository(SNIPPET_REPO_URL)
@@ -18,7 +18,7 @@ class Gitlab::Seeder::SnippetRepository
   end
 
   def self.cleanup
-    File.delete(BUNDLE_PATH) if File.exists?(BUNDLE_PATH)
+    File.delete(BUNDLE_PATH) if File.exist?(BUNDLE_PATH)
   rescue => e
     warn "\nError cleaning up snippet bundle: #{e}"
   end

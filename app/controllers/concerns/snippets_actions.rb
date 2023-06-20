@@ -56,7 +56,7 @@ module SnippetsActions
         @noteable = @snippet
 
         @discussions = @snippet.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
         render 'show'
       end
 

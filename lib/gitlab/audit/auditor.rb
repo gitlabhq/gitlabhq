@@ -77,12 +77,12 @@ module Gitlab
         @authentication_provider = @context[:authentication_provider]
 
         # TODO: Remove this code once we close https://gitlab.com/gitlab-org/gitlab/-/issues/367870
-        return unless @is_audit_event_yaml_defined
+        return if @is_audit_event_yaml_defined
 
-        # rubocop:disable Gitlab/RailsLogger
-        Rails.logger.warn('WARNING: Logging audit events without an event type definition will be deprecated soon.')
-        Rails.logger.warn('See https://docs.gitlab.com/ee/development/audit_event_guide/#event-type-definitions')
-        # rubocop:enable Gitlab/RailsLogger
+        message = 'Logging audit events without an event type definition will be deprecated soon ' \
+                  '(https://docs.gitlab.com/ee/development/audit_event_guide/#event-type-definitions)'
+
+        Gitlab::AppLogger.warn(message: message, event_type: @name)
       end
 
       def single_audit

@@ -43,7 +43,7 @@ describe('diffs/components/app', () => {
   let wrapper;
   let mock;
 
-  function createComponent(props = {}, extendStore = () => {}, provisions = {}) {
+  function createComponent(props = {}, extendStore = () => {}, provisions = {}, baseConfig = {}) {
     const provide = {
       ...provisions,
       glFeatures: {
@@ -57,20 +57,24 @@ describe('diffs/components/app', () => {
 
     extendStore(store);
 
+    store.dispatch('diffs/setBaseConfig', {
+      endpoint: TEST_ENDPOINT,
+      endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
+      endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
+      endpointDiffForPath: TEST_ENDPOINT,
+      projectPath: 'namespace/project',
+      dismissEndpoint: '',
+      showSuggestPopover: true,
+      mrReviews: {},
+      ...baseConfig,
+    });
+
     wrapper = shallowMount(App, {
       propsData: {
-        endpoint: TEST_ENDPOINT,
-        endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
-        endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
-        endpointDiffForPath: TEST_ENDPOINT,
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
         endpointCodequality: '',
-        projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
-        dismissEndpoint: '',
-        showSuggestPopover: true,
-        fileByFileUserPreference: false,
         ...props,
       },
       provide,
@@ -653,13 +657,18 @@ describe('diffs/components/app', () => {
 
   describe('file-by-file', () => {
     it('renders a single diff', async () => {
-      createComponent({ fileByFileUserPreference: true }, ({ state }) => {
-        state.diffs.treeEntries = {
-          123: { type: 'blob', fileHash: '123' },
-          312: { type: 'blob', fileHash: '312' },
-        };
-        state.diffs.diffFiles.push({ file_hash: '312' });
-      });
+      createComponent(
+        undefined,
+        ({ state }) => {
+          state.diffs.treeEntries = {
+            123: { type: 'blob', fileHash: '123' },
+            312: { type: 'blob', fileHash: '312' },
+          };
+          state.diffs.diffFiles.push({ file_hash: '312' });
+        },
+        undefined,
+        { viewDiffsFileByFile: true },
+      );
 
       await nextTick();
 
@@ -671,12 +680,17 @@ describe('diffs/components/app', () => {
       const paginator = () => fileByFileNav().findComponent(GlPagination);
 
       it('sets previous button as disabled', async () => {
-        createComponent({ fileByFileUserPreference: true }, ({ state }) => {
-          state.diffs.treeEntries = {
-            123: { type: 'blob', fileHash: '123' },
-            312: { type: 'blob', fileHash: '312' },
-          };
-        });
+        createComponent(
+          undefined,
+          ({ state }) => {
+            state.diffs.treeEntries = {
+              123: { type: 'blob', fileHash: '123' },
+              312: { type: 'blob', fileHash: '312' },
+            };
+          },
+          undefined,
+          { viewDiffsFileByFile: true },
+        );
 
         await nextTick();
 
@@ -685,13 +699,18 @@ describe('diffs/components/app', () => {
       });
 
       it('sets next button as disabled', async () => {
-        createComponent({ fileByFileUserPreference: true }, ({ state }) => {
-          state.diffs.treeEntries = {
-            123: { type: 'blob', fileHash: '123' },
-            312: { type: 'blob', fileHash: '312' },
-          };
-          state.diffs.currentDiffFileId = '312';
-        });
+        createComponent(
+          undefined,
+          ({ state }) => {
+            state.diffs.treeEntries = {
+              123: { type: 'blob', fileHash: '123' },
+              312: { type: 'blob', fileHash: '312' },
+            };
+            state.diffs.currentDiffFileId = '312';
+          },
+          undefined,
+          { viewDiffsFileByFile: true },
+        );
 
         await nextTick();
 
@@ -700,10 +719,15 @@ describe('diffs/components/app', () => {
       });
 
       it("doesn't display when there's fewer than 2 files", async () => {
-        createComponent({ fileByFileUserPreference: true }, ({ state }) => {
-          state.diffs.treeEntries = { 123: { type: 'blob', fileHash: '123' } };
-          state.diffs.currentDiffFileId = '123';
-        });
+        createComponent(
+          undefined,
+          ({ state }) => {
+            state.diffs.treeEntries = { 123: { type: 'blob', fileHash: '123' } };
+            state.diffs.currentDiffFileId = '123';
+          },
+          undefined,
+          { viewDiffsFileByFile: true },
+        );
 
         await nextTick();
 
@@ -711,14 +735,14 @@ describe('diffs/components/app', () => {
       });
 
       it.each`
-        currentDiffFileId | targetFile | newFileByFile
-        ${'123'}          | ${2}       | ${false}
-        ${'312'}          | ${1}       | ${true}
+        currentDiffFileId | targetFile
+        ${'123'}          | ${2}
+        ${'312'}          | ${1}
       `(
         'calls navigateToDiffFileIndex with $index when $link is clicked',
-        async ({ currentDiffFileId, targetFile, newFileByFile }) => {
+        async ({ currentDiffFileId, targetFile }) => {
           createComponent(
-            { fileByFileUserPreference: true },
+            undefined,
             ({ state }) => {
               state.diffs.treeEntries = {
                 123: { type: 'blob', fileHash: '123', filePaths: { old: '1234', new: '123' } },
@@ -726,11 +750,8 @@ describe('diffs/components/app', () => {
               };
               state.diffs.currentDiffFileId = currentDiffFileId;
             },
-            {
-              glFeatures: {
-                singleFileFileByFile: newFileByFile,
-              },
-            },
+            undefined,
+            { viewDiffsFileByFile: true },
           );
 
           await nextTick();
@@ -741,10 +762,7 @@ describe('diffs/components/app', () => {
 
           await nextTick();
 
-          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith({
-            index: targetFile - 1,
-            singleFile: newFileByFile,
-          });
+          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
     });

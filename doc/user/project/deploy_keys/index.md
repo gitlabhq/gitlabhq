@@ -56,14 +56,14 @@ As with all sensitive information, you should ensure only those who need access 
 For human interactions, use credentials tied to users such as Personal Access Tokens.
 
 To help detect a potential secret leak, you can use the
-[Audit Event](../../../administration/audit_event_streaming.md#example-payloads-for-ssh-events-with-deploy-key) feature.
+[Audit Event](../../../administration/audit_event_streaming/examples.md#example-payloads-for-ssh-events-with-deploy-key) feature.
 
 ## View deploy keys
 
 To view the deploy keys available to a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 
 The deploy keys available are listed:
@@ -80,8 +80,8 @@ Prerequisites:
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Complete the fields.
 1. Optional. To grant `read-write` permission, select the **Grant write permissions to this key**
@@ -101,8 +101,9 @@ Prerequisites:
 
 To create a public deploy key:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Deploy Keys**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Deploy Keys**.
 1. Select **New deploy key**.
 1. Complete the fields.
    - Use a meaningful description for **Name**. For example, include the name of the external host
@@ -118,8 +119,8 @@ Prerequisites:
 
 To grant a public deploy key access to a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Publicly accessible deploy keys**.
 1. In the key's row, select **Enable**.
@@ -138,8 +139,8 @@ Prerequisites:
 
 To disable a deploy key:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Disable** (**{cancel}**).
 
@@ -160,7 +161,7 @@ There are a few scenarios where a deploy key fails to push to a
 
 - The owner associated to a deploy key does not have access to the protected branch.
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
-- **No one** is selected in [the **Allowed to push and merge** section](../protected_branches.md#configure-a-protected-branch) of the protected branch.
+- **No one** is selected in [the **Allowed to push and merge** section](../protected_branches.md#add-protection-to-existing-branches) of the protected branch.
 
 All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 

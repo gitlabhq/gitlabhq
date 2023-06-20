@@ -216,18 +216,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       expect(personal_access_token).to be_valid
     end
 
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(admin_mode_for_api: false)
-      end
-
-      it "allows creating a token with `admin_mode` scope" do
-        personal_access_token.scopes = [:api, :admin_mode]
-
-        expect(personal_access_token).to be_valid
-      end
-    end
-
     context 'when registry is disabled' do
       before do
         stub_container_registry_config(enabled: false)
@@ -271,34 +259,27 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     context 'validates expires_at' do
       let(:max_expiration_date) { described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now }
 
-      context 'when default_pat_expiration feature flag is true' do
-        context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
-          it 'is valid' do
-            personal_access_token.expires_at = max_expiration_date - 1.day
+      it "can't be blank" do
+        personal_access_token.expires_at = nil
 
-            expect(personal_access_token).to be_valid
-          end
-        end
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:expires_at].first).to eq("can't be blank")
+      end
 
-        context 'when expires_in is more than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
-          it 'is invalid' do
-            personal_access_token.expires_at = max_expiration_date + 1.day
+      context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
+        it 'is valid' do
+          personal_access_token.expires_at = max_expiration_date - 1.day
 
-            expect(personal_access_token).not_to be_valid
-            expect(personal_access_token.errors[:expires_at].first).to eq('must expire in 365 days')
-          end
+          expect(personal_access_token).to be_valid
         end
       end
 
-      context 'when default_pat_expiration feature flag is false' do
-        before do
-          stub_feature_flags(default_pat_expiration: false)
-        end
-
-        it 'allows any expires_at value' do
+      context 'when expires_in is more than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
+        it 'is invalid' do
           personal_access_token.expires_at = max_expiration_date + 1.day
 
-          expect(personal_access_token).to be_valid
+          expect(personal_access_token).not_to be_valid
+          expect(personal_access_token.errors[:expires_at].first).to eq('must expire in 365 days')
         end
       end
     end
@@ -311,11 +292,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       let_it_be(:not_revoked_nil_token) { create(:personal_access_token, revoked: nil) }
       let_it_be(:expired_token) { create(:personal_access_token, :expired) }
       let_it_be(:not_expired_token) { create(:personal_access_token) }
-      let_it_be(:never_expires_token) { create(:personal_access_token, expires_at: nil) }
 
-      it 'includes non-revoked and non-expired tokens' do
+      it 'includes non-revoked tokens' do
         expect(described_class.active)
-          .to match_array([not_revoked_false_token, not_revoked_nil_token, not_expired_token, never_expires_token])
+          .to match_array([not_revoked_false_token, not_revoked_nil_token, not_expired_token])
       end
     end
 
@@ -417,28 +397,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         end
       end
     end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(admin_mode_for_api: false)
-      end
-
-      context 'with administrator user' do
-        let_it_be(:user) { create(:user, :admin) }
-
-        it 'adds `admin_mode` scope before created' do
-          expect(subject.scopes).to contain_exactly('api', 'admin_mode')
-        end
-      end
-
-      context 'with normal user' do
-        let_it_be(:user) { create(:user) }
-
-        it 'does not add `admin_mode` scope before created' do
-          expect(subject.scopes).to contain_exactly('api')
-        end
-      end
-    end
   end
 
   describe 'token format' do
@@ -459,38 +417,6 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it 'does not change the existing token' do
         expect { personal_access_token.ensure_token }
           .not_to change { personal_access_token.token }.from(token)
-      end
-    end
-  end
-
-  describe '#expires_at=' do
-    let(:personal_access_token) { described_class.new }
-
-    context 'when default_pat_expiration feature flag is true' do
-      context 'expires_at set to empty value' do
-        [nil, ""].each do |expires_in_value|
-          it 'defaults to PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
-            personal_access_token.expires_at = expires_in_value
-
-            freeze_time do
-              expect(personal_access_token.expires_at).to eq(
-                PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date
-              )
-            end
-          end
-        end
-      end
-    end
-
-    context 'when default_pat_expiration feature flag is false' do
-      before do
-        stub_feature_flags(default_pat_expiration: false)
-      end
-
-      it 'does not set a default' do
-        personal_access_token.expires_at = nil
-
-        expect(personal_access_token.expires_at).to eq(nil)
       end
     end
   end

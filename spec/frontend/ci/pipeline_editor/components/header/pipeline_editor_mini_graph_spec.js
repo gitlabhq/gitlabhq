@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineEditorMiniGraph from '~/ci/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
-import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/get_linked_pipelines.query.graphql';
+import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
 import { PIPELINE_FAILURE } from '~/ci/pipeline_editor/constants';
 import { mockLinkedPipelines, mockProjectFullPath, mockProjectPipeline } from '../../mock_data';
 

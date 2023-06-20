@@ -9,7 +9,7 @@ module Groups
 
     skip_cross_project_access_check :index
 
-    feature_category :subgroups
+    feature_category :groups_and_projects
 
     # TODO: Set to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/331494
     urgency :low, [:index]

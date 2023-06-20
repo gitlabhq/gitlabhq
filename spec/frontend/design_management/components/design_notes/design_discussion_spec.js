@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlFormCheckbox } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -36,7 +36,7 @@ describe('Design discussions component', () => {
   const findResolveButton = () => wrapper.find('[data-testid="resolve-button"]');
   const findResolvedMessage = () => wrapper.find('[data-testid="resolved-message"]');
   const findResolveLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findResolveCheckbox = () => wrapper.find('[data-testid="resolve-checkbox"]');
+  const findResolveCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   const registerPath = '/users/sign_up?redirect_to_referer=yes';
   const signInPath = '/users/sign_in?redirect_to_referer=yes';

@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+
+source "$(dirname "$0")/utils.sh"
+
+REGISTRY="${CI_REGISTRY}/${CI_PROJECT_PATH}"
+SHA_TAG="${CI_COMMIT_SHA}"
+BRANCH_TAG="${CI_COMMIT_REF_SLUG}"
+BASE_TAG=$([ "${BUILD_GDK_BASE}" == "true" ] && echo "${SHA_TAG}" || echo "master")
+
+if [[ -z "${GDK_SHA}" ]]; then
+  GDK_SHA=$(git ls-remote https://gitlab.com/gitlab-org/gitlab-development-kit.git main | cut -f 1)
+fi
+
+if [[ -n "${CI}" ]]; then
+  OUTPUT_OPTION="--push"
+else
+  OUTPUT_OPTION="--load"
+fi
+
+function build_image() {
+  local image=$1
+  local target=$2
+
+  echoinfo "Using GDK at SHA ${GDK_SHA}"
+
+  docker buildx build \
+    --cache-to="type=inline" \
+    --cache-from="${image}:${BRANCH_TAG}" \
+    --cache-from="${image}:master" \
+    --file="qa/gdk/Dockerfile.gdk" \
+    --target="${target}" \
+    --platform=${ARCH:-amd64} \
+    --tag="${image}:${SHA_TAG}" \
+    --tag="${image}:${BRANCH_TAG}" \
+    --build-arg="BASE_TAG=${BASE_TAG}" \
+    --build-arg="GDK_SHA=${GDK_SHA:-main}" \
+    ${OUTPUT_OPTION} \
+    .
+}
+
+# Rebuild base image when BUILD_GDK_BASE is set to true
+if [[ "${BUILD_GDK_BASE}" == "true" ]]; then
+  echoinfo "Building GDK base image", "yes"
+  build_image "${REGISTRY}/gitlab-qa-gdk-base" "gdk-base"
+fi
+
+echoinfo "Building GDK image", "yes"
+build_image "${REGISTRY}/gitlab-qa-gdk" "gdk"
+
+echosuccess "Built image '${REGISTRY}/gitlab-qa-gdk:${SHA_TAG}'"

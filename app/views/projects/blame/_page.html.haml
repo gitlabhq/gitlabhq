@@ -7,7 +7,7 @@
     - line_count = blame_group[:lines].count
 
     .tr{ class: ('last-row' if groups_length == index) }
-      .td.blame-commit.commit{ class: commit_data.age_map_class }
+      .td.blame-commit.commit.gl-py-3.gl-px-4{ class: commit_data.age_map_class }
         = commit_data.author_avatar
 
         .commit-row-title

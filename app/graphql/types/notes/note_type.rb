@@ -11,6 +11,11 @@ module Types
 
       implements(Types::ResolvableInterface)
 
+      field :max_access_level_of_author, GraphQL::Types::String,
+        null: true,
+        description: "Max access level of the note author in the project.",
+        method: :human_max_access
+
       field :id, ::Types::GlobalIDType[::Note],
         null: false,
         description: 'ID of the note.'
@@ -35,6 +40,10 @@ module Types
         null: false,
         method: :note,
         description: 'Content of the note.'
+
+      field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
+        null: true,
+        description: 'List of award emojis associated with the note.'
 
       field :confidential, GraphQL::Types::Boolean,
         null: true,
@@ -73,6 +82,12 @@ module Types
       field :last_edited_by, Types::UserType,
         null: true,
         description: 'User who last edited the note.'
+
+      field :author_is_contributor, GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether the note author is a contributor.',
+        method: :contributor?,
+        calls_gitaly: true
 
       field :system_note_metadata, Types::Notes::SystemNoteMetadataType,
         null: true,

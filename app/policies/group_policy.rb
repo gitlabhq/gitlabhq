@@ -109,6 +109,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     @subject.runner_registration_enabled?
   end
 
+  condition(:raise_admin_package_to_owner_enabled) do
+    Feature.enabled?(:raise_group_admin_package_permission_to_owner, @subject)
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -159,6 +163,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :award_achievement
   end
 
+  rule { can?(:owner_access) & achievements_enabled }.policy do
+    enable :destroy_user_achievement
+  end
+
   rule { ~public_group & ~has_access }.prevent :read_counts
 
   rule { ~can_read_group_member }.policy do
@@ -198,11 +206,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_package
     enable :read_crm_organization
     enable :read_crm_contact
+    enable :read_confidential_issues
   end
 
   rule { maintainer }.policy do
     enable :destroy_package
-    enable :admin_package
     enable :create_projects
     enable :import_projects
     enable :admin_pipeline
@@ -304,7 +312,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { dependency_proxy_access_allowed & dependency_proxy_available }
     .enable :read_dependency_proxy
 
-  rule { maintainer & dependency_proxy_available }.policy do
+  rule { maintainer & dependency_proxy_available & ~raise_admin_package_to_owner_enabled }.policy do
+    enable :admin_dependency_proxy
+  end
+
+  rule { owner & dependency_proxy_available & raise_admin_package_to_owner_enabled }.policy do
     enable :admin_dependency_proxy
   end
 
@@ -369,6 +381,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   # Should be matched with ProjectPolicy#read_internal_note
   rule { admin | reporter }.enable :read_internal_note
+
+  rule { maintainer & ~raise_admin_package_to_owner_enabled }.enable :admin_package
+  rule { owner & raise_admin_package_to_owner_enabled }.enable :admin_package
 
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?

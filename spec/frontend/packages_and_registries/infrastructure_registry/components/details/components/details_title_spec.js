@@ -51,7 +51,7 @@ describe('PackageTitle', () => {
     it('correctly calculates the size', async () => {
       await createComponent();
 
-      expect(packageSize().props('text')).toBe('300 bytes');
+      expect(packageSize().props('text')).toBe('300 B');
     });
   });
 

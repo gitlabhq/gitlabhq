@@ -105,7 +105,7 @@ export default {
      */
     this.$nextTick(() => {
       if (!this.noteUpdateDirty) {
-        this.autosaveDiscussion.reset();
+        this.autosaveDiscussion?.reset();
       }
     });
   },

@@ -120,9 +120,9 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
       # Because test cases are run inside a transaction, if any query raise and error all queries that follows
       # it are automatically canceled by PostgreSQL, to avoid that problem, and to provide exhaustive information
       # about every metric, queries are wrapped explicitly in sub transactions.
-      table = PgQuery.parse(query).tables.first
-      gitlab_schema = Gitlab::Database::GitlabSchema.tables_to_schema[table]
-      base_model = gitlab_schema == :gitlab_main ? ApplicationRecord : Ci::ApplicationRecord
+      table_name = PgQuery.parse(query).tables.first
+      gitlab_schema = Gitlab::Database::GitlabSchema.table_schema!(table_name)
+      base_model = Gitlab::Database.schemas_to_base_models.fetch(gitlab_schema).first
 
       base_model.transaction do
         base_model.connection.execute(query)&.first&.values&.first

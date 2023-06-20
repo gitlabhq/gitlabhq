@@ -119,15 +119,16 @@ Your package should now publish to the Package Registry when the pipeline runs.
 
 If multiple packages have the same name and version, when you install a package, the most recently-published package is retrieved.
 
-You can install a package from a GitLab project or instance:
+You can install a package from a GitLab project, group, or instance:
 
 - **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
+- **Group-level**: Use when you have many npm packages in different projects in the same GitLab group.
 - **Project-level**: Use when you have few npm packages and they are not in the same GitLab group.
 
 ### Authenticate to the Package Registry
 
-You must authenticate to the Package Registry to install a package from a private project.
-No authentication is needed if the project is public.
+You must authenticate to the Package Registry to install a package from a private project or a private group.
+No authentication is needed if the project or the group is public.
 
 To authenticate with `npm`:
 
@@ -145,7 +146,13 @@ If you're installing:
   npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
   ```
 
-  From the project level:
+- From the group level:
+
+  ```shell
+  npm config set -- //your_domain_name/api/v4/groups/your_group_id/-/packages/npm/:_authToken=your_token
+  ```
+
+- From the project level:
 
   ```shell
   npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
@@ -154,6 +161,7 @@ If you're installing:
 In these examples:
 
 - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
+- Replace `your_group_id` with your group ID, found on the group's home page.
 - Replace `your_project_id` is your project ID, found on the project's home page.
 - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
 
@@ -178,6 +186,29 @@ To install a package from the instance level, the package must have been publish
    - Replace `@scope` with the [root level group](#naming-convention) of the project you're installing to the package from.
    - Replace `your_domain_name` with your domain name, for example `gitlab.com`.
    - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+
+1. Install the package
+
+   ```shell
+   npm install @scope/my-package
+   ```
+
+### Install from the group level
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
+
+1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
+
+1. Set the registry
+
+   ```shell
+   npm config set @scope:registry=https://your_domain_name/api/v4/groups/your_group_id/-/packages/npm/
+   ```
+
+   - Replace `@scope` with the [root level group](#naming-convention) of the group you're installing to the package from.
+   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
+   - Replace `your_group_id` is your group ID, found on the group's home page.
 
 1. Install the package
 

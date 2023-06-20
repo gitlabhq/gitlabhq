@@ -1,7 +1,14 @@
 <script>
-import { GlDropdownForm, GlIcon, GlLoadingIcon, GlToggle, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlDisclosureDropdownItem,
+  GlDropdownForm,
+  GlIcon,
+  GlLoadingIcon,
+  GlToggle,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { TYPE_EPIC, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_EPIC, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -22,6 +29,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlDisclosureDropdownItem,
     GlDropdownForm,
     GlIcon,
     GlLoadingIcon,
@@ -88,6 +96,9 @@ export default {
   computed: {
     isMovedMrSidebar() {
       return this.glFeatures.movedMrSidebar;
+    },
+    isIssuable() {
+      return this.issuableType === TYPE_ISSUE;
     },
     isLoading() {
       return this.$apollo.queries?.subscribed?.loading || this.loading;
@@ -182,18 +193,32 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-form v-if="isMovedMrSidebar" class="gl-dropdown-item">
+  <gl-dropdown-form v-if="isMovedMrSidebar && isIssuable" class="gl-dropdown-item">
     <div class="gl-px-5 gl-pb-2 gl-pt-1">
+      <gl-toggle
+        :value="subscribed"
+        :label="$options.i18n.notifications"
+        class="merge-request-notification-toggle"
+        label-position="left"
+        data-testid="notification-toggle"
+        @change="toggleSubscribed"
+      />
+    </div>
+  </gl-dropdown-form>
+  <gl-disclosure-dropdown-item
+    v-else-if="isMovedMrSidebar"
+    data-testid="notification-toggle"
+    @action="toggleSubscribed"
+  >
+    <template #list-item>
       <gl-toggle
         :value="subscribed"
         :label="__('Notifications')"
         class="merge-request-notification-toggle"
         label-position="left"
-        data-testid="notifications-toggle"
-        @change="toggleSubscribed"
       />
-    </div>
-  </gl-dropdown-form>
+    </template>
+  </gl-disclosure-dropdown-item>
   <sidebar-editable-item
     v-else
     ref="editable"

@@ -1,5 +1,5 @@
 <script>
-import { GlTooltip, GlSprintf, GlIcon } from '@gitlab/ui';
+import { GlTooltip, GlSprintf, GlIcon, GlTruncate } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -10,6 +10,7 @@ export default {
     FileIcon,
     GlIcon,
     GlSprintf,
+    GlTruncate,
   },
   directives: {
     GlTooltip,
@@ -22,7 +23,8 @@ export default {
     },
     filePath: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     errorFn: {
       type: String,
@@ -79,26 +81,23 @@ export default {
 <template>
   <div class="file-holder">
     <div ref="header" class="file-title file-title-flex-parent">
-      <div class="file-header-content d-flex align-content-center">
+      <div class="file-header-content d-flex align-content-center gl-flex-wrap overflow-hidden">
         <div v-if="hasCode" class="d-inline-block cursor-pointer" @click="toggle()">
           <gl-icon :name="collapseIcon" :size="16" class="gl-mr-2" />
         </div>
-        <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-2" />
-        <strong
-          v-gl-tooltip
-          :title="filePath"
-          class="file-title-name d-inline-block overflow-hidden text-truncate limited-width"
-          data-container="body"
-        >
-          {{ filePath }}
-        </strong>
-        <clipboard-button
-          :title="__('Copy file path')"
-          :text="filePath"
-          category="tertiary"
-          size="small"
-          css-class="gl-mr-1"
-        />
+        <template v-if="filePath">
+          <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-2" />
+          <strong class="file-title-name d-inline-block overflow-hidden limited-width">
+            <gl-truncate with-tooltip :text="filePath" position="middle" />
+          </strong>
+          <clipboard-button
+            :title="__('Copy file path')"
+            :text="filePath"
+            category="tertiary"
+            size="small"
+            css-class="gl-mr-1"
+          />
+        </template>
 
         <gl-sprintf v-if="errorFn" :message="__('%{spanStart}in%{spanEnd} %{errorFn}')">
           <template #span="{ content }">

@@ -13,9 +13,10 @@ module WikiActions
   included do
     content_security_policy do |p|
       next if p.directives.blank?
+      next unless Gitlab::CurrentSettings.diagramsnet_enabled?
 
       default_frame_src = p.directives['frame-src'] || p.directives['default-src']
-      frame_src_values = Array.wrap(default_frame_src) | ['https://embed.diagrams.net'].compact
+      frame_src_values = Array.wrap(default_frame_src) | [Gitlab::CurrentSettings.diagramsnet_url].compact
 
       p.frame_src(*frame_src_values)
     end

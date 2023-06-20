@@ -85,6 +85,7 @@ module GroupsHelper
     end
   end
 
+  # Overridden in EE
   def remove_group_message(group)
     _("You are going to remove %{group_name}. This will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
@@ -128,7 +129,8 @@ module GroupsHelper
     {
       parent_group_url: group.parent && group_url(group.parent),
       parent_group_name: group.parent&.name,
-      import_existing_group_path: new_group_path(parent_id: group.parent_id, anchor: 'import-group-pane')
+      import_existing_group_path: new_group_path(parent_id: group.parent_id, anchor: 'import-group-pane'),
+      is_saas: Gitlab.com?.to_s
     }
   end
 

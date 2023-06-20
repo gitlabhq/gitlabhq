@@ -31,7 +31,7 @@ module Gitlab
           def content
             return @config.last if has_header?
 
-            @config.first
+            @config.first || {}
           end
         end
       end

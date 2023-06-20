@@ -10,7 +10,7 @@ description: "GitLab's development guidelines for Integrations"
 This page provides development guidelines for implementing [GitLab integrations](../../user/project/integrations/index.md),
 which are part of our [main Rails project](https://gitlab.com/gitlab-org/gitlab).
 
-Also see our [direction page](https://about.gitlab.com/direction/manage/integrations/) for an overview of our strategy around integrations.
+Also see our [direction page](https://about.gitlab.com/direction/manage/import_and_integrate/integrations/) for an overview of our strategy around integrations.
 
 This guide is a work in progress. You're welcome to ping `@gitlab-org/manage/integrations`
 if you need clarification or spot any outdated information.
@@ -299,6 +299,40 @@ You can also refer to our general [testing guidelines](../testing_guide/index.md
 All UI strings should be prepared for translation by following our [internationalization guidelines](../i18n/externalization.md).
 
 The strings should use the integration name as [namespace](../i18n/externalization.md#namespaces), for example, `s_('FooBarIntegration|My string')`.
+
+## Deprecate and remove an integration
+
+To remove an integration, you must first deprecate the integration. For more information,
+see the [feature deprecation guidelines](../../development/deprecation_guidelines/index.md).
+
+### Deprecate an integration
+
+You must announce any deprecation [no later than the third milestone preceding intended removal](../../development/deprecation_guidelines/index.md#when-can-a-feature-be-deprecated).
+To deprecate an integration:
+
+- [Add a deprecation entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation-pages).
+- [Mark the integration documentation as deprecated](../../development/documentation/versions.md#deprecate-a-page-or-topic).
+- Optional. To prevent any new project-level records from
+  being created, add the integration to `Project#disabled_integrations` (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114835)).
+
+### Remove an integration
+
+To safely remove an integration, you must stage the removal across two milestones.
+
+In the major milestone of intended removal (M.0), disable the integration and delete the records from the database:
+
+- Remove the integration from `Integration::INTEGRATION_NAMES`.
+- Delete the integration model's `#execute` and `#test` methods (if defined), but keep the model.
+- Add a post-migration to delete the integration records from PostgreSQL (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114721)).
+- [Add a removal entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation-pages).
+- [Mark the integration documentation as removed](../../development/documentation/versions.md#remove-a-page).
+- [Update the integration API documentation](../../api/integrations.md).
+
+In the next minor release (M.1):
+
+- Remove the integration's model and any remaining code.
+- Close any issues, merge requests, and epics that have the integration's label (`~Integration::<name>`).
+- Delete the integration's label (`~Integration::<name>`) from `gitlab-org`.
 
 ## Ongoing migrations and refactorings
 

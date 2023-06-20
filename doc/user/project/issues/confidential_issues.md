@@ -15,36 +15,36 @@ keep security vulnerabilities private or prevent surprises from leaking out.
 
 You can make an issue confidential when you create or edit an issue.
 
+### In a new issue
+
 When you create a new issue, a checkbox right below the text area is available
 to mark the issue as confidential. Check that box and select **Create issue**
-to create the issue. For existing issues, edit them, check the
-confidential checkbox and select **Save changes**.
+to create the issue.
 
 When you create a confidential issue in a project, the project becomes listed in the **Contributed projects** section in your [profile](../../profile/index.md). **Contributed projects** does not show information about the confidential issue; it only shows the project name.
 
-![Creating a new confidential issue](img/confidential_issues_create_v15_4.png)
+To create a confidential issue:
 
-## Modify issue confidentiality
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**).
+1. From the dropdown list, select **New issue**.
+1. Complete the [fields](create_issues.md#fields-in-the-new-issue-form).
+   - Select the **This issue is confidential...** checkbox.
+1. Select **Create issue**.
 
-There are two ways to change an issue's confidentiality.
+### In an existing issue
 
-The first way is to edit the issue and toggle the confidentiality checkbox.
-After you save the issue, the confidentiality of the issue is updated.
+To change the confidentiality of an existing issue:
 
-The second way is to locate the **Confidentiality** section in the sidebar and select
-**Edit**. A popup should appear and give you the option to turn on or turn off confidentiality.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Issues**.
+1. Select the title of your issue to view it.
+1. On the right sidebar, next to **Confidentiality**, select **Edit**.
+1. Select **Turn on** (or **Turn off** to make the issue non-confidential).
 
-| Turn off confidentiality | Turn on confidentiality |
-| :-----------: | :----------: |
-| ![Turn off confidentiality](img/turn_off_confidentiality_v15_1.png) | ![Turn on confidentiality](img/turn_on_confidentiality_v15_1.png) |
+Alternatively, you can use the `/confidential` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
-Every change from regular to confidential and vice versa, is indicated by a
-system note in the issue's comments:
-
-![Confidential issues system notes](img/confidential_issues_system_notes_v15_4.png)
-
-- **{eye-slash}** The issue is made confidential.
-- **{eye}** The issue is made public.
+## Who can see confidential issues
 
 When an issue is made confidential, only users with at least the Reporter role
 for the project have access to the issue.
@@ -53,16 +53,14 @@ the issue even if they were actively participating before the change.
 
 ## Confidential issue indicators
 
-There are a few things that visually separate a confidential issue from a
-regular one. In the issues index page view, you can see the confidential (**{eye-slash}**) icon
+Confidential issues are visually different from regular issues in a few ways.
+In the issues index page view, you can see the confidential (**{eye-slash}**) icon
 next to the issues that are marked as confidential:
 
 ![Confidential issues index page](img/confidential_issues_index_page.png)
 
 If you don't have [enough permissions](#permissions-and-access-to-confidential-issues),
 you cannot see confidential issues at all.
-
----
 
 Likewise, while inside the issue, you can see the confidential (**{eye-slash}**) icon right next to
 the issue number. There is also an indicator in the comment area that the
@@ -76,6 +74,14 @@ There is also an indicator on the sidebar denoting confidentiality.
 | :-----------: | :----------: |
 | ![Sidebar confidential issue](img/sidebar_confidential_issue.png) | ![Sidebar not confidential issue](img/sidebar_not_confidential_issue.png) |
 
+Every change from regular to confidential and vice versa, is indicated by a
+system note in the issue's comments:
+
+- **{eye-slash}** The issue is made confidential.
+- **{eye}** The issue is made public.
+
+![Confidential issues system notes](img/confidential_issues_system_notes_v15_4.png)
+
 ## Merge requests for confidential issues
 
 Although you can create confidential issues (and make existing issues confidential) in a public project, you cannot make confidential merge requests.
@@ -83,7 +89,7 @@ Learn how to create [merge requests for confidential issues](../merge_requests/c
 
 ## Permissions and access to confidential issues
 
-There are two kinds of level access for confidential issues. The general rule
+Access to confidential issues is by one of two routes. The general rule
 is that confidential issues are visible only to members of a project with at
 least the **Reporter role**.
 

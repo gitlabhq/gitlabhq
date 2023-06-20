@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class ArrayNoneAny < Grape::Validations::Base
+      class ArrayNoneAny < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
           value = params[attr_name]
 

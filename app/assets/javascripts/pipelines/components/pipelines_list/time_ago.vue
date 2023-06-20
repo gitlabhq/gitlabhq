@@ -14,6 +14,17 @@ export default {
       type: Object,
       required: true,
     },
+    displayCalendarIcon: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    fontSize: {
+      type: String,
+      required: false,
+      default: 'gl-font-sm',
+      validator: (fontSize) => ['gl-font-sm', 'gl-font-md'].includes(fontSize),
+    },
   },
   computed: {
     duration() {
@@ -23,47 +34,29 @@ export default {
       return formatTime(this.duration * 1000);
     },
     finishedTime() {
-      return this.pipeline?.details?.finished_at;
-    },
-    showInProgress() {
-      return !this.duration && !this.finishedTime && !this.skipped;
-    },
-    showSkipped() {
-      return !this.duration && !this.finishedTime && this.skipped;
-    },
-    skipped() {
-      return this.pipeline?.details?.status?.label === 'skipped';
-    },
-    stuck() {
-      return this.pipeline.flags.stuck;
+      return this.pipeline?.details?.finished_at || this.pipeline?.finishedAt;
     },
   },
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-direction-column gl-font-sm time-ago">
-    <span
-      v-if="showInProgress"
-      class="gl-display-inline-flex gl-align-items-center"
-      data-testid="pipeline-in-progress"
-    >
-      <gl-icon v-if="stuck" name="warning" class="gl-mr-2" :size="12" data-testid="warning-icon" />
-      <gl-icon v-else name="hourglass" class="gl-mr-2" :size="12" data-testid="hourglass-icon" />
-      {{ s__('Pipeline|In progress') }}
-    </span>
-
-    <span v-if="showSkipped" data-testid="pipeline-skipped">
-      <gl-icon name="status_skipped_borderless" />
-      {{ s__('Pipeline|Skipped') }}
-    </span>
-
+  <div
+    class="gl-display-flex gl-flex-direction-column gl-align-items-flex-end gl-lg-align-items-flex-start"
+    :class="fontSize"
+  >
     <p v-if="duration" class="duration gl-display-inline-flex gl-align-items-center">
       <gl-icon name="timer" class="gl-mr-2" :size="12" />
       {{ durationFormatted }}
     </p>
 
     <p v-if="finishedTime" class="finished-at gl-display-inline-flex gl-align-items-center">
-      <gl-icon name="calendar" class="gl-mr-2" :size="12" />
+      <gl-icon
+        v-if="displayCalendarIcon"
+        name="calendar"
+        class="gl-mr-2"
+        :size="12"
+        data-testid="calendar-icon"
+      />
 
       <time
         v-gl-tooltip

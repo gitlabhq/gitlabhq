@@ -31,6 +31,8 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
   end
 
   describe 'GET /features' do
+    let(:path) { '/features' }
+
     let(:expected_features) do
       [
         {
@@ -74,28 +76,28 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
       Feature.enable(known_feature_flag.name)
     end
 
+    it_behaves_like 'GET request permissions for admin mode'
+
     it 'returns a 401 for anonymous users' do
       get api('/features')
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'returns a 403 for users' do
-      get api('/features', user)
-
-      expect(response).to have_gitlab_http_status(:forbidden)
-    end
-
     it 'returns the feature list for admins' do
-      get api('/features', admin)
+      get api('/features', admin, admin_mode: true)
 
-      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to match_array(expected_features)
     end
   end
 
   describe 'POST /feature' do
     let(:feature_name) { known_feature_flag.name }
+    let(:path) { "/features/#{feature_name}" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { { value: 'true' } }
+    end
 
     # TODO: remove this shared examples block when set_feature_flag_service feature flag
     # is removed. Then remove also any duplicate specs covered by the service class.
@@ -115,7 +117,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
         context 'when passed value=true' do
           it 'creates an enabled feature' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -129,11 +131,11 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           it 'logs the event' do
             expect(Feature.logger).to receive(:info).once
 
-            post api("/features/#{feature_name}", admin), params: { value: 'true' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true' }
           end
 
           it 'creates an enabled feature for the given Flipper group when passed feature_group=perf_team' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', feature_group: 'perf_team' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', feature_group: 'perf_team' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -148,7 +150,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           end
 
           it 'creates an enabled feature for the given user when passed user=username' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', user: user.username }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -163,7 +165,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           end
 
           it 'creates an enabled feature for the given user and feature group when passed user=username and feature_group=perf_team' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username, feature_group: 'perf_team' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', user: user.username, feature_group: 'perf_team' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['name']).to eq(feature_name)
@@ -181,7 +183,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           let(:expected_inexistent_path) { actor_path }
 
           it 'returns the current state of the flag without changes' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', actor_type => actor_path }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', actor_type => actor_path }
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']).to eq("400 Bad request - #{expected_inexistent_path} is not found!")
@@ -190,7 +192,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
         shared_examples 'enables the flag for the actor' do |actor_type|
           it 'sets the feature gate' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', actor_type => actor.full_path }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', actor_type => actor.full_path }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -207,7 +209,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
         shared_examples 'creates an enabled feature for the specified entries' do
           it do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', **gate_params }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', **gate_params }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['name']).to eq(feature_name)
@@ -404,7 +406,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
         end
 
         it 'creates a feature with the given percentage of time if passed an integer' do
-          post api("/features/#{feature_name}", admin), params: { value: '50' }
+          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '50' }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to match(
@@ -419,7 +421,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
         end
 
         it 'creates a feature with the given percentage of time if passed a float' do
-          post api("/features/#{feature_name}", admin), params: { value: '0.01' }
+          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01' }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to match(
@@ -434,7 +436,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
         end
 
         it 'creates a feature with the given percentage of actors if passed an integer' do
-          post api("/features/#{feature_name}", admin), params: { value: '50', key: 'percentage_of_actors' }
+          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '50', key: 'percentage_of_actors' }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to match(
@@ -449,7 +451,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
         end
 
         it 'creates a feature with the given percentage of actors if passed a float' do
-          post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors' }
+          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors' }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to match(
@@ -473,7 +475,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
           context 'when key and feature_group are provided' do
             before do
-              post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', feature_group: 'some-value' }
+              post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', feature_group: 'some-value' }
             end
 
             it_behaves_like 'fails to set the feature flag'
@@ -481,7 +483,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
           context 'when key and user are provided' do
             before do
-              post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', user: 'some-user' }
+              post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', user: 'some-user' }
             end
 
             it_behaves_like 'fails to set the feature flag'
@@ -489,7 +491,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
           context 'when key and group are provided' do
             before do
-              post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', group: 'somepath' }
+              post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', group: 'somepath' }
             end
 
             it_behaves_like 'fails to set the feature flag'
@@ -497,7 +499,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
           context 'when key and namespace are provided' do
             before do
-              post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', namespace: 'somepath' }
+              post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', namespace: 'somepath' }
             end
 
             it_behaves_like 'fails to set the feature flag'
@@ -505,7 +507,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
           context 'when key and project are provided' do
             before do
-              post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', project: 'somepath' }
+              post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', project: 'somepath' }
             end
 
             it_behaves_like 'fails to set the feature flag'
@@ -520,7 +522,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
         context 'when passed value=true' do
           it 'enables the feature' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -532,7 +534,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           end
 
           it 'enables the feature for the given Flipper group when passed feature_group=perf_team' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', feature_group: 'perf_team' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', feature_group: 'perf_team' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -547,7 +549,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           end
 
           it 'enables the feature for the given user when passed user=username' do
-            post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', user: user.username }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -567,7 +569,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
             Feature.enable(feature_name)
             expect(Feature.enabled?(feature_name)).to eq(true)
 
-            post api("/features/#{feature_name}", admin), params: { value: 'false' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'false' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -582,7 +584,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
             Feature.enable(feature_name, Feature.group(:perf_team))
             expect(Feature.enabled?(feature_name, admin)).to be_truthy
 
-            post api("/features/#{feature_name}", admin), params: { value: 'false', feature_group: 'perf_team' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'false', feature_group: 'perf_team' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -597,7 +599,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
             Feature.enable(feature_name, user)
             expect(Feature.enabled?(feature_name, user)).to be_truthy
 
-            post api("/features/#{feature_name}", admin), params: { value: 'false', user: user.username }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'false', user: user.username }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -615,7 +617,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           end
 
           it 'updates the percentage of time if passed an integer' do
-            post api("/features/#{feature_name}", admin), params: { value: '30' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '30' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -636,7 +638,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
           end
 
           it 'updates the percentage of actors if passed an integer' do
-            post api("/features/#{feature_name}", admin), params: { value: '74', key: 'percentage_of_actors' }
+            post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '74', key: 'percentage_of_actors' }
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response).to match(
@@ -663,7 +665,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
       Feature.enable(feature_name)
       expect(Feature.enabled?(feature_name, user)).to be_truthy
 
-      post api("/features/#{feature_name}", admin), params: { value: 'opt_out', user: user.username }
+      post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'opt_out', user: user.username }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to include(
@@ -683,7 +685,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
       end
 
       it 'refuses to enable the feature' do
-        post api("/features/#{feature_name}", admin), params: { value: 'true', user: user.username }
+        post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'true', user: user.username }
 
         expect(Feature).not_to be_enabled(feature_name, user)
 
@@ -702,7 +704,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
         Feature.enable(feature_name)
         expect(Feature).to be_enabled(feature_name, user)
 
-        post api("/features/#{feature_name}", admin), params: { value: 'opt_out', user: user.username }
+        post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: 'opt_out', user: user.username }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -711,6 +713,9 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
   describe 'DELETE /feature/:name' do
     let(:feature_name) { 'my_feature' }
+    let(:path) { "/features/#{feature_name}" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
 
     context 'when the user has no access' do
       it 'returns a 401 for anonymous users' do
@@ -728,7 +733,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
     context 'when the user has access' do
       it 'returns 204 when the value is not set' do
-        delete api("/features/#{feature_name}", admin)
+        delete api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
@@ -740,7 +745,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
 
         it 'deletes an enabled feature' do
           expect do
-            delete api("/features/#{feature_name}", admin)
+            delete api("/features/#{feature_name}", admin, admin_mode: true)
             Feature.reset
           end.to change { Feature.persisted_name?(feature_name) }
             .and change { Feature.enabled?(feature_name) }
@@ -751,7 +756,7 @@ RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feat
         it 'logs the event' do
           expect(Feature.logger).to receive(:info).once
 
-          delete api("/features/#{feature_name}", admin)
+          delete api("/features/#{feature_name}", admin, admin_mode: true)
         end
       end
     end

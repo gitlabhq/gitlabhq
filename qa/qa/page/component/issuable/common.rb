@@ -10,8 +10,8 @@ module QA
           def self.included(base)
             super
 
-            base.view 'app/assets/javascripts/vue_shared/issuable/show/components/issuable_title.vue' do
-              element :title_content, required: true
+            base.view 'app/assets/javascripts/issues/show/components/title.vue' do
+              element :issue_title, required: true
             end
           end
         end

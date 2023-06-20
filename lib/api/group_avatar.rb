@@ -4,7 +4,7 @@ module API
   class GroupAvatar < ::API::Base
     helpers Helpers::GroupsHelpers
 
-    feature_category :subgroups
+    feature_category :groups_and_projects
 
     params do
       requires :id, type: String, desc: 'The ID of the group'

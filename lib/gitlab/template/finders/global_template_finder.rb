@@ -25,7 +25,7 @@ module Gitlab
 
           # The key is untrusted input, so ensure we can't be directed outside
           # of base_dir
-          Gitlab::Utils.check_path_traversal!(file_name)
+          Gitlab::PathTraversal.check_path_traversal!(file_name)
 
           directory = select_directory(file_name)
           directory ? File.join(category_directory(directory), file_name) : nil

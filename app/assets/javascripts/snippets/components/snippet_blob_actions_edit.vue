@@ -2,7 +2,7 @@
 import { GlButton, GlFormGroup } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { s__, sprintf } from '~/locale';
-import { SNIPPET_MAX_BLOBS } from '../constants';
+import { SNIPPET_MAX_BLOBS, SNIPPET_LIMITATIONS } from '../constants';
 import { createBlob, decorateBlob, diffAll } from '../utils/blob';
 import SnippetBlobEdit from './snippet_blob_edit.vue';
 
@@ -47,6 +47,11 @@ export default {
     addLabel() {
       return sprintf(s__('Snippets|Add another file %{num}/%{total}'), {
         num: this.count,
+        total: SNIPPET_MAX_BLOBS,
+      });
+    },
+    limitationText() {
+      return sprintf(SNIPPET_LIMITATIONS, {
         total: SNIPPET_MAX_BLOBS,
       });
     },
@@ -159,5 +164,8 @@ export default {
       @click="addBlob"
       >{{ addLabel }}</gl-button
     >
+    <p v-if="!canAdd" data-testid="limitations_text" class="gl-text-secondary">
+      {{ limitationText }}
+    </p>
   </div>
 </template>

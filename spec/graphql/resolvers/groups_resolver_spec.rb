@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupsResolver, feature_category: :subgroups do
+RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects do
   include GraphqlHelpers
 
   describe '#resolve' do

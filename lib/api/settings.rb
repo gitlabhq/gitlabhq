@@ -125,11 +125,15 @@ module API
       given plantuml_enabled: ->(val) { val } do
         requires :plantuml_url, type: String, desc: 'The PlantUML server URL'
       end
+      optional :diagramsnet_enabled, type: Boolean, desc: 'Enable Diagrams.net'
+      given diagramsnet_enabled: ->(val) { val } do
+        requires :diagramsnet_url, type: String, desc: 'The Diagrams.net server URL'
+      end
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
       optional :project_export_enabled, type: Boolean, desc: 'Enable project export'
       optional :prometheus_metrics_enabled, type: Boolean, desc: 'Enable Prometheus metrics'
-      optional :push_event_hooks_limit, type: Integer, desc: "Number of changes (branches or tags) in a single push to determine whether webhooks and services will be fired or not. Webhooks and services won't be submitted if it surpasses that value."
-      optional :push_event_activities_limit, type: Integer, desc: 'Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push event will be created. Bulk push event will be created if it surpasses that value.'
+      optional :push_event_hooks_limit, type: Integer, desc: "Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling."
+      optional :push_event_activities_limit, type: Integer, desc: 'Maximum number of changes (branches or tags) in a single push above which a bulk push event is created. Setting to `0` does not disable throttling.'
       optional :recaptcha_enabled, type: Boolean, desc: 'Helps prevent bots from creating accounts'
       given recaptcha_enabled: ->(val) { val } do
         requires :recaptcha_site_key, type: String, desc: 'Generate site key at http://www.google.com/recaptcha'
@@ -182,6 +186,7 @@ module API
       optional :issues_create_limit, type: Integer, desc: "Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute."
       optional :raw_blob_request_limit, type: Integer, desc: "Maximum number of requests per minute for each raw path. Set to 0 for unlimited requests per minute."
       optional :wiki_page_max_content_bytes, type: Integer, desc: "Maximum wiki page content size in bytes"
+      optional :wiki_asciidoc_allow_uri_includes, type: Boolean, desc: "Allow URI includes for AsciiDoc wiki pages"
       optional :require_admin_approval_after_user_signup, type: Boolean, desc: 'Require explicit admin approval for new signups'
       optional :whats_new_variant, type: String, values: ApplicationSetting.whats_new_variants.keys, desc: "What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`."
       optional :floc_enabled, type: Grape::API::Boolean, desc: 'Enable FloC (Federated Learning of Cohorts)'

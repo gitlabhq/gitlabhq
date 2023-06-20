@@ -17,6 +17,7 @@ retrieve-tests-metadata:
   # We use a smaller image for this job only (update-tests-metadata compiles some gems)
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
   stage: prepare
+  needs: []
   script:
     - apt-get update && apt-get install -y curl  # Not present in ruby-slim, so we add it manually
     - install_gitlab_gem
@@ -32,17 +33,17 @@ update-tests-metadata:
     - retrieve-tests-metadata
     - generate-frontend-fixtures-mapping
     - setup-test-env
-    - rspec migration pg13
+    - rspec migration pg14
     - rspec-all frontend_fixture
-    - rspec unit pg13
-    - rspec integration pg13
-    - rspec system pg13
-    - rspec background_migration pg13
-    - rspec-ee migration pg13
-    - rspec-ee unit pg13
-    - rspec-ee integration pg13
-    - rspec-ee system pg13
-    - rspec-ee background_migration pg13
+    - rspec unit pg14
+    - rspec integration pg14
+    - rspec system pg14
+    - rspec background_migration pg14
+    - rspec-ee migration pg14
+    - rspec-ee unit pg14
+    - rspec-ee integration pg14
+    - rspec-ee system pg14
+    - rspec-ee background_migration pg14
   script:
     - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
     - source ./scripts/rspec_helpers.sh

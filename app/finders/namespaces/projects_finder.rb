@@ -32,6 +32,8 @@ module Namespaces
                      namespace.projects.with_route
                    end
 
+      collection = collection.not_aimed_for_deletion if params[:not_aimed_for_deletion].present?
+
       collection = filter_projects(collection)
 
       sort(collection)

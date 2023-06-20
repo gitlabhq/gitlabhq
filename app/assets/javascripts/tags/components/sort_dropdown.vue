@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSearchBoxByClick } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSearchBoxByClick } from '@gitlab/ui';
 import { mergeUrlParams, visitUrl, getParameterValues } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
@@ -8,8 +8,7 @@ export default {
     searchPlaceholder: s__('TagsPage|Filter by tag name'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlSearchBoxByClick,
   },
   inject: ['sortOptions', 'filterTagsPath'],
@@ -22,6 +21,11 @@ export default {
   computed: {
     selectedSortMethod() {
       return this.sortOptions[this.selectedKey];
+    },
+    sortOptionsListboxItems() {
+      return Object.entries(this.sortOptions).map(([value, text]) => {
+        return { value, text };
+      });
     },
   },
   created() {
@@ -37,9 +41,6 @@ export default {
     }
   },
   methods: {
-    isSortMethodSelected(sortKey) {
-      return sortKey === this.selectedKey;
-    },
     visitUrlFromOption(sortKey) {
       this.selectedKey = sortKey;
       const urlParams = {};
@@ -62,16 +63,13 @@ export default {
       data-testid="tag-search"
       @submit="visitUrlFromOption(selectedKey)"
     />
-    <gl-dropdown :text="selectedSortMethod" right data-testid="tags-dropdown">
-      <gl-dropdown-item
-        v-for="(value, key) in sortOptions"
-        :key="key"
-        :is-checked="isSortMethodSelected(key)"
-        is-check-item
-        @click="visitUrlFromOption(key)"
-      >
-        {{ value }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+    <gl-collapsible-listbox
+      v-model="selectedKey"
+      data-testid="tags-dropdown"
+      :items="sortOptionsListboxItems"
+      placement="right"
+      :toggle-text="selectedSortMethod"
+      @select="visitUrlFromOption"
+    />
   </div>
 </template>

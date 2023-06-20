@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Go::ModuleVersion, type: :model do
+RSpec.describe Packages::Go::ModuleVersion, type: :model, feature_category: :package_registry do
   include_context 'basic Go module'
 
   let_it_be(:mod) { create :go_module, project: project }
@@ -57,9 +57,30 @@ RSpec.describe Packages::Go::ModuleVersion, type: :model do
     end
 
     context 'with go.mod present' do
-      let_it_be(:version) { create :go_module_version, :tagged, mod: mod, name: 'v1.0.1' }
+      let!(:version) { create :go_module_version, :tagged, mod: mod, name: name }
+      let(:name) { 'v1.0.1' }
 
-      it('returns the contents of go.mod') { expect(version.gomod).to eq("module #{mod.name}\n") }
+      shared_examples 'returns the contents of go.mod' do
+        it { expect(version.gomod).to eq("module #{mod.name}\n") }
+      end
+
+      it_behaves_like 'returns the contents of go.mod'
+
+      context 'with cached blobs' do
+        before do
+          version.send(:blobs)
+        end
+
+        it_behaves_like 'returns the contents of go.mod'
+      end
+
+      context 'with the submodule\'s path' do
+        let_it_be(:mod) { create :go_module, project: project, path: 'mod' }
+
+        let(:name) { 'v1.0.3' }
+
+        it_behaves_like 'returns the contents of go.mod'
+      end
     end
   end
 

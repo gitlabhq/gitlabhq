@@ -12,8 +12,8 @@ describe('MR Widget App', () => {
     });
   };
 
-  it('does not mount if widgets array is empty', () => {
+  it('renders widget container', () => {
     createComponent();
-    expect(wrapper.findByTestId('mr-widget-app').exists()).toBe(false);
+    expect(wrapper.findByTestId('mr-widget-app').exists()).toBe(true);
   });
 });

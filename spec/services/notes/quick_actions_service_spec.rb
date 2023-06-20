@@ -248,6 +248,46 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
         end
       end
     end
+
+    describe '/promote_to' do
+      shared_examples 'promotes work item' do |from:, to:|
+        it 'leaves the note empty' do
+          expect(execute(note)).to be_empty
+        end
+
+        it 'promotes to provided type' do
+          expect { execute(note) }.to change { noteable.work_item_type.base_type }.from(from).to(to)
+        end
+      end
+
+      context 'on a task' do
+        let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
+        let_it_be(:note_text) { '/promote_to Issue' }
+        let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+        it_behaves_like 'promotes work item', from: 'task', to: 'issue'
+
+        context 'when type name is lower case' do
+          let_it_be(:note_text) { '/promote_to issue' }
+
+          it_behaves_like 'promotes work item', from: 'task', to: 'issue'
+        end
+      end
+
+      context 'on an issue' do
+        let_it_be_with_reload(:noteable) { create(:work_item, :issue, project: project) }
+        let_it_be(:note_text) { '/promote_to Incident' }
+        let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+        it_behaves_like 'promotes work item', from: 'issue', to: 'incident'
+
+        context 'when type name is lower case' do
+          let_it_be(:note_text) { '/promote_to incident' }
+
+          it_behaves_like 'promotes work item', from: 'issue', to: 'incident'
+        end
+      end
+    end
   end
 
   describe '.supported?' do
@@ -376,6 +416,87 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
             expect(note.noteable).to be_open
           end
         end
+      end
+    end
+  end
+
+  describe '#apply_updates' do
+    include_context 'note on noteable'
+
+    let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:work_item, reload: true) { create(:work_item, :issue, project: project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:issue_note) { create(:note_on_issue, project: project, noteable: issue) }
+    let_it_be(:work_item_note) { create(:note, project: project, noteable: work_item) }
+    let_it_be(:mr_note) { create(:note_on_merge_request, project: project, noteable: merge_request) }
+    let_it_be(:commit_note) { create(:note_on_commit, project: project) }
+    let(:update_params) { {} }
+
+    subject(:apply_updates) { described_class.new(project, maintainer).apply_updates(update_params, note) }
+
+    context 'with a note on an issue' do
+      let(:note) { issue_note }
+
+      it 'returns successful service response if update returned no errors' do
+        update_params[:confidential] = true
+        expect(apply_updates.success?).to be true
+      end
+
+      it 'returns service response with errors if update failed' do
+        update_params[:title] = ""
+        expect(apply_updates.success?).to be false
+        expect(apply_updates.message).to include("Title can't be blank")
+      end
+    end
+
+    context 'with a note on a merge request' do
+      let(:note) { mr_note }
+
+      it 'returns successful service response if update returned no errors' do
+        update_params[:title] = 'New title'
+        expect(apply_updates.success?).to be true
+      end
+
+      it 'returns service response with errors if update failed' do
+        update_params[:title] = ""
+        expect(apply_updates.success?).to be false
+        expect(apply_updates.message).to include("Title can't be blank")
+      end
+    end
+
+    context 'with a note on a work item' do
+      let(:note) { work_item_note }
+
+      before do
+        update_params[:confidential] = true
+      end
+
+      it 'returns successful service response if update returned no errors' do
+        expect(apply_updates.success?).to be true
+      end
+
+      it 'returns service response with errors if update failed' do
+        task = create(:work_item, :task, project: project)
+        create(:parent_link, work_item: task, work_item_parent: work_item)
+
+        expect(apply_updates.success?).to be false
+        expect(apply_updates.message)
+          .to include("A confidential work item cannot have a parent that already has non-confidential children.")
+      end
+    end
+
+    context 'with a note on a commit' do
+      let(:note) { commit_note }
+
+      it 'returns successful service response if update returned no errors' do
+        update_params[:tag_name] = 'test'
+        expect(apply_updates.success?).to be true
+      end
+
+      it 'returns service response with errors if update failed' do
+        update_params[:tag_name] = '-test'
+        expect(apply_updates.success?).to be false
+        expect(apply_updates.message).to include('Tag name invalid')
       end
     end
   end

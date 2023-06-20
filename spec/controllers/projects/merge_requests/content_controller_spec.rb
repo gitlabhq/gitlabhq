@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MergeRequests::ContentController do
+RSpec.describe Projects::MergeRequests::ContentController, feature_category: :code_review_workflow do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }

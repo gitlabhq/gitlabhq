@@ -4,7 +4,7 @@ key_path: recorded_at
 description: When the Usage Ping computation was started
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: string
 status: active
 milestone: "8.10"

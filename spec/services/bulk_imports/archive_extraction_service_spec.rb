@@ -53,7 +53,7 @@ RSpec.describe BulkImports::ArchiveExtractionService, feature_category: :importe
     context 'when filepath is being traversed' do
       it 'raises an error' do
         expect { described_class.new(tmpdir: File.join(Dir.mktmpdir, 'test', '..'), filename: 'name').execute }
-          .to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+          .to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
       end
     end
   end

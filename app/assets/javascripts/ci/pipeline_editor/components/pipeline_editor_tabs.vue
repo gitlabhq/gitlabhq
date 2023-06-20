@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import CiEditorHeader from 'ee_else_ce/ci/pipeline_editor/components/editor/ci_editor_header.vue';
 import { s__, __ } from '~/locale';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -19,7 +20,6 @@ import {
 } from '../constants';
 import getAppStatus from '../graphql/queries/client/app_status.query.graphql';
 import CiConfigMergedPreview from './editor/ci_config_merged_preview.vue';
-import CiEditorHeader from './editor/ci_editor_header.vue';
 import CiValidate from './validate/ci_validate.vue';
 import TextEditor from './editor/text_editor.vue';
 import EditorTab from './ui/editor_tab.vue';
@@ -87,11 +87,7 @@ export default {
       type: String,
       required: true,
     },
-    isNewCiConfigFile: {
-      type: Boolean,
-      required: true,
-    },
-    showDrawer: {
+    showHelpDrawer: {
       type: Boolean,
       required: true,
     },
@@ -100,6 +96,10 @@ export default {
       required: true,
     },
     showAiAssistantDrawer: {
+      type: Boolean,
+      required: true,
+    },
+    isNewCiConfigFile: {
       type: Boolean,
       required: true,
     },
@@ -196,7 +196,7 @@ export default {
     >
       <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
       <ci-editor-header
-        :show-drawer="showDrawer"
+        :show-help-drawer="showHelpDrawer"
         :show-job-assistant-drawer="showJobAssistantDrawer"
         :show-ai-assistant-drawer="showAiAssistantDrawer"
         v-on="$listeners"

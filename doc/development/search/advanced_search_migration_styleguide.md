@@ -54,7 +54,7 @@ The following migration helpers are available in `ee/app/workers/concerns/elasti
 
 Backfills a specific field in an index. In most cases, the mapping for the field should already be added.
 
-Requires the `index_name` and `field_name` methods.
+Requires the `index_name` and `field_name` methods to backfill a single field.
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -68,6 +68,24 @@ class MigrationName < Elastic::Migration
 
   def field_name
     :schema_version
+  end
+end
+```
+
+Requires the `index_name` and `field_names` methods to backfill multiple fields if any field is null.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationBackfillHelper
+
+  private
+
+  def index_name
+    Issue.__elasticsearch__.index_name
+  end
+
+  def field_names
+    %w[schema_version visibility_level]
   end
 end
 ```
@@ -152,6 +170,34 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+#### `Elastic::MigrationCreateIndex`
+
+Creates a new index.
+
+Requires:
+
+- The `target_class` and `document_type` methods
+- Mappings and index settings for the class in `ee/lib/elastic/latest/` and `ee/lib/elastic/v12p1/`
+
+WARNING:
+You must perform a follow-up migration to populate the index in the same milestone.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Elastic::MigrationCreateIndex
+
+  retry_on_failure
+
+  def document_type
+    :epic
+  end
+
+  def target_class
+    Epic
+  end
+end
+```
+
 #### `Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.
@@ -215,9 +261,22 @@ class BatchedMigrationName < Elastic::Migration
 end
 ```
 
+## Avoiding downtime in migrations
+
+### Reverting a migration
+
+If a migration fails or is halted on GitLab.com, we prefer to revert the change that introduced the migration. This
+prevents self-managed customers from receiving a broken migration and reduces the need for backports.
+
+### When to merge
+
+We prefer not to merge migrations within 1 week of the release. This allows time for a revert if a migration fails or
+doesn't work as expected. Migrations still in development or review during the final week of the release should be pushed
+to the next milestone.
+
 ### Multi-version compatibility
 
-These advanced search migrations, like any other GitLab changes, need to support the case where
+Advanced search migrations, like any other GitLab changes, need to support the case where
 [multiple versions of the application are running at the same time](../multi_version_compatibility.md).
 
 Depending on the order of deployment, it's possible that the migration
@@ -225,7 +284,7 @@ has started or finished and there's still a server running the application code 
 migration. We need to take this into consideration until we can
 [ensure all advanced search migrations start after the deployment has finished](https://gitlab.com/gitlab-org/gitlab/-/issues/321619).
 
-### Reverting a migration
+### High risk migrations
 
 Because Elasticsearch does not support transactions, we always need to design our
 migrations to accommodate a situation where the application
@@ -236,7 +295,26 @@ some data is moved) to a later merge request after the migrations have
 completed successfully. To be safe, for self-managed customers we should also
 defer it to another release if there is risk of important data loss.
 
-### Best practices for advanced search migrations
+## Calculating migration runtime
+
+It's important to understand how long a migration might take to run on GitLab.com. Derive the number of documents that
+will be processed by the migration. This number may come from querying the database or an existing Elasticsearch index.
+Use the following formula to calculate the runtime:
+
+```ruby
+> batch_size = 9_000
+=> 9000
+> throttle_delay = 1.minute
+=> 1 minute
+> number_of_documents = 15_536_906
+=> 15536906
+> (number_of_documents / batch_size) * throttle_delay
+=> 1726 minutes
+> (number_of_documents / batch_size) * throttle_delay / 1.hour
+=> 28
+```
+
+## Best practices for advanced search migrations
 
 Follow these best practices for best results:
 

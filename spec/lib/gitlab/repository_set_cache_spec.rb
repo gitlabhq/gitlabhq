@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_repository_cache, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
 
   let(:repository) { project.repository }
@@ -59,8 +59,13 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
     it 'writes the value to the cache' do
       write_cache
 
-      redis_keys = Gitlab::Redis::Cache.with { |redis| redis.scan(0, match: "*") }.last
-      expect(redis_keys).to include("#{gitlab_cache_namespace}:branch_names:#{namespace}:set")
+      cursor, redis_keys = Gitlab::Redis::RepositoryCache.with { |redis| redis.scan(0, match: "*") }
+      while cursor != "0"
+        cursor, keys = Gitlab::Redis::RepositoryCache.with { |redis| redis.scan(cursor, match: "*") }
+        redis_keys << keys
+      end
+
+      expect(redis_keys.flatten).to include("#{gitlab_cache_namespace}:branch_names:#{namespace}:set")
       expect(cache.fetch('branch_names')).to contain_exactly('main')
     end
 
@@ -72,60 +77,64 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
   end
 
   describe '#expire' do
-    shared_examples 'expires varying amount of keys' do
-      subject { cache.expire(*keys) }
+    subject { cache.expire(*keys) }
 
-      before do
-        cache.write(:foo, ['value'])
-        cache.write(:bar, ['value2'])
-      end
+    before do
+      cache.write(:foo, ['value'])
+      cache.write(:bar, ['value2'])
+    end
 
-      it 'actually wrote the values' do
-        expect(cache.read(:foo)).to contain_exactly('value')
-        expect(cache.read(:bar)).to contain_exactly('value2')
-      end
+    it 'actually wrote the values' do
+      expect(cache.read(:foo)).to contain_exactly('value')
+      expect(cache.read(:bar)).to contain_exactly('value2')
+    end
 
-      context 'single key' do
-        let(:keys) { %w(foo) }
+    context 'single key' do
+      let(:keys) { %w(foo) }
 
-        it { is_expected.to eq(1) }
+      it { is_expected.to eq(1) }
 
-        it 'deletes the given key from the cache' do
-          subject
+      it 'deletes the given key from the cache' do
+        subject
 
-          expect(cache.read(:foo)).to be_empty
-        end
-      end
-
-      context 'multiple keys' do
-        let(:keys) { %w(foo bar) }
-
-        it { is_expected.to eq(2) }
-
-        it 'deletes the given keys from the cache' do
-          subject
-
-          expect(cache.read(:foo)).to be_empty
-          expect(cache.read(:bar)).to be_empty
-        end
-      end
-
-      context 'no keys' do
-        let(:keys) { [] }
-
-        it { is_expected.to eq(0) }
+        expect(cache.read(:foo)).to be_empty
       end
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(use_pipeline_over_multikey: false)
-      end
+    context 'multiple keys' do
+      let(:keys) { %w(foo bar) }
 
-      it_behaves_like 'expires varying amount of keys'
+      it { is_expected.to eq(2) }
+
+      it 'deletes the given keys from the cache' do
+        subject
+
+        expect(cache.read(:foo)).to be_empty
+        expect(cache.read(:bar)).to be_empty
+      end
     end
 
-    it_behaves_like 'expires varying amount of keys'
+    context 'no keys' do
+      let(:keys) { [] }
+
+      it { is_expected.to eq(0) }
+    end
+
+    context 'when deleting over 1000 keys' do
+      it 'deletes in batches of 1000' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          # In a Redis Cluster, we do not want a pipeline to have too many keys
+          # but in a standalone Redis, multi-key commands can be used.
+          if ::Gitlab::Redis::ClusterUtil.cluster?(redis)
+            expect(redis).to receive(:pipelined).at_least(2).and_call_original
+          else
+            expect(redis).to receive(:unlink).and_call_original
+          end
+        end
+
+        cache.expire(*(Array.new(1001) { |i| i }))
+      end
+    end
   end
 
   describe '#exist?' do

@@ -7,10 +7,12 @@ RSpec.describe SentNotificationsController do
   let(:project) { create(:project, :public) }
   let(:private_project) { create(:project, :private) }
   let(:sent_notification) { create(:sent_notification, project: target_project, noteable: noteable, recipient: user) }
+  let(:email) { 'email@example.com' }
 
   let(:issue) do
-    create(:issue, project: target_project) do |issue|
+    create(:issue, project: target_project, external_author: email) do |issue|
       issue.subscriptions.create!(user: user, project: target_project, subscribed: true)
+      issue.issue_email_participants.create!(email: email)
     end
   end
 
@@ -29,6 +31,14 @@ RSpec.describe SentNotificationsController do
   let(:noteable) { issue }
   let(:target_project) { project }
 
+  def force_unsubscribe
+    get(:unsubscribe, params: { id: sent_notification.reply_key, force: true })
+  end
+
+  def unsubscribe
+    get(:unsubscribe, params: { id: sent_notification.reply_key })
+  end
+
   describe 'GET unsubscribe' do
     shared_examples 'returns 404' do
       it 'does not set the flash message' do
@@ -43,11 +53,15 @@ RSpec.describe SentNotificationsController do
     context 'when the user is not logged in' do
       context 'when the force param is passed' do
         before do
-          get(:unsubscribe, params: { id: sent_notification.reply_key, force: true })
+          force_unsubscribe
         end
 
         it 'unsubscribes the user' do
           expect(issue.subscribed?(user, project)).to be_falsey
+        end
+
+        it 'does not delete the issue email participant for non-service-desk issue' do
+          expect { force_unsubscribe }.not_to change { issue.issue_email_participants.count }
         end
 
         it 'sets the flash message' do
@@ -63,7 +77,7 @@ RSpec.describe SentNotificationsController do
         render_views
 
         before do
-          get(:unsubscribe, params: { id: sent_notification.reply_key })
+          unsubscribe
         end
 
         shared_examples 'unsubscribing as anonymous' do |project_visibility|
@@ -99,6 +113,10 @@ RSpec.describe SentNotificationsController do
 
             it 'shows issue title' do
               expect(response.body).to include(issue.title)
+            end
+
+            it 'does not delete the issue email participant' do
+              expect { unsubscribe }.not_to change { issue.issue_email_participants.count }
             end
 
             it_behaves_like 'unsubscribing as anonymous', :public
@@ -171,7 +189,7 @@ RSpec.describe SentNotificationsController do
         before do
           sent_notification.noteable.destroy!
 
-          get(:unsubscribe, params: { id: sent_notification.reply_key })
+          unsubscribe
         end
 
         it_behaves_like 'returns 404'
@@ -193,7 +211,7 @@ RSpec.describe SentNotificationsController do
 
       context 'when the force param is passed' do
         before do
-          get(:unsubscribe, params: { id: sent_notification.reply_key, force: true })
+          force_unsubscribe
         end
 
         it 'unsubscribes the user' do
@@ -220,7 +238,7 @@ RSpec.describe SentNotificationsController do
         let(:sent_notification) { create(:sent_notification, project: project, noteable: merge_request, recipient: user) }
 
         before do
-          get(:unsubscribe, params: { id: sent_notification.reply_key })
+          unsubscribe
         end
 
         it 'unsubscribes the user' do
@@ -243,7 +261,7 @@ RSpec.describe SentNotificationsController do
           let(:target_project) { private_project }
 
           before do
-            get(:unsubscribe, params: { id: sent_notification.reply_key })
+            unsubscribe
           end
 
           it 'unsubscribes user and redirects to root path' do
@@ -257,11 +275,15 @@ RSpec.describe SentNotificationsController do
 
           before do
             private_project.add_developer(user)
-            get(:unsubscribe, params: { id: sent_notification.reply_key })
+            unsubscribe
           end
 
           it 'unsubscribes user and redirects to issue path' do
             expect(response).to redirect_to(project_issue_path(private_project, issue))
+          end
+
+          it 'does not delete the issue email participant for non-service-desk issue' do
+            expect { unsubscribe }.not_to change { issue.issue_email_participants.count }
           end
         end
       end
@@ -270,10 +292,26 @@ RSpec.describe SentNotificationsController do
         before do
           sent_notification.noteable.destroy!
 
-          get(:unsubscribe, params: { id: sent_notification.reply_key })
+          unsubscribe
         end
 
         it_behaves_like 'returns 404'
+      end
+
+      context 'when support bot is the notification recipient' do
+        let(:sent_notification) { create(:sent_notification, project: target_project, noteable: noteable, recipient: User.support_bot) }
+
+        it 'deletes the external author on the issue' do
+          expect { unsubscribe }.to change { issue.issue_email_participants.count }.by(-1)
+        end
+
+        context 'when noteable is not an issue' do
+          let(:noteable) { merge_request }
+
+          it 'does not delete the external author on the issue' do
+            expect { unsubscribe }.not_to change { issue.issue_email_participants.count }
+          end
+        end
       end
     end
   end

@@ -1,16 +1,19 @@
 <script>
+import * as Sentry from '@sentry/browser';
 import produce from 'immer';
 import Draggable from 'vuedraggable';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { s__ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
-import { findHierarchyWidgets, getWorkItemQuery } from '../../utils';
-import workItemQuery from '../../graphql/work_item.query.graphql';
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import { findHierarchyWidgets } from '../../utils';
+import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
+import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
+import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WorkItemLinkChild from './work_item_link_child.vue';
 
 export default {
@@ -38,11 +41,6 @@ export default {
       required: true,
     },
     canUpdate: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    fetchByIid: {
       type: Boolean,
       required: false,
       default: false,
@@ -78,44 +76,71 @@ export default {
         .map((child) => findHierarchyWidgets(child.widgets) || {})
         .some((hierarchy) => hierarchy.hasChildren);
     },
-    queryVariables() {
-      return this.fetchByIid
-        ? {
-            fullPath: this.fullPath,
-            iid: this.workItemIid,
-          }
-        : {
-            id: this.workItemId,
-          };
-    },
   },
   methods: {
-    addWorkItemQuery({ id, iid }) {
-      const variables = this.fetchByIid
-        ? {
-            fullPath: this.fullPath,
-            iid,
-          }
-        : {
-            id,
-          };
+    async removeChild(child) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: { input: { id: child.id, hierarchyWidget: { parentId: null } } },
+          update: (cache) => removeHierarchyChild(cache, this.fullPath, this.workItemIid, child),
+        });
+
+        if (data.workItemUpdate.errors.length) {
+          throw new Error(data.workItemUpdate.errors);
+        }
+
+        this.$toast.show(s__('WorkItem|Child removed'), {
+          action: {
+            text: s__('WorkItem|Undo'),
+            onClick: (_, toast) => {
+              this.undoChildRemoval(child);
+              toast.hide();
+            },
+          },
+        });
+      } catch (error) {
+        this.$emit('error', s__('WorkItem|Something went wrong while removing child.'));
+        Sentry.captureException(error);
+      }
+    },
+    async undoChildRemoval(child) {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: { input: { id: child.id, hierarchyWidget: { parentId: this.workItemId } } },
+          update: (cache) => addHierarchyChild(cache, this.fullPath, this.workItemIid, child),
+        });
+
+        if (data.workItemUpdate.errors.length) {
+          throw new Error(data.workItemUpdate.errors);
+        }
+
+        this.$toast.show(s__('WorkItem|Child removal reverted'));
+      } catch (error) {
+        this.$emit('error', s__('WorkItem|Something went wrong while undoing child removal.'));
+        Sentry.captureException(error);
+      }
+    },
+    addWorkItemQuery({ iid }) {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query() {
-          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        query: workItemByIidQuery,
+        variables: {
+          fullPath: this.fullPath,
+          iid,
         },
-        variables,
         update(data) {
-          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+          return data.workspace.workItems.nodes[0];
         },
         context: {
           isSingleRequest: true,
         },
       });
     },
-    prefetchWorkItem({ id, iid }) {
+    prefetchWorkItem({ iid }) {
       if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
         this.prefetch = setTimeout(
-          () => this.addWorkItemQuery({ id, iid }),
+          () => this.addWorkItemQuery({ iid }),
           DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
         );
       }
@@ -180,12 +205,13 @@ export default {
           },
           update: (store) => {
             store.updateQuery(
-              { query: getWorkItemQuery(this.fetchByIid), variables: this.queryVariables },
+              {
+                query: workItemByIidQuery,
+                variables: { fullPath: this.fullPath, iid: this.workItemIid },
+              },
               (sourceData) =>
                 produce(sourceData, (draftData) => {
-                  const widgets = this.fetchByIid
-                    ? draftData.workspace.workItems.nodes[0].widgets
-                    : draftData.workItem.widgets;
+                  const { widgets } = draftData.workspace.workItems.nodes[0];
                   const hierarchyWidget = findHierarchyWidgets(widgets);
                   hierarchyWidget.children.nodes = updatedChildren;
                 }),
@@ -210,7 +236,8 @@ export default {
           },
         )
         .catch((error) => {
-          this.updateError = error.message;
+          this.$emit('error', error.message);
+          Sentry.captureException(error);
         });
     },
   },
@@ -235,7 +262,7 @@ export default {
       :has-indirect-children="hasIndirectChildren"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
-      @removeChild="$emit('removeChild', $event)"
+      @removeChild="removeChild"
       @click="$emit('show-modal', { event: $event, child: $event.childItem || child })"
     />
   </component>

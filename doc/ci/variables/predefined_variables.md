@@ -35,7 +35,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_COMMIT_DESCRIPTION`                  | 10.8   | all    | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                      | 10.8   | all    | The full commit message. |
 | `CI_COMMIT_REF_NAME`                     | 9.0    | all    | The branch or tag name for which project is built. |
-| `CI_COMMIT_REF_PROTECTED`                | 11.11  | all    | `true` if the job is running for a protected reference. |
+| `CI_COMMIT_REF_PROTECTED`                | 11.11  | all    | `true` if the job is running for a protected reference, `false` otherwise. |
 | `CI_COMMIT_REF_SLUG`                     | 9.0    | all    | `CI_COMMIT_REF_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | `CI_COMMIT_SHA`                          | 9.0    | all    | The commit revision the project is built for. |
 | `CI_COMMIT_SHORT_SHA`                    | 11.7   | all    | The first eight characters of `CI_COMMIT_SHA`. |
@@ -110,7 +110,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_REGISTRY_PASSWORD`                   | 9.0    | all    | The password to push containers to the project's GitLab Container Registry. Only available if the Container Registry is enabled for the project. This password value is the same as the `CI_JOB_TOKEN` and is valid only as long as the job is running. Use the `CI_DEPLOY_PASSWORD` for long-lived access to the registry |
 | `CI_REGISTRY_USER`                       | 9.0    | all    | The username to push containers to the project's GitLab Container Registry. Only available if the Container Registry is enabled for the project. |
 | `CI_REGISTRY`                            | 8.10   | 0.5    | The address of the GitLab Container Registry. Only available if the Container Registry is enabled for the project. This variable includes a `:port` value if one is specified in the registry configuration. |
-| `CI_REPOSITORY_URL`                      | 9.0    | all    | The URL to clone the Git repository. |
+| `CI_REPOSITORY_URL`                      | 9.0    | all    | The full path to Git clone (HTTP) the repository with a [CI/CD job token](../jobs/ci_job_token.md), in the format `https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.example.com/my-group/my-project.git`. |
 | `CI_RUNNER_DESCRIPTION`                  | 8.10   | 0.5    | The description of the runner. |
 | `CI_RUNNER_EXECUTABLE_ARCH`              | all    | 10.6   | The OS/architecture of the GitLab Runner executable. Might not be the same as the environment of the executor. |
 | `CI_RUNNER_ID`                           | 8.10   | 0.5    | The unique ID of the runner being used. |

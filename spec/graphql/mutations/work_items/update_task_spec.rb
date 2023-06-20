@@ -20,10 +20,6 @@ RSpec.describe Mutations::WorkItems::UpdateTask do
       mutation.resolve(**input)
     end
 
-    before do
-      stub_spam_services
-    end
-
     context 'when user has sufficient permissions' do
       let(:current_user) { developer }
 

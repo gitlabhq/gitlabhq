@@ -1,21 +1,12 @@
 # frozen_string_literal: true
 
 class Projects::EnvironmentsController < Projects::ApplicationController
-  # Metrics dashboard code is getting decoupled from environments and is being moved
-  # into app/controllers/projects/metrics_dashboard_controller.rb
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/226002 for more details.
-
   MIN_SEARCH_LENGTH = 3
 
-  include MetricsDashboard
   include ProductAnalyticsTracking
   include KasCookie
 
   layout 'project'
-
-  before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
-    authorize_metrics_dashboard!
-  end
 
   before_action only: [:show] do
     push_frontend_feature_flag(:environment_details_vue, @project)
@@ -25,15 +16,19 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:kas_user_access_project, @project)
   end
 
-  before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
+  before_action only: [:edit, :new] do
+    push_frontend_feature_flag(:environment_settings_to_graphql, @project)
+  end
+
+  before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update, :cancel_auto_stop]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics, :cancel_auto_stop]
+  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :cancel_auto_stop]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
-  before_action :set_kas_cookie, only: [:index], if: -> { current_user }
+  before_action :set_kas_cookie, only: [:index], if: -> { current_user && request.format.html? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal,
@@ -175,41 +170,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
-  def metrics_redirect
-    return not_found if Feature.enabled?(:remove_monitor_metrics)
-
-    redirect_to project_metrics_dashboard_path(project)
-  end
-
-  def metrics
-    return not_found if Feature.enabled?(:remove_monitor_metrics)
-
-    respond_to do |format|
-      format.html do
-        redirect_to project_metrics_dashboard_path(project, environment: environment)
-      end
-      format.json do
-        # Currently, this acts as a hint to load the metrics details into the cache
-        # if they aren't there already
-        @metrics = environment.metrics || {}
-
-        render json: @metrics, status: @metrics.any? ? :ok : :no_content
-      end
-    end
-  end
-
-  def additional_metrics
-    return not_found if Feature.enabled?(:remove_monitor_metrics)
-
-    respond_to do |format|
-      format.json do
-        additional_metrics = environment.additional_metrics(*metrics_params) || {}
-
-        render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
-      end
-    end
-  end
-
   def search
     respond_to do |format|
       format.json do
@@ -259,16 +219,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     search = params[:search] if params[:search] && params[:search].length >= MIN_SEARCH_LENGTH
 
     @search_environments ||= Environments::EnvironmentsFinder.new(project, current_user, type: type, search: search).execute
-  end
-
-  def metrics_params
-    params.require([:start, :end])
-  end
-
-  def metrics_dashboard_params
-    params
-      .permit(:embedded, :group, :title, :y_label, :dashboard_path, :environment, :sample_metrics, :embed_json)
-      .merge(dashboard_path: params[:dashboard], environment: environment)
   end
 
   def include_all_dashboards?

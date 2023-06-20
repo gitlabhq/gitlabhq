@@ -7,18 +7,22 @@ module Packages
 
       ExtractionError = Class.new(StandardError)
 
+      ROOT_XPATH = '//xmlns:package/xmlns:metadata/xmlns'
+
       XPATHS = {
-        package_name: '//xmlns:package/xmlns:metadata/xmlns:id',
-        package_version: '//xmlns:package/xmlns:metadata/xmlns:version',
-        license_url: '//xmlns:package/xmlns:metadata/xmlns:licenseUrl',
-        project_url: '//xmlns:package/xmlns:metadata/xmlns:projectUrl',
-        icon_url: '//xmlns:package/xmlns:metadata/xmlns:iconUrl'
+        package_name: "#{ROOT_XPATH}:id",
+        package_version: "#{ROOT_XPATH}:version",
+        authors: "#{ROOT_XPATH}:authors",
+        description: "#{ROOT_XPATH}:description",
+        license_url: "#{ROOT_XPATH}:licenseUrl",
+        project_url: "#{ROOT_XPATH}:projectUrl",
+        icon_url: "#{ROOT_XPATH}:iconUrl"
       }.freeze
 
-      XPATH_DEPENDENCIES = '//xmlns:package/xmlns:metadata/xmlns:dependencies/xmlns:dependency'
-      XPATH_DEPENDENCY_GROUPS = '//xmlns:package/xmlns:metadata/xmlns:dependencies/xmlns:group'
-      XPATH_TAGS = '//xmlns:package/xmlns:metadata/xmlns:tags'
-      XPATH_PACKAGE_TYPES = '//xmlns:package/xmlns:metadata/xmlns:packageTypes/xmlns:packageType'
+      XPATH_DEPENDENCIES = "#{ROOT_XPATH}:dependencies/xmlns:dependency".freeze
+      XPATH_DEPENDENCY_GROUPS = "#{ROOT_XPATH}:dependencies/xmlns:group".freeze
+      XPATH_TAGS = "#{ROOT_XPATH}:tags".freeze
+      XPATH_PACKAGE_TYPES = "#{ROOT_XPATH}:packageTypes/xmlns:packageType".freeze
 
       MAX_FILE_SIZE = 4.megabytes.freeze
 
@@ -35,14 +39,9 @@ module Packages
       private
 
       def package_file
-        strong_memoize(:package_file) do
-          ::Packages::PackageFile.find_by_id(@package_file_id)
-        end
+        ::Packages::PackageFile.find_by_id(@package_file_id)
       end
-
-      def project
-        package_file.package.project
-      end
+      strong_memoize_attr :package_file
 
       def valid_package_file?
         package_file &&

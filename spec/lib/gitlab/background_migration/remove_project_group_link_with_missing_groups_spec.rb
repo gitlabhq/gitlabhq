@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::RemoveProjectGroupLinkWithMissingGroups, :migration,
-  feature_category: :subgroups, schema: 20230206172702 do
+  feature_category: :groups_and_projects, schema: 20230206172702 do
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:project_group_links) { table(:project_group_links) }

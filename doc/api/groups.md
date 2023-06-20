@@ -12,6 +12,8 @@ The fields returned in responses vary based on the [permissions](../user/permiss
 
 ## List groups
 
+> Support for keyset pagination introduced in GitLab 14.3.
+
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
@@ -19,7 +21,7 @@ By default, this request returns 20 results at a time because the API results [a
 
 When accessed without authentication, this endpoint also supports [keyset pagination](rest/index.md#keyset-based-pagination):
 
-- When requesting consecutive pages of results, we recommend you use keyset pagination.
+- When requesting consecutive pages of results, you should use keyset pagination.
 - Beyond a specific offset limit (specified by [max offset allowed by the REST API for offset-based pagination](../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination)), offset pagination is unavailable.
 
 Parameters:
@@ -820,9 +822,9 @@ Parameters:
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
-| `wiki_access_level` **(PREMIUM)**                            | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional units of compute for this group. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly units of compute for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `wiki_access_level` **(PREMIUM)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
 
 ### Options for `default_branch_protection`
 
@@ -834,6 +836,7 @@ The `default_branch_protection` attribute determines whether users with the Deve
 | `1`   | Partial protection. Users with the Developer or Maintainer role can:  <br>- Push new commits |
 | `2`   | Full protection. Only users with the Maintainer role can:  <br>- Push new commits |
 | `3`   | Protected against pushes. Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
+| `4`   | Protected against pushes except initial push. User with the Developer rope can: <br>- Push commit to empty repository.<br> Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
 
 ## New Subgroup
 
@@ -976,11 +979,11 @@ PUT /groups/:id
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)**      | integer | no       | Can be set by administrators only. Additional CI/CD minutes for this group. |
+| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional units of compute for this group. |
 | `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
 | `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
 | `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**            | integer | no       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
+| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly units of compute for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
 | `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
 | `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
 | `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
@@ -1222,48 +1225,132 @@ Example response:
 ```json
 [
   {
-    id: 66,
-    username: "user22",
-    name: "John Doe22",
-    state: "active",
-    avatar_url: "https://www.gravatar.com/avatar/xxx?s=80&d=identicon",
-    web_url: "http://my.gitlab.com/user22",
-    created_at: "2021-09-10T12:48:22.381Z",
-    bio: "",
-    location: null,
-    public_email: "",
-    skype: "",
-    linkedin: "",
-    twitter: "",
-    website_url: "",
-    organization: null,
-    job_title: "",
-    pronouns: null,
-    bot: false,
-    work_information: null,
-    followers: 0,
-    following: 0,
-    local_time: null,
-    last_sign_in_at: null,
-    confirmed_at: "2021-09-10T12:48:22.330Z",
-    last_activity_on: null,
-    email: "user22@example.org",
-    theme_id: 1,
-    color_scheme_id: 1,
-    projects_limit: 100000,
-    current_sign_in_at: null,
-    identities: [ ],
-    can_create_group: true,
-    can_create_project: true,
-    two_factor_enabled: false,
-    external: false,
-    private_profile: false,
-    commit_email: "user22@example.org",
-    shared_runners_minutes_limit: null,
-    extra_shared_runners_minutes_limit: null
+    "id": 66,
+    "username": "user22",
+    "name": "John Doe22",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/xxx?s=80&d=identicon",
+    "web_url": "http://my.gitlab.com/user22",
+    "created_at": "2021-09-10T12:48:22.381Z",
+    "bio": "",
+    "location": null,
+    "public_email": "",
+    "skype": "",
+    "linkedin": "",
+    "twitter": "",
+    "website_url": "",
+    "organization": null,
+    "job_title": "",
+    "pronouns": null,
+    "bot": false,
+    "work_information": null,
+    "followers": 0,
+    "following": 0,
+    "local_time": null,
+    "last_sign_in_at": null,
+    "confirmed_at": "2021-09-10T12:48:22.330Z",
+    "last_activity_on": null,
+    "email": "user22@example.org",
+    "theme_id": 1,
+    "color_scheme_id": 1,
+    "projects_limit": 100000,
+    "current_sign_in_at": null,
+    "identities": [ ],
+    "can_create_group": true,
+    "can_create_project": true,
+    "two_factor_enabled": false,
+    "external": false,
+    "private_profile": false,
+    "commit_email": "user22@example.org",
+    "shared_runners_minutes_limit": null,
+    "extra_shared_runners_minutes_limit": null
   },
   ...
 ]
+```
+
+## Service Accounts **(PREMIUM)**
+
+### Create Service Account User
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
+
+Creates a service account user with an auto-generated email address and username.
+
+```plaintext
+POST /groups/:id/service_accounts
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_group_345_6018816a18e515214e0c34c2b33523fc",
+  "name": "Service account user"
+}
+```
+
+### Create Personal Access Token for Service Account User
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+
+```plaintext
+POST /groups/:id/service_accounts/:user_id/personal_access_tokens
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
+```
+
+Example response:
+
+```json
+{
+  "id":6,
+  "name":"service_accounts_token",
+  "revoked":false,
+  "created_at":"2023-06-13T07:47:13.900Z",
+  "scopes":["api"],
+  "user_id":71,
+  "last_used_at":null,
+  "active":true,
+  "expires_at":"2024-06-12",
+  "token":"<token_value>"
+}
+```
+
+### Rotate a Personal Access Token for Service Account User
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+
+```plaintext
+POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
+```
+
+Example response:
+
+```json
+{
+  "id":7,
+  "name":"service_accounts_token",
+  "revoked":false,
+  "created_at":"2023-06-13T07:54:49.962Z",
+  "scopes":["api"],
+  "user_id":71,
+  "last_used_at":null,
+  "active":true,
+  "expires_at":"2023-06-20",
+  "token":"<token_value>"
+}
 ```
 
 ## Hooks **(PREMIUM)**

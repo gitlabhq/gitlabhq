@@ -1,0 +1,8 @@
+---
+name: model_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120096
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385047
+milestone: '16.1'
+type: development
+group: "group::mlops"
+default_enabled: false

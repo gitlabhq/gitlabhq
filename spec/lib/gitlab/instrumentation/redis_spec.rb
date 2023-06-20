@@ -35,13 +35,13 @@ RSpec.describe Gitlab::Instrumentation::Redis do
       # will be an extra SELECT command to choose the right database. We
       # don't want to make the spec less precise, so we force that to
       # happen (if needed) first, then clear the counts.
-      Gitlab::Redis::Cache.with { |redis| redis.info }
+      Gitlab::Redis::Sessions.with { |redis| redis.info }
       RequestStore.clear!
 
       stub_rails_env('staging') # to avoid raising CrossSlotError
-      Gitlab::Redis::Cache.with { |redis| redis.mset('cache-test', 321, 'cache-test-2', 321) }
+      Gitlab::Redis::Sessions.with { |redis| redis.mset('cache-test', 321, 'cache-test-2', 321) }
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-        Gitlab::Redis::Cache.with { |redis| redis.mget('cache-test', 'cache-test-2') }
+        Gitlab::Redis::Sessions.with { |redis| redis.mget('cache-test', 'cache-test-2') }
       end
       Gitlab::Redis::SharedState.with { |redis| redis.set('shared-state-test', 123) }
     end
@@ -56,13 +56,13 @@ RSpec.describe Gitlab::Instrumentation::Redis do
         redis_read_bytes: be >= 0,
         redis_write_bytes: be >= 0,
 
-        # Cache results
-        redis_cache_calls: 2,
-        redis_cache_cross_slot_calls: 1,
-        redis_cache_allowed_cross_slot_calls: 1,
-        redis_cache_duration_s: be >= 0,
-        redis_cache_read_bytes: be >= 0,
-        redis_cache_write_bytes: be >= 0,
+        # Queues results
+        redis_sessions_calls: 2,
+        redis_sessions_cross_slot_calls: 1,
+        redis_sessions_allowed_cross_slot_calls: 1,
+        redis_sessions_duration_s: be >= 0,
+        redis_sessions_read_bytes: be >= 0,
+        redis_sessions_write_bytes: be >= 0,
 
         # Shared state results
         redis_shared_state_calls: 1,

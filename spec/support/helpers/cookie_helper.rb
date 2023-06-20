@@ -27,12 +27,6 @@ module CookieHelper
     page.driver.browser.manage.cookie_named(name)
   end
 
-  def wait_for_cookie_set(name)
-    wait_for("Complete setting cookie") do
-      get_cookie(name)
-    end
-  end
-
   private
 
   def on_a_page?

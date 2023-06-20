@@ -20,25 +20,50 @@ describe('RunnerDeleteModal', () => {
     });
   };
 
-  it('Displays title', () => {
-    createComponent();
+  describe.each([null, 0, 1])('for %o runners', (managersCount) => {
+    beforeEach(() => {
+      createComponent({ props: { managersCount } });
+    });
 
-    expect(findGlModal().props('title')).toBe('Delete runner #99 (AABBCCDD)?');
+    it('Displays title', () => {
+      expect(findGlModal().props('title')).toBe('Delete runner #99 (AABBCCDD)?');
+    });
+
+    it('Displays buttons', () => {
+      expect(findGlModal().props('actionPrimary')).toMatchObject({
+        text: 'Permanently delete runner',
+      });
+      expect(findGlModal().props('actionCancel')).toMatchObject({ text: 'Cancel' });
+    });
+
+    it('Displays contents', () => {
+      expect(findGlModal().text()).toContain(
+        'The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?',
+      );
+    });
   });
 
-  it('Displays buttons', () => {
-    createComponent();
+  describe('for 2 runners', () => {
+    beforeEach(() => {
+      createComponent({ props: { managersCount: 2 } });
+    });
 
-    expect(findGlModal().props('actionPrimary')).toMatchObject({ text: 'Delete runner' });
-    expect(findGlModal().props('actionCancel')).toMatchObject({ text: 'Cancel' });
-  });
+    it('Displays title', () => {
+      expect(findGlModal().props('title')).toBe('Delete 2 runners?');
+    });
 
-  it('Displays contents', () => {
-    createComponent();
+    it('Displays buttons', () => {
+      expect(findGlModal().props('actionPrimary')).toMatchObject({
+        text: 'Permanently delete 2 runners',
+      });
+      expect(findGlModal().props('actionCancel')).toMatchObject({ text: 'Cancel' });
+    });
 
-    expect(findGlModal().html()).toContain(
-      'The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?',
-    );
+    it('Displays contents', () => {
+      expect(findGlModal().text()).toContain(
+        '2 runners will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?',
+      );
+    });
   });
 
   describe('When modal is confirmed by the user', () => {

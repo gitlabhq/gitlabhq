@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Group DevOps Adoption **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) in GitLab 13.11 as a [Beta feature](../../../policy/alpha-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321083) in GitLab 13.11 as a [Beta feature](../../../policy/experiment-beta-support.md#beta).
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/333556) in GitLab 14.1.
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
@@ -36,8 +36,8 @@ Prerequisite:
 
 To view DevOps Adoption:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > DevOps adoption**
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Analyze > DevOps adoption**
 
 ## DevOps Adoption categories
 
@@ -80,8 +80,8 @@ twelve months. The chart only shows data from when you enabled DevOps Adoption f
 
 To view feature adoption over time:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > DevOps adoption**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Analyze > DevOps adoption**.
 1. Select the **Overview** tab.
 
 Tooltips display information about the features tracked for individual months.

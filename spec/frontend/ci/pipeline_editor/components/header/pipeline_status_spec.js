@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineStatus, { i18n } from '~/ci/pipeline_editor/components/header/pipeline_status.vue';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
+import GraphqlPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/graphql_pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from '~/ci/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import { mockCommitSha, mockProjectPipeline, mockProjectFullPath } from '../../mock_data';
 
@@ -16,7 +17,7 @@ describe('Pipeline Status', () => {
   let mockApollo;
   let mockPipelineQuery;
 
-  const createComponentWithApollo = () => {
+  const createComponentWithApollo = ({ ciGraphqlPipelineMiniGraph = false } = {}) => {
     const handlers = [[getPipelineQuery, mockPipelineQuery]];
     mockApollo = createMockApollo(handlers);
 
@@ -26,6 +27,9 @@ describe('Pipeline Status', () => {
         commitSha: mockCommitSha,
       },
       provide: {
+        glFeatures: {
+          ciGraphqlPipelineMiniGraph,
+        },
         projectFullPath: mockProjectFullPath,
       },
       stubs: { GlLink, GlSprintf },
@@ -34,6 +38,7 @@ describe('Pipeline Status', () => {
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findGraphqlPipelineMiniGraph = () => wrapper.findComponent(GraphqlPipelineMiniGraph);
   const findPipelineEditorMiniGraph = () => wrapper.findComponent(PipelineEditorMiniGraph);
   const findPipelineId = () => wrapper.find('[data-testid="pipeline-id"]');
   const findPipelineCommit = () => wrapper.find('[data-testid="pipeline-commit"]');
@@ -127,5 +132,29 @@ describe('Pipeline Status', () => {
         expect(findPipelineViewBtn().exists()).toBe(false);
       });
     });
+  });
+
+  describe('feature flag behavior', () => {
+    beforeEach(() => {
+      mockPipelineQuery.mockResolvedValue({
+        data: { project: mockProjectPipeline() },
+      });
+    });
+
+    it.each`
+      state    | provide                                 | showPipelineMiniGraph | showGraphqlPipelineMiniGraph
+      ${true}  | ${{ ciGraphqlPipelineMiniGraph: true }} | ${false}              | ${true}
+      ${false} | ${{}}                                   | ${true}               | ${false}
+    `(
+      'renders the correct component when the feature flag is set to $state',
+      async ({ provide, showPipelineMiniGraph, showGraphqlPipelineMiniGraph }) => {
+        createComponentWithApollo(provide);
+
+        await waitForPromises();
+
+        expect(findPipelineEditorMiniGraph().exists()).toBe(showPipelineMiniGraph);
+        expect(findGraphqlPipelineMiniGraph().exists()).toBe(showGraphqlPipelineMiniGraph);
+      },
+    );
   });
 });

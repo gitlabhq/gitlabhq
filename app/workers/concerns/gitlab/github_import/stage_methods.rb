@@ -9,8 +9,12 @@ module Gitlab
 
         return unless (project = find_project(project_id))
 
-        if project.import_state&.canceled?
-          info(project_id, message: 'project import canceled')
+        unless project.import_state&.in_progress?
+          info(
+            project_id,
+            message: 'Project import is no longer running. Stopping worker.',
+            import_status: project.import_state.status
+          )
 
           return
         end

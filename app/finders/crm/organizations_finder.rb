@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Finder for retrieving organizations scoped to a group
+# Finder for retrieving crm_organizations scoped to a group
 #
 # Arguments:
 #   current_user - user performing the action. Must have the correct permission level for the group.
@@ -29,22 +29,22 @@ module Crm
     def execute
       return CustomerRelations::Organization.none unless root_group
 
-      organizations = root_group.organizations
-      organizations = by_ids(organizations)
-      organizations = by_search(organizations)
-      organizations = by_state(organizations)
-      sort_organizations(organizations)
+      crm_organizations = root_group.crm_organizations
+      crm_organizations = by_ids(crm_organizations)
+      crm_organizations = by_search(crm_organizations)
+      crm_organizations = by_state(crm_organizations)
+      sort_crm_organizations(crm_organizations)
     end
 
     private
 
-    def sort_organizations(organizations)
-      return organizations.sort_by_name unless @params.key?(:sort)
-      return organizations if @params[:sort].nil?
+    def sort_crm_organizations(crm_organizations)
+      return crm_organizations.sort_by_name unless @params.key?(:sort)
+      return crm_organizations if @params[:sort].nil?
 
       field = @params[:sort][:field]
       direction = @params[:sort][:direction]
-      organizations.sort_by_field(field, direction)
+      crm_organizations.sort_by_field(field, direction)
     end
 
     def root_group
@@ -57,22 +57,22 @@ module Crm
       end
     end
 
-    def by_search(organizations)
-      return organizations unless search?
+    def by_search(crm_organizations)
+      return crm_organizations unless search?
 
-      organizations.search(params[:search])
+      crm_organizations.search(params[:search])
     end
 
-    def by_state(organizations)
-      return organizations unless state?
+    def by_state(crm_organizations)
+      return crm_organizations unless state?
 
-      organizations.search_by_state(params[:state])
+      crm_organizations.search_by_state(params[:state])
     end
 
-    def by_ids(organizations)
-      return organizations unless ids?
+    def by_ids(crm_organizations)
+      return crm_organizations unless ids?
 
-      organizations.id_in(params[:ids])
+      crm_organizations.id_in(params[:ids])
     end
 
     def search?

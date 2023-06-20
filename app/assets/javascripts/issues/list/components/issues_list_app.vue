@@ -1,11 +1,11 @@
 <script>
 import {
   GlButton,
+  GlButtonGroup,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
   GlFilteredSearchToken,
   GlTooltipDirective,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownDivider,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -14,6 +14,7 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
@@ -68,6 +69,9 @@ import {
   defaultWorkItemTypes,
   i18n,
   ISSUE_REFERENCE,
+  ISSUES_GRID_VIEW_KEY,
+  ISSUES_LIST_VIEW_KEY,
+  ISSUES_VIEW_TYPE_KEY,
   MAX_LIST_SIZE,
   PARAM_FIRST_PAGE_SIZE,
   PARAM_LAST_PAGE_SIZE,
@@ -116,19 +120,23 @@ const CrmOrganizationToken = () =>
 export default {
   i18n,
   issuableListTabs,
+  ISSUES_VIEW_TYPE_KEY,
+  ISSUES_GRID_VIEW_KEY,
+  ISSUES_LIST_VIEW_KEY,
   components: {
     CsvImportExportButtons,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     GlButton,
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownItem,
+    GlButtonGroup,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
     NewResourceDropdown,
+    LocalStorageSync,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -194,6 +202,21 @@ export default {
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
+      viewType: ISSUES_LIST_VIEW_KEY,
+      subscribeDropdownOptions: {
+        items: [
+          {
+            text: i18n.rssLabel,
+            href: this.rssPath,
+            extraAttrs: { 'data-testid': 'subscribe-rss' },
+          },
+          {
+            text: i18n.calendarLabel,
+            href: this.calendarPath,
+            extraAttrs: { 'data-testid': 'subscribe-calendar' },
+          },
+        ],
+      },
     };
   },
   apollo: {
@@ -504,6 +527,12 @@ export default {
         })
       );
     },
+    gridViewFeatureEnabled() {
+      return Boolean(this.glFeatures?.issuesGridView);
+    },
+    isGridView() {
+      return this.viewType === ISSUES_GRID_VIEW_KEY;
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -764,6 +793,15 @@ export default {
       this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
     },
+    switchViewType(type) {
+      // Filter the wrong data from localStorage
+      if (type === ISSUES_GRID_VIEW_KEY) {
+        this.viewType = ISSUES_GRID_VIEW_KEY;
+        return;
+      }
+      // The default view is list view
+      this.viewType = ISSUES_LIST_VIEW_KEY;
+    },
   },
 };
 </script>
@@ -798,6 +836,7 @@ export default {
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
       :show-filtered-search-friendly-text="hasOrFeature"
+      :is-grid-view="isGridView"
       show-work-item-type-icon
       @click-tab="handleClickTab"
       @dismiss-alert="handleDismissAlert"
@@ -810,6 +849,30 @@ export default {
       @page-size-change="handlePageSizeChange"
     >
       <template #nav-actions>
+        <local-storage-sync
+          v-if="gridViewFeatureEnabled"
+          :value="viewType"
+          :storage-key="$options.ISSUES_VIEW_TYPE_KEY"
+          @input="switchViewType"
+        >
+          <gl-button-group>
+            <gl-button
+              :variant="isGridView ? 'default' : 'confirm'"
+              data-testid="list-view-type"
+              @click="switchViewType($options.ISSUES_LIST_VIEW_KEY)"
+            >
+              {{ $options.i18n.listLabel }}
+            </gl-button>
+            <gl-button
+              :variant="isGridView ? 'confirm' : 'default'"
+              data-testid="grid-view-type"
+              @click="switchViewType($options.ISSUES_GRID_VIEW_KEY)"
+            >
+              {{ $options.i18n.gridLabel }}
+            </gl-button>
+          </gl-button-group>
+        </local-storage-sync>
+
         <gl-button
           v-if="canBulkUpdate"
           :disabled="isBulkEditButtonDisabled"
@@ -831,12 +894,12 @@ export default {
           :query-variables="newIssueDropdownQueryVariables"
           :extract-projects="extractProjects"
         />
-        <gl-dropdown
+        <gl-disclosure-dropdown
           v-gl-tooltip.hover="$options.i18n.actionsLabel"
           category="tertiary"
           icon="ellipsis_v"
           no-caret
-          :text="$options.i18n.actionsLabel"
+          :toggle-text="$options.i18n.actionsLabel"
           text-sr-only
           data-qa-selector="issues_list_more_actions_dropdown"
         >
@@ -845,16 +908,8 @@ export default {
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />
-
-          <gl-dropdown-divider v-if="showCsvButtons" />
-
-          <gl-dropdown-item :href="rssPath">
-            {{ $options.i18n.rssLabel }}
-          </gl-dropdown-item>
-          <gl-dropdown-item :href="calendarPath">
-            {{ $options.i18n.calendarLabel }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+          <gl-disclosure-dropdown-group :bordered="true" :group="subscribeDropdownOptions" />
+        </gl-disclosure-dropdown>
       </template>
 
       <template #timeframe="{ issuable = {} }">

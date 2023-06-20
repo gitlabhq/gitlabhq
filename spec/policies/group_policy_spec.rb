@@ -1167,6 +1167,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'dependency proxy' do
+    RSpec.shared_examples 'disabling admin_package feature flag' do
+      before do
+        stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+      end
+
+      it { is_expected.to be_allowed(:admin_dependency_proxy) }
+    end
+
     context 'feature disabled' do
       let(:current_user) { owner }
 
@@ -1197,7 +1205,18 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         let(:current_user) { maintainer }
 
         it { is_expected.to be_allowed(:read_dependency_proxy) }
+        it { is_expected.to be_disallowed(:admin_dependency_proxy) }
+
+        it_behaves_like 'disabling admin_package feature flag'
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:read_dependency_proxy) }
         it { is_expected.to be_allowed(:admin_dependency_proxy) }
+
+        it_behaves_like 'disabling admin_package feature flag'
       end
     end
   end
@@ -1743,6 +1762,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     specify { is_expected.to be_allowed(:read_achievement) }
     specify { is_expected.to be_allowed(:admin_achievement) }
     specify { is_expected.to be_allowed(:award_achievement) }
+    specify { is_expected.to be_allowed(:destroy_user_achievement) }
 
     context 'with feature flag disabled' do
       before do
@@ -1752,12 +1772,53 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify { is_expected.to be_disallowed(:read_achievement) }
       specify { is_expected.to be_disallowed(:admin_achievement) }
       specify { is_expected.to be_disallowed(:award_achievement) }
+      specify { is_expected.to be_disallowed(:destroy_user_achievement) }
     end
 
     context 'when current user can not see the group' do
       let(:current_user) { non_group_member }
 
       specify { is_expected.to be_allowed(:read_achievement) }
+    end
+
+    context 'when current user is not an owner' do
+      let(:current_user) { maintainer }
+
+      specify { is_expected.to be_disallowed(:destroy_user_achievement) }
+    end
+  end
+
+  describe 'admin_package ability' do
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      context 'with feature flag enabled' do
+        specify { is_expected.to be_disallowed(:admin_package) }
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+        end
+
+        specify { is_expected.to be_allowed(:admin_package) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      context 'with feature flag enabled' do
+        specify { is_expected.to be_allowed(:admin_package) }
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+        end
+
+        specify { is_expected.to be_allowed(:admin_package) }
+      end
     end
   end
 end

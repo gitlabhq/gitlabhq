@@ -9,14 +9,10 @@ module Issues
     rate_limit key: :issues_create,
                opts: { scope: [:project, :current_user, :external_author] }
 
-    # NOTE: For Issues::CreateService, we require the spam_params and do not default it to nil, because
-    # spam_checking is likely to be necessary.  However, if there is not a request available in scope
-    # in the caller (for example, an issue created via email) and the required arguments to the
-    # SpamParams constructor are not otherwise available, spam_params: must be explicitly passed as nil.
-    def initialize(container:, spam_params:, current_user: nil, params: {}, build_service: nil)
+    def initialize(container:, current_user: nil, params: {}, build_service: nil, perform_spam_check: true)
       @extra_params = params.delete(:extra_params) || {}
       super(container: container, current_user: current_user, params: params)
-      @spam_params = spam_params
+      @perform_spam_check = perform_spam_check
       @build_service = build_service ||
         BuildService.new(container: project, current_user: current_user, params: params)
     end
@@ -51,12 +47,7 @@ module Issues
     end
 
     def before_create(issue)
-      Spam::SpamActionService.new(
-        spammable: issue,
-        spam_params: spam_params,
-        user: current_user,
-        action: :create
-      ).execute
+      issue.check_for_spam(user: current_user, action: :create) if perform_spam_check
 
       # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user
@@ -109,7 +100,7 @@ module Issues
       :create_issue
     end
 
-    attr_reader :spam_params, :extra_params
+    attr_reader :perform_spam_check, :extra_params
 
     def create_timeline_event(issue)
       return unless issue.work_item_type&.incident?
@@ -118,7 +109,7 @@ module Issues
     end
 
     def user_agent_detail_service
-      UserAgentDetailService.new(spammable: @issue, spam_params: spam_params)
+      UserAgentDetailService.new(spammable: @issue, perform_spam_check: perform_spam_check)
     end
 
     def handle_add_related_issue(issue)

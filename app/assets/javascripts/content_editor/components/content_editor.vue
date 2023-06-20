@@ -11,6 +11,7 @@ import EditorStateObserver from './editor_state_observer.vue';
 import CodeBlockBubbleMenu from './bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from './bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from './bubble_menus/media_bubble_menu.vue';
+import ReferenceBubbleMenu from './bubble_menus/reference_bubble_menu.vue';
 import FormattingToolbar from './formatting_toolbar.vue';
 import LoadingIndicator from './loading_indicator.vue';
 
@@ -27,6 +28,7 @@ export default {
     LinkBubbleMenu,
     MediaBubbleMenu,
     EditorStateObserver,
+    ReferenceBubbleMenu,
   },
   props: {
     renderMarkdown: {
@@ -87,6 +89,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    disableAttachments: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -221,37 +228,41 @@ export default {
         class="md-area gl-border-none! gl-shadow-none!"
         :class="{ 'is-focused': focused }"
       >
-        <formatting-toolbar ref="toolbar" @enableMarkdownEditor="$emit('enableMarkdownEditor')" />
-        <div class="gl-relative">
-          <code-block-bubble-menu />
-          <link-bubble-menu />
-          <media-bubble-menu />
-          <div v-if="showPlaceholder" class="gl-absolute gl-text-gray-400 gl-px-5 gl-pt-4">
-            {{ placeholder }}
-          </div>
-          <tiptap-editor-content
-            class="md gl-px-5"
-            data-testid="content_editor_editablebox"
-            :editor="contentEditor.tiptapEditor"
-          />
-          <loading-indicator v-if="isLoading" />
-          <div
-            v-if="quickActionsDocsPath"
-            class="gl-display-flex gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-4 gl-mx-2 gl-mb-2 gl-bg-gray-10 gl-text-secondary"
-          >
-            <div class="gl-w-full gl-line-height-32 gl-font-sm">
-              <gl-sprintf :message="$options.i18n.quickActionsText">
-                <template #keyboard="{ content }">
-                  <kbd>{{ content }}</kbd>
-                </template>
-                <template #quickActionsDocsLink="{ content }">
-                  <gl-link :href="quickActionsDocsPath" target="_blank" class="gl-font-sm">{{
-                    content
-                  }}</gl-link>
-                </template>
-              </gl-sprintf>
-            </div>
-          </div>
+        <formatting-toolbar
+          ref="toolbar"
+          :hide-attachment-button="disableAttachments"
+          @enableMarkdownEditor="$emit('enableMarkdownEditor')"
+        />
+        <div v-if="showPlaceholder" class="gl-absolute gl-text-gray-400 gl-px-5 gl-pt-4">
+          {{ placeholder }}
+        </div>
+        <tiptap-editor-content
+          class="md gl-px-5"
+          data-testid="content_editor_editablebox"
+          :editor="contentEditor.tiptapEditor"
+        />
+        <loading-indicator v-if="isLoading" />
+
+        <code-block-bubble-menu />
+        <link-bubble-menu />
+        <media-bubble-menu />
+        <reference-bubble-menu />
+      </div>
+      <div
+        v-if="quickActionsDocsPath"
+        class="gl-display-flex gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-4 gl-mx-2 gl-mb-2 gl-bg-gray-10 gl-text-secondary"
+      >
+        <div class="gl-w-full gl-line-height-32 gl-font-sm">
+          <gl-sprintf :message="$options.i18n.quickActionsText">
+            <template #keyboard="{ content }">
+              <kbd>{{ content }}</kbd>
+            </template>
+            <template #quickActionsDocsLink="{ content }">
+              <gl-link :href="quickActionsDocsPath" target="_blank" class="gl-font-sm">{{
+                content
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
         </div>
       </div>
     </div>

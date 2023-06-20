@@ -24,8 +24,6 @@ RSpec.describe LastGroupOwnerAssigner do
         specify do
           expect { assigner.execute }.to change(group_member, :last_owner)
                                            .from(nil).to(true)
-                                           .and change(group_member, :last_blocked_owner)
-                                                  .from(nil).to(false)
         end
       end
 
@@ -35,8 +33,6 @@ RSpec.describe LastGroupOwnerAssigner do
         specify do
           expect { assigner.execute }.to change(group_member, :last_owner)
                                            .from(nil).to(false)
-                                           .and change(group_member, :last_blocked_owner)
-                                                  .from(nil).to(false)
         end
 
         it "has many members passed" do
@@ -44,12 +40,8 @@ RSpec.describe LastGroupOwnerAssigner do
 
           expect { assigner.execute }.to change(group_member, :last_owner)
                                            .from(nil).to(false)
-                                           .and change(group_member, :last_blocked_owner)
-                                                  .from(nil).to(false)
                                                   .and change(unblocked_owner_member, :last_owner)
                                                          .from(nil).to(false)
-                                                         .and change(unblocked_owner_member, :last_blocked_owner)
-                                                                .from(nil).to(false)
         end
       end
 
@@ -66,8 +58,6 @@ RSpec.describe LastGroupOwnerAssigner do
             specify do
               expect { assigner.execute }.to change(group_member, :last_owner)
                 .from(nil).to(true)
-                .and change(group_member, :last_blocked_owner)
-                .from(nil).to(false)
             end
           end
         end
@@ -80,8 +70,6 @@ RSpec.describe LastGroupOwnerAssigner do
 
           specify do
             expect { assigner.execute }.to change(group_member_2, :last_owner)
-              .from(nil).to(false)
-              .and change(group_member_2, :last_blocked_owner)
               .from(nil).to(false)
           end
         end
@@ -96,9 +84,7 @@ RSpec.describe LastGroupOwnerAssigner do
       context "with one blocked owner" do
         specify do
           expect { assigner.execute }.to change(group_member, :last_owner)
-                                           .from(nil).to(false)
-                                           .and change(group_member, :last_blocked_owner)
-                                                  .from(nil).to(true)
+                                           .from(nil).to(true)
         end
       end
 
@@ -108,8 +94,6 @@ RSpec.describe LastGroupOwnerAssigner do
 
           expect { assigner.execute }.to change(group_member, :last_owner)
                                            .from(nil).to(false)
-                                           .and change(group_member, :last_blocked_owner)
-                                                  .from(nil).to(false)
         end
       end
 
@@ -119,8 +103,6 @@ RSpec.describe LastGroupOwnerAssigner do
 
           expect { assigner.execute }.to change(group_member, :last_owner)
                                            .from(nil).to(false)
-                                           .and change(group_member, :last_blocked_owner)
-                                                  .from(nil).to(false)
         end
       end
 
@@ -136,8 +118,6 @@ RSpec.describe LastGroupOwnerAssigner do
 
             specify do
               expect { assigner.execute }.to change(group_member, :last_owner)
-                .from(nil).to(false)
-                .and change(group_member, :last_blocked_owner)
                 .from(nil).to(true)
             end
           end
@@ -152,8 +132,6 @@ RSpec.describe LastGroupOwnerAssigner do
 
           specify do
             expect { assigner.execute }.to change(group_member, :last_owner)
-              .from(nil).to(false)
-              .and change(group_member, :last_blocked_owner)
               .from(nil).to(true)
           end
 
@@ -164,8 +142,6 @@ RSpec.describe LastGroupOwnerAssigner do
 
             specify do
               expect { assigner.execute }.to change(group_member, :last_owner)
-                .from(nil).to(false)
-                .and change(group_member, :last_blocked_owner)
                 .from(nil).to(false)
             end
           end
@@ -180,8 +156,6 @@ RSpec.describe LastGroupOwnerAssigner do
 
           expect { assigner.execute }.to change(group_member, :last_owner)
             .from(nil).to(true)
-            .and change(group_member, :last_blocked_owner)
-            .from(nil).to(false)
         end
       end
     end

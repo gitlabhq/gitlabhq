@@ -52,7 +52,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-display-flex gl-flex-grow-1">
     <gl-search-box-by-click
       v-model="searchTerm"
       :placeholder="$options.i18n.searchPlaceholder"

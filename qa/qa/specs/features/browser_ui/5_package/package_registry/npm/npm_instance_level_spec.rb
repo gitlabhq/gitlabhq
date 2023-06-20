@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Package Registry', :skip_live_env, :orchestrated, :reliable, :packages, :object_storage, product_group: :package_registry do
+    describe 'Package Registry', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
       describe 'npm instance level endpoint' do
         using RSpec::Parameterized::TableSyntax
         include Runtime::Fixtures
@@ -90,7 +90,7 @@ module QA
           it 'push and pull a npm package via CI', testcase: params[:testcase] do
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               npm_upload_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_package_instance.yaml.erb')).result(binding)
-              package_json = ERB.new(read_fixture('package_managers/npm', 'package_instance.json.erb')).result(binding)
+              package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
               Resource::Repository::Commit.fabricate_via_api! do |commit|
                 commit.project = project

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::Metadatum, type: :model do
+RSpec.describe Packages::Nuget::Metadatum, type: :model, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:package).inverse_of(:nuget_metadatum) }
   end
@@ -10,23 +10,18 @@ RSpec.describe Packages::Nuget::Metadatum, type: :model do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package) }
 
+    it { is_expected.to validate_presence_of(:authors) }
+    it { is_expected.to validate_length_of(:authors).is_at_most(described_class::MAX_AUTHORS_LENGTH) }
+    it { is_expected.to validate_presence_of(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(described_class::MAX_DESCRIPTION_LENGTH) }
+
     %i[license_url project_url icon_url].each do |url|
       describe "##{url}" do
         it { is_expected.to allow_value('http://sandbox.com').for(url) }
         it { is_expected.to allow_value('https://sandbox.com').for(url) }
         it { is_expected.not_to allow_value('123').for(url) }
         it { is_expected.not_to allow_value('sandbox.com').for(url) }
-      end
-
-      describe '#ensure_at_least_one_field_supplied' do
-        subject { build(:nuget_metadatum) }
-
-        it 'rejects unfilled metadatum' do
-          subject.attributes = { license_url: nil, project_url: nil, icon_url: nil }
-
-          expect(subject).not_to be_valid
-          expect(subject.errors).to contain_exactly('Nuget metadatum must have at least license_url, project_url or icon_url set')
-        end
+        it { is_expected.to validate_length_of(url).is_at_most(described_class::MAX_URL_LENGTH) }
       end
 
       describe '#ensure_nuget_package_type' do

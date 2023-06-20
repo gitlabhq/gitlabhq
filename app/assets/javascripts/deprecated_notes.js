@@ -25,6 +25,7 @@ import syntaxHighlight from '~/syntax_highlight';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
 import * as constants from '~/notes/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { COMMENT_FORM, UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import Autosave from './autosave';
 import loadAwardsHandler from './awards_handler';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
@@ -687,26 +688,36 @@ export default class Notes {
     return this.renderNote(note);
   }
 
-  addNoteError($form) {
+  addNoteError(error, $form) {
     let formParentTimeline;
     if ($form.hasClass('js-main-target-form')) {
       formParentTimeline = $form.parents('.timeline');
     } else if ($form.hasClass('js-discussion-note-form')) {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
+
+    const serverErrorMessage = error?.response?.data?.errors;
+
+    const alertMessage = serverErrorMessage
+      ? sprintf(COMMENT_FORM.error, { reason: serverErrorMessage.toLowerCase() }, false)
+      : COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK;
+
     return this.addAlert({
-      message: __(
-        'Your comment could not be submitted! Please check your network connection and try again.',
-      ),
+      message: alertMessage,
       parent: formParentTimeline.get(0),
     });
   }
 
-  updateNoteError() {
-    createAlert({
-      message: __(
-        'Your comment could not be updated! Please check your network connection and try again.',
-      ),
+  updateNoteError(error, $editingNote) {
+    const serverErrorMessage = error?.response?.data?.errors;
+
+    const alertMessage = serverErrorMessage
+      ? sprintf(UPDATE_COMMENT_FORM.error, { reason: serverErrorMessage }, false)
+      : UPDATE_COMMENT_FORM.defaultError;
+
+    return this.addAlert({
+      message: alertMessage,
+      parent: $editingNote.get(0),
     });
   }
 
@@ -787,6 +798,8 @@ export default class Notes {
     const $editForm = $(this.getEditFormSelector($target));
     const $note = $target.closest('.note');
     const $currentlyEditing = $('.note.is-editing:visible');
+
+    this.clearAlertWrapper();
 
     if ($currentlyEditing.length) {
       const isEditAllowed = this.checkContentToAllowEditing($currentlyEditing);
@@ -1777,7 +1790,7 @@ export default class Notes {
 
         $form.trigger('ajax:success', [note]);
       })
-      .catch(() => {
+      .catch((error) => {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
         $submitBtn.prop('disabled', false);
@@ -1806,7 +1819,7 @@ export default class Notes {
 
         $form.find('.js-note-text').val(formContentOriginal);
         this.reenableTargetFormSubmitButton(e);
-        this.addNoteError($form);
+        this.addNoteError(error, $form);
       });
   }
 
@@ -1854,14 +1867,14 @@ export default class Notes {
         // Submission successful! render final note element
         this.updateNote(data, $editingNote);
       })
-      .catch(() => {
+      .catch((error) => {
+        $editingNote.addClass('is-editing fade-in-full').removeClass('being-posted fade-in-half');
         // Submission failed, revert back to original note
-        $noteBodyText.html(escape(cachedNoteBodyText));
-        $editingNote.removeClass('being-posted fade-in');
+        $noteBodyText.html(cachedNoteBodyText);
         $editingNote.find('.gl-spinner').remove();
 
         // Show Flash message about failure
-        this.updateNoteError();
+        this.updateNoteError(error, $editingNote);
       });
 
     return $closeBtn.text($closeBtn.data('originalText'));

@@ -54,11 +54,13 @@ Prerequisites:
   [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
   but you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
   To do this, you must have administrator access.
+- You must have enabled [issue](settings/index.md#configure-project-visibility-features-and-permissions)
+  tracker for the project.
 
 To enable Service Desk in your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
 1. Optional. Complete the fields.
@@ -101,7 +103,8 @@ visible in the email template. For more information, see
 
 #### Thank you email
 
-> `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
 
 When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
 
@@ -110,20 +113,23 @@ directory in your repository, create a file named `thank_you.md`.
 
 You can use these placeholders to be automatically replaced in each email:
 
-- `%{ISSUE_ID}`: issue IID
-- `%{ISSUE_PATH}`: project path appended with the issue IID
-- `%{ISSUE_DESCRIPTION}`: issue description based on the original email
-- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
-- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
+- `%{ISSUE_ID}`: Issue IID.
+- `%{ISSUE_PATH}`: Project path appended with the issue IID.
+- `%{ISSUE_URL}`: URL to the issue. External participants can only view the issue if the project is public
+   and issue is not confidential (Service Desk issues are confidential by default).
+- `%{ISSUE_DESCRIPTION}`: Issue description based on the original email.
+- `%{UNSUBSCRIBE_URL}`: Unsubscribe URL.
+- `%{SYSTEM_HEADER}`: [System header message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{SYSTEM_FOOTER}`: [System footer message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{ADDITIONAL_TEXT}`: [Custom additional text](../admin_area/settings/email.md#custom-additional-text).
 
 Because Service Desk issues are created as [confidential](issues/confidential_issues.md) (only project members can see them),
 the response email does not contain the issue link.
 
 #### New note email
 
-> `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
 
 When a user-submitted issue receives a new comment, GitLab sends a **new note email**.
 
@@ -132,17 +138,19 @@ directory in your repository, create a file named `new_note.md`.
 
 You can use these placeholders to be automatically replaced in each email:
 
-- `%{ISSUE_ID}`: issue IID
-- `%{ISSUE_PATH}`: project path appended with the issue IID
-- `%{ISSUE_DESCRIPTION}`: issue description at the time email is generated.
+- `%{ISSUE_ID}`: Issue IID.
+- `%{ISSUE_PATH}`: Project path appended with the issue IID.
+- `%{ISSUE_URL}`: URL to the issue. External participants can only view the issue if the project is public
+   and issue is not confidential (Service Desk issues are confidential by default).
+- `%{ISSUE_DESCRIPTION}`: Issue description at the time email is generated.
   If a user has edited the description, it might contain sensitive information that is not intended
   to be delivered to external participants. Use this placeholder only if you never modify
   descriptions or your team is aware of the template design.
-- `%{NOTE_TEXT}`: note text
-- `%{UNSUBSCRIBE_URL}`: unsubscribe URL
-- `%{SYSTEM_HEADER}`: [system header message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
-- `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
+- `%{NOTE_TEXT}`: Note text.
+- `%{UNSUBSCRIBE_URL}`: Unsubscribe URL.
+- `%{SYSTEM_HEADER}`: [System header message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{SYSTEM_FOOTER}`: [System footer message](../admin_area/appearance.md#system-header-and-footer-messages).
+- `%{ADDITIONAL_TEXT}`: [Custom additional text](../admin_area/settings/email.md#custom-additional-text).
 
 ### Use a custom template for Service Desk issues
 
@@ -163,8 +171,8 @@ Prerequisite:
 
 To use a custom description template with Service Desk:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
 
@@ -174,6 +182,11 @@ Behind the scenes, Service Desk works by the special Support Bot user creating i
 This user isn't a [billable user](../../subscriptions/self_managed/index.md#billable-users),
 so it does not count toward the license limit count.
 
+In GitLab 16.0 and earlier, comments generated from Service Desk emails show `GitLab Support Bot`
+as the author. In [GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/226995),
+these comments show the email of the user who sent the email.
+This feature only applies to comments made in GitLab 16.1 and later.
+
 #### Change the Support Bot's display name
 
 You can change the display name of the Support Bot user. Emails sent from Service Desk have
@@ -181,8 +194,8 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Below **Email display name**, enter a new name.
 1. Select **Save changes**.
@@ -225,9 +238,10 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
 
 NOTE:
 In GitLab 15.3 and later, Service Desk uses `webhook` (internal API call) by default instead of enqueuing a Sidekiq job.
-To use `webhook` on an Omnibus installation running GitLab 15.3, you must generate a secret file.
+To use `webhook` on a Linux package installation running GitLab 15.3, you must generate a secret file.
 For more information, see [merge request 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
-In GitLab 15.4, reconfiguring an Omnibus installation generates this secret file automatically, so no secret file configuration setting is needed.
+In GitLab 15.4, reconfiguring a Linux package installation generates this secret file automatically, so no
+secret file configuration setting is needed.
 For more information, see [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
 
 ```ruby
@@ -406,7 +420,7 @@ Service Desk can be configured to read Microsoft Exchange Online mailboxes with 
 Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 [the same way as for incoming email](../../administration/incoming_email.md#microsoft-graph).
 
-- Example for Omnibus GitLab installations:
+- Example for Linux package installations:
 
   ```ruby
   gitlab_rails['service_desk_email_enabled'] = true
@@ -455,8 +469,8 @@ Prerequisites:
 
 - You must have configured a [custom mailbox](#configure-a-custom-mailbox).
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Below **Email address suffix**, enter the suffix to use.
 1. Select **Save changes**.
@@ -472,6 +486,138 @@ The [incoming email](../../administration/incoming_email.md) address still works
 If you don't configure a custom suffix, the default project identification is used for identifying
 the project.
 
+### Configure email ingestion in multi-node environments
+
+A multi-node environment is a setup where GitLab is run across multiple servers
+for scalability, fault tolerance, and performance reasons.
+
+GitLab uses a separate process called `mail_room` to ingest new unread emails
+from the `incoming_email` and `service_desk_email` mailboxes.
+
+#### Helm chart (Kubernetes)
+
+The [GitLab Helm chart](https://docs.gitlab.com/charts/) is made up of multiple subcharts, and one of them is
+the [Mailroom subchart](https://docs.gitlab.com/charts/charts/gitlab/mailroom/index.html). Configure the
+[common settings for `incoming_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration)
+and the [common settings for `service_desk_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#service-desk-email-configuration).
+
+#### Linux package (Omnibus)
+
+In multi-node Linux package installation environments, run `mail_room` only on one node. Run it either on a single
+`rails` node (for example, `application_role`)
+or completely separately.
+
+##### Set up all nodes
+
+1. Add basic configuration for `incoming_email` and `service_desk_email` on every node
+   to render email addresses in the web UI and in generated emails.
+
+   Find the `incoming_email` or `service_desk_email` section in `/etc/gitlab/gitlab.rb`:
+
+   ::Tabs
+
+   :::TabTitle `incoming_email`
+
+   ```ruby
+   gitlab_rails['incoming_email_enabled'] = true
+   gitlab_rails['incoming_email_address'] = "incoming+%{key}@example.com"
+   ```
+
+   :::TabTitle `service_desk_email`
+
+   ```ruby
+   gitlab_rails['service_desk_email_enabled'] = true
+   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.com"
+   ```
+
+   ::EndTabs
+
+1. GitLab offers two methods to transport emails from `mail_room` to the GitLab
+application. You can configure the `delivery_method` for each email setting individually:
+   1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload via an API POST request to your GitLab
+      application. It uses a shared token to authenticate. If you choose this method,
+      make sure the `mail_room` process can access the API endpoint and distribute the shared
+      token across all application nodes.
+
+      ::Tabs
+
+      :::TabTitle `incoming_email`
+
+      ```ruby
+      gitlab_rails['incoming_email_delivery_method'] = "webhook"
+
+      # The URL that mail_room can contact. You can also use an internal URL or IP,
+      # just make sure mail_room can access the GitLab API via that address.
+      # Do not end with "/".
+      gitlab_rails['incoming_email_gitlab_url'] = "https://gitlab.example.com"
+
+      # The shared secret file that should contain a random token. Make sure it's the same on every node.
+      gitlab_rails['incoming_email_secret_file'] = ".gitlab_mailroom_secret"
+      ```
+
+      :::TabTitle `service_desk_email`
+
+      ```ruby
+      gitlab_rails['service_desk_email_delivery_method'] = "webhook"
+
+      # The URL that mail_room can contact. You can also use an internal URL or IP,
+      # just make sure mail_room can access the GitLab API via that address.
+      # Do not end with "/".
+
+      gitlab_rails['service_desk_email_gitlab_url'] = "https://gitlab.example.com"
+
+      # The shared secret file that should contain a random token. Make sure it's the same on every node.
+      gitlab_rails['service_desk_email_secret_file'] = ".gitlab_mailroom_secret"
+      ```
+
+      ::EndTabs
+
+   1. [Deprecated in GitLab 16.0 and planned for removal in 17.0)](../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
+      If you experience issues with the `webhook` setup, use `sidekiq` to deliver the email payload directly to GitLab Sidekiq using Redis.
+
+      ::Tabs
+
+      :::TabTitle `incoming_email`
+
+      ```ruby
+      # It uses the Redis configuration to directly add Sidekiq jobs
+      gitlab_rails['incoming_email_delivery_method'] = "sidekiq"
+      ```
+
+      :::TabTitle `service_desk_email`
+
+      ```ruby
+      # It uses the Redis configuration to directly add Sidekiq jobs
+      gitlab_rails['service_desk_email_delivery_method'] = "sidekiq"
+      ```
+
+      ::EndTabs
+
+1. Disable `mail_room` on all nodes that should not run email ingestion. For example, in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   mailroom['enabled'] = false
+   ```
+
+1. [Reconfigure GitLab](../../administration/restart_gitlab.md) for the changes to take effect.
+
+##### Set up a single email ingestion node
+
+After setting up all nodes and disabling the `mail_room` process, enable `mail_room` on a single node.
+This node polls the mailboxes for `incoming_email` and `service_desk_email` on a regular basis and
+move new unread emails to GitLab.
+
+1. Choose an existing node that additionally handles email ingestion.
+1. Add [full configuration and credentials](../../administration/incoming_email.md#configuration-examples)
+   for `incoming_email` and `service_desk_email`.
+1. Enable `mail_room` on this node. For example, in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   mailroom['enabled'] = true
+   ```
+
+1. [Reconfigure GitLab](../../administration/restart_gitlab.md) on this node for the changes to take effect.
+
 ## Use Service Desk
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
@@ -481,8 +627,8 @@ In these issues, you can also see our friendly neighborhood [Support Bot](#suppo
 
 To check what the Service Desk email address is for your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > Service Desk**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Service Desk**.
 
 The email address is available at the top of the issue list.
 
@@ -533,8 +679,8 @@ Prerequisites:
 
 To view Service Desk issues:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > Service Desk**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Service Desk**.
 
 ### Email contents and formatting
 
@@ -570,7 +716,7 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
 Service Desk issues are [confidential](issues/confidential_issues.md), so they are
 only visible to project members. The project owner can
-[make an issue public](issues/confidential_issues.md#modify-issue-confidentiality).
+[make an issue public](issues/confidential_issues.md#in-an-existing-issue).
 When a Service Desk issue becomes public, the issue creator's and participants' email addresses are
 visible to signed-in users with at least the Reporter role for the project.
 

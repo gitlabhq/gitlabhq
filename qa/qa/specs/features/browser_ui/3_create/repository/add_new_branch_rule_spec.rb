@@ -3,10 +3,6 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Branch Rules Overview', product_group: :source_code,
-      feature_flag: {
-        name: 'branch_rules',
-        scope: :project
-      },
       quarantine: {
         issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403583',
         type: :flaky
@@ -22,8 +18,6 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:branch_rules, project: project)
-
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -33,10 +27,6 @@ module QA
           commit.commit_message = 'First commit'
           commit.add_files([{ file_path: 'new_file.rb', content: '# new content' }])
         end
-      end
-
-      after do
-        Runtime::Feature.disable(:branch_rules, project: project)
       end
 
       it 'adds a new branch rule', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/397587' do

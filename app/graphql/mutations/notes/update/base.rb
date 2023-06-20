@@ -24,12 +24,9 @@ module Mutations
             note_params(note, args)
           ).execute(note)
 
-          # It's possible for updated_note to be `nil`, in the situation
-          # where the note is deleted within `Notes::UpdateService` due to
-          # the body of the note only containing Quick Actions.
           {
-            note: updated_note&.reset,
-            errors: updated_note ? errors_on_object(updated_note) : []
+            note: updated_note.destroyed? ? nil : updated_note.reset,
+            errors: updated_note.destroyed? ? [] : errors_on_object(updated_note)
           }
         end
 

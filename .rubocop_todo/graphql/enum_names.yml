@@ -1,6 +1,5 @@
 ---
 Graphql/EnumNames:
-  Details: grace period
   Exclude:
     - 'app/graphql/types/access_level_enum.rb'
     - 'app/graphql/types/availability_enum.rb'

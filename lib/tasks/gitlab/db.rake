@@ -473,7 +473,7 @@ namespace :gitlab do
           Gitlab::Database::SchemaValidation::TrackInconsistency.new(
             inconsistency,
             Project.find_by_full_path(gitlab_url),
-            User.support_bot
+            User.automation_bot
           ).execute
 
           puts inconsistency.inspect
@@ -482,18 +482,12 @@ namespace :gitlab do
     end
 
     namespace :dictionary do
-      DB_DOCS_PATH = Rails.root.join('db', 'docs')
-
       desc 'Generate database docs yaml'
       task generate: :environment do
         next if Gitlab.jh?
 
-        FileUtils.mkdir_p(DB_DOCS_PATH)
-
-        if Gitlab.ee?
-          Gitlab::Database::EE_DATABASES_NAME_TO_DIR.each do |_, ee_db_dir|
-            FileUtils.mkdir_p(Rails.root.join(ee_db_dir, 'docs'))
-          end
+        Gitlab::Database.all_database_connections.values.map(&:db_docs_dir).each do |db_dir|
+          FileUtils.mkdir_p(db_dir)
         end
 
         Rails.application.eager_load!
@@ -502,7 +496,6 @@ namespace :gitlab do
         milestone = version.release.segments.first(2).join('.')
 
         classes = {}
-        ignored_tables = %w[p_ci_builds]
 
         Gitlab::Database.database_base_models.each do |_, model_class|
           tables = model_class.connection.tables
@@ -521,11 +514,10 @@ namespace :gitlab do
             .reject { |c| c.name =~ /^(?:EE::)?Gitlab::(?:BackgroundMigration|DatabaseImporters)::/ }
             .reject { |c| c.name =~ /^HABTM_/ }
             .reject { |c| c < Gitlab::Database::Migration[1.0]::MigrationRecord }
-            .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) }
+            .each { |c| classes[c.table_name] << c.name if classes.has_key?(c.table_name) && c.name.present? }
 
           sources.each do |source_name|
             next if source_name.start_with?('_test_') # Ignore test tables
-            next if ignored_tables.include?(source_name)
 
             database = model_class.connection_db_config.name
             file = dictionary_file_path(source_name, views, database)
@@ -574,12 +566,7 @@ namespace :gitlab do
       def dictionary_file_path(source_name, views, database)
         sub_directory = views.include?(source_name) ? 'views' : ''
 
-        path = if Gitlab.ee? && Gitlab::Database::EE_DATABASES_NAME_TO_DIR.key?(database.to_s)
-                 Rails.root.join(Gitlab::Database::EE_DATABASES_NAME_TO_DIR[database.to_s], 'docs')
-               else
-                 DB_DOCS_PATH
-               end
-
+        path = Gitlab::Database.all_database_connections.fetch(database).db_docs_dir
         File.join(path, sub_directory, "#{source_name}.yml")
       end
 

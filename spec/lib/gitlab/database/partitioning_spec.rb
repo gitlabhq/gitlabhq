@@ -112,6 +112,24 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
       end
     end
 
+    context 'without ci database' do
+      it 'only creates partitions for main database' do
+        skip_if_database_exists(:ci)
+
+        allow(Gitlab::Database::Partitioning::PartitionManager).to receive(:new).and_call_original
+
+        # Also, in the case where `ci` database is shared with `main` database,
+        # check that we do not run PartitionManager again for ci connection as
+        # that is redundant.
+        expect(Gitlab::Database::Partitioning::PartitionManager).not_to receive(:new)
+          .with(anything, connection: ci_connection).and_call_original
+
+        expect { described_class.sync_partitions(models) }
+          .to change { find_partitions(table_names.first, conn: main_connection).size }.from(0)
+          .and change { find_partitions(table_names.last, conn: main_connection).size }.from(0)
+      end
+    end
+
     context 'when no partitioned models are given' do
       it 'manages partitions for each registered model' do
         described_class.register_models([models.first])
@@ -245,6 +263,18 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         .to change { Postgresql::DetachedPartition.count }.from(2).to(0)
         .and change { table_exists?(table_names.first) }.from(true).to(false)
         .and change { table_exists?(table_names.last) }.from(true).to(false)
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(partition_manager_sync_partitions: false)
+      end
+
+      it 'does not call the DetachedPartitionDropper' do
+        expect(Gitlab::Database::Partitioning::DetachedPartitionDropper).not_to receive(:new)
+
+        described_class.drop_detached_partitions
+      end
     end
 
     def table_exists?(table_name)

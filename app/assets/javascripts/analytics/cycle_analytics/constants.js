@@ -43,3 +43,4 @@ export const METRICS_REQUESTS = [
 
 export const MILESTONES_ENDPOINT = '/-/milestones.json';
 export const LABELS_ENDPOINT = '/-/labels.json';
+export const MAX_LABELS = 100;

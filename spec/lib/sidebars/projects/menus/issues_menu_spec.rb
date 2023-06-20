@@ -71,7 +71,7 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
     context 'when there are open issues' do
       it 'returns the number of open issues' do
         create_list(:issue, 2, :opened, project: project)
-        create(:issue, :closed, project: project)
+        build_stubbed(:issue, :closed, project: project)
 
         expect(subject.pill_count).to eq '2'
       end

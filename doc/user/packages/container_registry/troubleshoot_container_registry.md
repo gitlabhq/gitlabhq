@@ -91,8 +91,8 @@ The following procedure uses these sample project names:
    There may be a delay while the images are queued and deleted.
 1. Change the path or transfer the project:
 
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Settings > General**.
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+   1. Select **Settings > General**.
    1. Expand the **Advanced** section.
    1. In the **Change path** text box, edit the path.
    1. Select **Change path**.

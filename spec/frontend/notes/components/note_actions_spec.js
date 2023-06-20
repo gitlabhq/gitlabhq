@@ -175,11 +175,6 @@ describe('noteActions', () => {
         const { resolveButton } = wrapper.vm.$refs;
         expect(resolveButton.$el.getAttribute('title')).toBe(`Resolved by ${complexUnescapedName}`);
       });
-
-      it('closes the dropdown', () => {
-        findReportAbuseButton().vm.$emit('action');
-        expect(mockCloseDropdown).toHaveBeenCalled();
-      });
     });
   });
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BatchOpenIssuesCountService, feature_category: :projects do
+RSpec.describe Projects::BatchOpenIssuesCountService, feature_category: :groups_and_projects do
   let!(:project_1) { create(:project) }
   let!(:project_2) { create(:project) }
 

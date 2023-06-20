@@ -5,7 +5,7 @@ data_category: optional
 name: service_usage_data_download_payload_click
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: number
 status: active
 time_frame: all

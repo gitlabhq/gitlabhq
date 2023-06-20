@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/ExpectChange:
-  Details: grace period
   Exclude:
     - 'ee/spec/graphql/mutations/boards/update_spec.rb'
     - 'ee/spec/graphql/mutations/incident_management/issuable_resource_link/create_spec.rb'

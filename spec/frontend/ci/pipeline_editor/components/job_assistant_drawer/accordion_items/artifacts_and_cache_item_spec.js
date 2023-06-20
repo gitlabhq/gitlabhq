@@ -1,10 +1,15 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import ArtifactsAndCacheItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/artifacts_and_cache_item.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { JOB_TEMPLATE } from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
+import {
+  JOB_TEMPLATE,
+  HELP_PATHS,
+} from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
 
 describe('Artifacts and cache item', () => {
   let wrapper;
 
+  const findLinks = () => wrapper.findAllComponents(GlLink);
   const findArtifactsPathsInputByIndex = (index) =>
     wrapper.findByTestId(`artifacts-paths-input-${index}`);
   const findArtifactsExcludeInputByIndex = (index) =>
@@ -31,8 +36,18 @@ describe('Artifacts and cache item', () => {
       propsData: {
         job,
       },
+      stubs: {
+        GlSprintf,
+      },
     });
   };
+
+  it('should render help links with correct hrefs', () => {
+    createComponent();
+
+    const hrefs = findLinks().wrappers.map((w) => w.attributes('href'));
+    expect(hrefs).toEqual([HELP_PATHS.artifactsHelpPath, HELP_PATHS.cacheHelpPath]);
+  });
 
   it('should emit update job event when filling inputs', () => {
     createComponent();

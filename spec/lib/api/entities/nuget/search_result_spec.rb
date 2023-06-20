@@ -2,11 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Nuget::SearchResult do
+RSpec.describe API::Entities::Nuget::SearchResult, feature_category: :package_registry do
   let(:search_result) do
     {
       type: 'Package',
-      authors: 'Author',
       name: 'PackageTest',
       version: '1.2.3',
       versions: [
@@ -16,11 +15,12 @@ RSpec.describe API::Entities::Nuget::SearchResult do
           version: '1.2.3'
         }
       ],
-      summary: 'Summary',
       total_downloads: 100,
       verified: true,
       tags: 'tag1 tag2 tag3',
       metadatum: {
+        authors: 'Author',
+        description: 'Description',
         project_url: 'http://sandbox.com/project',
         license_url: 'http://sandbox.com/license',
         icon_url: 'http://sandbox.com/icon'
@@ -34,7 +34,7 @@ RSpec.describe API::Entities::Nuget::SearchResult do
       'authors': 'Author',
       'id': 'PackageTest',
       'title': 'PackageTest',
-      'summary': 'Summary',
+      'summary': 'Description',
       'totalDownloads': 100,
       'verified': true,
       'version': '1.2.3',

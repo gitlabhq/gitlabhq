@@ -23,7 +23,7 @@ After you've created these core components, you can begin running your iteration
 ## Create a group
 
 Iteration cadences are created at the group level, so start by
-[creating one](../../user/group/manage.md#create-a-group) if you don't have one already.
+[creating one](../../user/group/index.md#create-a-group) if you don't have one already.
 
 You use groups to manage one or more related projects at the same time.
 You add your users as members in the group, and assign them a role. Roles determine

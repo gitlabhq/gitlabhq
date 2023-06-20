@@ -11,22 +11,25 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 
 ## Enable AI/ML features
 
-> Introduced in GitLab 16.0 and is [actively being rolled out](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222).
+> Introduced in GitLab 16.0 and [actively being rolled out](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222).
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-To enable AI/ML features:
+To enable AI/ML features for a top-level group:
 
-- Enable the [Experiment features setting](group/manage.md#group-experiment-features-setting).
-- The [third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) is enabled by default. To disable AI features powered by third-party APIs, disable this setting.
+- Enable [Experiment features](group/manage.md#enable-experiment-features).
+- Enable [third-party AI features](group/manage.md#enable-third-party-ai-features) (enabled by default).
+  To disable AI features powered by third-party APIs, clear this setting.
 
-These settings give you control over which features are enabled. These settings work together so you can have a mix of both experimental and third-party AI features.
+These settings work together so you can have a mix of both experimental and third-party AI features.
 
 ## Generally Available AI features
 
-When a feature is [Generally Available](../policy/alpha-beta-support.md#generally-available-ga), it does not require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled. Some of these features might require the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting).
+When a feature is [Generally Available](../policy/experiment-beta-support.md#generally-available-ga),
+it does not require [Experiment features to be enabled](group/manage.md#enable-experiment-features).
+Some of these features might require [third-party AI features to be enabled](group/manage.md#enable-third-party-ai-features).
 
 The following feature is Generally Available:
 
@@ -34,7 +37,8 @@ The following feature is Generally Available:
 
 ## Beta AI features
 
-[Beta features](../policy/alpha-beta-support.md#beta) do not require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
+[Beta features](../policy/experiment-beta-support.md#beta) do not require
+[Experiment features to be enabled](group/manage.md#enable-experiment-features).
 
 The following feature is in Beta:
 
@@ -42,17 +46,20 @@ The following feature is in Beta:
 
 ## Experiment AI features
 
-[Experiment features](../policy/alpha-beta-support.md#experiment) will soon require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
+[Experiment features](../policy/experiment-beta-support.md#experiment) will soon require
+[Experiment features to be enabled](group/manage.md#enable-experiment-features).
 
 ## Third-party AI features
 
-Third-party AI features require the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled. Experiment third-party AI features also require the [Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
+Third-party AI features require [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
+
+For Experiment third-party AI features, [Experiment features must be enabled](group/manage.md#enable-experiment-features) as well.
 
 ### Explain Selected Code in the Web UI **(ULTIMATE SAAS)**
 
-> Introduced in GitLab 15.11 as an [Experiment](../policy/alpha-beta-support.md#experiment) on GitLab.com.
+> Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3.
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3.
 
 GitLab can help you get up to speed faster if you:
 
@@ -69,8 +76,8 @@ Prerequisites:
 
 To explain your code:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**, then select your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
 1. Go to the file, and select the lines that you want to have explained.
 1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
@@ -83,9 +90,9 @@ We cannot guarantee that the large language model produces results that are corr
 
 ### Explain this Vulnerability in the Web UI **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment) on GitLab.com.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by Google AI.
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by Google AI.
 
 GitLab can help you with your vulnerability by using a large language model to:
 
@@ -101,8 +108,8 @@ Prerequisites:
 
 To explain your vulnerability:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Secure > Vulnerability report**.
 1. Find a SAST vulnerability.
 1. Open the vulnerability.
 1. Select **Try it out**.
@@ -115,9 +122,9 @@ We cannot guarantee that the large language model produces results that are corr
 
 ### GitLab Chat **(ULTIMATE SAAS)**
 
-> Introduced in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+> Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
 Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Chat.
 
@@ -129,11 +136,15 @@ To give feedback, select the **Give Feedback** link.
 
 ### Summarize merge request changes **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10400) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10400) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-You can generate a merge request summary by using the `/summarize_diff` quick action in a merge request comment. This action posts a comment from a GitLab bot. The comment provides a summary of the changes and the related SHA for when that summary was generated.
+You can generate a merge request summary in a merge request comment.
+
+- In a comment, type `/summarize_diff`.
+
+This action posts a comment from a GitLab bot. The comment provides a summary of the changes and the related SHA for when that summary was generated.
 
 Provide feedback on this experimental feature in [issue 408726](https://gitlab.com/gitlab-org/gitlab/-/issues/408726).
 
@@ -142,16 +153,19 @@ and the target branch is sent to the large language model referenced above.
 
 ### Summarize my merge request review **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-When you've completed your review of a merge request and are ready to [submit your review](project/merge_requests/reviews/index.md#submit-a-review) you can choose to have summary generated for you. To generate the summary:
+When you've completed your review of a merge request and are ready to [submit your review](project/merge_requests/reviews/index.md#submit-a-review), you can have a summary generated for you.
 
-1. Select the AI Actions dropdown list.
+To generate the summary:
+
+1. When you are ready to submit your review, select **Finish review**.
+1. Select **AI Actions** (**{tanuki}**).
 1. Select **Summarize my code review**.
 
-The summary is generated and entered in to the comment box where you can edit and refine prior to submitting with your review.
+The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 
 Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
 
@@ -162,16 +176,19 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 ### Generate suggested tests in merge requests **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-When in a merge request you can choose to have GitLab suggest tests for the file you are reviewing. This can help to determine if appropriate test coverage has been provided or help with writing tests to provide more coverage for your project. To generate a test suggestion:
+In a merge request, you can get a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
 
-1. Select the menu icon on the header of a file.
-1. Select **Generate test with AI**.
+To generate a test suggestion:
 
-A sidebar opens where the test suggestion is generated. From there you can choose to copy that suggestion in to your editor as the start of your tests.
+1. In a merge request, select the **Changes** tab.
+1. On the header for the file, in the upper-right corner, select **Options** (**{ellipsis_v}**).
+1. Select **Suggest test cases**.
+
+The test suggestion is generated in a sidebar. You can copy the suggestion to your editor and use it as the start of your tests.
 
 Feedback on this experimental feature can be provided in [issue 408995](https://gitlab.com/gitlab-org/gitlab/-/issues/408995).
 
@@ -180,17 +197,37 @@ Feedback on this experimental feature can be provided in [issue 408995](https://
 - Contents of the file
 - The file name
 
+### Summarize issue discussions **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+
+This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's
+GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
+
+You can generate a summary of discussions on an issue:
+
+1. In an issue, scroll to the **Activity** section.
+1. Select **View summary**.
+
+The comments in the issue are summarized in as many as 10 list items.
+The summary is displayed only for you.
+
+Provide feedback on this experimental feature in [issue 407779](https://gitlab.com/gitlab-org/gitlab/-/issues/407779).
+
+**Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
+language model referenced above.
+
 ## Data Usage
 
 GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function.
 
 ### Progressive enhancement
 
-These features are designed as a progressive enhancement to existing GitLab features across our DevSecOps platform. They are designed to fail gracefully and should not prevent the core functionality of the underlying feature. Please note each feature is subject to its expected functionality as defined by the relevant [feature support policy](../policy/alpha-beta-support.md).
+These features are designed as a progressive enhancement to existing GitLab features across our DevSecOps platform. They are designed to fail gracefully and should not prevent the core functionality of the underlying feature. Please note each feature is subject to its expected functionality as defined by the relevant [feature support policy](../policy/experiment-beta-support.md).
 
 ### Stability and performance
 
-These features are in a variety of [feature support levels](../policy/alpha-beta-support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable **beta and experimental** features for any or all customers at any time at our discretion.
+These features are in a variety of [feature support levels](../policy/experiment-beta-support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable **beta and experimental** features for any or all customers at any time at our discretion.
 
 ## Third party services
 
@@ -198,7 +235,7 @@ These features are in a variety of [feature support levels](../policy/alpha-beta
 
 Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use in order to provide these features.
 
-Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting).
+Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#enable-third-party-ai-features).
 
 ### Model accuracy and quality
 

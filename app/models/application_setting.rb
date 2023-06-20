@@ -13,8 +13,32 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
   ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
-  ignore_column :clickhouse_connection_string, remove_with: '16.1', remove_after: '2023-05-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
+  ignore_columns %i[
+    encrypted_tofa_access_token_expires_in
+    encrypted_tofa_access_token_expires_in_iv
+    encrypted_tofa_client_library_args
+    encrypted_tofa_client_library_args_iv
+    encrypted_tofa_client_library_class
+    encrypted_tofa_client_library_class_iv
+    encrypted_tofa_client_library_create_credentials_method
+    encrypted_tofa_client_library_create_credentials_method_iv
+    encrypted_tofa_client_library_fetch_access_token_method
+    encrypted_tofa_client_library_fetch_access_token_method_iv
+    encrypted_tofa_credentials
+    encrypted_tofa_credentials_iv
+    encrypted_tofa_host
+    encrypted_tofa_host_iv
+    encrypted_tofa_request_json_keys
+    encrypted_tofa_request_json_keys_iv
+    encrypted_tofa_request_payload
+    encrypted_tofa_request_payload_iv
+    encrypted_tofa_response_json_keys
+    encrypted_tofa_response_json_keys_iv
+    encrypted_tofa_url
+    encrypted_tofa_url_iv
+    vertex_project
+  ], remove_with: '16.2', remove_after: '2023-06-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -30,6 +54,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   HUMANIZED_ATTRIBUTES = {
     archive_builds_in_seconds: 'Archive job value'
   }.freeze
+
+  # matches the size set in the database constraint
+  DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
 
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
@@ -86,12 +113,16 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attribute :id, default: 1
   attribute :repository_storages_weighted, default: -> { {} }
   attribute :kroki_formats, default: -> { {} }
+  attribute :default_branch_protection_defaults, default: -> { {} }
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr :group_runner_token_expiration_interval_human_readable, :group_runner_token_expiration_interval
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
+
+  validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
+  validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
 
   validates :grafana_url,
     system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({
@@ -186,6 +217,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :plantuml_url, presence: true, if: :plantuml_enabled
 
   validates :sourcegraph_url, presence: true, if: :sourcegraph_enabled
+
+  validates :diagramsnet_url,
+    presence: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ enforce_sanitization: true }),
+    if: :diagramsnet_enabled
 
   validates :gitpod_url,
     presence: true,
@@ -379,6 +415,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobytes }
+  validates :wiki_asciidoc_allow_uri_includes, inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :max_yaml_size_bytes, numericality: { only_integer: true, greater_than: 0 }, presence: true
   validates :max_yaml_depth, numericality: { only_integer: true, greater_than: 0 }, presence: true
 
@@ -390,6 +427,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :container_registry_delete_tags_service_timeout,
     :container_registry_cleanup_tags_service_max_list_size,
+    :container_registry_data_repair_detail_worker_max_concurrency,
     :container_registry_expiration_policies_worker_capacity,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -590,6 +628,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :search_rate_limit
     validates :search_rate_limit_unauthenticated
     validates :projects_api_rate_limit_unauthenticated
+    validates :gitlab_shell_operation_limit
   end
 
   validates :notes_create_limit_allowlist,
@@ -668,6 +707,17 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :database_apdex_settings, json_schema: { filename: 'application_setting_database_apdex_settings' }, allow_nil: true
 
+  validates :namespace_aggregation_schedule_lease_duration_in_seconds,
+    numericality: { only_integer: true, greater_than: 0 }
+
+  validates :instance_level_code_suggestions_enabled,
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :ai_access_token,
+    presence: { message: N_("is required to enable Code Suggestions") },
+    if: :instance_level_code_suggestions_enabled
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,
@@ -713,18 +763,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  # TOFA API integration settngs
-  attr_encrypted :tofa_client_library_args, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_client_library_class, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_client_library_create_credentials_method, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_client_library_fetch_access_token_method, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_host, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_request_json_keys, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_request_payload, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_response_json_keys, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_url, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :tofa_access_token_expires_in, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -752,7 +792,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name
-  before_validation :remove_old_import_sources
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -794,10 +833,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     end
 
     users_count >= INSTANCE_REVIEW_MIN_USERS
-  end
-
-  def remove_old_import_sources
-    self.import_sources -= %w[phabricator gitlab] if self.import_sources
   end
 
   Recursion = Class.new(RuntimeError)
@@ -911,4 +946,5 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 end
 
+ApplicationSetting.prepend(ApplicationSettingMaskedAttrs)
 ApplicationSetting.prepend_mod_with('ApplicationSetting')

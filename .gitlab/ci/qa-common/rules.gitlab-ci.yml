@@ -1,5 +1,5 @@
 # Specific specs passed
-.specific-specs: &specific-specs
+.specs-specified: &specs-specified
   if: $QA_TESTS != ""
 
 # No specific specs passed
@@ -9,6 +9,14 @@
 # FF changes
 .feature-flags-set: &feature-flags-set
   if: $QA_FEATURE_FLAGS =~ /enabled|disabled/
+
+# Specific specs specified
+.spec-file-specified: &spec-file-specified
+  if: $QA_TESTS =~ /_spec\.rb/
+
+# Specs directory specified
+.spec-directory-specified: &spec-directory-specified
+  if: $QA_TESTS != "" && $QA_TESTS !~ /_spec\.rb/
 
 # Manually trigger job on ff changes but with default ff state instead of inverted
 .feature-flags-set-manual: &feature-flags-set-manual
@@ -48,18 +56,6 @@
   rules:
     - when: always
 
-.rules:omnibus-build:
-  rules:
-    - if: $SKIP_OMNIBUS_TRIGGER == "true"
-      when: never
-    - if: $FOSS_ONLY != "1"
-
-.rules:omnibus-build-ce:
-  rules:
-    - if: $SKIP_OMNIBUS_TRIGGER == "true"
-      when: never
-    - if: $FOSS_ONLY == "1"
-
 .rules:update-cache:
   rules:
     - if: '$UPDATE_QA_CACHE == "true"'
@@ -96,11 +92,25 @@
       when: never
     - <<: *feature-flags-set
       when: never
+    - <<: *spec-directory-specified
+      when: never
+
+.rules:test:qa-selective-parallel:
+  rules:
+    # always run parallel with full suite when framework changes present or ff state changed
+    - <<: *qa-run-all-tests
+      when: never
+    - <<: *all-specs
+      when: never
+    - <<: *feature-flags-set
+      when: never
+    - <<: *spec-file-specified
+      when: never
 
 .rules:test:qa-parallel:
   rules:
     - *qa-run-all-tests
-    - <<: *specific-specs
+    - <<: *specs-specified
       when: manual
       allow_failure: true
       variables:
@@ -113,6 +123,11 @@
     - *qa-run-all-tests
     - *feature-flags-set-manual
 
+.rules:test:ce-only:
+  rules:
+    - if: $FOSS_ONLY != "1"
+      when: never
+
 .rules:test:ee-only:
   rules:
     - if: $FOSS_ONLY == "1"
@@ -124,12 +139,10 @@
     # these jobs need gitlab version because we can't reliably detect it from just the image
     - if: $GITLAB_SEMVER_VERSION !~ /^\d+\.\d+\.\d+/
       when: never
-    # update type tests are used to check if gitlab upgrade can be performed correctly (mainly migrations)
-    # there isn't much benefit in running tests after update with new sidebar enabled and there
-    # is also an issue to properly pass feature toggle to this job due to how gitlab-qa parses cli args
-    - if: $QA_SUPER_SIDEBAR_ENABLED == "true"
+    # $QA_SUPER_SIDEBAR_ENABLED is now only present as a variable when testing old nav so we skip update jobs
+    # in pipeline where it is explicitly disabled
+    - if: $QA_SUPER_SIDEBAR_ENABLED
       when: never
-    - !reference [.rules:test:ee-only, rules]
     - !reference [.rules:test:qa, rules]
 
 .rules:test:qa-default-branch:

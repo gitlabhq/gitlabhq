@@ -7,7 +7,7 @@ class DropExperimentSubjectsTable < Gitlab::Database::Migration[2.0]
 
   def down
     unless table_exists?(:experiment_subjects)
-      create_table :experiment_subjects do |t| # rubocop:disable Migration/SchemaAdditionMethodsNoPost
+      create_table :experiment_subjects do |t|
         t.bigint :experiment_id, null: false
         t.bigint :user_id
         t.bigint :project_id

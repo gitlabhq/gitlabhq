@@ -21,9 +21,11 @@ module QA
         end
 
         def fetch_issue(issue_key)
-          response = get("#{api_url}/issue/#{issue_key}",
-                         user: Runtime::Env.jira_admin_username,
-                         password: Runtime::Env.jira_admin_password)
+          response = get(
+            "#{api_url}/issue/#{issue_key}",
+            user: Runtime::Env.jira_admin_username,
+            password: Runtime::Env.jira_admin_password
+          )
 
           parse_body(response)
         end

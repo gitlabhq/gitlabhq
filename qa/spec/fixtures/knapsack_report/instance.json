@@ -1,0 +1,7 @@
+{
+  "qa/specs/features/ee/browser_ui/3_create/repository/code_owners_with_protected_branch_and_squashed_commits_spec.rb": 18.85673829499956,
+  "qa/specs/features/api/3_create/repository/files_spec.rb": 3.180753622999873,
+  "qa/specs/features/browser_ui/3_create/web_ide_old/server_hooks_custom_error_message_spec.rb": 0.010764157999801682,
+  "qa/specs/features/api/9_data_stores/users_spec.rb": 0.2808277129997805,
+  "qa/specs/features/api/2_plan/closes_issue_via_pushing_a_commit_spec.rb": 4.882168451000325
+}

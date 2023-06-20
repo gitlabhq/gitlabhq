@@ -5,14 +5,14 @@
  *
  * Makes a post request when the button is clicked.
  */
-import { GlModalDirective, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import setEnvironmentToRollback from '../graphql/mutations/set_environment_to_rollback.mutation.graphql';
 
 export default {
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -41,12 +41,14 @@ export default {
     },
   },
 
-  computed: {
-    title() {
-      return this.isLastDeployment
-        ? s__('Environments|Re-deploy to environment')
-        : s__('Environments|Rollback environment');
-    },
+  data() {
+    return {
+      item: {
+        text: this.isLastDeployment
+          ? s__('Environments|Re-deploy to environment')
+          : s__('Environments|Rollback environment'),
+      },
+    };
   },
 
   methods: {
@@ -71,7 +73,5 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown-item v-gl-modal.confirm-rollback-modal @click="onClick">
-    {{ title }}
-  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item v-gl-modal.confirm-rollback-modal :item="item" @action="onClick" />
 </template>

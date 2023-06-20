@@ -10,6 +10,8 @@ module Gitlab
 
       attr_reader :project, :client, :errors, :users
 
+      ALREADY_IMPORTED_CACHE_KEY = 'bitbucket_cloud-importer/already-imported/%{project}/%{collection}'
+
       def initialize(project)
         @project = project
         @client = Bitbucket::Client.new(project.import_data.credentials)
@@ -30,6 +32,18 @@ module Gitlab
       end
 
       private
+
+      def already_imported?(collection, iid)
+        Gitlab::Cache::Import::Caching.set_includes?(cache_key(collection), iid)
+      end
+
+      def mark_as_imported(collection, iid)
+        Gitlab::Cache::Import::Caching.set_add(cache_key(collection), iid)
+      end
+
+      def cache_key(collection)
+        format(ALREADY_IMPORTED_CACHE_KEY, project: project.id, collection: collection)
+      end
 
       def handle_errors
         return unless errors.any?
@@ -97,6 +111,8 @@ module Gitlab
         issue_type_id = ::WorkItems::Type.default_issue_type.id
 
         client.issues(repo).each_with_index do |issue, index|
+          next if already_imported?(:issues, issue.iid)
+
           # If a user creates an issue while the import is in progress, this can lead to an import failure.
           # The workaround is to allocate IIDs before starting the importer.
           allocate_issues_internal_id!(project, client) if index == 0
@@ -126,6 +142,8 @@ module Gitlab
           created_at: issue.created_at,
           updated_at: issue.updated_at
         )
+
+        mark_as_imported(:issues, issue.iid)
 
         metrics.issues_counter.increment
 
@@ -179,6 +197,8 @@ module Gitlab
         pull_requests = client.pull_requests(repo)
 
         pull_requests.each do |pull_request|
+          next if already_imported?(:pull_requests, pull_request.iid)
+
           import_pull_request(pull_request)
         end
       end
@@ -208,6 +228,8 @@ module Gitlab
           created_at: pull_request.created_at,
           updated_at: pull_request.updated_at
         )
+
+        mark_as_imported(:pull_requests, pull_request.iid)
 
         metrics.merge_requests_counter.increment
 

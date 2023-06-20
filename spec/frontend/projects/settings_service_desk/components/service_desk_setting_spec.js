@@ -1,7 +1,8 @@
-import { GlButton, GlDropdown, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import { GlButton, GlDropdown, GlLoadingIcon, GlToggle, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import ServiceDeskSetting from '~/projects/settings_service_desk/components/service_desk_setting.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -16,16 +17,43 @@ describe('ServiceDeskSetting', () => {
   const findTemplateDropdown = () => wrapper.findComponent(GlDropdown);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findSuffixFormGroup = () => wrapper.findByTestId('suffix-form-group');
+  const findIssueTrackerInfo = () => wrapper.findComponent(GlAlert);
+  const findIssueHelpLink = () => wrapper.findByTestId('issue-help-page');
 
   const createComponent = ({ props = {} } = {}) =>
     extendedWrapper(
       mount(ServiceDeskSetting, {
         propsData: {
           isEnabled: true,
+          isIssueTrackerEnabled: true,
           ...props,
         },
       }),
     );
+
+  describe('with issue tracker', () => {
+    it('does not show the info notice when enabled', () => {
+      wrapper = createComponent();
+
+      expect(findIssueTrackerInfo().exists()).toBe(false);
+    });
+
+    it('shows info notice when disabled with help page link', () => {
+      wrapper = createComponent({
+        props: {
+          isIssueTrackerEnabled: false,
+        },
+      });
+
+      expect(findIssueTrackerInfo().exists()).toBe(true);
+      expect(findIssueHelpLink().text()).toEqual('activate the issue tracker');
+      expect(findIssueHelpLink().attributes('href')).toBe(
+        helpPagePath('user/project/settings/index.md', {
+          anchor: 'configure-project-visibility-features-and-permissions',
+        }),
+      );
+    });
+  });
 
   describe('when isEnabled=true', () => {
     describe('only isEnabled', () => {

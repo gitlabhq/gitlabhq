@@ -84,7 +84,7 @@ You can use GitLab Pages to host the GitLab product documentation.
 
 Prerequisite:
 
-- Ensure the Pages site URL does not use a subfolder. Because of the way the                       
+- Ensure the Pages site URL does not use a subfolder. Because of the way the
   site is pre-compiled, the CSS and JavaScript files are relative to the
   main domain or subdomain. For example, URLs like `https://example.com/docs/`
   are not supported.
@@ -179,7 +179,7 @@ documentation URL requests as needed. For example, if your GitLab version is
 
 To test the setting, in GitLab, select a **Learn more** link. For example:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. In the **Syntax highlighting theme** section, select **Learn more**.
 

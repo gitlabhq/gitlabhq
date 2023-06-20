@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Middleware::CompressedJson do
+RSpec.describe Gitlab::Middleware::CompressedJson, feature_category: :shared do
   let_it_be(:decompressed_input) { '{"foo": "bar"}' }
   let_it_be(:input) { ActiveSupport::Gzip.compress(decompressed_input) }
 
@@ -70,24 +70,6 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
   end
 
   describe '#call' do
-    context 'with collector route' do
-      let(:path) { '/api/v4/error_tracking/collector/1/store' }
-
-      it_behaves_like 'decompress middleware'
-
-      context 'with no Content-Type' do
-        let(:content_type) { nil }
-
-        it_behaves_like 'decompress middleware'
-      end
-
-      include_context 'with relative url' do
-        let(:path) { "#{relative_url_root}/api/v4/error_tracking/collector/1/store" }
-
-        it_behaves_like 'decompress middleware'
-      end
-    end
-
     context 'with packages route' do
       context 'with instance level endpoint' do
         context 'with npm advisory bulk url' do
@@ -192,11 +174,11 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
       it_behaves_like 'passes input'
     end
 
-    context 'payload is too large' do
+    context 'when payload is too large' do
       let(:body_limit) { Gitlab::Middleware::CompressedJson::MAXIMUM_BODY_SIZE }
       let(:decompressed_input) { 'a' * (body_limit + 100) }
       let(:input) { ActiveSupport::Gzip.compress(decompressed_input) }
-      let(:path) { '/api/v4/error_tracking/collector/1/envelope' }
+      let(:path) { '/api/v4/packages/npm/-/npm/v1/security/advisories/bulk' }
 
       it 'reads only limited size' do
         expect(middleware.call(env))

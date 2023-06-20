@@ -6,6 +6,7 @@ module API
       include PaginationParams
 
       before do
+        check_api_enabled!
         authenticate!
         authorize! :read_secure_files, user_project
       end
@@ -64,7 +65,7 @@ module API
 
         resource do
           before do
-            read_only_feature_flag_enabled?
+            check_read_only_feature_flag_enabled!
             authorize! :admin_secure_files, user_project
           end
 
@@ -81,7 +82,7 @@ module API
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
           post ':id/secure_files' do
             secure_file = user_project.secure_files.new(
-              name: Gitlab::Utils.check_path_traversal!(params[:name])
+              name: Gitlab::PathTraversal.check_path_traversal!(params[:name])
             )
 
             secure_file.file = params[:file]
@@ -112,7 +113,11 @@ module API
       end
 
       helpers do
-        def read_only_feature_flag_enabled?
+        def check_api_enabled!
+          forbidden! unless Gitlab.config.ci_secure_files.enabled
+        end
+
+        def check_read_only_feature_flag_enabled!
           service_unavailable! if Feature.enabled?(:ci_secure_files_read_only, user_project, type: :ops)
         end
       end

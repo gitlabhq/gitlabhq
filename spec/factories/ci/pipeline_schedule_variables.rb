@@ -7,5 +7,9 @@ FactoryBot.define do
     variable_type { 'env_var' }
 
     pipeline_schedule factory: :ci_pipeline_schedule
+
+    trait(:file) do
+      variable_type { :file }
+    end
   end
 end

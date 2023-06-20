@@ -9,7 +9,7 @@ function getAllDiscussionElements() {
   const containerEl = isOverviewPage() ? '.tab-pane.notes' : '.diffs';
   return Array.from(
     document.querySelectorAll(
-      `${containerEl} div[data-discussion-id]:not([data-discussion-resolved])`,
+      `${containerEl} div[data-discussion-id][data-discussion-resolvable]:not([data-discussion-resolved])`,
     ),
   );
 }

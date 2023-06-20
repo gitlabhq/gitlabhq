@@ -1,11 +1,24 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import Table from '~/repository/components/table/index.vue';
 import TableRow from '~/repository/components/table/row.vue';
+import refQuery from '~/repository/queries/ref.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
-let vm;
-let $apollo;
+let wrapper;
+
+const createMockApolloProvider = (ref) => {
+  Vue.use(VueApollo);
+  const apolloProver = createMockApollo([]);
+  apolloProver.clients.defaultClient.cache.writeQuery({
+    query: refQuery,
+    data: { ref, escapedRef: ref },
+  });
+
+  return apolloProver;
+};
 
 const MOCK_BLOBS = [
   {
@@ -70,8 +83,15 @@ const MOCK_COMMITS = [
   },
 ];
 
-function factory({ path, isLoading = false, hasMore = true, entries = {}, commits = [] }) {
-  vm = shallowMount(Table, {
+function factory({
+  path,
+  isLoading = false,
+  hasMore = true,
+  entries = {},
+  commits = [],
+  ref = 'main',
+}) {
+  wrapper = shallowMount(Table, {
     propsData: {
       path,
       isLoading,
@@ -79,13 +99,11 @@ function factory({ path, isLoading = false, hasMore = true, entries = {}, commit
       hasMore,
       commits,
     },
-    mocks: {
-      $apollo,
-    },
+    apolloProvider: createMockApolloProvider(ref),
   });
 }
 
-const findTableRows = () => vm.findAllComponents(TableRow);
+const findTableRows = () => wrapper.findAllComponents(TableRow);
 
 describe('Repository table component', () => {
   it.each`
@@ -94,14 +112,10 @@ describe('Repository table component', () => {
     ${'app/assets'} | ${'main'}
     ${'/'}          | ${'test'}
   `('renders table caption for $ref in $path', async ({ path, ref }) => {
-    factory({ path });
-
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    vm.setData({ ref });
+    factory({ path, ref });
 
     await nextTick();
-    expect(vm.find('.table').attributes('aria-label')).toEqual(
+    expect(wrapper.find('.table').attributes('aria-label')).toEqual(
       `Files, directories, and submodules in the path ${path} for commit reference ${ref}`,
     );
   });
@@ -109,7 +123,7 @@ describe('Repository table component', () => {
   it('shows loading icon', () => {
     factory({ path: '/', isLoading: true });
 
-    expect(vm.findComponent(GlSkeletonLoader).exists()).toBe(true);
+    expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
   });
 
   it('renders table rows', () => {
@@ -152,7 +166,7 @@ describe('Repository table component', () => {
   });
 
   describe('Show more button', () => {
-    const showMoreButton = () => vm.findComponent(GlButton);
+    const showMoreButton = () => wrapper.findComponent(GlButton);
 
     it.each`
       hasMore  | expectButtonToExist
@@ -170,7 +184,7 @@ describe('Repository table component', () => {
 
       await nextTick();
 
-      expect(vm.emitted('showMore')).toHaveLength(1);
+      expect(wrapper.emitted('showMore')).toHaveLength(1);
     });
   });
 });

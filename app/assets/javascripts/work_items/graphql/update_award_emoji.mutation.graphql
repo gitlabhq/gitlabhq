@@ -1,0 +1,6 @@
+mutation updateWorkItemAwardEmojiWidget($input: AwardEmojiToggleInput!) {
+  awardEmojiToggle(input: $input) {
+    errors
+    toggledOn
+  }
+}

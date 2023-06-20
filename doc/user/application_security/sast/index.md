@@ -301,8 +301,8 @@ successfully, and an error may occur.
 
 To enable and configure SAST with customizations:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. If the project does not have a `.gitlab-ci.yml` file, select **Enable SAST** in the Static
    Application Security Testing (SAST) row, otherwise select **Configure SAST**.
 1. Enter the custom SAST values.
@@ -328,8 +328,8 @@ successfully, and an error may occur.
 
 To enable and configure SAST with default settings:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance** > **Configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 1. Review and merge the merge request to enable SAST.
 
@@ -617,6 +617,7 @@ flags are added to the scanner's CLI options.
 |------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------|
 | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) | `--max-memory`     | Sets the maximum system memory to use when running a rule on a single file. Measured in MB. |
 | [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) | `--neverignore` | Never ignore security issues, even if they have an “ignore” directive in a comment. Adding this option is likely to result in the analyzer detecting additional vulnerability findings which cannot be automatically resolved. |
+| [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) | `-effort` | Sets the analysis effort level. Valid values are `min`, `less`, `more` and `max`, defined in increasing order of scan's precision and ability to detect more vulnerabilities. Default value is set to `max` which may require more memory and time to complete the scan, depending on the project's size. In case you face memory or performance issues, you may reduce the analysis effort level to a lower value. For example: `-effort less`. |
 
 #### Custom CI/CD variables
 
@@ -868,7 +869,7 @@ This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, 
 
 ### Semgrep slowness, unexpected results, or other errors
 
-If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/gitlab-sast/).
+If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/semgrep-ci/#troubleshooting-gitlab-sast).
 
 ### SAST job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
 

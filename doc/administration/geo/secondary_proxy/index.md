@@ -122,7 +122,7 @@ for details.
   To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate
   the certificate, then copy it to all other sites.
 
-- [Viewing projects and designs data from a primary site is not possible when using a unified URL](../index.md#view-replication-data-on-the-primary-site).
+- [Viewing projects data from a primary site is not possible when using a unified URL](../index.md#view-replication-data-on-the-primary-site).
 
 - When secondary proxying is used together with separate URLs, registering [GitLab runners](https://docs.gitlab.com/runner/) to clone from
 secondary sites is not supported. The runner registration succeeds, but the clone URL defaults to the primary site. The runner
@@ -152,6 +152,8 @@ sites for improved latency and bandwidth nearby. All write requests are proxied 
 The following table details the components currently tested through the Geo secondary site Workhorse proxy.
 It does not cover all data types.
 
+In this context, accelerated reads refer to read requests served from the secondary site, provided that the data is up to date for the component on the secondary site. If the data on the secondary site is determined to be out of date, the request is forwarded to the primary site. Read requests for components not listed in the table below are always automatically forwarded to the primary site.
+
 | Feature / component                                 | Accelerated reads?     |
 |:----------------------------------------------------|:-----------------------|
 | Project, wiki, design repository (using the web UI) | **{dotted-circle}** No |
@@ -165,11 +167,12 @@ It does not cover all data types.
 | LFS objects (using Git)                             | **{check-circle}** Yes |
 | Pages                                               | **{dotted-circle}** No <sup>2</sup> |
 | Advanced search (using the web UI)                  | **{dotted-circle}** No |
-| Container registry                                  | **{dotted-circle}** No |
+| Container registry                                  | **{dotted-circle}** No <sup>3</sup>|
 
 1. Git reads are served from the local secondary while pushes get proxied to the primary.
    Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.
 1. Pages can use the same URL (without access control), but must be configured separately and are not proxied.
+1. The container registry is only recommended for Disaster Recovery scenarios. If the secondary site's container registry is not up to date, the read request is served with old data as the request is not forwarded to the primary site.
 
 ## Disable Geo proxying
 
@@ -179,7 +182,8 @@ Secondary proxying is enabled by default in GitLab 15.1 on a secondary site even
 
 Additionally, the `gitlab-workhorse` service polls `/api/v4/geo/proxy` every 10 seconds. In GitLab 15.2 and later, it is only polled once, if Geo is not enabled. Prior to GitLab 15.2, you can stop this polling by disabling secondary proxying.
 
-You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:
+You can disable the secondary proxying on each Geo site separately by following these steps on a Linux package
+installation:
 
 1. SSH into each application node (serving user traffic directly) on your secondary Geo site
    and add the following environment variable:

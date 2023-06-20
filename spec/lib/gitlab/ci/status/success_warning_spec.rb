@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::SuccessWarning do
+RSpec.describe Gitlab::Ci::Status::SuccessWarning, feature_category: :continuous_integration do
   let(:status) { double('status') }
 
   subject do
@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Ci::Status::SuccessWarning do
   end
 
   describe '#test' do
-    it { expect(subject.text).to eq 'passed' }
+    it { expect(subject.text).to eq 'warning' }
   end
 
   describe '#label' do

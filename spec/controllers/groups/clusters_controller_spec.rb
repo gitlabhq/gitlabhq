@@ -115,46 +115,6 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     end
   end
 
-  it_behaves_like 'GET #metrics_dashboard for dashboard', 'Cluster health' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
-
-    let(:metrics_dashboard_req_params) do
-      {
-        id: cluster.id,
-        group_id: group.name
-      }
-    end
-  end
-
-  describe 'GET #prometheus_proxy' do
-    let(:proxyable) do
-      create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group])
-    end
-
-    it_behaves_like 'metrics dashboard prometheus api proxy' do
-      let(:proxyable_params) do
-        {
-          id: proxyable.id.to_s,
-          group_id: group.name
-        }
-      end
-
-      context 'with anonymous user' do
-        let(:prometheus_body) { nil }
-
-        before do
-          sign_out(user)
-        end
-
-        it 'returns 404' do
-          get :prometheus_proxy, params: prometheus_proxy_params
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-    end
-  end
-
   describe 'POST create for existing cluster' do
     let(:params) do
       {
@@ -351,41 +311,6 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
 
     include_examples ':certificate_based_clusters feature flag controller responses' do
       let(:subject) { go }
-    end
-
-    describe 'functionality' do
-      context 'when remove_monitor_metrics FF is disabled' do
-        before do
-          stub_feature_flags(remove_monitor_metrics: false)
-        end
-
-        render_views
-
-        it 'renders view' do
-          go
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(assigns(:cluster)).to eq(cluster)
-        end
-
-        it 'renders integration tab view', :aggregate_failures do
-          go(tab: 'integrations')
-
-          expect(response).to render_template('clusters/clusters/_integrations')
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'when remove_monitor_metrics FF is enabled' do
-        render_views
-
-        it 'renders details tab view', :aggregate_failures do
-          go(tab: 'integrations')
-
-          expect(response).to render_template('clusters/clusters/_details')
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
     end
 
     describe 'security' do

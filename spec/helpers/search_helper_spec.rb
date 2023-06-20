@@ -60,16 +60,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(search_autocomplete_opts(project.name).size).to eq(1)
       end
 
-      context 'for users' do
+      shared_examples 'for users' do
         let_it_be(:another_user) { create(:user, name: 'Jane Doe') }
         let(:term) { 'jane' }
-
-        it 'makes a call to SearchService' do
-          params = { search: term, per_page: 5, scope: 'users' }
-          expect(SearchService).to receive(:new).with(current_user, params).and_call_original
-
-          search_autocomplete_opts(term)
-        end
 
         it 'returns users matching the term' do
           result = search_autocomplete_opts(term)
@@ -88,6 +81,68 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           end
         end
 
+        describe 'permissions' do
+          let(:term) { 'jane@doe' }
+          let(:private_email_user) { create(:user, email: term) }
+          let(:public_email_user) { create(:user, :public_email, email: term) }
+          let(:banned_user) { create(:user, :banned, email: term) }
+          let(:user_with_other_email) { create(:user, email: 'something@else') }
+          let(:secondary_email) { create(:email, :confirmed, user: user_with_other_email, email: term) }
+          let(:ids) { search_autocomplete_opts(term).pluck(:id) }
+
+          context 'when current_user is an admin' do
+            before do
+              allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
+            end
+
+            it 'includes users with matching public emails' do
+              public_email_user
+              expect(ids).to include(public_email_user.id)
+            end
+
+            it 'includes users in forbidden states' do
+              banned_user
+              expect(ids).to include(banned_user.id)
+            end
+
+            it 'includes users without matching public emails but with matching private emails' do
+              private_email_user
+              expect(ids).to include(private_email_user.id)
+            end
+
+            it 'includes users matching on secondary email' do
+              secondary_email
+              expect(ids).to include(secondary_email.user_id)
+            end
+          end
+
+          context 'when current_user is not an admin' do
+            before do
+              allow(current_user).to receive(:can_admin_all_resources?).and_return(false)
+            end
+
+            it 'includes users with matching public emails' do
+              public_email_user
+              expect(ids).to include(public_email_user.id)
+            end
+
+            it 'does not include users in forbidden states' do
+              banned_user
+              expect(ids).not_to include(banned_user.id)
+            end
+
+            it 'does not include users without matching public emails but with matching private emails' do
+              private_email_user
+              expect(ids).not_to include(private_email_user.id)
+            end
+
+            it 'does not include users matching on secondary email' do
+              secondary_email
+              expect(ids).not_to include(secondary_email.user_id)
+            end
+          end
+        end
+
         context 'with limiting' do
           let!(:users) { create_list(:user, 6, name: 'Jane Doe') }
 
@@ -95,6 +150,16 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             result = search_autocomplete_opts(term)
             expect(result.size).to eq(5)
           end
+        end
+      end
+
+      [true, false].each do |enabled|
+        context "with feature flag autcomplete_users_use_search_service #{enabled}" do
+          before do
+            stub_feature_flags(autocomplete_users_use_search_service: enabled)
+          end
+
+          include_examples 'for users'
         end
       end
 
@@ -268,10 +333,21 @@ RSpec.describe SearchHelper, feature_category: :global_search do
             expect(results.first).to include({
               category: 'In this project',
               id: issue.id,
-              label: 'test title (#1)',
+              label: "test title (##{issue.iid})",
               url: ::Gitlab::Routing.url_helpers.project_issue_path(issue.project, issue),
               avatar_url: '' # project has no avatar
             })
+          end
+        end
+
+        context 'with a search scope' do
+          let(:term) { 'bla' }
+          let(:scope) { 'project' }
+
+          it 'returns scoped resource results' do
+            expect(self).to receive(:resource_results).with(term, scope: scope).and_return([])
+
+            search_autocomplete_opts(term, filter: :search, scope: scope)
           end
         end
       end
@@ -306,8 +382,98 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
   end
 
+  describe 'resource_results' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user, name: 'User') }
+    let_it_be(:group) { create(:group, name: 'Group') }
+    let_it_be(:project) { create(:project, name: 'Project') }
+    let!(:issue) { create(:issue, project: project) }
+    let(:issue_iid) { "\##{issue.iid}" }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+      group.add_owner(user)
+      project.add_owner(user)
+      @project = project
+    end
+
+    where(:term, :size, :category) do
+      'g'             | 0 | 'Groups'
+      'gr'            | 1 | 'Groups'
+      'gro'           | 1 | 'Groups'
+      'p'             | 0 | 'Projects'
+      'pr'            | 1 | 'Projects'
+      'pro'           | 1 | 'Projects'
+      'u'             | 0 | 'Users'
+      'us'            | 1 | 'Users'
+      'use'           | 1 | 'Users'
+      ref(:issue_iid) | 1 | 'In this project'
+    end
+
+    with_them do
+      it 'returns results only if the term is more than or equal to Gitlab::Search::Params::MIN_TERM_LENGTH' do
+        results = resource_results(term)
+
+        expect(results.size).to eq(size)
+        expect(results.first[:category]).to eq(category) if size == 1
+      end
+    end
+
+    context 'with a search scope' do
+      let(:term) { 'bla' }
+      let(:scope) { 'project' }
+
+      it 'returns only scope-specific results' do
+        expect(self).to receive(:scope_specific_results).with(term, scope).and_return([])
+        expect(self).not_to receive(:groups_autocomplete)
+        expect(self).not_to receive(:projects_autocomplete)
+        expect(self).not_to receive(:users_autocomplete)
+        expect(self).not_to receive(:issue_autocomplete)
+
+        resource_results(term, scope: scope)
+      end
+    end
+  end
+
+  describe 'scope_specific_results' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user, name: 'Searched') }
+    let_it_be(:project) { create(:project, name: 'Searched') }
+    let_it_be(:issue) { create(:issue, title: 'Searched', project: project) }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+      allow_next_instance_of(Gitlab::Search::RecentIssues) do |recent_issues|
+        allow(recent_issues).to receive(:search).and_return([issue])
+      end
+      project.add_developer(user)
+    end
+
+    where(:scope, :category) do
+      'user'    | 'Users'
+      'project' | 'Projects'
+      'issue'   | 'Recent issues'
+    end
+
+    with_them do
+      it 'returns results only for the specific scope' do
+        results = scope_specific_results('sea', scope)
+        expect(results.size).to eq(1)
+        expect(results.first[:category]).to eq(category)
+      end
+    end
+
+    context 'when scope is unknown' do
+      it 'does not return any results' do
+        expect(scope_specific_results('sea', 'other')).to eq([])
+      end
+    end
+  end
+
   describe 'projects_autocomplete' do
-    let_it_be(:user) { create(:user, name: "madelein") }
+    let_it_be(:user) { create(:user) }
     let_it_be(:project_1) { create(:project, name: 'test 1') }
     let_it_be(:project_2) { create(:project, name: 'test 2') }
     let(:search_term) { 'test' }
@@ -578,7 +744,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         @project = :some_project
 
         expect(self).to receive(:project_search_tabs?)
-          .with(:members)
+          .with(:users)
           .and_return(:value)
       end
 
@@ -711,22 +877,38 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       allow(self).to receive(:current_user).and_return(:the_current_user)
     end
 
-    where(:confidential, :expected) do
+    where(:input, :expected) do
       '0'       | false
       '1'       | true
       'yes'     | true
       'no'      | false
+      'true'    | true
+      'false'   | false
       true      | true
       false     | false
     end
 
-    let(:params) { { confidential: confidential } }
+    describe 'for confidential' do
+      let(:params) { { confidential: input } }
 
-    with_them do
-      it 'transforms confidentiality param' do
-        expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
+      with_them do
+        it 'transforms param' do
+          expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
 
-        subject
+          subject
+        end
+      end
+    end
+
+    describe 'for include_archived' do
+      let(:params) { { include_archived: input } }
+
+      with_them do
+        it 'transforms param' do
+          expect(::SearchService).to receive(:new).with(:the_current_user, { include_archived: expected })
+
+          subject
+        end
       end
     end
   end
@@ -989,15 +1171,20 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'issues' do
-      where(:project_search_tabs, :global_search_issues_tab, :condition) do
-        false                     | false                    | false
-        false                     | true                     | true
-        true                      | false                    | true
-        true                      | true                     | true
+      where(:project_search_tabs, :global_search_issues_tab, :global_project, :condition) do
+        false                     | false                    | nil            | false
+        false                     | true                     | nil            | true
+        false                     | true                     | ref(:project)  | false
+        false                     | false                    | ref(:project)  | false
+        true                      | false                    | nil            | true
+        true                      | true                     | nil            | true
+        true                      | false                    | ref(:project)  | true
+        true                      | true                     | ref(:project)  | true
       end
 
       with_them do
         it 'data item condition is set correctly' do
+          @project = global_project
           allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_issues_tab).and_return(global_search_issues_tab)
           allow(self).to receive(:project_search_tabs?).with(:issues).and_return(project_search_tabs)
 
@@ -1007,15 +1194,20 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'merge requests' do
-      where(:project_search_tabs, :feature_flag_tab_enabled, :condition) do
-        false                     | false                    | false
-        true                      | false                    | true
-        false                     | true                     | true
-        true                      | true                     | true
+      where(:project_search_tabs, :feature_flag_tab_enabled, :global_project, :condition) do
+        false   | false   | nil           | false
+        true    | false   | nil           | true
+        false   | false   | ref(:project) | false
+        true    | false   | ref(:project) | true
+        false   | true    | nil           | true
+        true    | true    | nil           | true
+        false   | true    | ref(:project) | false
+        true    | true    | ref(:project) | true
       end
 
       with_them do
         it 'data item condition is set correctly' do
+          @project = global_project
           allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_merge_requests_tab).and_return(feature_flag_tab_enabled)
           allow(self).to receive(:project_search_tabs?).with(:merge_requests).and_return(project_search_tabs)
 
@@ -1028,7 +1220,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       where(:global_search_wiki_tab, :show_elasticsearch_tabs, :global_project, :project_search_tabs, :condition) do
         false                         | false                   | nil            | true                | true
         false                         | false                   | nil            | false               | false
+        false                         | false                   | ref(:project)  | false               | false
         false                         | true                    | nil            | false               | false
+        false                         | true                    | ref(:project)  | false               | false
         true                          | false                   | nil            | false               | false
         true                          | true                    | ref(:project)  | false               | false
       end
@@ -1038,7 +1232,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           @project = global_project
           allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(show_elasticsearch_tabs)
           allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_wiki_tab).and_return(global_search_wiki_tab)
-          allow(self).to receive(:project_search_tabs?).with(:wiki).and_return(project_search_tabs)
+          allow(self).to receive(:project_search_tabs?).with(:wiki_blobs).and_return(project_search_tabs)
 
           expect(search_navigation[:wiki_blobs][:condition]).to eq(condition)
         end
@@ -1048,9 +1242,12 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     context 'commits' do
       where(:global_search_commits_tab, :show_elasticsearch_tabs, :global_project, :project_search_tabs, :condition) do
         false                           | false                   | nil            | true                | true
+        false                           | false                   | ref(:project)  | true                | true
         false                           | false                   | nil            | false               | false
+        false                           | true                    | ref(:project)  | false               | false
         false                           | true                    | nil            | false               | false
         true                            | false                   | nil            | false               | false
+        true                            | false                   | ref(:project)  | false               | false
         true                            | true                    | ref(:project)  | false               | false
         true                            | true                    | nil            | false               | true
       end
@@ -1068,15 +1265,20 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'comments' do
-      where(:project_search_tabs, :show_elasticsearch_tabs, :condition) do
-        true                      | true                    | true
-        false                     | false                   | false
-        false                     | true                    | true
-        true                      | false                   | true
+      where(:project_search_tabs, :show_elasticsearch_tabs, :global_project, :condition) do
+        true     | true     | nil           | true
+        true     | true     | ref(:project) | true
+        false    | false    | nil           | false
+        false    | false    | ref(:project) | false
+        false    | true     | nil           | true
+        false    | true     | ref(:project) | false
+        true     | false    | nil           | true
+        true     | false    | ref(:project) | true
       end
 
       with_them do
         it 'data item condition is set correctly' do
+          @project = global_project
           allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(show_elasticsearch_tabs)
           allow(self).to receive(:project_search_tabs?).with(:notes).and_return(project_search_tabs)
 
@@ -1119,16 +1321,22 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'snippet_titles' do
-      where(:global_project, :global_show_snippets, :condition) do
-        ref(:project)         | true                 | false
-        nil                   | false                | false
-        ref(:project)         | false                | false
-        nil                   | true                 | true
+      where(:global_project, :global_show_snippets, :global_feature_flag_enabled, :condition) do
+        ref(:project)         | true        | false      | false
+        nil                   | false       | false      | false
+        ref(:project)         | false       | false      | false
+        nil                   | true        | false      | false
+        ref(:project)         | true        | true       | false
+        nil                   | false       | true       | false
+        ref(:project)         | false       | true       | false
+        nil                   | true        | true       | true
       end
 
       with_them do
         it 'data item condition is set correctly' do
           allow(search_service).to receive(:show_snippets?).and_return(global_show_snippets)
+          allow(self).to receive(:feature_flag_tab_enabled?).with(:global_search_snippet_titles_tab)
+            .and_return(global_feature_flag_enabled)
           @project = global_project
 
           expect(search_navigation[:snippet_titles][:condition]).to eq(condition)

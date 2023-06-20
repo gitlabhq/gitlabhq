@@ -16,8 +16,8 @@ requirements or needs additional oversight. The label can optionally enforce
 
 Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. Create, edit, or delete compliance frameworks.
 
@@ -40,8 +40,8 @@ A compliance framework that is set to default has a **default** label.
 
 Group owners can set a compliance framework as default (or remove the setting):
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand the **Compliance frameworks** section and locate the compliance framework to set (or remove) as default.
 1. Select the vertical ellipsis (**{ellipsis_v}**) for the compliance frame and then select **Set default** (or
    **Remove default**).
@@ -125,8 +125,8 @@ Therefore, communicate with project users about compliance pipeline configuratio
 
 To configure a compliance pipeline:
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. In **Compliance pipeline configuration (optional)**, add the path to the compliance framework configuration. Use the
    `path/file.y[a]ml@group-name/project-name` format. For example:
@@ -397,3 +397,22 @@ You could also have the following `.gitlab-ci.yml` configuration:
 
 This configuration doesn't overwrite the compliance pipeline and you get the following message:
 `take compliance action`.
+
+### Prefilled variables are not shown
+
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857),
+compliance pipelines in GitLab 15.3 and later can prevent
+[prefilled variables](../../ci/pipelines/index.md#prefill-variables-in-manual-pipelines)
+from appearing when manually starting a pipeline.
+
+To workaround this issue, use `ref: '$CI_COMMIT_SHA'` instead of `ref: '$CI_COMMIT_REF_NAME'`
+in the `include:` statement that executes the individual project's configuration.
+
+The [example configuration](#example-configuration) has been updated with this change:
+
+```yaml
+include:
+  - project: '$CI_PROJECT_PATH'
+    file: '$CI_CONFIG_PATH'
+    ref: '$CI_COMMIT_SHA'
+```

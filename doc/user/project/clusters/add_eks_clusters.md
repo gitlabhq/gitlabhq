@@ -174,7 +174,7 @@ When you create a new cluster, you have the following settings:
 | Kubernetes cluster name | Your cluster's name. |
 | Environment scope       | The [associated environment](multiple_kubernetes_clusters.md#setting-the-environment-scope). |
 | Service role            | The **EKS IAM role** (**role A**). |
-| Kubernetes version      | The [Kubernetes version](../../clusters/agent/index.md#gitlab-agent-for-kubernetes-supported-cluster-versions) for your cluster. |
+| Kubernetes version      | The [Kubernetes version](../../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features) for your cluster. |
 | Key pair name           | The [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) that you can use to connect to your worker nodes. |
 | VPC                     | The [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) to use for your EKS Cluster resources. |
 | Subnets                 | The [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html) in your VPC where your worker nodes run. Two are required. |
@@ -248,7 +248,10 @@ For example, the following policy document allows assuming a role whose name sta
 To configure Amazon authentication in GitLab, generate an access key for the
 IAM user in the Amazon AWS console, and follow these steps:
 
-1. In GitLab, on the top bar, select **Main menu > Admin > Settings > General** and expand the **Amazon EKS** section.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Amazon EKS**.
 1. Check **Enable Amazon EKS integration**.
 1. Enter your **Account ID**.
 1. Enter your [access key and ID](#eks-access-key-and-id).

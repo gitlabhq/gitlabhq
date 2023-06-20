@@ -168,9 +168,7 @@ When you use merge request pipelines, you can use:
 - All the same [predefined variables](../variables/predefined_variables.md) that are
   available in branch pipelines.
 - [Additional predefined variables](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
-  available only to jobs in merge request pipelines. These variables contain
-  information from the associated merge request, which can be when calling the
-  [GitLab Merge Request API endpoint](../../api/merge_requests.md) from a job.
+  available only to jobs in merge request pipelines.
 
 ## Troubleshooting
 
@@ -202,8 +200,8 @@ It's possible to have both branch pipelines and merge request pipelines in the
 **Pipelines** tab of a single merge request. This might be [by configuration](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines),
 or [by accident](#two-pipelines-when-pushing-to-a-branch).
 
-When using the [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
-feature and both pipelines types are present, the merge request pipelines are checked,
+When the project has [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge) enabled
+and both pipelines types are present, the merge request pipelines are checked,
 not the branch pipelines.
 
 Therefore, the MR pipeline result is marked as unsuccessful if the

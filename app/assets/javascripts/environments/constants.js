@@ -89,3 +89,22 @@ export const ENVIRONMENT_NEW_HELP_TEXT = __(
 export const ENVIRONMENT_EDIT_HELP_TEXT = ENVIRONMENT_NEW_HELP_TEXT;
 
 export const SERVICES_LIMIT_PER_PAGE = 10;
+
+export const CLUSTER_STATUS_HEALTHY_TEXT = s__('Environment|Healthy');
+export const CLUSTER_STATUS_UNHEALTHY_TEXT = s__('Environment|Unhealthy');
+
+export const HEALTH_BADGES = {
+  success: {
+    variant: 'success',
+    text: CLUSTER_STATUS_HEALTHY_TEXT,
+  },
+  error: {
+    variant: 'danger',
+    text: CLUSTER_STATUS_UNHEALTHY_TEXT,
+  },
+};
+
+export const PHASE_RUNNING = 'Running';
+export const PHASE_PENDING = 'Pending';
+export const PHASE_SUCCEEDED = 'Succeeded';
+export const PHASE_FAILED = 'Failed';

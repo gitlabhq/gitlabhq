@@ -2,8 +2,6 @@
 
 module Gitlab
   module Database
-    DATABASE_NAMES = %w[main ci main_clusterwide].freeze
-
     MAIN_DATABASE_NAME = 'main'
     CI_DATABASE_NAME = 'ci'
     DEFAULT_POOL_HEADROOM = 10
@@ -56,67 +54,78 @@ module Gitlab
     MODE_SINGLE_DATABASE_CI_CONNECTION = "single-database-ci-connection"
     MODE_MULTIPLE_DATABASES = "multiple-databases"
 
+    def self.all_database_connection_files
+      Dir.glob(Rails.root.join("db/database_connections/*.yaml"))
+    end
+
+    def self.all_gitlab_schema_files
+      Dir.glob(Rails.root.join("db/gitlab_schemas/*.yaml"))
+    end
+
+    def self.all_database_connections
+      @all_database_connections ||=
+        all_database_connection_files
+          .map { |file| DatabaseConnectionInfo.load_file(file) }
+          .sort_by(&:order)
+          .index_by(&:name)
+          .with_indifferent_access.freeze
+    end
+
+    def self.all_database_names
+      all_database_connections.keys.map(&:to_s)
+    end
+
+    def self.all_gitlab_schemas
+      @all_gitlab_schemas ||=
+        all_gitlab_schema_files
+          .map { |file| GitlabSchemaInfo.load_file(file) }
+          .index_by(&:name)
+          .with_indifferent_access.freeze
+    end
+
     def self.database_base_models
-      @database_base_models ||= {
-        # Note that we use ActiveRecord::Base here and not ApplicationRecord.
-        # This is deliberate, as we also use these classes to apply load
-        # balancing to, and the load balancer must be enabled for _all_ models
-        # that inherit from ActiveRecord::Base; not just our own models that
-        # inherit from ApplicationRecord.
-        main: ::ActiveRecord::Base,
-        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
-        ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
-      }.compact.with_indifferent_access.freeze
+      # Note that we use ActiveRecord::Base here and not ApplicationRecord.
+      # This is deliberate, as we also use these classes to apply load
+      # balancing to, and the load balancer must be enabled for _all_ models
+      # that inherit from ActiveRecord::Base; not just our own models that
+      # inherit from ApplicationRecord.
+      @database_base_models ||=
+        all_database_connections
+          .transform_values(&:connection_class)
+          .compact.with_indifferent_access.freeze
     end
 
     # This returns a list of databases that contains all the gitlab_shared schema
-    # tables. We can't reuse database_base_models because Geo does not support
-    # the gitlab_shared tables yet.
+    # tables.
     def self.database_base_models_with_gitlab_shared
-      @database_base_models_with_gitlab_shared ||= {
-        # Note that we use ActiveRecord::Base here and not ApplicationRecord.
-        # This is deliberate, as we also use these classes to apply load
-        # balancing to, and the load balancer must be enabled for _all_ models
-        # that inher from ActiveRecord::Base; not just our own models that
-        # inherit from ApplicationRecord.
-        main: ::ActiveRecord::Base,
-        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
-        ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
-      }.compact.with_indifferent_access.freeze
+      @database_base_models_with_gitlab_shared ||=
+        all_database_connections
+          .select { |_, db| db.has_gitlab_shared? }
+          .transform_values(&:connection_class)
+          .compact.with_indifferent_access.freeze
     end
 
     # This returns a list of databases whose connection supports database load
-    # balancing. We can't reuse the database_base_models method because the Geo
-    # database does not support load balancing yet.
-    #
-    # TODO: https://gitlab.com/gitlab-org/geo-team/discussions/-/issues/5032
+    # balancing. We can't reuse the database_base_models since not all connections
+    # do support load balancing.
     def self.database_base_models_using_load_balancing
-      @database_base_models_using_load_balancing ||= {
-        # Note that we use ActiveRecord::Base here and not ApplicationRecord.
-        # This is deliberate, as we also use these classes to apply load
-        # balancing to, and the load balancer must be enabled for _all_ models
-        # that inher from ActiveRecord::Base; not just our own models that
-        # inherit from ApplicationRecord.
-        main: ::ActiveRecord::Base,
-        main_clusterwide: ::MainClusterwide::ApplicationRecord.connection_class? ? ::MainClusterwide::ApplicationRecord : nil,
-        ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
-      }.compact.with_indifferent_access.freeze
+      @database_base_models_using_load_balancing ||=
+        all_database_connections
+          .select { |_, db| db.uses_load_balancing? }
+          .transform_values(&:connection_class)
+          .compact.with_indifferent_access.freeze
     end
 
     # This returns a list of base models with connection associated for a given gitlab_schema
     def self.schemas_to_base_models
-      @schemas_to_base_models ||= {
-        gitlab_main: [self.database_base_models.fetch(:main)],
-        gitlab_ci: [self.database_base_models[:ci] || self.database_base_models.fetch(:main)], # use CI or fallback to main
-        gitlab_shared: database_base_models_with_gitlab_shared.values, # all models
-        gitlab_internal: database_base_models.values, # all models
-        gitlab_pm: [self.database_base_models.fetch(:main)], # package metadata models
-        gitlab_main_clusterwide: [self.database_base_models[:main_clusterwide] || self.database_base_models.fetch(:main)]
-      }.with_indifferent_access.freeze
-    end
-
-    def self.all_database_names
-      DATABASE_NAMES
+      @schemas_to_base_models ||=
+        all_gitlab_schemas.transform_values do |schema|
+          all_database_connections
+            .values
+            .select { |db| db.gitlab_schemas.include?(schema.name) }
+            .filter_map { |db| db.connection_class_or_fallback(all_database_connections) }
+            .uniq
+        end.compact.with_indifferent_access.freeze
     end
 
     # We configure the database connection pool size automatically based on the
@@ -255,8 +264,16 @@ module Gitlab
       end
     end
 
-    def self.db_config_names
-      ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:name) - ['geo']
+    def self.db_config_names(with_schema:)
+      db_config_names = ::ActiveRecord::Base.configurations
+        .configs_for(env_name: Rails.env).map(&:name)
+      return db_config_names unless with_schema
+
+      schema_models = schemas_to_base_models.fetch(with_schema)
+      db_config_names.select do |db_config_name|
+        db_info = all_database_connections.fetch(db_config_name)
+        schema_models.include?(db_info.connection_class)
+      end
     end
 
     # This returns all matching schemas that a given connection can use

@@ -20,7 +20,7 @@ import {
   NEW_ACTIONS_POPOVER_KEY,
 } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { getCookie, parseBoolean, setCookie } from '~/lib/utils/common_utils';
+import { getCookie, parseBoolean, setCookie, isLoggedIn } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
@@ -137,6 +137,7 @@ export default {
   data() {
     return {
       isReportAbuseDrawerOpen: false,
+      isUserSignedIn: isLoggedIn(),
     };
   },
   apollo: {
@@ -204,7 +205,11 @@ export default {
     },
     hasDesktopDropdown() {
       return (
-        this.canCreateIssue || this.canPromoteToEpic || !this.isIssueAuthor || this.canReportSpam
+        this.canCreateIssue ||
+        this.canPromoteToEpic ||
+        !this.isIssueAuthor ||
+        this.canReportSpam ||
+        this.issuableReference
       );
     },
     hasMobileDropdown() {
@@ -219,7 +224,10 @@ export default {
       return this.glFeatures.movedMrSidebar;
     },
     showLockIssueOption() {
-      return this.isMrSidebarMoved && this.issueType === TYPE_ISSUE;
+      return this.isMrSidebarMoved && this.issueType === TYPE_ISSUE && this.isUserSignedIn;
+    },
+    showMovedSidebarOptions() {
+      return this.isMrSidebarMoved && this.isUserSignedIn;
     },
   },
   created() {
@@ -326,17 +334,16 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-gap-3">
+  <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3">
     <gl-dropdown
       v-if="hasMobileDropdown"
       class="gl-sm-display-none! w-100"
       block
       :text="dropdownText"
-      data-qa-selector="issue_actions_dropdown"
       data-testid="mobile-dropdown"
       :loading="isToggleStateButtonLoading"
     >
-      <template v-if="isMrSidebarMoved">
+      <template v-if="showMovedSidebarOptions">
         <sidebar-subscriptions-widget
           :iid="String(iid)"
           :full-path="fullPath"
@@ -356,7 +363,7 @@ export default {
       </gl-dropdown-item>
       <gl-dropdown-item
         v-if="showToggleIssueStateButton"
-        :data-qa-selector="`mobile_${qaSelector}`"
+        :data-testid="`mobile_${qaSelector}`"
         @click="toggleIssueState"
       >
         {{ buttonText }}
@@ -375,7 +382,7 @@ export default {
           >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
         >
         <gl-dropdown-item
-          v-if="issuableEmailAddress"
+          v-if="issuableEmailAddress && showMovedSidebarOptions"
           :data-clipboard-text="issuableEmailAddress"
           data-testid="copy-email"
           @click="copyEmailAddress"
@@ -401,7 +408,7 @@ export default {
         </gl-dropdown-item>
       </template>
       <gl-dropdown-item
-        v-if="!isIssueAuthor"
+        v-if="!isIssueAuthor && isUserSignedIn"
         data-testid="report-abuse-item"
         @click="toggleReportAbuseDrawer(true)"
       >
@@ -426,7 +433,7 @@ export default {
       class="gl-display-none gl-sm-display-inline-flex!"
       :data-qa-selector="qaSelector"
       :loading="isToggleStateButtonLoading"
-      data-testid="toggle-button"
+      data-testid="toggle-issue-state-button"
       @click="toggleIssueState"
     >
       {{ buttonText }}
@@ -439,7 +446,6 @@ export default {
       class="gl-display-none gl-sm-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
-      data-qa-selector="issue_actions_ellipsis_dropdown"
       :text="dropdownText"
       :text-sr-only="true"
       :title="dropdownText"
@@ -449,7 +455,7 @@ export default {
       right
       @shown="dismissPopover"
     >
-      <template v-if="isMrSidebarMoved">
+      <template v-if="showMovedSidebarOptions">
         <sidebar-subscriptions-widget
           :iid="String(iid)"
           :full-path="fullPath"
@@ -460,7 +466,7 @@ export default {
         <gl-dropdown-divider />
       </template>
 
-      <gl-dropdown-item v-if="canCreateIssue" :href="newIssuePath">
+      <gl-dropdown-item v-if="canCreateIssue && isUserSignedIn" :href="newIssuePath">
         {{ newIssueTypeText }}
       </gl-dropdown-item>
       <gl-dropdown-item
@@ -482,7 +488,7 @@ export default {
           >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
         >
         <gl-dropdown-item
-          v-if="issuableEmailAddress"
+          v-if="issuableEmailAddress && showMovedSidebarOptions"
           :data-clipboard-text="issuableEmailAddress"
           data-testid="copy-email"
           @click="copyEmailAddress"
@@ -502,14 +508,14 @@ export default {
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
-          data-qa-selector="delete_issue_button"
+          data-testid="delete_issue_button"
           @click="track('click_dropdown')"
         >
           {{ deleteButtonText }}
         </gl-dropdown-item>
       </template>
       <gl-dropdown-item
-        v-if="!isIssueAuthor"
+        v-if="!isIssueAuthor && isUserSignedIn"
         data-testid="report-abuse-item"
         @click="toggleReportAbuseDrawer(true)"
       >

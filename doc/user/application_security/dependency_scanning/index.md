@@ -578,8 +578,8 @@ always take the latest dependency scanning artifact available.
 
 To enable Dependency Scanning in a project, you can create a merge request:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 1. Review and merge the merge request to enable Dependency Scanning.
 
@@ -864,7 +864,7 @@ Here's an example dependency scanning report:
 
 ### CycloneDX Software Bill of Materials
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/alpha-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Generally available in GitLab 15.7.
 
 In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)

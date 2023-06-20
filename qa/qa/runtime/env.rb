@@ -86,6 +86,10 @@ module QA
         ENV['CI_PROJECT_NAME']
       end
 
+      def schedule_type
+        ENV['SCHEDULE_TYPE']
+      end
+
       def generate_allure_report?
         enabled?(ENV['QA_GENERATE_ALLURE_REPORT'], default: false)
       end
@@ -203,8 +207,16 @@ module QA
         ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
       end
 
-      def browser_version
-        ENV['QA_BROWSER_VERSION'] || 'latest'
+      def selenoid_browser_version
+        ENV['QA_SELENOID_BROWSER_VERSION']
+      end
+
+      def selenoid_browser_image
+        ENV['QA_SELENOID_BROWSER_IMAGE']
+      end
+
+      def video_recorder_image
+        ENV['QA_VIDEO_RECORDER_IMAGE']
       end
 
       def remote_mobile_device_name
@@ -235,6 +247,19 @@ module QA
 
       def record_video?
         enabled?(ENV['QA_RECORD_VIDEO'], default: false)
+      end
+
+      def use_selenoid?
+        enabled?(ENV['USE_SELENOID'], default: false)
+      end
+
+      def require_video_variables!
+        docs_link = 'https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/running_against_remote_grid.md#testing-with-selenoid'
+        use_selenoid? || (raise ArgumentError, "USE_SELENOID is required! See docs: #{docs_link}")
+        remote_grid || (raise ArgumentError, "QA_REMOTE_GRID is required! See docs: #{docs_link}")
+        video_recorder_image || (raise ArgumentError, "QA_VIDEO_RECORDER_IMAGE is required! See docs: #{docs_link}")
+        selenoid_browser_image || (raise ArgumentError, "QA_SELENOID_BROWSER_IMAGE is required! See docs: #{docs_link}")
+        selenoid_browser_version || (raise ArgumentError, "QA_SELENOID_BROWSER_VERSION is required! See docs: #{docs_link}")
       end
 
       def user_username
@@ -569,7 +594,7 @@ module QA
       end
 
       def super_sidebar_enabled?
-        enabled?(ENV['QA_SUPER_SIDEBAR_ENABLED'], default: false)
+        enabled?(ENV['QA_SUPER_SIDEBAR_ENABLED'], default: true)
       end
 
       def require_slack_env!

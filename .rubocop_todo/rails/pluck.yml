@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/Pluck:
-  Details: grace period
   Exclude:
     - 'app/controllers/ldap/omniauth_callbacks_controller.rb'
     - 'app/finders/merge_requests/oldest_per_commit_finder.rb'

@@ -8,13 +8,14 @@ export default {
   components: { GlModal, GroupsList },
   modal: {
     id: ADD_NAMESPACE_MODAL_ID,
-    title: s__('Integrations|Link namespaces'),
+    title: s__('JiraConnect|Link groups'),
     cancelProps: {
       text: __('Cancel'),
     },
   },
 };
 </script>
+
 <template>
   <gl-modal
     :modal-id="$options.modal.id"

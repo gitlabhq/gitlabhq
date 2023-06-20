@@ -35,6 +35,7 @@ export default {
       activeListId: '',
       boardId: this.initialBoardId,
       filterParams: { ...this.initialFilterParams },
+      addColumnFormVisible: false,
       isShowingEpicsSwimlanes: Boolean(queryToObject(window.location.search).group_by),
       apolloError: null,
     };
@@ -79,6 +80,7 @@ export default {
   computed: {
     ...mapGetters(['isSidebarOpen']),
     listQueryVariables() {
+      if (this.filterParams.groupBy) delete this.filterParams.groupBy;
       return {
         ...(this.isIssueBoard && {
           isGroup: this.isGroupBoard,
@@ -129,19 +131,24 @@ export default {
   <div class="boards-app gl-relative" :class="{ 'is-compact': isAnySidebarOpen }">
     <board-top-bar
       :board-id="boardId"
+      :add-column-form-visible="addColumnFormVisible"
       :is-swimlanes-on="isSwimlanesOn"
       @switchBoard="switchBoard"
       @setFilters="setFilters"
+      @setAddColumnFormVisibility="addColumnFormVisible = $event"
       @toggleSwimlanes="isShowingEpicsSwimlanes = $event"
     />
     <board-content
       v-if="!isApolloBoard || boardListsApollo"
       :board-id="boardId"
+      :add-column-form-visible="addColumnFormVisible"
       :is-swimlanes-on="isSwimlanesOn"
       :filter-params="filterParams"
       :board-lists-apollo="boardListsApollo"
       :apollo-error="apolloError"
+      :list-query-variables="listQueryVariables"
       @setActiveList="setActiveId"
+      @setAddColumnFormVisibility="addColumnFormVisible = $event"
     />
     <board-settings-sidebar
       v-if="!isApolloBoard || activeList"

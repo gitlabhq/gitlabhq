@@ -81,7 +81,7 @@ module WikiCloth
         blahtex_png_path = @options[:blahtex_png_path] || '/tmp'
         blahtex_options = @options[:blahtex_options] || '--texvc-compatible-commands --mathml-version-1-fonts --disallow-plane-1 --spacing strict'
 
-        if File.exists?(blahtex_path) && @options[:math_formatter] != :google
+        if File.exist?(blahtex_path) && @options[:math_formatter] != :google
           begin
             # pass tex markup to blahtex
             response = IO.popen("#{blahtex_path} #{blahtex_options} --png --mathml --png-directory #{blahtex_png_path}","w+") do |pipe|

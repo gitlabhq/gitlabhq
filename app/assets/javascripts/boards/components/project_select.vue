@@ -1,15 +1,10 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
-  GlSearchBoxByType,
-  GlIntersectionObserver,
-  GlLoadingIcon,
-} from '@gitlab/ui';
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { debounce } from 'lodash';
 import { s__ } from '~/locale';
 import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { ListType } from '../constants';
 
 export default {
@@ -27,12 +22,7 @@ export default {
     order_by: 'similarity',
   },
   components: {
-    GlIntersectionObserver,
-    GlLoadingIcon,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownText,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
   },
   inject: ['groupId'],
   props: {
@@ -44,6 +34,7 @@ export default {
   data() {
     return {
       initialLoading: true,
+      selectedProjectId: '',
       selectedProject: {},
       searchTerm: '',
     };
@@ -51,6 +42,12 @@ export default {
   computed: {
     ...mapState(['groupProjectsFlags']),
     ...mapGetters(['activeGroupProjects']),
+    projects() {
+      return this.activeGroupProjects.map((project) => ({
+        value: project.id,
+        text: project.nameWithNamespace,
+      }));
+    },
     selectedProjectName() {
       return this.selectedProject.name || this.$options.i18n.dropdownText;
     },
@@ -73,26 +70,27 @@ export default {
     },
   },
   watch: {
-    searchTerm() {
+    searchTerm: debounce(function debouncedSearch() {
       this.fetchGroupProjects({ search: this.searchTerm });
-    },
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
   },
   mounted() {
     this.fetchGroupProjects({});
-
     this.initialLoading = false;
   },
   methods: {
     ...mapActions(['fetchGroupProjects', 'setSelectedProject']),
     selectProject(projectId) {
+      this.selectedProjectId = projectId;
       this.selectedProject = this.activeGroupProjects.find((project) => project.id === projectId);
       this.setSelectedProject(this.selectedProject);
     },
     loadMoreProjects() {
+      if (!this.hasNextPage) return;
       this.fetchGroupProjects({ search: this.searchTerm, fetchNext: true });
     },
-    setFocus() {
-      this.$refs.search.focusInput();
+    onSearch(query) {
+      this.searchTerm = query;
     },
   },
 };
@@ -103,45 +101,23 @@ export default {
     <label class="gl-font-weight-bold gl-mt-3" data-testid="header-label">{{
       $options.i18n.headerTitle
     }}</label>
-    <gl-dropdown
-      data-testid="project-select-dropdown"
-      :text="selectedProjectName"
-      :header-text="$options.i18n.headerTitle"
+    <gl-collapsible-listbox
+      v-model="selectedProjectId"
       block
-      menu-class="gl-w-full!"
+      searchable
+      infinite-scroll
+      data-testid="project-select-dropdown"
+      :items="projects"
+      :toggle-text="selectedProjectName"
+      :header-text="$options.i18n.headerTitle"
       :loading="initialLoading"
-      @shown="setFocus"
-    >
-      <gl-search-box-by-type
-        ref="search"
-        v-model.trim="searchTerm"
-        debounce="250"
-        :placeholder="$options.i18n.searchPlaceholder"
-      />
-      <gl-dropdown-item
-        v-for="project in activeGroupProjects"
-        v-show="!groupProjectsFlags.isLoading"
-        :key="project.id"
-        :name="project.name"
-        @click="selectProject(project.id)"
-      >
-        {{ project.nameWithNamespace }}
-      </gl-dropdown-item>
-      <gl-dropdown-text
-        v-show="groupProjectsFlags.isLoading"
-        data-testid="dropdown-text-loading-icon"
-      >
-        <gl-loading-icon class="gl-mx-auto" size="sm" />
-      </gl-dropdown-text>
-      <gl-dropdown-text
-        v-if="isFetchResultEmpty && !groupProjectsFlags.isLoading"
-        data-testid="empty-result-message"
-      >
-        <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>
-      </gl-dropdown-text>
-      <gl-intersection-observer v-if="hasNextPage" @appear="loadMoreProjects">
-        <gl-loading-icon v-if="groupProjectsFlags.isLoadingMore" size="lg" />
-      </gl-intersection-observer>
-    </gl-dropdown>
+      :searching="groupProjectsFlags.isLoading"
+      :search-placeholder="$options.i18n.searchPlaceholder"
+      :no-results-text="$options.i18n.emptySearchResult"
+      :infinite-scroll-loading="groupProjectsFlags.isLoadingMore"
+      @select="selectProject"
+      @search="onSearch"
+      @bottom-reached="loadMoreProjects"
+    />
   </div>
 </template>

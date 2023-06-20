@@ -36,6 +36,10 @@ module QA
               open_code_submenu('Compare revisions')
             end
 
+            def go_to_merge_requests
+              open_code_submenu('Merge requests')
+            end
+
             private
 
             def open_code_submenu(sub_menu)

@@ -42,7 +42,14 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       profileEnableGitpodPath
       savedReplies
       savedReply
-      user_achievements
+      userAchievements
+      bio
+      linkedin
+      twitter
+      discord
+      organization
+      jobTitle
+      createdAt
     ]
 
     # TODO: 'workspaces' needs to be included, but only when this spec is run in EE context, to account for the

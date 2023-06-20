@@ -75,7 +75,7 @@ The following modes are supported:
 
 - **Unordered:** This is the default process mode that limits the concurrency on running jobs.
   It's the easiest option to use when you don't care about the execution order
-  of the jobs. It starts processing the jobs whenever a job ready to run.
+  of the jobs. It starts processing the jobs whenever a job is ready to run.
 - **Oldest first:** This process mode limits the concurrency of the jobs. When a resource is free,
   it picks the first job from the list of upcoming jobs (`created`, `scheduled`, or `waiting_for_resource` state)
   that are sorted by pipeline ID in ascending order.

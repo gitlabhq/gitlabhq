@@ -4,8 +4,8 @@ import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { __ } from '~/locale';
 import { setAttributes } from '~/lib/utils/dom_utils';
 import {
+  DRAWIO_PARAMS,
   DARK_BACKGROUND_COLOR,
-  DRAWIO_EDITOR_URL,
   DRAWIO_FRAME_ID,
   DIAGRAM_BACKGROUND_COLOR,
   DRAWIO_IFRAME_TIMEOUT,
@@ -17,7 +17,7 @@ function updateDrawioEditorState(drawIOEditorState, data) {
 }
 
 function postMessageToDrawioEditor(drawIOEditorState, message) {
-  const { origin } = new URL(DRAWIO_EDITOR_URL);
+  const { origin } = new URL(drawIOEditorState.drawioUrl);
 
   drawIOEditorState.iframe.contentWindow.postMessage(JSON.stringify(message), origin);
 }
@@ -222,7 +222,7 @@ function createEditorIFrame(drawIOEditorState) {
 
   setAttributes(iframe, {
     id: DRAWIO_FRAME_ID,
-    src: DRAWIO_EDITOR_URL,
+    src: drawIOEditorState.drawioUrl,
     class: 'drawio-editor',
   });
 
@@ -256,7 +256,7 @@ function attachDrawioIFrameMessageListener(drawIOEditorState, editorFacade) {
   });
 }
 
-const createDrawioEditorState = ({ filename = null }) => ({
+const createDrawioEditorState = ({ filename = null, drawioUrl }) => ({
   newDiagram: true,
   filename,
   diagramSvg: null,
@@ -266,10 +266,17 @@ const createDrawioEditorState = ({ filename = null }) => ({
   initialized: false,
   dark: darkModeEnabled(),
   disposeEventListener: null,
+  drawioUrl,
 });
 
-export function launchDrawioEditor({ editorFacade, filename }) {
-  const drawIOEditorState = createDrawioEditorState({ filename });
+export function launchDrawioEditor({ editorFacade, filename, drawioUrl = gon.diagramsnet_url }) {
+  const url = new URL(drawioUrl);
+
+  for (const [key, value] of Object.entries(DRAWIO_PARAMS)) {
+    url.searchParams.set(key, value);
+  }
+
+  const drawIOEditorState = createDrawioEditorState({ filename, drawioUrl: url.href });
 
   // The execution order of these two functions matter
   attachDrawioIFrameMessageListener(drawIOEditorState, editorFacade);

@@ -122,6 +122,14 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           end
         end
 
+        context 'when by_commit_email is true' do
+          it 'returns a relative URL for the avatar' do
+            avatar = helper.avatar_icon_for_email(user.commit_email, by_commit_email: true).to_s
+
+            expect(avatar).to eq(user.avatar.url)
+          end
+        end
+
         context 'when no user exists for the email' do
           it 'calls gravatar_icon' do
             expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)

@@ -114,7 +114,7 @@ export const setAttributes = (el, attributes) => {
  * @param {String} contentWrapperClass the content wrapper class
  * @returns {String} height in px
  */
-export const getContentWrapperHeight = (contentWrapperClass) => {
+export const getContentWrapperHeight = (contentWrapperClass = '.content-wrapper') => {
   const wrapperEl = document.querySelector(contentWrapperClass);
   return wrapperEl ? `${wrapperEl.offsetTop}px` : '';
 };

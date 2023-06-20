@@ -428,8 +428,6 @@ For instructions on how to run these tests using the `gitlab-qa` gem, please ref
 
 Tests that are tagged with `:mobile` can be run against specified mobile devices using cloud emulator/simulator services.
 
-These tests run in the [nightly pipeline](https://gitlab.com/gitlab-org/quality/nightly/-/pipelines) in the `ce:remote_mobile_safari` job.
-
 ### How to run mobile tests with Sauce Labs
 
 Running directly against an environment like staging is not recommended because Sauce Labs test logs expose credentials. Therefore, it is best practice and the default to use a tunnel.
@@ -587,18 +585,18 @@ You can verify whether GitLab is appropriately redirecting your session to the `
 
 The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](beginners_guide.md).
 
-## OpenID Connect (OIDC) tests
+## Tests for GitLab as OpenID Connect (OIDC) and OAuth provider
 
-To run the [`login_via_oidc_with_gitlab_as_idp_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/188e2c876a17a097448d7f3ed35bdf264fed0d3b/qa/qa/specs/features/browser_ui/1_manage/login/login_via_oidc_with_gitlab_as_idp_spec.rb) on your local machine:
+To run the [`login_via_oauth_and_oidc_with_gitlab_as_idp_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/2e2c8bcfa4f68cd39041806af531038ce4d2ab04/qa/qa/specs/features/browser_ui/1_manage/login/login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb) on your local machine:
 
 1. Make sure your GDK is set to run on a non-localhost address such as `gdk.test:3000`.
 1. Configure a [loopback interface to 172.16.123.1](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/6fe7b46403229f12ab6d903f99b024e0b82cb94a/doc/howto/local_network.md#create-loopback-interface).
 1. Make sure Docker Desktop or Rancher Desktop is running.
-1. Add an entry to your `/etc/hosts` file for `gitlab-oidc-consumer.bridge` pointing to `127.0.0.1`.
+1. Add an entry to your `/etc/hosts` file for `gitlab-oidc-consumer.bridge` and `gitlab-oauth-consumer.bridge` pointing to `127.0.0.1`.
 1. From the `qa` directory, run the following command. To set the GitLab image you want to use, update the `RELEASE` variable. For example, to use the latest EE image, set `RELEASE` to `gitlab/gitlab-ee:latest`:
 
    ```shell
    bundle install
 
-   RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:1d5a644145dfe901ea7648d825f8f9f3006d0acf' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oidc_with_gitlab_as_idp_spec.rb
+   RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:c0ae46db6b31ea231b2de88961cd687acf634179' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb
    ```

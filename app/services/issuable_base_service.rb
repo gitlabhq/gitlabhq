@@ -314,16 +314,19 @@ class IssuableBaseService < ::BaseContainerService
 
       before_update(issuable)
 
-      # Do not touch when saving the issuable if only changes position within a list. We should call
-      # this method at this point to capture all possible changes.
-      should_touch = update_timestamp?(issuable)
-
-      issuable.updated_by = current_user if should_touch
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
 
       issuable_saved = issuable.with_transaction_returning_status do
+        @callbacks.each(&:before_update)
+
+        # Do not touch when saving the issuable if only changes position within a list. We should call
+        # this method at this point to capture all possible changes.
+        should_touch = update_timestamp?(issuable)
+
+        issuable.updated_by = current_user if should_touch
+
         transaction_update(issuable, { save_with_touch: should_touch })
       end
 

@@ -259,8 +259,8 @@ is inside `_()` so it can be translated:
   link:
 
   ```haml
-  - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/permissions') }
-  %p= _("This is a text describing the option/feature in a sentence. %{link_start}Learn more.%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+  - link = link_to('', help_page_path('user/permissions'), target: '_blank', rel: 'noopener noreferrer')
+  %p= safe_format(_("This is a text describing the option/feature in a sentence. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
   ```
 
 - Using a button link. Useful in places where text would be out of context with
@@ -290,7 +290,7 @@ be translated:
 
 ```ruby
 docs_link = link_to _('Learn more.'), help_page_url('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
-_('This is a text describing the option/feature in a sentence. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+safe_format(_('This is a text describing the option/feature in a sentence. %{docs_link}'), docs_link: docs_link)
 ```
 
 In cases where you need to generate a link from outside of views/helpers, where the `link_to` and `help_page_url` methods are not available, use the following code block
@@ -298,7 +298,7 @@ as a guide where the methods are fully qualified:
 
 ```ruby
 docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/permissions', anchor: 'anchor-link'), target: '_blank', rel: 'noopener noreferrer'
-_('This is a text describing the option/feature in a sentence. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+safe_format(_('This is a text describing the option/feature in a sentence. %{docs_link}'), docs_link: docs_link)
 ```
 
 Do not use `include ActionView::Helpers::UrlHelper` just to make the `link_to` method available as you might see in some existing code. Read more in

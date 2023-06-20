@@ -11,10 +11,6 @@ module Gitlab
 
             # rubocop: disable Metrics/CyclomaticComplexity
             def process_without_instrumentation(files)
-              if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
-                return legacy_process_without_instrumentation(files)
-              end
-
               files.each do |file|
                 # When running a pipeline, some Ci::ProjectConfig sources prepend the config content with an
                 # "internal" `include`. We use this condition to exclude that `include` from the included file set.
@@ -44,30 +40,6 @@ module Gitlab
               end
             end
             # rubocop: enable Metrics/CyclomaticComplexity
-
-            def legacy_process_without_instrumentation(files)
-              files.each do |file|
-                # When running a pipeline, some Ci::ProjectConfig sources prepend the config content with an
-                # "internal" `include`. We use this condition to exclude that `include` from the included file set.
-                context.expandset << file unless context.internal_include?
-                verify_max_includes!
-
-                verify_execution_time!
-
-                file.validate_location!
-                file.validate_context! if file.valid?
-                file.content if file.valid?
-              end
-
-              # We do not combine the loops because we need to load the content of all files before continuing
-              # to call `BatchLoader` for all locations.
-              files.each do |file| # rubocop:disable Style/CombinableLoops
-                verify_execution_time!
-
-                file.validate_content! if file.valid?
-                file.load_and_validate_expanded_hash! if file.valid?
-              end
-            end
 
             def verify_max_includes!
               return if context.expandset.count <= context.max_includes

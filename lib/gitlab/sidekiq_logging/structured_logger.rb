@@ -76,15 +76,19 @@ module Gitlab
         payload['load_balancing_strategy'] = job['load_balancing_strategy'] if job['load_balancing_strategy']
         payload['dedup_wal_locations'] = job['dedup_wal_locations'] if job['dedup_wal_locations'].present?
 
-        if job_exception
-          payload['message'] = "#{message}: fail: #{payload['duration_s']} sec"
-          payload['job_status'] = 'fail'
+        job_status = if job_exception
+                       'fail'
+                     elsif job['deferred']
+                       'deferred'
+                     else
+                       'done'
+                     end
 
-          Gitlab::ExceptionLogFormatter.format!(job_exception, payload)
-        else
-          payload['message'] = "#{message}: done: #{payload['duration_s']} sec"
-          payload['job_status'] = 'done'
-        end
+        payload['message'] = "#{message}: #{job_status}: #{payload['duration_s']} sec"
+        payload['job_status'] = job_status
+        payload['job_deferred_by'] = job['deferred_by'] if job['deferred']
+
+        Gitlab::ExceptionLogFormatter.format!(job_exception, payload) if job_exception
 
         db_duration = ActiveRecord::LogSubscriber.runtime
         payload['db_duration_s'] = Gitlab::Utils.ms_to_round_sec(db_duration)

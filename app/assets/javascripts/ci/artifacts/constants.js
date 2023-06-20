@@ -54,7 +54,6 @@ export const I18N_FEEDBACK_BANNER_BODY = s__(
 export const I18N_FEEDBACK_BANNER_BUTTON = s__('Artifacts|Take a quick survey');
 export const FEEDBACK_URL = 'https://gitlab.fra1.qualtrics.com/jfe/form/SV_cI9rAUI20Vo2St8';
 
-export const BULK_DELETE_FEATURE_FLAG = 'ciJobArtifactBulkDestroy';
 export const SELECTED_ARTIFACTS_MAX_COUNT = 50;
 export const I18N_BULK_DELETE_MAX_SELECTED = s__(
   'Artifacts|Maximum selected artifacts limit reached',
@@ -104,6 +103,7 @@ export const JOBS_PER_PAGE = 20;
 export const INITIAL_LAST_PAGE_SIZE = null;
 
 export const ARCHIVE_FILE_TYPE = 'ARCHIVE';
+export const METADATA_FILE_TYPE = 'METADATA';
 
 export const ARTIFACT_ROW_HEIGHT = 56;
 export const ARTIFACTS_SHOWN_WITHOUT_SCROLLING = 4;

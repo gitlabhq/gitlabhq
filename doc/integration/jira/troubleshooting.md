@@ -16,7 +16,7 @@ set up for the [Jira integration](configure.md) has permission to:
 - Post comments on a Jira issue.
 - Transition the Jira issue.
 
-Jira issue references and update comments do not work if the GitLab issue tracker is disabled.
+Jira issue references and update comments do not work if the [GitLab issue tracker](../../integration/external-issue-tracker.md) is disabled.
 
 If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), make sure you add your self-managed IP addresses or [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist in Jira.
 

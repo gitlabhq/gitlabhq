@@ -13,7 +13,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
-    slack_integrations_scopes: [%w[slack_api_scope_id]]
+    slack_integrations_scopes: [%w[slack_api_scope_id]],
+    namespaces: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -86,7 +87,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
-    p_ci_runner_machine_builds: %w[partition_id build_id],
+    p_ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],
@@ -205,7 +206,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     'Clusters::Cluster' => %w[platform_type provider_type],
     'CommitStatus' => %w[failure_reason],
     'GenericCommitStatus' => %w[failure_reason],
-    'Gitlab::DatabaseImporters::CommonMetrics::PrometheusMetric' => %w[group],
     'InternalId' => %w[usage],
     'List' => %w[list_type],
     'NotificationSetting' => %w[level],
@@ -247,8 +247,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     "Packages::Composer::Metadatum" => %w[composer_json],
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary],
-    "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
-    "EE::Gitlab::BackgroundMigration::FixSecurityScanStatuses::SecurityScan" => %w[info] # This is a migration model
+    "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity
@@ -258,8 +257,10 @@ RSpec.describe 'Database schema', feature_category: :database do
         next if models_by_table_name[hash["table_name"]].nil?
 
         models_by_table_name[hash["table_name"]].each do |model|
-          jsonb_columns = [hash["column_name"]] - ignored_jsonb_columns(model.name)
+          # Skip migration models
+          next if model.name.include?('Gitlab::BackgroundMigration')
 
+          jsonb_columns = [hash["column_name"]] - ignored_jsonb_columns(model.name)
           expect(model).to validate_jsonb_schema(jsonb_columns)
         end
       end

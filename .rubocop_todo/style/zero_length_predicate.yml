@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 Style/ZeroLengthPredicate:
-  Details: grace period
   Exclude:
     - 'spec/requests/api/graphql/mutations/admin/sidekiq_queues/delete_jobs_spec.rb'

@@ -37,6 +37,6 @@ module Gitlab
     # rubocop:enable Style/StringConcatenation
 
     PATTERN_UNTRUSTED_REGEX =
-      Gitlab::UntrustedRegexp.new(PATTERN_UNTRUSTED, multiline: true)
+      Gitlab::UntrustedRegexp.new(PATTERN_UNTRUSTED, multiline: true).freeze
   end
 end

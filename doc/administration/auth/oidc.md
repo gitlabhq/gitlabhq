@@ -16,7 +16,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
@@ -35,7 +35,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
 
 1. Add the provider configuration.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -63,7 +63,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    ]
    ```
 
-   For Omnibus GitLab with multiple identity providers:
+   For Linux package installations with multiple identity providers:
 
    ```ruby
    { 'name' => 'openid_connect',
@@ -108,7 +108,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    NOTE:
    For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
 
-   For installation from source:
+   For self-compiled installations:
 
    ```yaml
      - { name: 'openid_connect', # do not change this parameter
@@ -184,10 +184,10 @@ The OpenID Connect provides you with a client's details and secret for you to us
        - `jwks_uri` is the URL to the endpoint where the Token signer publishes its keys.
 
 1. Save the configuration file.
-1. For changes to take effect, if you installed GitLab:
+1. For changes to take effect, if you:
 
-   - With Omnibus, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-   - From source, [restart GitLab](../restart_gitlab.md#installations-from-source).
+   - Used the Linux package to install GitLab, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#installations-from-source).
 
 On the sign in page, you have an OpenID Connect option below the regular sign in form.
 Select this option to begin the authentication process. The OpenID Connect provider
@@ -197,7 +197,7 @@ by the client. You are redirected to GitLab and signed in.
 ## Example configurations
 
 The following configurations illustrate how to set up OpenID with
-different providers with Omnibus GitLab.
+different providers when using the Linux package installation.
 
 ### Configure Google
 
@@ -240,7 +240,7 @@ you need the following information:
   [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
-Example Omnibus configuration block:
+Example configuration block for Linux package installations:
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -372,7 +372,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
    ```
 
 1. Configure the issuer URL with the custom policy used for `signup_signin`. For example, this is
-   the Omnibus configuration with a custom policy for `b2c_1a_signup_signin`:
+   the configuration with a custom policy for `b2c_1a_signup_signin` for Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -432,7 +432,7 @@ HS256 or HS358) to sign tokens. Public key encryption algorithms are:
 1. Select **Realm Settings > Tokens > Default Signature Algorithm**.
 1. Configure the signature algorithm.
 
-Example Omnibus configuration block:
+Example configuration block for Linux package installations:
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -556,7 +556,7 @@ For your app, complete the following steps on Casdoor:
 
 See the [Casdoor documentation](https://casdoor.org/docs/integration/ruby/gitlab) for more details.
 
-Example Omnibus GitLab configuration (file path: `/etc/gitlab/gitlab.rb`):
+Example configuration for Linux package installations (file path: `/etc/gitlab/gitlab.rb`):
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -617,7 +617,7 @@ This is not compatible with [configuring users based on OIDC group membership](#
 
 The following example configurations show how to offer different levels of authentication, one option with 2FA and one without 2FA.
 
-For Omnibus GitLab:
+For Linux package installations:
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -668,7 +668,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-For installation from source:
+For self-compiled installations:
 
 ```yaml
   - { name: 'openid_connect',
@@ -774,7 +774,7 @@ response to require users to be members of a certain group, configure GitLab to 
 
 If you do not set `required_groups` or leave the setting empty, any user authenticated by the IdP through OIDC can use GitLab.
 
-For Omnibus GitLab:
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -805,10 +805,10 @@ For Omnibus GitLab:
    ]
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For installation from source:
+For self-compiled installations:
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -853,7 +853,7 @@ based on group membership, configure GitLab to identify:
   [external user](../../user/admin_area/external_users.md), using the
  `external_groups` setting.
 
-For Omnibus GitLab:
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -884,10 +884,10 @@ For Omnibus GitLab:
    ]
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For installation from source:
+For self-compiled installations:
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -930,7 +930,7 @@ response to assign users as administrator based on group membership, configure G
 - Which group memberships grant the user administrator access, using the
  `admin_groups` setting.
 
-For Omnibus GitLab:
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -961,10 +961,10 @@ For Omnibus GitLab:
    ]
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For installation from source:
+For self-compiled installations:
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 

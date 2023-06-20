@@ -1,55 +1,53 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import Vue from 'vue';
-import Vuex from 'vuex';
 import NoChanges from '~/diffs/components/no_changes.vue';
-import { createStore } from '~/mr_notes/stores';
+import store from '~/mr_notes/stores';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
-Vue.use(Vuex);
+jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
 const TEST_TARGET_BRANCH = 'foo';
 const TEST_SOURCE_BRANCH = 'dev/update';
+const latestVersionNumber = Math.max(...diffsMockData.map((version) => version.version_index));
 
 describe('Diff no changes empty state', () => {
-  let wrapper;
-  let store;
-
-  function createComponent(mountFn = shallowMount) {
-    wrapper = mountFn(NoChanges, {
-      store,
+  const createComponent = (mountFn = shallowMount) =>
+    mountFn(NoChanges, {
+      mocks: {
+        $store: store,
+      },
       propsData: {
         changesEmptyStateIllustration: '',
       },
     });
-  }
 
   beforeEach(() => {
-    store = createStore();
-    store.state.diffs.mergeRequestDiff = {};
-    store.state.notes.noteableData = {
+    store.reset();
+
+    store.getters.getNoteableData = {
       target_branch: TEST_TARGET_BRANCH,
       source_branch: TEST_SOURCE_BRANCH,
     };
-    store.state.diffs.mergeRequestDiffs = diffsMockData;
+    store.getters['diffs/diffCompareDropdownSourceVersions'] = [];
+    store.getters['diffs/diffCompareDropdownTargetVersions'] = [];
   });
 
-  const findMessage = () => wrapper.find('[data-testid="no-changes-message"]');
+  const findMessage = (wrapper) => wrapper.find('[data-testid="no-changes-message"]');
 
   it('prevents XSS', () => {
-    store.state.notes.noteableData = {
+    store.getters.getNoteableData = {
       source_branch: '<script>alert("test");</script>',
       target_branch: '<script>alert("test");</script>',
     };
 
-    createComponent();
+    const wrapper = createComponent();
 
     expect(wrapper.find('script').exists()).toBe(false);
   });
 
   describe('Renders', () => {
     it('Show create commit button', () => {
-      createComponent();
+      const wrapper = createComponent();
 
       expect(wrapper.findComponent(GlButton).exists()).toBe(true);
     });
@@ -64,15 +62,28 @@ describe('Diff no changes empty state', () => {
       'renders text "$expectedText" (sourceIndex=$sourceIndex and targetIndex=$targetIndex)',
       ({ expectedText, targetIndex, sourceIndex }) => {
         if (targetIndex !== null) {
-          store.state.diffs.startVersion = { version_index: targetIndex };
+          store.getters['diffs/diffCompareDropdownTargetVersions'] = [
+            {
+              selected: true,
+              version_index: targetIndex,
+              versionName: `version ${targetIndex}`,
+            },
+          ];
         }
         if (sourceIndex !== null) {
-          store.state.diffs.mergeRequestDiff.version_index = sourceIndex;
+          store.getters['diffs/diffCompareDropdownSourceVersions'] = [
+            {
+              isLatestVersion: sourceIndex === latestVersionNumber,
+              selected: true,
+              version_index: targetIndex,
+              versionName: `version ${sourceIndex}`,
+            },
+          ];
         }
 
-        createComponent(mount);
+        const wrapper = createComponent(mount);
 
-        expect(findMessage().text()).toBe(expectedText);
+        expect(findMessage(wrapper).text()).toBe(expectedText);
       },
     );
   });

@@ -39,6 +39,13 @@ resource :profile, only: [:show, :update] do
         put :reset
       end
     end
+
+    resource :slack, only: [:edit] do
+      member do
+        get :slack_link
+      end
+    end
+
     resource :preferences, only: [:show, :update]
 
     resources :comment_templates, only: [:index, :show], action: :index

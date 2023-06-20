@@ -1,0 +1,8 @@
+name: gitlab_shared
+description:
+  Schema for all tables implementing shared features,
+  ex. loose foreign keys, re-indexing, etc.
+allow_cross_joins:
+  - gitlab_internal
+allow_cross_transactions:
+  - gitlab_internal

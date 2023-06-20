@@ -1,0 +1,8 @@
+---
+name: autocomplete_users_use_search_service
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122289
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/413972
+milestone: '16.1'
+type: development
+group: group::global search
+default_enabled: false

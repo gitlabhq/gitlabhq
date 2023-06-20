@@ -24,7 +24,7 @@ module Projects
     def execute
       params[:wiki_enabled] = params[:wiki_access_level] if params[:wiki_access_level]
       params[:builds_enabled] = params[:builds_access_level] if params[:builds_access_level]
-      params[:snippets_enabled] = params[:builds_access_level] if params[:snippets_access_level]
+      params[:snippets_enabled] = params[:snippets_access_level] if params[:snippets_access_level]
       params[:merge_requests_enabled] = params[:merge_requests_access_level] if params[:merge_requests_access_level]
       params[:issues_enabled] = params[:issues_access_level] if params[:issues_access_level]
 
@@ -231,7 +231,7 @@ module Projects
 
           @project.create_labels unless @project.gitlab_project_import?
 
-          break if @project.import?
+          next if @project.import?
 
           unless @project.create_repository(default_branch: default_branch)
             raise 'Failed to create repository'

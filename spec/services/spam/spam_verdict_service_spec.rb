@@ -271,17 +271,6 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
               expect(user.spam_score).to eq(0.0)
             end
           end
-
-          context 'user spam score feature is disabled' do
-            before do
-              stub_feature_flags(user_spam_scores: false)
-            end
-
-            it 'returns the verdict and does not update the spam score' do
-              expect(subject).to eq(ALLOW)
-              expect(user.spam_score).to eq(0.0)
-            end
-          end
         end
 
         context 'when recaptcha is enabled' do

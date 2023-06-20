@@ -7,6 +7,9 @@
   = render "layouts/bizible"
 = render "layouts/google_tag_manager_body"
 
+- content_for :omniauth_providers_bottom do
+  = render 'devise/shared/signup_omniauth_providers'
+
 .signup-page
   = render signup_box_template,
     url: registration_path(resource_name, registration_path_params),

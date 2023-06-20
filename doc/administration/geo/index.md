@@ -160,7 +160,9 @@ public URL of the primary site is used.
 
 To update the internal URL of the primary Geo site:
 
-1. On the top bar, select **Main menu > Admin > Geo > Sites**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Geo > Sites**.
 1. Select **Edit** on the primary site.
 1. Change the **Internal URL**, then select **Save changes**.
 
@@ -199,7 +201,8 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [GitLab chart with Geo](https://docs.gitlab.com/charts/advanced/geo/) does not support [Unified URLs](secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites). See [GitLab issue #3522](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3522) for more details.
 - [Disaster recovery](disaster_recovery/index.md) for multi-secondary sites causes downtime due to the complete re-synchronization and re-configuration of all non-promoted secondaries.
-- For Git over SSH, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
+- For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
+- Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
 
 ### Limitations on replication/verification
 
@@ -209,13 +212,10 @@ There is a complete list of all GitLab [data types](replication/datatypes.md) an
 
 If you try to view replication data on the primary site, you receive a warning that this may be inconsistent:
 
-> Viewing projects and designs data from a primary site is not possible when using a unified URL. Visit the secondary site directly.
+> Viewing projects data from a primary site is not possible when using a unified URL. Visit the secondary site directly.
 
 The only way to view projects replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/projects`.
 An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4623) to fix this limitation.
-
-The only way to view designs replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/designs`.
-An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4624) to fix this limitation.
 
 Keep in mind that mentioned URLs don't work when [Admin Mode](../../user/admin_area/settings/sign_in_restrictions.md#admin-mode) is enabled.
 
@@ -248,10 +248,11 @@ secondary. If the site is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
 WARNING:
-Pausing and resuming of replication is only supported for Geo installations using an
-Omnibus GitLab-managed database. External databases are not supported.
+Pausing and resuming of replication is only supported for Geo installations using a
+Linux package-managed database. External databases are not supported.
 
-In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
+In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a
+[planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the node in the secondary site where the `postgresql` service is enabled.
 
@@ -275,7 +276,7 @@ For information on configuring Geo for multiple nodes, see [Geo for multiple ser
 
 ### Configuring Geo with Object Storage
 
-For information on configuring Geo with object storage, see [Geo with Object storage](replication/object_storage.md).
+For information on configuring Geo with Object storage, see [Geo with Object storage](replication/object_storage.md).
 
 ### Disaster Recovery
 
@@ -333,7 +334,7 @@ For answers to common questions, see the [Geo FAQ](replication/faq.md).
 
 ## Log files
 
-Geo stores structured log messages in a `geo.log` file. For Omnibus GitLab
+Geo stores structured log messages in a `geo.log` file. For Linux package
 installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
 This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into. For example, Elasticsearch or Splunk.

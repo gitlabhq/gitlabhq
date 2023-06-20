@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Utils::Markdown do
 
     context 'when string has a product suffix' do
       %w[CORE STARTER PREMIUM ULTIMATE FREE BRONZE SILVER GOLD].each do |tier|
-        ['', ' ONLY', ' SELF', ' SASS'].each do |modifier|
+        ['', ' ONLY', ' SELF', ' SAAS'].each do |modifier|
           context "#{tier}#{modifier}" do
             let(:string) { "My Header (#{tier}#{modifier})" }
 

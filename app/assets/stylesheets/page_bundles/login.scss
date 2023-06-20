@@ -55,12 +55,12 @@
     .omniauth-container {
       box-shadow: none;
     }
+  }
 
-    .g-recaptcha {
-      > div {
-        margin-left: auto;
-        margin-right: auto;
-      }
+  .g-recaptcha {
+    > div {
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
@@ -102,6 +102,10 @@
 
       .username .validation-error {
         color: $red-500;
+      }
+
+      .terms .gl-form-checkbox {
+        @include gl-reset-font-size;
       }
     }
   }
@@ -192,13 +196,6 @@
     }
   }
 
-  .form-control {
-    &:active,
-    &:focus {
-      background-color: $white;
-    }
-  }
-
   .submit-container {
     margin-top: 16px;
   }
@@ -267,7 +264,7 @@
       left: 0;
       right: 0;
       height: 40px;
-      background: $white;
+      background: var(--white, $white);
     }
 
     .login-page-broadcast {

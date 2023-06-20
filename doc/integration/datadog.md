@@ -27,7 +27,8 @@ project, group, or instance level:
 1. *For project-level or group-level integrations:* In GitLab, go to your project or group.
 1. *For instance-level integrations:*
    1. Sign in to GitLab as a user with administrator access.
-   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Scroll to **Add an integration**, and select **Datadog**.
 1. Select **Active** to enable the integration.
@@ -45,7 +46,7 @@ project, group, or instance level:
 <!-- vale gitlab.Spelling = YES -->
 1. Optional. To define any custom tags for all spans at which the integration is being configured,
    enter one tag per line in **Tags**. Each line must be in the format `key:value`. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.)
-1. Optional. Select **Test settings** to test your integration.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 When the integration sends data, you can view it in the [CI Visibility](https://app.datadoghq.com/ci)

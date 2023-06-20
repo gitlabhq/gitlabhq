@@ -7,6 +7,7 @@ import { buildButton } from './helpers';
 describe('Source Editor Toolbar button', () => {
   let wrapper;
   const defaultBtn = buildButton();
+  const tertiaryBtnWithIcon = buildButton({ category: 'tertiary' });
 
   const findButton = () => wrapper.findComponent(GlButton);
 
@@ -41,6 +42,16 @@ describe('Source Editor Toolbar button', () => {
       const btn = findButton();
       expect(btn.exists()).toBe(true);
       expect(btn.props()).toMatchObject(defaultProps);
+      expect(btn.text()).toBe('Foo Bar Button');
+    });
+
+    it('does not render button for tertiary button with icon', () => {
+      createComponent({
+        button: {
+          tertiaryBtnWithIcon,
+        },
+      });
+      expect(findButton().text()).toBe('');
     });
 
     it('renders a button based on the props passed', () => {

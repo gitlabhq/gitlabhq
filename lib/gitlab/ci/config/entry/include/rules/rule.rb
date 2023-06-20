@@ -9,10 +9,14 @@ module Gitlab
             include ::Gitlab::Config::Entry::Validatable
             include ::Gitlab::Config::Entry::Attributable
 
-            ALLOWED_KEYS = %i[if exists].freeze
+            ALLOWED_KEYS = %i[if exists when].freeze
+            ALLOWED_WHEN = %w[never always].freeze
 
-            attributes :if, :exists
+            attributes :if, :exists, :when
 
+            # Include rules are validated before Entry validations. This is because
+            # the include files are expanded before `compose!` runs in Ci::Config.
+            # The actual validation logic is in lib/gitlab/ci/config/external/rules.rb.
             validations do
               validates :config, presence: true
               validates :config, type: { with: Hash }

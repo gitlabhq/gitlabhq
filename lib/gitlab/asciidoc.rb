@@ -70,7 +70,8 @@ module Gitlab
                                         .merge({
                                                    # Define the Kroki server URL from the settings.
                                                    # This attribute cannot be overridden from the AsciiDoc document.
-                                                   'kroki-server-url' => Gitlab::CurrentSettings.kroki_url
+                                                   'kroki-server-url' => Gitlab::CurrentSettings.kroki_url,
+                                                   'allow-uri-read' => Gitlab::CurrentSettings.wiki_asciidoc_allow_uri_includes
                                                }),
                         extensions: extensions }
 

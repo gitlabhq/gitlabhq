@@ -522,6 +522,11 @@ When using code block style:
   [list of supported languages and lexers](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
   for available syntax highlighters. Use `plaintext` if no better hint is available.
 
+#### cURL commands in code blocks
+
+See [cURL commands](../restful_api_styleguide.md#curl-commands) for information
+about styling cURL commands.
+
 ## Lists
 
 - Do not use a period if the phrase is not a full sentence.
@@ -640,21 +645,43 @@ To keep tables accessible and scannable, tables should not have any
 empty cells. If there is no otherwise meaningful value for a cell, consider entering
 **N/A** for 'not applicable' or **None**.
 
-To help tables be easier to maintain, consider adding additional spaces to the
-column widths to make them consistent. For example:
+To help keep tables easier to maintain, you can:
 
-```markdown
-| App name | Description          | Requirements   |
-|:---------|:---------------------|:---------------|
-| App 1    | Description text 1.  | Requirements 1 |
-| App 2    | Description text 2.  | None           |
-```
+- Add additional spaces to make the column widths consistent. For example:
+
+  ```markdown
+  | App name | Description         | Requirements   |
+  |----------|---------------------|----------------|
+  | App 1    | Description text 1. | Requirements 1 |
+  | App 2    | Description text 2. | None           |
+  ```
+
+- Skip the additional spaces in the rightmost column for tables that are very wide.
+  For example:
+
+  ```markdown
+  | Setting   | Default | Description |
+  |-----------|---------|-------------|
+  | Setting 1 | `1000`  | A short description. |
+  | Setting 2 | `2000`  | A long description that would make the table too wide and add too much whitespace if every cell in this column was aligned. |
+  | Setting 3 | `0`     | Another short description. |
+  ```
 
 Consider installing a plugin or extension in your editor for formatting tables:
 
 - [Markdown Table Prettifier](https://marketplace.visualstudio.com/items?itemName=darkriszty.markdown-table-prettify) for Visual Studio Code
 - [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter) for Sublime Text
 - [Markdown Table Formatter](https://atom.io/packages/markdown-table-formatter) for Atom
+
+### Updates to existing tables
+
+When you add or edit rows in an existing table, the cells in the new rows might be wider.
+If you realign the columns to account for the width, the diff becomes difficult to read,
+because the entire table shows as modified.
+
+Markdown tables naturally fall out of alignment over time, but still render correctly
+on `docs.gitlab.com`. The technical writing team can realign cells the next time
+the page is refactored.
 
 ### Table headings
 
@@ -681,10 +708,10 @@ For the footnotes below the table, use a bold number followed by a sentence.
 For example:
 
 ```markdown
-| App name | Description                      |
-|:---------|:---------------------------------|
-| App A    | Description text. <sup>1</sup>   |
-| App B    | Description text. <sup>2</sup>   |
+| App name | Description                    |
+|:---------|:-------------------------------|
+| App A    | Description text. <sup>1</sup> |
+| App B    | Description text. <sup>2</sup> |
 
 1. This is the footnote.
 1. This is the other footnote.
@@ -692,10 +719,10 @@ For example:
 
 This text renders this output:
 
-| App name | Description                      |
-|:---------|:---------------------------------|
-| App A    | Description text. <sup>1</sup>   |
-| App B    | Description text. <sup>2</sup>   |
+| App name | Description                    |
+|:---------|:-------------------------------|
+| App A    | Description text. <sup>1</sup> |
+| App B    | Description text. <sup>2</sup> |
 
 1. This is the footnote.
 1. This is the other footnote.
@@ -834,7 +861,7 @@ Sometimes they are more precise and will be maintained more actively.
 
 For each external link you add, weigh the customer benefit with the maintenance difficulties.
 
-### Links requiring permissions
+### Links that require permissions
 
 Don't link directly to:
 
@@ -842,23 +869,27 @@ Don't link directly to:
 - Project features that require [special permissions](../../../user/permissions.md)
   to view.
 
-These fail for:
+These links fail for:
 
 - Those without sufficient permissions.
 - Automated link checkers.
 
-Instead:
+If you must use one of these links:
 
-- To reduce confusion, mention in the text that the information is either:
-  - Contained in a confidential issue.
-  - Requires special permission to a project to view.
-- Provide a link in back ticks (`` ` ``) so that those with access to the issue
-  can navigate to it.
+- If the link is to a confidential issue, mention that the issue is visible only to GitLab team members, as in the first example.
+- If the link requires a specific role or permissions, mention that information, as in the second example.
+- Put the link in backticks, so that it does not cause link checkers to fail.
 
-Example:
+Examples:
 
 ```markdown
-For more information, see the [confidential issue](../../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/<issue_number>`.
+GitLab team members can view more information in this confidential issue:
+`https://gitlab.com/gitlab-org/gitlab/-/issues/<issue_number>`
+```
+
+```markdown
+Users with the Maintainer role for the project can use the pipeline editor:
+`https://gitlab.com/gitlab-org/gitlab/-/ci/editor`
 ```
 
 ### Link to specific lines of code
@@ -894,10 +925,10 @@ When documenting how to navigate through the GitLab UI:
 Use these terms when referring to the main GitLab user interface
 elements:
 
-- **Top bar**: This is the top bar that spans the width of the user interface.
-  It includes the menu, the GitLab logo, search field, counters, and the user's avatar.
 - **Left sidebar**: This is the navigation sidebar on the left of the user
-  interface, specific to the project or group.
+  interface.
+  - Do not use the phrase `context switcher` or `switch contexts`. Instead, try to direct the user to the exact location with a set of repeatable steps.
+  - Do not use the phrase `the **Explore** menu` or `the **Your work** sidebar`. Instead, use `the left sidebar`.
 - **Right sidebar**: This is the navigation sidebar on the right of the user
   interface, specific to the open issue, merge request, or epic.
 
@@ -913,51 +944,57 @@ To be consistent, use these templates when you write navigation steps in a task 
 To open project settings:
 
 ```markdown
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
 
 To open group settings:
 
 ```markdown
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
 
 To open either project or group settings:
 
 ```markdown
-1. On the top bar, select **Main menu**, and:
-   - For a project, select **Projects** and find your project.
-   - For a group, select **Groups** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
 
 To create a project:
 
 ```markdown
-1. On the top bar, select **Create new... > New project**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 ```
 
 To create a group:
 
 ```markdown
-1. On the top bar, select **Create new... > New group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
 ```
 
 To open the Admin Area:
 
 ```markdown
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+```
+
+To open the **Your work** menu item:
+
+```markdown
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
 ```
 
 To select your avatar:
 
 ```markdown
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 ```
 
 To save the selection in some dropdown lists:
@@ -967,6 +1004,20 @@ To save the selection in some dropdown lists:
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to associate this issue with.
 1. Select any area outside the dropdown list.
+```
+
+To view all your projects:
+
+```markdown
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
+```
+
+To view all your groups:
+
+```markdown
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
 ```
 
 ### Optional steps
@@ -998,8 +1049,8 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
 

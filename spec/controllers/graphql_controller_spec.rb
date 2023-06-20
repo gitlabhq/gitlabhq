@@ -78,7 +78,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           a_hash_including('message' => 'Upstream Gitaly has been exhausted. Try again later')
         )
       )
-      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response).to have_gitlab_http_status(:service_unavailable)
       expect(response.headers['Retry-After']).to be(50)
     end
   end
@@ -224,6 +224,16 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         post :execute
       end
 
+      it 'calls the track jetbrains bundled third party api when trackable method' do
+        agent = 'IntelliJ-GitLab-Plugin PhpStorm/PS-232.6734.11 (JRE 17.0.7+7-b966.2; Linux 6.2.0-20-generic; amd64)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
+
       context 'if using the GitLab CLI' do
         it 'call trackable for the old UserAgent' do
           agent = 'GLab - GitLab CLI'
@@ -359,6 +369,16 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         subject
       end
 
+      it 'calls the track jetbrains bundled third party api when trackable method' do
+        agent = 'IntelliJ-GitLab-Plugin PhpStorm/PS-232.6734.11 (JRE 17.0.7+7-b966.2; Linux 6.2.0-20-generic; amd64)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
+      end
+
       it 'calls the track gitlab cli when trackable method' do
         agent = 'GLab - GitLab CLI'
         request.env['HTTP_USER_AGENT'] = agent
@@ -406,6 +426,94 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       post :execute, params: { remove_deprecated: '1' }
 
       expect(assigns(:context)[:remove_deprecated]).to be true
+    end
+
+    context 'when querying an IntrospectionQuery', :use_clean_rails_memory_store_caching do
+      let_it_be(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
+
+      it 'caches the IntrospectionQuery' do
+        expect(GitlabSchema).to receive(:execute).exactly(:once)
+
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+      end
+
+      it 'caches separately for both remove_deprecated set to true and false' do
+        expect(GitlabSchema).to receive(:execute).exactly(:twice)
+
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: true }
+
+        # We clear this instance variable to reset remove_deprecated
+        subject.remove_instance_variable(:@context) if subject.instance_variable_defined?(:@context)
+
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery', remove_deprecated: false }
+      end
+
+      it 'has a different cache for each Gitlab.revision' do
+        expect(GitlabSchema).to receive(:execute).exactly(:twice)
+
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+
+        allow(Gitlab).to receive(:revision).and_return('new random value')
+
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+      end
+
+      it 'logs that it will try to hit the cache' do
+        expect(Gitlab::AppLogger).to receive(:info).with(message: "IntrospectionQueryCache hit")
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          message: "IntrospectionQueryCache",
+          can_use_introspection_query_cache: "true",
+          query: query.to_s,
+          variables: "{}",
+          introspection_query_cache_key: "[\"introspection-query-cache\", \"#{Gitlab.revision}\", false]"
+        )
+
+        post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+      end
+
+      context 'when there is an unknown introspection query' do
+        let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/fake_introspection.graphql')) }
+
+        it 'logs that it did not try to hit the cache' do
+          expect(Gitlab::AppLogger).to receive(:info).with(message: "IntrospectionQueryCache miss")
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            message: "IntrospectionQueryCache",
+            can_use_introspection_query_cache: "false",
+            query: query.to_s,
+            variables: "{}",
+            introspection_query_cache_key: "[\"introspection-query-cache\", \"#{Gitlab.revision}\", false]"
+          )
+
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+        end
+
+        it 'does not cache an unknown introspection query' do
+          expect(GitlabSchema).to receive(:execute).exactly(:twice)
+
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+          post :execute, params: { query: query, operationName: 'IntrospectionQuery' }
+        end
+      end
+
+      it 'hits the cache even if the whitespace in the query differs' do
+        query_1 = File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql'))
+        query_2 = "#{query_1}  " # add a couple of spaces to change the fingerprint
+
+        expect(GitlabSchema).to receive(:execute).exactly(:once)
+
+        post :execute, params: { query: query_1, operationName: 'IntrospectionQuery' }
+        post :execute, params: { query: query_2, operationName: 'IntrospectionQuery' }
+      end
+
+      it 'fails if the GraphiQL gem version is not 1.8.0' do
+        # We cache the IntrospectionQuery based on the default IntrospectionQuery by GraphiQL. If this spec fails,
+        # GraphiQL has been updated, so we should check whether the IntropsectionQuery we cache is still valid.
+        # It is stored in `app/graphql/cached_introspection_query.rb#query_string`
+        expect(GraphiQL::Rails::VERSION).to eq("1.8.0")
+      end
     end
   end
 

@@ -20,7 +20,6 @@ describe('AvailableAgentsDropdown', () => {
       propsData,
       stubs: { GlCollapsibleListbox },
     });
-    wrapper.vm.$refs.dropdown.closeAndFocus = jest.fn();
   };
 
   describe('there are agents available', () => {

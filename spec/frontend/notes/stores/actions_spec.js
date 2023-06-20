@@ -68,6 +68,8 @@ describe('Actions Notes Store', () => {
     resetStore(store);
     axiosMock.restore();
     resetHTMLFixture();
+
+    window.gon = {};
   });
 
   describe('setNotesData', () => {
@@ -872,26 +874,6 @@ describe('Actions Notes Store', () => {
       });
     });
 
-    describe('if response contains errors.base', () => {
-      const res = { errors: { base: ['something went wrong'] } };
-      const error = { message: 'Unprocessable entity', response: { data: res } };
-
-      it('sets an alert using errors.base message', async () => {
-        const resp = await actions.saveNote(
-          {
-            commit() {},
-            dispatch: () => Promise.reject(error),
-          },
-          { ...payload, flashContainer },
-        );
-        expect(resp.hasAlert).toBe(true);
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'Your comment could not be submitted because something went wrong',
-          parent: flashContainer,
-        });
-      });
-    });
-
     describe('if response contains no errors', () => {
       const res = { valid: true };
 
@@ -1464,6 +1446,29 @@ describe('Actions Notes Store', () => {
           { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
         ],
         [{ type: 'updateResolvableDiscussionsCounts' }],
+      );
+    });
+
+    it('dispatches `fetchDiscussionsBatch` action with notes_filter 0 for merge request', () => {
+      window.gon = { features: { mrActivityFilters: true } };
+
+      return testAction(
+        actions.fetchDiscussions,
+        { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
+        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
+        [],
+        [
+          {
+            type: 'fetchDiscussionsBatch',
+            payload: {
+              config: {
+                params: { notes_filter: 0, persist_filter: false },
+              },
+              path: 'test-path',
+              perPage: 20,
+            },
+          },
+        ],
       );
     });
 

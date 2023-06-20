@@ -20,17 +20,11 @@ RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
   if status == :created
     it 'creates package files', :aggregate_failures do
       expect(::Packages::Debian::CreatePackageFileService).to receive(:new).with(package: be_a(Packages::Package), current_user: be_an(User), params: be_an(Hash)).and_call_original
+      expect(::Packages::Debian::ProcessChangesWorker).not_to receive(:perform_async)
 
-      if file_name.end_with? '.changes'
-        expect(::Packages::Debian::ProcessChangesWorker).to receive(:perform_async)
-      else
-        expect(::Packages::Debian::ProcessChangesWorker).not_to receive(:perform_async)
-      end
-
-      if extra_params[:distribution]
+      if extra_params[:distribution] || file_name.end_with?('.changes')
         expect(::Packages::Debian::FindOrCreateIncomingService).not_to receive(:new)
-        expect(::Packages::Debian::ProcessPackageFileWorker).to receive(:perform_async)
-
+        expect(::Packages::Debian::ProcessPackageFileWorker).to receive(:perform_async).with(be_a(Integer), extra_params[:distribution], extra_params[:component])
         expect { subject }
           .to change { container.packages.debian.count }.by(1)
           .and not_change { container.packages.debian.where(name: 'incoming').count }

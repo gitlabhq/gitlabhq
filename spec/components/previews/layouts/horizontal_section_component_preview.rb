@@ -13,9 +13,9 @@ module Layouts
       body: 'Settings fields here.'
     )
       render(::Layouts::HorizontalSectionComponent.new(border: border, options: { class: 'gl-mb-6 gl-pb-3' })) do |c|
-        c.title { title }
-        c.description { description }
-        c.body { body }
+        c.with_title { title }
+        c.with_description { description }
+        c.with_body { body }
       end
     end
   end

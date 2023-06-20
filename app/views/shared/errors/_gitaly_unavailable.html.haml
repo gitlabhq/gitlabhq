@@ -2,5 +2,5 @@
   variant: :danger,
   dismissible: false,
   title: reason) do |c|
-  = c.body do
+  - c.with_body do
     = s_('The git server, Gitaly, is not available at this time. Please contact your administrator.')

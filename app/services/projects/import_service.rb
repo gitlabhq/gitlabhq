@@ -20,6 +20,8 @@ module Projects
 
       add_repository_to_project
 
+      validate_repository_size!
+
       download_lfs_objects
 
       import_data
@@ -57,6 +59,10 @@ module Projects
     private
 
     attr_reader :resolved_address
+
+    def validate_repository_size!
+      # Defined in EE::Projects::ImportService
+    end
 
     def after_execute_hook
       # Defined in EE::Projects::ImportService

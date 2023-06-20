@@ -17,11 +17,28 @@ RSpec.shared_examples_for 'GET #metrics_dashboard for dashboard' do |dashboard_n
   let(:expected_keys) { %w(dashboard status metrics_data) }
   let(:status_code) { :ok }
 
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
+  end
+
   it_behaves_like 'GET #metrics_dashboard correctly formatted response'
 
   it 'returns correct dashboard' do
     get :metrics_dashboard, params: metrics_dashboard_req_params, format: :json
 
     expect(json_response['dashboard']['dashboard']).to eq(dashboard_name)
+  end
+
+  context 'when metrics dashboard feature is unavailable' do
+    before do
+      stub_feature_flags(remove_monitor_metrics: true)
+    end
+
+    it 'returns 404 not found' do
+      get :metrics_dashboard, params: metrics_dashboard_req_params, format: :json
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(response.body).to be_empty
+    end
   end
 end

@@ -16,15 +16,15 @@ RSpec.describe 'Merge request > User marks merge request as draft', :js, feature
   end
 
   it 'toggles draft status' do
-    find('[data-testid="merge-request-actions"]').click
-    click_link 'Mark as draft'
+    find('#new-actions-header-dropdown button').click
+    click_button 'Mark as draft'
 
     expect(page).to have_content("Draft: #{merge_request.title}")
 
-    find('[data-testid="merge-request-actions"]').click
+    find('#new-actions-header-dropdown button').click
 
     page.within('.detail-page-header-actions') do
-      click_link 'Mark as ready'
+      click_button 'Mark as ready'
     end
 
     expect(page).to have_content(merge_request.title)

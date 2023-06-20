@@ -135,7 +135,7 @@ If so, please have a look at [the Engineering Productivity RUNBOOK on predictive
 ### Fork pipelines
 
 We run only the predictive RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
-label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
+label is set on the MR. The goal is to reduce the compute quota consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1170).
 
@@ -186,8 +186,8 @@ This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST
 
 ## Re-run previously failed tests in merge request pipelines
 
-In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg13-rerun-previous-failed-tests`
-and `rspec rspec-ee-pg13-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
+In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg14-rerun-previous-failed-tests`
+and `rspec rspec-ee-pg14-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
 
 This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
 
@@ -195,7 +195,7 @@ This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/git
 
 1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
    jobs from the previous MR pipeline.
-1. The `rspec rspec-pg13-rerun-previous-failed-tests` and `rspec rspec-ee-pg13-rerun-previous-failed-tests` jobs
+1. The `rspec rspec-pg14-rerun-previous-failed-tests` and `rspec rspec-ee-pg14-rerun-previous-failed-tests` jobs
    will run the test files gathered by the `detect-previous-failed-tests` job.
 
 ```mermaid
@@ -205,8 +205,8 @@ graph LR
     end
 
     subgraph "test stage";
-        B["rspec rspec-pg13-rerun-previous-failed-tests"];
-        C["rspec rspec-ee-pg13-rerun-previous-failed-tests"];
+        B["rspec rspec-pg14-rerun-previous-failed-tests"];
+        C["rspec rspec-ee-pg14-rerun-previous-failed-tests"];
     end
 
     A --"artifact: list of test files"--> B & C
@@ -442,7 +442,7 @@ This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-vali
 project variables set.
 
 It's a pull mirror pulling from [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
-mirroring only protected branches, `master` and `main-jh`, overriding
+mirroring specific branches: `(master|main-jh)`, overriding
 divergent refs, triggering no pipelines when mirror is updated.
 
 The pulling user is [`@gitlab-jh-validation-bot`](https://gitlab.com/gitlab-jh-validation-bot), who is a maintainer in the project, and also a
@@ -480,6 +480,50 @@ for how it works.
     [`jh/Gemfile.checksum`](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/Gemfile.checksum)
     committed. More context can be found at:
     [Setting it to `false` to skip it](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118938#note_1374688877)
+
+##### Why do we have both the mirror project and validation project?
+
+We have separate projects for a several reasons.
+
+- **Security**: Previously, we had the mirror project only. However, to fully
+  mitigate a [security issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369898),
+  we had to make the mirror project private.
+- **Isolation**: We want to run JH code in a completely isolated and standalone project.
+  We should not run it under the `gitlab-org` group, which is where the mirror
+  project is. The validation project is completely isolated.
+- **Cost**: We don't want to connect to JiHuLab.com from each merge request.
+  It is more cost effective to mirror the code from JiHuLab.com to
+  somewhere at GitLab.com, and have our merge requests fetch code from there.
+  This means that the validation project can fetch code from the mirror, rather
+  than from JiHuLab.com. The mirror project will periodically fetch from
+  JiHuLab.com.
+- **Branch separation/security/efficiency**: We want to mirror all branches,
+  so that we can fetch the corresponding JH branch from JiHuLab.com. However,
+  we don't want to overwrite the `as-if-jh-code-sync` branch in the validation project,
+  because we use it to control the validation pipeline and it has access to
+  `AS_IF_JH_TOKEN`. However, we cannot mirror all branches except a single
+  one. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/413032) for details.
+
+  Given this issue, the validation project is set to only mirror `master` and
+  `main-jh`. Technically, we don't even need those branches, but we do want to
+  keep the repository up-to-date with all the default branches so that when
+  we push changes from the merge request, we only need to push changes from
+  the merge request, which can be more efficient.
+
+- Separation of concerns:
+  - Validation project only has the following branches:
+    - `master` and `main-jh` to keep changes up-to-date.
+    - `as-if-jh-code-sync` for dependency synchronization.
+      We should never mirror this.
+    - `as-if-jh/*` branches from the merge requests.
+      We should never mirror these.
+  - All branches from the mirror project are all coming from JiHuLab.com.
+    We never push anything to the mirror project, nor does it run any
+    pipelines. CI/CD is disabled in the mirror project.
+
+We can consider merging the two projects to simplify the
+setup and process, but we need to make sure that all of these reasons
+are no longer concerns.
 
 ### `rspec:undercoverage` job
 
@@ -581,22 +625,22 @@ This should let us:
 
 ### PostgreSQL versions testing
 
-Our test suite runs against PG13 as GitLab.com runs on PG13 and
-[Omnibus defaults to PG13 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
+Our test suite runs against PostgreSQL 14 as GitLab.com runs on PostgreSQL 14 and
+[Omnibus defaults to PG14 for new installs and upgrades](../../administration/package_information/postgresql_versions.md).
 
-We do run our test suite against PG13 on nightly scheduled pipelines.
+We do run our test suite against PostgreSQL 14 on nightly scheduled pipelines.
 
-We also run our test suite against PG13 upon specific database library changes in MRs and `main` pipelines (with the `rspec db-library-code pg13` job).
+We also run our test suite against PostgreSQL 12 and PostgreSQL 13 upon specific database library changes in merge requests and `main` pipelines (with the `rspec db-library-code pg12` and `rspec db-library-code pg13` jobs).
 
 #### Current versions testing
 
 | Where?                                                                                         | PostgreSQL version                              | Ruby version          |
 |------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
-| Merge requests                                                                                 | 13 (default version), 12 for DB library changes | 3.0 (default version) |
-| `master` branch commits                                                                        | 13 (default version), 12 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 13 (default version), 12 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 13 (default version), 12 for DB library changes | 2.7                   |
-| `nightly` scheduled pipelines for the `master` branch                                          | 13 (default version), 12, 14 | 3.0 (default version) |
+| Merge requests                                                                                 | 14 (default version), 13 for DB library changes | 3.0 (default version) |
+| `master` branch commits                                                                        | 14 (default version), 13 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)           | 14 (default version), 13 for DB library changes | 3.0 (default version) |
+| `maintenance` scheduled pipelines for the `ruby2` branch (every odd-numbered hour), see below. | 14 (default version), 13 for DB library changes | 2.7                   |
+| `nightly` scheduled pipelines for the `master` branch                                          | 14 (default version), 12, 13, 15                | 3.0 (default version) |
 
 There are 2 pipeline schedules used for testing Ruby 2.7. One is triggering a
 pipeline in `ruby2-sync` branch, which updates the `ruby2` branch with latest

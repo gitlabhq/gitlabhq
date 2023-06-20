@@ -23,11 +23,9 @@ The following table lists examples with step-by-step tutorials that are containe
 
 | Use case                      | Resource |
 |-------------------------------|----------|
-| Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../testing/browser_performance_testing.md). |
 | Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/index.md). |
 | GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
 | End-to-end testing            | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md). |
-| Load performance testing      | [Load Performance Testing with the k6 container](../testing/load_performance_testing.md). |
 | Multi project pipeline        | [Build, test deploy using multi project pipeline](https://gitlab.com/gitlab-examples/upstream-project). |
 | npm with semantic-release     | [Publish npm packages to the GitLab Package Registry using semantic-release](semantic-release.md). |
 | PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md). |

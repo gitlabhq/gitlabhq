@@ -12,7 +12,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
 
   before do
     # Disabled in spec_helper by default thus we need to enable it here.
-    stub_feature_flags(use_click_house_database_for_error_tracking: true)
+    stub_feature_flags(gitlab_error_tracking: true)
   end
 
   shared_examples 'exception logging' do
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
         it 'returns detailed error' do
           is_expected.to have_attributes(
             id: error.fingerprint.to_s,
-            title: error.name,
+            title: "#{error.name}: #{error.description}",
             message: error.description,
             culprit: error.actor,
             first_seen: error.first_seen_at.to_s,
@@ -97,8 +97,41 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
             tags: { level: nil, logger: nil },
             external_url: "http://localhost/#{project.full_path}/-/error_tracking/#{error.fingerprint}/details",
             external_base_url: "http://localhost/#{project.full_path}",
-            integrated: true
+            integrated: true,
+            frequency: [[1, 2], [3, 4]]
           )
+        end
+
+        context 'with missing stats' do
+          let(:error) { build(:error_tracking_open_api_error, project_id: project.id, stats: nil) }
+
+          it 'returns empty frequency' do
+            is_expected.to have_attributes(
+              frequency: []
+            )
+          end
+        end
+
+        context 'with missing frequency' do
+          let(:empty_freq) { build(:error_tracking_open_api_error_stats, { frequency: nil }) }
+          let(:error) { build(:error_tracking_open_api_error, project_id: project.id, stats: empty_freq) }
+
+          it 'returns empty frequency' do
+            is_expected.to have_attributes(
+              frequency: []
+            )
+          end
+        end
+
+        context 'with missing frequency data' do
+          let(:empty_freq) { build(:error_tracking_open_api_error_stats, { frequency: {} }) }
+          let(:error) { build(:error_tracking_open_api_error, project_id: project.id, stats: empty_freq) }
+
+          it 'returns empty frequency' do
+            is_expected.to have_attributes(
+              frequency: []
+            )
+          end
         end
 
         it 'returns no first and last release version' do
@@ -187,14 +220,15 @@ RSpec.describe Gitlab::ErrorTracking::ErrorRepository::OpenApiStrategy do
         expect(result_errors).to all(
           have_attributes(
             id: error.fingerprint.to_s,
-            title: error.name,
+            title: "#{error.name}: #{error.description}",
             message: error.description,
             culprit: error.actor,
             first_seen: error.first_seen_at,
             last_seen: error.last_seen_at,
             status: error.status,
             count: error.event_count,
-            user_count: error.approximated_user_count
+            user_count: error.approximated_user_count,
+            frequency: [[1, 2], [3, 4]]
           ))
       end
 

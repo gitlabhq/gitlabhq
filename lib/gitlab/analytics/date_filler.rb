@@ -32,7 +32,7 @@ module Gitlab
     # End date of the range
     #
     # **period**
-    # Specifies the period in wich the dates should be generated. Options:
+    # Specifies the period in which the dates should be generated. Options:
     #
     # - :day, generate date-value pair for each day in the given period
     # - :week, generate date-value pair for each week (beginning of the week date)

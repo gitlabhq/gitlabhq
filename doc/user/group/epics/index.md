@@ -19,6 +19,13 @@ Use epics:
 - To track when the work for the group of issues is targeted to begin and end.
 - To discuss and collaborate on feature ideas and scope at a high level.
 
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=kdE-yb6Puuo">GitLab Epics - Setting up your Organization with GitLab</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/kdE-yb6Puuo" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
 ## Relationships between epics and issues
 
 The possible relationships between epics and issues are:

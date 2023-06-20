@@ -1,4 +1,4 @@
 - if Feature.disabled?(:restyle_login_page, @project)
   .omniauth-divider.gl-display-flex.gl-align-items-center
     = _("or")
-= render 'devise/shared/signup_omniauth_provider_list', providers: enabled_button_based_providers
+= render 'devise/shared/signup_omniauth_provider_list', providers: enabled_button_based_providers, tracking_label: "free_registration"

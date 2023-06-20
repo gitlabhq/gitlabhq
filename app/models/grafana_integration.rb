@@ -11,8 +11,8 @@ class GrafanaIntegration < ApplicationRecord
   before_validation :check_token_changes
 
   validates :grafana_url,
-            length: { maximum: 1024 },
-            addressable_url: { enforce_sanitization: true, ascii_only: true }
+    length: { maximum: 1024 },
+    addressable_url: { enforce_sanitization: true, ascii_only: true }
 
   validates :encrypted_token, :project, presence: true
 

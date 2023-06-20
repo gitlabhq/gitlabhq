@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class Absence < Grape::Validations::Base
+      class Absence < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
           return if params.respond_to?(:key?) && !params.key?(attr_name)
 

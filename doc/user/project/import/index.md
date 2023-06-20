@@ -18,7 +18,7 @@ For any type of source and target, you can migrate GitLab projects:
 
 - When [migrating groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended),
   which allows you to migrate all projects in a group simultaneously. Migrating projects by direct transfer is in
-  [Beta](../../../policy/alpha-beta-support.md#beta). The feature is not ready for production use.
+  [Beta](../../../policy/experiment-beta-support.md#beta). The feature is not ready for production use.
 - Using [file exports](../settings/import_export.md). With this method you can migrate projects one by one. No network
   connection between instances is required.
 
@@ -26,7 +26,7 @@ If you only need to migrate Git repositories, you can [import each project by UR
 import issues and merge requests this way. To retain metadata like issues and merge requests, either:
 
 - [Migrate projects with groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
-  This feature is in [Beta](../../../policy/alpha-beta-support.md#beta). It is not ready for production use.
+  This feature is in [Beta](../../../policy/experiment-beta-support.md#beta). It is not ready for production use.
 - Use [file exports](../settings/import_export.md) to import projects.
 
 Keep in mind the limitations of [migrating using file exports](../settings/import_export.md#items-that-are-exported).
@@ -41,8 +41,9 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 
 GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Import sources**.
 1. Clear checkboxes for importers that are not required.
@@ -113,8 +114,7 @@ You can view all project imports created by you. This list includes the followin
 To view project import history:
 
 1. Sign in to GitLab.
-1. On the top bar, select **Create new...** (**{plus-square}**).
-1. Select **New project/repository**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.

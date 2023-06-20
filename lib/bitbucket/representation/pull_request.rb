@@ -4,7 +4,7 @@ module Bitbucket
   module Representation
     class PullRequest < Representation::Base
       def author
-        raw.fetch('author', {}).fetch('nickname', nil)
+        raw.dig('author', 'nickname')
       end
 
       def description
@@ -39,19 +39,19 @@ module Bitbucket
       end
 
       def source_branch_name
-        source_branch.fetch('branch', {}).fetch('name', nil)
+        source_branch.dig('branch', 'name')
       end
 
       def source_branch_sha
-        source_branch.fetch('commit', {}).fetch('hash', nil)
+        source_branch.dig('commit', 'hash')
       end
 
       def target_branch_name
-        target_branch.fetch('branch', {}).fetch('name', nil)
+        target_branch.dig('branch', 'name')
       end
 
       def target_branch_sha
-        target_branch.fetch('commit', {}).fetch('hash', nil)
+        target_branch.dig('commit', 'hash')
       end
 
       private

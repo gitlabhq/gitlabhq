@@ -7,7 +7,7 @@ RSpec.describe Packages::Debian::ProcessChangesService, feature_category: :packa
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:distribution) { create(:debian_project_distribution, :with_file, suite: 'unstable') }
 
-    let!(:incoming) { create(:debian_incoming, project: distribution.project) }
+    let!(:incoming) { create(:debian_incoming, project: distribution.project, with_changes_file: true) }
 
     let(:package_file) { incoming.package_files.with_file_name('sample_1.2.3~alpha2_amd64.changes').first }
 

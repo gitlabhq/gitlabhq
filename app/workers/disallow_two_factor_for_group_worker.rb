@@ -8,7 +8,7 @@ class DisallowTwoFactorForGroupWorker
   sidekiq_options retry: 3
   include ExceptionBacktrace
 
-  feature_category :subgroups
+  feature_category :groups_and_projects
   idempotent!
 
   def perform(group_id)

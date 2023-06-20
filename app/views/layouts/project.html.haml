@@ -10,6 +10,7 @@
 - content_for :flash_message do
   = dispensable_render_if_exists "projects/storage_enforcement_alert", context: @project
   = dispensable_render_if_exists "shared/namespace_storage_limit_alert", context: @project
+  = dispensable_render_if_exists "shared/namespace_combined_storage_users_alert", context: @project
 
 - content_for :project_javascripts do
   - project = @target_project || @project
@@ -22,6 +23,8 @@
   = render 'projects/invite_members_modal', project: @project
 
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"
+= dispensable_render_if_exists "projects/code_suggestions_alert", project: @project
+= dispensable_render_if_exists "projects/code_suggestions_third_party_alert", project: @project
 = dispensable_render_if_exists "projects/free_user_cap_alert", project: @project
 = dispensable_render_if_exists 'shared/unlimited_members_during_trial_alert', resource: @project
 

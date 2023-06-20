@@ -69,7 +69,8 @@ You can view audit events from user actions across an entire GitLab instance.
 
 To view instance audit events:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 
 ### Export to CSV
@@ -80,7 +81,8 @@ To view instance audit events:
 You can export the current view (including filters) of your instance audit events as a CSV file. To export the instance
 audit events to CSV:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. Select the available search [filters](#filter-audit-events).
 1. Select **Export as CSV**.
@@ -393,6 +395,8 @@ The following user actions on a GitLab instance generate instance audit events:
 - User was unblocked using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115727) in GitLab 15.11.
 - User was banned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103) in GitLab 15.11.
 - User was unbanned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116221) in GitLab 15.11.
+- User was deactivated using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117776) in GitLab 16.0.
+- User was activated using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121708) in GitLab 16.1.
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 

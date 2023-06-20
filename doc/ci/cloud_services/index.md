@@ -38,8 +38,7 @@ ID tokens support cloud providers with OIDC, including:
 NOTE:
 Configuring OIDC enables JWT token access to the target environments for all pipelines.
 When you configure OIDC for a pipeline, you should complete a software supply chain security
-review for the pipeline, focusing on the additional access. You can use the [software supply chain security awareness assessment](https://about.gitlab.com/quiz/software-supply-chain-security/)
-as a starting point, and for more information about supply chain attacks, see
+review for the pipeline, focusing on the additional access. For more information about supply chain attacks, see
 [How a DevOps Platform helps protect against supply chain attacks](https://about.gitlab.com/blog/2021/04/28/devops-platform-supply-chain-attacks/).
 
 ## Use cases

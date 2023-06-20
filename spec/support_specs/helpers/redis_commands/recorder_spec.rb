@@ -8,6 +8,12 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
   let(:cache) { Rails.cache }
   let(:pattern) { nil }
 
+  before do
+    # do not need to test for positive case since this is testing
+    # a spec support class
+    stub_feature_flags(use_primary_and_secondary_stores_for_cache: false)
+  end
+
   describe '#initialize' do
     context 'with a block' do
       it 'records Redis commands' do
@@ -35,7 +41,7 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
         cache.delete('key1')
       end
 
-      expect(recorder.log).to include([:set, 'cache:gitlab:key1', anything])
+      expect(recorder.log).to include([:set, 'cache:gitlab:key1', anything, anything, anything])
       expect(recorder.log).to include([:get, 'cache:gitlab:key1'])
       expect(recorder.log).to include([:get, 'cache:gitlab:key2'])
       expect(recorder.log).to include([:del, 'cache:gitlab:key1'])
@@ -91,7 +97,7 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
         cache.delete('key2')
       end
 
-      expect(recorder.log).to include([:set, 'cache:gitlab:key1', anything])
+      expect(recorder.log).to include([:set, 'cache:gitlab:key1', anything, anything, anything])
       expect(recorder.log).to include([:get, 'cache:gitlab:key1'])
       expect(recorder.log).not_to include([:get, 'cache:gitlab:key2'])
       expect(recorder.log).not_to include([:del, 'cache:gitlab:key2'])

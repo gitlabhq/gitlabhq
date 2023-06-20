@@ -1,14 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAlert } from '@gitlab/ui';
 import AbuseReportApp from '~/admin/abuse_report/components/abuse_report_app.vue';
 import ReportHeader from '~/admin/abuse_report/components/report_header.vue';
 import UserDetails from '~/admin/abuse_report/components/user_details.vue';
 import ReportedContent from '~/admin/abuse_report/components/reported_content.vue';
 import HistoryItems from '~/admin/abuse_report/components/history_items.vue';
+import { SUCCESS_ALERT } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
 describe('AbuseReportApp', () => {
   let wrapper;
 
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findReportHeader = () => wrapper.findComponent(ReportHeader);
   const findUserDetails = () => wrapper.findComponent(UserDetails);
   const findReportedContent = () => wrapper.findComponent(ReportedContent);
@@ -27,10 +30,44 @@ describe('AbuseReportApp', () => {
     createComponent();
   });
 
+  it('does not show the alert by default', () => {
+    expect(findAlert().exists()).toBe(false);
+  });
+
+  describe('when emitting the showAlert event from the report header', () => {
+    const message = 'alert message';
+
+    beforeEach(() => {
+      findReportHeader().vm.$emit('showAlert', SUCCESS_ALERT, message);
+    });
+
+    it('shows the alert', () => {
+      expect(findAlert().exists()).toBe(true);
+    });
+
+    it('displays the message', () => {
+      expect(findAlert().text()).toBe(message);
+    });
+
+    it('sets the variant property', () => {
+      expect(findAlert().props('variant')).toBe(SUCCESS_ALERT);
+    });
+
+    describe('when dismissing the alert', () => {
+      beforeEach(() => {
+        findAlert().vm.$emit('dismiss');
+      });
+
+      it('hides the alert', () => {
+        expect(findAlert().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('ReportHeader', () => {
     it('renders ReportHeader', () => {
       expect(findReportHeader().props('user')).toBe(mockAbuseReport.user);
-      expect(findReportHeader().props('actions')).toBe(mockAbuseReport.actions);
+      expect(findReportHeader().props('report')).toBe(mockAbuseReport.report);
     });
 
     describe('when no user is present', () => {

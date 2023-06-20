@@ -11,12 +11,12 @@ class RemoteMirror < ApplicationRecord
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
 
   attr_encrypted :credentials,
-                 key: Settings.attr_encrypted_db_key_base,
-                 marshal: true,
-                 encode: true,
-                 mode: :per_attribute_iv_and_salt,
-                 insecure_mode: true,
-                 algorithm: 'aes-256-cbc'
+    key: Settings.attr_encrypted_db_key_base,
+    marshal: true,
+    encode: true,
+    mode: :per_attribute_iv_and_salt,
+    insecure_mode: true,
+    algorithm: 'aes-256-cbc'
 
   belongs_to :project, inverse_of: :remote_mirrors
 
@@ -31,10 +31,8 @@ class RemoteMirror < ApplicationRecord
 
   scope :stuck, -> do
     started
-      .where('(last_update_started_at < ? AND last_update_at IS NOT NULL)',
-             MAX_INCREMENTAL_RUNTIME.ago)
-      .or(where('(last_update_started_at < ? AND last_update_at IS NULL)',
-                MAX_FIRST_RUNTIME.ago))
+      .where('(last_update_started_at < ? AND last_update_at IS NOT NULL)', MAX_INCREMENTAL_RUNTIME.ago)
+      .or(where('(last_update_started_at < ? AND last_update_at IS NULL)', MAX_FIRST_RUNTIME.ago))
   end
 
   state_machine :update_status, initial: :none do

@@ -27,7 +27,7 @@ A database review is required for:
   database review.
 - Changes in Service Data metrics that use `count`, `distinct_count`, `estimate_batch_distinct_count` and `sum`.
   These metrics could have complex queries over large tables.
-  See the [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
+  See the [Analytics Instrumentation Guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
   for implementation details.
 
 A database reviewer is expected to look out for overly complex

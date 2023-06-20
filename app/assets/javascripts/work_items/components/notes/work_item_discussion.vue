@@ -164,12 +164,7 @@ export default {
     @reportAbuse="$emit('reportAbuse', note)"
     @error="$emit('error', $event)"
   />
-  <timeline-entry-item
-    v-else
-    :class="{ 'internal-note': note.internal }"
-    :data-note-id="noteId"
-    class="note note-discussion gl-px-0"
-  >
+  <timeline-entry-item v-else :data-note-id="noteId" class="note note-discussion gl-px-0">
     <div class="timeline-content">
       <div class="discussion">
         <div class="discussion-body">
@@ -222,7 +217,11 @@ export default {
                         @error="$emit('error', $event)"
                       />
                     </template>
-                    <work-item-note-replying v-if="isReplying" :body="replyingText" />
+                    <work-item-note-replying
+                      v-if="isReplying"
+                      :is-internal-note="note.internal"
+                      :body="replyingText"
+                    />
                     <work-item-add-note
                       v-if="shouldShowReplyForm"
                       :notes-form="false"
@@ -235,6 +234,7 @@ export default {
                       :add-padding="true"
                       :autocomplete-data-sources="autocompleteDataSources"
                       :markdown-preview-path="markdownPreviewPath"
+                      :is-internal-thread="note.internal"
                       @startReplying="showReplyForm"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"

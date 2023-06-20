@@ -1,0 +1,22 @@
+---
+development:
+  chat:
+    cluster:
+      - redis://localhost:7001
+  cluster_cache:
+    cluster:
+      - redis://localhost:7001
+  rate_limiting:
+    cluster:
+      - redis://localhost:7001
+
+test:
+  chat:
+    cluster:
+      - redis://localhost:7001
+  cluster_cache:
+    cluster:
+      - redis://localhost:7001
+  rate_limiting:
+    cluster:
+      - redis://localhost:7001

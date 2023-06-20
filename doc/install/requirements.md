@@ -8,12 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This page includes information about the minimum requirements you need to install and use GitLab.
 
-## Software requirements
-
-### Redis versions
-
-GitLab 16.0 and later requires Redis 6.0 or later.
-
 ## Hardware requirements
 
 ### Storage
@@ -161,10 +155,10 @@ of GitLab Support or other GitLab engineers.
 ## Puma settings
 
 The recommended settings for Puma are determined by the infrastructure on which it's running.
-The GitLab Linux package defaults to the recommended Puma settings. Regardless of installation method, you can
+The Linux package defaults to the recommended Puma settings. Regardless of installation method, you can
 tune the Puma settings:
 
-- If you're using the GitLab Linux package, see [Puma settings](../administration/operations/puma.md)
+- If you're using the Linux package, see [Puma settings](../administration/operations/puma.md)
   for instructions on changing the Puma settings.
 - If you're using the GitLab Helm chart, see the
   [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
@@ -248,11 +242,19 @@ By default, each Puma worker is limited to 1.2 GB of memory.
 You can [adjust this memory setting](../administration/operations/puma.md#reducing-memory-use) and should do so
 if you must increase the number of Puma workers.
 
-## Redis and Sidekiq
+## Redis
 
 Redis stores all user sessions and the background task queue.
-The storage requirements for Redis are minimal, about 25 kB per user.
-Sidekiq processes the background jobs with a multi-threaded process.
+
+The requirements for Redis are as follows:
+
+- Redis 6.0 is required from GitLab 16.0 and later.
+- Redis Cluster mode is not supported. Redis Standalone must be used.
+- Storage requirements for Redis are minimal, about 25 kB per user on average.
+
+## Sidekiq
+
+Sidekiq processes the background jobs with a multithreaded process.
 This process starts with the entire Rails stack (200 MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 billable users) the Sidekiq process can use 1 GB+ of memory.
 

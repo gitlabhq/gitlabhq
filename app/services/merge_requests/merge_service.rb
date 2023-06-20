@@ -160,7 +160,7 @@ module MergeRequests
     end
 
     def handle_merge_error(log_message:, save_message_on_model: false)
-      log_error("MergeService ERROR: #{merge_request_info} - #{log_message}")
+      log_error("MergeService ERROR: #{merge_request_info}:#{merge_status} - #{log_message}")
       @merge_request.update(merge_error: log_message) if save_message_on_model
     end
 
@@ -184,6 +184,10 @@ module MergeRequests
 
     def merge_request_info
       @merge_request_info ||= merge_request.to_reference(full: true)
+    end
+
+    def merge_status
+      @merge_status ||= @merge_request.merge_status
     end
 
     def source_matches?

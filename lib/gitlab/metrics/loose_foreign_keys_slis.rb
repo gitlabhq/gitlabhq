@@ -26,7 +26,7 @@ module Gitlab
         private
 
         def possible_labels
-          ::Gitlab::Database.db_config_names.map do |db_config_name|
+          ::Gitlab::Database.db_config_names(with_schema: :gitlab_shared).map do |db_config_name|
             {
               db_config_name: db_config_name,
               feature_category: :database

@@ -65,7 +65,7 @@ export default {
     :search-results="searchResults"
   >
     <template #view-all-items>
-      <nav-item v-bind="viewAllProps" />
+      <nav-item v-bind="viewAllProps" is-subitem />
     </template>
   </search-results>
   <frequent-items-list
@@ -76,7 +76,7 @@ export default {
     :pristine-text="$options.i18n.pristineText"
   >
     <template #view-all-items>
-      <nav-item v-bind="viewAllProps" />
+      <nav-item v-bind="viewAllProps" is-subitem />
     </template>
   </frequent-items-list>
 </template>

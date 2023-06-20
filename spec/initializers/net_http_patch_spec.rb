@@ -11,7 +11,7 @@ RSpec.describe 'Net::HTTP patch proxy user and password encoding' do
   before do
     # This file can be removed once Ruby 3.0 is no longer supported:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/396223
-    skip if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new(3.1)
+    skip if Gem::Version.new(Net::HTTP::VERSION) >= Gem::Version.new('0.2.0')
   end
 
   describe '#proxy_user' do

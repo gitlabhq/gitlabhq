@@ -77,8 +77,10 @@ RSpec.describe Onboarding::Progress do
 
     describe '.completed_actions_with_latest_in_range' do
       subject do
-        described_class.completed_actions_with_latest_in_range(actions,
-                                                               1.day.ago.beginning_of_day..1.day.ago.end_of_day)
+        described_class.completed_actions_with_latest_in_range(
+          actions,
+          1.day.ago.beginning_of_day..1.day.ago.end_of_day
+        )
       end
 
       let!(:one_action_completed_in_range_one_action_incompleted) do

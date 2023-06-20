@@ -42,12 +42,9 @@ module Gitlab
         clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
-          usage_data_metrics
+          { recorded_at: recorded_at }
+            .merge(usage_data_metrics)
         end
-      end
-
-      def license_usage_data
-        { recorded_at: recorded_at }
       end
 
       def recorded_at
@@ -70,9 +67,6 @@ module Gitlab
             auto_devops_disabled: count(::ProjectAutoDevops.disabled),
             deploy_keys: count(DeployKey),
             # rubocop: disable UsageData/LargeTable:
-            deployments: deployment_count(Deployment),
-            successful_deployments: deployment_count(Deployment.success),
-            failed_deployments: deployment_count(Deployment.failed),
             feature_flags: count(Operations::FeatureFlag),
             # rubocop: enable UsageData/LargeTable:
             environments: count(::Environment),
@@ -101,7 +95,7 @@ module Gitlab
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
             issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
             issues_created_from_alerts: total_alert_issues,
-            incident_issues: count(::Issue.incident, start: minimum_id(Issue), finish: maximum_id(Issue)),
+            incident_issues: count(::Issue.with_issue_type(:incident), start: minimum_id(Issue), finish: maximum_id(Issue)),
             alert_bot_incident_issues: count(::Issue.authored(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
             label_lists: count(List.label),
@@ -113,11 +107,10 @@ module Gitlab
             pages_domains: count(PagesDomain),
             pool_repositories: count(PoolRepository),
             projects: count(Project),
-            projects_creating_incidents: distinct_count(Issue.incident, :project_id),
+            projects_creating_incidents: distinct_count(Issue.with_issue_type(:incident), :project_id),
             projects_imported_from_github: count(Project.where(import_type: 'github')),
             projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             projects_with_error_tracking_enabled: count(::ErrorTracking::ProjectErrorTrackingSetting.where(enabled: true)),
-            projects_with_alerts_created: distinct_count(::AlertManagement::Alert, :project_id),
             projects_with_enabled_alert_integrations: distinct_count(::AlertManagement::HttpIntegration.active, :project_id),
             projects_with_terraform_reports: distinct_count(::Ci::JobArtifact.of_report_type(:terraform), :project_id),
             projects_with_terraform_states: distinct_count(::Terraform::State, :project_id),
@@ -125,8 +118,6 @@ module Gitlab
             protected_branches_except_default: count(ProtectedBranch.where.not(name: ['main', 'master', Gitlab::CurrentSettings.default_branch_name])),
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
-            personal_snippets: count(PersonalSnippet),
-            project_snippets: count(ProjectSnippet),
             suggestions: count(Suggestion),
             terraform_reports: count(::Ci::JobArtifact.of_report_type(:terraform)),
             terraform_states: count(::Terraform::State),
@@ -140,9 +131,7 @@ module Gitlab
             integrations_usage,
             user_preferences_usage,
             service_desk_counts
-          ).tap do |data|
-            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
-          end
+          )
         }
       end
       # rubocop: enable Metrics/AbcSize
@@ -150,19 +139,9 @@ module Gitlab
       def system_usage_data_monthly
         {
           counts_monthly: {
-            # rubocop: disable UsageData/LargeTable:
-            deployments: deployment_count(Deployment.where(monthly_time_range_db_params)),
-            successful_deployments: deployment_count(Deployment.success.where(monthly_time_range_db_params)),
-            failed_deployments: deployment_count(Deployment.failed.where(monthly_time_range_db_params)),
-            # rubocop: enable UsageData/LargeTable:
             projects: count(Project.where(monthly_time_range_db_params), start: minimum_id(Project), finish: maximum_id(Project)),
-            packages: count(::Packages::Package.where(monthly_time_range_db_params)),
-            personal_snippets: count(PersonalSnippet.where(monthly_time_range_db_params)),
-            project_snippets: count(ProjectSnippet.where(monthly_time_range_db_params)),
-            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id)
-          }.tap do |data|
-            data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
-          end
+            packages: count(::Packages::Package.where(monthly_time_range_db_params))
+          }
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -372,7 +351,6 @@ module Gitlab
             package: usage_activity_by_stage_package(time_period),
             plan: usage_activity_by_stage_plan(time_period),
             release: usage_activity_by_stage_release(time_period),
-            secure: usage_activity_by_stage_secure(time_period),
             verify: usage_activity_by_stage_verify(time_period)
           }
         }
@@ -450,8 +428,11 @@ module Gitlab
                                                         start: minimum_id(User),
                                                         finish: maximum_id(User)),
           projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id),
-          projects_with_incidents: distinct_count(::Issue.incident.where(time_period), :project_id),
-          projects_with_alert_incidents: distinct_count(::Issue.incident.with_alert_management_alerts.where(time_period), :project_id),
+          projects_with_incidents: distinct_count(::Issue.with_issue_type(:incident).where(time_period), :project_id),
+          # We are making an assumption here that all alert_management_alerts are associated with an issue of type
+          # incident. In reality this is very close to the truth and allows more efficient queries.
+          # More info in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121297#note_1416999956
+          projects_with_alert_incidents: distinct_count(::AlertManagement::Alert.where(time_period).where.not(issue_id: nil), :project_id),
           projects_with_enabled_alert_integrations_histogram: integrations_histogram
         }.compact
       end
@@ -514,13 +495,6 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      # Currently too complicated and to get reliable counts for these stats:
-      # container_scanning_jobs, dast_jobs, dependency_scanning_jobs, license_management_jobs, sast_jobs, secret_detection_jobs
-      # Once https://gitlab.com/gitlab-org/gitlab/merge_requests/17568 is merged, this might be doable
-      def usage_activity_by_stage_secure(time_period)
-        {}
-      end
-
       def with_metadata
         result = nil
         error = nil
@@ -552,8 +526,7 @@ module Gitlab
       end
 
       def usage_data_metrics
-        license_usage_data
-          .merge(system_usage_data_license)
+        system_usage_data_license
           .merge(system_usage_data_settings)
           .merge(system_usage_data)
           .merge(system_usage_data_monthly)
@@ -635,10 +608,6 @@ module Gitlab
       # no internal details leak via usage ping.
       def filtered_omniauth_provider_names
         omniauth_provider_names.reject { |name| name.starts_with?('ldap') }
-      end
-
-      def deployment_count(relation)
-        count relation, start: minimum_id(Deployment), finish: maximum_id(Deployment)
       end
 
       def project_imports(time_period)

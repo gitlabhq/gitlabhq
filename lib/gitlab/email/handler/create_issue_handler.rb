@@ -68,7 +68,7 @@ module Gitlab
               title: mail.subject,
               description: message_including_reply_or_only_quotes
             },
-            spam_params: nil
+            perform_spam_check: false
           ).execute
         end
 

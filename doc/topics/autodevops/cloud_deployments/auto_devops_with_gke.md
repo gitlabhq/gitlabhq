@@ -62,8 +62,7 @@ those projects provide a bare-bones application built on some well-known framewo
 WARNING:
 Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
 
-1. On the top bar in GitLab, select the plus icon (**{plus-square}**), and select
-   **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Ruby on Rails** template.
 1. Give your project a name, optionally a description, and make it public so that
@@ -137,8 +136,8 @@ While Auto DevOps is enabled by default, Auto DevOps can be disabled at both
 the instance level (for self-managed instances) and the group level. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. On the top bar, select **Main menu > Projects** and find the application project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the application project.
+1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
 1. In **Deployment strategy**, select your desired [continuous deployment strategy](../requirements.md#auto-devops-deployment-strategy)

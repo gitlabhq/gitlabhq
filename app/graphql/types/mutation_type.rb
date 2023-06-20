@@ -9,6 +9,7 @@ module Types
     mount_mutation Mutations::Achievements::Award, alpha: { milestone: '15.10' }
     mount_mutation Mutations::Achievements::Create, alpha: { milestone: '15.8' }
     mount_mutation Mutations::Achievements::Delete, alpha: { milestone: '15.11' }
+    mount_mutation Mutations::Achievements::DeleteUserAchievement, alpha: { milestone: '16.1' }
     mount_mutation Mutations::Achievements::Revoke, alpha: { milestone: '15.10' }
     mount_mutation Mutations::Achievements::Update, alpha: { milestone: '15.11' }
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
@@ -52,7 +53,10 @@ module Types
     mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
     mount_mutation Mutations::DependencyProxy::GroupSettings::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
+    mount_mutation Mutations::Environments::Create
+    mount_mutation Mutations::Environments::Delete
     mount_mutation Mutations::Environments::Stop
+    mount_mutation Mutations::Environments::Update
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, alpha: { milestone: '15.6' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Update
@@ -139,11 +143,6 @@ module Types
     mount_mutation Mutations::Ci::PipelineSchedule::Play
     mount_mutation Mutations::Ci::PipelineSchedule::Create
     mount_mutation Mutations::Ci::PipelineSchedule::Update
-    mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
-      reason: :renamed,
-      replacement: 'ProjectCiCdSettingsUpdate',
-      milestone: '15.0'
-    }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
     mount_mutation Mutations::Ci::Job::ArtifactsDestroy
     mount_mutation Mutations::Ci::Job::Play
@@ -183,6 +182,7 @@ module Types
     mount_mutation Mutations::Pages::MarkOnboardingComplete
     mount_mutation Mutations::SavedReplies::Destroy
     mount_mutation Mutations::Uploads::Delete
+    mount_mutation Mutations::Users::SetNamespaceCommitEmail
   end
 end
 

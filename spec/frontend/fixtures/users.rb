@@ -2,18 +2,47 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Users (GraphQL fixtures)', feature_category: :user_profile do
-  describe GraphQL::Query, type: :request do
-    include ApiHelpers
-    include GraphqlHelpers
-    include JavaScriptFixturesHelpers
+RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
+  include JavaScriptFixturesHelpers
+  include ApiHelpers
 
-    let_it_be(:user) { create(:user) }
+  let_it_be(:followers) { create_list(:user, 5) }
+  let_it_be(:user) { create(:user, followers: followers) }
+
+  describe API::Users, '(JavaScript fixtures)', type: :request do
+    it 'api/users/followers/get.json' do
+      get api("/users/#{user.id}/followers", user)
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe UsersController, '(JavaScript fixtures)', type: :controller do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project_empty_repo, group: group) }
+
+    include_context 'with user contribution events'
+
+    before do
+      group.add_owner(user)
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    it 'controller/users/activity.json' do
+      get :activity, params: { username: user.username, limit: 50 }, format: :json
+
+      expect(response).to be_successful
+    end
+  end
+
+  describe GraphQL::Query, type: :request do
+    include GraphqlHelpers
 
     context 'for user achievements' do
       let_it_be(:group) { create(:group, :public) }
       let_it_be(:private_group) { create(:group, :private) }
-      let_it_be(:achievement1) { create(:achievement, namespace: group) }
+      let_it_be(:achievement1) { create(:achievement, namespace: group, name: 'Multiple') }
       let_it_be(:achievement2) { create(:achievement, namespace: group) }
       let_it_be(:achievement3) { create(:achievement, namespace: group) }
       let_it_be(:achievement_from_private_group) { create(:achievement, namespace: private_group) }
@@ -65,6 +94,7 @@ RSpec.describe 'Users (GraphQL fixtures)', feature_category: :user_profile do
         [achievement1, achievement2, achievement3, achievement_with_avatar_and_description].each do |achievement|
           create(:user_achievement, user: user, achievement: achievement)
         end
+        create(:user_achievement, user: user, achievement: achievement1)
 
         post_graphql(query, current_user: user, variables: { id: user.to_global_id })
 

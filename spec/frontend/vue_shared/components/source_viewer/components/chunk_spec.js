@@ -2,7 +2,27 @@ import { nextTick } from 'vue';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
-import { CHUNK_1, CHUNK_2 } from '../mock_data';
+import ChunkLine from '~/vue_shared/components/source_viewer/components/chunk_line.vue';
+import LineHighlighter from '~/blob/line_highlighter';
+
+const lineHighlighter = new LineHighlighter();
+jest.mock('~/blob/line_highlighter', () =>
+  jest.fn().mockReturnValue({
+    highlightHash: jest.fn(),
+  }),
+);
+
+const DEFAULT_PROPS = {
+  chunkIndex: 2,
+  isHighlighted: false,
+  content: '// Line 1 content \n // Line 2 content',
+  startingFrom: 140,
+  totalLines: 50,
+  language: 'javascript',
+  blamePath: 'blame/file.js',
+};
+
+const hash = '#L142';
 
 describe('Chunk component', () => {
   let wrapper;
@@ -10,12 +30,14 @@ describe('Chunk component', () => {
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(Chunk, {
-      propsData: { ...CHUNK_1, ...props },
+      mocks: { $route: { hash } },
+      propsData: { ...DEFAULT_PROPS, ...props },
     });
   };
 
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
-  const findLineNumbers = () => wrapper.findAllByTestId('line-numbers');
+  const findChunkLines = () => wrapper.findAllComponents(ChunkLine);
+  const findLineNumbers = () => wrapper.findAllByTestId('line-number');
   const findContent = () => wrapper.findByTestId('content');
 
   beforeEach(() => {
@@ -28,57 +50,72 @@ describe('Chunk component', () => {
       expect(findIntersectionObserver().exists()).toBe(true);
     });
 
-    it('renders highlighted content if appear event is emitted', async () => {
-      createComponent({ chunkIndex: 1, isHighlighted: false });
+    it('emits an appear event when intersection-observer appears', () => {
       findIntersectionObserver().vm.$emit('appear');
 
-      await nextTick();
+      expect(wrapper.emitted('appear')).toEqual([[DEFAULT_PROPS.chunkIndex]]);
+    });
 
-      expect(findContent().exists()).toBe(true);
+    it('does not emit an appear event is isHighlighted is true', () => {
+      createComponent({ isHighlighted: true });
+      findIntersectionObserver().vm.$emit('appear');
+
+      expect(wrapper.emitted('appear')).toEqual(undefined);
     });
   });
 
   describe('rendering', () => {
-    it('does not register window.requestIdleCallback for the first chunk, renders content immediately', () => {
+    it('does not register window.requestIdleCallback if isFirstChunk prop is true, renders lines immediately', () => {
       jest.clearAllMocks();
+      createComponent({ isFirstChunk: true });
 
       expect(window.requestIdleCallback).not.toHaveBeenCalled();
-      expect(findContent().text()).toBe(CHUNK_1.highlightedContent);
+      expect(findContent().exists()).toBe(true);
     });
 
-    it('does not render content if browser is not in idle state', () => {
+    it('does not render a Chunk Line component if isHighlighted is false', () => {
+      expect(findChunkLines().length).toBe(0);
+    });
+
+    it('does not render simplified line numbers and content if browser is not in idle state', () => {
       idleCallbackSpy.mockRestore();
-      createComponent({ chunkIndex: 1, ...CHUNK_2 });
+      createComponent();
 
       expect(findLineNumbers()).toHaveLength(0);
       expect(findContent().exists()).toBe(false);
     });
 
-    describe('isHighlighted is false', () => {
-      beforeEach(() => createComponent(CHUNK_2));
+    it('renders simplified line numbers and content if isHighlighted is false', () => {
+      expect(findLineNumbers().length).toBe(DEFAULT_PROPS.totalLines);
 
-      it('does not render line numbers', () => {
-        expect(findLineNumbers()).toHaveLength(0);
-      });
+      expect(findLineNumbers().at(0).attributes('id')).toBe(`L${DEFAULT_PROPS.startingFrom + 1}`);
 
-      it('renders raw content', () => {
-        expect(findContent().text()).toBe(CHUNK_2.rawContent);
+      expect(findContent().text()).toBe(DEFAULT_PROPS.content);
+    });
+
+    it('renders Chunk Line components if isHighlighted is true', () => {
+      const splitContent = DEFAULT_PROPS.content.split('\n');
+      createComponent({ isHighlighted: true });
+
+      expect(findChunkLines().length).toBe(splitContent.length);
+
+      expect(findChunkLines().at(0).props()).toMatchObject({
+        number: DEFAULT_PROPS.startingFrom + 1,
+        content: splitContent[0],
+        language: DEFAULT_PROPS.language,
+        blamePath: DEFAULT_PROPS.blamePath,
       });
     });
 
-    describe('isHighlighted is true', () => {
-      beforeEach(() => createComponent({ ...CHUNK_2, isHighlighted: true }));
+    it('does not scroll to route hash if last chunk is not loaded', () => {
+      expect(LineHighlighter).not.toHaveBeenCalled();
+    });
 
-      it('renders line numbers', () => {
-        expect(findLineNumbers()).toHaveLength(CHUNK_2.totalLines);
-
-        // Opted for a snapshot test here since the output is simple and verifies native HTML elements
-        expect(findLineNumbers().at(0).element).toMatchSnapshot();
-      });
-
-      it('renders highlighted content', () => {
-        expect(findContent().text()).toBe(CHUNK_2.highlightedContent);
-      });
+    it('scrolls to route hash if last chunk is loaded', async () => {
+      createComponent({ totalChunks: DEFAULT_PROPS.chunkIndex + 1 });
+      await nextTick();
+      expect(LineHighlighter).toHaveBeenCalledWith({ scrollBehavior: 'auto' });
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
   });
 });

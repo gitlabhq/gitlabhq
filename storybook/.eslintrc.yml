@@ -1,0 +1,8 @@
+rules:
+  '@gitlab/require-i18n-strings': off
+  import/no-extraneous-dependencies: off
+  import/no-commonjs: off
+  import/no-nodejs-modules: off
+  filenames/match-regex: off
+  no-console: off
+  import/no-unresolved: off

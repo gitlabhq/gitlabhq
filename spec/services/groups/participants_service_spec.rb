@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::ParticipantsService, feature_category: :subgroups do
+RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projects do
   describe '#group_members' do
     let(:user) { create(:user) }
     let(:parent_group) { create(:group) }

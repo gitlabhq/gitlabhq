@@ -17,9 +17,9 @@ separately configured [Mattermost notifications](mattermost.md).
 GitLab provides different ways to configure Mattermost slash commands. For any of these options,
 you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/).
 
-- **Omnibus GitLab installations**: Mattermost is bundled with
-  [Omnibus GitLab](https://docs.gitlab.com/omnibus/). To configure Mattermost for Omnibus GitLab,
-  read the [Omnibus GitLab Mattermost documentation](../../../integration/mattermost/index.md).
+- **Linux package installations**: Mattermost is bundled with
+  [Linux package](https://docs.gitlab.com/omnibus/). To configure Mattermost for Linux package
+  installations, read the [Linux package Mattermost documentation](../../../integration/mattermost/index.md).
 - **If Mattermost is installed on the same server as GitLab**, use the
   [automated configuration](#configure-automatically).
 - **For all other installations**, use the [manual configuration](#configure-manually).
@@ -29,9 +29,9 @@ you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/pla
 If Mattermost is installed on the same server as GitLab,
 you can automatically configure Mattermost slash commands:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
-1. In **Add an integration**, select **Mattermost slash commands**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
+1. Select **Mattermost slash commands**.
 1. In **Enable integration**, ensure the **Active** checkbox is selected.
 1. Select **Add to Mattermost**, and select **Save changes**.
 
@@ -65,8 +65,9 @@ To get configuration values from GitLab:
 
 1. In a different browser tab, sign in to
    GitLab as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Integrations**.
 1. Select **Mattermost slash commands**. GitLab displays potential values for Mattermost settings.
 1. Copy the **Request URL** value. All other values are suggestions.
 1. Do not close this browser tab. You need it in a later step.
@@ -133,7 +134,7 @@ The available slash commands for Mattermost are:
 ## Related topics
 
 - [Mattermost slash commands](https://developers.mattermost.com/integrate/slash-commands/)
-- [Omnibus GitLab Mattermost](../../../integration/mattermost/index.md)
+- [Linux package Mattermost](../../../integration/mattermost/index.md)
 
 ## Troubleshooting
 

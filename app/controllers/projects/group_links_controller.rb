@@ -6,7 +6,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
   before_action :authorize_admin_project_group_link!, only: [:destroy]
   before_action :authorize_admin_project_member!, only: [:update]
 
-  feature_category :subgroups
+  feature_category :groups_and_projects
 
   def update
     Projects::GroupLinks::UpdateService.new(group_link, current_user).execute(group_link_params)

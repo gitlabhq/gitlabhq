@@ -31,6 +31,7 @@ import {
   MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION,
   MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION,
   MOCK_AGGREGATIONS,
+  MOCK_LABEL_AGGREGATIONS,
 } from '../mock_data';
 
 jest.mock('~/alert');
@@ -132,7 +133,7 @@ describe('Global Search Store Actions', () => {
 
     describe('when groupId is set', () => {
       it('calls Api.groupProjects with expected parameters', () => {
-        actions.fetchProjects({ commit: mockCommit, state }, undefined);
+        actions.fetchProjects({ commit: mockCommit, state }, MOCK_QUERY.search);
         expect(Api.groupProjects).toHaveBeenCalledWith(state.query.group_id, state.query.search, {
           order_by: 'similarity',
           include_subgroups: true,
@@ -301,11 +302,11 @@ describe('Global Search Store Actions', () => {
   });
 
   describe.each`
-    action                              | axiosMock                                                       | type         | expectedMutations                             | errorLogs
-    ${actions.fetchLanguageAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION} | ${0}
-    ${actions.fetchLanguageAggregation} | ${{ method: 'onPut', code: 0 }}                                 | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
-    ${actions.fetchLanguageAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
-  `('fetchLanguageAggregation', ({ action, axiosMock, type, expectedMutations, errorLogs }) => {
+    action                         | axiosMock                                                       | type         | expectedMutations                             | errorLogs
+    ${actions.fetchAllAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_OK }}                    | ${'success'} | ${MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION} | ${0}
+    ${actions.fetchAllAggregation} | ${{ method: 'onPut', code: 0 }}                                 | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
+    ${actions.fetchAllAggregation} | ${{ method: 'onGet', code: HTTP_STATUS_INTERNAL_SERVER_ERROR }} | ${'error'}   | ${MOCK_RECEIVE_AGGREGATIONS_ERROR_MUTATION}   | ${1}
+  `('fetchAllAggregation', ({ action, axiosMock, type, expectedMutations, errorLogs }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {
         if (axiosMock.method) {
@@ -345,6 +346,51 @@ describe('Global Search Store Actions', () => {
         [{ type: types.SET_QUERY, payload: { key: 'language', value: [] } }],
         [],
       );
+    });
+  });
+
+  describe('closeLabel', () => {
+    beforeEach(() => {
+      state = createState({
+        query: MOCK_QUERY,
+        aggregations: MOCK_LABEL_AGGREGATIONS,
+      });
+    });
+
+    it('removes correct labels from query and sets sidebar dirty', () => {
+      const expectedResult = [
+        {
+          payload: {
+            key: 'labels',
+            value: ['37'],
+          },
+          type: 'SET_QUERY',
+        },
+        {
+          payload: true,
+          type: 'SET_SIDEBAR_DIRTY',
+        },
+      ];
+      return testAction(actions.closeLabel, { key: '60' }, state, expectedResult, []);
+    });
+  });
+
+  describe('setLabelFilterSearch', () => {
+    beforeEach(() => {
+      state = createState({
+        query: MOCK_QUERY,
+        aggregations: MOCK_LABEL_AGGREGATIONS,
+      });
+    });
+
+    it('sets search string', () => {
+      const expectedResult = [
+        {
+          payload: 'test',
+          type: 'SET_LABEL_SEARCH_STRING',
+        },
+      ];
+      return testAction(actions.setLabelFilterSearch, { value: 'test' }, state, expectedResult, []);
     });
   });
 });

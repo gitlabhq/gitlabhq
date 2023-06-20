@@ -6,7 +6,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
   it { is_expected.to belong_to :namespace }
   it { is_expected.to have_one(:route).through(:namespace) }
 
-  it { is_expected.to delegate_method(:all_projects).to(:namespace) }
+  it { is_expected.to delegate_method(:all_projects_except_soft_deleted).to(:namespace) }
 
   context 'scopes' do
     describe '.for_namespace_ids' do
@@ -28,9 +28,10 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
     let(:project1) { create(:project, namespace: namespace) }
     let(:project2) { create(:project, namespace: namespace) }
+    let(:project3) { create(:project, namespace: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
 
     shared_examples 'project data refresh' do
-      it 'aggregates project statistics' do
+      it 'aggregates eligible project statistics' do
         root_storage_statistics.recalculate!
 
         root_storage_statistics.reload
@@ -97,6 +98,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
     context 'with project statistics' do
       let!(:project_stat1) { create(:project_statistics, project: project1, with_data: true, size_multiplier: 100) }
       let!(:project_stat2) { create(:project_statistics, project: project2, with_data: true, size_multiplier: 200) }
+      let!(:project_stat3) { create(:project_statistics, project: project3, with_data: true, size_multiplier: 300) }
 
       it_behaves_like 'project data refresh'
       it_behaves_like 'does not include personal snippets'
@@ -316,31 +318,6 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         root_storage_statistics.recalculate!
 
         expect(root_storage_statistics.reload.internal_forks_storage_size).to eq(0)
-      end
-
-      context 'when the feature flag is off' do
-        before do
-          stub_feature_flags(root_storage_statistics_calculate_forks: false)
-        end
-
-        it 'does not aggregate fork storage sizes' do
-          project = create_project(size_multiplier: 150)
-          create_fork(project, size_multiplier: 100)
-
-          root_storage_statistics.recalculate!
-
-          expect(root_storage_statistics.reload.private_forks_storage_size).to eq(0)
-        end
-
-        it 'aggregates fork sizes for enabled namespaces' do
-          stub_feature_flags(root_storage_statistics_calculate_forks: namespace)
-          project = create_project(size_multiplier: 150)
-          project_fork = create_fork(project, size_multiplier: 100)
-
-          root_storage_statistics.recalculate!
-
-          expect(root_storage_statistics.reload.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
-        end
       end
     end
   end

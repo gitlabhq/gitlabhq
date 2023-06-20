@@ -245,15 +245,15 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
         end
 
         it 'lists a project which is a direct descendant of the top-level group' do
-          expect(project_select_dropdown).to have_button("root project")
+          expect(project_select_dropdown).to have_selector("li", text: "root project")
         end
 
         it 'lists a project that belongs to a subgroup' do
-          expect(project_select_dropdown).to have_button("sub project1")
+          expect(project_select_dropdown).to have_selector("li", text: "sub project1")
         end
 
         it "does not list projects to which user doesn't have access" do
-          expect(project_select_dropdown).not_to have_button("sub project2")
+          expect(project_select_dropdown).not_to have_selector("li", text: "sub project2")
         end
       end
     end

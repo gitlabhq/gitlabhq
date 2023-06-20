@@ -8,7 +8,7 @@
   - if issuable.respond_to?(:draft?)
     .gl-pt-3
       = render Pajamas::CheckboxTagComponent.new(name: 'mark_as_draft', checkbox_options: { class: 'js-toggle-draft' }) do |c|
-        = c.label do
+        - c.with_label do
           = s_('MergeRequests|Mark as draft')
-        = c.help_text do
+        - c.with_help_text do
           = s_('MergeRequests|Drafts cannot be merged until marked ready.')

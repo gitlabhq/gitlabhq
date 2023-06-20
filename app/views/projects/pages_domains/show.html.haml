@@ -2,15 +2,6 @@
 - breadcrumb_title domain_presenter.domain
 - page_title domain_presenter.domain
 
-- verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
-
-- if verification_enabled && domain_presenter.unverified?
-  = content_for :flash_message do
-    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
-      - c.with_body do
-        .container-fluid.container-limited
-          = _("This domain is not verified. You will need to verify ownership before access is enabled.")
-
 %h1.page-title.gl-font-size-h-display
   = _('Pages Domain')
 = render 'projects/pages_domains/helper_text'

@@ -9,6 +9,7 @@ module Integrations
       :app_store_key_id,
       :app_store_private_key,
       :app_store_private_key_file_name,
+      :app_store_protected_refs,
       :active,
       :alert_events,
       :api_key,

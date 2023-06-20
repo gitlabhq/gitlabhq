@@ -1,0 +1,8 @@
+---
+name: ci_job_failures_in_mr
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122914
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414321
+milestone: '16.1'
+type: development
+group: group::pipeline authoring
+default_enabled: false

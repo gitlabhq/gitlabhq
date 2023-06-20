@@ -311,13 +311,428 @@ growth of references in object pools.
 
 ## Design and implementation details
 
-<!--
+### Moving lifecycle management of object pools into Gitaly
 
-This section intentionally left blank. I first want to reach consensus on the
-bigger picture I'm proposing in this blueprint before I iterate and fill in the
-lower-level design and implementation details.
+As stated, the goal is to move the ownership of object pools into Gitaly.
+Ideally, the concept of object pools should not be exposed to callers at all
+anymore. Instead, we want to only expose the higher-level concept of networks of
+repositories that share objects with each other in order to deduplicate them.
 
--->
+The following subsections review the current object pool-based architecture and
+then propose the new object deduplication network-based architecture.
+
+#### Object pool-based architecture
+
+Managing the object pool lifecycle in the current architecture requires a
+plethora of RPC calls and requires a lot of knowledge from the calling side. The
+following sequence diagram shows a simplified version of the lifecycle of an
+object pool. It is simplified insofar as we only consider there to be a single
+object pool member.
+
+```mermaid
+sequenceDiagram
+    Rails->>+Gitaly: CreateObjectPool
+    Gitaly->>+Object Pool: Create
+    activate Object Pool
+    Object Pool-->>-Gitaly: Success
+    Gitaly-->>-Rails: Success
+
+    Rails->>+Gitaly: LinkRepositoryToObjectPool
+    Gitaly->>+Upstream: Link
+    Upstream-->>-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    Rails->>+Gitaly: OptimizeRepository
+    Gitaly->>+Upstream: Optimize
+    Upstream-->-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    Rails->>+Gitaly: CreateFork
+    Gitaly->>+Fork: Create
+    activate Fork
+    Fork-->>-Gitaly: Success
+    Gitaly-->>-Rails: CreateFork
+
+    note over Rails, Fork: Fork exists but is not connected to the object pool.
+
+    Rails->>+Gitaly: LinkRepositoryToObjectPool
+    Gitaly->>+Fork: Link
+    Fork-->>-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    note over Rails, Fork: Fork is connected to object pool, but objects are duplicated.
+
+    Rails->>+Gitaly: OptimizeRepository
+    Gitaly->>+Fork: Optimize
+    Fork-->-Gitaly: Success
+    Gitaly-->-Rails: Success
+
+    loop Regularly
+        note over Rails, Fork: Rails needs to ensure that the object pool is regularly updated.
+
+        Rails->>+Gitaly: FetchIntoObjectPool
+        Gitaly->>+Object Pool: Fetch
+        Object Pool-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    end
+
+    alt Disconnect Fork
+        note over Rails, Fork: Forks can be disconnected to stop deduplicating objects.
+
+        Rails->>+Gitaly: DisconnectGitAlternates
+        Gitaly->>+Fork: Disconnect
+        Fork-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    else Delete Fork
+        note over Rails, Fork: Or the fork is deleted eventually.
+
+        Rails->>+Gitaly: RemoveRepository
+        Gitaly->>+Fork: Remove
+        Fork-->>-Gitaly: Success
+        deactivate Fork
+        Gitaly-->>-Rails: Success
+    end
+
+    Rails->>+Gitaly: DisconnectGitAlternates
+    Gitaly->>+Upstream: Disconnect
+    Upstream-->>-Gitaly: Success
+    Gitaly-->>-Rails: Success
+
+    Rails->>+Gitaly: DeleteObjectPool
+    Gitaly->>+Object Pool: Remove
+    Object Pool-->>-Gitaly: Success
+    deactivate Object Pool
+    Gitaly-->>-Rails: Success
+```
+
+The following steps are involved in creating the object pool:
+
+1. The object pool is created from its upstream repository by calling
+   `CreateObjectPool()`. It contains all the objects that the upstream
+   repository contains at the time of creation.
+1. The upstream repository is linked to the object pool by calling
+   `LinkRepositoryToObjectPool()`. Its objects are not automatically
+   deduplicated.
+1. Objects in the upstream repository get deduplicated by calling
+   `OptimizeRepository()`.
+1. The fork is created by calling `CreateFork()`. This RPC call only takes the
+   upstream repository as input and does not know about the already-created
+   object pool. It thus performs a second full copy of objects.
+1. Fork and object pool are linked by calling `LinkRepositoryToObjectPool()`.
+   This writes the `info/alternates` file in the fork so that it becomes
+   aware of the additional object database, but doesn't cause the objects to
+   become deduplicated.
+1. Objects in the fork get deduplicated by calling `OptimizeRepository()`.
+1. The calling side is now expected to regularly call `FetchIntoObjectPool()` to
+   fetch new objects from the upstream repository into the object pool. Fetched
+   objects are not automatically deduplicated in the upstream repository.
+1. The fork can be detached from the object pool in two ways:
+   - Explicitly by calling `DisconnectGitAlternates()`, which removes the
+     `info/alternates` file and reduplicates all objects.
+   - By calling `RemoveRepository()` to delete the fork altogether.
+1. When the object pool is empty, it must be removed by calling
+   `DeleteObjectPool()`.
+
+It is clear that the whole lifecycle management is not well-abstracted and that
+the clients need to be aware of many of its intricacies. Furthermore, we have
+multiple sources of truth for object pool memberships that can (and in practice
+do) diverge.
+
+#### Object deduplication network-based architecture
+
+The proposed new architecture simplifies this process by completely removing the
+notion of object pools from the public interface. Instead, Gitaly exposes the
+high-level notion of "object deduplication networks". Repositories can join
+these networks with one of two roles:
+
+- Read-write object deduplication network members regularly update the set of
+  objects that are part of the object deduplication network.
+- Read-only object deduplication network members are passive members and never
+  update the set of objects that are part of the object deduplication network.
+
+The set of objects that can be deduplicated across members of the object
+deduplication network thus consists only of objects fetched from the read-write
+members. All members benefit from the deduplication regardless of their role.
+Typically:
+
+- The original upstream repository is designated as the read-write member of
+  the object deduplication network.
+- Forks are read-only object deduplication network members.
+
+It is valid for object deduplication networks to only have read-only members.
+In that case the network is not updated with new shared objects, but the
+existing shared objects remain in use.
+
+Though object pools continue to be the underlying mechanism, the higher level of
+abstraction would allow us to swap out the mechanism if we ever decide to do so.
+
+While clients of Gitaly need to perform fine-grained lifecycle management of
+object pools in the object pool-based architecture, the object deduplication
+network-based architecture only requires them to manage memberships of object
+deduplication networks. The following diagram shows the equivalent flow to the
+object pool-based architecture in the object deduplication network-based
+architecture:
+
+```mermaid
+sequenceDiagram
+    Rails->>+Gitaly: CreateFork
+    Gitaly->>+Object Pool: Create
+    activate Object Pool
+    Object Pool -->>-Gitaly: Success
+    Gitaly->>+Fork: Create
+    Fork->>+Object Pool: Join
+    Object Pool-->>-Fork: Success
+    Fork-->>-Gitaly: Success
+    activate Fork
+    Gitaly-->>-Rails: CreateFork
+
+    loop Regularly
+        Rails->>+Gitaly: OptimizeRepository
+        Gitaly->>+Fork: Optimize
+        Gitaly->>+Object Pool: Optimize
+        Object Pool-->>-Gitaly: Success
+        Fork-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    end
+
+    alt Disconnect Fork
+        Rails->>+Gitaly: RemoveRepositoryFromObjectDeduplicationNetwork
+        Gitaly->>+Fork: Disconnect
+
+        alt Last member
+            Gitaly->>+Object Pool: Remove
+            Object Pool-->>-Gitaly: Success
+        end
+
+        Fork-->>-Gitaly: Success
+        Gitaly-->>-Rails: Success
+    else Delete Fork
+        Rails->>+Gitaly: RemoveRepository
+        Gitaly->>+Fork: Remove
+
+        alt Last member
+            Gitaly->>+Object Pool: Remove
+            Object Pool-->>-Gitaly: Success
+        end
+
+        Fork-->>-Gitaly: Success
+        deactivate Fork
+        Gitaly-->>-Rails: Success
+    end
+```
+
+The following major steps are involved:
+
+1. The fork is created, where the request instructs Gitaly to have both
+   upstream and fork repository join an object deduplication network. If the
+   upstream project is part of an object deduplication network already, then
+   the fork joins that object deduplication network. If it isn't, Gitaly
+   creates an object pool and joins the upstream repository as a read-write
+   member and the fork as a read-only member. Objects of the fork are
+   immediately deduplicated. Gitaly records the membership of both repositories
+   in the object pool.
+1. The client regularly calls `OptimizeRepository()` on either the upstream or
+   the fork project, which is something that clients already know to do. The
+   behavior changes depending on the role of the object deduplication network
+   member:
+   - When executed on a read-write object deduplication network member, the
+     object pool may be updated based on a set of heuristics. This will pull
+     objects which have been newly created in the read-write object
+     deduplication network member into the object pool so that they are
+     available for all members in the object deduplication network.
+   - When executed on a read-only object deduplication network member, the
+     object pool will not be updated so that objects which are only part of the
+     read-only object deduplication network member will not get shared across
+     members. The object pool may still be optimized though as required, for
+     example by repacking objects.
+1. Both the upstream and the fork project can leave the object deduplication
+   network by calling `RemoveRepositoryFromObjectNetwork()`. This reduplicates
+   all objects and disconnects the repositories from the object pool.
+   Furthermore, if the repository was a read-write object deduplication network
+   member, Gitaly will stop using it as a source to update the pool.
+
+   Alternatively, the fork can be deleted with a call to `RemoveRepository()`.
+
+   Both calls update the memberships of the object pool to reflect that
+   repositories have left it. Gitaly deletes the object pool if it has no
+   members left.
+
+With this proposed flow the creation, maintenance, and removal of object pools
+is handled opaquely inside of Gitaly. In addition to the above, two more
+supporting RPCs may be provided:
+
+- `AddRepositoryToObjectDeduplicationNetwork()` to let a preexisting repository
+  join into an object deduplication network with a specified role.
+- `ListObjectDeduplicationNetworkMembers()` to list all members and their roles
+  of the object deduplication network that a repository is a member of.
+
+#### Migration to the object deduplication network-based architecture
+
+Migration towards the object deduplication network-based architecture involves
+a lot of small steps:
+
+1. `CreateFork()` starts automatically linking against preexisting object
+   pools. This allows fast forking and removes the notion of object pools for
+   callers when creating a fork.
+1. Introduce `AddRepositoryToObjectDeduplicationNetwork()` and
+   `RemoveRepositoryFromObjectDeduplicationNetwork()`. Deprecate
+   `AddRepositoryToObjectPool()` and `DisconnectGitAlternates()` and migrate
+   Rails to use the new RPCs. The object deduplication network is identified
+   via a repository, so this drops the notion of object pools when handling
+   memberships.
+1. Start recording object deduplication network memberships in `CreateFork()`,
+   `AddRepositoryToObjectDeduplicationNetwork()`,
+   `RemoveRepositoryFromObjectDeduplicationNetwork()` and `RemoveRepository()`.
+   This information empowers Gitaly to take control over the object pool
+   lifecycle.
+1. Implement a migration so that we can be sure that Gitaly has an up-to-date
+   view of all members of object pools. A migration is required so that Gitaly
+   can automatically handle the lifecycle of on object pool, which:
+   - Enables `OptimizeRepository()` to automatically fetch objects from
+     read-write object pool members.
+   - Allows Gitaly to automatically remove empty object pools.
+1. Change `OptimizeRepository()` so that it also optimizes object pools
+   connected to the repository, which allows us to deprecate and eventually
+   remove `FetchIntoObjectPool()`.
+1. Adapt `RemoveRepositoryFromObjectDeduplicationNetwork()` and
+   `RemoveRepository()` to remove empty object pools.
+1. Adapt `CreateFork()` to automatically create object pools, which allows us
+   to remove the `CreateObjectPool()` RPC.
+1. Remove the `ObjectPoolService` and the notion of object pools from the Gitaly
+   public API.
+
+This plan is of course subject to change.
+
+### Gitaly Cluster concerns
+
+#### Repository creation
+
+When a repository is forked for the first time, Rails creates an object pool via
+the `CreateObjectPool()` RPC. This means object pool creation is handled outside
+of Gitaly. Subsequently, the object pool is linked to upstream and fork
+repositories. When a repository has its Git `alternates` file configured to link
+to another repository, these two repositories must exist on the same physical
+storage.
+
+The repository and its object pool existing on the same physical storage is
+particularly important for Praefect because it is dependent of the repository's
+replication factor. A replication factor is a configuration that controls how
+many storages the repository is replicated to in the Praefect virtual storage.
+By default, the replication factor is equal to the number of storages in
+Praefect. This means that when using the default replication factor, a
+repository is available on all storages in the cluster. When a custom
+replication factor is used, the number of replicas can be reduced so that a
+repository only exists on a subset of storages in Praefect.
+
+Gitaly Cluster persists repositories and their assigned storages in the Praefect
+PostgreSQL database. The database is updated when new repositories are created
+on the virtual storage. When a new repository is created, the replication factor
+specifies how many storages are randomly assigned to the repository. The
+following scenario outlines how a custom replication factor can be problematic
+for object pools:
+
+1. A new repository is created in a Gitaly Cluster that has five storage nodes.
+   The replication factor is set to three. Therefore, three storages are
+   randomly selected and assigned for this new repository in Praefect. For
+   example, the assignments are storages 1, 2, and 3. Storages 4 and 5 do not
+   have a copy of this repository.
+1. The repository gets forked for the first time thus requiring an object pool
+   repository be created with the `CreateObjectPool()` RPC. Because the
+   replication factor is set to three, another randomly selected set of three
+   storages are assigned in Praefect for the new object pool repository. For
+   example, the object pool repository is assigned to storages 3, 4, and 5. Note
+   that these assignments do not entirely match the upstream repository's.
+1. The forked copy of the repository gets created with the `CreateFork()` RPC
+   and is also assigned to three randomly-selected storages. For example, the
+   fork repository gets assigned storages 1, 3, and 5. These assignments also do
+   not entirely match the upstream and object pool repository's storage
+   assignments.
+1. Both the upstream and fork repositories are linked to the object pool via
+   separate invocations of `LinkRepositoryToObjectPool()`. For this RPC to
+   succeed the object pool must exist on the same storage as the repository
+   that is linking to it. The upstream repository fails to link on storages 1
+   and 2. The fork repository fails to link on storage 2. The
+   `LinkRepositoryToObjectPool()` RPC is not transactional so a single failure
+   of the RPC on any of the storages results in an error being proxied back to
+   the client. Therefore, in this scenario `LinkRepositoryToObjectPool()` on
+   both the upstream and fork repository always result in an error response.
+
+To fix this problem, we must ensure Praefect always routes `CreateObjectPool()`
+and `CreateFork()` RPC requests to the same set of storages as the upstream
+repository. This ensures that these repositories always have the required object
+pool repository available so that linking to them can succeed.
+
+The main downside of this is that repositories in an object deduplication
+network are pinned to the same set of storages. This could unevenly stress
+individual storages as an object deduplication network grows larger. In the
+future this can be avoided altogether when Praefect has the ability to create
+object pools on a storage where it is required but not already present.
+
+#### Repository replication
+
+The `ReplicateRepository()` RPC is not aware of object pools and only replicates
+from the source repository. This means that replication of a source repository
+linked to an object pool repository results in a target repository with no Git
+`alternates` file and consequently no deduplication of objects.
+
+The `ReplicateRepository()` RPC has two main uses:
+
+- Storage moves performed in the GitLab API rely on the `ReplicateRepository()`
+  RPC to replicate repositories from one storage to another. Since this RPC is
+  currently not object pool aware, the resulting replica on the target storage
+  does not replicate the Git `alternates` file from the source repository or
+  recreate any object pools. Instead, the replica is always a complete
+  self-contained copy of the source repository. Consequently, the object pool
+  relationship for the repository project in Rails is also removed. When moving
+  repositories in an object deduplication network from one storage to another,
+  the replicated repositories can result in increased storage usage because
+  there is no longer any deduplication of objects on the target storage.
+- When a repository replica becomes outdated in Praefect, the
+  `ReplicateRepository()` RPC is internally used by Praefect replication jobs to
+  replicate over the out-of-date replica from an up-to-date replica. Replication
+  jobs are queued by the Praefect replication manager when replicas become
+  outdated. Though the `ReplicateRepository()` RPC is not aware of object pools,
+  the replication job checks if the source repository is linked to an object
+  pool. If the source repository is linked, the job recreates the corresponding
+  Git `alternates` file on the target repository. However, it is currently
+  possible for an object pool to not exist on the same storage as the replica.
+  When this happens, replication always fails because the replica is unable to
+  link to the non-existent object pool. This means it is possible for replicas
+  to remain outdated permanently.
+
+Object pools required by the source repository should be replicated to the
+target storage along with the repository during the `ReplicateRepository()` RPC.
+This preserves object deduplication for repositories in an object deduplication
+network. Because storage moves performed in the GitLab API remove any object
+pool relationships, recreating object pools on the target storage results in
+orphaned object pools. This new object pool replication behavior of the
+`ReplicateRepository()` RPC should be controlled by the client to prevent
+breaking changes. Object pool replication for storage moves can be enabled once
+either:
+
+- The Rails side is updated to preserve the object pool relationship.
+- The object pool lifecycle is managed within Gitaly.
+
+When it comes to replication of object pools, there are scenarios Praefect needs
+to be capable of handling. Special consideration must be made in these cases so
+Praefect can keep track of all the repositories it manages in its PostgreSQL
+database to ensure they stay up to date.
+
+- Replication of an external source repository that is linked to an object pool
+  to Gitaly Cluster can result in the target virtual storage's Praefect needing
+  to create a new object pool repository. To handle this, it needs to be known
+  if the source repository is using an object pool. From there it can be checked
+  if Praefect has an entry for the object pool repository in its `repositories`
+  database table, and if not, create one. Next, Praefect storage assignments for
+  the object pool need to be generated and persisted in the
+  `repository_assignments` database table.
+- It can not be guaranteed that the target repository storage in Praefect
+  already contains the required object pool. Thus an individual storage may need
+  to have an object pool assigned to it. This new assignment must also be
+  tracked by the object pool repository in Praefect. To handle this, Praefect
+  has to detect when a target storage does not contain the required object pool
+  and persist the new storage assignment in the `repository_assignments`
+  database table.
 
 ## Problems with the design
 

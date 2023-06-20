@@ -82,6 +82,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
             'pull-push' | 'pull-push'
             'push'      | 'push'
             'pull'      | 'pull'
+            '$VARIABLE' | '$VARIABLE'
             'unknown'   | 'unknown' # invalid
           end
 
@@ -145,6 +146,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
           'pull-push' | true
           'push'      | true
           'pull'      | true
+          '$VARIABLE' | true
           'unknown'   | false
         end
 
@@ -280,7 +282,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
             let(:config) { { policy: 'unknown' } }
 
             it 'returns error' do
-              is_expected.to include('cache policy should be one of: pull-push, push, pull')
+              is_expected.to include('cache policy should be a variable or one of: pull-push, push, pull')
             end
           end
 

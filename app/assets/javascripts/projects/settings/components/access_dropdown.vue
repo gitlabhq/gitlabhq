@@ -63,6 +63,11 @@ export default {
       required: false,
       default: () => [],
     },
+    items: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -143,11 +148,37 @@ export default {
     query: debounce(function debouncedSearch() {
       return this.getData();
     }, 500),
+    items(items) {
+      this.setDataForSave(items);
+    },
   },
   created() {
     this.getData({ initial: true });
   },
   methods: {
+    setDataForSave(items) {
+      this.selected = items.reduce(
+        (selected, item) => {
+          if (item.group_id) {
+            selected[LEVEL_TYPES.GROUP].push({ id: item.group_id, ...item });
+          } else if (item.user_id) {
+            selected[LEVEL_TYPES.USER].push({ id: item.user_id, ...item });
+          } else if (item.access_level) {
+            const level = this.accessLevelsData.find(({ id }) => item.access_level === id);
+            selected[LEVEL_TYPES.ROLE].push(level);
+          } else if (item.deploy_key_id) {
+            selected[LEVEL_TYPES.DEPLOY_KEY].push({ id: item.deploy_key_id, ...item });
+          }
+          return selected;
+        },
+        {
+          [LEVEL_TYPES.GROUP]: [],
+          [LEVEL_TYPES.USER]: [],
+          [LEVEL_TYPES.ROLE]: [],
+          [LEVEL_TYPES.DEPLOY_KEY]: [],
+        },
+      );
+    },
     focusInput() {
       this.$refs.search.focusInput();
     },

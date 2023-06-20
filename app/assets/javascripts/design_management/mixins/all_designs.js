@@ -43,7 +43,7 @@ export default {
           });
           this.$router.replace({ name: DESIGNS_ROUTE_NAME, query: { version: undefined } });
         }
-        if (this.designCollection.copyState === 'ERROR') {
+        if (this.designCollection?.copyState === 'ERROR') {
           createAlert({
             message: s__(
               'DesignManagement|There was an error moving your designs. Please upload your designs below.',

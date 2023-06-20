@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import GroupFolder from '~/groups/components/group_folder.vue';
-import GroupItem from '~/groups/components/group_item.vue';
+import GroupItem from 'jh_else_ce/groups/components/group_item.vue';
 import { MAX_CHILDREN_COUNT } from '~/groups/constants';
 import { mockGroups, mockParentGroupItem } from '../mock_data';
 

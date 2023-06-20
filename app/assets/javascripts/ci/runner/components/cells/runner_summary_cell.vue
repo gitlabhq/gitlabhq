@@ -8,6 +8,7 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerName from '../runner_name.vue';
 import RunnerTags from '../runner_tags.vue';
 import RunnerTypeBadge from '../runner_type_badge.vue';
+import RunnerManagersBadge from '../runner_managers_badge.vue';
 
 import { formatJobCount } from '../../utils';
 import {
@@ -29,6 +30,7 @@ export default {
     RunnerName,
     RunnerTags,
     RunnerTypeBadge,
+    RunnerManagersBadge,
     RunnerUpgradeStatusIcon: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
     UserAvatarLink,
@@ -44,6 +46,9 @@ export default {
     },
   },
   computed: {
+    managersCount() {
+      return this.runner.managers?.count || 0;
+    },
     jobCount() {
       return formatJobCount(this.runner.jobCount);
     },
@@ -75,6 +80,8 @@ export default {
       <slot :runner="runner" name="runner-name">
         <runner-name :runner="runner" />
       </slot>
+
+      <runner-managers-badge :count="managersCount" size="sm" class="gl-vertical-align-middle" />
       <gl-icon
         v-if="runner.locked"
         v-gl-tooltip
@@ -87,7 +94,7 @@ export default {
     <div class="gl-mb-3 gl-ml-auto gl-display-inline-flex gl-max-w-full">
       <template v-if="runner.version">
         <div class="gl-flex-shrink-0">
-          <runner-upgrade-status-icon :runner="runner" />
+          <runner-upgrade-status-icon :upgrade-status="runner.upgradeStatus" />
           <gl-sprintf :message="$options.i18n.I18N_VERSION_LABEL">
             <template #version>{{ runner.version }}</template>
           </gl-sprintf>

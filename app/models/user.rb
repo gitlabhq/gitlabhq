@@ -31,6 +31,7 @@ class User < ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
+  include SafelyChangeColumnDefault
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -56,8 +57,14 @@ class User < ApplicationRecord
 
   FORBIDDEN_SEARCH_STATES = %w(blocked banned ldap_blocked).freeze
 
-  add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
-  add_authentication_token_field :feed_token
+  INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
+  FEED_TOKEN_PREFIX = 'glft-'
+
+  columns_changing_default :notified_of_own_activity
+
+  # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
+  add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
+  add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
   add_authentication_token_field :static_object_token, encrypted: :optional
 
   attribute :admin, default: false
@@ -91,6 +98,7 @@ class User < ApplicationRecord
 
   # Must be included after `devise`
   include EncryptedUserPassword
+  include RecoverableByAnyEmail
 
   include AdminChangedPasswordNotifier
 
@@ -215,8 +223,11 @@ class User < ApplicationRecord
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_reports,            dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
-  has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport" # rubocop:disable Cop/ActiveRecordDependent
+  has_many :abuse_reports,            dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
+  has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
+  has_many :assigned_abuse_reports,   foreign_key: :assignee_id, class_name: "AbuseReport", inverse_of: :assignee
+  has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
+  has_many :abuse_events,             foreign_key: :user_id, class_name: 'Abuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :abuse_trust_scores,       class_name: 'Abuse::TrustScore', foreign_key: :user_id
   has_many :builds,                   class_name: 'Ci::Build'
@@ -343,7 +354,7 @@ class User < ApplicationRecord
   enum dashboard: { projects: 0, stars: 1, your_activity: 10, project_activity: 2, starred_project_activity: 3, groups: 4, todos: 5, issues: 6, merge_requests: 7, operations: 8, followed_user_activity: 9 }
 
   # User's Project preference
-  enum project_view: { readme: 0, activity: 1, files: 2 }
+  enum project_view: { readme: 0, activity: 1, files: 2, wiki: 3 }
 
   # User's role
   enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true
@@ -360,6 +371,7 @@ class User < ApplicationRecord
     :sourcegraph_enabled, :sourcegraph_enabled=,
     :gitpod_enabled, :gitpod_enabled=,
     :setup_for_company, :setup_for_company=,
+    :project_shortcut_buttons, :project_shortcut_buttons=,
     :render_whitespace_in_code, :render_whitespace_in_code=,
     :markdown_surround_selection, :markdown_surround_selection=,
     :markdown_automatic_lists, :markdown_automatic_lists=,
@@ -959,6 +971,10 @@ class User < ApplicationRecord
 
     def get_ids_by_ids_or_usernames(ids, usernames)
       by_ids_or_usernames(ids, usernames).pluck(:id)
+    end
+
+    def generate_incoming_mail_token
+      "#{INCOMING_MAIL_TOKEN_PREFIX}#{SecureRandom.hex.to_i(16).to_s(36)}"
     end
   end
 
@@ -1664,16 +1680,19 @@ class User < ApplicationRecord
   DELETION_DELAY_IN_DAYS = 7.days
 
   def delete_async(deleted_by:, params: {})
-    is_deleting_own_record = deleted_by.id == id
+    if should_delay_delete?(deleted_by)
+      new_note = format(_("User deleted own account on %{timestamp}"), timestamp: Time.zone.now)
+      self.note = "#{new_note}\n#{note}".strip
 
-    if is_deleting_own_record && ::Feature.enabled?(:delay_delete_own_user)
-      block
+      block_or_ban
       DeleteUserWorker.perform_in(DELETION_DELAY_IN_DAYS, deleted_by.id, id, params.to_h)
-    else
-      block if params[:hard_delete]
 
-      DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
+      return
     end
+
+    block if params[:hard_delete]
+
+    DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -2155,6 +2174,14 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
+  def dismissed_callout_before?(feature_name, dismissed_before)
+    callout = callouts_by_feature_name[feature_name]
+
+    return false unless callout
+
+    callout.dismissed_before?(dismissed_before)
+  end
+
   def dismissed_callout_for_group?(feature_name:, group:, ignore_dismissal_earlier_than: nil)
     source_feature_name = "#{feature_name}_#{group.id}"
     callout = group_callouts_by_feature_name[source_feature_name]
@@ -2252,8 +2279,24 @@ class User < ApplicationRecord
       namespace_commit_emails.find_by(namespace: project.root_namespace)
   end
 
+  def spammer?
+    spam_score > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
+  end
+
   def spam_score
     abuse_trust_scores.spamcheck.average(:score) || 0.0
+  end
+
+  def telesign_score
+    abuse_trust_scores.telesign.order(created_at: :desc).first&.score || 0.0
+  end
+
+  def arkose_global_score
+    abuse_trust_scores.arkose_global_score.order(created_at: :desc).first&.score || 0.0
+  end
+
+  def arkose_custom_score
+    abuse_trust_scores.arkose_custom_score.order(created_at: :desc).first&.score || 0.0
   end
 
   def trust_scores_for_source(source)
@@ -2265,6 +2308,12 @@ class User < ApplicationRecord
       account_age: account_age_in_days,
       two_factor_enabled: two_factor_enabled? ? 1 : 0
     }
+  end
+
+  def namespace_commit_email_for_namespace(namespace)
+    return if namespace.nil?
+
+    namespace_commit_emails.find_by(namespace: namespace)
   end
 
   protected
@@ -2304,6 +2353,45 @@ class User < ApplicationRecord
   end
 
   private
+
+  def block_or_ban
+    if spammer? && account_age_in_days < 7
+      ban_and_report
+    else
+      block
+    end
+  end
+
+  def ban_and_report
+    msg = 'Potential spammer account deletion'
+    attrs = { user_id: id, reporter: User.security_bot, category: 'spam' }
+    abuse_report = AbuseReport.find_by(attrs)
+
+    if abuse_report.nil?
+      abuse_report = AbuseReport.create!(attrs.merge(message: msg))
+    else
+      abuse_report.update(message: "#{abuse_report.message}\n\n#{msg}")
+    end
+
+    UserCustomAttribute.set_banned_by_abuse_report(abuse_report)
+
+    ban
+  end
+
+  def has_possible_spam_contributions?
+    events
+      .for_action('commented')
+      .or(events.for_action('created').where(target_type: %w[Issue MergeRequest]))
+      .any?
+  end
+
+  def should_delay_delete?(deleted_by)
+    is_deleting_own_record = deleted_by.id == id
+
+    is_deleting_own_record &&
+      ::Feature.enabled?(:delay_delete_own_user) &&
+      has_possible_spam_contributions?
+  end
 
   def pbkdf2?
     return false unless otp_backup_codes&.any?
@@ -2357,9 +2445,10 @@ class User < ApplicationRecord
   def authorized_groups_without_shared_membership
     Group.from_union(
       [
-        groups.select(*Namespace.cached_column_list),
-        authorized_projects.joins(:namespace).select(*Namespace.cached_column_list)
-      ])
+        groups,
+        Group.id_in(authorized_projects.select(:namespace_id))
+      ]
+    )
   end
 
   def authorized_groups_with_shared_membership
@@ -2514,6 +2603,10 @@ class User < ApplicationRecord
       .shortest_traversal_ids_prefixes
 
     Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
+  end
+
+  def prefix_for_feed_token
+    FEED_TOKEN_PREFIX
   end
 end
 

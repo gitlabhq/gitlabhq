@@ -27,13 +27,11 @@ module Mutations
         work_item_type = find_work_item_type!(attributes[:work_item_type_id])
         authorize_work_item_type!(work_item, work_item_type)
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-
         update_result = ::WorkItems::UpdateService.new(
           container: work_item.project,
           current_user: current_user,
           params: { work_item_type: work_item_type, issue_type: work_item_type.base_type },
-          spam_params: spam_params
+          perform_spam_check: true
         ).execute(work_item)
 
         check_spam_action_response!(work_item)

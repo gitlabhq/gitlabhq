@@ -377,7 +377,7 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
             end
           end
 
-          context 'when maximum upload size is < 5 MB' do
+          context 'when maximum upload size is < 5 MiB' do
             let(:maximum_size) { 1024 }
 
             it 'returns only 1 part' do

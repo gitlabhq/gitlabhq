@@ -28,7 +28,9 @@ RSpec.shared_context 'unique ips sign in limit' do
 
   def request_from_ip(ip)
     change_ip(ip)
-    request
+    # Implement this method while including this shared context to simulate a request to GitLab
+    # The method name gitlab_request was chosen over request to avoid conflict with rack request
+    gitlab_request
     response
   end
 

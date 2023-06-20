@@ -1,5 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ItemsList from '~/super_sidebar/components/items_list.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { cachedFrequentProjects } from '../mock_data';
@@ -12,8 +11,8 @@ describe('ItemsList component', () => {
 
   const findNavItems = () => wrapper.findAllComponents(NavItem);
 
-  const createWrapper = ({ props = {}, slots = {}, mountFn = shallowMountExtended } = {}) => {
-    wrapper = mountFn(ItemsList, {
+  const createWrapper = ({ props = {}, slots = {} } = {}) => {
+    wrapper = shallowMountExtended(ItemsList, {
       propsData: {
         ...props,
       },
@@ -60,42 +59,5 @@ describe('ItemsList component', () => {
     });
 
     expect(wrapper.findByTestId(testId).exists()).toBe(true);
-  });
-
-  describe('item removal', () => {
-    const findRemoveButton = () => wrapper.findByTestId('item-remove');
-    const mockProject = {
-      ...firstMockedProject,
-      title: firstMockedProject.name,
-    };
-
-    beforeEach(() => {
-      createWrapper({
-        props: {
-          items: [mockProject],
-        },
-        mountFn: mountExtended,
-      });
-    });
-
-    it('renders the remove button', () => {
-      const itemRemoveButton = findRemoveButton();
-
-      expect(itemRemoveButton.exists()).toBe(true);
-      expect(itemRemoveButton.attributes('title')).toBe('Remove');
-      expect(itemRemoveButton.findComponent(GlIcon).props('name')).toBe('dash');
-    });
-
-    it('emits `remove-item` event with item param when remove button is clicked', () => {
-      const itemRemoveButton = findRemoveButton();
-
-      itemRemoveButton.vm.$emit(
-        'click',
-        { stopPropagation: jest.fn(), preventDefault: jest.fn() },
-        mockProject,
-      );
-
-      expect(wrapper.emitted('remove-item')).toEqual([[mockProject]]);
-    });
   });
 });

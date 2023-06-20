@@ -110,8 +110,8 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
       expect(page).to have_text group_user.name
       expect(page).to have_text subgroup_user.name
       expect(page).to have_text invited_to_project_group_user.name
+      expect(page).to have_text invited_to_group_group_user.name
       expect(page).not_to have_text subsubgroup_user.name
-      expect(page).not_to have_text invited_to_group_group_user.name
     end
   end
 end

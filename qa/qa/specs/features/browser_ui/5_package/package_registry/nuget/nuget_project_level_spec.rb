@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage,
-product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
     describe 'NuGet project level endpoint' do
       include Support::Helpers::MaskToken
 

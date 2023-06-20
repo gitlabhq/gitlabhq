@@ -15,8 +15,7 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
       table_name: table_name,
       partitioning_column: partitioning_column,
       parent_table_name: parent_table_name,
-      zero_partition_value: partitioning_default,
-      lock_tables: lock_tables
+      zero_partition_value: partitioning_default
     )
   end
 
@@ -227,16 +226,6 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
       end
     end
 
-    context 'with locking tables' do
-      let(:lock_tables) { [table_name] }
-
-      it 'locks the table' do
-        recorder = ActiveRecord::QueryRecorder.new { partition }
-
-        expect(recorder.log).to include(/LOCK "_test_table_to_partition" IN ACCESS EXCLUSIVE MODE/)
-      end
-    end
-
     context 'when an error occurs during the conversion' do
       before do
         # Set up the fault that we'd like to inject
@@ -264,7 +253,6 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
         with_them do
           it 'recovers from a fault', :aggregate_failures do
             expect { converter.partition }.to raise_error(/fault/)
-            expect(Gitlab::Database::PostgresPartition.for_parent_table(parent_table_name).count).to eq(0)
 
             expect { converter.partition }.not_to raise_error
             expect(Gitlab::Database::PostgresPartition.for_parent_table(parent_table_name).count).to eq(1)
@@ -285,26 +273,6 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
 
         expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
         expect(migration_context.has_loose_foreign_key?(parent_table_name)).to be_truthy
-      end
-
-      context 'with locking tables' do
-        let(:lock_tables) { [table_name] }
-
-        it 'locks the table before dropping the triggers' do
-          recorder = ActiveRecord::QueryRecorder.new { partition }
-
-          lock_index = recorder.log.find_index do |log|
-            log.start_with?('LOCK "_test_table_to_partition" IN ACCESS EXCLUSIVE MODE')
-          end
-
-          trigger_index = recorder.log.find_index do |log|
-            log.start_with?('DROP TRIGGER IF EXISTS _test_table_to_partition_loose_fk_trigger')
-          end
-
-          expect(lock_index).to be_present
-          expect(trigger_index).to be_present
-          expect(lock_index).to be < trigger_index
-        end
       end
     end
   end

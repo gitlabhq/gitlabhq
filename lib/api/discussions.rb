@@ -122,7 +122,7 @@ module API
 
           note = create_note(noteable, opts)
 
-          if note.valid?
+          if note.persisted?
             present note.discussion, with: Entities::Discussion
           else
             bad_request!("Note #{note.errors.messages}")
@@ -175,7 +175,7 @@ module API
           }
           note = create_note(noteable, opts)
 
-          if note.valid?
+          if note.persisted?
             present note, with: Entities::Note
           else
             bad_request!("Note #{note.errors.messages}")

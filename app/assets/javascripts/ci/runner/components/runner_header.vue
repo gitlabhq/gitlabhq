@@ -1,9 +1,8 @@
 <script>
 import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { I18N_DETAILS_TITLE, I18N_LOCKED_RUNNER_DESCRIPTION } from '../constants';
+import { I18N_LOCKED_RUNNER_DESCRIPTION } from '../constants';
+import { formatRunnerName } from '../utils';
 import RunnerTypeBadge from './runner_type_badge.vue';
 import RunnerStatusBadge from './runner_status_badge.vue';
 
@@ -25,12 +24,8 @@ export default {
     },
   },
   computed: {
-    paused() {
-      return !this.runner.active;
-    },
-    heading() {
-      const id = getIdFromGraphQLId(this.runner.id);
-      return sprintf(I18N_DETAILS_TITLE, { runner_id: id });
+    name() {
+      return formatRunnerName(this.runner);
     },
   },
   I18N_LOCKED_RUNNER_DESCRIPTION,
@@ -38,16 +33,16 @@ export default {
 </script>
 <template>
   <div
-    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-gap-3 gl-flex-wrap gl-py-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+    class="gl-display-flex gl-justify-content-space-between gl-align-items-flex-start gl-gap-3 gl-flex-wrap gl-py-5"
   >
-    <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-flex-wrap">
-      <runner-status-badge :runner="runner" />
-      <runner-type-badge v-if="runner" :type="runner.runnerType" />
-      <span>
-        <template v-if="runner.createdAt">
-          <gl-sprintf :message="__('%{runner} created %{timeago}')">
-            <template #runner>
-              <strong>{{ heading }}</strong>
+    <div>
+      <h1 class="gl-font-size-h-display gl-my-0">{{ name }}</h1>
+      <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-flex-wrap gl-mt-3">
+        <runner-status-badge :contacted-at="runner.contactedAt" :status="runner.status" />
+        <runner-type-badge :type="runner.runnerType" />
+        <span v-if="runner.createdAt">
+          <gl-sprintf :message="__('%{locked} created %{timeago}')">
+            <template #locked>
               <gl-icon
                 v-if="runner.locked"
                 v-gl-tooltip="$options.I18N_LOCKED_RUNNER_DESCRIPTION"
@@ -59,11 +54,8 @@ export default {
               <time-ago :time="runner.createdAt" />
             </template>
           </gl-sprintf>
-        </template>
-        <template v-else>
-          <strong>{{ heading }}</strong>
-        </template>
-      </span>
+        </span>
+      </div>
     </div>
     <div class="gl-display-flex gl-gap-3 gl-flex-wrap"><slot name="actions"></slot></div>
   </div>

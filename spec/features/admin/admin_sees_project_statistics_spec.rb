@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin > Admin sees project statistics", feature_category: :projects do
+RSpec.describe "Admin > Admin sees project statistics", feature_category: :groups_and_projects do
   let(:current_user) { create(:admin) }
 
   before do
@@ -16,7 +16,7 @@ RSpec.describe "Admin > Admin sees project statistics", feature_category: :proje
     let(:project) { create(:project, :repository) }
 
     it "shows project statistics" do
-      expect(page).to have_content("Storage: 0 Bytes (Repository: 0 Bytes / Wikis: 0 Bytes / Build Artifacts: 0 Bytes / Pipeline Artifacts: 0 Bytes / LFS: 0 Bytes / Snippets: 0 Bytes / Packages: 0 Bytes / Uploads: 0 Bytes)")
+      expect(page).to have_content("Storage: 0 B (Repository: 0 B / Wikis: 0 B / Build Artifacts: 0 B / Pipeline Artifacts: 0 B / LFS: 0 B / Snippets: 0 B / Packages: 0 B / Uploads: 0 B)")
     end
   end
 

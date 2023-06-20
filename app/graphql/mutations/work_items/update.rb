@@ -21,7 +21,6 @@ module Mutations
 
         work_item = authorized_find!(id: id)
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
         widget_params = extract_widget_params!(work_item.work_item_type, attributes)
 
         interpret_quick_actions!(work_item, current_user, widget_params, attributes)
@@ -31,7 +30,7 @@ module Mutations
           current_user: current_user,
           params: attributes,
           widget_params: widget_params,
-          spam_params: spam_params
+          perform_spam_check: true
         ).execute(work_item)
 
         check_spam_action_response!(work_item)

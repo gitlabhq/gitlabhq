@@ -20,9 +20,7 @@ module SearchRateLimitable
   def safe_search_scope
     # Sometimes search scope can have abusive length or invalid keyword. We don't want
     # to send those to redis for rate limit checks, so we guard against that here.
-    return if Feature.disabled?(:search_rate_limited_scopes) || abuse_detected?
-
-    params[:scope]
+    params[:scope] unless abuse_detected?
   end
 
   def abuse_detected?

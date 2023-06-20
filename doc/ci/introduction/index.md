@@ -61,8 +61,7 @@ of the changes.
 
 ## Continuous Deployment
 
-[Continuous Deployment](https://www.airpair.com/continuous-deployment/posts/continuous-deployment-for-practical-people)
-is another step beyond Continuous Integration, similar to
+Continuous Deployment is another step beyond Continuous Integration, similar to
 Continuous Delivery. The difference is that instead of deploying your
 application manually, you set it to be deployed automatically.
 Human intervention is not required.

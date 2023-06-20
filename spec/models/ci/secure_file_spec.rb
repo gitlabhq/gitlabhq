@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::SecureFile do
+RSpec.describe Ci::SecureFile, factory_default: :keep, feature_category: :mobile_devops do
+  let_it_be(:project) { create_default(:project).freeze }
+  let(:sample_file) { fixture_file('ci_secure_files/upload-keystore.jks') }
+
   before do
     stub_ci_secure_file_object_storage
   end
-
-  let(:sample_file) { fixture_file('ci_secure_files/upload-keystore.jks') }
 
   subject { create(:ci_secure_file, file: CarrierWaveStringFile.new(sample_file)) }
 
@@ -60,10 +61,9 @@ RSpec.describe Ci::SecureFile do
 
   describe 'ordered scope' do
     it 'returns the newest item first' do
-      project = create(:project)
-      file1 = create(:ci_secure_file, created_at: 1.week.ago, project: project)
-      file2 = create(:ci_secure_file, created_at: 2.days.ago, project: project)
-      file3 = create(:ci_secure_file, created_at: 1.day.ago, project: project)
+      file1 = create(:ci_secure_file, created_at: 1.week.ago)
+      file2 = create(:ci_secure_file, created_at: 2.days.ago)
+      file3 = create(:ci_secure_file, created_at: 1.day.ago)
 
       files = project.secure_files.order_by_created_at
 
@@ -197,6 +197,19 @@ RSpec.describe Ci::SecureFile do
       message = 'Validation failed: Metadata must be a valid json schema - PEM_read_bio_X509: no start line.'
       expect(Gitlab::AppLogger).to receive(:error).with("Secure File Parser Failure (#{corrupt_file.id}): #{message}")
       corrupt_file.update_metadata!
+    end
+  end
+
+  describe '#local?' do
+    it 'returns true when using local storage' do
+      secure_file = create(:ci_secure_file)
+      secure_file.update!(file_store: ObjectStorage::Store::LOCAL)
+      expect(secure_file.local?).to be true
+    end
+
+    it 'returns false when using object storage' do
+      secure_file = create(:ci_secure_file, file_store: ObjectStorage::Store::REMOTE)
+      expect(secure_file.local?).to be false
     end
   end
 end

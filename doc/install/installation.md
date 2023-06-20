@@ -4,14 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Installation from source **(FREE SELF)**
+# Self-compiled installation **(FREE SELF)**
 
 This is the official installation guide to set up a production GitLab server
-using the source files. To set up a **development installation** or for many
-other installation options, see the [main installation page](index.md).
-It was created for and tested on **Debian/Ubuntu** operating systems.
+using the source files. It was created for and tested on **Debian/Ubuntu** operating systems.
 Read [requirements.md](requirements.md) for hardware and operating system requirements.
-If you want to install on RHEL/CentOS, you should use the [Omnibus packages](https://about.gitlab.com/install/).
+If you want to install on RHEL/CentOS, you should use the [Linux packages](https://about.gitlab.com/install/).
+For many other installation options, see the [main installation page](index.md).
 
 This guide is long because it covers many cases and includes all commands you
 need, this is [one of the few installation scripts that actually work out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
@@ -24,21 +23,20 @@ If you find a bug/error in this guide, **submit a merge request**
 following the
 [contributing guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CONTRIBUTING.md).
 
-## Consider the Omnibus package installation
+## Consider the Linux package installation
 
-Because an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/install/) (deb/rpm).
+Because a self-compiled installation is a lot of work and error prone, we strongly recommend the fast and reliable [Linux package installation](https://about.gitlab.com/install/) (deb/rpm).
 
-One reason the Omnibus package is more reliable is its use of runit to restart any of the GitLab processes in case one crashes.
+One reason the Linux package is more reliable is its use of runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker grows over time.
-
-Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/sidekiq/sidekiq_memory_killer.md) if it uses too much memory.
+The Linux packages solve this by [letting the Sidekiq terminate gracefully](../administration/sidekiq/sidekiq_memory_killer.md) if it uses too much memory.
 After this termination runit detects Sidekiq is not running and starts it.
-Because installations from source don't use runit for process supervision, Sidekiq
+Because self-compiled installations don't use runit for process supervision, Sidekiq
 can't be terminated and its memory usage grows over time.
 
 ## Select a version to install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (for example, `11-7-stable`).
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (for example, `16-0-stable`).
 You can select the branch in the version dropdown list in the upper-left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
@@ -51,7 +49,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | [RubyGems](#3-rubygems) | `3.4.x`         | A specific RubyGems version is not fully needed, but it's recommended to update so you can enjoy some known performance improvements.                                                                                                                                                  |
 | [Go](#4-go)             | `1.18.x`        | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.38.x`        | From GitLab 15.8, Git 2.38.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
-| [Node.js](#5-node)      | `16.15.0`       | From GitLab 15.7, Node.js 16.15.0 or later is required.                                                                                                                                                                                                                                |
+| [Node.js](#5-node)      | `18.16.x`       | From GitLab 16.1, Node.js 18.16 or later is required.                                                                                                                                                                                                                                |
 
 ## GitLab directory structure
 
@@ -262,8 +260,8 @@ GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` 16.x releases (v16.15.0 or later).
-  [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 16.x.
+- `node` 18.x releases (v18.16.0 or later).
+  [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 18.x.
 - `yarn` = v1.22.x (Yarn 2 is not supported yet)
 
 In many distributions,
@@ -271,8 +269,8 @@ the versions provided by the official package repositories are out of date, so
 we must install through the following commands:
 
 ```shell
-# install node v16.x
-curl --location "https://deb.nodesource.com/setup_16.x" | sudo bash -
+# install node v18.x
+curl --location "https://deb.nodesource.com/setup_18.x" | sudo bash -
 sudo apt-get install -y nodejs
 
 npm install --global yarn
@@ -423,7 +421,7 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 16.0 and later
 
 ## 8. Redis
 
-See the [requirements page](requirements.md#redis-versions) for the minimum
+See the [requirements page](requirements.md#redis) for the minimum
 Redis requirements.
 
 Install Redis with:
@@ -1146,15 +1144,6 @@ You must also change the corresponding options (for example, `ssh_user`, `ssh_ho
 ### Additional Markup Styles
 
 Apart from the always supported Markdown style, there are other rich text files that GitLab can display. But you might have to install a dependency to do so. See the [`github-markup` gem README](https://github.com/gitlabhq/markup#markups) for more information.
-
-### Using Sidekiq instead of Sidekiq Cluster
-
-As of GitLab 12.10, Source installations are using `bin/sidekiq-cluster` for managing Sidekiq processes.
-Using Sidekiq directly is still supported until 14.0. So if you're experiencing issues:
-
-1. Edit the system `init.d` script to remove the `SIDEKIQ_WORKERS` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
-1. Restart GitLab.
-1. [Create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/-/new) describing the problem.
 
 ### Prometheus server setup
 

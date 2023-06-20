@@ -1,9 +1,12 @@
 import { GlDropdownDivider, GlModal, GlToggle } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
@@ -13,6 +16,8 @@ import {
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
   TEST_ID_PROMOTE_ACTION,
+  TEST_ID_COPY_REFERENCE_ACTION,
+  TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
 } from '~/work_items/constants';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
@@ -31,8 +36,10 @@ describe('WorkItemActions component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  let glModalDirective;
   let mockApollo;
+  const mockWorkItemReference = 'gitlab-org/gitlab-test#1';
+  const mockWorkItemCreateNoteEmail =
+    'gitlab-incoming+gitlab-org-gitlab-test-2-ddpzuq0zd2wefzofcpcdr3dg7-issue-1@gmail.com';
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
@@ -41,6 +48,9 @@ describe('WorkItemActions component', () => {
     wrapper.findByTestId(TEST_ID_NOTIFICATIONS_TOGGLE_ACTION);
   const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
   const findPromoteButton = () => wrapper.findByTestId(TEST_ID_PROMOTE_ACTION);
+  const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
+  const findCopyCreateNoteEmailButton = () =>
+    wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
   const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
   const findDropdownItemsActual = () =>
     findDropdownItems().wrappers.map((x) => {
@@ -55,6 +65,7 @@ describe('WorkItemActions component', () => {
     });
   const findNotificationsToggle = () => wrapper.findComponent(GlToggle);
 
+  const modalShowSpy = jest.fn();
   const $toast = {
     show: jest.fn(),
     hide: jest.fn(),
@@ -77,9 +88,10 @@ describe('WorkItemActions component', () => {
     notificationsMock = [updateWorkItemNotificationsMutation, jest.fn()],
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     workItemType = 'Task',
+    workItemReference = mockWorkItemReference,
+    workItemCreateNoteEmail = mockWorkItemCreateNoteEmail,
   } = {}) => {
     const handlers = [notificationsMock];
-    glModalDirective = jest.fn();
     mockApollo = createMockApollo([
       ...handlers,
       [convertWorkItemMutation, convertWorkItemMutationHandler],
@@ -96,13 +108,8 @@ describe('WorkItemActions component', () => {
         subscribed,
         isParentConfidential,
         workItemType,
-      },
-      directives: {
-        glModal: {
-          bind(_, { value }) {
-            glModalDirective(value);
-          },
-        },
+        workItemReference,
+        workItemCreateNoteEmail,
       },
       provide: {
         fullPath: 'gitlab-org/gitlab',
@@ -110,6 +117,13 @@ describe('WorkItemActions component', () => {
       },
       mocks: {
         $toast,
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            show: modalShowSpy,
+          },
+        }),
       },
     });
   };
@@ -139,6 +153,14 @@ describe('WorkItemActions component', () => {
       {
         testId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
         text: 'Turn on confidentiality',
+      },
+      {
+        testId: TEST_ID_COPY_REFERENCE_ACTION,
+        text: 'Copy reference',
+      },
+      {
+        testId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
+        text: 'Copy task email address',
       },
       {
         divider: true,
@@ -189,7 +211,7 @@ describe('WorkItemActions component', () => {
 
       findDeleteButton().vm.$emit('click');
 
-      expect(glModalDirective).toHaveBeenCalled();
+      expect(modalShowSpy).toHaveBeenCalled();
     });
 
     it('emits event when clicking OK button', () => {
@@ -357,6 +379,39 @@ describe('WorkItemActions component', () => {
       expect(wrapper.emitted('error')).toEqual([
         ['Something went wrong while promoting the key result. Please try again.'],
       ]);
+    });
+  });
+
+  describe('copy reference action', () => {
+    it('shows toast when user clicks on the action', () => {
+      createComponent();
+
+      expect(findCopyReferenceButton().exists()).toBe(true);
+      findCopyReferenceButton().vm.$emit('click');
+
+      expect(toast).toHaveBeenCalledWith('Reference copied');
+    });
+  });
+
+  describe('copy email address action', () => {
+    it.each(['key result', 'objective'])(
+      'renders correct button name when work item is %s',
+      (workItemType) => {
+        createComponent({ workItemType });
+
+        expect(findCopyCreateNoteEmailButton().text()).toEqual(
+          `Copy ${workItemType} email address`,
+        );
+      },
+    );
+
+    it('shows toast when user clicks on the action', () => {
+      createComponent();
+
+      expect(findCopyCreateNoteEmailButton().exists()).toBe(true);
+      findCopyCreateNoteEmailButton().vm.$emit('click');
+
+      expect(toast).toHaveBeenCalledWith('Email address copied');
     });
   });
 });

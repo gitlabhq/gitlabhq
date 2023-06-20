@@ -32,13 +32,14 @@ In Asana, create a Personal Access Token.
 
 Complete these steps in GitLab:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Asana**.
 1. Ensure that the **Active** toggle is enabled.
 1. Paste the token you generated in Asana.
 1. Optional. To restrict this setting to specific branches, list them in the **Restrict to branch**
    field, separated with commas.
-1. Select **Save changes** or optionally select **Test settings**.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 <!-- ## Troubleshooting -->

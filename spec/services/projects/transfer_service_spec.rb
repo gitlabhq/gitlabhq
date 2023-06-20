@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::TransferService, feature_category: :projects do
+RSpec.describe Projects::TransferService, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com') }
@@ -716,7 +716,7 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
     end
 
     def clear_design_repo_memoization
-      project.design_management_repository.clear_memoization(:repository)
+      project&.design_management_repository&.clear_memoization(:repository)
       project.clear_memoization(:design_repository)
     end
 

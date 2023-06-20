@@ -213,10 +213,9 @@ module Packages
       end
 
       def release_content
-        strong_memoize(:release_content) do
-          release_header + release_sums
-        end
+        release_header + release_sums
       end
+      strong_memoize_attr :release_content
 
       def release_header
         [
@@ -235,10 +234,9 @@ module Packages
       end
 
       def release_date
-        strong_memoize(:release_date) do
-          Time.now.utc
-        end
+        Time.now.utc
       end
+      strong_memoize_attr :release_date
 
       def release_sums
         # NB: MD5Sum was removed for FIPS compliance

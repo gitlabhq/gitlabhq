@@ -41,7 +41,7 @@ RSpec.describe Gitlab::JiraImport do
         context 'when Jira connection is not valid' do
           before do
             WebMock.stub_request(:get, 'https://jira.example.com/rest/api/2/serverInfo')
-              .to_raise(JIRA::HTTPError.new(double(message: 'Some failure.')))
+              .to_raise(JIRA::HTTPError.new(double(message: 'Some failure.', code: '400')))
           end
 
           it_behaves_like 'raise Jira import error', 'Unable to connect to the Jira instance. Please check your Jira integration configuration.'

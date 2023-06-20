@@ -8,7 +8,7 @@ RSpec.describe Packages::Debian::ProcessChangesWorker, type: :worker, feature_ca
     create(:debian_project_distribution, :with_file, codename: FFaker::Lorem.word, suite: 'unstable')
   end
 
-  let(:incoming) { create(:debian_incoming, project: distribution.project) }
+  let(:incoming) { create(:debian_incoming, project: distribution.project, with_changes_file: true) }
   let(:package_file) { incoming.package_files.with_file_name('sample_1.2.3~alpha2_amd64.changes').first }
   let(:worker) { described_class.new }
 

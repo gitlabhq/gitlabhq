@@ -68,9 +68,7 @@ module Issues
       new_params.delete(:created_at)
       new_params.delete(:updated_at)
 
-      # spam checking is not necessary, as no new content is being created. Passing nil for
-      # spam_params will cause SpamActionService to skip checking and return a success response.
-      spam_params = nil
+      # spam checking is not necessary, as no new content is being created.
 
       # Skip creation of system notes for existing attributes of the issue when cloning with notes.
       # The system notes of the old issue are copied over so we don't want to end up with duplicate notes.
@@ -79,7 +77,7 @@ module Issues
         container: target_project,
         current_user: current_user,
         params: new_params,
-        spam_params: spam_params
+        perform_spam_check: false
       ).execute(skip_system_notes: with_notes)
 
       raise CloneError, create_result.errors.join(', ') if create_result.error? && create_result[:issue].blank?

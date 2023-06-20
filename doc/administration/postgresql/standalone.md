@@ -57,7 +57,7 @@ together with Omnibus GitLab. This is recommended as part of our
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Note the PostgreSQL node's IP address or hostname, port, and
    plain text password. These are necessary when configuring the GitLab
    application servers later.

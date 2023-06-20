@@ -8,12 +8,12 @@
     root_namespace: hook.parent.root_namespace.path }
   = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook rate limit has been reached'),
     variant: :danger) do |c|
-    = c.body do
+    - c.with_body do
       = s_("Webhooks|Webhooks for %{root_namespace} are now disabled because they've been triggered more than %{limit} times per minute. They'll be automatically re-enabled in the next minute.").html_safe % placeholders
 - elsif hook.permanently_disabled?
   = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook failed to connect'),
     variant: :danger) do |c|
-    = c.body do
+    - c.with_body do
       = s_('Webhooks|The webhook failed to connect, and is disabled. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.').html_safe % { strong_start: strong_start, strong_end: strong_end }
 - elsif hook.temporarily_disabled?
   - help_path = help_page_path('user/project/integrations/webhooks', anchor: 'webhook-fails-or-multiple-webhook-requests-are-triggered')
@@ -24,5 +24,5 @@
     help_link_end: link_end }
   = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook fails to connect'),
     variant: :warning) do |c|
-    = c.body do
+    - c.with_body do
       = s_('Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end}, and will retry in %{retry_time}. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.').html_safe % placeholders

@@ -37,7 +37,7 @@ for GitLab Pages, and then one entry for each page site:
 If instead of editing your `/etc/hosts` you'd prefer to use a DNS wildcard, you can use:
 
 - [`nip.io`](https://nip.io)
-- [`dnsmasq`](https://wiki.debian.org/dnsmasq)
+- [`dnsmasq`](dnsmasq.md)
 
 ## Configuring GitLab Pages without GDK
 

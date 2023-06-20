@@ -20,7 +20,8 @@ and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#par
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility:
 
-1. On the top bar, select **Main menu > Admin** on your GitLab instance.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Gitaly Servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
@@ -85,7 +86,7 @@ check for an SSL or TLS problem:
 ```
 
 Check whether `Verify return code` field indicates a
-[known Omnibus GitLab configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+[known Linux package installation configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
 check [certificate requirements](configure_gitaly.md#certificate-requirements) for Gitaly.
@@ -93,7 +94,7 @@ check [certificate requirements](configure_gitaly.md#certificate-requirements) f
 ### Server side gRPC logs
 
 gRPC tracing can also be enabled in Gitaly itself with the `GODEBUG=http2debug`
-environment variable. To set this in an Omnibus GitLab install:
+environment variable. To set this in a Linux package installation:
 
 1. Add the following to your `gitlab.rb` file:
 
@@ -103,7 +104,7 @@ environment variable. To set this in an Omnibus GitLab install:
    }
    ```
 
-1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab.
+1. [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab.
 
 ### Correlating Git processes with RPCs
 
@@ -216,7 +217,7 @@ Confirm the following are all true:
 To fix this problem, confirm that your [`gitlab-secrets.json` file](configure_gitaly.md#configure-gitaly-servers)
 on the Gitaly server matches the one on Gitaly client. If it doesn't match,
 update the secrets file on the Gitaly server to match the Gitaly client, then
-[reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+[reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 If you've confirmed that your `gitlab-secrets.json` file is the same on all Gitaly servers and clients,
 the application might be fetching this secret from a different file. Your Gitaly server's
@@ -399,6 +400,10 @@ To resolve this, remove the `noexec` option from the file system mount. An alter
 
 1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
 1. Run `sudo gitlab-ctl reconfigure`.
+
+### Commit signing fails with `invalid argument: signing key is encrypted` or `invalid data: tag byte does not have MSB set.`
+
+Because Gitaly commit signing is headless and not associated with a specific user, the GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
 
 ## Troubleshoot Praefect (Gitaly Cluster)
 

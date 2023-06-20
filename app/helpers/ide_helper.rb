@@ -8,8 +8,8 @@ module IdeHelper
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
       'sign-in-path' => new_session_path(current_user),
       'user-preferences-path' => profile_preferences_path,
-      'editor-font-src-url' => font_url('jetbrains-mono/JetBrainsMono.woff2'),
-      'editor-font-family' => 'JetBrains Mono',
+      'editor-font-src-url' => font_url('gitlab-mono/GitLabMono.woff2'),
+      'editor-font-family' => 'GitLab Mono',
       'editor-font-format' => 'woff2'
     }.merge(use_new_web_ide? ? new_ide_data(project: project) : legacy_ide_data(project: project))
 
@@ -29,20 +29,24 @@ module IdeHelper
 
   private
 
+  def new_ide_code_suggestions_data
+    {}
+  end
+
   def new_ide_data(project:)
     {
       'project-path' => project&.path_with_namespace,
       'csp-nonce' => content_security_policy_nonce,
       # We will replace these placeholders in the FE
       'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
-    }
+    }.merge(new_ide_code_suggestions_data)
   end
 
   def legacy_ide_data(project:)
     {
       'empty-state-svg-path' => image_path('illustrations/multi_file_editor_empty.svg'),
       'no-changes-state-svg-path' => image_path('illustrations/multi-editor_no_changes_empty.svg'),
-      'committed-state-svg-path' => image_path('illustrations/multi-editor_all_changes_committed_empty.svg'),
+      'committed-state-svg-path' => image_path('illustrations/rocket-launch-md.svg'),
       'pipelines-empty-state-svg-path': image_path('illustrations/empty-state/empty-pipeline-md.svg'),
       'switch-editor-svg-path': image_path('illustrations/rocket-launch-md.svg'),
       'promotion-svg-path': image_path('illustrations/web-ide_promotion.svg'),

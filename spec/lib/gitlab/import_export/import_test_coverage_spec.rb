@@ -7,7 +7,7 @@ require 'spec_helper'
 # Fixture JSONs we use for testing Import such as
 # `spec/fixtures/lib/gitlab/import_export/complex/project.json`
 # should include these relations being non-empty.
-RSpec.describe 'Test coverage of the Project Import' do
+RSpec.describe 'Test coverage of the Project Import', feature_category: :importers do
   include ConfigurationHelper
 
   # `muted_relations` is a technical debt.
@@ -18,7 +18,6 @@ RSpec.describe 'Test coverage of the Project Import' do
   let(:muted_relations) do
     %w[
       project.milestones.events.push_event_payload
-      project.issues.events
       project.issues.events.push_event_payload
       project.issues.notes.events
       project.issues.notes.events.push_event_payload
@@ -53,19 +52,23 @@ RSpec.describe 'Test coverage of the Project Import' do
       project.boards.lists.label.priorities
       project.service_desk_setting
       project.security_setting
+      project.push_rule
+      project.approval_rules
+      project.approval_rules.approval_project_rules_protected_branches
+      project.approval_rules.approval_project_rules_users
     ].freeze
   end
 
-  # A list of JSON fixture files we use to test Import.
-  # Most of the relations are present in `complex/project.json`
+  # A list of project tree fixture files we use to test Import.
+  # Most of the relations are present in `complex/tree`
   # which is our main fixture.
-  let(:project_json_fixtures) do
+  let(:project_tree_fixtures) do
     [
-      'spec/fixtures/lib/gitlab/import_export/complex/project.json',
-      'spec/fixtures/lib/gitlab/import_export/group/project.json',
-      'spec/fixtures/lib/gitlab/import_export/light/project.json',
-      'spec/fixtures/lib/gitlab/import_export/milestone-iid/project.json',
-      'spec/fixtures/lib/gitlab/import_export/designs/project.json'
+      'spec/fixtures/lib/gitlab/import_export/complex/tree',
+      'spec/fixtures/lib/gitlab/import_export/group/tree',
+      'spec/fixtures/lib/gitlab/import_export/light/tree',
+      'spec/fixtures/lib/gitlab/import_export/milestone-iid/tree',
+      'spec/fixtures/lib/gitlab/import_export/designs/tree'
     ].freeze
   end
 
@@ -82,14 +85,28 @@ RSpec.describe 'Test coverage of the Project Import' do
   end
 
   def tested_relations
-    project_json_fixtures.flat_map(&method(:relations_from_json)).to_set
+    project_tree_fixtures.flat_map(&method(:relations_from_tree)).to_set
   end
 
-  def relations_from_json(json_file)
-    json = Gitlab::Json.parse(File.read(json_file))
+  def relations_from_tree(json_tree_path)
+    json = convert_tree_to_json(json_tree_path)
 
     [].tap { |res| gather_relations({ project: json }, res, []) }
       .map { |relation_names| relation_names.join('.') }
+  end
+
+  def convert_tree_to_json(json_tree_path)
+    json = Gitlab::Json.parse(File.read(File.join(json_tree_path, 'project.json')))
+
+    Dir["#{json_tree_path}/project/*.ndjson"].each do |ndjson|
+      relation_name = File.basename(ndjson, '.ndjson')
+      json[relation_name] = []
+      File.foreach(ndjson) do |line|
+        json[relation_name] << Gitlab::Json.parse(line)
+      end
+    end
+
+    json
   end
 
   def gather_relations(item, res, path)
@@ -112,7 +129,7 @@ RSpec.describe 'Test coverage of the Project Import' do
       These relations seem to be added recently and
       they expected to be covered in our Import specs: #{not_tested_relations}.
 
-      To do that, expand one of the files listed in `project_json_fixtures`
+      To do that, expand one of the files listed in `project_tree_fixtures`
       (or expand the list if you consider adding a new fixture file).
 
       After that, add a new spec into

@@ -10,10 +10,10 @@ class RemoveNewAmountUsedColumn < Gitlab::Database::Migration[2.1]
   def down
     return if column_exists?(:ci_project_monthly_usages, :new_amount_used)
 
-    # rubocop:disable Migration/SchemaAdditionMethodsNoPost, Migration/AddColumnsToWideTables
+    # rubocop:disable Migration/AddColumnsToWideTables
     add_column :ci_project_monthly_usages, :new_amount_used, :decimal, default: 0.0,
                                                                        precision: 18, scale: 2, null: false
-    # rubocop:enable Migration/SchemaAdditionMethodsNoPost, Migration/AddColumnsToWideTables
+    # rubocop:enable Migration/AddColumnsToWideTables
 
     install_rename_triggers :ci_project_monthly_usages, :amount_used, :new_amount_used, trigger_name: TRIGGER_NAME
   end

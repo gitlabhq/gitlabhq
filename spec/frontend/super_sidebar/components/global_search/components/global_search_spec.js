@@ -7,6 +7,12 @@ import GlobalSearchModal from '~/super_sidebar/components/global_search/componen
 import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_search/components/global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
 import GlobalSearchScopedItems from '~/super_sidebar/components/global_search/components/global_search_scoped_items.vue';
+import FakeSearchInput from '~/super_sidebar/components/global_search/command_palette/fake_search_input.vue';
+import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
+import {
+  SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+  COMMON_HANDLES,
+} from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
@@ -17,6 +23,7 @@ import {
   IS_SEARCHING,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
 } from '~/super_sidebar/components/global_search/constants';
+import { SEARCH_GITLAB } from '~/vue_shared/global_search/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -53,7 +60,18 @@ describe('GlobalSearchModal', () => {
     },
   };
 
-  const createComponent = (initialState, mockGetters, stubs) => {
+  const defaultMockGetters = {
+    searchQuery: () => MOCK_SEARCH_QUERY,
+    searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
+    scopedSearchOptions: () => MOCK_SCOPED_SEARCH_OPTIONS,
+  };
+
+  const createComponent = (
+    initialState = deafaultMockState,
+    mockGetters = defaultMockGetters,
+    stubs,
+    glFeatures = { commandPalette: false },
+  ) => {
     const store = new Vuex.Store({
       state: {
         ...deafaultMockState,
@@ -71,6 +89,7 @@ describe('GlobalSearchModal', () => {
     wrapper = shallowMountExtended(GlobalSearchModal, {
       store,
       stubs,
+      provide: { glFeatures },
     });
   };
 
@@ -98,6 +117,8 @@ describe('GlobalSearchModal', () => {
     wrapper.findComponent(GlobalSearchAutocompleteItems);
   const findSearchInputDescription = () => wrapper.find(`#${SEARCH_INPUT_DESCRIPTION}`);
   const findSearchResultsDescription = () => wrapper.findByTestId(SEARCH_RESULTS_DESCRIPTION);
+  const findCommandPaletteItems = () => wrapper.findComponent(CommandPaletteItems);
+  const findFakeSearchInput = () => wrapper.findComponent(FakeSearchInput);
 
   describe('template', () => {
     describe('always renders', () => {
@@ -280,6 +301,45 @@ describe('GlobalSearchModal', () => {
             findScopeToken().findComponent(GlIcon).attributes('name'),
         ).toBe(iconName);
       });
+    });
+
+    describe('Command palette', () => {
+      describe('when FF `command_palette` is disabled', () => {
+        beforeEach(() => {
+          createComponent();
+        });
+
+        it('should not render command mode components', () => {
+          expect(findCommandPaletteItems().exists()).toBe(false);
+          expect(findFakeSearchInput().exists()).toBe(false);
+        });
+
+        it('should provide default placeholder to the search input', () => {
+          expect(findGlobalSearchInput().attributes('placeholder')).toBe(SEARCH_GITLAB);
+        });
+      });
+
+      describe.each(COMMON_HANDLES)(
+        'when FF `command_palette` is enabled and search handle is %s',
+        (handle) => {
+          beforeEach(() => {
+            createComponent({ search: handle }, undefined, undefined, {
+              commandPalette: true,
+            });
+          });
+
+          it('should render command mode components', () => {
+            expect(findCommandPaletteItems().exists()).toBe(true);
+            expect(findFakeSearchInput().exists()).toBe(true);
+          });
+
+          it('should provide an alternative placeholder to the search input', () => {
+            expect(findGlobalSearchInput().attributes('placeholder')).toBe(
+              SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+            );
+          });
+        },
+      );
     });
   });
 

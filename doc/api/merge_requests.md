@@ -13,8 +13,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `merge_status` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
 > - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11  [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
 > - `approvals_before_merge` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
+> - `prepared_at` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
 
-Every API call to merge requests must be authenticated.
+Authentication is required for API calls to non-public information.
 
 ## Removals in API v5
 
@@ -108,6 +109,7 @@ Supported attributes:
       "web_url": "https://gitlab.com/DouweM"
     },
     "merged_at": "2018-09-07T11:16:17.520Z",
+    "prepared_at": "2018-09-04T11:16:17.520Z",
     "closed_by": null,
     "closed_at": null,
     "created_at": "2017-04-29T08:46:00Z",
@@ -296,6 +298,7 @@ Supported attributes:
       "web_url": "https://gitlab.com/DouweM"
     },
     "merged_at": "2018-09-07T11:16:17.520Z",
+    "prepared_at": "2018-09-04T11:16:17.520Z",
     "closed_by": null,
     "closed_at": null,
     "created_at": "2017-04-29T08:46:00Z",
@@ -471,6 +474,7 @@ Supported attributes:
       "web_url": "https://gitlab.com/DouweM"
     },
     "merged_at": "2018-09-07T11:16:17.520Z",
+    "prepared_at": "2018-09-04T11:16:17.520Z",
     "closed_by": null,
     "closed_at": null,
     "created_at": "2017-04-29T08:46:00Z",
@@ -621,13 +625,14 @@ Supported attributes:
 | `latest_build_started_at` | datetime | Timestamp of when the latest build for the merge request started. |
 | `merge_commit_sha` | string | SHA of the merge request commit. Returns `null` until merged. |
 | `merge_error` | string | Error message shown when a merge has failed. To check mergeability, use `detailed_merge_status` instead  |
-| `merge_user` | object | The user who merged this merge request, the user who set it to merge when pipeline succeeds, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
+| `merge_user` | object | The user who merged this merge request, the user who set it to auto-merge, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
 | `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
 | `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds. |
 | `merged_at` | datetime | Timestamp of when the merge request was merged. |
-| `merged_by` | object | User who merged this merge request or set it to merge when pipeline succeeds. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. |
+| `merged_by` | object | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. |
 | `milestone` | object | Milestone of the merge request. |
 | `pipeline` | object | Pipeline running on the branch HEAD of the merge request. Consider using `head_pipeline` instead, as it contains more information. |
+| `prepared_at` | datetime | Timestamp of when the merge request was prepared. This field is populated one time, only after all the [preparation steps](#preparation-steps) are completed, and is not updated if more changes are added. |
 | `project_id` | integer | ID of the merge request project. |
 | `reference` | string | Internal reference of the merge request. Returned in shortened format by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `references` instead. |
 | `references` | object | Internal references of the merge request. Includes `short`, `relative`, and `full` references. `references.relative` is relative to the merge request's group or project. When fetched from the merge request's project, `relative` and `short` formats are identical. When requested across groups or projects, `relative` and `full` formats are identical.|
@@ -664,6 +669,7 @@ Supported attributes:
   "merged_by": null, // Deprecated and will be removed in API v5. Use `merge_user` instead.
   "merge_user": null,
   "merged_at": null,
+  "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
   "target_branch": "master",
@@ -821,6 +827,18 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `not_approved`: Approval is required before merge.
   - `not_open`: The merge request must be open before merge.
   - `policies_denied`: The merge request contains denied policies.
+
+### Preparation steps
+
+The `prepared_at` field is populated one time, only after all of the preparation steps
+are completed. It is not updated if more changes are added to the merge request:
+
+- The diff is created.
+- Web hooks are executed.
+- Pipelines are created.
+- Mergeability is checked.
+- Git LFS objects are linked.
+- Notifications are sent.
 
 ## Get single merge request participants
 
@@ -1102,7 +1120,7 @@ following response attributes:
 | `new_path` | string | New path of the file. |
 | `a_mode` | string | Old file mode of the file. |
 | `b_mode` | string | New file mode of the file. |
-| `diff` | string | Diff representation of the changes made on the file. |
+| `diff` | string | Diff representation of the changes made to the file. |
 | `new_file` | boolean | Indicates if the file has just been added. |
 | `renamed_file` | boolean | Indicates if the file has been renamed. |
 | `deleted_file` | boolean | Indicates if the file has been removed. |
@@ -1353,6 +1371,7 @@ POST /projects/:id/merge_requests
     "web_url": "https://gitlab.com/DouweM"
   },
   "merged_at": "2018-09-07T11:16:17.520Z",
+  "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
   "latest_build_started_at": "2018-09-07T07:27:38.472Z",
@@ -1524,6 +1543,7 @@ Must include at least one non-required attribute from above.
     "web_url": "https://gitlab.com/DouweM"
   },
   "merged_at": "2018-09-07T11:16:17.520Z",
+  "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
   "latest_build_started_at": "2018-09-07T07:27:38.472Z",
@@ -1701,6 +1721,7 @@ Supported attributes:
     "web_url": "https://gitlab.com/DouweM"
   },
   "merged_at": "2018-09-07T11:16:17.520Z",
+  "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
   "latest_build_started_at": "2018-09-07T07:27:38.472Z",
@@ -1902,6 +1923,7 @@ Supported attributes:
     "web_url": "https://gitlab.com/DouweM"
   },
   "merged_at": "2018-09-07T11:16:17.520Z",
+  "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
   "latest_build_started_at": "2018-09-07T07:27:38.472Z",
@@ -2202,6 +2224,7 @@ Example response:
     "web_url": "https://gitlab.com/DouweM"
   },
   "merged_at": "2018-09-07T11:16:17.520Z",
+  "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
   "latest_build_started_at": "2018-09-07T07:27:38.472Z",
@@ -2361,6 +2384,7 @@ Example response:
     "web_url": "https://gitlab.com/DouweM"
   },
   "merged_at": "2018-09-07T11:16:17.520Z",
+  "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
   "latest_build_started_at": "2018-09-07T07:27:38.472Z",

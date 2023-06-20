@@ -209,6 +209,11 @@ module MergeRequests
         old_branch, new_branch)
     end
 
+    override :before_update
+    def before_update(merge_request, skip_spam_check: false)
+      merge_request.check_for_spam(user: current_user, action: :update) unless skip_spam_check
+    end
+
     override :handle_quick_actions
     def handle_quick_actions(merge_request)
       super

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe User, feature_category: :user_profile do
+  using RSpec::Parameterized::TableSyntax
+
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers
@@ -59,6 +61,9 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:setup_for_company).to(:user_preference) }
     it { is_expected.to delegate_method(:setup_for_company=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:project_shortcut_buttons).to(:user_preference) }
+    it { is_expected.to delegate_method(:project_shortcut_buttons=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:render_whitespace_in_code).to(:user_preference) }
     it { is_expected.to delegate_method(:render_whitespace_in_code=).to(:user_preference).with_arguments(:args) }
@@ -152,7 +157,11 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:saved_replies).class_name('::Users::SavedReply') }
     it { is_expected.to have_many(:uploads) }
-    it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
+    it { is_expected.to have_many(:abuse_reports).dependent(:nullify).inverse_of(:user) }
+    it { is_expected.to have_many(:reported_abuse_reports).dependent(:nullify).class_name('AbuseReport').inverse_of(:reporter) }
+    it { is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport').inverse_of(:assignee) }
+    it { is_expected.to have_many(:resolved_abuse_reports).class_name('AbuseReport').inverse_of(:resolved_by) }
+    it { is_expected.to have_many(:abuse_events).class_name('Abuse::Event').inverse_of(:user) }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:user) }
@@ -2081,7 +2090,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       user = create(:user)
 
-      expect(user.incoming_email_token).to eql('gitlab')
+      expect(user.incoming_email_token).to eql("glimt-gitlab")
     end
   end
 
@@ -2126,6 +2135,12 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(feed_token).not_to be_blank
       expect(user.reload.feed_token).to eq feed_token
+    end
+
+    it 'returns feed tokens with a prefix' do
+      user = create(:user)
+
+      expect(user.feed_token).to start_with('glft-')
     end
 
     it 'ensures no feed token when disabled' do
@@ -2175,7 +2190,7 @@ RSpec.describe User, feature_category: :user_profile do
   describe 'enabled_static_object_token' do
     let_it_be(:static_object_token) { 'ilqx6jm1u945macft4eff0nw' }
 
-    it 'returns incoming email token when supported' do
+    it 'returns static object token when supported' do
       allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(true)
 
       user = create(:user, static_object_token: static_object_token)
@@ -2201,6 +2216,14 @@ RSpec.describe User, feature_category: :user_profile do
       user = create(:user, incoming_email_token: incoming_email_token)
 
       expect(user.enabled_incoming_email_token).to eq(incoming_email_token)
+    end
+
+    it 'returns incoming mail tokens with a prefix' do
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+
+      user = create(:user)
+
+      expect(user.enabled_incoming_email_token).to start_with('glimt-')
     end
 
     it 'returns `nil` when not supported' do
@@ -2923,6 +2946,56 @@ RSpec.describe User, feature_category: :user_profile do
         key = create(:personal_key)
 
         expect(key.user.require_ssh_key?).to eq(false)
+      end
+    end
+  end
+
+  describe '#spammer?' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when the user is a spammer' do
+      before do
+        allow(user).to receive(:spam_score).and_return(0.9)
+      end
+
+      it 'classifies the user as a spammer' do
+        expect(user).to be_spammer
+      end
+    end
+
+    context 'when the user is not a spammer' do
+      before do
+        allow(user).to receive(:spam_score).and_return(0.1)
+      end
+
+      it 'does not classify the user as a spammer' do
+        expect(user).not_to be_spammer
+      end
+    end
+  end
+
+  describe '#spam_score' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when the user is a spammer' do
+      before do
+        create(:abuse_trust_score, user: user, score: 0.8)
+        create(:abuse_trust_score, user: user, score: 0.9)
+      end
+
+      it 'returns the expected score' do
+        expect(user.spam_score).to be_within(0.01).of(0.85)
+      end
+    end
+
+    context 'when the user is not a spammer' do
+      before do
+        create(:abuse_trust_score, user: user, score: 0.1)
+        create(:abuse_trust_score, user: user, score: 0.0)
+      end
+
+      it 'returns the expected score' do
+        expect(user.spam_score).to be_within(0.01).of(0.05)
       end
     end
   end
@@ -4112,8 +4185,6 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#following_users_allowed?' do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be(:user) { create(:user) }
     let_it_be(:followee) { create(:user) }
 
@@ -4497,6 +4568,18 @@ RSpec.describe User, feature_category: :user_profile do
 
       it { is_expected.to include shared_group }
       it { is_expected.not_to include other_group }
+    end
+
+    context 'when a new column is added to namespaces table' do
+      before do
+        ApplicationRecord.connection.execute "ALTER TABLE namespaces ADD COLUMN _test_column_xyz INT NULL"
+      end
+
+      # We sanity check that we don't get:
+      #   ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  each UNION query must have the same number of columns
+      it 'will not raise errors' do
+        expect { subject.count }.not_to raise_error
+      end
     end
   end
 
@@ -5950,35 +6033,187 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#delete_async' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, note: "existing note") }
     let(:deleted_by) { create(:user) }
 
-    it 'blocks the user then schedules them for deletion if a hard delete is specified' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, { hard_delete: true })
+    shared_examples 'schedules user for deletion without delay' do
+      it 'schedules user for deletion without delay' do
+        expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, {})
+        expect(DeleteUserWorker).not_to receive(:perform_in)
 
+        user.delete_async(deleted_by: deleted_by)
+      end
+    end
+
+    shared_examples 'it does not block the user' do
+      it 'does not block the user' do
+        user.delete_async(deleted_by: deleted_by)
+
+        expect(user).not_to be_blocked
+      end
+    end
+
+    it 'blocks the user if hard delete is specified' do
       user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })
 
       expect(user).to be_blocked
     end
 
-    it 'schedules user for deletion without blocking them' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, {})
+    it_behaves_like 'schedules user for deletion without delay'
 
-      user.delete_async(deleted_by: deleted_by)
-
-      expect(user).not_to be_blocked
-    end
+    it_behaves_like 'it does not block the user'
 
     context 'when target user is the same as deleted_by' do
       let(:deleted_by) { user }
 
-      it 'blocks the user and schedules the record for deletion with the correct delay' do
+      subject { user.delete_async(deleted_by: deleted_by) }
+
+      before do
+        allow(user).to receive(:has_possible_spam_contributions?).and_return(true)
+      end
+
+      shared_examples 'schedules the record for deletion with the correct delay' do
+        it 'schedules the record for deletion with the correct delay' do
+          freeze_time do
+            expect(DeleteUserWorker).to receive(:perform_in).with(7.days, user.id, user.id, {})
+
+            subject
+          end
+        end
+      end
+
+      it_behaves_like 'schedules the record for deletion with the correct delay'
+
+      it 'blocks the user' do
+        subject
+
+        expect(user).to be_blocked
+        expect(user).not_to be_banned
+      end
+
+      context 'with possible spam contribution' do
+        context 'with comments' do
+          it_behaves_like 'schedules the record for deletion with the correct delay' do
+            before do
+              allow(user).to receive(:has_possible_spam_contributions?).and_call_original
+
+              note = create(:note_on_issue, author: user)
+              create(:event, :commented, target: note, author: user)
+            end
+          end
+        end
+
+        context 'with other types' do
+          where(:resource, :action, :delayed) do
+            'Issue'        | :created | true
+            'MergeRequest' | :created | true
+            'Issue'        | :closed  | false
+            'MergeRequest' | :closed  | false
+            'WorkItem'     | :created | false
+          end
+
+          with_them do
+            before do
+              allow(user).to receive(:has_possible_spam_contributions?).and_call_original
+
+              case resource
+              when 'Issue'
+                create(:event, action, :for_issue, author: user)
+              when 'MergeRequest'
+                create(:event, action, :for_merge_request, author: user)
+              when 'WorkItem'
+                create(:event, action, :for_work_item, author: user)
+              end
+            end
+
+            if params[:delayed]
+              it_behaves_like 'schedules the record for deletion with the correct delay'
+            else
+              it_behaves_like 'schedules user for deletion without delay'
+            end
+          end
+        end
+      end
+
+      context 'when user has no possible spam contributions' do
+        before do
+          allow(user).to receive(:has_possible_spam_contributions?).and_return(false)
+        end
+
+        it_behaves_like 'schedules user for deletion without delay'
+      end
+
+      context 'when the user is a spammer' do
+        before do
+          allow(user).to receive(:spammer?).and_return(true)
+        end
+
+        context 'when the user account is less than 7 days old' do
+          it_behaves_like 'schedules the record for deletion with the correct delay'
+
+          it 'creates an abuse report with the correct data' do
+            expect { subject }.to change { AbuseReport.count }.from(0).to(1)
+            expect(AbuseReport.last.attributes).to include({
+              reporter_id: User.security_bot.id,
+              user_id: user.id,
+              category: "spam",
+              message: 'Potential spammer account deletion'
+            }.stringify_keys)
+          end
+
+          it 'adds custom attribute to the user with the correct values' do
+            subject
+
+            custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
+            expect(custom_attribute.value).to eq(AbuseReport.last.id.to_s)
+          end
+
+          it 'bans the user' do
+            subject
+
+            expect(user).to be_banned
+          end
+
+          context 'when there is an existing abuse report' do
+            let!(:abuse_report) { create(:abuse_report, user: user, reporter: User.security_bot, message: 'Existing') }
+
+            it 'updates the abuse report' do
+              subject
+              abuse_report.reload
+
+              expect(abuse_report.message).to eq("Existing\n\nPotential spammer account deletion")
+            end
+
+            it 'adds custom attribute to the user with the correct values' do
+              subject
+
+              custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
+              expect(custom_attribute.value).to eq(abuse_report.id.to_s)
+            end
+          end
+        end
+
+        context 'when the user acount is greater than 7 days old' do
+          before do
+            allow(user).to receive(:account_age_in_days).and_return(8)
+          end
+
+          it_behaves_like 'schedules the record for deletion with the correct delay'
+
+          it 'blocks the user' do
+            subject
+
+            expect(user).to be_blocked
+            expect(user).not_to be_banned
+          end
+        end
+      end
+
+      it 'updates note to indicate the action (account was deleted by the user) and timestamp' do
         freeze_time do
-          expect(DeleteUserWorker).to receive(:perform_in).with(7.days, user.id, user.id, {})
+          expected_note = "User deleted own account on #{Time.zone.now}\n#{user.note}"
 
-          user.delete_async(deleted_by: deleted_by)
-
-          expect(user).to be_blocked
+          expect { user.delete_async(deleted_by: deleted_by) }.to change { user.note }.to(expected_note)
         end
       end
 
@@ -5987,12 +6222,12 @@ RSpec.describe User, feature_category: :user_profile do
           stub_feature_flags(delay_delete_own_user: false)
         end
 
-        it 'schedules user for deletion without blocking them' do
-          expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id, {})
+        it_behaves_like 'schedules user for deletion without delay'
 
-          user.delete_async(deleted_by: deleted_by)
+        it_behaves_like 'it does not block the user'
 
-          expect(user).not_to be_blocked
+        it 'does not update the note' do
+          expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.note }
         end
       end
     end
@@ -6801,6 +7036,31 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#dismissed_callout_before?' do
+    let_it_be(:user, refind: true) { create(:user) }
+    let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
+
+    context 'when no callout dismissal record exists' do
+      it 'returns false' do
+        expect(user.dismissed_callout_before?(feature_name, 1.day.ago)).to eq false
+      end
+    end
+
+    context 'when dismissed callout exists' do
+      before_all do
+        create(:callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
+      end
+
+      it 'returns false when dismissed_before is earlier than dismissed_at' do
+        expect(user.dismissed_callout_before?(feature_name, 6.months.ago)).to eq false
+      end
+
+      it 'returns true when dismissed_before is later than dismissed_at' do
+        expect(user.dismissed_callout_before?(feature_name, 3.months.ago)).to eq true
+      end
+    end
+  end
+
   describe '#find_or_initialize_callout' do
     let_it_be(:user, refind: true) { create(:user) }
     let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
@@ -7121,8 +7381,6 @@ RSpec.describe User, feature_category: :user_profile do
       let(:user_id) { user.id }
 
       describe 'update user' do
-        using RSpec::Parameterized::TableSyntax
-
         where(:attributes) do
           [
             { state: 'blocked' },
@@ -7849,6 +8107,72 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect(emails).to eq(project_commit_email)
         end
+      end
+    end
+  end
+
+  describe '#telesign_score' do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    context 'when the user has a telesign risk score' do
+      before do
+        create(:abuse_trust_score, user: user1, score: 12.0, source: :telesign)
+        create(:abuse_trust_score, user: user1, score: 24.0, source: :telesign)
+      end
+
+      it 'returns the latest score' do
+        expect(user1.telesign_score).to be(24.0)
+      end
+    end
+
+    context 'when the user does not have a telesign risk score' do
+      it 'defaults to zero' do
+        expect(user2.telesign_score).to be(0.0)
+      end
+    end
+  end
+
+  describe '#arkose_global_score' do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    context 'when the user has an arkose global risk score' do
+      before do
+        create(:abuse_trust_score, user: user1, score: 12.0, source: :arkose_global_score)
+        create(:abuse_trust_score, user: user1, score: 24.0, source: :arkose_global_score)
+      end
+
+      it 'returns the latest score' do
+        expect(user1.arkose_global_score).to be(24.0)
+      end
+    end
+
+    context 'when the user does not have an arkose global risk score' do
+      it 'defaults to zero' do
+        expect(user2.arkose_global_score).to be(0.0)
+      end
+    end
+  end
+
+  describe '#arkose_custom_score' do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    context 'when the user has an arkose custom risk score' do
+      before do
+        create(:abuse_trust_score, user: user1, score: 12.0, source: :arkose_custom_score)
+        create(:abuse_trust_score, user: user1, score: 24.0, source: :arkose_custom_score)
+      end
+
+      it 'returns the latest score' do
+        expect(user1.arkose_custom_score).to be(24.0)
+      end
+    end
+
+    context 'when the user does not have an arkose custom risk score' do
+      it 'defaults to zero' do
+        expect(user2.arkose_custom_score).to be(0.0)
       end
     end
   end

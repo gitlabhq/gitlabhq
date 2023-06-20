@@ -63,12 +63,6 @@
     }
   }
 
-  @include media-breakpoint-down(md) {
-    .time-ago {
-      align-items: flex-end;
-    }
-  }
-
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;

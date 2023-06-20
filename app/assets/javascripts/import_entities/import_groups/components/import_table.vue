@@ -560,7 +560,7 @@ export default {
   gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
-  betaFeatureHelpPath: helpPagePath('policy/alpha-beta-support', { anchor: 'beta-features' }),
+  betaFeatureHelpPath: helpPagePath('policy/experiment-beta-support', { anchor: 'beta-features' }),
   popoverOptions: { title: __('What is listed here?') },
   i18n,
   LOCAL_STORAGE_KEY: 'gl-bulk-imports-status-page-size-v1',

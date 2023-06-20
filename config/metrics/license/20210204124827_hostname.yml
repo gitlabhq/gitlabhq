@@ -3,7 +3,7 @@ key_path: hostname
 description: Host name of GitLab instance
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: string
 status: active
 milestone: "<13.9"

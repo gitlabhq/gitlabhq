@@ -18,11 +18,44 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
   end
 
   let(:logger) { instance_spy(Gitlab::AuditJsonLogger) }
+  let(:app_logger) { instance_spy(Gitlab::AppLogger) }
 
   subject(:auditor) { described_class }
 
   describe '.audit' do
     let(:audit!) { auditor.audit(context) }
+
+    context 'when yaml definition is not defined' do
+      before do
+        allow(Gitlab::Audit::Type::Definition).to receive(:defined?).and_return(false)
+        allow(Gitlab::AppLogger).to receive(:warn).and_return(app_logger)
+      end
+
+      it 'logs a warning when YAML is not defined' do
+        expected_warning = {
+          message: 'Logging audit events without an event type definition will be deprecated soon ' \
+                   '(https://docs.gitlab.com/ee/development/audit_event_guide/#event-type-definitions)',
+          event_type: name
+        }
+
+        audit!
+
+        expect(Gitlab::AppLogger).to have_received(:warn).with(expected_warning)
+      end
+    end
+
+    context 'when yaml definition is defined' do
+      before do
+        allow(Gitlab::Audit::Type::Definition).to receive(:defined?).and_return(true)
+        allow(Gitlab::AppLogger).to receive(:warn).and_return(app_logger)
+      end
+
+      it 'does not log a warning when YAML is defined' do
+        audit!
+
+        expect(Gitlab::AppLogger).not_to have_received(:warn)
+      end
+    end
 
     context 'when authentication event' do
       it 'creates an authentication event' do

@@ -1,8 +1,8 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { NodeViewWrapper } from '@tiptap/vue-2';
+import { GlDisclosureDropdown } from '@gitlab/ui';
+import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
 import { selectedRect as getSelectedRect } from '@tiptap/pm/tables';
 import { nextTick } from 'vue';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import TableCellBaseWrapper from '~/content_editor/components/wrappers/table_cell_base.vue';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../../test_utils';
@@ -15,32 +15,21 @@ describe('content/components/wrappers/table_cell_base', () => {
   let node;
 
   const createWrapper = (propsData = { cellType: 'td' }) => {
-    wrapper = shallowMountExtended(TableCellBaseWrapper, {
+    wrapper = mountExtended(TableCellBaseWrapper, {
       propsData: {
         editor,
         node,
+        getPos: () => 0,
         ...propsData,
       },
       stubs: {
-        GlDropdown: stubComponent(GlDropdown, {
-          methods: {
-            hide: jest.fn(),
-          },
-        }),
+        NodeViewWrapper: stubComponent(NodeViewWrapper),
+        NodeViewContent: stubComponent(NodeViewContent),
       },
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItemWithLabel = (name) =>
-    wrapper
-      .findAllComponents(GlDropdownItem)
-      .filter((dropdownItem) => dropdownItem.text().includes(name))
-      .at(0);
-  const findDropdownItemWithLabelExists = (name) =>
-    wrapper
-      .findAllComponents(GlDropdownItem)
-      .filter((dropdownItem) => dropdownItem.text().includes(name)).length > 0;
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const setCurrentPositionInCell = () => {
     const { $cursor } = editor.state.selection;
 
@@ -48,7 +37,9 @@ describe('content/components/wrappers/table_cell_base', () => {
   };
 
   beforeEach(() => {
-    node = {};
+    node = {
+      attrs: {},
+    };
     editor = createTestEditor({});
   });
 
@@ -68,11 +59,10 @@ describe('content/components/wrappers/table_cell_base', () => {
       category: 'tertiary',
       icon: 'chevron-down',
       size: 'small',
-      split: false,
+      noCaret: true,
     });
     expect(findDropdown().attributes()).toMatchObject({
       boundary: 'viewport',
-      'no-caret': '',
     });
   });
 
@@ -88,6 +78,10 @@ describe('content/components/wrappers/table_cell_base', () => {
     beforeEach(async () => {
       setCurrentPositionInCell();
       getSelectedRect.mockReturnValue({
+        top: 0,
+        left: 0,
+        bottom: 1,
+        right: 1,
         map: {
           height: 1,
           width: 1,
@@ -107,57 +101,55 @@ describe('content/components/wrappers/table_cell_base', () => {
       ${'Delete table'}         | ${'deleteTable'}
     `(
       'executes $commandName when $dropdownItemLabel button is clicked',
-      ({ commandName, dropdownItemLabel }) => {
+      async ({ dropdownItemLabel, commandName }) => {
         const mocks = mockChainedCommands(editor, [commandName, 'run']);
 
-        findDropdownItemWithLabel(dropdownItemLabel).vm.$emit('click');
+        await wrapper.findByRole('button', { name: dropdownItemLabel }).trigger('click');
 
         expect(mocks[commandName]).toHaveBeenCalled();
       },
     );
 
-    it('does not allow deleting rows and columns', () => {
-      expect(findDropdownItemWithLabelExists('Delete row')).toBe(false);
-      expect(findDropdownItemWithLabelExists('Delete column')).toBe(false);
+    it.each`
+      dropdownItemLabel
+      ${'Delete row'}
+      ${'Delete column'}
+      ${'Split cell'}
+      ${'Merge'}
+    `('does not have option $dropdownItemLabel available', ({ dropdownItemLabel }) => {
+      expect(findDropdown().text()).not.toContain(dropdownItemLabel);
     });
 
-    it('allows deleting rows when there are more than 2 rows in the table', async () => {
-      const mocks = mockChainedCommands(editor, ['deleteRow', 'run']);
+    it.each`
+      dropdownItemLabel  | commandName
+      ${'Delete row'}    | ${'deleteRow'}
+      ${'Delete column'} | ${'deleteColumn'}
+    `(
+      'allows $dropdownItemLabel operation when there are more than 2 rows and 1 column in the table',
+      async ({ dropdownItemLabel, commandName }) => {
+        const mocks = mockChainedCommands(editor, [commandName, 'run']);
 
-      getSelectedRect.mockReturnValue({
-        map: {
-          height: 3,
-        },
-      });
+        getSelectedRect.mockReturnValue({
+          top: 0,
+          left: 0,
+          bottom: 1,
+          right: 1,
+          map: {
+            height: 3,
+            width: 2,
+          },
+        });
 
-      emitEditorEvent({ tiptapEditor: editor, event: 'selectionUpdate' });
+        emitEditorEvent({ tiptapEditor: editor, event: 'selectionUpdate' });
 
-      await nextTick();
+        await nextTick();
+        await wrapper.findByRole('button', { name: dropdownItemLabel }).trigger('click');
 
-      findDropdownItemWithLabel('Delete row').vm.$emit('click');
+        expect(mocks[commandName]).toHaveBeenCalled();
+      },
+    );
 
-      expect(mocks.deleteRow).toHaveBeenCalled();
-    });
-
-    it('allows deleting columns when there are more than 1 column in the table', async () => {
-      const mocks = mockChainedCommands(editor, ['deleteColumn', 'run']);
-
-      getSelectedRect.mockReturnValue({
-        map: {
-          width: 2,
-        },
-      });
-
-      emitEditorEvent({ tiptapEditor: editor, event: 'selectionUpdate' });
-
-      await nextTick();
-
-      findDropdownItemWithLabel('Delete column').vm.$emit('click');
-
-      expect(mocks.deleteColumn).toHaveBeenCalled();
-    });
-
-    describe('when current row is the table’s header', () => {
+    describe("when current row is the table's header", () => {
       beforeEach(async () => {
         // Remove 2 rows condition
         getSelectedRect.mockReturnValue({
@@ -172,7 +164,7 @@ describe('content/components/wrappers/table_cell_base', () => {
       });
 
       it('does not allow adding a row before the header', () => {
-        expect(findDropdownItemWithLabelExists('Insert row before')).toBe(false);
+        expect(findDropdown().text()).not.toContain('Insert row before');
       });
 
       it('does not allow removing the header row', async () => {
@@ -180,8 +172,105 @@ describe('content/components/wrappers/table_cell_base', () => {
 
         await nextTick();
 
-        expect(findDropdownItemWithLabelExists('Delete row')).toBe(false);
+        expect(findDropdown().text()).not.toContain('Delete row');
       });
+    });
+
+    describe.each`
+      attrs             | rect
+      ${{ rowspan: 2 }} | ${{ top: 0, left: 0, bottom: 2, right: 1 }}
+      ${{ colspan: 2 }} | ${{ top: 0, left: 0, bottom: 1, right: 2 }}
+    `('when selected cell has $attrs', ({ attrs, rect }) => {
+      beforeEach(() => {
+        node = { attrs };
+
+        getSelectedRect.mockReturnValue({
+          ...rect,
+          map: {
+            height: 3,
+            width: 2,
+          },
+        });
+
+        setCurrentPositionInCell();
+      });
+
+      it('allows splitting the cell', async () => {
+        const mocks = mockChainedCommands(editor, ['splitCell', 'run']);
+
+        createWrapper();
+
+        await nextTick();
+        await wrapper.findByRole('button', { name: 'Split cell' }).trigger('click');
+
+        expect(mocks.splitCell).toHaveBeenCalled();
+      });
+    });
+
+    describe('when selected cell has rowspan=2 and colspan=2', () => {
+      beforeEach(() => {
+        node = { attrs: { rowspan: 2, colspan: 2 } };
+        const rect = { top: 1, left: 1, bottom: 3, right: 3 };
+
+        getSelectedRect.mockReturnValue({
+          ...rect,
+          map: { height: 5, width: 5 },
+        });
+
+        setCurrentPositionInCell();
+      });
+
+      it.each`
+        type         | dropdownItemLabel     | commandName
+        ${'rows'}    | ${'Delete 2 rows'}    | ${'deleteRow'}
+        ${'columns'} | ${'Delete 2 columns'} | ${'deleteColumn'}
+      `('shows correct label for deleting $type', async ({ dropdownItemLabel, commandName }) => {
+        const mocks = mockChainedCommands(editor, [commandName, 'run']);
+
+        createWrapper();
+
+        await nextTick();
+        await wrapper.findByRole('button', { name: dropdownItemLabel }).trigger('click');
+
+        expect(mocks[commandName]).toHaveBeenCalled();
+      });
+    });
+
+    describe.each`
+      rows | cols | product
+      ${2} | ${1} | ${2}
+      ${1} | ${2} | ${2}
+      ${2} | ${2} | ${4}
+    `('when $rows x $cols ($product) cells are selected', ({ rows, cols, product }) => {
+      it.each`
+        dropdownItemLabel                                          | commandName
+        ${`Merge ${product} cells`}                                | ${'mergeCells'}
+        ${rows === 1 ? 'Delete row' : `Delete ${rows} rows`}       | ${'deleteRow'}
+        ${cols === 1 ? 'Delete column' : `Delete ${cols} columns`} | ${'deleteColumn'}
+      `(
+        'executes $commandName when $dropdownItemLabel is clicked',
+        async ({ dropdownItemLabel, commandName }) => {
+          const mocks = mockChainedCommands(editor, [commandName, 'run']);
+
+          getSelectedRect.mockReturnValue({
+            top: 0,
+            left: 0,
+            bottom: rows,
+            right: cols,
+            map: {
+              height: 4,
+              width: 4,
+            },
+          });
+
+          emitEditorEvent({ tiptapEditor: editor, event: 'selectionUpdate' });
+
+          await nextTick();
+          await wrapper.findByRole('button', { name: dropdownItemLabel }).trigger('click');
+
+          expect(mocks[commandName]).toHaveBeenCalled();
+        },
+      );
     });
   });
 });

@@ -101,8 +101,8 @@ a YAML snippet that you can paste in your GitLab CI/CD configuration.
 
 To generate an API Fuzzing configuration snippet:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [Available CI/CD variables](#available-cicd-variables).
 1. Select **Generate code snippet**.
@@ -2605,14 +2605,6 @@ deploy-test-target:
     paths:
       - environment_url.txt
 ```
-
-<!--
-### Target Container
-
-The API Fuzzing template supports launching a docker container containing an API target using docker-in-docker.
-
-TODO
--->
 
 ### Use OpenAPI with an invalid schema
 

@@ -21,8 +21,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
     end.new
   end
 
-  let_it_be(:project) { create(:project, :import_started) }
-  let_it_be(:project2) { create(:project, :import_canceled) }
+  let_it_be(:project) { create(:project, :import_started, import_url: 'https://github.com/foo/baz.git') }
 
   let(:importer_class) { double(:importer_class, name: 'klass_name') }
   let(:importer_instance) { double(:importer_instance) }
@@ -113,8 +112,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
       })
     end
 
-    it 'logs info if the import state is canceled' do
-      expect(project2.import_state.status).to eq('canceled')
+    it 'does not execute importer if import state is not in progress' do
+      allow(project.import_state).to receive(:status).and_return('failed')
 
       expect(importer_class).not_to receive(:new)
 
@@ -125,13 +124,14 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         .with(
           {
             github_identifiers: nil,
-            message: 'project import canceled',
-            project_id: project2.id,
-            importer: 'klass_name'
+            message: 'Project import is no longer running. Stopping worker.',
+            project_id: project.id,
+            importer: 'klass_name',
+            import_status: 'failed'
           }
         )
 
-      worker.import(project2, client, { 'number' => 11, 'github_id' => 2 } )
+      worker.import(project, client, { 'number' => 11, 'github_id' => 2 } )
     end
 
     it 'logs error when the import fails' do

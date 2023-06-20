@@ -12,6 +12,9 @@ class GraphqlController < ApplicationController
   # Max size of the query text in characters
   MAX_QUERY_SIZE = 10_000
 
+  # The query string of a standard IntrospectionQuery, used to compare incoming requests for caching
+  CACHED_INTROSPECTION_QUERY_STRING = CachedIntrospectionQuery.query_string
+
   # If a user is using their session to access GraphQL, we need to have session
   # storage, since the admin-mode check is session wide.
   # We can't enable this for anonymous users because that would cause users using
@@ -32,6 +35,7 @@ class GraphqlController < ApplicationController
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :track_jetbrains_usage
+  before_action :track_jetbrains_bundled_usage
   before_action :track_gitlab_cli_usage
   before_action :disable_query_limiting
   before_action :limit_query_size
@@ -54,7 +58,12 @@ class GraphqlController < ApplicationController
   urgency :low, [:execute]
 
   def execute
-    result = multiplex? ? execute_multiplex : execute_query
+    result = if Feature.enabled?(:cache_introspection_query) && params[:operationName] == 'IntrospectionQuery'
+               execute_introspection_query
+             else
+               multiplex? ? execute_multiplex : execute_query
+             end
+
     render json: result
   end
 
@@ -80,7 +89,7 @@ class GraphqlController < ApplicationController
     log_exception(exception)
 
     response.headers.merge!(exception.headers)
-    render_error(exception.message, status: :too_many_requests)
+    render_error(exception.message, status: :service_unavailable)
   end
 
   rescue_from Gitlab::Graphql::Variables::Invalid do |exception|
@@ -166,6 +175,11 @@ class GraphqlController < ApplicationController
 
   def track_jetbrains_usage
     Gitlab::UsageDataCounters::JetBrainsPluginActivityUniqueCounter
+      .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+  end
+
+  def track_jetbrains_bundled_usage
+    Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter
       .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
   end
 
@@ -258,5 +272,47 @@ class GraphqlController < ApplicationController
 
   def logs
     RequestStore.store[:graphql_logs].to_a
+  end
+
+  def execute_introspection_query
+    if introspection_query_can_use_cache?
+      Gitlab::AppLogger.info(message: "IntrospectionQueryCache hit")
+      log_introspection_query_cache_details(true)
+
+      # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
+      Rails.cache.fetch(
+        introspection_query_cache_key,
+        expires_in: 1.day) do
+          execute_query.to_json
+        end
+    else
+      Gitlab::AppLogger.info(message: "IntrospectionQueryCache miss")
+      log_introspection_query_cache_details(false)
+
+      execute_query
+    end
+  end
+
+  def introspection_query_can_use_cache?
+    graphql_query = GraphQL::Query.new(GitlabSchema, query: query, variables: build_variables(params[:variables]))
+
+    CACHED_INTROSPECTION_QUERY_STRING == graphql_query.query_string.squish
+  end
+
+  def introspection_query_cache_key
+    # We use context[:remove_deprecated] here as an introspection query result can differ based on the
+    # visibility of schema items. Visibility can be affected by the remove_deprecated param. For more context, see:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/409448#note_1377558096
+    ['introspection-query-cache', Gitlab.revision, context[:remove_deprecated]]
+  end
+
+  def log_introspection_query_cache_details(can_use_introspection_query_cache)
+    Gitlab::AppLogger.info(
+      message: "IntrospectionQueryCache",
+      can_use_introspection_query_cache: can_use_introspection_query_cache.to_s,
+      query: query,
+      variables: build_variables(params[:variables]).to_s,
+      introspection_query_cache_key: introspection_query_cache_key.to_s
+    )
   end
 end

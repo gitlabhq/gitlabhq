@@ -1,0 +1,8 @@
+---
+name: cluster_agents_limit_tokens_created
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120825
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/412399
+milestone: '16.1'
+type: development
+group: group::environments
+default_enabled: true

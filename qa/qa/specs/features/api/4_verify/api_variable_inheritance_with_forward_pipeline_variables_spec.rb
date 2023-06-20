@@ -70,15 +70,13 @@ module QA
       def expect_downstream_pipeline_to_inherit_variable
         pipeline = downstream_pipeline(upstream_project, 'child1_trigger')
         expect(pipeline).to have_variable(key: key, value: value),
-                            "Expected to find `{key: 'TEST_VAR', value: 'This is great!'}`" \
-            " but got #{pipeline.pipeline_variables}"
+          "Expected to find `{key: 'TEST_VAR', value: 'This is great!'}` but got #{pipeline.pipeline_variables}"
       end
 
       def expect_downstream_pipeline_not_to_inherit_variable(project, bridge_name)
         pipeline = downstream_pipeline(project, bridge_name)
         expect(pipeline).not_to have_variable(key: key, value: value),
-                                "Did not expect to find `{key: 'TEST_VAR', value: 'This is great!'}`" \
-            " but got #{pipeline.pipeline_variables}"
+          "Did not expect to find `{key: 'TEST_VAR', value: 'This is great!'}` but got #{pipeline.pipeline_variables}"
       end
     end
   end

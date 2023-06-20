@@ -34,8 +34,8 @@ displays an error.
 
 To set up push mirroring for an existing project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.
@@ -79,8 +79,15 @@ To configure a mirror from GitLab to GitHub:
 
 1. Create a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
    with `public_repo` selected.
-1. Enter a **Git repository URL** with this format:
-   `https://<your_access_token>@github.com/<github_group>/<github_project>.git`.
+1. Enter a **Git repository URL** with this format, changing the variables as needed:
+
+   ```plaintext
+   https://USERNAME@github.com/GROUP/PROJECT.git
+   ```
+
+   - `USERNAME`: The username of the owner of the personal access token.
+   - `GROUP`: The group on GitHub.
+   - `PROJECT`: The project on GitHub.
 1. For **Password**, enter your GitHub personal access token.
 1. Select **Mirror repository**.
 
@@ -149,7 +156,7 @@ To set up a mirror from GitLab to AWS CodeCommit:
 1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repository.
 1. Open your new repository, and then select **Clone URL > Clone HTTPS** (not **Clone HTTPS (GRC)**).
 1. In GitLab, open the repository to be push-mirrored.
-1. On the left sidebar, select **Settings > Repository**, and then expand **Mirroring repositories**.
+1. Select **Settings > Repository**, and then expand **Mirroring repositories**.
 1. Fill in the **Git repository URL** field using this format:
 
    ```plaintext

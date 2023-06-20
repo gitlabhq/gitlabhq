@@ -973,6 +973,8 @@ Under the hood, it works like this:
 
 ```ruby
 class SwapPrimaryKey < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
   TABLE_NAME = :table_name
   PRIMARY_KEY = :table_name_pkey
   OLD_INDEX_NAME = :old_index_name

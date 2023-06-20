@@ -189,10 +189,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
   #
   # @param [CarrierWave::SanitizedFile]
   # @return [Nil]
-  # @raise [Gitlab::Utils::PathTraversalAttackError]
+  # @raise [Gitlab::PathTraversal::PathTraversalAttackError]
   def protect_from_path_traversal!(file)
     PROTECTED_METHODS.each do |method|
-      Gitlab::Utils.check_path_traversal!(self.send(method)) # rubocop: disable GitlabSecurity/PublicSend
+      Gitlab::PathTraversal.check_path_traversal!(self.send(method)) # rubocop: disable GitlabSecurity/PublicSend
 
     rescue ObjectNotReadyError
       # Do nothing. This test was attempted before the file was ready for that method

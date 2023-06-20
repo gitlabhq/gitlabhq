@@ -76,12 +76,21 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone = Milestones::UpdateService.new(project, current_user, milestone_params).execute(milestone)
 
     respond_to do |format|
-      format.js
       format.html do
         if @milestone.valid?
           redirect_to project_milestone_path(@project, @milestone)
         else
           render :edit
+        end
+      end
+
+      format.js
+
+      format.json do
+        if @milestone.valid?
+          head :no_content
+        else
+          render json: { errors: @milestone.errors.full_messages }, status: :unprocessable_entity
         end
       end
     end

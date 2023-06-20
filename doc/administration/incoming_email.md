@@ -156,7 +156,7 @@ If the sender's address is spoofed, the reject notice is delivered to the spoofe
 `FROM` address, which can cause the mail server's IP or domain to appear on a block
 list.
 
-### Omnibus package installations
+### Linux package installations
 
 1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature
     and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
@@ -270,7 +270,7 @@ Reply by email should now be working.
 
 Example configuration for Postfix mail server. Assumes mailbox `incoming@gitlab.example.com`.
 
-Example for Omnibus installs:
+Example for Linux package installations:
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -362,7 +362,7 @@ Example configuration for Gmail/Google Workspace. Assumes mailbox `gitlab-incomi
 NOTE:
 `incoming_email_email` cannot be a Gmail alias account.
 
-Example for Omnibus installs:
+Example for Linux package installations:
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -459,7 +459,7 @@ Exchange does not support sub-addressing, only two options exist:
 
 Assumes the catch-all mailbox `incoming@exchange.example.com`.
 
-Example for Omnibus installs:
+Example for Linux package installations:
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -533,7 +533,7 @@ Cannot support [Service Desk](../user/project/service_desk.md).
 
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
-Example for Omnibus installs:
+Example for Linux package installations:
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -617,7 +617,7 @@ To enable sub-addressing:
    Disconnect-ExchangeOnline
    ```
 
-This example for Omnibus GitLab assumes the mailbox `incoming@office365.example.com`:
+This example for Linux package installations assumes the mailbox `incoming@office365.example.com`:
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -678,7 +678,7 @@ incoming_email:
 
 ##### Catch-all mailbox
 
-This example for Omnibus installs assumes the catch-all mailbox `incoming@office365.example.com`:
+This example for Linux package installations assumes the catch-all mailbox `incoming@office365.example.com`:
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -743,7 +743,7 @@ NOTE:
 Supports [Reply by Email](reply_by_email.md) only.
 Cannot support [Service Desk](../user/project/service_desk.md).
 
-This example for Omnibus installs assumes the dedicated email address `incoming@office365.example.com`:
+This example for Linux package installations assumes the dedicated email address `incoming@office365.example.com`:
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -821,7 +821,7 @@ To mitigate security concerns, we recommend configuring an application access
 policy which limits the mailbox access for all accounts, as described in
 [Microsoft documentation](https://learn.microsoft.com/en-us/graph/auth-limit-mailbox-access).
 
-This example for Omnibus GitLab assumes you're using the following mailbox: `incoming@example.onmicrosoft.com`:
+This example for Linux package installations assumes you're using the following mailbox: `incoming@example.onmicrosoft.com`:
 
 ##### Configure Microsoft Graph
 

@@ -39,9 +39,13 @@ export default Node.create({
   addKeyboardShortcuts() {
     return {
       Enter: () => {
+        if (!this.editor.isActive('descriptionItem')) return false;
+
         return this.editor.commands.splitListItem('descriptionItem');
       },
       Tab: () => {
+        if (!this.editor.isActive('descriptionItem')) return false;
+
         const { isTerm } = this.editor.getAttributes('descriptionItem');
         if (isTerm)
           return this.editor.commands.updateAttributes('descriptionItem', { isTerm: !isTerm });
@@ -49,6 +53,8 @@ export default Node.create({
         return false;
       },
       'Shift-Tab': () => {
+        if (!this.editor.isActive('descriptionItem')) return false;
+
         const { isTerm } = this.editor.getAttributes('descriptionItem');
         if (isTerm) return this.editor.commands.liftListItem('descriptionItem');
 

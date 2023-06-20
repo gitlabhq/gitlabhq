@@ -38,8 +38,12 @@ module Gitlab
       # client - An instance of `Gitlab::GithubImport::Client`
       # hash - A Hash containing the details of the object to import.
       def import(project, client, hash)
-        if project.import_state&.canceled?
-          info(project.id, message: 'project import canceled')
+        unless project.import_state&.in_progress?
+          info(
+            project.id,
+            message: 'Project import is no longer running. Stopping worker.',
+            import_status: project.import_state.status
+          )
 
           return
         end

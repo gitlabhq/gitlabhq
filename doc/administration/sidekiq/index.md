@@ -278,7 +278,7 @@ To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
    sidekiq['exporter_tls_key_path'] = "/path/to/private-key.pem"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 When TLS is enabled, the same `port` and `address` are used as described above.

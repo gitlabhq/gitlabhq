@@ -46,29 +46,35 @@ RSpec.describe Gitlab::ReactiveCacheSetCache, :clean_gitlab_redis_cache do
   end
 
   describe '#clear_cache!', :use_clean_rails_redis_caching do
-    shared_examples 'clears cache' do
-      it 'deletes the cached items' do
-        # Cached key and value
-        Rails.cache.write('test_item', 'test_value')
-        # Add key to set
-        cache.write(cache_prefix, 'test_item')
+    it 'deletes the cached items' do
+      # Cached key and value
+      Rails.cache.write('test_item', 'test_value')
+      # Add key to set
+      cache.write(cache_prefix, 'test_item')
 
-        expect(cache.read(cache_prefix)).to contain_exactly('test_item')
-        cache.clear_cache!(cache_prefix)
+      expect(cache.read(cache_prefix)).to contain_exactly('test_item')
+      cache.clear_cache!(cache_prefix)
 
-        expect(cache.read(cache_prefix)).to be_empty
-      end
+      expect(cache.read(cache_prefix)).to be_empty
     end
 
-    context 'when featuer flag disabled' do
+    context 'when key size is large' do
       before do
-        stub_feature_flags(use_pipeline_over_multikey: false)
+        1001.times { |i| cache.write(cache_prefix, i) }
       end
 
-      it_behaves_like 'clears cache'
-    end
+      it 'sends multiple pipelines of 1000 unlinks' do
+        Gitlab::Redis::Cache.with do |redis|
+          if Gitlab::Redis::ClusterUtil.cluster?(redis)
+            expect(redis).to receive(:pipelined).at_least(2).and_call_original
+          else
+            expect(redis).to receive(:pipelined).once.and_call_original
+          end
+        end
 
-    it_behaves_like 'clears cache'
+        cache.clear_cache!(cache_prefix)
+      end
+    end
   end
 
   describe '#include?' do

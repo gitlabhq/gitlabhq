@@ -6,12 +6,14 @@ import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import issuableEventHub from '~/issues/list/eventhub';
 import { DEFAULT_SKELETON_COUNT, PAGE_SIZE_STORAGE_KEY } from '../constants';
 import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
 import IssuableItem from './issuable_item.vue';
 import IssuableTabs from './issuable_tabs.vue';
+import IssuableGrid from './issuable_grid.vue';
 
 const VueDraggable = () => import('vuedraggable');
 
@@ -30,12 +32,14 @@ export default {
     IssuableTabs,
     FilteredSearchBar,
     IssuableItem,
+    IssuableGrid,
     IssuableBulkEditSidebar,
     GlPagination,
     VueDraggable,
     PageSizeSelector,
     LocalStorageSync,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     namespace: {
       type: String,
@@ -194,6 +198,11 @@ export default {
       required: false,
       default: false,
     },
+    isGridView: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -228,6 +237,9 @@ export default {
     },
     issuablesWrapper() {
       return this.isManualOrdering ? VueDraggable : 'ul';
+    },
+    gridViewFeatureEnabled() {
+      return Boolean(this.glFeatures?.issuesGridView);
     },
   },
   watch: {
@@ -342,7 +354,7 @@ export default {
     <template v-else>
       <component
         :is="issuablesWrapper"
-        v-if="issuables.length > 0"
+        v-if="issuables.length > 0 && !isGridView"
         class="content-list issuable-list issues-list"
         :class="{ 'manual-ordering': isManualOrdering }"
         v-bind="$options.vueDraggableAttributes"
@@ -382,6 +394,9 @@ export default {
           </template>
         </issuable-item>
       </component>
+      <div v-else-if="issuables.length > 0 && isGridView">
+        <issuable-grid />
+      </div>
       <slot v-else name="empty-state"></slot>
     </template>
 

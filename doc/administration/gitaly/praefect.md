@@ -90,7 +90,7 @@ GitLab application database.
 
 ## Setup Instructions
 
-If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus GitLab package
+If you [installed](https://about.gitlab.com/install/) GitLab using the Linux package
 (highly recommended), follow the steps below:
 
 1. [Preparation](#preparation)
@@ -107,7 +107,7 @@ Before beginning, you should already have a working GitLab instance.
 [Learn how to install GitLab](https://about.gitlab.com/install/).
 
 Provision a PostgreSQL server. You should use the PostgreSQL that is shipped
-with Omnibus GitLab and use it to configure the PostgreSQL database. You can use an
+with the Linux package and use it to configure the PostgreSQL database. You can use an
 external PostgreSQL server (version 11 or newer) but you must set it up [manually](#manual-database-setup).
 
 Prepare all your new nodes by [installing GitLab](https://about.gitlab.com/install/). You need:
@@ -159,7 +159,7 @@ with secure tokens as you complete the setup process.
 We note in the instructions below where these secrets are required.
 
 NOTE:
-Omnibus GitLab installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SECRET_TOKEN`.
+Linux package installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SECRET_TOKEN`.
 
 ### Customize time server setting
 
@@ -178,7 +178,7 @@ The replication state is internal to each instance of GitLab and should
 not be replicated.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of failure. To avoid this, you can configure your own clustered
-PostgreSQL. Support for PostgreSQL replication and failover using Omnibus GitLab is proposed in [epic 7814](https://gitlab.com/groups/gitlab-org/-/epics/7814).
+PostgreSQL. Support for PostgreSQL replication and failover using the Linux package is proposed in [epic 7814](https://gitlab.com/groups/gitlab-org/-/epics/7814).
 Clustered database support for other databases (for example, Praefect and Geo databases) is proposed in
 [issue 7292](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 
@@ -198,7 +198,7 @@ Setting up PostgreSQL creates empty Praefect tables. For more information, see t
 #### Running GitLab and Praefect databases on the same server
 
 The GitLab application database and the Praefect database can be run on the same server. However, Praefect should have
-its own database server when using Omnibus GitLab PostgreSQL. If there is a failover, Praefect isn't aware and starts to
+its own database server when using PostgreSQL from the Linux package. If there is a failover, Praefect isn't aware and starts to
 fail as the database it's trying to use would either:
 
 - Be unavailable.
@@ -213,10 +213,10 @@ To complete this section you need:
   - A PostgreSQL user with permissions to manage the database server
 
 In this section, we configure the PostgreSQL database. This can be used for both external
-and Omnibus-provided PostgreSQL server.
+and Linux package-provided PostgreSQL server.
 
 To run the following instructions, you can use the Praefect node, where `psql` is installed
-by Omnibus GitLab (`/opt/gitlab/embedded/bin/psql`). If you are using the Omnibus-provided
+by the Linux package (`/opt/gitlab/embedded/bin/psql`). If you are using the Linux package-provided
 PostgreSQL you can use `gitlab-psql` on the PostgreSQL node instead:
 
 1. Create a new user `praefect` to be used by Praefect:
@@ -233,11 +233,11 @@ PostgreSQL you can use `gitlab-psql` on the PostgreSQL node instead:
    CREATE DATABASE praefect_production WITH OWNER praefect ENCODING UTF8;
    ```
 
-For using Omnibus-provided PgBouncer you need to take the following additional steps. We strongly
-recommend using the PostgreSQL that is shipped with Omnibus as the backend. The following
-instructions only work on Omnibus-provided PostgreSQL:
+When using the Linux package-provided PgBouncer, you need to take the following additional steps. We strongly
+recommend using the PostgreSQL that is shipped with the Linux package as the backend. The following
+instructions only work on the Linux package-provided PostgreSQL:
 
-1. For Omnibus-provided PgBouncer, you need to use the hash of `praefect` password instead the of the
+1. For the Linux package-provided PgBouncer, you need to use the hash of `praefect` password instead the of the
    actual password:
 
    ```sql
@@ -247,7 +247,7 @@ instructions only work on Omnibus-provided PostgreSQL:
    Replace `<PRAEFECT_SQL_PASSWORD_HASH>` with the hash of the password you generated in the
    preparation step. It is prefixed with `md5` literal.
 
-1. The PgBouncer that is shipped with Omnibus is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
+1. The PgBouncer that is shipped with the Linux package is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
    and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`
    database:
 
@@ -447,7 +447,7 @@ praefect['configuration'] = {
 With this configuration, Praefect uses PgBouncer for both connection types.
 
 NOTE:
-Omnibus GitLab handles the authentication requirements (using `auth_query`), but if you are preparing
+Linux package installations handle the authentication requirements (using `auth_query`), but if you are preparing
 your databases manually and configuring an external PgBouncer, you must include `praefect` user and
 its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
 configuration option is set. For more details, consult the PgBouncer documentation.
@@ -670,7 +670,7 @@ Updates to example must be made at:
 1. Enable [distribution of reads](index.md#distributed-reads).
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -694,7 +694,7 @@ Updates to example must be made at:
      additional configuration changes can be done and then reconfigure can be run manually.
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -702,7 +702,7 @@ Updates to example must be made at:
 
 1. To ensure that Praefect
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
-   [restart Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
+   [restart Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl restart praefect
@@ -758,9 +758,9 @@ Note the following:
   }
   ```
 
-To configure Praefect with TLS:
+Configure Praefect with TLS.
 
-**For Omnibus GitLab**
+For Linux package installations:
 
 1. Create certificates for Praefect servers.
 
@@ -788,7 +788,7 @@ To configure Praefect with TLS:
    }
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 1. On the Praefect clients (including each Gitaly server), copy the certificates,
    or their certificate authority, into `/etc/gitlab/trusted-certs`:
@@ -809,9 +809,9 @@ To configure Praefect with TLS:
    })
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-**For installations from source**
+For self-compiled installations:
 
 1. Create certificates for Praefect servers.
 1. On the Praefect servers, create the `/etc/gitlab/ssl` directory and copy your key and certificate
@@ -950,7 +950,7 @@ You can also appoint an authoritative name server by setting it in this format:
    praefect['consul_service_name'] = 'praefect'
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
 `/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
 with Praefect service discovery address, such as `praefect.service.consul`.
@@ -964,7 +964,7 @@ with Praefect service discovery address, such as `praefect.service.consul`.
    })
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 :::TabTitle Self-compiled (source)
 
@@ -1091,7 +1091,7 @@ For more information on Gitaly server configuration, see our
 
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
         servers and any other Gitaly clients.
-     1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on Gitaly servers.
+     1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 
    - Method 2:
 
@@ -1146,7 +1146,7 @@ For more information on Gitaly server configuration, see our
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Gitaly](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure Gitaly](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1154,7 +1154,7 @@ For more information on Gitaly server configuration, see our
 
 1. To ensure that Gitaly
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
-   [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
+   [restart Gitaly](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl restart gitaly
@@ -1273,7 +1273,7 @@ Particular attention should be shown to:
 
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
         servers and any other Gitaly clients.
-     1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) on Gitaly servers.
+     1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 
    - Method 2:
 
@@ -1317,7 +1317,7 @@ Particular attention should be shown to:
    ]
    ```
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1335,7 +1335,8 @@ Particular attention should be shown to:
 
 1. Check that the Praefect storage is configured to store new repositories:
 
-   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
    1. On the left sidebar, select **Settings > Repository**.
    1. Expand the **Repository storage** section.
 
@@ -1388,7 +1389,7 @@ To get started quickly:
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+   [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1424,49 +1425,59 @@ Praefect does not store the actual replication factor, but assigns enough storag
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
 the replication factor of repositories assigned to the storage is decreased accordingly.
 
-You can configure:
+You can configure either:
 
-- A default replication factor for each virtual storage that is applied to newly-created repositories.
-  The configuration is added to the `/etc/gitlab/gitlab.rb` file:
+- A default replication factor for each virtual storage that is applied to newly created repositories.
+- A replication factor for an existing repository with the `set-replication-factor` subcommand.
 
-  ```ruby
-   praefect['configuration'] = {
-      # ...
-      virtual_storage: [
-         {
-            # ...
-            name: 'default',
-            default_replication_factor: 1,
-         },
-      ],
-   }
-  ```
+### Configure default replication factor
 
-- A replication factor for an existing repository using the `set-replication-factor` sub-command.
-  `set-replication-factor` automatically assigns or unassigns random storage nodes as
-  necessary to reach the desired replication factor. The repository's primary node is
-  always assigned first and is never unassigned.
+If `default_replication_factor` is unset, the repositories are always replicated on every node defined in
+`virtual_storages`. If a new node is introduced to the virtual storage, both new and existing repositories are
+replicated to the node automatically.
 
-  ```shell
-  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
-  ```
+For large Gitaly Cluster deployments with many Gitaly nodes, replicating a repository to every storage is often not
+sensible and can cause problems. The higher the replication factor, the higher the pressure on the primary repository.
+You should explicitly set the default replication factor for large Gitaly Cluster deployments.
 
-  - `-virtual-storage` is the virtual storage the repository is located in.
-  - `-repository` is the repository's relative path in the storage.
-  - `-replication-factor` is the desired replication factor of the repository. The minimum value is
-    `1`, as the primary needs a copy of the repository. The maximum replication factor is the number of
-    storages in the virtual storage.
+To configure a default replication factor, add configuration to the `/etc/gitlab/gitlab.rb` file:
 
-  On success, the assigned host storages are printed. For example:
+```ruby
+praefect['configuration'] = {
+   # ...
+   virtual_storage: [
+      {
+         # ...
+         name: 'default',
+         default_replication_factor: 1,
+      },
+   ],
+}
+```
 
-  ```shell
-  $ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+### Configure replication factor for existing repositories
 
-  current assignments: gitaly-1, gitaly-2
-  ```
+The `set-replication-factor` subcommand automatically assigns or unassigns random storage nodes as
+necessary to reach the desired replication factor. The repository's primary node is
+always assigned first and is never unassigned.
 
-If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
-node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically.
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
+```
+
+- `-virtual-storage` is the virtual storage the repository is located in.
+- `-repository` is the repository's relative path in the storage.
+- `-replication-factor` is the desired replication factor of the repository. The minimum value is
+ `1`, as the primary needs a copy of the repository. The maximum replication factor is the number of
+ storages in the virtual storage.
+
+On success, the assigned host storages are printed. For example:
+
+```shell
+$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+
+current assignments: gitaly-1, gitaly-2
+```
 
 ### Repository storage recommendations
 

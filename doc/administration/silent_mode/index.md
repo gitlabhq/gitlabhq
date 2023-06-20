@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Silent Mode (Experiment) **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature is an [Experiment](../../policy/alpha-beta-support.md#experiment).
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment).
 
 Silent Mode allows you to suppress outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 
@@ -33,6 +33,8 @@ There are two ways to enable Silent Mode:
   ::Gitlab::CurrentSettings.update!(silent_mode_enabled: true)
   ```
 
+It may take up to a minute to take effect. [Issue 405433](https://gitlab.com/gitlab-org/gitlab/-/issues/405433) proposes removing this delay.
+
 ## Disable Silent Mode
 
 Prerequisites:
@@ -53,12 +55,26 @@ There are two ways to disable Silent Mode:
   ::Gitlab::CurrentSettings.update!(silent_mode_enabled: false)
   ```
 
+It may take up to a minute to take effect. [Issue 405433](https://gitlab.com/gitlab-org/gitlab/-/issues/405433) proposes removing this delay.
+
 ## Behavior of GitLab features in Silent Mode
+
+This section documents the current behavior of GitLab when Silent Mode is enabled. While Silent Mode is an Experiment, the behavior may change without notice. The work for the first iteration of Silent Mode is tracked by [Epic 9826](https://gitlab.com/groups/gitlab-org/-/epics/9826).
 
 ### Service Desk
 
 Incoming emails still raise issues, but the users who sent the emails to [Service Desk](../../user/project/service_desk.md) are not notified of issue creation or comments on their issues.
 
+### Webhooks
+
+[Project and group webhooks](../../user/project/integrations/webhooks.md), and [system hooks](../system_hooks.md) are suppressed. The relevant Sidekiq jobs fail 4 times and then disappear, while Silent Mode is enabled. [Issue 393639](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) discusses preventing the Sidekiq jobs from running in the first place.
+
+Triggering webhook tests via the UI results in HTTP status 500 responses.
+
 ### Outbound emails
 
-Outbound emails are suppressed. It may take up to a minute to take effect after enabling Silent Mode. [Issue 405433](https://gitlab.com/gitlab-org/gitlab/-/issues/405433) proposes removing this delay.
+Outbound emails are suppressed.
+
+### Outbound HTTP requests
+
+Many outbound HTTP requests are suppressed. A list of unsuppressed requests does not exist at this time, since more suppression is planned.

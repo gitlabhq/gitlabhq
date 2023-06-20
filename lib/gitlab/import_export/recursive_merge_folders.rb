@@ -45,9 +45,9 @@ module Gitlab
       DEFAULT_DIR_MODE = 0o700
 
       def self.merge(source_path, target_path)
-        Gitlab::Utils.check_path_traversal!(source_path)
-        Gitlab::Utils.check_path_traversal!(target_path)
-        Gitlab::Utils.check_allowed_absolute_path!(source_path, [Dir.tmpdir])
+        Gitlab::PathTraversal.check_path_traversal!(source_path)
+        Gitlab::PathTraversal.check_path_traversal!(target_path)
+        Gitlab::PathTraversal.check_allowed_absolute_path!(source_path, [Dir.tmpdir])
 
         recursive_merge(source_path, target_path)
       end

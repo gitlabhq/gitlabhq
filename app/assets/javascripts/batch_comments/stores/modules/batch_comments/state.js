@@ -5,4 +5,5 @@ export default () => ({
   isPublishing: false,
   currentlyPublishingDrafts: [],
   shouldAnimateReviewButton: false,
+  reviewBarRendered: false,
 });

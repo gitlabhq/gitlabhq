@@ -254,6 +254,18 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
     end
   end
 
+  describe '#enable_visionai' do
+    subject { client.enable_vision_api(gcp_project_id) }
+
+    it 'calls Google Api ServiceUsageService' do
+      expect_any_instance_of(Google::Apis::ServiceusageV1::ServiceUsageService)
+        .to receive(:enable_service)
+              .with("projects/#{gcp_project_id}/services/vision.googleapis.com")
+              .and_return(operation)
+      is_expected.to eq(operation)
+    end
+  end
+
   describe '#revoke_authorizations' do
     subject { client.revoke_authorizations }
 

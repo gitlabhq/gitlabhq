@@ -1,52 +1,63 @@
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
-import SafeHtml from '~/vue_shared/directives/safe_html';
-import { getPageParamValue, getPageSearchString } from '~/blob/utils';
+import LineHighlighter from '~/blob/line_highlighter';
+import ChunkLine from './chunk_line.vue';
 
 /*
  * We only highlight the chunk that is currently visible to the user.
  * By making use of the Intersection Observer API we can determine when a chunk becomes visible and highlight it accordingly.
  *
- * Content that is not visible to the user (i.e. not highlighted) does not need to look nice,
- * so by rendering raw (non-highlighted) text, the browser spends less resources on painting
- * content that is not immediately relevant.
- * Why use plaintext as opposed to hiding content entirely?
- * If content is hidden entirely, native find text (⌘ + F) won't work.
+ * Content that is not visible to the user (i.e. not highlighted) do not need to look nice,
+ * so by making text transparent and rendering raw (non-highlighted) text,
+ * the browser spends less resources on painting content that is not immediately relevant.
+ *
+ * Why use transparent text as opposed to hiding content entirely?
+ * 1. If content is hidden entirely, native find text (⌘ + F) won't work.
+ * 2. When URL contains line numbers, the browser needs to be able to jump to the correct line.
  */
 export default {
   components: {
+    ChunkLine,
     GlIntersectionObserver,
   },
-  directives: {
-    SafeHtml,
-  },
   props: {
-    isHighlighted: {
+    isFirstChunk: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     chunkIndex: {
       type: Number,
       required: false,
       default: 0,
     },
-    rawContent: {
+    isHighlighted: {
+      type: Boolean,
+      required: true,
+    },
+    content: {
       type: String,
       required: true,
     },
-    highlightedContent: {
-      type: String,
-      required: true,
+    startingFrom: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     totalLines: {
       type: Number,
       required: false,
       default: 0,
     },
-    startingFrom: {
+    totalChunks: {
       type: Number,
       required: false,
       default: 0,
+    },
+    language: {
+      type: String,
+      required: false,
+      default: null,
     },
     blamePath: {
       type: String,
@@ -55,36 +66,37 @@ export default {
   },
   data() {
     return {
-      hasAppeared: false,
       isLoading: true,
     };
   },
   computed: {
-    shouldHighlight() {
-      return Boolean(this.highlightedContent) && (this.hasAppeared || this.isHighlighted);
-    },
     lines() {
       return this.content.split('\n');
     },
-    pageSearchString() {
-      const page = getPageParamValue(this.number);
-      return getPageSearchString(this.blamePath, page);
-    },
   },
+
   created() {
-    if (this.chunkIndex === 0) {
-      // Display first chunk ASAP in order to improve perceived performance
+    if (this.isFirstChunk) {
       this.isLoading = false;
       return;
     }
 
-    window.requestIdleCallback(() => {
+    window.requestIdleCallback(async () => {
       this.isLoading = false;
+      const { hash } = this.$route;
+      if (hash && this.totalChunks > 0 && this.totalChunks === this.chunkIndex + 1) {
+        // when the last chunk is loaded scroll to the hash
+        await this.$nextTick();
+        const lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
+        lineHighlighter.highlightHash(hash);
+      }
     });
   },
   methods: {
     handleChunkAppear() {
-      this.hasAppeared = true;
+      if (!this.isHighlighted) {
+        this.$emit('appear', this.chunkIndex);
+      }
     },
     calculateLineNumber(index) {
       return this.startingFrom + index + 1;
@@ -94,36 +106,28 @@ export default {
 </script>
 <template>
   <gl-intersection-observer @appear="handleChunkAppear">
-    <div class="gl-display-flex">
-      <div v-if="shouldHighlight" class="gl-display-flex gl-flex-direction-column">
-        <div
+    <div v-if="isHighlighted">
+      <chunk-line
+        v-for="(line, index) in lines"
+        :key="index"
+        :number="calculateLineNumber(index)"
+        :content="line"
+        :language="language"
+        :blame-path="blamePath"
+      />
+    </div>
+    <div v-else-if="!isLoading" class="gl-display-flex gl-text-transparent">
+      <div class="gl-display-flex gl-flex-direction-column content-visibility-auto">
+        <span
           v-for="(n, index) in totalLines"
+          v-once
+          :id="`L${calculateLineNumber(index)}`"
           :key="index"
-          data-testid="line-numbers"
-          class="gl-p-0! gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
-        >
-          <a
-            class="gl-user-select-none gl-shadow-none! file-line-blame"
-            :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
-          ></a>
-          <a
-            :id="`L${calculateLineNumber(index)}`"
-            class="gl-user-select-none gl-shadow-none! file-line-num"
-            :href="`#L${calculateLineNumber(index)}`"
-            :data-line-number="calculateLineNumber(index)"
-          >
-            {{ calculateLineNumber(index) }}
-          </a>
-        </div>
+          data-testid="line-number"
+          v-text="calculateLineNumber(index)"
+        ></span>
       </div>
-
-      <div v-else-if="!isLoading" class="line-numbers gl-p-0! gl-mr-3 gl-text-transparent">
-        <!-- Placeholder for line numbers while content is not highlighted -->
-      </div>
-
-      <pre
-        class="gl-m-0 gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-0"
-      ><code v-if="shouldHighlight" v-once v-safe-html="highlightedContent" data-testid="content"></code><code v-else-if="!isLoading" v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
+      <div v-once class="gl-white-space-pre-wrap!" data-testid="content">{{ content }}</div>
     </div>
   </gl-intersection-observer>
 </template>

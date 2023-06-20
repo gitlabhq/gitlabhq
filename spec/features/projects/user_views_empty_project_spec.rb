@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views an empty project', feature_category: :projects do
+RSpec.describe 'User views an empty project', feature_category: :groups_and_projects do
   include Features::InviteMembersModalHelpers
 
   let_it_be(:project) { create(:project, :empty_repo) }
@@ -14,7 +14,7 @@ RSpec.describe 'User views an empty project', feature_category: :projects do
     it 'shows push-to-default-branch instructions' do
       visit project_path(project)
 
-      expect(page).to have_content("git push -u origin #{default_branch}")
+      expect(page).to have_content("git push --set-upstream origin #{default_branch}")
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe 'User views an empty project', feature_category: :projects do
       it 'does not show push-to-master instructions' do
         visit project_path(project)
 
-        expect(page).not_to have_content('git push -u origin')
+        expect(page).not_to have_content('git push --set-upstream origin')
       end
     end
   end
@@ -67,7 +67,7 @@ RSpec.describe 'User views an empty project', feature_category: :projects do
     it 'does not show push-to-master instructions nor invite members link', :aggregate_failures, :js do
       visit project_path(project)
 
-      expect(page).not_to have_content('git push -u origin')
+      expect(page).not_to have_content('git push --set-upstream origin')
       expect(page).not_to have_button(text: 'Invite members')
     end
   end

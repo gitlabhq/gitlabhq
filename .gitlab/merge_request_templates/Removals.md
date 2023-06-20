@@ -78,8 +78,6 @@ yourself as a reviewer if it's not yet ready for merge.
 - [ ] Title:
   - Length limit: 7 words (not including articles or prepositions).
   - Capitalization: ensure the title is [sentence cased](https://design.gitlab.com/content/punctuation#case).
-- [ ] Dates:
-  - Make sure that the milestone dates are based on the dates in [Product milestone creation](https://about.gitlab.com/handbook/product/milestones/#product-milestone-creation).
 - [ ] Consistency:
   - Ensure that all resources (docs, removal, etc.) refer to the feature with the same term / feature name.
 - [ ] Content:
@@ -107,6 +105,6 @@ must be updated before this MR is merged:
    If you want to double check that it worked, you can run `bin/rake gitlab:docs:check_removals`
    to verify that the doc is up to date.
 1. Commit the updated file and push the changes.
-1. Set the MR to merge when the pipeline succeeds (or merge if the pipeline is already complete).
+1. Set the merge request to auto-merge, or if the pipeline is already complete, merge.
 
 If you have trouble running the rake task, check the [troubleshooting steps](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).

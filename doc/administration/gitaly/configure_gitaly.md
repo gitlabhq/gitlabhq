@@ -14,7 +14,7 @@ Configure Gitaly in one of two ways:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add or change the
    [Gitaly settings](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/1dd07197c7e5ae23626aad5a4a070a800b670380/files/gitlab-config-template/gitlab.rb.template#L1622-1676).
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 :::TabTitle Self-compiled (source)
 
@@ -40,8 +40,8 @@ By default, Gitaly is run on the same server as Gitaly clients and is
 [configured as above](#configure-gitaly). Single-server installations are best served by
 this default configuration used by:
 
-- [Omnibus GitLab](https://docs.gitlab.com/omnibus/).
-- The GitLab [source installation guide](../../install/installation.md).
+- [Linux package installations](https://docs.gitlab.com/omnibus/).
+- [Self-compiled installations](../../install/installation.md).
 
 However, Gitaly can be deployed to its own server, which can benefit GitLab installations that span
 multiple machines.
@@ -112,12 +112,11 @@ You can use as few as one server with one repository storage if desired.
 
 ### Install Gitaly
 
-Install Gitaly on each Gitaly server using either Omnibus GitLab or install it from source:
+Install Gitaly on each Gitaly server using either:
 
-- For Omnibus GitLab, [download and install](https://about.gitlab.com/install/) the Omnibus GitLab
-  package you want but **do not** provide the `EXTERNAL_URL=` value.
-- To install from source, follow the steps at
-  [Install Gitaly](../../install/installation.md#install-gitaly).
+- A Linux package installation. [Download and install](https://about.gitlab.com/install/) the Linux package you want
+  but **do not** provide the `EXTERNAL_URL=` value.
+- A self-compiled installation. Follow the steps at [Install Gitaly](../../install/installation.md#install-gitaly).
 
 ### Configure Gitaly servers
 
@@ -301,7 +300,7 @@ Configure Gitaly server in one of two ways:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Confirm that Gitaly can perform callbacks to the GitLab internal API:
    - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
    - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
@@ -424,7 +423,7 @@ Configure Gitaly clients in one of two ways:
    })
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Run `sudo gitlab-rake gitlab:gitaly:check` on the Gitaly client (for example, the
    Rails application) to confirm it can connect to Gitaly servers.
 1. Tail the logs to see the requests:
@@ -564,7 +563,7 @@ Disable Gitaly on a GitLab server in one of two ways:
    gitaly['enable'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 :::TabTitle Self-compiled (source)
 
@@ -633,7 +632,7 @@ Configure Gitaly with TLS in one of two ways:
    })
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. On the Gitaly servers, create the `/etc/gitlab/ssl` directory and copy your key and certificate
    there:
 
@@ -668,14 +667,14 @@ Configure Gitaly with TLS in one of two ways:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Verify Gitaly traffic is being served over TLS by
    [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
 1. Optional. Improve security by:
    1. Disabling non-TLS connections by commenting out or deleting `gitaly['configuration'][:listen_addr]` in
       `/etc/gitlab/gitlab.rb`.
    1. Saving the file.
-   1. [Reconfiguring GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+   1. [Reconfiguring GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 :::TabTitle Self-compiled (source)
 
@@ -880,7 +879,7 @@ to `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
 
 - `mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
 - `hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
-   is expected to be owned by the user and group Gitaly runs as. Omnibus GitLab
+   is expected to be owned by the user and group Gitaly runs as. A Linux package installation
    creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
    when Gitaly starts.
 - `memory_bytes` is the total memory limit that is imposed collectively on all
@@ -939,7 +938,7 @@ in `/etc/gitlab/gitlab.rb`:
    commands to these cgroups.
 - `cgroups_mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
 - `cgroups_hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
-   is expected to be owned by the user and group Gitaly runs as. Omnibus GitLab
+   is expected to be owned by the user and group Gitaly runs as. A Linux package installation
    creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
    when Gitaly starts.
 - `cgroups_memory_enabled` enables or disables the memory limit on cgroups.
@@ -1388,7 +1387,7 @@ objects even if the project doesn't have malicious intent.
 Instance administrators can override consistency checks if they must
 process repositories that do not pass consistency checks.
 
-For Omnibus GitLab installations, edit `/etc/gitlab/gitlab.rb` and set the
+For Linux package installations, edit `/etc/gitlab/gitlab.rb` and set the
 following keys (in this example, to disable the `hasDotgit` consistency check):
 
 - In [GitLab 15.10](https://gitlab.com/gitlab-org/gitaly/-/issues/4754) and later:
@@ -1537,7 +1536,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 :::TabTitle Self-compiled (source)
 

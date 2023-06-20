@@ -30,8 +30,8 @@ When you disable GitLab CI/CD:
 
 To disable GitLab CI/CD in your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. In the **Repository** section, turn off **CI/CD**.
 1. Select **Save changes**.
@@ -40,8 +40,8 @@ To disable GitLab CI/CD in your project:
 
 To enable GitLab CI/CD in your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. In the **Repository** section, turn on **CI/CD**.
 1. Select **Save changes**.

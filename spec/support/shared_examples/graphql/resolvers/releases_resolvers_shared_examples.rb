@@ -4,8 +4,8 @@ RSpec.shared_examples 'releases and group releases resolver' do
   context 'when the user does not have access to the project' do
     let(:current_user) { public_user }
 
-    it 'returns an empty array' do
-      expect(resolve_releases).to be_empty
+    it 'returns an empty response' do
+      expect(resolve_releases).to be_blank
     end
   end
 

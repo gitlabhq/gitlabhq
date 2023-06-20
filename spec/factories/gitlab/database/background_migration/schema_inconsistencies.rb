@@ -7,5 +7,6 @@ FactoryBot.define do
     object_name { 'name' }
     table_name { 'table' }
     valitador_name { 'validator' }
+    diff { 'diff' }
   end
 end

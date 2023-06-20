@@ -4,6 +4,8 @@ module Gitlab
   module Database
     module SchemaValidation
       class TrackInconsistency
+        COLUMN_TEXT_LIMIT = 6144
+
         def initialize(inconsistency, project, user)
           @inconsistency = inconsistency
           @project = project
@@ -12,10 +14,13 @@ module Gitlab
 
         def execute
           return unless Gitlab.com?
-          return if inconsistency_record.present?
+          return refresh_issue if inconsistency_record.present?
 
-          result = ::Issues::CreateService.new(container: project, current_user: user, params: params,
-            spam_params: nil).execute
+          result = ::Issues::CreateService.new(
+            container: project,
+            current_user: user,
+            params: params,
+            perform_spam_check: false).execute
 
           track_inconsistency(result[:issue]) if result.success?
         end
@@ -25,20 +30,21 @@ module Gitlab
         attr_reader :inconsistency, :project, :user
 
         def track_inconsistency(issue)
-          schema_inconsistency_model.create(
+          schema_inconsistency_model.create!(
             issue: issue,
             object_name: inconsistency.object_name,
             table_name: inconsistency.table_name,
-            valitador_name: inconsistency.type
+            valitador_name: inconsistency.type,
+            diff: inconsistency_diff
           )
         end
 
         def params
           {
             title: issue_title,
-            description: issue_description,
+            description: description,
             issue_type: 'issue',
-            labels: %w[database database-inconsistency-report]
+            labels: default_labels + group_labels
           }
         end
 
@@ -46,7 +52,7 @@ module Gitlab
           "New schema inconsistency: #{inconsistency.object_name}"
         end
 
-        def issue_description
+        def description
           <<~MSG
             We have detected a new schema inconsistency.
 
@@ -81,12 +87,46 @@ module Gitlab
           MSG
         end
 
+        def group_labels
+          dictionary = YAML.safe_load(File.read(table_file_path))
+
+          dictionary['feature_categories'].to_a.filter_map do |feature_category|
+            Gitlab::Database::ConvertFeatureCategoryToGroupLabel.new(feature_category).execute
+          end
+        rescue Errno::ENOENT
+          []
+        end
+
+        def default_labels
+          %w[database database-inconsistency-report type::maintenance severity::4]
+        end
+
+        def table_file_path
+          Rails.root.join(Gitlab::Database::GitlabSchema.dictionary_paths.first, "#{inconsistency.table_name}.yml")
+        end
+
         def schema_inconsistency_model
           Gitlab::Database::SchemaValidation::SchemaInconsistency
         end
 
+        def refresh_issue
+          return if inconsistency_diff == inconsistency_record.diff # Nothing to refresh
+
+          note = ::Notes::CreateService.new(
+            inconsistency_record.issue.project,
+            user,
+            { noteable_type: 'Issue', noteable: inconsistency_record.issue, note: description }
+          ).execute
+
+          inconsistency_record.update!(diff: inconsistency_diff) if note.persisted?
+        end
+
+        def inconsistency_diff
+          @inconsistency_diff ||= inconsistency.diff.to_s.first(COLUMN_TEXT_LIMIT)
+        end
+
         def inconsistency_record
-          schema_inconsistency_model.find_by(
+          @inconsistency_record ||= schema_inconsistency_model.with_open_issues.find_by(
             object_name: inconsistency.object_name,
             table_name: inconsistency.table_name,
             valitador_name: inconsistency.type

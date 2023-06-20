@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Owner cannot leave project', feature_category: :subgroups do
+RSpec.describe 'Projects > Members > Owner cannot leave project', feature_category: :groups_and_projects do
   let(:project) { create(:project) }
 
   before do

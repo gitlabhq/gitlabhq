@@ -1,5 +1,4 @@
 ---
 Lint/UnmodifiedReduceAccumulator:
-  Details: grace period
   Exclude:
     - 'qa/qa/specs/runner.rb'

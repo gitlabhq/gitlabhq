@@ -20,7 +20,6 @@ RSpec.describe TemplateFinder do
       :dockerfiles    | 'Binary'
       :gitignores     | 'Actionscript'
       :gitlab_ci_ymls | 'Android'
-      :metrics_dashboard_ymls | 'Default'
     end
 
     with_them do
@@ -103,16 +102,11 @@ RSpec.describe TemplateFinder do
   describe '#build' do
     let(:project) { build_stubbed(:project) }
 
-    before do
-      stub_feature_flags(remove_monitor_metrics: false)
-    end
-
     where(:type, :expected_class) do
       :dockerfiles    | described_class
       :gitignores     | described_class
       :gitlab_ci_ymls | described_class
       :licenses | ::LicenseTemplateFinder
-      :metrics_dashboard_ymls | described_class
       :issues | described_class
       :merge_requests | described_class
     end
@@ -122,16 +116,6 @@ RSpec.describe TemplateFinder do
 
       it { is_expected.to be_a(expected_class) }
       it { expect(finder.project).to eq(project) }
-    end
-
-    context 'when metrics dashboard is unavailable' do
-      before do
-        stub_feature_flags(remove_monitor_metrics: true)
-      end
-
-      subject(:finder) { described_class.build(:metrics_dashboard_ymls, project) }
-
-      it { is_expected.to be_nil }
     end
   end
 
@@ -178,7 +162,6 @@ RSpec.describe TemplateFinder do
       :dockerfiles    | 'Binary'
       :gitignores     | 'Actionscript'
       :gitlab_ci_ymls | 'Android'
-      :metrics_dashboard_ymls | 'Default'
     end
 
     with_them do

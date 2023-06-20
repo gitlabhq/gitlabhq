@@ -20,8 +20,8 @@ module Gitlab
 
               tar_gz_full_path = File.join(dirpath, filename)
               decompress_path = File.join(dirpath, relation)
-              Gitlab::Utils.check_path_traversal!(tar_gz_full_path)
-              Gitlab::Utils.check_path_traversal!(decompress_path)
+              Gitlab::PathTraversal.check_path_traversal!(tar_gz_full_path)
+              Gitlab::PathTraversal.check_path_traversal!(decompress_path)
 
               # Download tar.gz
               download_or_copy_upload(

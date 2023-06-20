@@ -73,10 +73,11 @@ a [blocking manual job](../jobs/job_control.md#types-of-manual-jobs), the
 pipeline waits for the manual job before continuing and is not considered complete.
 The visualization cannot be displayed if the blocking manual job did not run.
 
-### Artifact expiration
+### Data expiration
 
-By default, the [pipeline artifact](../pipelines/pipeline_artifacts.md#storage) used
-to draw the visualization on the merge request expires **one week** after creation.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest data is kept regardless of expiry time.
+
+By default, the data used to draw the visualization on the merge request expires **one week** after creation.
 
 ### Coverage report from child pipeline
 
@@ -296,7 +297,7 @@ run tests:
 The following [`.gitlab-ci.yml`](../yaml/index.md) example for PHP uses [PHPUnit](https://phpunit.readthedocs.io/)
 to collect test coverage data and generate the report.
 
-With a minimal [`phpunit.xml`](https://phpunit.readthedocs.io/en/9.5/configuration.html) file (you may reference
+With a minimal [`phpunit.xml`](https://docs.phpunit.de/en/10.2/configuration.html) file (you may reference
 [this example repository](https://gitlab.com/yookoala/code-coverage-visualization-with-php/)), you can run the test and
 generate the `coverage.xml`:
 
@@ -428,6 +429,8 @@ the coverage report itself and verify that:
 - The file you are viewing in the diff view is mentioned in the coverage report.
 - The `source` and `filename` nodes in the report follows the [expected structure](#automatic-class-path-correction)
   to match the files in your repository.
+- The pipeline has completed. If the pipeline is [blocked on a manual job](../jobs/job_control.md#types-of-manual-jobs),
+  the pipeline is not considered complete.
 
 Report artifacts are not downloadable by default. If you want the report to be downloadable
 from the job details page, add your coverage report to the artifact `paths`:

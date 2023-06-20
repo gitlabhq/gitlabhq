@@ -22,7 +22,7 @@ module BulkImports
 
         def load(context, file_path)
           # Validate that the path is OK to load
-          Gitlab::Utils.check_allowed_absolute_path_and_path_traversal!(file_path, [Dir.tmpdir])
+          Gitlab::PathTraversal.check_allowed_absolute_path_and_path_traversal!(file_path, [Dir.tmpdir])
           return if File.directory?(file_path)
           return if File.lstat(file_path).symlink?
 

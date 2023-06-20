@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Activity RSS', feature_category: :projects do
+RSpec.describe 'Project Activity RSS', feature_category: :groups_and_projects do
   let(:project) { create(:project, :public) }
   let(:user) { project.first_owner }
   let(:path) { activity_project_path(project) }

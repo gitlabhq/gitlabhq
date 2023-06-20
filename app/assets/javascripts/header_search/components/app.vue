@@ -215,7 +215,7 @@ export default {
   <form
     role="search"
     :aria-label="$options.i18n.SEARCH_GITLAB"
-    class="header-search gl-relative gl-rounded-base gl-w-full"
+    class="header-search-form gl-relative gl-rounded-base gl-w-full"
     :class="searchBarClasses"
     data-testid="header-search-form"
   >

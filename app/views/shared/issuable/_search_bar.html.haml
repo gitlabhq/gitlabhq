@@ -13,7 +13,7 @@
         - if @can_bulk_update
           .check-all-holder.gl-display-none.gl-sm-display-block.hidden.gl-float-left.gl-mr-3.gl-line-height-36
             = render Pajamas::CheckboxTagComponent.new(name: 'check-all-issues', value: nil) do |c|
-              = c.label do
+              - c.with_label do
                 %span.gl-sr-only
                   = _('Select all')
         .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups/show', feature_category: :subgroups do
+RSpec.describe 'groups/show', feature_category: :groups_and_projects do
   describe 'group README' do
     let_it_be(:group) { build_stubbed(:group) }
     let_it_be(:readme_project) { build_stubbed(:project, :readme) }

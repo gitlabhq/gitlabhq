@@ -28,10 +28,24 @@ To better explain this, let's imagine the page that has one toggle, and toggling
 - when you have to maintain any form of application state and share it between tags/elements;
 - when you expect complex logic to be added in the future - it's easier to start with basic Vue application than having to rewrite JS/HAML to Vue on the next step.
 
+## Avoid multiple Vue applications on the page
+
+In the past, we added interactivity to the page piece-by-piece, adding multiple small Vue applications to different parts of the rendered HAML page. However, this approach led us to multiple complications:
+
+- in most cases, these applications don't share state and perform API requests independently which grows a number of requests;
+- we have to provide data from Rails to Vue using multiple endpoints;
+- we cannot render Vue applications dynamically after page load, so the page structure becomes rigid;
+- we cannot fully leverage client-side routing to replace Rails routing;
+- multiple applications lead to unpredictable user experience, increased page complexity, harder debugging process;
+- the way apps communicate with each other affects Web Vitals numbers.
+
+Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, please make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, please feel free to ask for the architectural advise on `#frontend` or `#frontend-maintainers` Slack channel.
+
+If you still need to add a new application, please make sure it shares local state with existing applications (preferably via Apollo Client, or Vuex if we use REST API)
+
 ## Vue architecture
 
-All new features built with Vue.js must follow a [Flux architecture](https://facebookarchive.github.io/flux/).
-The main goal we are trying to achieve is to have only one data flow, and only one data entry.
+The main goal we are trying to achieve with Vue architecture is to have only one data flow, and only one data entry.
 To achieve this goal we use [Vuex](#vuex) or [Apollo Client](graphql.md#libraries)
 
 You can also read about this architecture in Vue documentation about

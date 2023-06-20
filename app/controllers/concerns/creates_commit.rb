@@ -23,6 +23,8 @@ module CreatesCommit
     commit_params = @commit_params.merge(
       start_project: start_project,
       start_branch: @start_branch,
+      source_project: @project,
+      target_project: target_project,
       branch_name: @branch_name
     )
 

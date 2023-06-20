@@ -2,6 +2,7 @@ fragment ClusterAgentFragment on ClusterAgent {
   id
   name
   webPath
+  createdAt
   connections {
     nodes {
       metadata {

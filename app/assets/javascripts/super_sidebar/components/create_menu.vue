@@ -42,21 +42,9 @@ export default {
     isInvitedMembers(groupItem) {
       return groupItem.component === TOP_NAV_INVITE_MEMBERS_COMPONENT;
     },
-    closeAndFocus() {
-      this.$refs.dropdown.closeAndFocus();
-    },
   },
   toggleId: 'create-menu-toggle',
-  popperOptions: {
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
-        },
-      },
-    ],
-  },
+  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 };
 </script>
@@ -64,14 +52,13 @@ export default {
 <template>
   <div>
     <gl-disclosure-dropdown
-      ref="dropdown"
       category="tertiary"
       icon="plus"
       no-caret
       text-sr-only
       :toggle-text="$options.i18n.createNew"
       :toggle-id="$options.toggleId"
-      :popper-options="$options.popperOptions"
+      :dropdown-offset="$options.dropdownOffset"
       data-qa-selector="new_menu_toggle"
       data-testid="new-menu-toggle"
       @shown="dropdownOpen = true"
@@ -89,7 +76,6 @@ export default {
             :key="`${groupItem.text}-trigger`"
             trigger-source="top-nav"
             :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
-            @modal-opened="closeAndFocus"
           />
           <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
         </template>

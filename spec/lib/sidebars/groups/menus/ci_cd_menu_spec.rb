@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Groups::Menus::CiCdMenu do
+RSpec.describe Sidebars::Groups::Menus::CiCdMenu, feature_category: :navigation do
   let_it_be(:owner) { create(:user) }
   let_it_be(:root_group) do
     build(:group, :private).tap do |g|

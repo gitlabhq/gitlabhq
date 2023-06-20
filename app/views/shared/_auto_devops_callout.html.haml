@@ -6,7 +6,7 @@
     svg_path: 'illustrations/autodevops.svg',
     banner_options: { class: 'js-autodevops-banner auto-devops-callout', data: { uid: 'auto_devops_settings_dismissed', project_path: project_path(@project) } },
     close_options: { 'aria-label' => s_('AutoDevOps|Dismiss Auto DevOps box'), class: 'js-close-callout' }) do |c|
-    - c.title do
+    - c.with_title do
       = s_('AutoDevOps|Auto DevOps')
 
     %p= s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')

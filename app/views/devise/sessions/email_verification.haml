@@ -2,7 +2,7 @@
   = render 'devise/shared/tab_single', tab_title: s_('IdentityVerification|Help us protect your account')
   .login-box.gl-p-5
     .login-body
-      = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: 'gl-show-field-errors' }) do |f|
+      = gitlab_ui_form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: 'gl-show-field-errors' }) do |f|
         %p
           = s_("IdentityVerification|For added security, you'll need to verify your identity. We've sent a verification code to %{email}").html_safe % { email: "<strong>#{sanitize(obfuscated_email(resource.email))}</strong>".html_safe }
         %div
@@ -11,7 +11,7 @@
           %p.gl-field-error.gl-mt-2
             = resource.errors.full_messages.to_sentence
           .gl-mt-5
-            = f.submit s_('IdentityVerification|Verify code'), class: 'gl-button btn btn-confirm'
+            = f.submit s_('IdentityVerification|Verify code'), class: 'gl-w-full', pajamas_button: true
             - unless send_rate_limited?(resource)
               = link_to s_('IdentityVerification|Resend code'), users_resend_verification_code_path, method: :post, class: 'form-control gl-button btn-link gl-mt-3 gl-mb-0'
   %p.gl-p-5.gl-text-secondary

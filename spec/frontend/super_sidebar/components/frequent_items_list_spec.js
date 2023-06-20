@@ -1,4 +1,4 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { s__ } from '~/locale';
 import FrequentItemsList from '~/super_sidebar/components//frequent_items_list.vue';
 import ItemsList from '~/super_sidebar/components/items_list.vue';
@@ -18,18 +18,20 @@ describe('FrequentItemsList component', () => {
   const findListTitle = () => wrapper.findByTestId('list-title');
   const findItemsList = () => wrapper.findComponent(ItemsList);
   const findEmptyText = () => wrapper.findByTestId('empty-text');
+  const findRemoveItemButton = () => wrapper.findByTestId('item-remove');
 
-  const createWrapper = ({ props = {} } = {}) => {
-    wrapper = shallowMountExtended(FrequentItemsList, {
+  const createWrapperFactory = (mountFn = shallowMountExtended) => () => {
+    wrapper = mountFn(FrequentItemsList, {
       propsData: {
         title,
         pristineText,
         storageKey,
         maxItems,
-        ...props,
       },
     });
   };
+  const createWrapper = createWrapperFactory();
+  const createFullWrapper = createWrapperFactory(mountExtended);
 
   describe('default', () => {
     beforeEach(() => {
@@ -64,16 +66,20 @@ describe('FrequentItemsList component', () => {
     it('does not render the empty text slot', () => {
       expect(findEmptyText().exists()).toBe(false);
     });
+  });
 
-    describe('items editing', () => {
-      it('remove-item event emission from items-list causes list item to be removed', async () => {
-        const localStorageProjects = findItemsList().props('items');
+  describe('items editing', () => {
+    beforeEach(() => {
+      window.localStorage.setItem(storageKey, cachedFrequentProjects);
+      createFullWrapper();
+    });
 
-        await findItemsList().vm.$emit('remove-item', localStorageProjects[0]);
+    it('remove-item event emission from items-list causes list item to be removed', async () => {
+      const localStorageProjects = findItemsList().props('items');
+      await findRemoveItemButton().trigger('click');
 
-        expect(findItemsList().props('items')).toHaveLength(maxItems - 1);
-        expect(findItemsList().props('items')).not.toContain(localStorageProjects[0]);
-      });
+      expect(findItemsList().props('items')).toHaveLength(maxItems - 1);
+      expect(findItemsList().props('items')).not.toContain(localStorageProjects[0]);
     });
   });
 });

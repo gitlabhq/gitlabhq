@@ -11,7 +11,6 @@
 .row.gl-flex-grow-1
   .d-flex.gl-flex-direction-column.gl-align-items-center.gl-w-full.gl-px-5.gl-pb-5
     .edit-profile.login-page.d-flex.flex-column.gl-align-items-center
-      = render_if_exists "registrations/welcome/progress_bar"
       %h2.gl-text-center= html_escape(_('Welcome to GitLab,%{br_tag}%{name}!')) % { name: html_escape(current_user.first_name), br_tag: '<br/>'.html_safe }
       - if Gitlab.com?
         %p.gl-text-center= html_escape(_('%{gitlab_experience_text}. We won\'t share this information with anyone.')) % { gitlab_experience_text: gitlab_experience_text }
@@ -23,7 +22,7 @@
                 'aria-live' => 'assertive',
                 data: { testid: 'welcome-form' } }) do |f|
         = render Pajamas::CardComponent.new do |c|
-          - c.body do
+          - c.with_body do
             .devise-errors
               = render 'devise/shared/error_messages', resource: current_user
             .row

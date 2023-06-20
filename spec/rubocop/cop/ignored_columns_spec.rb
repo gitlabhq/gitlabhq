@@ -3,12 +3,21 @@
 require 'rubocop_spec_helper'
 require_relative '../../../rubocop/cop/ignored_columns'
 
-RSpec.describe RuboCop::Cop::IgnoredColumns do
-  it 'flags direct use of ignored_columns instead of the IgnoredColumns concern' do
+RSpec.describe RuboCop::Cop::IgnoredColumns, feature_category: :database do
+  it 'flags use of `self.ignored_columns +=` instead of the IgnoredColumns concern' do
     expect_offense(<<~RUBY)
       class Foo < ApplicationRecord
         self.ignored_columns += %i[id]
-        ^^^^^^^^^^^^^^^^^^^^ Use `IgnoredColumns` concern instead of adding to `self.ignored_columns`.
+             ^^^^^^^^^^^^^^^ Use `IgnoredColumns` concern instead of adding to `self.ignored_columns`.
+      end
+    RUBY
+  end
+
+  it 'flags use of `self.ignored_columns =` instead of the IgnoredColumns concern' do
+    expect_offense(<<~RUBY)
+      class Foo < ApplicationRecord
+        self.ignored_columns = %i[id]
+             ^^^^^^^^^^^^^^^ Use `IgnoredColumns` concern instead of setting `self.ignored_columns`.
       end
     RUBY
   end
@@ -16,7 +25,7 @@ RSpec.describe RuboCop::Cop::IgnoredColumns do
   context 'when only CE model exist' do
     let(:file_path) { full_path('app/models/bar.rb') }
 
-    it 'does not flag ignore_columns usage in CE model' do
+    it 'does not flag `ignore_columns` usage in CE model' do
       expect_no_offenses(<<~RUBY, file_path)
         class Bar < ApplicationRecord
           ignore_columns :foo, remove_with: '14.3', remove_after: '2021-09-22'
@@ -24,7 +33,7 @@ RSpec.describe RuboCop::Cop::IgnoredColumns do
       RUBY
     end
 
-    it 'flags ignore_column usage in EE model' do
+    it 'does not flag `ignore_column` usage in CE model' do
       expect_no_offenses(<<~RUBY, file_path)
         class Baz < ApplicationRecord
           ignore_column :bar, remove_with: '14.3', remove_after: '2021-09-22'
@@ -40,7 +49,7 @@ RSpec.describe RuboCop::Cop::IgnoredColumns do
       allow(File).to receive(:exist?).with(full_path('app/models/bar.rb')).and_return(false)
     end
 
-    it 'flags ignore_columns usage in EE model' do
+    it 'does not flag `ignore_columns` usage in EE model' do
       expect_no_offenses(<<~RUBY, file_path)
         class Bar < ApplicationRecord
           ignore_columns :foo, remove_with: '14.3', remove_after: '2021-09-22'
@@ -48,7 +57,7 @@ RSpec.describe RuboCop::Cop::IgnoredColumns do
       RUBY
     end
 
-    it 'flags ignore_column usage in EE model' do
+    it 'does not flag `ignore_column` usage in EE model' do
       expect_no_offenses(<<~RUBY, file_path)
         class Bar < ApplicationRecord
           ignore_column :foo, remove_with: '14.3', remove_after: '2021-09-22'
@@ -64,7 +73,7 @@ RSpec.describe RuboCop::Cop::IgnoredColumns do
       allow(File).to receive(:exist?).with(full_path('app/models/bar.rb')).and_return(true)
     end
 
-    it 'flags ignore_columns usage in EE model' do
+    it 'flags `ignore_columns` usage in EE model' do
       expect_offense(<<~RUBY, file_path)
         class Bar < ApplicationRecord
           ignore_columns :foo, remove_with: '14.3', remove_after: '2021-09-22'
@@ -73,7 +82,7 @@ RSpec.describe RuboCop::Cop::IgnoredColumns do
       RUBY
     end
 
-    it 'flags ignore_column usage in EE model' do
+    it 'flags `ignore_column` usage in EE model' do
       expect_offense(<<~RUBY, file_path)
         class Bar < ApplicationRecord
           ignore_column :foo, remove_with: '14.3', remove_after: '2021-09-22'

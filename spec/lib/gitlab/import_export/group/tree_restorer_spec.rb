@@ -177,30 +177,146 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, f
     end
 
     context 'group visibility levels' do
-      let(:user) { create(:user) }
-      let(:shared) { Gitlab::ImportExport::Shared.new(group) }
-      let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
+      context 'when the @top_level_group is the destination_group' do
+        let(:user) { create(:user) }
+        let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+        let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
 
-      before do
-        setup_import_export_config(filepath)
+        shared_examples 'with visibility level' do |visibility_level, expected_visibilities|
+          context "when visibility level is #{visibility_level}" do
+            let(:group) { create(:group, visibility_level) }
+            let(:filepath) { "group_exports/visibility_levels/#{visibility_level}" }
 
-        group_tree_restorer.restore
+            before do
+              setup_import_export_config(filepath)
+              group_tree_restorer.restore
+            end
+
+            it "imports all subgroups as #{visibility_level}" do
+              expect(group.children.map(&:visibility_level)).to match_array(expected_visibilities)
+            end
+          end
+        end
+
+        include_examples 'with visibility level', :public, [20, 10, 0]
+        include_examples 'with visibility level', :private, [0, 0, 0]
+        include_examples 'with visibility level', :internal, [10, 10, 0]
       end
 
-      shared_examples 'with visibility level' do |visibility_level, expected_visibilities|
-        context "when visibility level is #{visibility_level}" do
-          let(:group) { create(:group, visibility_level) }
-          let(:filepath) { "group_exports/visibility_levels/#{visibility_level}" }
+      context 'when the destination_group is the @top_level_group.parent' do
+        let(:user) { create(:user) }
+        let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+        let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
 
-          it "imports all subgroups as #{visibility_level}" do
-            expect(group.children.map(&:visibility_level)).to match_array(expected_visibilities)
+        shared_examples 'with visibility level' do |visibility_level, expected_visibilities, group_visibility|
+          context "when source level is #{visibility_level}" do
+            let(:parent) { create(:group, visibility_level) }
+            let(:group) { create(:group, visibility_level, parent: parent) }
+            let(:filepath) { "group_exports/visibility_levels/#{visibility_level}" }
+
+            before do
+              setup_import_export_config(filepath)
+              parent.add_maintainer(user)
+              group_tree_restorer.restore
+            end
+
+            it "imports all subgroups as #{visibility_level}" do
+              expect(group.visibility_level).to eq(group_visibility)
+              expect(group.children.map(&:visibility_level)).to match_array(expected_visibilities)
+            end
           end
+        end
+
+        include_examples 'with visibility level', :public, [20, 10, 0], 20
+        include_examples 'with visibility level', :private, [0, 0, 0], 0
+        include_examples 'with visibility level', :internal, [10, 10, 0], 10
+      end
+
+      context 'when the visibility level is restricted' do
+        let(:user) { create(:user) }
+        let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+        let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
+        let(:group) { create(:group, :internal) }
+        let(:filepath) { "group_exports/visibility_levels/internal" }
+
+        before do
+          setup_import_export_config(filepath)
+          Gitlab::CurrentSettings.restricted_visibility_levels = [10]
+          group_tree_restorer.restore
+        end
+
+        after do
+          Gitlab::CurrentSettings.restricted_visibility_levels = []
+        end
+
+        it 'updates the visibility_level' do
+          expect(group.children.map(&:visibility_level)).to match_array([0, 0, 0])
+        end
+      end
+    end
+
+    context 'when there are nested subgroups' do
+      let(:filepath) { "group_exports/visibility_levels/nested_subgroups" }
+
+      context "when destination level is :public" do
+        let(:user) { create(:user) }
+        let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+        let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
+        let(:parent) { create(:group, :public) }
+        let(:group) { create(:group, :public, parent: parent) }
+
+        before do
+          setup_import_export_config(filepath)
+          parent.add_maintainer(user)
+          group_tree_restorer.restore
+        end
+
+        it "imports all subgroups with original visibility_level" do
+          expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+          expect(group.descendants.map(&:visibility_level))
+            .to match_array([0, 0, 0, 10, 10, 10, 20, 20])
         end
       end
 
-      include_examples 'with visibility level', :public, [20, 10, 0]
-      include_examples 'with visibility level', :private, [0, 0, 0]
-      include_examples 'with visibility level', :internal, [10, 10, 0]
+      context "when destination level is :internal" do
+        let(:user) { create(:user) }
+        let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+        let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
+        let(:parent) { create(:group, :internal) }
+        let(:group) { create(:group, :internal, parent: parent) }
+
+        before do
+          setup_import_export_config(filepath)
+          parent.add_maintainer(user)
+          group_tree_restorer.restore
+        end
+
+        it "imports non-public subgroups with original level and public subgroups as internal" do
+          expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+          expect(group.descendants.map(&:visibility_level))
+            .to match_array([0, 0, 0, 10, 10, 10, 10, 10])
+        end
+      end
+
+      context "when destination level is :private" do
+        let(:user) { create(:user) }
+        let(:shared) { Gitlab::ImportExport::Shared.new(group) }
+        let(:group_tree_restorer) { described_class.new(user: user, shared: shared, group: group) }
+        let(:parent) { create(:group, :private) }
+        let(:group) { create(:group, :private, parent: parent) }
+
+        before do
+          setup_import_export_config(filepath)
+          parent.add_maintainer(user)
+          group_tree_restorer.restore
+        end
+
+        it "imports all subgroups as private" do
+          expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          expect(group.descendants.map(&:visibility_level))
+            .to match_array([0, 0, 0, 0, 0, 0, 0, 0])
+        end
+      end
     end
   end
 

@@ -188,6 +188,12 @@ describe('Design management design index page', () => {
       markdownPreviewPath: '/project-path/preview_markdown?target_type=Issue',
       resolvedDiscussionsExpanded: false,
       isLoading: false,
+      designVariables: {
+        fullPath: 'project-path',
+        iid: '1',
+        filenames: ['gid::/gitlab/Design/1'],
+        atVersion: null,
+      },
     });
   });
 

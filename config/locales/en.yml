@@ -10,6 +10,8 @@ en:
         pwa_short_name: "PWA short name"
         pwa_description: "PWA description"
         pwa_icon: "Icon"
+      application_setting:
+        ai_access_token: "Personal access token"
       incident_management/timeline_event:
         note: 'Timeline text'
       issue_link:
@@ -269,13 +271,13 @@ en:
       storage_units:
         format: "%n %u"
         units:
-          byte:
-            one: Byte
-            other: Bytes
-          gb: GB
-          kb: KB
-          mb: MB
-          tb: TB
+          byte: B
+          kb: KiB
+          mb: MiB
+          gb: GiB
+          tb: TiB
+          pb: PiB
+          eb: EiB
     percentage:
       format:
         delimiter: ''

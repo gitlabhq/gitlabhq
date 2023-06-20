@@ -19,8 +19,9 @@ read [GitLab.com settings](../../gitlab_com/index.md).
 To access the **Admin Area**:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings**, and the group of settings to view:
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings**, and the group of settings to view:
    - [General](#general)
    - [Geo](#geo)
    - [CI/CD](#cicd)
@@ -96,7 +97,7 @@ The **Integrations** settings contain:
   [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164).
 - [Customer experience improvement and third-party offers](third_party_offers.md) -
   Control the display of customer experience improvement content and third-party offers.
-- [Snowplow](../../../development/snowplow/index.md) - Configure the Snowplow integration.
+- [Snowplow](../../../development/internal_analytics/snowplow/index.md) - Configure the Snowplow integration.
 - [Google GKE](../../project/clusters/add_gke_clusters.md) - Google GKE integration enables
   you to provision GKE clusters from GitLab.
 - [Amazon EKS](../../project/clusters/add_eks_clusters.md) - Amazon EKS integration enables
@@ -108,7 +109,7 @@ The **Metrics and profiling** settings contain:
 
 - [Metrics - Prometheus](../../../administration/monitoring/prometheus/gitlab_metrics.md) -
   Enable and configure Prometheus metrics.
-- [Metrics - Grafana](../../../administration/monitoring/performance/grafana_configuration.md#integration-with-gitlab-ui) -
+- [Metrics - Grafana](../../../administration/monitoring/performance/grafana_configuration.md#integrate-with-gitlab-ui) -
   Enable and configure Grafana.
 - [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-for-non-administrators) -
   Enable access to the Performance Bar for non-administrator users in a given group.
@@ -161,8 +162,10 @@ The **Preferences** settings contain:
 
 The **Reporting** settings contain:
 
-- [Spam and Anti-bot Protection](../../../integration/recaptcha.md) -
-  Enable anti-spam services, like reCAPTCHA, Akismet, or [Spamcheck](../reporting/spamcheck.md), and set IP limits.
+- Spam and Anti-bot protection:
+  - Anti-spam services, such as [reCAPTCHA](../../../integration/recaptcha.md),
+    [Akismet](../../../integration/akismet.md), or [Spamcheck](../reporting/spamcheck.md).
+  - [IP address restrictions](../reporting/ip_addr_restrictions.md).
 - [Abuse reports](../review_abuse_reports.md) - Set notification email for abuse reports.
 - [Git abuse rate limit](../reporting/git_abuse_rate_limit.md) - Configure Git abuse rate limit settings. **(ULTIMATE SELF)**
 
@@ -199,8 +202,9 @@ The **Templates** settings contain:
 You can change the [Default first day of the week](../../profile/preferences.md)
 for the entire GitLab instance:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Preferences**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Preferences**.
 1. Scroll to the **Localization** section, and select your desired first day of the week.
 
 ## Default language
@@ -208,6 +212,7 @@ for the entire GitLab instance:
 You can change the [Default language](../../profile/preferences.md)
 for the entire GitLab instance:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Preferences**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Preferences**.
 1. Scroll to the **Localization** section, and select your desired default language.

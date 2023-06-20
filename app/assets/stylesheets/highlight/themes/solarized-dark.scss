@@ -128,10 +128,6 @@ $solarized-dark-il: #2aa198;
     @include hljs-override('params', $solarized-dark-nb);
 
   // Line numbers
-  .file-line-num {
-    @include line-link($white, 'link');
-  }
-
   .file-line-blame {
     @include line-link($white, 'git');
   }

@@ -1,7 +1,7 @@
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { badgeState } from '~/issuable/components/status_box.vue';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
-import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { formatDate, getTimeago, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
 import { machine } from '~/lib/utils/finite_state_machine';
 import {
   MTWPS_MERGE_STRATEGY,
@@ -212,6 +212,7 @@ export default class MergeRequestStore {
 
   setGraphqlSubscriptionData(data) {
     this.detailedMergeStatus = data.detailedMergeStatus;
+    this.commitsCount = data.commitCount;
 
     this.setState();
   }
@@ -341,7 +342,7 @@ export default class MergeRequestStore {
       return '';
     }
 
-    return format(date);
+    return format(date, timeagoLanguageCode);
   }
 
   static getPreferredAutoMergeStrategy(availableAutoMergeStrategies) {

@@ -33,13 +33,16 @@ Prerequisites:
 
 To generate an authentication token for a shared runner:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **CI/CD > Runners**.
 1. Select **New instance runner**.
 1. Select a platform.
 1. Optional. Enter configurations for the runner.
 1. Select **Submit**.
 1. Follow the instructions to register the runner from the command line.
+
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
 
 ### For a group runner
 
@@ -56,13 +59,15 @@ Prerequisites:
 
 To generate an authentication token for a group runner:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Build > Runners**.
 1. Select **New group runner**.
 1. Select a platform.
 1. Optional. Enter configurations for the runner.
 1. Select **Submit**.
 1. Follow the instructions to register the runner from the command line.
+
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
 
 ### For a project runner
 
@@ -79,39 +84,45 @@ Prerequisites:
 
 To generate an authentication token for a project runner:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
+1. Expand the **Runners** section.
 1. Select **New project runner**.
 1. Select a platform.
 1. Optional. Enter configurations for the runner.
 1. Select **Submit**.
 1. Follow the instructions to register the runner from the command line.
 
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
+
 ## Generate a registration token (deprecated)
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6. Authentication tokens
-should be used instead to register runners. Registration tokens, and support for certain configuration arguments
-will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for `glrt-` tokens are `--locked`, `--access-level`, `--run-untagged`, `--maximum-timeout`, `--paused`, `--tag-list`, and `--maintenance-note`. This change is a breaking
+should be used instead to register runners. Registration tokens, and support for certain configuration
+arguments, will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
+The configuration arguments disabled for `glrt-` tokens will be `--locked`, `--access-level`,
+`--run-untagged`, `--maximum-timeout`, `--paused`, `--tag-list`, and `--maintenance-note`. This change is a breaking
 change.
 
 ### For a shared runner
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **CI/CD > Runners**.
 1. Select **Register an instance runner**.
 1. Copy the registration token.
 
 ### For a group runner
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Build > Runners**.
 1. Copy the registration token.
 
 ### For a project runner
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand the **Runners** section.
 1. Copy the registration token.

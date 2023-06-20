@@ -103,16 +103,12 @@ module ImportCsv
     strong_memoize_attr :detect_col_sep
 
     def create_object(attributes)
-      # NOTE: CSV imports are performed by workers, so we do not have a request context in order
-      # to create a SpamParams object to pass to the issuable create service.
-      spam_params = nil
-
       # default_params can be extracted into a method if we need
       # to support creation of objects that belongs to groups.
       default_params = { container: project,
                          current_user: user,
                          params: attributes,
-                         spam_params: spam_params }
+                         perform_spam_check: false }
 
       create_service = create_object_class.new(**default_params.merge(extra_create_service_params))
 

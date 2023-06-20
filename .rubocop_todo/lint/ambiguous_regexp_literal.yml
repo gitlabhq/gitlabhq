@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/AmbiguousRegexpLiteral:
-  Details: grace period
   Exclude:
     - 'ee/lib/ee/gitlab/auth/ldap/group.rb'
     - 'ee/spec/controllers/groups/sso_controller_spec.rb'

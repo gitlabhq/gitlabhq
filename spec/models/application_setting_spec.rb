@@ -23,6 +23,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.id).to eq(1) }
     it { expect(setting.repository_storages_weighted).to eq({}) }
     it { expect(setting.kroki_formats).to eq({}) }
+    it { expect(setting.default_branch_protection_defaults).to eq({}) }
   end
 
   describe 'validations' do
@@ -97,6 +98,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_numericality_of(:container_registry_delete_tags_service_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_data_repair_detail_worker_max_concurrency).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to allow_value(true).for(:container_registry_expiration_policies_caching) }
     it { is_expected.to allow_value(false).for(:container_registry_expiration_policies_caching) }
@@ -108,6 +110,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:container_registry_pre_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_pre_import_tags_rate).is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_data_repair_detail_worker_max_concurrency) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_tags_count) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_retries) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_start_max_retries) }
@@ -131,6 +134,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
+    it { is_expected.to allow_value(true).for(:wiki_asciidoc_allow_uri_includes) }
+    it { is_expected.to allow_value(false).for(:wiki_asciidoc_allow_uri_includes) }
+    it { is_expected.not_to allow_value(nil).for(:wiki_asciidoc_allow_uri_includes) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_yaml_size_bytes) }
@@ -200,7 +206,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
 
     %i[notes_create_limit search_rate_limit search_rate_limit_unauthenticated users_get_by_id_limit
-      projects_api_rate_limit_unauthenticated].each do |setting|
+      projects_api_rate_limit_unauthenticated gitlab_shell_operation_limit].each do |setting|
       it { is_expected.to allow_value(400).for(setting) }
       it { is_expected.not_to allow_value('two').for(setting) }
       it { is_expected.not_to allow_value(nil).for(setting) }
@@ -273,6 +279,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value([true, false]).for(:remember_me_enabled) }
     it { is_expected.not_to allow_value(nil).for(:remember_me_enabled) }
 
+    it { is_expected.to validate_numericality_of(:namespace_aggregation_schedule_lease_duration_in_seconds).only_integer.is_greater_than(0) }
+
+    it { is_expected.to allow_values([true, false]).for(:instance_level_code_suggestions_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:instance_level_code_suggestions_enabled) }
+
     context 'when deactivate_dormant_users is enabled' do
       before do
         stub_application_setting(deactivate_dormant_users: true)
@@ -310,17 +321,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
                                  .with_message('is too long (maximum is 255 characters)')
           end
         end
-      end
-    end
-
-    context 'import_sources validation' do
-      before do
-        subject.import_sources = %w[github bitbucket gitlab git gitlab_project gitea manifest phabricator]
-      end
-
-      it 'removes phabricator as an import source' do
-        subject.validate
-        expect(subject.import_sources).to eq(%w[github bitbucket git gitlab_project gitea manifest])
       end
     end
 
@@ -1120,6 +1120,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
+    describe 'diagrams.net settings' do
+      context 'when diagrams.net is enabled' do
+        before do
+          setting.diagramsnet_enabled = true
+        end
+
+        it { is_expected.not_to allow_value(nil).for(:diagramsnet_url) }
+        it { is_expected.to allow_value("https://embed.diagrams.net").for(:diagramsnet_url) }
+        it { is_expected.not_to allow_value('not a URL').for(:diagramsnet_url) }
+      end
+
+      context 'when diagrams.net is not enabled' do
+        before do
+          setting.diagramsnet_enabled = false
+        end
+
+        it { is_expected.to allow_value(nil).for(:diagramsnet_url) }
+      end
+    end
+
     context 'throttle_* settings' do
       where(:throttle_setting) do
         %i[
@@ -1208,6 +1228,25 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     context 'for default_syntax_highlighting_theme' do
       it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_syntax_highlighting_theme) }
       it { is_expected.not_to allow_value(nil, 0, Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme) }
+    end
+
+    context 'default_branch_protections_defaults validations' do
+      let(:charset) { [*'a'..'z'] + [*0..9] }
+      let(:value) { Array.new(byte_size) { charset.sample }.join }
+
+      it { expect(described_class).to validate_jsonb_schema(['default_branch_protection_defaults']) }
+
+      context 'when json is more than 1kb' do
+        let(:byte_size) { 1.1.kilobytes }
+
+        it { is_expected.not_to allow_value({ name: value }).for(:default_branch_protection_defaults) }
+      end
+
+      context 'when json less than 1kb' do
+        let(:byte_size) { 0.5.kilobytes }
+
+        it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
+      end
     end
   end
 
@@ -1479,6 +1518,26 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
+  describe 'default_branch_protection_defaults' do
+    let(:defaults) { { name: 'main', push_access_level: 30, merge_access_level: 30, unprotect_access_level: 40 } }
+
+    it 'returns the value for default_branch_protection_defaults' do
+      subject.default_branch_protection_defaults = defaults
+      expect(subject.default_branch_protection_defaults['name']).to eq('main')
+      expect(subject.default_branch_protection_defaults['push_access_level']).to eq(30)
+      expect(subject.default_branch_protection_defaults['merge_access_level']).to eq(30)
+      expect(subject.default_branch_protection_defaults['unprotect_access_level']).to eq(40)
+    end
+
+    context 'when provided with content that does not match the JSON schema' do
+      # valid json
+      it { is_expected.to allow_value({ name: 'bar' }).for(:default_branch_protection_defaults) }
+
+      # invalid json
+      it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
+    end
+  end
+
   describe '#static_objects_external_storage_auth_token=', :aggregate_failures do
     subject { setting.static_objects_external_storage_auth_token = token }
 
@@ -1568,6 +1627,31 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   describe '.personal_access_tokens_disabled?' do
     it 'is false' do
       expect(setting.personal_access_tokens_disabled?).to eq(false)
+    end
+  end
+
+  describe '#ai_access_token' do
+    context 'when `instance_level_code_suggestions_enabled` is true' do
+      before do
+        setting.instance_level_code_suggestions_enabled = true
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:ai_access_token) }
+    end
+
+    context 'when `instance_level_code_suggestions_enabled` is false' do
+      before do
+        setting.instance_level_code_suggestions_enabled = false
+      end
+
+      it { is_expected.to allow_value(nil).for(:ai_access_token) }
+    end
+
+    it 'does not modify the token if it is unchanged in the form' do
+      setting.ai_access_token = 'foo'
+      setting.ai_access_token = ApplicationSettingMaskedAttrs::MASK
+
+      expect(setting.ai_access_token).to eq('foo')
     end
   end
 end

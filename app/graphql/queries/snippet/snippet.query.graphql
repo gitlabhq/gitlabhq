@@ -53,6 +53,7 @@ query GetSnippetQuery($ids: [SnippetID!]) {
         id
         fullPath
         webUrl
+        visibility
       }
       author {
         __typename

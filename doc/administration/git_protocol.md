@@ -29,7 +29,7 @@ and [All-in-one Docker image](../install/docker.md), the SSH
 service is already configured to accept the `GIT_PROTOCOL` environment. Users
 need not do anything more.
 
-For Omnibus GitLab and installations from source, update
+For installations from the Linux package or self-compiled installations, update
 the SSH configuration of your server manually by adding this line to the `/etc/ssh/sshd_config` file:
 
 ```plaintext

@@ -1,4 +1,4 @@
-import { GlDropdown, GlButton } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue/';
 import stubChildren from 'helpers/stub_children';
@@ -19,7 +19,7 @@ describe('Package Files', () => {
   const findSecondRowCommitLink = () => findSecondRow().find('[data-testid="commit-link"]');
   const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().findComponent(TimeAgoTooltip);
-  const findFirstActionMenu = () => findFirstRow().findComponent(GlDropdown);
+  const findFirstActionMenu = () => findFirstRow().findComponent(GlDisclosureDropdown);
   const findActionMenuDelete = () => findFirstActionMenu().find('[data-testid="delete-file"]');
   const findFirstToggleDetailsButton = () => findFirstRow().findComponent(GlButton);
   const findFirstRowShaComponent = (id) => wrapper.find(`[data-testid="${id}"]`);
@@ -159,7 +159,7 @@ describe('Package Files', () => {
             it('emits a delete event when clicked', () => {
               createComponent();
 
-              findActionMenuDelete().vm.$emit('click');
+              findActionMenuDelete().vm.$emit('action');
 
               const [[{ id }]] = wrapper.emitted('delete-file');
               expect(id).toBe(npmFiles[0].id);

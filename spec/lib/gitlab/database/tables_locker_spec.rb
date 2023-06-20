@@ -251,6 +251,31 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'ci'
     end
 
+    context 'when not including partitions' do
+      subject { described_class.new(include_partitions: false).lock_writes }
+
+      it 'does not include any table partitions' do
+        gitlab_main_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.security_findings_test_partition"
+
+        expect(Gitlab::Database::LockWritesManager).not_to receive(:new).with(
+          hash_including(table_name: gitlab_main_partition)
+        )
+
+        subject
+      end
+
+      it 'does not include any detached partitions' do
+        detached_partition_name = "_test_gitlab_main_part_20220101"
+        gitlab_main_detached_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{detached_partition_name}"
+
+        expect(Gitlab::Database::LockWritesManager).not_to receive(:new).with(
+          hash_including(table_name: gitlab_main_detached_partition)
+        )
+
+        subject
+      end
+    end
+
     context 'when running in dry_run mode' do
       subject { described_class.new(dry_run: true).lock_writes }
 

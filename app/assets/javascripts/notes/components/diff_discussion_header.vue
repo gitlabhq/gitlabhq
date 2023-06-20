@@ -5,6 +5,7 @@ import { mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
+import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import NoteEditedText from './note_edited_text.vue';
 import NoteHeader from './note_header.vue';
 
@@ -62,6 +63,7 @@ export default {
         for_commit: isForCommit,
         diff_discussion: isDiffDiscussion,
         active: isActive,
+        position,
       } = this.discussion;
 
       let text = s__('MergeRequests|started a thread');
@@ -75,6 +77,10 @@ export default {
           : s__(
               'MergeRequests|started a thread on an outdated change in commit %{linkStart}%{commitDisplay}%{linkEnd}',
             );
+      } else if (isDiffDiscussion && position?.position_type === FILE_DIFF_POSITION_TYPE) {
+        text = isActive
+          ? s__('MergeRequests|started a thread on %{linkStart}a file%{linkEnd}')
+          : s__('MergeRequests|started a thread on %{linkStart}an old version of a file%{linkEnd}');
       } else if (isDiffDiscussion) {
         text = isActive
           ? s__('MergeRequests|started a thread on %{linkStart}the diff%{linkEnd}')

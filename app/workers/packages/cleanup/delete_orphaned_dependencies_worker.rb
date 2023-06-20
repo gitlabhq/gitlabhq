@@ -20,8 +20,6 @@ module Packages
       REDIS_EXPIRATION_TIME = 2.hours.to_i
 
       def perform
-        return unless enabled?
-
         start_time
 
         dependency_id = last_processed_dependency_id
@@ -43,10 +41,6 @@ module Packages
       end
 
       private
-
-      def enabled?
-        Feature.enabled?(:packages_delete_orphaned_dependencies_worker)
-      end
 
       def start_time
         @start_time ||= ::Gitlab::Metrics::System.monotonic_time

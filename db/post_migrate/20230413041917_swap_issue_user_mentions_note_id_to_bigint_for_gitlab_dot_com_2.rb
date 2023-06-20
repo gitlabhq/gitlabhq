@@ -9,14 +9,14 @@ class SwapIssueUserMentionsNoteIdToBigintForGitlabDotCom2 < Gitlab::Database::Mi
 
   def up
     return unless should_run?
-    return if columns_alredy_swapped?
+    return if columns_already_swapped?
 
     swap
   end
 
   def down
     return unless should_run?
-    return unless columns_alredy_swapped?
+    return unless columns_already_swapped?
 
     swap
 
@@ -83,7 +83,7 @@ class SwapIssueUserMentionsNoteIdToBigintForGitlabDotCom2 < Gitlab::Database::Mi
     com_or_dev_or_test_but_not_jh?
   end
 
-  def columns_alredy_swapped?
+  def columns_already_swapped?
     table_columns = columns(TABLE_NAME)
     note_id = table_columns.find { |c| c.name == 'note_id' }
     note_id_convert_to_bigint = table_columns.find { |c| c.name == 'note_id_convert_to_bigint' }

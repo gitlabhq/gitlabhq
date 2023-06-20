@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SearchResults do
+RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
   include ProjectForksHelper
   include SearchHelpers
   using RSpec::Parameterized::TableSyntax
@@ -260,19 +260,59 @@ RSpec.describe Gitlab::SearchResults do
       end
     end
 
+    describe '#projects' do
+      let(:scope) { 'projects' }
+      let(:query) { 'Test' }
+
+      describe 'filtering' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:unarchived_project) { create(:project, :public, group: group, name: 'Test1') }
+        let_it_be(:archived_project) { create(:project, :archived, :public, group: group, name: 'Test2') }
+
+        it_behaves_like 'search results filtered by archived'
+
+        context 'when the search_projects_hide_archived feature flag is disabled' do
+          before do
+            stub_feature_flags(search_projects_hide_archived: false)
+          end
+
+          context 'when filter not provided' do
+            let(:filters) { {} }
+
+            it 'returns archived and unarchived results', :aggregate_failures do
+              expect(results.objects('projects')).to include unarchived_project
+              expect(results.objects('projects')).to include archived_project
+            end
+          end
+        end
+      end
+    end
+
     describe '#users' do
       it 'does not call the UsersFinder when the current_user is not allowed to read users list' do
         allow(Ability).to receive(:allowed?).and_return(false)
 
-        expect(UsersFinder).not_to receive(:new).with(user, search: 'foo').and_call_original
+        expect(UsersFinder).not_to receive(:new).with(user, { search: 'foo', use_minimum_char_limit: false }).and_call_original
 
         results.objects('users')
       end
 
       it 'calls the UsersFinder' do
-        expect(UsersFinder).to receive(:new).with(user, search: 'foo').and_call_original
+        expect(UsersFinder).to receive(:new).with(user, { search: 'foo', use_minimum_char_limit: false }).and_call_original
 
         results.objects('users')
+      end
+
+      context 'when autocomplete_users_use_search_service feature flag is disabled' do
+        before do
+          stub_feature_flags(autocomplete_users_use_search_service: false)
+        end
+
+        it 'calls the UsersFinder without use_minimum_char_limit' do
+          expect(UsersFinder).to receive(:new).with(user, search: 'foo').and_call_original
+
+          results.objects('users')
+        end
       end
     end
   end

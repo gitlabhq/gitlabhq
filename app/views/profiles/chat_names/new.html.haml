@@ -3,9 +3,9 @@
 %main{ role: 'main' }
   .gl-max-w-80.gl-mx-auto.gl-mt-6
     = render Pajamas::CardComponent.new do |c|
-      - c.header do
+      - c.with_header do
         %h4.gl-m-0= sprintf(s_('Integrations|Authorize %{integration_name} (%{user}) to use your account?'), { user: @chat_name_params[:chat_name], integration_name: @integration_name })
-      - c.body do
+      - c.with_body do
         %p
           = sprintf(s_('Integrations|An application called %{integration_name} is requesting access to your GitLab account. This application was created by GitLab Inc.'), { integration_name: @integration_name })
         %p
@@ -16,7 +16,7 @@
             %li= s_('SlackIntegration|Run ChatOps jobs.')
         %p.gl-mb-0
           = s_("SlackIntegration|You don't have to reauthorize this application if the permission scope changes in future releases.")
-      - c.footer do
+      - c.with_footer do
         .gl-display-flex
           = form_tag profile_chat_names_path, method: :post do
             = hidden_field_tag :token, @chat_name_token.token

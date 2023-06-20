@@ -1,29 +1,13 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 .error-list {
-  .dropdown {
-    min-width: auto;
-  }
-
   .filtered-search-box .form-control {
     min-width: unset;
   }
 
-  .sort-control {
-    .btn {
-      padding-right: 2rem;
-    }
-
-    .gl-dropdown-caret {
-      position: absolute;
-      right: 0.5rem;
-      top: 0.5rem;
-    }
-  }
-
   @include media-breakpoint-down(sm) {
     .error-list-table {
-      .table-col {
+      td {
         min-height: 68px;
 
         &:last-child {

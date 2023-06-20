@@ -2,6 +2,8 @@
 
 module ResourceEvents
   class AbuseReportEvent < ApplicationRecord
+    include AbuseReportEventsHelper
+
     belongs_to :abuse_report, optional: false
     belongs_to :user
 
@@ -28,5 +30,9 @@ module ResourceEvents
       other: 8,
       unconfirmed: 9
     }
+
+    def success_message
+      success_message_for_action(action)
+    end
   end
 end

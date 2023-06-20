@@ -2,27 +2,6 @@ import produce from 'immer';
 
 export const hasErrors = ({ errors = [] }) => errors?.length;
 
-export function addAgentToStore(store, createClusterAgent, query, variables) {
-  if (!hasErrors(createClusterAgent)) {
-    const { clusterAgent } = createClusterAgent;
-    const sourceData = store.readQuery({
-      query,
-      variables,
-    });
-
-    const data = produce(sourceData, (draftData) => {
-      draftData.project.clusterAgents.nodes.push(clusterAgent);
-      draftData.project.clusterAgents.count += 1;
-    });
-
-    store.writeQuery({
-      query,
-      variables,
-      data,
-    });
-  }
-}
-
 export function addAgentConfigToStore(
   store,
   clusterAgentTokenCreate,
@@ -65,7 +44,12 @@ export function removeAgentFromStore(store, deleteClusterAgent, query, variables
       draftData.project.clusterAgents.nodes = draftData.project.clusterAgents.nodes.filter(
         ({ id }) => id !== deleteClusterAgent.id,
       );
-      draftData.project.clusterAgents.count -= 1;
+      draftData.project.ciAccessAuthorizedAgents.nodes = draftData.project.ciAccessAuthorizedAgents.nodes.filter(
+        ({ agent }) => agent.id !== deleteClusterAgent.id,
+      );
+      draftData.project.userAccessAuthorizedAgents.nodes = draftData.project.userAccessAuthorizedAgents.nodes.filter(
+        ({ agent }) => agent.id !== deleteClusterAgent.id,
+      );
     });
 
     store.writeQuery({

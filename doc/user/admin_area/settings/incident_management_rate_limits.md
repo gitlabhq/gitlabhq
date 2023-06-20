@@ -30,8 +30,9 @@ Requests that exceed the limit are logged into `auth.log`.
 
 To set inbound incident management alert limits:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Incident Management Limits**.
 1. Select the **Enable Incident Management inbound alert limit** checkbox.
 1. Optional. Input a custom value for **Maximum requests per project per rate limit period**. Default is 3600.

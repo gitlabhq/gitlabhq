@@ -33,12 +33,12 @@ alternatives to server hooks include:
 
 :::TabTitle GitLab 15.11 and later
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
 
 Prerequisites:
 
 - The [storage name](gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage), path to the Gitaly configuration file
-  (default is `/var/opt/gitlab/gitaly/config.toml` on Omnibus GitLab instances), and the
+  (default is `/var/opt/gitlab/gitaly/config.toml` on Linux package instances), and the
   [repository relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
 
 To set server hooks for a repository:
@@ -57,11 +57,13 @@ To set server hooks for a repository:
    1. Ensure the server hook files are executable and do not match the backup file pattern (`*~`). The server hooks be
       in a `custom_hooks` directory that is at the root of the tarball.
    1. Create the custom hooks archive with the tar command. For example, `tar -cf custom_hooks.tar custom_hooks`.
-1. Run the `hooks set` command with required options to set the Git hooks for the repository. For example,
+1. Run the `hooks set` subcommand with required options to set the Git hooks for the repository. For example,
    `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
 
    - A path to a valid Gitaly configuration for the node is required to connect to the node and provided to the `--config` flag.
    - Custom hooks tarball must be passed via `stdin`. For example, `cat hooks.tar | gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+1. If you are using Gitaly Cluster, you must run `hooks set` subcommand on all Gitaly nodes. For more information, see
+   [Server hooks on a Gitaly Cluster](#server-hooks-on-a-gitaly-cluster).
 
 If you implemented the server hook code correctly, it should execute when the Git hook is next triggered.
 
@@ -69,15 +71,16 @@ If you implemented the server hook code correctly, it should execute when the Gi
 
 To create server hooks for a repository:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. Go to **Overview > Projects** and select the project you want to add a server hook to.
 1. On the page that appears, locate the value of **Gitaly relative path**. This path is where server hooks must be located.
    - If you are using [hashed storage](repository_storage_types.md#hashed-storage), see
      [Translate hashed storage paths](repository_storage_types.md#translate-hashed-storage-paths) for information on
      interpreting the relative path.
    - If you are not using [hashed storage](repository_storage_types.md#hashed-storage):
-     - For Omnibus GitLab installations, the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
-     - For an installation from source, the path is usually `/home/git/repositories/<group>/<project>.git`.
+     - For Linux package installations, the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
+     - For self-compiled installations, the path is usually `/home/git/repositories/<group>/<project>.git`.
 1. On the file system, create a new directory in the correct location called `custom_hooks`.
 1. In the new `custom_hooks` directory:
    - To create a single server hook, create a file with a name that matches the hook type. For example, for a
@@ -90,15 +93,18 @@ To create server hooks for a repository:
    example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
 1. Ensure the hook file does not match the backup file
    pattern (`*~`).
+1. If you are using Gitaly Cluster, you must repeat this process on all Gitaly nodes. For more information, see
+   [Server hooks on a Gitaly Cluster](#server-hooks-on-a-gitaly-cluster).
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered.
 
 ::EndTabs
 
-### Gitaly Cluster
+### Server hooks on a Gitaly Cluster
 
-If you use [Gitaly Cluster](gitaly/index.md), the scripts must be copied to every Gitaly node that has a replica of the repository. Every Gitaly node
-needs a copy because any node can be made a primary at any time. Server hooks only run on primary nodes.
+If you use [Gitaly Cluster](gitaly/index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
+Consequentially, the hook scripts must be copied to every Gitaly node that has a replica of the repository.
+To accomplish this, follow the same steps for setting custom repository hooks for the applicable version and repeat for each storage.
 
 The location to copy the scripts to depends on where repositories are stored:
 
@@ -123,7 +129,7 @@ To create a Git hook that applies to all repositories, set a global server hook.
 
 Before creating a global server hook, you must choose a directory for it.
 
-For Omnibus GitLab installations, the directory is set in `gitlab.rb` under `gitaly['configuration'][:hooks][:custom_hooks_dir]`. You can either:
+For Linux package installations, the directory is set in `gitlab.rb` under `gitaly['configuration'][:hooks][:custom_hooks_dir]`. You can either:
 
 - Use the default suggestion of the `/var/opt/gitlab/gitaly/custom_hooks` directory by uncommenting it.
 - Add your own setting.
@@ -201,7 +207,7 @@ The following GitLab environment variables are supported for all server hooks:
 
 | Environment variable | Description                                                                                                                                                |
 |:---------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GL_ID`              | GitLab identifier of user that initiated the push. For example, `user-2234`.                                                                               |
+| `GL_ID`              | GitLab identifier of user or SSH key that initiated the push. For example, `user-2234` or `key-4`.                                                         |
 | `GL_PROJECT_PATH`    | (GitLab 13.2 and later) GitLab project path.                                                                                                               |
 | `GL_PROTOCOL`        | (GitLab 13.2 and later) Protocol used for this change. One of: `http` (Git `push` using HTTP), `ssh` (Git `push` using SSH), or `web` (all other actions). |
 | `GL_REPOSITORY`      | `project-<id>` where `id` is the ID of the project.                                                                                                        |

@@ -122,4 +122,12 @@ describe('Global Search Store Mutations', () => {
       expect(state.aggregations).toStrictEqual(result);
     });
   });
+
+  describe('SET_LABEL_SEARCH_STRING', () => {
+    it('sets the search string to the given data', () => {
+      mutations[types.SET_LABEL_SEARCH_STRING](state, 'test');
+
+      expect(state.searchLabelString).toBe('test');
+    });
+  });
 });

@@ -1,5 +1,5 @@
 =begin
-#Error Trackig REST API
+#Error Tracking REST API
 
 #This schema describes the API endpoints for the error tracking feature
 
@@ -36,6 +36,8 @@ module ErrorTrackingOpenAPI
     # Status of the error
     attr_accessor :status
 
+    attr_accessor :stats
+
     class EnumAttributeValidator
       attr_reader :datatype
       attr_reader :allowable_values
@@ -70,7 +72,8 @@ module ErrorTrackingOpenAPI
         :'approximated_user_count' => :'approximated_user_count',
         :'last_seen_at' => :'last_seen_at',
         :'first_seen_at' => :'first_seen_at',
-        :'status' => :'status'
+        :'status' => :'status',
+        :'stats' => :'stats'
       }
     end
 
@@ -91,7 +94,8 @@ module ErrorTrackingOpenAPI
         :'approximated_user_count' => :'Integer',
         :'last_seen_at' => :'Time',
         :'first_seen_at' => :'Time',
-        :'status' => :'String'
+        :'status' => :'String',
+        :'stats' => :'ErrorStats'
       }
     end
 
@@ -155,6 +159,10 @@ module ErrorTrackingOpenAPI
       if attributes.key?(:'status')
         self.status = attributes[:'status']
       end
+
+      if attributes.key?(:'stats')
+        self.stats = attributes[:'stats']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -196,7 +204,8 @@ module ErrorTrackingOpenAPI
           approximated_user_count == o.approximated_user_count &&
           last_seen_at == o.last_seen_at &&
           first_seen_at == o.first_seen_at &&
-          status == o.status
+          status == o.status &&
+          stats == o.stats
     end
 
     # @see the `==` method
@@ -208,7 +217,7 @@ module ErrorTrackingOpenAPI
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [fingerprint, project_id, name, description, actor, event_count, approximated_user_count, last_seen_at, first_seen_at, status].hash
+      [fingerprint, project_id, name, description, actor, event_count, approximated_user_count, last_seen_at, first_seen_at, status, stats].hash
     end
 
     # Builds the object from hash

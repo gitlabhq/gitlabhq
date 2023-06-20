@@ -1,0 +1,33 @@
+- return unless show_new_navigation_callout?
+
+- changes_url = 'https://gitlab.com/groups/gitlab-org/-/epics/9044#whats-different'
+- vision_url = 'https://about.gitlab.com/blog/2023/05/01/gitlab-product-navigation/'
+- design_url = 'https://about.gitlab.com/blog/2023/05/15/overhauling-the-navigation-is-like-building-a-dream-home/'
+- feedback_url = 'https://gitlab.com/gitlab-org/gitlab/-/issues/409005'
+- docs_url = help_page_path('tutorials/left_sidebar/index')
+
+- changes_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: changes_url }
+- vision_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: vision_url }
+- design_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: design_url }
+- link_end = '</a>'.html_safe
+
+- welcome_text = _('For the next few releases, you can go to your avatar at any time to turn the new navigation on and off.')
+- cta_text = _('Read more about the %{changes_link_start}changes%{link_end}, the %{vision_link_start}vision%{link_end}, and the %{design_link_start}design%{link_end}.' % { changes_link_start: changes_link_start,
+                  vision_link_start: vision_link_start,
+                  design_link_start: design_link_start,
+                  link_end: link_end}).html_safe # rubocop:disable Gettext/StaticIdentifier
+
+= render Pajamas::AlertComponent.new(dismissible: true, title: _('Welcome to a new navigation experience'),
+  alert_options: { class: 'js-new-navigation-callout', data: { feature_id: "new_navigation_callout", dismiss_endpoint: callouts_path }}) do |c|
+  - c.with_body do
+    %p
+      = welcome_text
+      = cta_text
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :confirm,
+      href: docs_url,
+      button_options: { class: 'gl-alert-action', data: { track_action: 'click_button', track_label: 'banner_nav_learn_more' } }) do |c|
+      = _('Learn more')
+    = render Pajamas::ButtonComponent.new(href: feedback_url,
+      button_options: { data: { track_action: 'click_button', track_label: 'banner_nav_provide_feedback' } }) do |c|
+      = _('Provide feedback')

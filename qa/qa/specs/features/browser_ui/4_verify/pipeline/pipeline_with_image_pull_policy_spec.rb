@@ -71,10 +71,10 @@ module QA
 
             if pull_image
               expect(job_log).to have_content(message),
-                                 "Expected to find #{message} in #{job_log}, but didn't."
+                "Expected to find #{message} in #{job_log}, but didn't."
             else
               expect(job_log).not_to have_content(message),
-                                 "Found #{message} in #{job_log}, but didn't expect to."
+                "Found #{message} in #{job_log}, but didn't expect to."
             end
           end
         end
@@ -96,7 +96,7 @@ module QA
           visit_job
 
           expect(job_log).to include(text1, text2),
-                             "Expected to find contents #{text1} and #{text2} in #{job_log}, but didn't."
+            "Expected to find contents #{text1} and #{text2} in #{job_log}, but didn't."
         end
       end
 

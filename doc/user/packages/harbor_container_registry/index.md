@@ -12,9 +12,8 @@ You can integrate the [Harbor container registry](../../../user/project/integrat
 
 You can view the Harbor Registry for a project or group.
 
-1. On the top bar, select **Main menu > Projects/Groups**.
-1. Go to the project or group that you are interested in.
-1. On the left sidebar, select **Packages and registries > Harbor Registry**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Operate > Harbor Registry**.
 
 You can search, sort, and filter images on this page. You can share a filtered view by copying the URL from your browser.
 
@@ -30,7 +29,8 @@ Default settings for the Harbor integration at the project level are inherited f
 To download and run a Harbor image hosted in the GitLab Harbor Registry:
 
 1. Copy the link to your container image:
-    1. Go to your project or group's **Packages and registries > Harbor Registry** and find the image you want.
+    1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+    1. Select **Operate > Harbor Registry** and find the image you want.
     1. Select the **Copy** icon next to the image name.
 
 1. Use the command to run the container image you want.
@@ -39,8 +39,8 @@ To download and run a Harbor image hosted in the GitLab Harbor Registry:
 
 To view the list of tags associated with a specific artifact:
 
-1. Go to your project or group.
-1. Go to **Packages and registries > Harbor Registry**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Go to **Operate > Harbor Registry**.
 1. Select the image name to view its artifacts.
 1. Select the artifact you want.
 
@@ -55,13 +55,18 @@ To build and push to the Harbor Registry:
 1. Authenticate with the Harbor Registry.
 1. Run the command to build or push.
 
-To view these commands, go to your project's **Packages and registries > Harbor Registry > CLI Commands**.
+To view these commands:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Operate > Harbor Registry**.
+1. Select **CLI Commands**.
 
 ## Disable the Harbor Registry for a project
 
 To remove the Harbor Registry for a project:
 
-1. Go to your project/group's **Settings > Integrations** page.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Settings > Integrations**.
 1. Select **Harbor** under **Active integrations**.
 1. Clear the **Active** checkbox under **Enable integration**.
 1. Select **Save changes**.

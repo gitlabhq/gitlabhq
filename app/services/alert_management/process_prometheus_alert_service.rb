@@ -6,9 +6,10 @@ module AlertManagement
     include ::AlertManagement::AlertProcessing
     include ::AlertManagement::Responses
 
-    def initialize(project, payload)
+    def initialize(project, payload, integration: nil)
       @project = project
       @payload = payload
+      @integration = integration
     end
 
     def execute
@@ -24,7 +25,7 @@ module AlertManagement
 
     private
 
-    attr_reader :project, :payload
+    attr_reader :project, :payload, :integration
 
     override :incoming_payload
     def incoming_payload
@@ -32,6 +33,7 @@ module AlertManagement
         Gitlab::AlertManagement::Payload.parse(
           project,
           payload,
+          integration: integration,
           monitoring_tool: Gitlab::AlertManagement::Payload::MONITORING_TOOLS[:prometheus]
         )
       end

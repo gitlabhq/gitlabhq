@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Repository > Branch rules settings', feature_category: :projects do
+RSpec.describe 'Projects > Settings > Repository > Branch rules settings', feature_category: :groups_and_projects do
   let(:project) { create(:project_empty_repo) }
   let(:user) { create(:user) }
   let(:role) { :developer }
@@ -43,15 +43,6 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
         request
 
         expect(page).to have_content('Branch rules')
-      end
-    end
-
-    context 'branch_rules feature flag disabled' do
-      it 'does not render branch rules content' do
-        stub_feature_flags(branch_rules: false)
-        request
-
-        expect(page).to have_gitlab_http_status(:not_found)
       end
     end
   end

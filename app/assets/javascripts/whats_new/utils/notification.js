@@ -9,7 +9,7 @@ export const setNotification = (appEl) => {
 
   let notificationCountEl = notificationEl.querySelector('.js-whats-new-notification-count');
 
-  if (localStorage.getItem(STORAGE_KEY) === versionDigest) {
+  if (localStorage.getItem(STORAGE_KEY) === versionDigest || versionDigest === undefined) {
     notificationEl.classList.remove('with-notifications');
     if (notificationCountEl) {
       notificationCountEl.parentElement.removeChild(notificationCountEl);

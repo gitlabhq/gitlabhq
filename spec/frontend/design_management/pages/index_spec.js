@@ -1,4 +1,4 @@
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
@@ -16,7 +16,7 @@ import DesignDestroyer from '~/design_management/components/design_destroyer.vue
 import Design from '~/design_management/components/list/item.vue';
 import moveDesignMutation from '~/design_management/graphql/mutations/move_design.mutation.graphql';
 import uploadDesignMutation from '~/design_management/graphql/mutations/upload_design.mutation.graphql';
-import Index from '~/design_management/pages/index.vue';
+import Index, { i18n } from '~/design_management/pages/index.vue';
 import createRouter from '~/design_management/router';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
 import * as utils from '~/design_management/utils/design_management_utils';
@@ -117,6 +117,8 @@ describe('Design management index page', () => {
   const findDesignUploadButton = () => wrapper.findByTestId('design-upload-button');
   const findDesignToolbarWrapper = () => wrapper.findByTestId('design-toolbar-wrapper');
   const findDesignUpdateAlert = () => wrapper.findByTestId('design-update-alert');
+  const findLoadinIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   async function moveDesigns(localWrapper) {
     await waitForPromises();
@@ -177,13 +179,14 @@ describe('Design management index page', () => {
   function createComponentWithApollo({
     permissionsHandler = jest.fn().mockResolvedValue(getPermissionsQueryResponse()),
     moveHandler = jest.fn().mockResolvedValue(moveDesignMutationResponse),
+    getDesignListHandler = jest.fn().mockResolvedValue(getDesignListQueryResponse()),
   }) {
     Vue.use(VueApollo);
     permissionsQueryHandler = permissionsHandler;
     moveDesignHandler = moveHandler;
 
     const requestHandlers = [
-      [getDesignListQuery, jest.fn().mockResolvedValue(getDesignListQueryResponse())],
+      [getDesignListQuery, getDesignListHandler],
       [permissionsQuery, permissionsQueryHandler],
       [moveDesignMutation, moveDesignHandler],
     ];
@@ -203,24 +206,12 @@ describe('Design management index page', () => {
   describe('designs', () => {
     it('renders loading icon', () => {
       createComponent({ loading: true });
-
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('renders error', async () => {
-      createComponent();
-
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ error: true });
-
-      await nextTick();
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findLoadinIcon().exists()).toBe(true);
     });
 
     it('renders a toolbar with buttons when there are designs', () => {
       createComponent({ allVersions: [mockVersion] });
-
+      expect(findLoadinIcon().exists()).toBe(false);
       expect(findToolbar().exists()).toBe(true);
     });
 
@@ -236,7 +227,6 @@ describe('Design management index page', () => {
     it('has correct classes applied to design dropzone', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
       expect(dropzoneClasses()).toContain('design-list-item');
-      expect(dropzoneClasses()).toContain('design-list-item-new');
     });
 
     it('has correct classes applied to dropzone wrapper', () => {
@@ -262,7 +252,6 @@ describe('Design management index page', () => {
 
     it('has correct classes applied to design dropzone', () => {
       expect(dropzoneClasses()).not.toContain('design-list-item');
-      expect(dropzoneClasses()).not.toContain('design-list-item-new');
     });
 
     it('has correct classes applied to dropzone wrapper', () => {
@@ -319,6 +308,8 @@ describe('Design management index page', () => {
                 },
                 image: '',
                 imageV432x230: '',
+                description: '',
+                descriptionHtml: '',
                 filename: 'test',
                 fullPath: '',
                 event: 'NONE',
@@ -362,7 +353,6 @@ describe('Design management index page', () => {
       expect(wrapper.vm.filesToBeSaved).toEqual([{ name: 'test' }]);
       expect(wrapper.vm.isSaving).toBe(true);
       expect(dropzoneClasses()).toContain('design-list-item');
-      expect(dropzoneClasses()).toContain('design-list-item-new');
     });
 
     it('sets isSaving', async () => {
@@ -382,9 +372,8 @@ describe('Design management index page', () => {
 
     it('updates state appropriately after upload complete', async () => {
       createComponent({ stubs: { GlEmptyState } });
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ filesToBeSaved: [{ name: 'test' }] });
+      const designDropzone = findFirstDropzoneWithDesign();
+      designDropzone.vm.$emit('change', 'test');
 
       wrapper.vm.onUploadDesignDone(designUploadMutationCreatedResponse);
       await nextTick();
@@ -396,10 +385,8 @@ describe('Design management index page', () => {
 
     it('updates state appropriately after upload error', async () => {
       createComponent({ stubs: { GlEmptyState } });
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ filesToBeSaved: [{ name: 'test' }] });
-
+      const designDropzone = findFirstDropzoneWithDesign();
+      designDropzone.vm.$emit('change', 'test');
       wrapper.vm.onUploadDesignError();
       await nextTick();
       expect(wrapper.vm.filesToBeSaved).toEqual([]);
@@ -752,6 +739,16 @@ describe('Design management index page', () => {
   });
 
   describe('with mocked Apollo client', () => {
+    it('renders error', async () => {
+      // eslint-disable-next-line no-console
+      console.error = jest.fn();
+
+      createComponentWithApollo({
+        getDesignListHandler: jest.fn().mockRejectedValue(new Error('GraphQL error')),
+      });
+      await waitForPromises();
+      expect(findAlert().text()).toBe(i18n.designLoadingError);
+    });
     it('has a design with id 1 as a first one', async () => {
       createComponentWithApollo({});
       await waitForPromises();

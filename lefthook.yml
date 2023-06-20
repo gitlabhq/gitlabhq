@@ -61,7 +61,7 @@ pre-push:
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://docs.errata.ai/vale/install."; exit 1; fi'
     gettext:
-      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
+      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
@@ -91,10 +91,20 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'db/structure.sql'
       run: scripts/validate_schema_changes
+    static-verification:
+      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
+      tags: backend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{rb}'
+      run: bundle exec rake lint:static_verification
+    bundler-checksum-lint:
+      tags: backend bundler
+      glob: 'Gemfile.lock'
+      run: bundle exec bundler-checksum lint
 
   scripts:
     "merge_conflicts":
-      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
+      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       runner: bash
     "security_harness":
       tags: security

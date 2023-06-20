@@ -17,6 +17,8 @@ module ResourceAccessTokens
       access_level = params[:access_level] || Gitlab::Access::MAINTAINER
       return error("Could not provision owner access to project access token") if do_not_allow_owner_access_level_for_project_bot?(access_level)
 
+      return error(s_('AccessTokens|Access token limit reached')) if reached_access_token_limit?
+
       user = create_user
 
       return error(user.errors.full_messages.to_sentence) unless user.persisted?
@@ -44,6 +46,10 @@ module ResourceAccessTokens
     private
 
     attr_reader :resource_type, :resource
+
+    def reached_access_token_limit?
+      false
+    end
 
     def username_and_email_generator
       Gitlab::Utils::UsernameAndEmailGenerator.new(
@@ -91,7 +97,7 @@ module ResourceAccessTokens
         name: params[:name] || "#{resource_type}_bot",
         impersonation: false,
         scopes: params[:scopes] || default_scopes,
-        expires_at: params[:expires_at] || nil
+        expires_at: pat_expiration
       }
     end
 
@@ -100,15 +106,11 @@ module ResourceAccessTokens
     end
 
     def create_membership(resource, user, access_level)
-      resource.add_member(user, access_level, expires_at: default_pat_expiration)
+      resource.add_member(user, access_level, expires_at: pat_expiration)
     end
 
-    def default_pat_expiration
-      if Feature.enabled?(:default_pat_expiration)
-        params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
-      else
-        params[:expires_at]
-      end
+    def pat_expiration
+      params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
     end
 
     def log_event(token)

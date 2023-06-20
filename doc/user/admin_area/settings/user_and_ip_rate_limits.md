@@ -31,8 +31,10 @@ counted as web traffic.
 
 To enable the unauthenticated request rate limit:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **User and IP rate limits**.
 1. Select **Enable unauthenticated API request rate limit**.
 
    - Optional. Update the **Maximum unauthenticated API requests per rate limit period per IP** value.
@@ -44,8 +46,10 @@ To enable the unauthenticated request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **User and IP rate limits**.
 1. Select **Enable unauthenticated web request rate limit**.
 
    - Optional. Update the **Maximum unauthenticated web requests per rate limit period per IP** value.
@@ -57,8 +61,10 @@ To enable the unauthenticated request rate limit:
 
 To enable the authenticated API request rate limit:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **User and IP rate limits**.
 1. Select **Enable authenticated API request rate limit**.
 
    - Optional. Update the **Maximum authenticated API requests per rate limit period per user** value.
@@ -70,8 +76,10 @@ To enable the authenticated API request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **User and IP rate limits**.
 1. Select **Enable authenticated web request rate limit**.
 
    - Optional. Update the **Maximum authenticated web requests per rate limit period per user** value.
@@ -88,8 +96,10 @@ plain-text body, which by default is `Retry later`.
 
 To use a custom response:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**, and expand **User and IP rate limits**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **User and IP rate limits**.
 1. In the **Plain-text response to send to clients that hit a rate limit** text box,
    add the plain-text response message.
 
@@ -131,7 +141,7 @@ GitLab. For example:
    - Set `Gitlab-Bypass-Rate-Limiting` to a value other than `1` on all requests that
      should be affected by rate limiting.
 1. Set the environment variable  `GITLAB_THROTTLE_BYPASS_HEADER`.
-   - For [Omnibus](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+   - For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
      set `'GITLAB_THROTTLE_BYPASS_HEADER' => 'Gitlab-Bypass-Rate-Limiting'` in `gitlab_rails['env']`.
    - For source installations, set `export GITLAB_THROTTLE_BYPASS_HEADER=Gitlab-Bypass-Rate-Limiting`
      in `/etc/default/gitlab`.
@@ -163,7 +173,7 @@ the `GITLAB_THROTTLE_USER_ALLOWLIST` environment variable. If you want
 users 1, 53 and 217 to bypass the authenticated request rate limiter,
 the allowlist configuration would be `1,53,217`.
 
-- For [Omnibus](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
+- For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
   set `'GITLAB_THROTTLE_USER_ALLOWLIST' => '1,53,217'` in `gitlab_rails['env']`.
 - For source installations, set `export GITLAB_THROTTLE_USER_ALLOWLIST=1,53,217`
   in `/etc/default/gitlab`.

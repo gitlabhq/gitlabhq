@@ -87,16 +87,14 @@ it's safe to enable support for these headers globally. If you prefer a
 narrower set of rules, you can restrict it to URLs ending with `/terminal.ws`.
 This approach may still result in a few false positives.
 
-If you installed from source, or have made any configuration changes to your
-Omnibus installation before upgrading to 8.15, you may need to make some changes
-to your configuration. Read
+If you self-compiled your installation, you may need to make some changes to your configuration. Read
 [Upgrading Community Edition and Enterprise Edition from source](../../update/upgrading_from_source.md#nginx-configuration)
 for more details.
 
 To disable web terminal support in GitLab, stop passing
 the `Connection` and `Upgrade` hop-by-hop headers in the *first* HTTP reverse
 proxy in the chain. For most users, this is the NGINX server bundled with
-Omnibus GitLab, in which case, you need to:
+Linux package installations. In this case, you need to:
 
 - Find the `nginx['proxy_set_headers']` section of your `gitlab.rb` file
 - Ensure the whole block is uncommented, and then comment out or remove the
@@ -114,7 +112,7 @@ they receive a `Connection failed` message.
 By default, terminal sessions do not expire. To limit the terminal session
 lifetime in your GitLab instance:
 
-1. On the top bar, select **Main menu > Admin**.
-1. Select
-   [**Settings > Web terminal**](../../user/admin_area/settings/index.md#general).
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select [**Settings > Web terminal**](../../user/admin_area/settings/index.md#general).
 1. Set a `max session time`.

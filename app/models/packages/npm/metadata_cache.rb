@@ -4,6 +4,7 @@ module Packages
   module Npm
     class MetadataCache < ApplicationRecord
       include FileStoreMounter
+      include Packages::Downloadable
 
       belongs_to :project, inverse_of: :npm_metadata_caches
 

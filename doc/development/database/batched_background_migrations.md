@@ -42,7 +42,159 @@ Background migrations can help when:
 - You should use the [generator](#generator) to create batched background migrations,
   so that required files are created by default.
 
-## Isolation
+## How it works
+
+Batched background migrations (BBM) are subclasses of
+`Gitlab::BackgroundMigration::BatchedMigrationJob` that define a `perform` method.
+As the first step, a regular migration creates a `batched_background_migrations`
+record with the BBM class and the required arguments. By default,
+`batched_background_migrations` is in an active state, and those are picked up
+by the Sidekiq worker to execute the actual batched migration.
+
+All migration classes must be defined in the namespace `Gitlab::BackgroundMigration`. Place the files
+in the directory `lib/gitlab/background_migration/`.
+
+### Execution mechanism
+
+Batched background migrations are picked from the queue in the order they are enqueued. Multiple migrations are fetched
+and executed in parallel, as long they are in active state and do not target the same database table.
+The default number of migrations processed in parallel is 2, for GitLab.com this limit is configured to 4.
+Once migration is picked for execution, a job is created for the specific batch. After each job execution, migration's
+batch size may be increased or decreased, based on the performance of the last 20 jobs.
+
+```plantuml
+@startuml
+hide empty description
+skinparam ConditionEndStyle hline
+left to right direction
+rectangle "Batched Background Migration Queue" as migrations {
+  rectangle "Migration N (active)" as migrationn
+  rectangle "Migration 1 (completed)" as migration1
+  rectangle "Migration 2 (active)" as migration2
+  rectangle "Migration 3 (on hold)" as migration3
+  rectangle "Migration 4 (active)" as migration4
+  migration1 -[hidden]> migration2
+  migration2 -[hidden]> migration3
+  migration3 -[hidden]> migration4
+  migration4 -[hidden]> migrationn
+}
+rectangle "Execution Workers" as workers {
+ rectangle "Execution Worker 1 (busy)" as worker1
+ rectangle "Execution Worker 2 (available)" as worker2
+ worker1 -[hidden]> worker2
+}
+migration2 --> [Scheduling Worker]
+migration4 --> [Scheduling Worker]
+[Scheduling Worker] --> worker2
+@enduml
+```
+
+Soon as a worker is available, the BBM is processed by the runner.
+
+```plantuml
+@startuml
+hide empty description
+start
+rectangle Runner {
+  :Migration;
+  if (Have reached batching bounds?) then (Yes)
+    if (Have jobs to retry?) then (Yes)
+      :Fetch the batched job;
+    else (No)
+      :Finish active migration;
+      stop
+    endif
+  else (No)
+    :Create a batched job;
+  endif
+  :Execute batched job;
+  :Evaluate DB health;
+  note right: Checks for table autovacuum, Patroni Apdex, Write-ahead logging
+  if (Evaluation signs to stop?) then (Yes)
+    :Put migration on hold;
+  else (No)
+    :Optimize migration;
+  endif
+}
+@enduml
+```
+
+### Idempotence
+
+Batched background migrations are executed in a context of a Sidekiq process.
+The usual Sidekiq rules apply, especially the rule that jobs should be small
+and idempotent. Make sure that in case that your migration job is retried, data
+integrity is guaranteed.
+
+See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)
+for more details.
+
+### Migration optimization
+
+After each job execution, a verification takes place to check if the migration can be optimized.
+The optimization underlying mechanic is based on the concept of time efficiency. It calculates
+the exponential moving average of time efficiencies for the last N jobs and updates the batch
+size of the batched background migration to its optimal value.
+
+### Job retry mechanism
+
+The batched background migrations retry mechanism ensures that a job is executed again in case of failure.
+The following diagram shows the different stages of our retry mechanism:
+
+```plantuml
+@startuml
+hide empty description
+note as N1
+  can_split?:
+  the failure is due to a query timeout
+end note
+    [*] --> Running
+Running --> Failed
+note on link
+  if number of retries <= MAX_ATTEMPTS
+end note
+Running --> Succeeded
+Failed --> Running
+note on link
+  if number of retries > MAX_ATTEMPTS
+  and can_split? == true
+  then two jobs with smaller
+  batch size will be created
+end note
+Failed --> [*]
+Succeeded --> [*]
+@enduml
+```
+
+- `MAX_ATTEMPTS` is defined in the [`Gitlab::Database::BackgroundMigration`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_job.rb)
+  class.
+- `can_split?` is defined in the [`Gitlab::Database::BatchedJob`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/background_migration/batched_job.rb) class.
+
+### Failed batched background migrations
+
+The whole batched background migration is marked as `failed`
+(`/chatops run batched_background_migrations status MIGRATION_ID` shows
+the migration as `failed`) if any of the following is true:
+
+- There are no more jobs to consume, and there are failed jobs.
+- More than [half of the jobs failed since the background migration was started](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_migration.rb#L160).
+
+### Throttling batched migrations
+
+Because batched migrations are update heavy and there were few incidents in the past because of the heavy load from migrations while the database was underperforming, a throttling mechanism exists to mitigate them.
+
+These database indicators are checked to throttle a migration. On getting a
+stop signal, the migration is paused for a set time (10 minutes):
+
+- WAL queue pending archival crossing a threshold.
+- Active autovacuum on the tables on which the migration works on.
+- Patroni apdex SLI dropping below the SLO.
+
+It's an ongoing effort to add more indicators to further enhance the
+database health check framework. For more details, see
+[epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
+
+### Isolation
 
 Batched background migrations must be isolated and cannot use application code (for example,
 models defined in `app/models` except the `ApplicationRecord` classes).
@@ -96,16 +248,6 @@ ApplicationRecord.connection.execute("SELECT * FROM projects")
 ActiveRecord::Base.connection.execute("SELECT * FROM projects")
 ```
 
-## Idempotence
-
-Batched background migrations are executed in a context of a Sidekiq process.
-The usual Sidekiq rules apply, especially the rule that jobs should be small
-and idempotent. Make sure that in case that your migration job is retried, data
-integrity is guaranteed.
-
-See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)
-for more details.
-
 ## Batched background migrations for EE-only features
 
 All the background migration classes for EE-only features should be present in GitLab FOSS.
@@ -117,12 +259,6 @@ NOTE:
 Background migration classes for EE-only features that use job arguments should define them
 in the GitLab FOSS class. This is required to prevent job arguments validation from failing when
 migration is scheduled in GitLab FOSS context.
-
-Batched Background migrations are simple classes that define a `perform` method. A
-Sidekiq worker then executes such a class, passing any arguments to it. All
-migration classes must be defined in the namespace
-`Gitlab::BackgroundMigration`. Place the files in the directory
-`lib/gitlab/background_migration/`.
 
 ## Queueing
 
@@ -147,49 +283,6 @@ the number of [job arguments](#job-arguments) defined in `JOB_CLASS_NAME`.
 Make sure the newly-created data is either migrated, or
 saved in both the old and new version upon creation. Removals in
 turn can be handled by defining foreign keys with cascading deletes.
-
-### Job retry mechanism
-
-The batched background migrations retry mechanism ensures that a job is executed again in case of failure.
-The following diagram shows the different stages of our retry mechanism:
-
-```plantuml
-@startuml
-hide empty description
-note as N1
-  can_split?:
-  the failure is due to a query timeout
-end note
-[*] --> Running
-Running --> Failed
-note on link
-  if number of retries <= MAX_ATTEMPTS
-end note
-Running --> Succeeded
-Failed --> Running
-note on link
-  if number of retries > MAX_ATTEMPTS
-  and can_split? == true
-  then two jobs with smaller
-  batch size will be created
-end note
-Failed --> [*]
-Succeeded --> [*]
-@enduml
-```
-
-- `MAX_ATTEMPTS` is defined in the [`Gitlab::Database::BackgroundMigration`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_job.rb)
-class.
-- `can_split?` is defined in the [`Gitlab::Database::BatchedJob`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/background_migration/batched_job.rb) class.
-
-### Failed batched background migrations
-
-The whole batched background migration is marked as `failed`
-(`/chatops run batched_background_migrations status MIGRATION_ID` will show
-the migration as `failed`) if any of the following are true:
-
-- There are no more jobs to consume, and there are failed jobs.
-- More than [half of the jobs failed since the background migration was started](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_migration.rb).
 
 ### Requeuing batched background migrations
 
@@ -831,6 +924,7 @@ Let's assume that a batched background migration failed on a particular batch on
 Fortunately you can leverage our [database migration pipeline](database_migration_pipeline.md) to rerun a particular batch with additional logging and/or fix to see if it solves the problem.
 
 <!-- vale gitlab.Substitutions = NO -->
+
 For an example see [Draft: Test PG::CardinalityViolation fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110910) but make sure to read the entire section.
 
 To do that, you need to:
@@ -872,7 +966,7 @@ end
 
 #### 3. Apply a workaround for our migration helpers (optional)
 
-If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you'll have to monkey patch database helpers so they don't fail the testing pipeline job:
+If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you must to monkey patch database helpers so they don't fail the testing pipeline job:
 
 1. Add the schema names to [`RestrictGitlabSchema`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb#L57)
 

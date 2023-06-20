@@ -65,7 +65,7 @@ module Ci
       '%.2f' % pipeline.coverage
     end
 
-    def ref_text
+    def ref_text_legacy
       if pipeline.detached_merge_request_pipeline?
         _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch}")
           .html_safe % {
@@ -84,6 +84,28 @@ module Ci
         .html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
       elsif pipeline.ref
         _("for %{ref}").html_safe % { ref: plain_ref_name }
+      end
+    end
+
+    def ref_text
+      if pipeline.detached_merge_request_pipeline?
+        _("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}")
+          .html_safe % {
+            link_to_merge_request: link_to_merge_request,
+            link_to_merge_request_source_branch: link_to_merge_request_source_branch
+          }
+      elsif pipeline.merged_result_pipeline?
+        _("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}")
+          .html_safe % {
+            link_to_merge_request: link_to_merge_request,
+            link_to_merge_request_source_branch: link_to_merge_request_source_branch,
+            link_to_merge_request_target_branch: link_to_merge_request_target_branch
+          }
+      elsif pipeline.ref && pipeline.ref_exists?
+        _("For %{link_to_pipeline_ref}")
+        .html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
+      elsif pipeline.ref
+        _("For %{ref}").html_safe % { ref: plain_ref_name }
       end
     end
 
@@ -106,7 +128,7 @@ module Ci
     def link_to_pipeline_ref
       ApplicationController.helpers.link_to(pipeline.ref,
         project_commits_path(pipeline.project, pipeline.ref),
-        class: "ref-name")
+        class: "ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2")
     end
 
     def link_to_merge_request

@@ -5,11 +5,13 @@ import micromatch from 'micromatch';
 import { debounce } from 'lodash';
 import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
+import { contentTop } from '~/lib/utils/common_utils';
 import DiffFileRow from './diff_file_row.vue';
 
 const MODIFIER_KEY = getModifierKey();
+const MAX_ITEMS_ON_NARROW_SCREEN = 8;
+const BOTTOM_MARGIN = 16;
 
 export default {
   directives: {
@@ -20,7 +22,6 @@ export default {
     DiffFileRow,
     RecycleScroller,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     hideFileStats: {
       type: Boolean,
@@ -31,13 +32,16 @@ export default {
     return {
       search: '',
       scrollerHeight: 0,
-      resizeObserver: null,
       rowHeight: 0,
       debouncedHeightCalc: null,
+      reviewBarHeight: 0,
+      largeBreakpointSize: 0,
     };
   },
   computed: {
     ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds']),
+    ...mapState('batchComments', ['reviewBarRendered']),
+    ...mapGetters('batchComments', ['draftsCount']),
     ...mapGetters('diffs', ['allBlobs']),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
@@ -90,21 +94,44 @@ export default {
 
       return result;
     },
+    reviewBarEnabled() {
+      return this.draftsCount > 0;
+    },
+  },
+  watch: {
+    reviewBarEnabled() {
+      this.debouncedHeightCalc();
+    },
+    calculateReviewBarHeight() {
+      this.debouncedHeightCalc();
+    },
   },
   created() {
     this.debouncedHeightCalc = debounce(this.calculateScrollerHeight, 50);
   },
   mounted() {
     const heightProp = getComputedStyle(this.$refs.wrapper).getPropertyValue('--file-row-height');
+    const breakpointProp = getComputedStyle(window.document.body).getPropertyValue(
+      '--breakpoint-lg',
+    );
+    this.largeBreakpointSize = parseInt(breakpointProp, 10);
     this.rowHeight = parseInt(heightProp, 10);
     this.calculateScrollerHeight();
-    this.resizeObserver = new ResizeObserver(() => {
-      this.debouncedHeightCalc();
-    });
-    this.resizeObserver.observe(this.$refs.scrollRoot);
+    let stop;
+    // eslint-disable-next-line prefer-const
+    stop = this.$watch(
+      () => this.reviewBarRendered,
+      (enabled) => {
+        if (!enabled) return;
+        this.calculateReviewBarHeight();
+        stop();
+      },
+      { immediate: true },
+    );
+    window.addEventListener('resize', this.debouncedHeightCalc, { passive: true });
   },
   beforeDestroy() {
-    this.resizeObserver.disconnect();
+    window.removeEventListener('resize', this.debouncedHeightCalc, { passive: true });
   },
   methods: {
     ...mapActions('diffs', ['toggleTreeOpen', 'goToFile']),
@@ -112,7 +139,20 @@ export default {
       this.search = '';
     },
     calculateScrollerHeight() {
-      this.scrollerHeight = this.$refs.scrollRoot.clientHeight;
+      if (window.matchMedia(`(max-width: ${this.largeBreakpointSize - 1}px)`).matches) {
+        this.calculateMobileScrollerHeight();
+      } else {
+        let clipping = BOTTOM_MARGIN;
+        if (this.reviewBarEnabled) clipping += this.reviewBarHeight;
+        this.scrollerHeight = this.$refs.scrollRoot.clientHeight - clipping;
+      }
+    },
+    calculateMobileScrollerHeight() {
+      const maxItems = Math.min(MAX_ITEMS_ON_NARROW_SCREEN, this.flatFilteredTreeList.length);
+      this.scrollerHeight = Math.min(maxItems * this.rowHeight, window.innerHeight - contentTop());
+    },
+    calculateReviewBarHeight() {
+      this.reviewBarHeight = document.querySelector('.js-review-bar')?.offsetHeight || 0;
     },
   },
   searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)'), {
@@ -130,7 +170,7 @@ export default {
   >
     <div class="gl-pb-3 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
-        <gl-icon name="search" class="gl-absolute gl-top-5 tree-list-icon" />
+        <gl-icon name="search" class="gl-absolute gl-top-3 gl-left-3 tree-list-icon" />
         <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
         <input
           id="diff-tree-search"
@@ -149,7 +189,7 @@ export default {
           class="position-absolute bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
           @click="clearSearch"
         >
-          <gl-icon name="close" />
+          <gl-icon name="close" class="gl-absolute gl-top-3 gl-right-1 tree-list-icon" />
         </button>
       </div>
     </div>
@@ -177,7 +217,7 @@ export default {
             :class="{ 'tree-list-parent': item.level > 0 }"
             class="gl-relative"
             @toggleTreeOpen="toggleTreeOpen"
-            @clickFile="(path) => goToFile({ singleFile: glFeatures.singleFileFileByFile, path })"
+            @clickFile="(path) => goToFile({ path })"
           />
         </template>
         <template #after>
@@ -194,13 +234,6 @@ export default {
 <style>
 .tree-list-blobs .file-row-name {
   margin-left: 12px;
-}
-
-.diff-tree-search-shortcut {
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  pointer-events: none;
 }
 
 .tree-list-icon:not(button) {

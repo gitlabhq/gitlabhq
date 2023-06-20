@@ -19,7 +19,7 @@ module Types
                                            description: 'File name of the artifact.',
                                            method: :filename
 
-      field :size, GraphQL::Types::Int, null: false,
+      field :size, GraphQL::Types::BigInt, null: false,
                                         description: 'Size of the artifact in bytes.'
 
       field :expire_at, Types::TimeType, null: true,

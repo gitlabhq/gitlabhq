@@ -48,8 +48,6 @@ module GraphqlTriggers
   end
 
   def self.merge_request_merge_status_updated(merge_request)
-    return unless Feature.enabled?(:realtime_mr_status_change, merge_request.project)
-
     GitlabSchema.subscriptions.trigger(
       :merge_request_merge_status_updated, { issuable_id: merge_request.to_gid }, merge_request
     )
@@ -59,6 +57,14 @@ module GraphqlTriggers
     GitlabSchema.subscriptions.trigger(
       :merge_request_approval_state_updated, { issuable_id: merge_request.to_gid }, merge_request
     )
+  end
+
+  def self.work_item_updated(work_item)
+    # becomes is necessary here since this can be triggered with both a WorkItem and also an Issue
+    # depending on the update service the call comes from
+    work_item = work_item.becomes(::WorkItem) if work_item.is_a?(::Issue) # rubocop:disable Cop/AvoidBecomes
+
+    ::GitlabSchema.subscriptions.trigger('workItemUpdated', { work_item_id: work_item.to_gid }, work_item)
   end
 end
 

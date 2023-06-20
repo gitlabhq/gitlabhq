@@ -1,21 +1,18 @@
-import { GlButton, GlModal } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlModal } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 
+import getWritableForksResponse from 'test_fixtures/graphql/vue_shared/components/web_ide/get_writable_forks.query.graphql_none.json';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import WebIdeLink, {
-  i18n,
-  PREFERRED_EDITOR_RESET_KEY,
-  PREFERRED_EDITOR_KEY,
-} from '~/vue_shared/components/web_ide_link.vue';
-import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
-import { KEY_WEB_IDE } from '~/vue_shared/components/constants';
+import WebIdeLink, { i18n } from '~/vue_shared/components/web_ide_link.vue';
+import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 import { visitUrl } from '~/lib/utils/url_utility';
+import getWritableForksQuery from '~/vue_shared/components/web_ide/get_writable_forks.query.graphql';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -30,9 +27,8 @@ const forkPath = '/some/fork/path';
 const ACTION_EDIT = {
   href: TEST_EDIT_URL,
   key: 'edit',
-  text: 'Edit',
+  text: 'Edit single file',
   secondaryText: 'Edit this file only.',
-  tooltip: '',
   attrs: {
     'data-qa-selector': 'edit_button',
     'data-track-action': 'click_consolidated_edit',
@@ -45,10 +41,8 @@ const ACTION_EDIT_CONFIRM_FORK = {
   handle: expect.any(Function),
 };
 const ACTION_WEB_IDE = {
-  href: TEST_WEB_IDE_URL,
   key: 'webide',
   secondaryText: i18n.webIdeText,
-  tooltip: i18n.webIdeTooltip,
   text: 'Web IDE',
   attrs: {
     'data-qa-selector': 'web_ide_button',
@@ -59,7 +53,6 @@ const ACTION_WEB_IDE = {
 };
 const ACTION_WEB_IDE_CONFIRM_FORK = {
   ...ACTION_WEB_IDE,
-  href: '#modal-confirm-fork-webide',
   handle: expect.any(Function),
 };
 const ACTION_WEB_IDE_EDIT_FORK = { ...ACTION_WEB_IDE, text: 'Edit fork in Web IDE' };
@@ -67,7 +60,6 @@ const ACTION_GITPOD = {
   href: TEST_GITPOD_URL,
   key: 'gitpod',
   secondaryText: 'Launch a ready-to-code development environment for your project.',
-  tooltip: 'Launch a ready-to-code development environment for your project.',
   text: 'Gitpod',
   attrs: {
     'data-qa-selector': 'gitpod_button',
@@ -82,19 +74,21 @@ const ACTION_PIPELINE_EDITOR = {
   href: TEST_PIPELINE_EDITOR_URL,
   key: 'pipeline_editor',
   secondaryText: 'Edit, lint, and visualize your pipeline.',
-  tooltip: 'Edit, lint, and visualize your pipeline.',
   text: 'Edit in pipeline editor',
   attrs: {
     'data-qa-selector': 'pipeline_editor_button',
   },
 };
 
-describe('Web IDE link component', () => {
-  useLocalStorageSpy();
+describe('vue_shared/components/web_ide_link', () => {
+  Vue.use(VueApollo);
 
   let wrapper;
 
   function createComponent(props, { mountFn = shallowMountExtended, glFeatures = {} } = {}) {
+    const fakeApollo = createMockApollo([
+      [getWritableForksQuery, jest.fn().mockResolvedValue(getWritableForksResponse)],
+    ]);
     wrapper = mountFn(WebIdeLink, {
       propsData: {
         editUrl: TEST_EDIT_URL,
@@ -117,15 +111,11 @@ describe('Web IDE link component', () => {
             </div>`,
         }),
       },
+      apolloProvider: fakeApollo,
     });
   }
 
-  beforeEach(() => {
-    localStorage.setItem(PREFERRED_EDITOR_RESET_KEY, 'true');
-  });
-
   const findActionsButton = () => wrapper.findComponent(ActionsButton);
-  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findModal = () => wrapper.findComponent(GlModal);
   const findForkConfirmModal = () => wrapper.findComponent(ConfirmForkModal);
 
@@ -238,64 +228,16 @@ describe('Web IDE link component', () => {
       });
     });
 
-    it('selected Pipeline Editor by default', () => {
+    it('displays Pipeline Editor as the first action', () => {
       expect(findActionsButton().props()).toMatchObject({
         actions: [ACTION_PIPELINE_EDITOR, ACTION_WEB_IDE, ACTION_GITPOD],
-        selectedKey: ACTION_PIPELINE_EDITOR.key,
       });
     });
 
     it('when web ide button is clicked it opens in a new tab', async () => {
-      findActionsButton().props('actions')[1].handle({
-        preventDefault: jest.fn(),
-      });
+      findActionsButton().props('actions')[1].handle();
       await nextTick();
-      expect(visitUrl).toHaveBeenCalledWith(ACTION_WEB_IDE.href, true);
-    });
-  });
-
-  describe('with multiple actions', () => {
-    beforeEach(() => {
-      createComponent({
-        showEditButton: false,
-        showWebIdeButton: true,
-        showGitpodButton: true,
-        showPipelineEditorButton: false,
-        userPreferencesGitpodPath: TEST_USER_PREFERENCES_GITPOD_PATH,
-        userProfileEnableGitpodPath: TEST_USER_PROFILE_ENABLE_GITPOD_PATH,
-        gitpodEnabled: true,
-      });
-    });
-
-    it('selected Web IDE by default', () => {
-      expect(findActionsButton().props()).toMatchObject({
-        actions: [ACTION_WEB_IDE, ACTION_GITPOD],
-        selectedKey: ACTION_WEB_IDE.key,
-      });
-    });
-
-    it('should set selection with local storage value', async () => {
-      expect(findActionsButton().props('selectedKey')).toBe(ACTION_WEB_IDE.key);
-
-      findLocalStorageSync().vm.$emit('input', ACTION_GITPOD.key);
-
-      await nextTick();
-
-      expect(findActionsButton().props('selectedKey')).toBe(ACTION_GITPOD.key);
-    });
-
-    it('should update local storage when selection changes', async () => {
-      expect(findLocalStorageSync().props()).toMatchObject({
-        asString: true,
-        value: ACTION_WEB_IDE.key,
-      });
-
-      findActionsButton().vm.$emit('select', ACTION_GITPOD.key);
-
-      await nextTick();
-
-      expect(findActionsButton().props('selectedKey')).toBe(ACTION_GITPOD.key);
-      expect(findLocalStorageSync().props('value')).toBe(ACTION_GITPOD.key);
+      expect(visitUrl).toHaveBeenCalledWith(TEST_WEB_IDE_URL, true);
     });
   });
 
@@ -348,7 +290,10 @@ describe('Web IDE link component', () => {
     it.each(testActions)('opens the modal when the button is clicked', async ({ props }) => {
       createComponent({ ...props, needsToFork: true }, { mountFn: mountExtended });
 
-      await findActionsButton().findComponent(GlButton).trigger('click');
+      wrapper.findComponent(ActionsButton).props().actions[0].handle();
+
+      await nextTick();
+      await wrapper.findByRole('button', { name: /Web IDE|Edit/im }).trigger('click');
 
       expect(findForkConfirmModal().props()).toEqual({
         visible: true,
@@ -404,10 +349,8 @@ describe('Web IDE link component', () => {
         { mountFn: mountExtended },
       );
 
-      findLocalStorageSync().vm.$emit('input', ACTION_GITPOD.key);
-
       await nextTick();
-      await wrapper.findByRole('button', { name: gitpodText }).trigger('click');
+      await wrapper.findByRole('button', { name: new RegExp(gitpodText, 'm') }).trigger('click');
 
       expect(findModal().props('visible')).toBe(true);
     });
@@ -423,60 +366,6 @@ describe('Web IDE link component', () => {
       });
 
       expect(findModal().exists()).toBe(false);
-    });
-  });
-
-  describe('when vscode_web_ide feature flag is enabled', () => {
-    describe('when is not showing edit button', () => {
-      describe(`when ${PREFERRED_EDITOR_RESET_KEY} is unset`, () => {
-        beforeEach(() => {
-          localStorage.setItem.mockReset();
-          localStorage.getItem.mockReturnValueOnce(null);
-          createComponent({ showEditButton: false }, { glFeatures: { vscodeWebIde: true } });
-        });
-
-        it(`sets ${PREFERRED_EDITOR_KEY} local storage key to ${KEY_WEB_IDE}`, () => {
-          expect(localStorage.getItem).toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
-          expect(localStorage.setItem).toHaveBeenCalledWith(PREFERRED_EDITOR_KEY, KEY_WEB_IDE);
-        });
-
-        it(`sets ${PREFERRED_EDITOR_RESET_KEY} local storage key to true`, () => {
-          expect(localStorage.setItem).toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY, true);
-        });
-
-        it(`selects ${KEY_WEB_IDE} as the preferred editor`, () => {
-          expect(findActionsButton().props().selectedKey).toBe(KEY_WEB_IDE);
-        });
-      });
-
-      describe(`when ${PREFERRED_EDITOR_RESET_KEY} is set to true`, () => {
-        beforeEach(() => {
-          localStorage.setItem.mockReset();
-          localStorage.getItem.mockReturnValueOnce('true');
-          createComponent({ showEditButton: false }, { glFeatures: { vscodeWebIde: true } });
-        });
-
-        it(`does not update the persisted preferred editor`, () => {
-          expect(localStorage.getItem).toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
-          expect(localStorage.setItem).not.toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
-        });
-      });
-    });
-
-    describe('when is showing the edit button', () => {
-      it(`does not try to reset the ${PREFERRED_EDITOR_KEY}`, () => {
-        createComponent({ showEditButton: true }, { glFeatures: { vscodeWebIde: true } });
-
-        expect(localStorage.getItem).not.toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
-      });
-    });
-  });
-
-  describe('when vscode_web_ide feature flag is disabled', () => {
-    it(`does not try to reset the ${PREFERRED_EDITOR_KEY}`, () => {
-      createComponent({}, { glFeatures: { vscodeWebIde: false } });
-
-      expect(localStorage.getItem).not.toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
     });
   });
 });

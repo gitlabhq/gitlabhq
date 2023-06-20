@@ -58,19 +58,6 @@ RSpec.describe SearchController, feature_category: :global_search do
           expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit, scope: [user])
           get :show, params: { search: 'hello', scope: 'blobs' * 1000 }
         end
-
-        context 'when search_rate_limited_scopes feature flag is disabled' do
-          before do
-            stub_feature_flags(search_rate_limited_scopes: false)
-          end
-
-          it 'uses just current_user' do
-            %w[projects blobs users issues merge_requests].each do |scope|
-              expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit, scope: [user])
-              get :show, params: { search: 'hello', scope: scope }
-            end
-          end
-        end
       end
 
       context 'uses the right partials depending on scope' do
@@ -395,19 +382,6 @@ RSpec.describe SearchController, feature_category: :global_search do
           expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit, scope: [user])
           get :count, params: { search: 'hello', scope: 'blobs' * 1000 }
         end
-
-        context 'when search_rate_limited_scopes feature flag is disabled' do
-          before do
-            stub_feature_flags(search_rate_limited_scopes: false)
-          end
-
-          it 'uses just current_user' do
-            %w[projects blobs users issues merge_requests].each do |scope|
-              expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit, scope: [user])
-              get :count, params: { search: 'hello', scope: scope }
-            end
-          end
-        end
       end
 
       it 'raises an error if search term is missing' do
@@ -486,19 +460,6 @@ RSpec.describe SearchController, feature_category: :global_search do
           expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit, scope: [user])
           get :autocomplete, params: { term: 'hello', scope: 'blobs' * 1000 }
         end
-
-        context 'when search_rate_limited_scopes feature flag is disabled' do
-          before do
-            stub_feature_flags(search_rate_limited_scopes: false)
-          end
-
-          it 'uses just current_user' do
-            %w[projects blobs users issues merge_requests].each do |scope|
-              expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit, scope: [user])
-              get :autocomplete, params: { term: 'hello', scope: scope }
-            end
-          end
-        end
       end
 
       it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
@@ -514,6 +475,12 @@ RSpec.describe SearchController, feature_category: :global_search do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.count).to eq(1)
         expect(json_response.first['label']).to match(/User settings/)
+      end
+
+      it 'can be scoped with params[:scope]' do
+        expect(controller).to receive(:search_autocomplete_opts).with('setting', filter: nil, scope: 'project')
+
+        get :autocomplete, params: { term: 'setting', scope: 'project' }
       end
 
       it 'makes a call to search_autocomplete_opts' do
@@ -557,6 +524,7 @@ RSpec.describe SearchController, feature_category: :global_search do
           project_id: '456',
           project_ids: %w(456 789),
           confidential: true,
+          include_archived: true,
           state: true,
           force_search_results: true,
           language: 'ruby'

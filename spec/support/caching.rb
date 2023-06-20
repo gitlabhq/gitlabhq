@@ -23,15 +23,26 @@ RSpec.configure do |config|
 
   config.around(:each, :use_clean_rails_redis_caching) do |example|
     original_null_store = Rails.cache
-    caching_config_hash = Gitlab::Redis::Cache.params
-    caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
-    Rails.cache = ActiveSupport::Cache::RedisCacheStore.new(**caching_config_hash)
+    Rails.cache = ActiveSupport::Cache::RedisCacheStore.new(**Gitlab::Redis::Cache.active_support_config)
 
     redis_cache_cleanup!
 
     example.run
 
     redis_cache_cleanup!
+
+    Rails.cache = original_null_store
+  end
+
+  config.around(:each, :use_clean_rails_repository_cache_store_caching) do |example|
+    original_null_store = Rails.cache
+    Rails.cache = Gitlab::Redis::RepositoryCache.cache_store
+
+    redis_repository_cache_cleanup!
+
+    example.run
+
+    redis_repository_cache_cleanup!
 
     Rails.cache = original_null_store
   end

@@ -1,0 +1,8 @@
+---
+name: use_primary_and_secondary_stores_for_cache
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122595
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415029
+milestone: '16.1'
+type: development
+group: group::scalability
+default_enabled: false

@@ -2131,6 +2131,46 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:user) { developer }
     end
 
+    context 'unlink command' do
+      let_it_be(:private_issue) { create(:issue, project: create(:project, :private)) }
+      let_it_be(:other_issue) { create(:issue, project: project) }
+      let(:content) { "/unlink #{other_issue.to_reference(issue)}" }
+
+      subject(:unlink_issues) { service.execute(content, issue) }
+
+      shared_examples 'command with failure' do
+        it 'does not destroy issues relation' do
+          expect { unlink_issues }.not_to change { IssueLink.count }
+        end
+
+        it 'return correct execution message' do
+          expect(unlink_issues[2]).to eq('No linked issue matches the provided parameter.')
+        end
+      end
+
+      context 'when command includes linked issue' do
+        let_it_be(:link1) { create(:issue_link, source: issue, target: other_issue) }
+        let_it_be(:link2) { create(:issue_link, source: issue, target: private_issue) }
+
+        it 'executes command successfully' do
+          expect { unlink_issues }.to change { IssueLink.count }.by(-1)
+          expect(unlink_issues[2]).to eq("Removed link with #{other_issue.to_reference(issue)}.")
+          expect(issue.notes.last.note).to eq("removed the relation with #{other_issue.to_reference}")
+          expect(other_issue.notes.last.note).to eq("removed the relation with #{issue.to_reference}")
+        end
+
+        context 'when user has no access' do
+          let(:content) { "/unlink #{private_issue.to_reference(issue)}" }
+
+          it_behaves_like 'command with failure'
+        end
+      end
+
+      context 'when provided issue is not linked' do
+        it_behaves_like 'command with failure'
+      end
+    end
+
     context 'invite_email command' do
       let_it_be(:issuable) { issue }
 
@@ -2377,54 +2417,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    describe 'type command' do
-      let_it_be(:project) { create(:project, :private) }
-      let_it_be(:work_item) { create(:work_item, project: project) }
-
-      let(:command) { '/type Task' }
-
-      context 'when user has sufficient permissions to create new type' do
-        before do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(true)
-        end
-
-        it 'populates :issue_type: and :work_item_type' do
-          _, updates, message = service.execute(command, work_item)
-
-          expect(message).to eq(_('Type changed successfully.'))
-          expect(updates).to eq({ issue_type: 'task', work_item_type: WorkItems::Type.default_by_type(:task) })
-        end
-
-        it 'returns error with an invalid type' do
-          _, updates, message = service.execute('/type foo', work_item)
-
-          expect(message).to eq(_("Failed to convert this work item: Provided type is not supported."))
-          expect(updates).to eq({})
-        end
-
-        it 'returns error with same type' do
-          _, updates, message = service.execute('/type Issue', work_item)
-
-          expect(message).to eq(_("Failed to convert this work item: Types are the same."))
-          expect(updates).to eq({})
-        end
-      end
-
-      context 'when user has insufficient permissions to create new type' do
-        before do
-          allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(false)
-        end
-
-        it 'returns error' do
-          _, updates, message = service.execute(command, work_item)
-
-          expect(message).to eq(_("Failed to convert this work item: You have insufficient permissions."))
-          expect(updates).to eq({})
-        end
-      end
-    end
+    it_behaves_like 'quick actions that change work item type'
   end
 
   describe '#explain' do
@@ -2875,28 +2868,66 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         expect(explanations)
           .to contain_exactly("Converts work item to Issue. Widgets not supported in new type are removed.")
       end
+    end
 
-      context 'when feature flag work_items_mvc_2 is disabled' do
-        before do
-          stub_feature_flags(work_items_mvc_2: false)
+    describe 'relate and unlink commands' do
+      let_it_be(:other_issue) { create(:issue, project: project).to_reference(issue) }
+      let(:relate_content) { "/relate #{other_issue}" }
+      let(:unlink_content) { "/unlink #{other_issue}" }
+
+      context 'when user has permissions' do
+        it '/relate command is available' do
+          _, explanations = service.explain(relate_content, issue)
+
+          expect(explanations).to eq(["Marks this issue as related to #{other_issue}."])
         end
 
-        it 'does not have the command available' do
-          _, explanations = service.explain(command, work_item)
+        it '/unlink command is available' do
+          _, explanations = service.explain(unlink_content, issue)
+
+          expect(explanations).to eq(["Removes link with #{other_issue}."])
+        end
+      end
+
+      context 'when user has insufficient permissions' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(current_user, :admin_issue_link, issue).and_return(false)
+        end
+
+        it '/relate command is not available' do
+          _, explanations = service.explain(relate_content, issue)
+
+          expect(explanations).to be_empty
+        end
+
+        it '/unlink command is not available' do
+          _, explanations = service.explain(unlink_content, issue)
 
           expect(explanations).to be_empty
         end
       end
     end
 
-    describe 'relate command' do
-      let_it_be(:other_issue) { create(:issue, project: project) }
-      let(:content) { "/relate #{other_issue.to_reference}" }
+    describe 'promote_to command' do
+      let(:content) { '/promote_to issue' }
 
-      it 'includes explain message' do
-        _, explanations = service.explain(content, issue)
+      context 'when work item supports promotion' do
+        let_it_be(:task) { build(:work_item, :task, project: project) }
 
-        expect(explanations).to eq(["Marks this issue as related to #{other_issue.to_reference}."])
+        it 'includes the value' do
+          _, explanations = service.explain(content, task)
+          expect(explanations).to eq(['Promotes work item to issue.'])
+        end
+      end
+
+      context 'when work item does not support promotion' do
+        let_it_be(:incident) { build(:work_item, :incident, project: project) }
+
+        it 'does not include the value' do
+          _, explanations = service.explain(content, incident)
+          expect(explanations).to be_empty
+        end
       end
     end
   end

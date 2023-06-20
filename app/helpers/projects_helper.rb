@@ -177,7 +177,11 @@ module ProjectsHelper
 
     abilities = Array(search_tab_ability_map[tab])
 
-    abilities.any? { |ability| can?(current_user, ability, @project) }
+    if @project.respond_to?(:each) # support multi-project select
+      @project.any? { |project| abilities.any? { |ability| can?(current_user, ability, project) } }
+    else
+      abilities.any? { |ability| can?(current_user, ability, @project) }
+    end
   end
 
   def can_change_visibility_level?(project, current_user)
@@ -421,8 +425,9 @@ module ProjectsHelper
       packagesAvailable: ::Gitlab.config.packages.enabled,
       packagesHelpPath: help_page_path('user/packages/index'),
       currentSettings: project_permissions_settings(project),
-      canDisableEmails: can_disable_emails?(project, current_user),
+      canAddCatalogResource: can_add_catalog_resource?(project),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
+      canDisableEmails: can_disable_emails?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
       visibilityHelpPath: help_page_path('user/public_access'),
       registryAvailable: Gitlab.config.registry.enabled,
@@ -615,7 +620,8 @@ module ProjectsHelper
       commits: :read_code,
       merge_requests: :read_merge_request,
       notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
-      members: :read_project_member
+      users: :read_project_member,
+      wiki_blobs: :read_wiki
     )
   end
 
@@ -737,7 +743,6 @@ module ProjectsHelper
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
       emailsDisabled: project.emails_disabled?,
-      metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
@@ -747,7 +752,8 @@ module ProjectsHelper
       environmentsAccessLevel: feature.environments_access_level,
       featureFlagsAccessLevel: feature.feature_flags_access_level,
       releasesAccessLevel: feature.releases_access_level,
-      infrastructureAccessLevel: feature.infrastructure_access_level
+      infrastructureAccessLevel: feature.infrastructure_access_level,
+      modelExperimentsAccessLevel: feature.model_experiments_access_level
     }
   end
 

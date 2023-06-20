@@ -2,6 +2,9 @@
 // Please see the feedback issue for more details and help:
 // https://gitlab.com/gitlab-org/gitlab/-/issues/331812
 @charset "UTF-8";
+:root {
+  --white: #333238;
+}
 *,
 *::before,
 *::after {
@@ -17,10 +20,9 @@ header {
 }
 body {
   margin: 0;
-  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -48,7 +50,7 @@ a:not([href]):not([class]) {
   text-decoration: none;
 }
 kbd {
-  font-family: var(--default-mono-font, "Menlo"), "DejaVu Sans Mono",
+  font-family: "GitLab Mono", "JetBrains Mono", "Menlo", "DejaVu Sans Mono",
     "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono",
     "lucida console", monospace;
   font-size: 1em;
@@ -413,10 +415,9 @@ a.gl-badge.badge-warning:active {
 .gl-form-input,
 .gl-form-input.form-control {
   background-color: #333238;
-  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
+  font-family: "GitLab Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 0.875rem;
   line-height: 1rem;
   padding-top: 0.5rem;
@@ -581,8 +582,7 @@ html {
 .layout-page {
   padding-top: calc(
     var(--header-height, 48px) +
-      calc(var(--system-header-height) + var(--performance-bar-height)) +
-      var(--top-bar-height)
+      calc(var(--system-header-height) + var(--performance-bar-height))
   );
   padding-bottom: var(--system-footer-height);
 }
@@ -631,6 +631,11 @@ html {
   --top-bar-height: 0px;
   --system-footer-height: 0px;
   --mr-review-bar-height: 0px;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
 }
 .with-top-bar {
   --top-bar-height: 48px;
@@ -822,15 +827,15 @@ kbd {
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
 }
-.navbar-gitlab .header-search {
+.navbar-gitlab .header-search-form {
   min-width: 320px;
 }
 @media (min-width: 768px) and (max-width: 1199.98px) {
-  .navbar-gitlab .header-search {
+  .navbar-gitlab .header-search-form {
     min-width: 200px;
   }
 }
-.navbar-gitlab .header-search .keyboard-shortcut-helper {
+.navbar-gitlab .header-search-form .keyboard-shortcut-helper {
   transform: translateY(calc(50% - 2px));
   box-shadow: none;
   border-color: transparent;
@@ -1716,7 +1721,7 @@ body.gl-dark .navbar-gitlab .navbar-sub-nav {
 body.gl-dark .navbar-gitlab .nav > li {
   color: #ececef;
 }
-body.gl-dark .navbar-gitlab .nav > li.header-search-new {
+body.gl-dark .navbar-gitlab .nav > li.header-search {
   color: #ececef;
 }
 body.gl-dark .navbar-gitlab .nav > li > a .notification-dot {
@@ -1753,25 +1758,25 @@ body.gl-dark
   .notification-dot {
   background-color: #ececef;
 }
-body.gl-dark .header-search {
+body.gl-dark .header-search-form {
   background-color: rgba(236, 236, 239, 0.2) !important;
   border-radius: 4px;
 }
-body.gl-dark .header-search svg.gl-search-box-by-type-search-icon {
+body.gl-dark .header-search-form svg.gl-search-box-by-type-search-icon {
   color: rgba(236, 236, 239, 0.8);
 }
-body.gl-dark .header-search input {
+body.gl-dark .header-search-form input {
   background-color: transparent;
   color: rgba(236, 236, 239, 0.8);
   box-shadow: inset 0 0 0 1px rgba(236, 236, 239, 0.4);
 }
-body.gl-dark .header-search input::placeholder {
+body.gl-dark .header-search-form input::placeholder {
   color: rgba(236, 236, 239, 0.8);
 }
-body.gl-dark .header-search input:active::placeholder {
+body.gl-dark .header-search-form input:active::placeholder {
   color: #737278;
 }
-body.gl-dark .header-search .keyboard-shortcut-helper {
+body.gl-dark .header-search-form .keyboard-shortcut-helper {
   color: #ececef;
   background-color: rgba(236, 236, 239, 0.2);
 }
@@ -1795,11 +1800,11 @@ body.gl-dark .navbar-gitlab .navbar-nav li.active > button {
   color: var(--gl-text-color);
   background-color: var(--gray-200);
 }
-body.gl-dark .navbar-gitlab .header-search {
+body.gl-dark .navbar-gitlab .header-search-form {
   background-color: var(--gray-100) !important;
   box-shadow: inset 0 0 0 1px var(--border-color) !important;
 }
-body.gl-dark .navbar-gitlab .header-search:active {
+body.gl-dark .navbar-gitlab .header-search-form:active {
   background-color: var(--gray-100) !important;
   box-shadow: inset 0 0 0 1px var(--blue-200) !important;
 }

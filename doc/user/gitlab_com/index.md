@@ -438,6 +438,12 @@ See [non-configurable limits](../../security/rate_limits.md#non-configurable-lim
 for information on rate limits that are not configurable, and therefore also
 used on GitLab.com.
 
+## GitLab.com-specific Gitaly RPC concurrency limits
+
+Per-repository Gitaly RPC concurrency and queuing limits are configured for different types of Git operations such as `git clone`. When these limits are exceeded, a `fatal: remote error: GitLab is currently unable to handle this request due to load` message is returned to the client.
+
+For administrator documentation, see [limit RPC concurrency](../../administration/gitaly/configure_gitaly.md#limit-rpc-concurrency).
+
 ## GitLab.com logging
 
 We use [Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
@@ -462,7 +468,7 @@ and can't be configured on GitLab.com to expire. You can erase job logs
 
 ## GitLab.com at scale
 
-In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
+In addition to the GitLab Enterprise Edition Linux package install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
 publicly available, as [Kubernetes configuration](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com)
 or [Chef cookbooks](https://gitlab.com/gitlab-cookbooks).

@@ -37,6 +37,8 @@ import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
+import Reference from '~/content_editor/extensions/reference';
+import ReferenceLabel from '~/content_editor/extensions/reference_label';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
@@ -192,6 +194,15 @@ export const triggerMarkInputRule = ({ tiptapEditor, inputRuleText }) => {
   );
 };
 
+export const triggerKeyboardInput = ({ tiptapEditor, key, shiftKey = false }) => {
+  let isCaptured = false;
+  tiptapEditor.view.someProp('handleKeyDown', (f) => {
+    isCaptured = f(tiptapEditor.view, new KeyboardEvent('keydown', { key, shiftKey }));
+    return isCaptured;
+  });
+  return isCaptured;
+};
+
 /**
  * Executes an action that triggers a transaction in the
  * tiptap Editor. Returns a promise that resolves
@@ -205,6 +216,22 @@ export const waitUntilNextDocTransaction = ({ tiptapEditor, action = () => {} })
     const handleTransaction = () => {
       tiptapEditor.off('update', handleTransaction);
       resolve();
+    };
+
+    tiptapEditor.on('update', handleTransaction);
+    action();
+  });
+};
+
+export const waitUntilTransaction = ({ tiptapEditor, number, action }) => {
+  return new Promise((resolve) => {
+    let counter = 0;
+    const handleTransaction = () => {
+      counter += 1;
+      if (counter === number) {
+        tiptapEditor.off('update', handleTransaction);
+        resolve();
+      }
     };
 
     tiptapEditor.on('update', handleTransaction);
@@ -266,6 +293,8 @@ export const createTiptapEditor = (extensions = []) =>
       ListItem,
       OrderedList,
       ReferenceDefinition,
+      Reference,
+      ReferenceLabel,
       Strike,
       Table,
       TableCell,

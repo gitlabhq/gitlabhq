@@ -23,7 +23,7 @@ To enable the PostgreSQL Server Exporter:
    address is [listed in `trust_auth_cidr_addresses`](../../postgresql/replication_and_failover.md#network-information) or the
    exporter can't connect to the database.
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
    take effect.
 
 Prometheus begins collecting performance data from
@@ -70,5 +70,5 @@ use the following configuration options:
    postgres_exporter['sslrootcert'] = 'ssl-root.crt'
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.

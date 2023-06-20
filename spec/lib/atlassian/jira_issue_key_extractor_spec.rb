@@ -41,5 +41,13 @@ RSpec.describe Atlassian::JiraIssueKeyExtractor, feature_category: :integrations
         is_expected.to contain_exactly('TEST-01')
       end
     end
+
+    context 'with untrusted regex' do
+      subject { described_class.new('TEST-01 some A-100', custom_regex: Gitlab::UntrustedRegexp.new("[A-Z]{2,}-\\d+")).issue_keys }
+
+      it 'returns all valid Jira issue keys' do
+        is_expected.to contain_exactly('TEST-01')
+      end
+    end
   end
 end

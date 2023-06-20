@@ -1,5 +1,5 @@
 <script>
-import scheduleSvg from '@gitlab/svgs/dist/illustrations/schedule-md.svg';
+import scheduleSvg from '@gitlab/svgs/dist/illustrations/schedule-md.svg?raw';
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';

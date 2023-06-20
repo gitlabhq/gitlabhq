@@ -89,6 +89,8 @@ describe('optimistic responses', () => {
             id: -1,
             image: '',
             imageV432x230: '',
+            description: '',
+            descriptionHtml: '',
             filename: 'test',
             fullPath: '',
             notesCount: 0,

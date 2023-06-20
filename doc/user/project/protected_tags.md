@@ -31,15 +31,20 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected tags**.
 1. To protect a single tag, select **Tag**, then choose your tag from the dropdown list.
 1. To protect all tags with names matching a string:
    1. Select **Tag**.
    1. Enter the string to use for tag matching. Wildcards (`*`) are supported.
    1. Select **Create wildcard**.
-1. In **Allowed to create** , select either the users or roles that may create protected tags.
+1. In **Allowed to create** , select roles that may create protected tags.
+
+   NOTE:
+   In GitLab Premium and Ultimate, you can also add groups or individual users
+   to **Allowed to create**.
+
 1. Select **Protect**.
 
 The protected tag (or wildcard) displays in the **Protected tags** list.
@@ -105,8 +110,8 @@ Prerequisites:
 
 To allow a deploy key to create a protected tag:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected tags**.
 1. From the **Tag** dropdown list, select the tag you want to protect.
 1. From the **Allowed to create** list, select the deploy key.
@@ -123,8 +128,8 @@ Prerequisite:
 
 To do this:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Tags**.
 1. Next to the tag you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.
 

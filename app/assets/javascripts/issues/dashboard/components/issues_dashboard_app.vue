@@ -29,6 +29,7 @@ import {
   getSortOptions,
   isSortKey,
 } from '~/issues/list/utils';
+import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -126,6 +127,10 @@ export default {
       update(data) {
         return data.issues.nodes ?? [];
       },
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      // We need this for handling loading state when using frontend cache
+      // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106004#note_1217325202 for details
+      notifyOnNetworkStatusChange: true,
       result({ data }) {
         this.pageInfo = data?.issues.pageInfo ?? {};
       },
@@ -182,6 +187,17 @@ export default {
     },
     hasSearch() {
       return Boolean(this.searchQuery || Object.keys(this.urlFilterParams).length);
+    },
+    // due to the issues with cache-and-network, we need this hack to check if there is any data for the query in the cache.
+    // if we have cached data, we disregard the loading state
+    isLoading() {
+      return (
+        this.$apollo.queries.issues.loading &&
+        !this.$apollo.provider.clients.defaultClient.readQuery({
+          query: getIssuesQuery,
+          variables: this.queryVariables,
+        })
+      );
     },
     queryVariables() {
       return {
@@ -446,7 +462,7 @@ export default {
     :initial-filter-value="filterTokens"
     :initial-sort-by="sortKey"
     :issuables="renderedIssues"
-    :issuables-loading="$apollo.queries.issues.loading"
+    :issuables-loading="isLoading"
     namespace="dashboard"
     recent-searches-storage-key="issues"
     :search-input-placeholder="$options.i18n.searchPlaceholder"
@@ -494,6 +510,7 @@ export default {
       <gl-empty-state
         :description="emptyStateDescription"
         :svg-path="emptyStateSvgPath"
+        :svg-height="150"
         :title="emptyStateTitle"
       />
     </template>

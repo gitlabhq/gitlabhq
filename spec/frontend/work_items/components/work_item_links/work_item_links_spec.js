@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { stubComponent } from 'helpers/stub_component';
+import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
@@ -13,19 +13,14 @@ import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/wor
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
-import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   getIssueDetailsResponse,
   workItemHierarchyResponse,
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
-  changeWorkItemParentMutationResponse,
   workItemByIidResponseFactory,
-  workItemQueryResponse,
   mockWorkItemCommentNote,
-  childrenWorkItems,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -36,65 +31,47 @@ describe('WorkItemLinks', () => {
   let wrapper;
   let mockApollo;
 
-  const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
-
-  const $toast = {
-    show: jest.fn(),
-  };
-
-  const mutationChangeParentHandler = jest
-    .fn()
-    .mockResolvedValue(changeWorkItemParentMutationResponse);
-  const childWorkItemByIidHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
   const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyResponse);
   const responseWithoutAddChildPermission = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ adminParentLink: false }));
 
   const createComponent = async ({
-    data = {},
     fetchHandler = responseWithAddChildPermission,
-    mutationHandler = mutationChangeParentHandler,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
-        [workItemQuery, fetchHandler],
-        [changeWorkItemParentMutation, mutationHandler],
+        [workItemByIidQuery, fetchHandler],
         [issueDetailsQuery, issueDetailsQueryHandler],
-        [workItemByIidQuery, childWorkItemByIidHandler],
       ],
       resolvers,
       { addTypename: true },
     );
 
     wrapper = shallowMountExtended(WorkItemLinks, {
-      data() {
-        return {
-          ...data,
-        };
-      },
       provide: {
         fullPath: 'project/path',
         hasIterationsFeature,
         reportAbusePath: '/report/abuse/path',
       },
-      propsData: { issuableId: 1 },
-      apolloProvider: mockApollo,
-      mocks: {
-        $toast,
+      propsData: {
+        issuableId: 1,
+        issuableIid: 1,
       },
+      apolloProvider: mockApollo,
       stubs: {
         WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
           methods: {
             show: showModal,
           },
         }),
+        WidgetWrapper: stubComponent(WidgetWrapper, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
       },
     });
-
-    wrapper.vm.$refs.wrapper.show = jest.fn();
 
     await waitForPromises();
   };
@@ -122,8 +99,7 @@ describe('WorkItemLinks', () => {
   `(
     '$expectedAssertion "Add" button in hierarchy widget header when "userPermissions.adminParentLink" is $value',
     async ({ workItemFetchHandler, value }) => {
-      createComponent({ fetchHandler: workItemFetchHandler });
-      await waitForPromises();
+      await createComponent({ fetchHandler: workItemFetchHandler });
 
       expect(findToggleFormDropdown().exists()).toBe(value);
     },
@@ -158,24 +134,6 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAddLinksForm().exists()).toBe(false);
-    });
-
-    it('adds work item child from the form', async () => {
-      const workItem = {
-        ...workItemQueryResponse.data.workItem,
-        id: 'gid://gitlab/WorkItem/11',
-      };
-      await createComponent();
-      findToggleFormDropdown().vm.$emit('click');
-      findToggleCreateFormButton().vm.$emit('click');
-      await nextTick();
-
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
-
-      findAddLinksForm().vm.$emit('addWorkItemChild', workItem);
-      await waitForPromises();
-
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(5);
     });
   });
 
@@ -230,50 +188,6 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  describe('remove child', () => {
-    let firstChild;
-
-    beforeEach(async () => {
-      await createComponent({ mutationHandler: mutationChangeParentHandler });
-
-      [firstChild] = childrenWorkItems;
-    });
-
-    it('calls correct mutation with correct variables', async () => {
-      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild);
-
-      await waitForPromises();
-
-      expect(mutationChangeParentHandler).toHaveBeenCalledWith({
-        input: {
-          id: WORK_ITEM_ID,
-          hierarchyWidget: {
-            parentId: null,
-          },
-        },
-      });
-    });
-
-    it('shows toast when mutation succeeds', async () => {
-      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild);
-
-      await waitForPromises();
-
-      expect($toast.show).toHaveBeenCalledWith('Child removed', {
-        action: { onClick: expect.anything(), text: 'Undo' },
-      });
-    });
-
-    it('renders correct number of children after removal', async () => {
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
-
-      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild);
-      await waitForPromises();
-
-      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(3);
-    });
-  });
-
   describe('when parent item is confidential', () => {
     it('passes correct confidentiality status to form', async () => {
       await createComponent({
@@ -286,16 +200,6 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAddLinksForm().props('parentConfidential')).toBe(true);
-    });
-  });
-
-  it('starts prefetching work item by iid if URL contains work_item_iid query parameter', async () => {
-    setWindowLocation('?work_item_iid=5');
-    await createComponent();
-
-    expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
-      iid: '5',
-      fullPath: 'project/path',
     });
   });
 

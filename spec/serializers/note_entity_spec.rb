@@ -59,20 +59,9 @@ RSpec.describe NoteEntity do
 
     subject { entity.as_json[:external_author] }
 
-    context 'when external_note_author_service_desk feature flag is enabled' do
+    context 'with external note author' do
       let(:obfuscated_email) { 'em*****@e*****.c**' }
       let(:email) { 'email@example.com' }
-
-      it_behaves_like 'external author'
-    end
-
-    context 'when external_note_author_service_desk feature flag is disabled' do
-      let(:email) { nil }
-      let(:obfuscated_email) { nil }
-
-      before do
-        stub_feature_flags(external_note_author_service_desk: false)
-      end
 
       it_behaves_like 'external author'
     end

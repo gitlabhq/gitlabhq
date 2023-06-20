@@ -17,6 +17,8 @@ Rails.application.configure do |config|
     else
       activity.user_session_override!
     end
+  rescue Gitlab::Auth::TooManyIps
+    throw(:warden, scope: opts[:scope], reason: :too_many_requests) # rubocop:disable Cop/BanCatchThrow
   end
 
   Warden::Manager.after_authentication(scope: :user) do |user, auth, opts|

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/projects/_form', feature_category: :projects do
+RSpec.describe 'admin/projects/_form', feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:admin) { build_stubbed(:admin) }

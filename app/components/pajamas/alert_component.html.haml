@@ -2,10 +2,10 @@
   - if @show_icon
     = sprite_icon(icon, css_class: icon_classes)
   - if @dismissible
-    %button.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon.js-close{ @close_button_options,
-      type: 'button',
-      aria: { label: _('Dismiss') } }
-      = sprite_icon('close')
+    = render Pajamas::ButtonComponent.new(category: :tertiary,
+      icon: 'close',
+      size: :small,
+      button_options: dismissible_button_options)
   .gl-alert-content{ role: 'alert' }
     - if @title
       %h4.gl-alert-title

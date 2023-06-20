@@ -12,6 +12,9 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import { sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '~/notes/event_hub';
+import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
+import NoteForm from '~/notes/components/note_form.vue';
+import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
@@ -19,10 +22,12 @@ import {
   EVT_EXPAND_ALL_FILES,
   EVT_PERF_MARK_DIFF_FILES_END,
   EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN,
+  FILE_DIFF_POSITION_TYPE,
 } from '../constants';
 import eventHub from '../event_hub';
 import { DIFF_FILE, GENERIC_ERROR, CONFLICT_TEXT } from '../i18n';
 import { collapsedType, getShortShaFromFile } from '../utils/diff_file';
+import DiffDiscussions from './diff_discussions.vue';
 import DiffFileHeader from './diff_file_header.vue';
 
 export default {
@@ -33,11 +38,18 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     GlAlert,
+    DiffFileDrafts,
+    NoteForm,
+    DiffDiscussions,
   },
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin(), IdState({ idProp: (vm) => vm.file.file_hash })],
+  mixins: [
+    glFeatureFlagsMixin(),
+    IdState({ idProp: (vm) => vm.file.file_hash }),
+    diffLineNoteFormMixin,
+  ],
   props: {
     file: {
       type: Object,
@@ -101,7 +113,7 @@ export default {
       'conflictResolutionPath',
       'canMerge',
     ]),
-    ...mapGetters(['isNotesFetched']),
+    ...mapGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
     ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled']),
     viewBlobHref() {
       return escape(this.file.view_path);
@@ -175,6 +187,21 @@ export default {
 
       return this.file.viewer?.manuallyCollapsed;
     },
+    fileDiscussions() {
+      return this.file.discussions.filter(
+        (f) => f.position?.position_type === FILE_DIFF_POSITION_TYPE,
+      );
+    },
+    showFileDiscussions() {
+      return (
+        this.glFeatures.commentOnFiles &&
+        !this.file.viewer?.manuallyCollapsed &&
+        (this.fileDiscussions.length || this.file.drafts.length || this.file.hasCommentForm)
+      );
+    },
+    diffFileHash() {
+      return this.file.file_hash;
+    },
   },
   watch: {
     'file.id': {
@@ -187,6 +214,9 @@ export default {
     'file.file_hash': {
       handler: function hashChangeWatch(newHash, oldHash) {
         if (
+          this.viewDiffsFileByFile &&
+          !this.isCollapsed &&
+          !this.glFeatures.singleFileFileByFile &&
           newHash &&
           oldHash &&
           !this.hasDiff &&
@@ -209,12 +239,6 @@ export default {
 
     if (this.hasDiff) {
       this.postRender();
-    } else if (
-      this.viewDiffsFileByFile &&
-      !this.isCollapsed &&
-      !this.glFeatures.singleFileFileByFile
-    ) {
-      this.requestDiff();
     }
 
     this.manageViewedEffects();
@@ -230,6 +254,8 @@ export default {
       'assignDiscussionsToDiff',
       'setRenderIt',
       'setFileCollapsedByUser',
+      'saveDiffDiscussion',
+      'toggleFileCommentForm',
     ]),
     manageViewedEffects() {
       if (
@@ -281,12 +307,12 @@ export default {
         this.requestDiff();
       }
     },
-    requestDiff() {
+    requestDiff(params = {}) {
       const { idState, file } = this;
 
       idState.isLoadingCollapsedDiff = true;
 
-      this.loadCollapsedDiff(file)
+      this.loadCollapsedDiff({ file, params })
         .then(() => {
           idState.isLoadingCollapsedDiff = false;
           idState.hasLoadedCollapsedDiff = true;
@@ -319,8 +345,20 @@ export default {
     hideForkMessage() {
       this.idState.forkMessageVisible = false;
     },
+    handleSaveNote(note) {
+      this.saveDiffDiscussion({
+        note,
+        formData: {
+          noteableData: this.getNoteableData,
+          noteableType: this.noteableType,
+          diffFile: this.file,
+          positionType: FILE_DIFF_POSITION_TYPE,
+        },
+      });
+    },
   },
   CONFLICT_TEXT,
+  FILE_DIFF_POSITION_TYPE,
 };
 </script>
 
@@ -425,6 +463,35 @@ export default {
             </template>
           </gl-sprintf>
         </gl-alert>
+        <div v-if="showFileDiscussions" class="gl-border-b" data-testid="file-discussions">
+          <div class="diff-file-discussions-wrapper">
+            <diff-discussions
+              v-if="fileDiscussions.length"
+              class="diff-file-discussions"
+              data-testid="diff-file-discussions"
+              :discussions="fileDiscussions"
+            />
+            <diff-file-drafts
+              :file-hash="file.file_hash"
+              :show-pin="false"
+              :position-type="$options.FILE_DIFF_POSITION_TYPE"
+              class="diff-file-discussions"
+            />
+            <note-form
+              v-if="file.hasCommentForm"
+              :save-button-title="__('Comment')"
+              :diff-file="file"
+              autofocus
+              class="gl-py-3 gl-px-5"
+              data-testid="file-note-form"
+              @handleFormUpdate="handleSaveNote"
+              @handleFormUpdateAddToReview="
+                (note) => addToReview(note, $options.FILE_DIFF_POSITION_TYPE)
+              "
+              @cancelForm="toggleFileCommentForm(file.file_path)"
+            />
+          </div>
+        </div>
         <gl-loading-icon
           v-if="showLoadingIcon"
           size="sm"
@@ -464,6 +531,7 @@ export default {
             :class="hasBodyClasses.content"
             :diff-file="file"
             :help-page-path="helpPagePath"
+            @load-file="requestDiff"
           />
         </template>
       </div>

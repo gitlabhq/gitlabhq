@@ -170,7 +170,7 @@ RSpec.describe Emails::MergeRequests do
   end
 
   describe "#merge_when_pipeline_succeeds_email" do
-    let(:title) { "Merge request #{merge_request.to_reference} was scheduled to merge after pipeline succeeds by #{current_user.name}" }
+    let(:title) { "Merge request #{merge_request.to_reference} was set to auto-merge by #{current_user.name}" }
 
     subject { Notify.merge_when_pipeline_succeeds_email(recipient.id, merge_request.id, current_user.id) }
 
@@ -253,7 +253,7 @@ RSpec.describe Emails::MergeRequests do
         }
       end
 
-      it { expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MB.') }
+      it { expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MiB.') }
     end
   end
 

@@ -1340,8 +1340,8 @@ describe('updateIssueOrder', () => {
     };
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
-        issueMoveList: {
-          issue: rawIssue,
+        issuableMoveList: {
+          issuable: rawIssue,
           errors: [],
         },
       },
@@ -1355,8 +1355,8 @@ describe('updateIssueOrder', () => {
   it('should commit MUTATE_ISSUE_SUCCESS mutation when successful', () => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
-        issueMoveList: {
-          issue: rawIssue,
+        issuableMoveList: {
+          issuable: rawIssue,
           errors: [],
         },
       },
@@ -1387,8 +1387,8 @@ describe('updateIssueOrder', () => {
   it('should commit SET_ERROR and dispatch undoMoveIssueCard', () => {
     jest.spyOn(gqlClient, 'mutate').mockResolvedValue({
       data: {
-        issueMoveList: {
-          issue: {},
+        issuableMoveList: {
+          issuable: {},
           errors: [{ foo: 'bar' }],
         },
       },

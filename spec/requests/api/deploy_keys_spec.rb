@@ -59,6 +59,17 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
         expect { make_api_request }.not_to exceed_all_query_limit(control)
       end
 
+      it 'avoids N+1 database queries', :use_sql_query_cache, :request_store do
+        create(:deploy_keys_project, :readonly_access, project: project2, deploy_key: deploy_key)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { make_api_request }
+
+        deploy_key2 = create(:deploy_key, public: true)
+        create(:deploy_keys_project, :readonly_access, project: project3, deploy_key: deploy_key2)
+
+        expect { make_api_request }.not_to exceed_all_query_limit(control)
+      end
+
       context 'when `public` parameter is `true`' do
         it 'only returns public deploy keys' do
           make_api_request({ public: true })
@@ -79,6 +90,21 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
 
           expect(response_projects_with_write_access[0]['id']).to eq(project2.id)
           expect(response_projects_with_write_access[1]['id']).to eq(project3.id)
+        end
+      end
+
+      context 'projects_with_readonly_access' do
+        let!(:deploy_keys_project2) { create(:deploy_keys_project, :readonly_access, project: project2, deploy_key: deploy_key) }
+        let!(:deploy_keys_project3) { create(:deploy_keys_project, :readonly_access, project: project3, deploy_key: deploy_key) }
+
+        it 'returns projects with readonly access' do
+          make_api_request
+
+          response_projects_with_readonly_access = json_response.first['projects_with_readonly_access']
+
+          expect(response_projects_with_readonly_access[0]['id']).to eq(project.id)
+          expect(response_projects_with_readonly_access[1]['id']).to eq(project2.id)
+          expect(response_projects_with_readonly_access[2]['id']).to eq(project3.id)
         end
       end
     end
@@ -103,6 +129,7 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(deploy_key.title)
       expect(json_response.first).not_to have_key(:projects_with_write_access)
+      expect(json_response.first).not_to have_key(:projects_with_readonly_access)
     end
 
     it 'returns multiple deploy keys without N + 1' do
@@ -129,6 +156,7 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
 
       expect(json_response['title']).to eq(deploy_key.title)
       expect(json_response).not_to have_key(:projects_with_write_access)
+      expect(json_response).not_to have_key(:projects_with_readonly_access)
     end
 
     it 'returns 404 Not Found with invalid ID' do

@@ -64,7 +64,7 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3
       it 'validates the remote content-length' do
         expect(subject).not_to be_valid
         expect(subject.errors.full_messages)
-          .to include('Content length is too big (should be at most 10 GB)')
+          .to include('Content length is too big (should be at most 10 GiB)')
       end
     end
 

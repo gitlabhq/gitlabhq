@@ -43,7 +43,7 @@ module API
       end
       expose :tags
 
-      expose :pipeline, if: ->(package) { package.original_build_info }, using: Package::Pipeline
+      expose :pipeline, if: ->(package) { package.last_build_info }, using: Package::Pipeline
       expose :pipelines, if: ->(package) { package.pipelines.present? }, using: Package::Pipeline
 
       expose :versions, using: ::API::Entities::PackageVersion, unless: ->(_, opts) { opts[:collection] }

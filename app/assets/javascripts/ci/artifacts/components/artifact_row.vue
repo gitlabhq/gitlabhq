@@ -8,12 +8,10 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   I18N_EXPIRED,
   I18N_DOWNLOAD,
   I18N_DELETE,
-  BULK_DELETE_FEATURE_FLAG,
   I18N_BULK_DELETE_MAX_SELECTED,
 } from '../constants';
 
@@ -29,7 +27,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['canDestroyArtifacts'],
   props: {
     artifact: {
@@ -66,7 +63,7 @@ export default {
       return numberToHumanSize(this.artifact.size);
     },
     canBulkDestroyArtifacts() {
-      return this.glFeatures[BULK_DELETE_FEATURE_FLAG] && this.canDestroyArtifacts;
+      return this.canDestroyArtifacts;
     },
   },
   methods: {

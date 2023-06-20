@@ -54,6 +54,36 @@ RSpec.describe Ci::GroupVariable, feature_category: :secrets_management do
     it { expect(described_class.for_groups([group.id])).to eq([group_variable]) }
   end
 
+  describe '.for_environment_scope_like' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:variable1_on_staging1) { create(:ci_group_variable, group: group, environment_scope: 'staging1') }
+    let_it_be(:variable2_on_staging2) { create(:ci_group_variable, group: group, environment_scope: 'staging2') }
+    let_it_be(:variable3_on_production) { create(:ci_group_variable, group: group, environment_scope: 'production') }
+
+    it {
+      expect(described_class.for_environment_scope_like('staging'))
+        .to match_array([variable1_on_staging1, variable2_on_staging2])
+    }
+
+    it {
+      expect(described_class.for_environment_scope_like('production'))
+        .to match_array([variable3_on_production])
+    }
+  end
+
+  describe '.environment_scope_names' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:variable1_on_staging1) { create(:ci_group_variable, group: group, environment_scope: 'staging1') }
+    let_it_be(:variable2_on_staging2) { create(:ci_group_variable, group: group, environment_scope: 'staging2') }
+    let_it_be(:variable3_on_staging2) { create(:ci_group_variable, group: group, environment_scope: 'staging2') }
+    let_it_be(:variable4_on_production) { create(:ci_group_variable, group: group, environment_scope: 'production') }
+
+    it 'groups and orders' do
+      expect(described_class.environment_scope_names)
+        .to match_array(%w[production staging1 staging2])
+    end
+  end
+
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:model) { create(:ci_group_variable) }
 

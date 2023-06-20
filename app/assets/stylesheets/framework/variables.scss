@@ -460,6 +460,7 @@ $browser-scrollbar-size: 10px;
  * Misc
  */
 $header-height: var(--header-height, 48px);
+$content-wrapper-padding: 100px;
 $header-zindex: 1000;
 $zindex-dropdown-menu: 300;
 $ide-statusbar-height: 25px;
@@ -568,9 +569,9 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 /*
  * Fonts
  */
-$monospace-font: var(--default-mono-font, 'Menlo'), 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
+$monospace-font: 'GitLab Mono', 'JetBrains Mono', 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
   'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular-font: var(--default-regular-font, -apple-system), BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans',
+$regular-font: 'GitLab Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans',
   Ubuntu, Cantarell, 'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
   'Segoe UI Symbol', 'Noto Color Emoji';
 $gl-monospace-font: $monospace-font;

@@ -9,6 +9,7 @@ import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
 import { extractDiscussions, extractParticipants } from '../utils/design_management_utils';
 import DesignDiscussion from './design_notes/design_discussion.vue';
+import DescriptionForm from './design_description/description_form.vue';
 import DesignNoteSignedOut from './design_notes/design_note_signed_out.vue';
 import DesignTodoButton from './design_todo_button.vue';
 
@@ -21,6 +22,7 @@ export default {
     GlAccordionItem,
     GlSkeletonLoader,
     DesignTodoButton,
+    DescriptionForm,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -52,6 +54,10 @@ export default {
     },
     isLoading: {
       type: Boolean,
+      required: true,
+    },
+    designVariables: {
+      type: Object,
       required: true,
     },
   },
@@ -143,6 +149,12 @@ export default {
       :href="issue.webUrl"
       >{{ issue.webPath }}</a
     >
+    <description-form
+      v-if="!isLoading"
+      :design="design"
+      :design-variables="designVariables"
+      :markdown-preview-path="markdownPreviewPath"
+    />
     <participants
       :participants="discussionParticipants"
       :show-participant-label="false"

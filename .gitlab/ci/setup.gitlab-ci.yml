@@ -83,8 +83,8 @@ verify-approvals:
 generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping
-    - .use-pg13
-    - .rails-cache
+    - .use-pg14
+    - .ruby-cache
   needs: ["setup-test-env"]
   stage: prepare
   before_script:
@@ -171,3 +171,46 @@ e2e-test-pipeline-generate:
     expire_in: 1 day
     paths:
       - '*-pipeline.yml'
+      - "${CI_PROJECT_DIR}/qa_tests_vars.env"
+
+trigger-omnibus-env:
+  stage: prepare
+  extends:
+    - .qa:rules:package-and-test-ee
+  needs:
+    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream omnibus-gitlab pipeline.
+    - compile-production-assets
+  variables:
+    BUILD_ENV: build.env
+  before_script:
+    - source scripts/utils.sh
+  script:
+    - |
+      SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
+      echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
+      for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
+      echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_RUBY2_BUILD=${OMNIBUS_GITLAB_RUBY2_BUILD:-false}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
+      echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
+      echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
+      target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_REF_NAME}}"
+      echo "TRIGGER_BRANCH=$([[ "${target_branch_name}" =~ ^[0-9-]+-stable(-ee)?$ ]] && echo ${target_branch_name%-ee} || echo 'master')" >> $BUILD_ENV
+    - |
+      echo "Built environment file for omnibus build:"
+      cat $BUILD_ENV
+  artifacts:
+    expire_in: 3 days
+    reports:
+      dotenv: $BUILD_ENV
+    paths:
+      - $BUILD_ENV
+
+trigger-omnibus-env as-if-foss:
+  extends:
+    - trigger-omnibus-env
+    - .qa:rules:package-and-test-ce
+  needs:
+    - compile-production-assets as-if-foss

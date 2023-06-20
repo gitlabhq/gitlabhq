@@ -37,7 +37,7 @@ RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failure
       subject.validate(validated_object)
 
       expect(validated_object.errors.full_messages)
-        .to include('Content length is too small (should be at least 1 Byte)')
+        .to include('Content length is too small (should be at least 1 B)')
     end
 
     it 'is invalid with file too large' do
@@ -46,7 +46,7 @@ RSpec.describe ::Import::GitlabProjects::RemoteFileValidator, :aggregate_failure
       subject.validate(validated_object)
 
       expect(validated_object.errors.full_messages)
-        .to include('Content length is too big (should be at most 10 GB)')
+        .to include('Content length is too big (should be at most 10 GiB)')
     end
   end
 

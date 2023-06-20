@@ -86,14 +86,15 @@ class PostReceiveService
     banner = nil
 
     if project
-      scoped_messages = BroadcastMessage.current_banner_messages(current_path: project.full_path).select do |message|
-        message.target_path.present? && message.matches_current_path(project.full_path)
-      end
+      scoped_messages =
+        BroadcastMessage.current_banner_messages(current_path: project.full_path).select do |message|
+          message.target_path.present? && message.matches_current_path(project.full_path) && message.show_in_cli?
+        end
 
       banner = scoped_messages.last
     end
 
-    banner ||= BroadcastMessage.current_banner_messages.last
+    banner ||= BroadcastMessage.current_show_in_cli_banner_messages.last
 
     banner&.message
   end

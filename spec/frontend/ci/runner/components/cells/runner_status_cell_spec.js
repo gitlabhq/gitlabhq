@@ -24,7 +24,7 @@ describe('RunnerStatusCell', () => {
       propsData: {
         runner: {
           runnerType: INSTANCE_TYPE,
-          active: true,
+          paused: false,
           status: STATUS_ONLINE,
           jobExecutionStatus: JOB_STATUS_IDLE,
           ...runner,
@@ -59,7 +59,7 @@ describe('RunnerStatusCell', () => {
   it('Displays paused status', () => {
     createComponent({
       runner: {
-        active: false,
+        paused: true,
         status: STATUS_ONLINE,
       },
     });

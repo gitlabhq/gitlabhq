@@ -42,9 +42,6 @@ export default {
     }
   },
   methods: {
-    close() {
-      this.$refs.disclosureDropdown?.close();
-    },
     generateHeaders() {
       const BASE_PADDING = 16;
       const headers = [...this.blobViewer.querySelectorAll('h1,h2,h3,h4,h5,h6')];
@@ -72,10 +69,8 @@ export default {
 <template>
   <gl-disclosure-dropdown
     v-if="!isHidden && items.length"
-    ref="disclosureDropdown"
     icon="list-bulleted"
     class="gl-mr-2"
     :items="items"
-    @action="close"
   />
 </template>

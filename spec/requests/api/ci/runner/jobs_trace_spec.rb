@@ -45,6 +45,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
         let(:send_request) { patch_the_trace }
       end
 
+      it_behaves_like 'runner migrations backoff' do
+        let(:request) { patch_the_trace }
+      end
+
       it 'updates runner info' do
         runner.update!(contacted_at: 1.year.ago)
 

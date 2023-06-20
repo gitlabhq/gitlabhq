@@ -9,7 +9,6 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
   let_it_be(:related_work_item, refind: true) { create(:work_item, project: project) }
   let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
-  let(:spam_params) { double }
   let(:link_params) { {} }
 
   let(:params) do
@@ -45,11 +44,7 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
   end
 
   describe '#execute' do
-    subject(:service_result) { described_class.new(project: project, current_user: user, params: params, spam_params: spam_params, link_params: link_params).execute }
-
-    before do
-      stub_spam_services
-    end
+    subject(:service_result) { described_class.new(project: project, current_user: user, params: params, link_params: link_params).execute }
 
     context 'when work item params are valid' do
       it { is_expected.to be_success }

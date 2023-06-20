@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { SYSTEM_NOTE } from '../constants';
 import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
 import NoteEditedText from './note_edited_text.vue';
@@ -82,6 +83,12 @@ export default {
         url: this.discussion.discussion_path,
       };
     },
+    isDiscussionInternal() {
+      return this.discussion.notes[0]?.internal;
+    },
+    isFileDiscussion() {
+      return this.discussion.position?.position_type === FILE_DIFF_POSITION_TYPE;
+    },
   },
   methods: {
     ...mapActions(['toggleDiscussion', 'setSelectedCommentPositionHover']),
@@ -139,6 +146,8 @@ export default {
           :discussion-resolve-path="discussion.resolve_path"
           :is-overview-tab="isOverviewTab"
           :should-scroll-to-note="shouldScrollToNote"
+          :internal-note="isDiscussionInternal"
+          :class="{ 'gl-border-top-0!': isFileDiscussion }"
           @handleDeleteNote="$emit('deleteNote')"
           @startReplying="$emit('startReplying')"
         >
@@ -171,6 +180,7 @@ export default {
               :note="componentData(note)"
               :help-page-path="helpPagePath"
               :line="line"
+              :internal-note="isDiscussionInternal"
               @handleDeleteNote="$emit('deleteNote')"
             />
           </template>
@@ -190,6 +200,7 @@ export default {
           :discussion-resolve-path="discussion.resolve_path"
           :is-overview-tab="isOverviewTab"
           :should-scroll-to-note="shouldScrollToNote"
+          :internal-note="isDiscussionInternal"
           @handleDeleteNote="$emit('deleteNote')"
         >
           <template #avatar-badge>

@@ -17,7 +17,7 @@ module Docs
       end
 
       entries = source_file_paths.flat_map do |file|
-        YAML.load_file(file)
+        YAML.safe_load_file(file, permitted_classes: [Date])
       end
       entries = entries.sort_by { |d| d["title"] }
 

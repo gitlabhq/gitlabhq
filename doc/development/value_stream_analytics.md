@@ -365,7 +365,7 @@ Seed issues and merge requests for value stream analytics:
 
 Seed DORA daily metrics for value stream, insights and CI/CD analytics:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. On the project's homepage, in the upper-left corner, copy the **Project ID**. You need it in a later step.
 1. [Create an environment for your selected project from the UI](../ci/environments/index.md#create-a-static-environment) named `production`.
 1. Open the rails console:

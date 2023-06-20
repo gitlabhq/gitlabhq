@@ -103,7 +103,7 @@ module Gitlab
                 cc: mail.cc
               }
             },
-            spam_params: nil
+            perform_spam_check: false
           ).execute
 
           raise InvalidIssueError if result.error?

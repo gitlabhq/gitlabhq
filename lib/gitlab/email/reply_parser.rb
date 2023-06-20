@@ -80,9 +80,7 @@ module Gitlab
           #
           # Plain email.
           # ```
-          # So, we had to force its part to corresponding encoding before able
-          # to convert it to UTF-8
-          force_utf8(object.body.decoded.force_encoding(object.charset.gsub(/utf8/i, "UTF-8")))
+          object.body.decoded.force_encoding(object.charset.gsub(/utf8/i, "UTF-8")).encode("UTF-8").to_s
         else
           object.body.to_s
         end

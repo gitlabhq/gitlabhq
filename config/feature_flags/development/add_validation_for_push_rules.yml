@@ -1,0 +1,8 @@
+---
+name: add_validation_for_push_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121030
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/411901
+milestone: '16.1'
+type: development
+group: group::source code
+default_enabled: true

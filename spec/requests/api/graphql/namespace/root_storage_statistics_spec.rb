@@ -10,9 +10,11 @@ RSpec.describe 'rendering namespace statistics', feature_category: :metrics do
   let(:user) { create(:user) }
 
   let(:query) do
-    graphql_query_for('namespace',
-                      { 'fullPath' => namespace.full_path },
-                      "rootStorageStatistics { #{all_graphql_fields_for('RootStorageStatistics')} }")
+    graphql_query_for(
+      'namespace',
+      { 'fullPath' => namespace.full_path },
+      "rootStorageStatistics { #{all_graphql_fields_for('RootStorageStatistics')} }"
+    )
   end
 
   shared_examples 'a working namespace with storage statistics query' do

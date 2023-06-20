@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Source Code
+stage: Manage
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -13,7 +13,7 @@ Before using the project import and export API, you might want to use the
 
 ## Prerequisites
 
-For information on prerequisites for project import and export API, see:
+For prerequisites for project import and export API, see:
 
 - Prerequisites for [project export](../user/project/settings/import_export.md#export-a-project-and-its-data).
 - Prerequisites for [project import](../user/project/settings/import_export.md#import-a-project-and-its-data).
@@ -32,8 +32,10 @@ project to a web server or to any S3-compatible platform. For exports, GitLab:
   time and is available throughout the export process.
 - Administrators can modify the maximum export file size. By default, the maximum is unlimited (`0`). To change this,
   edit `max_export_size` using either:
-  - [Application settings API](settings.md#change-application-settings)
   - [GitLab UI](../user/admin_area/settings/account_and_limit_settings.md).
+  - [Application settings API](settings.md#change-application-settings)
+- Has a fixed limit for the maximum import file size on GitLab.com. For more information, see
+  [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings).
 
 The `upload[url]` parameter is required if the `upload` parameter is present.
 
@@ -205,7 +207,7 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 ## Import a file from a remote object storage (Beta)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/alpha-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.
@@ -446,3 +448,4 @@ GitHub and how many were already imported:
 
 - [Migrating projects using file exports](../user/project/settings/import_export.md).
 - [Project import and export Rake tasks](../administration/raketasks/project_import_export.md).
+- [Group import and export API](group_import_export.md)

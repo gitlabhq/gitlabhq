@@ -1,6 +1,42 @@
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
+export const commonOptions = {
+  ciConfigPath: '/ci/config',
+  ciExamplesHelpPagePath: 'help/ci/examples',
+  ciHelpPagePath: 'help/ci/',
+  ciLintPath: 'ci/lint',
+  ciTroubleshootingPath: 'help/troubleshoot',
+  defaultBranch: 'main',
+  emptyStateIllustrationPath: 'illustrations/svg',
+  helpPaths: '/ads',
+  includesHelpPagePath: 'help/includes',
+  needsHelpPagePath: 'help/ci/needs',
+  newMergeRequestPath: 'merge_request/new',
+  pipelinePagePath: '/pipelines/1',
+  projectFullPath: 'root/my-project',
+  projectNamespace: 'root',
+  simulatePipelineHelpPagePath: 'help/ci/simulate',
+  totalBranches: '10',
+  usesExternalConfig: 'false',
+  validateTabIllustrationPath: 'illustrations/tab',
+  ymlHelpPagePath: 'help/ci/yml',
+  aiChatAvailable: 'true',
+};
+
+export const editorDatasetOptions = {
+  initialBranchName: 'production',
+  pipelineEtag: 'pipelineEtag',
+  ...commonOptions,
+};
+
+export const expectedInjectValues = {
+  ...commonOptions,
+  aiChatAvailable: true,
+  usesExternalConfig: false,
+  totalBranches: 10,
+};
+
 export const mockProjectNamespace = 'user1';
 export const mockProjectPath = 'project1';
 export const mockProjectFullPath = `${mockProjectNamespace}/${mockProjectPath}`;
@@ -43,7 +79,7 @@ job_build:
 export const mockCiTemplateQueryResponse = {
   data: {
     project: {
-      id: 'project-1',
+      id: 'gid://gitlab/Project/1',
       ciTemplate: {
         content: mockCiYml,
       },
@@ -54,7 +90,7 @@ export const mockCiTemplateQueryResponse = {
 export const mockBlobContentQueryResponse = {
   data: {
     project: {
-      id: 'project-1',
+      id: 'gid://gitlab/Project/1',
       repository: { blobs: { nodes: [{ id: 'blob-1', rawBlob: mockCiYml }] } },
     },
   },
@@ -62,13 +98,13 @@ export const mockBlobContentQueryResponse = {
 
 export const mockBlobContentQueryResponseNoCiFile = {
   data: {
-    project: { id: 'project-1', repository: { blobs: { nodes: [] } } },
+    project: { id: 'gid://gitlab/Project/1', repository: { blobs: { nodes: [] } } },
   },
 };
 
 export const mockBlobContentQueryResponseEmptyCiFile = {
   data: {
-    project: { id: 'project-1', repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
+    project: { id: 'gid://gitlab/Project/1', repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
   },
 };
 

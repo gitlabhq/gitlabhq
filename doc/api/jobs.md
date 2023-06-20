@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## List project jobs
 
+> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
+
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination)

@@ -13,10 +13,9 @@ import {
   MODAL_TYPE_EMPTY,
   MODAL_TYPE_REGISTER,
 } from '../constants';
-import { addAgentToStore, addAgentConfigToStore } from '../graphql/cache_update';
+import { addAgentConfigToStore } from '../graphql/cache_update';
 import createAgent from '../graphql/mutations/create_agent.mutation.graphql';
 import createAgentToken from '../graphql/mutations/create_agent_token.mutation.graphql';
-import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import agentConfigurations from '../graphql/queries/agent_configurations.query.graphql';
 import AvailableAgentsDropdown from './available_agents_dropdown.vue';
 import AgentToken from './agent_token.vue';
@@ -147,14 +146,6 @@ export default {
               name: this.agentName,
               projectPath: this.projectPath,
             },
-          },
-          update: (store, { data: { createClusterAgent } }) => {
-            addAgentToStore(
-              store,
-              createClusterAgent,
-              getAgentsQuery,
-              this.getAgentsQueryVariables,
-            );
           },
         })
         .then(({ data: { createClusterAgent } }) => {

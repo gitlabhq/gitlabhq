@@ -113,6 +113,8 @@ class SearchService
   end
 
   def global_search_enabled_for_scope?
+    return false if show_snippets? && Feature.disabled?(:global_search_snippet_titles_tab, current_user, type: :ops)
+
     case params[:scope]
     when 'blobs'
       Feature.enabled?(:global_search_code_tab, current_user, type: :ops)
@@ -122,6 +124,8 @@ class SearchService
       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops)
     when 'merge_requests'
       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops)
+    when 'snippet_titles'
+      Feature.enabled?(:global_search_snippet_titles_tab, current_user, type: :ops)
     when 'wiki_blobs'
       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops)
     when 'users'

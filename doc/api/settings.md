@@ -67,6 +67,8 @@ Example response:
   "repository_storages_weighted": {"default": 100},
   "plantuml_enabled": false,
   "plantuml_url": null,
+  "diagramsnet_enabled": true,
+  "diagramsnet_url": "https://embed.diagrams.net",
   "kroki_enabled": false,
   "kroki_url": null,
   "terminal_max_session_time": 0,
@@ -193,6 +195,8 @@ Example response:
   "repository_storages": ["default"],
   "plantuml_enabled": false,
   "plantuml_url": null,
+  "diagramsnet_enabled": true,
+  "diagramsnet_url": "https://embed.diagrams.net",
   "terminal_max_session_time": 0,
   "polling_interval_multiplier": 1.0,
   "rsa_key_restriction": 0,
@@ -325,6 +329,8 @@ listed in the descriptions of the relevant settings.
 | `delayed_group_deletion` **(PREMIUM SELF)**   | boolean     | no                                   | Enable delayed group deletion. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), disables and locks the group-level setting for delayed protect deletion when set to `false`. From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled, this attribute has been removed. This attribute will be completely removed in GitLab 16.0. |
 | `default_project_deletion_protection` **(PREMIUM SELF)** | boolean | no                            | Enable default project deletion protection so only administrators can delete projects. Default is `false`. |
 | `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), a hook on `deletion_adjourned_period` sets the period to `1` on every update, and sets both `delayed_project_deletion` and `delayed_group_deletion` to `false` if the period is `0`. |
+| `diagramsnet_enabled`                       | boolean          | no                                   | (If enabled, requires `diagramsnet_url`) Enable [Diagrams.net integration](../administration/integration/diagrams_net.md). Default is `true`. |
+| `diagramsnet_url`                           | string           | required by: `diagramsnet_enabled`      | The Diagrams.net instance URL for integration. |
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../user/admin_area/diff_limits.md), in bytes. |
 | `diff_max_files`                         | integer          | no                                   | Maximum [files in a diff](../user/admin_area/diff_limits.md). |
 | `diff_max_lines`                         | integer          | no                                   | Maximum [lines in a diff](../user/admin_area/diff_limits.md). |
@@ -419,7 +425,7 @@ listed in the descriptions of the relevant settings.
 | `max_export_size`                        | integer          | no                                   | Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited). [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8. |
 | `max_pages_size`                         | integer          | no                                   | Maximum size of pages repositories in MB. |
-| `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. |
+| `max_personal_access_token_lifetime` **(ULTIMATE SELF)** | integer | no                                   | Maximum allowable lifetime for access tokens in days. When left blank, default value of 365 is applied. When set, value must be 365 or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked.|
 | `max_ssh_key_lifetime` **(ULTIMATE SELF)** | integer        | no                                   | Maximum allowable lifetime for SSH keys in days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6. |
 | `max_terraform_state_size_bytes`         | integer | no                                         | Maximum size in bytes of the [Terraform state](../administration/terraform_state.md) files. Set this to 0 for unlimited file size. |
 | `metrics_method_call_threshold`          | integer          | no                                   | A method call is only tracked when it takes longer than the given amount of milliseconds. |
@@ -455,10 +461,10 @@ listed in the descriptions of the relevant settings.
 | `projects_api_rate_limit_unauthenticated`      | integer          | no                                   | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10. Max number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](projects.md#list-all-projects). Default: 400. To disable throttling set to 0.|
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
-| `push_event_activities_limit`            | integer          | no                                   | Number of changes (branches or tags) in a single push to determine whether individual push events or bulk push events are created. [Bulk push events are created](../user/admin_area/settings/push_event_activities_limit.md) if it surpasses that value. |
-| `push_event_hooks_limit`                 | integer          | no                                   | Number of changes (branches or tags) in a single push to determine whether webhooks and services fire or not. Webhooks and services aren't submitted if it surpasses that value. |
+| `push_event_activities_limit`            | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which a [bulk push event is created](../user/admin_area/settings/push_event_activities_limit.md). Setting to `0` does not disable throttling. |
+| `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. |
 | `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
-| `raw_blob_request_limit`                 | integer          | no                                   | Max number of requests per minute for each raw path. Default: 300. To disable throttling set to 0.|
+| `raw_blob_request_limit`                 | integer          | no                                   | Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling.|
 | `user_email_lookup_limit`                | integer          | no                                   | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631/)** in GitLab 14.9 will be removed in 15.0. Replaced by `search_rate_limit`. Max number of requests per minute for email lookup. Default: 60. To disable throttling set to 0.|
 | `search_rate_limit`                      | integer          | no                                   | Max number of requests per minute for performing a search while authenticated. Default: 30. To disable throttling set to 0.|
 | `search_rate_limit_unauthenticated`      | integer          | no                                   | Max number of requests per minute for performing a search while unauthenticated. Default: 10. To disable throttling set to 0.|
@@ -477,7 +483,7 @@ listed in the descriptions of the relevant settings.
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |
 | `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up scan result policy approval groups globally or within project hierarchies. |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
-| `shared_runners_minutes` **(PREMIUM)**   | integer          | required by: `shared_runners_enabled` | Set the maximum number of CI/CD minutes that a group can use on shared runners per month. |
+| `shared_runners_minutes` **(PREMIUM)**   | integer          | required by: `shared_runners_enabled` | Set the maximum number of units of compute that a group can use on shared runners per month. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
 | `sidekiq_job_limiter_mode` | string | no | `track` or `compress`. Sets the behavior for [Sidekiq job size limits](../user/admin_area/settings/sidekiq_job_limits.md). Default: 'compress'. |
 | `sidekiq_job_limiter_compression_threshold_bytes` | integer | no | The threshold in bytes at which Sidekiq jobs are compressed before being stored in Redis. Default: 100,000 bytes (100 KB). |

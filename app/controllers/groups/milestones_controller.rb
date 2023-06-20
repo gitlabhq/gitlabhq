@@ -44,7 +44,19 @@ class Groups::MilestonesController < Groups::ApplicationController
   def update
     Milestones::UpdateService.new(@milestone.parent, current_user, milestone_params).execute(@milestone)
 
-    redirect_to milestone_path(@milestone)
+    respond_to do |format|
+      format.html do
+        redirect_to milestone_path(@milestone)
+      end
+
+      format.json do
+        if @milestone.valid?
+          head :no_content
+        else
+          render json: { errors: @milestone.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+    end
   rescue ActiveRecord::StaleObjectError
     respond_to do |format|
       format.html do

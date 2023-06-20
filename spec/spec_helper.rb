@@ -173,7 +173,6 @@ RSpec.configure do |config|
   config.include SidekiqMiddleware
   config.include StubActionCableConnection, type: :channel
   config.include StubMemberAccessLevel
-  config.include StubSpamServices
   config.include SnowplowHelpers
   config.include RenderedHelpers
   config.include RSpec::Benchmark::Matchers, type: :benchmark
@@ -181,6 +180,7 @@ RSpec.configure do |config|
   config.include RequestUrgencyMatcher, type: :controller
   config.include RequestUrgencyMatcher, type: :request
   config.include Capybara::RSpecMatchers, type: :request
+  config.include PendingDirectUploadHelpers, :direct_uploads
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -275,7 +275,7 @@ RSpec.configure do |config|
 
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
-      stub_feature_flags(use_click_house_database_for_error_tracking: false)
+      stub_feature_flags(gitlab_error_tracking: false)
 
       # Disable this to avoid the Web IDE modals popping up in tests:
       # https://gitlab.com/gitlab-org/gitlab/-/issues/385453
@@ -302,6 +302,7 @@ RSpec.configure do |config|
 
       # These are ops feature flags that are disabled by default
       stub_feature_flags(disable_anonymous_project_search: false)
+      stub_feature_flags(disable_cancel_redundant_pipelines_service: false)
 
       # Specs should not get a CAPTCHA challenge by default, this makes the sign-in flow simpler in
       # most cases. We do test the CAPTCHA flow in the appropriate specs.
@@ -348,16 +349,6 @@ RSpec.configure do |config|
       allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
         current_user_mode.send(:user)&.admin?
       end
-    end
-
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/42692
-    # The ongoing implementation of Admin Mode for API is behind the :admin_mode_for_api feature flag.
-    # All API specs will be adapted continuously. The following list contains the specs that have not yet been adapted.
-    # The feature flag is disabled for these specs as long as they are not yet adapted.
-    admin_mode_for_api_feature_flag_paths = %w[]
-
-    if example.metadata[:file_path].start_with?(*admin_mode_for_api_feature_flag_paths)
-      stub_feature_flags(admin_mode_for_api: false)
     end
 
     # Make sure specs test by default admin mode setting on, unless forced to the opposite
@@ -415,7 +406,8 @@ RSpec.configure do |config|
     with_sidekiq_server_middleware do |chain|
       Gitlab::SidekiqMiddleware.server_configurator(
         metrics: false, # The metrics don't go anywhere in tests
-        arguments_logger: false # We're not logging the regular messages for inline jobs
+        arguments_logger: false, # We're not logging the regular messages for inline jobs
+        defer_jobs: false # We're not deferring jobs for inline tests
       ).call(chain)
       chain.add DisableQueryLimit
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore

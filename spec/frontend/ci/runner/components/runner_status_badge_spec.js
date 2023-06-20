@@ -21,13 +21,11 @@ describe('RunnerTypeBadge', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const getTooltip = () => getBinding(findBadge().element, 'gl-tooltip');
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(RunnerStatusBadge, {
       propsData: {
-        runner: {
-          contactedAt: '2020-12-31T23:59:00Z',
-          status: STATUS_ONLINE,
-        },
+        contactedAt: '2020-12-31T23:59:00Z',
+        status: STATUS_ONLINE,
         ...props,
       },
       directives: {
@@ -55,7 +53,7 @@ describe('RunnerTypeBadge', () => {
 
   it('renders never contacted state', () => {
     createComponent({
-      runner: {
+      props: {
         contactedAt: null,
         status: STATUS_NEVER_CONTACTED,
       },
@@ -68,7 +66,7 @@ describe('RunnerTypeBadge', () => {
 
   it('renders offline state', () => {
     createComponent({
-      runner: {
+      props: {
         contactedAt: '2020-12-31T00:00:00Z',
         status: STATUS_OFFLINE,
       },
@@ -81,7 +79,7 @@ describe('RunnerTypeBadge', () => {
 
   it('renders stale state', () => {
     createComponent({
-      runner: {
+      props: {
         contactedAt: '2020-01-01T00:00:00Z',
         status: STATUS_STALE,
       },
@@ -94,7 +92,7 @@ describe('RunnerTypeBadge', () => {
 
   it('renders stale state with no contact time', () => {
     createComponent({
-      runner: {
+      props: {
         contactedAt: null,
         status: STATUS_STALE,
       },
@@ -108,7 +106,7 @@ describe('RunnerTypeBadge', () => {
   describe('does not fail when data is missing', () => {
     it('contacted_at is missing', () => {
       createComponent({
-        runner: {
+        props: {
           contactedAt: null,
           status: STATUS_ONLINE,
         },
@@ -120,7 +118,7 @@ describe('RunnerTypeBadge', () => {
 
     it('status is missing', () => {
       createComponent({
-        runner: {
+        props: {
           status: null,
         },
       });

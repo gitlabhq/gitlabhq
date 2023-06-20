@@ -3,6 +3,10 @@
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"
   ],
+  "BaseHeaderInterface": [
+    "AuditEventStreamingHeader",
+    "AuditEventsStreamingInstanceHeader"
+  ],
   "CiVariable": [
     "CiGroupVariable",
     "CiInstanceVariable",
@@ -94,6 +98,7 @@
     "ContainerRepositoryRegistry",
     "DependencyProxyBlobRegistry",
     "DependencyProxyManifestRegistry",
+    "DesignManagementRepositoryRegistry",
     "JobArtifactRegistry",
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
@@ -150,6 +155,7 @@
     "VulnerabilityDetailList",
     "VulnerabilityDetailMarkdown",
     "VulnerabilityDetailModuleLocation",
+    "VulnerabilityDetailNamedList",
     "VulnerabilityDetailTable",
     "VulnerabilityDetailText",
     "VulnerabilityDetailUrl"

@@ -3,6 +3,7 @@ import discussionFixture from 'test_fixtures/merge_requests/diff_discussion.json
 import imageDiscussionFixture from 'test_fixtures/merge_requests/image_diff_discussion.json';
 import { createStore } from '~/mr_notes/stores';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
+import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 
 describe('diff_with_note', () => {
   let store;
@@ -19,6 +20,8 @@ describe('diff_with_note', () => {
       return wrapper.find('.diff-content .notes_holder');
     },
   };
+
+  const findDiffViewer = () => wrapper.findComponent(DiffViewer);
 
   beforeEach(() => {
     store = createStore();
@@ -83,6 +86,45 @@ describe('diff_with_note', () => {
 
     it('shows image diff', () => {
       expect(selectors.diffTable.exists()).toBe(false);
+    });
+  });
+
+  describe('legacy diff note', () => {
+    const mockCommitId = 'abc123';
+
+    beforeEach(() => {
+      const diffDiscussion = {
+        ...discussionFixture[0],
+        commit_id: mockCommitId,
+        diff_file: {
+          ...discussionFixture[0].diff_file,
+          diff_refs: null,
+          viewer: {
+            ...discussionFixture[0].diff_file.viewer,
+            name: 'no_preview',
+          },
+        },
+      };
+
+      wrapper = shallowMount(DiffWithNote, {
+        propsData: {
+          discussion: diffDiscussion,
+        },
+        store,
+      });
+    });
+
+    it('shows file diff', () => {
+      expect(selectors.diffTable.exists()).toBe(false);
+    });
+
+    it('uses "no_preview" diff mode', () => {
+      expect(findDiffViewer().props('diffMode')).toBe('no_preview');
+    });
+
+    it('falls back to discussion.commit_id for baseSha and headSha', () => {
+      expect(findDiffViewer().props('oldSha')).toBe(mockCommitId);
+      expect(findDiffViewer().props('newSha')).toBe(mockCommitId);
     });
   });
 });

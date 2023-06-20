@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subgroups do
+RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :groups_and_projects do
   shared_examples 'project namespace path is in sync with project path' do
     it 'keeps project and project namespace attributes in sync' do
       projects_with_project_namespace.each do |project|
@@ -907,7 +907,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
       let(:subsub_project) { create(:project, group: subsubgroup) }
 
       let!(:contacts) { create_list(:contact, 4, group: root_group) }
-      let!(:organizations) { create_list(:crm_organization, 2, group: root_group) }
+      let!(:crm_organizations) { create_list(:crm_organization, 2, group: root_group) }
 
       before do
         create(:issue_customer_relations_contact, contact: contacts[0], issue: create(:issue, project: root_project))
@@ -966,7 +966,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
         it 'moves all crm objects' do
           expect { transfer_service.execute(new_parent_group) }
             .to change { root_group.contacts.count }.by(-4)
-            .and change { root_group.organizations.count }.by(-2)
+            .and change { root_group.crm_organizations.count }.by(-2)
         end
 
         it 'retains issue contacts' do
@@ -991,7 +991,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
           it 'moves all crm objects' do
             expect { transfer_service.execute(subgroup_in_new_parent_group) }
               .to change { root_group.contacts.count }.by(-4)
-              .and change { root_group.organizations.count }.by(-2)
+              .and change { root_group.crm_organizations.count }.by(-2)
           end
 
           it 'retains issue contacts' do

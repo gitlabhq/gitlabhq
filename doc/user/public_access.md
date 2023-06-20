@@ -59,7 +59,7 @@ Prerequisite:
 
 - You must have the Owner role for a project.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Change **Project visibility** to either **Private**, **Internal**, or **Public**.
@@ -78,7 +78,7 @@ Prerequisites:
   restrictive as the new setting of the parent group. For example, you cannot set a group
   to private if a subgroup or project in that group is public.
 
-1. On the top bar, select **Main menu > Groups** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Naming, visibility**.
 1. Under **Visibility level** select either **Private**, **Internal**, or **Public**.

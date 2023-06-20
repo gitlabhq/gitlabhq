@@ -20,13 +20,13 @@ module Banzai
       DOLLAR_INLINE_UNTRUSTED =
         '(?P<matched>\$(?P<math>(?:\S[^$\n]*?\S|[^$\s]))\$)(?:[^\d]|$)'
       DOLLAR_INLINE_UNTRUSTED_REGEX =
-        Gitlab::UntrustedRegexp.new(DOLLAR_INLINE_UNTRUSTED, multiline: false)
+        Gitlab::UntrustedRegexp.new(DOLLAR_INLINE_UNTRUSTED, multiline: false).freeze
 
       # Corresponds to the "$$...$$" syntax
       DOLLAR_DISPLAY_INLINE_UNTRUSTED =
         '(?P<matched>\$\$\ *(?P<math>[^$\n]+?)\ *\$\$)'
       DOLLAR_DISPLAY_INLINE_UNTRUSTED_REGEX =
-        Gitlab::UntrustedRegexp.new(DOLLAR_DISPLAY_INLINE_UNTRUSTED, multiline: false)
+        Gitlab::UntrustedRegexp.new(DOLLAR_DISPLAY_INLINE_UNTRUSTED, multiline: false).freeze
 
       # Order dependent. Handle the `$$` syntax before the `$` syntax
       DOLLAR_MATH_PIPELINE = [

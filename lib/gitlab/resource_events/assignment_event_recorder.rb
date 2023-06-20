@@ -11,8 +11,6 @@ module Gitlab
       end
 
       def record
-        return if Feature.disabled?(:record_issue_and_mr_assignee_events, parent.project)
-
         case parent
         when Issue
           record_for_parent(

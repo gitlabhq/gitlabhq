@@ -3,7 +3,7 @@
 
 .sub-section
   %h4.warning-title= s_('GroupSettings|Change group URL')
-  = form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
+  = gitlab_ui_form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
     = form_errors(@group)
     .form-group
       %p
@@ -23,7 +23,7 @@
           title: group_url_error_message,
           maxlength: ::Namespace::URL_MAX_LENGTH,
           "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
-    = f.submit s_('GroupSettings|Change group URL'), class: 'btn gl-button btn-danger'
+    = f.submit s_('GroupSettings|Change group URL'), class: 'btn-danger', pajamas_button: true
 
 = render 'groups/settings/transfer', group: @group
 = render 'groups/settings/remove', group: @group, remove_form_id: remove_form_id

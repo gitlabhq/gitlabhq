@@ -75,6 +75,10 @@ export const NORMAL_FILTER = 'normalFilter';
 export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
+export const ISSUES_VIEW_TYPE_KEY = 'issuesViewType';
+export const ISSUES_LIST_VIEW_KEY = 'List';
+export const ISSUES_GRID_VIEW_KEY = 'Grid';
+
 export const i18n = {
   actionsLabel: __('Actions'),
   calendarLabel: __('Subscribe to calendar'),
@@ -116,6 +120,8 @@ export const i18n = {
   upvotes: __('Upvotes'),
   titles: __('Titles'),
   descriptions: __('Descriptions'),
+  listLabel: __('List'),
+  gridLabel: __('Grid'),
 };
 
 export const urlSortParams = {

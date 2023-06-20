@@ -27,10 +27,9 @@ module Packages
       end
 
       def composer_json
-        strong_memoize(:composer_json) do
-          ::Packages::Composer::ComposerJsonService.new(project, target).execute
-        end
+        ::Packages::Composer::ComposerJsonService.new(project, target).execute
       end
+      strong_memoize_attr :composer_json
 
       def package_name
         composer_json['name']

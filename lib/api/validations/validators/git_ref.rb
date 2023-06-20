@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class GitRef < Grape::Validations::Base
+      class GitRef < Grape::Validations::Validators::Base
         # There are few checks that a Git reference should pass through to be valid reference.
         # The link contains some rules that have been added to this validator.
         # https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html

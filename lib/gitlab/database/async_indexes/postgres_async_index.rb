@@ -8,12 +8,16 @@ module Gitlab
 
         self.table_name = 'postgres_async_indexes'
 
+        # schema_name + . + table_name
+        MAX_TABLE_NAME_LENGTH = (Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH * 2) + 1
         MAX_IDENTIFIER_LENGTH = Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH
         MAX_DEFINITION_LENGTH = 2048
 
         validates :name, presence: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
-        validates :table_name, presence: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
+        validates :table_name, presence: true, length: { maximum: MAX_TABLE_NAME_LENGTH }
         validates :definition, presence: true, length: { maximum: MAX_DEFINITION_LENGTH }
+
+        validate :ensure_correct_schema_and_table_name
 
         scope :to_create, -> { where("definition ILIKE 'CREATE%'") }
         scope :to_drop, -> { where("definition ILIKE 'DROP%'") }
@@ -21,6 +25,24 @@ module Gitlab
 
         def to_s
           definition
+        end
+
+        private
+
+        def ensure_correct_schema_and_table_name
+          return unless table_name
+
+          schema, table, *rest = table_name.split('.')
+
+          too_long = (table.nil? && schema.length > MAX_DEFINITION_LENGTH) || # no schema given
+            # both schema and table given
+            (schema.length > MAX_IDENTIFIER_LENGTH || (table && table.length > MAX_IDENTIFIER_LENGTH))
+
+          if too_long
+            errors.add(:table_name, :too_long)
+          elsif rest.any?
+            errors.add(:table_name, :invalid)
+          end
         end
       end
     end

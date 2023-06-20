@@ -10,7 +10,7 @@ query projectUsersSearchWithMRPermissions(
     id
     users: projectMembers(
       search: $search
-      relations: [DIRECT, INHERITED, INVITED_GROUPS]
+      relations: [DIRECT, INHERITED, INVITED_GROUPS, SHARED_INTO_ANCESTORS]
       sort: USER_FULL_NAME_ASC
     ) {
       nodes {

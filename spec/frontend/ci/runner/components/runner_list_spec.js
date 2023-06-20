@@ -18,7 +18,6 @@ import { I18N_PROJECT_TYPE, I18N_STATUS_NEVER_CONTACTED } from '~/ci/runner/cons
 import { allRunnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
-const mockActiveRunnersCount = mockRunners.length;
 
 describe('RunnerList', () => {
   let wrapper;
@@ -44,7 +43,6 @@ describe('RunnerList', () => {
       apolloProvider: createMockApollo([], {}, cacheConfig),
       propsData: {
         runners: mockRunners,
-        activeRunnersCount: mockActiveRunnersCount,
         ...props,
       },
       provide: {

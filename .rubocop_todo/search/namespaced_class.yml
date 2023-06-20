@@ -1,6 +1,5 @@
 ---
 Search/NamespacedClass:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/search_rate_limitable.rb'
     - 'app/controllers/search_controller.rb'
@@ -22,6 +21,7 @@ Search/NamespacedClass:
     - 'ee/app/graphql/types/iteration_searchable_field_enum.rb'
     - 'ee/app/helpers/ee/search_helper.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
+    - 'ee/app/models/concerns/elastic/maintain_elasticsearch_on_group_update.rb'
     - 'ee/app/models/concerns/elastic/namespace_update.rb'
     - 'ee/app/models/concerns/elastic/projects_search.rb'
     - 'ee/app/models/concerns/elastic/repositories_search.rb'
@@ -54,6 +54,7 @@ Search/NamespacedClass:
     - 'ee/app/workers/concerns/elastic/bulk_cron_worker.rb'
     - 'ee/app/workers/concerns/elastic/indexing_control.rb'
     - 'ee/app/workers/concerns/elastic/migration_backfill_helper.rb'
+    - 'ee/app/workers/concerns/elastic/migration_create_index.rb'
     - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/app/workers/concerns/elastic/migration_obsolete.rb'
     - 'ee/app/workers/concerns/elastic/migration_options.rb'
@@ -117,6 +118,8 @@ Search/NamespacedClass:
     - 'ee/lib/elastic/latest/snippet_instance_proxy.rb'
     - 'ee/lib/elastic/latest/state_filter.rb'
     - 'ee/lib/elastic/latest/user_class_proxy.rb'
+    - 'ee/lib/elastic/latest/wiki_class_proxy.rb'
+    - 'ee/lib/elastic/latest/wiki_instance_proxy.rb'
     - 'ee/lib/elastic/latest/user_config.rb'
     - 'ee/lib/elastic/latest/user_instance_proxy.rb'
     - 'ee/lib/elastic/latest/wiki_config.rb'
@@ -148,6 +151,8 @@ Search/NamespacedClass:
     - 'ee/lib/elastic/v12p1/snippet_instance_proxy.rb'
     - 'ee/lib/elastic/v12p1/user_class_proxy.rb'
     - 'ee/lib/elastic/v12p1/user_instance_proxy.rb'
+    - 'ee/lib/elastic/v12p1/wiki_class_proxy.rb'
+    - 'ee/lib/elastic/v12p1/wiki_instance_proxy.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/adapter/active_record/importing.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/adapter/multiple/records.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/client.rb'

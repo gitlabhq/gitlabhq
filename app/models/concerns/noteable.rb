@@ -169,7 +169,9 @@ module Noteable
   def expire_note_etag_cache
     return unless discussions_rendered_on_frontend?
     return unless etag_caching_enabled?
-    return unless project.present?
+
+    # TODO: We need to figure out a way to make ETag caching work for group-level work items
+    return if is_a?(Issue) && project.nil?
 
     Gitlab::EtagCaching::Store.new.touch(note_etag_key)
   end

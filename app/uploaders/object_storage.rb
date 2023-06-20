@@ -11,6 +11,7 @@ module ObjectStorage
   RemoteStoreError = Class.new(StandardError)
   UnknownStoreError = Class.new(StandardError)
   ObjectStorageUnavailable = Class.new(StandardError)
+  MissingFinalStorePathRootId = Class.new(StandardError)
 
   class ExclusiveLeaseTaken < StandardError
     def initialize(lease_key)
@@ -153,21 +154,30 @@ module ObjectStorage
         [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
       end
 
-      def generate_final_store_path
+      def generate_final_store_path(root_id:)
         hash = Digest::SHA2.hexdigest(SecureRandom.uuid)
 
         # We prefix '@final' to prevent clashes and make the files easily recognizable
         # as having been created by this code.
-        File.join('@final', hash[0..1], hash[2..3], hash[4..])
+        sub_path = File.join('@final', hash[0..1], hash[2..3], hash[4..])
+
+        # We generate a hashed path of the root ID (e.g. Project ID) to distribute directories instead of
+        # filling up one root directory with a bunch of files.
+        Gitlab::HashedPath.new(sub_path, root_hash: root_id).to_s
       end
 
-      def workhorse_authorize(has_length:, maximum_size: nil, use_final_store_path: false)
+      def workhorse_authorize(
+        has_length:,
+        maximum_size: nil,
+        use_final_store_path: false,
+        final_store_path_root_id: nil)
         {}.tap do |hash|
           if self.direct_upload_to_object_store?
             hash[:RemoteObject] = workhorse_remote_upload_options(
               has_length: has_length,
               maximum_size: maximum_size,
-              use_final_store_path: use_final_store_path
+              use_final_store_path: use_final_store_path,
+              final_store_path_root_id: final_store_path_root_id
             )
           else
             hash[:TempPath] = workhorse_local_upload_path
@@ -190,11 +200,17 @@ module ObjectStorage
         ObjectStorage::Config.new(object_store_options)
       end
 
-      def workhorse_remote_upload_options(has_length:, maximum_size: nil, use_final_store_path: false)
+      def workhorse_remote_upload_options(
+        has_length:,
+        maximum_size: nil,
+        use_final_store_path: false,
+        final_store_path_root_id: nil)
         return unless direct_upload_to_object_store?
 
         if use_final_store_path
-          id = generate_final_store_path
+          raise MissingFinalStorePathRootId unless final_store_path_root_id.present?
+
+          id = generate_final_store_path(root_id: final_store_path_root_id)
           upload_path = with_bucket_prefix(id)
           prepare_pending_direct_upload(id)
         else
@@ -410,7 +426,7 @@ module ObjectStorage
     end
 
     def retrieve_from_store!(identifier)
-      Gitlab::Utils.check_path_traversal!(identifier)
+      Gitlab::PathTraversal.check_path_traversal!(identifier)
 
       # We need to force assign the value of @filename so that we will still
       # get the original_filename in cases wherein the file points to a random generated

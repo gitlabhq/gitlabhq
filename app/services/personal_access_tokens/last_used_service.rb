@@ -22,7 +22,14 @@ module PersonalAccessTokens
 
       last_used = @personal_access_token.last_used_at
 
-      last_used.nil? || (last_used <= 1.day.ago)
+      return true if last_used.nil?
+
+      if Feature.enabled?(:update_personal_access_token_usage_information_every_10_minutes) &&
+          last_used <= 10.minutes.ago
+        return true
+      end
+
+      last_used <= 1.day.ago
     end
   end
 end

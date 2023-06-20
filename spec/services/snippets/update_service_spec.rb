@@ -21,9 +21,8 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
     let(:extra_opts) { {} }
     let(:options) { base_opts.merge(extra_opts) }
     let(:updater) { user }
-    let(:spam_params) { double }
 
-    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options, spam_params: spam_params) }
+    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options, perform_spam_check: true) }
 
     subject { service.execute(snippet) }
 
@@ -722,10 +721,6 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
         expect(response).to be_success
         expect(blob.data).to eq content
       end
-    end
-
-    before do
-      stub_spam_services
     end
 
     context 'when Project Snippet' do

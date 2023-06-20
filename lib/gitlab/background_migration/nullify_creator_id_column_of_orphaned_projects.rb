@@ -12,7 +12,7 @@ module Gitlab
       end
 
       operation_name :update_all
-      feature_category :projects
+      feature_category :groups_and_projects
 
       def perform
         each_sub_batch do |sub_batch|

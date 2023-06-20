@@ -117,7 +117,7 @@ Files: `config.xml`
 | Topic | Security Requirement | Reason |
 | ----- | -------------------- | ------ |
 | Permissions | ClickHouse runs by default with the `clickhouse` user. Running as `root` is never needed. Use the principle of least privileges for the folders: `/etc/clickhouse-server`, `/var/lib/clickhouse`, `/var/log/clickhouse-server`. These folders must belong to the `clickhouse` user and group, and no other system user must have access to them. | Default passwords, ports and rules are "open doors". ([Fail securely & use secure defaults](https://about.gitlab.com/handbook/security/architecture/#fail-securely--use-secure-defaults) principle) |
-| Encryption | Use an encrypted storage for logs and data if RED data is processed. On Kubernetes, the [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) used must be encrypted. | Encrypt data at rest. ([Defense in depth](https://about.gitlab.com/handbook/security/architecture/#implement-defense-in-depth)) |
+| Encryption | Use an encrypted storage for logs and data if RED data is processed. On Kubernetes, the [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) used must be encrypted. [GKE](https://cloud.google.com/blog/products/containers-kubernetes/exploring-container-security-use-your-own-keys-to-protect-your-data-on-gke) and [EKS](https://aws.github.io/aws-eks-best-practices/security/docs/data/) encrypt all data at rest already. In this case, using your own key is best but not required. | Encrypt data at rest. ([Defense in depth](https://about.gitlab.com/handbook/security/architecture/#implement-defense-in-depth)) |
 
 ### Logging
 

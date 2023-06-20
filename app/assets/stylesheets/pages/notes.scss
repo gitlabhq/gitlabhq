@@ -44,7 +44,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     background: var(--gray-50, $gray-50);
   }
 
-  .timeline-entry:last-child::before {
+  .timeline-entry:not(.draft-note):last-child::before {
     background: var(--white);
 
     .gl-dark & {
@@ -667,7 +667,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   .discussion-reply-holder {
     border-top: 0;
-    border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
+    border-radius: $gl-border-radius-base $gl-border-radius-base;
     position: relative;
 
     .discussion-form {

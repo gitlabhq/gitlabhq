@@ -69,6 +69,11 @@ export default {
       required: false,
       default: false,
     },
+    isInternalThread: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -132,8 +137,8 @@ export default {
     isProjectArchived() {
       return this.workItem?.project?.archived;
     },
-    canUpdate() {
-      return this.workItem?.userPermissions?.updateWorkItem;
+    canCreateNote() {
+      return this.workItem?.userPermissions?.createNote;
     },
     workItemState() {
       return this.workItem?.state;
@@ -147,7 +152,8 @@ export default {
         // eslint-disable-next-line @gitlab/require-i18n-strings
         'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix': !this
           .isNewDiscussion,
-        'gl-bg-white! gl-pt-0!': this.isEditing,
+        'gl-pt-0! is-replying': this.isEditing,
+        'internal-note': this.isInternalThread,
       };
     },
   },
@@ -162,7 +168,7 @@ export default {
     },
   },
   methods: {
-    async updateWorkItem(commentText) {
+    async updateWorkItem({ commentText, isNoteInternal = false }) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
       try {
@@ -175,6 +181,7 @@ export default {
               noteableId: this.workItemId,
               body: commentText,
               discussionId: this.discussionId || null,
+              internal: isNoteInternal,
             },
           },
           update(store, createNoteData) {
@@ -236,7 +243,7 @@ export default {
   <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
     <work-item-comment-locked
-      v-else-if="!canUpdate"
+      v-else-if="!canCreateNote"
       :work-item-type="workItemType"
       :is-project-archived="isProjectArchived"
     />

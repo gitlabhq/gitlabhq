@@ -1,0 +1,67 @@
+%li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id, qa_selector: 'issue_container', qa_issue_title: issue.title } }
+  .issuable-info-container
+    .issuable-main-info
+      .issue-title.title
+        %span.issue-title-text.js-onboarding-issue-item{ dir: "auto" }
+          - if issue.confidential?
+            %span.has-tooltip{ title: _('Confidential') }
+              = confidential_icon(issue)
+          = hidden_issue_icon(issue)
+          = link_to issue.title, issue_path(issue), class: 'js-prefetch-document'
+        = render_if_exists 'projects/issues/subepic_flag', issue: issue
+        - if issue.tasks?
+          %span.task-status.d-none.d-sm-inline-block
+            &nbsp;
+            = issue.task_status
+
+      .issuable-info
+        %span.issuable-reference
+          #{issuable_reference(issue)}
+        %span.issuable-authored.d-none.d-sm-inline-block
+          &middot;
+          - if issue.service_desk_reply_to
+            #{_('created %{timeAgoString} by %{email} via %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), email: issue.present(current_user: current_user).service_desk_reply_to, user: link_to_member(@project, issue.author, avatar: false) }}
+          - else
+            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), user: link_to_member(@project, issue.author, avatar: false) }}
+        - if issue.milestone
+          %span.issuable-milestone.d-none.d-sm-inline-block
+            &nbsp;
+            = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(issue.milestone) } do
+              = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
+              = issue.milestone.title
+        - if issue.due_date
+          %span.issuable-due-date.d-none.d-sm-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue? && !issue.closed?}", title: _('Due date') }
+            &nbsp;
+            = sprite_icon('calendar')
+            = issue.due_date.to_s(:medium)
+
+        = render_if_exists "projects/issues/issue_weight", issue: issue
+        = render_if_exists "projects/issues/health_status", issue: issue
+
+        - if issue.labels.any?
+          &nbsp;
+          - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
+            = link_to_label(label, small: true)
+
+        = render 'projects/issues/service_desk/issue_estimate', issue: issue
+
+    .issuable-meta
+      %ul.controls
+        - if issue.closed? && issue.moved?
+          %li.issuable-status
+            = render Pajamas::BadgeComponent.new(_('Closed (moved)'), size: 'sm', variant: 'info')
+        - elsif issue.closed?
+          %li.issuable-status
+            = render Pajamas::BadgeComponent.new(_('Closed'), size: 'sm', variant: 'info')
+        - if issue.assignees.any?
+          %li.gl-display-flex
+            = render 'shared/issuable/assignees', project: @project, issuable: issue
+
+        = render 'shared/issuable_meta_data', issuable: issue
+
+      .float-right.issuable-timestamp.d-none.d-sm-inline-block
+        %span
+          - if issue.closed? && issue.closed_at
+            = _('closed %{timeago}').html_safe % { timeago: time_ago_with_tooltip(issue.closed_at, placement: 'bottom') }
+          - else
+            = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(issue.updated_at, placement: 'bottom') }

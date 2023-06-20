@@ -27,7 +27,6 @@ describe('ForkInfo component', () => {
   const forkInfoError = new Error('Something went wrong');
   const projectId = 'gid://gitlab/Project/1';
   const showMock = jest.fn();
-  const synchronizeFork = true;
 
   Vue.use(VueApollo);
 
@@ -71,11 +70,6 @@ describe('ForkInfo component', () => {
             '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
           methods: { show: showMock },
         }),
-      },
-      provide: {
-        glFeatures: {
-          synchronizeFork,
-        },
       },
     });
     return waitForPromises();

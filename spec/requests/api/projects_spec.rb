@@ -46,7 +46,7 @@ RSpec.shared_examples 'languages and percentages JSON response' do
   end
 end
 
-RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects do
+RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and_projects do
   include ProjectForksHelper
   include WorkhorseHelpers
   include StubRequests
@@ -2158,7 +2158,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
     end
 
     shared_examples 'capped upload attachments' do |upload_allowed|
-      it "limits the upload to 1 GB" do
+      it "limits the upload to 1 GiB" do
         expect_next_instance_of(UploadService) do |instance|
           expect(instance).to receive(:override_max_attachment_size=).with(1.gigabyte).and_call_original
         end
@@ -5154,13 +5154,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
       it 'includes groups where the user has permissions to transfer a project to' do
         request
 
-        expect(project_ids_from_response).to include(maintainer_group.id, owner_group.id)
+        expect(project_ids_from_response).to match_array [maintainer_group.id, owner_group.id]
       end
 
       it 'does not include groups where the user doesn not have permissions to transfer a project' do
         request
 
         expect(project_ids_from_response).not_to include(guest_group.id)
+      end
+
+      it 'does not include the group id of the current project' do
+        request
+
+        expect(project_ids_from_response).not_to include(project.group.id)
       end
 
       context 'with search' do

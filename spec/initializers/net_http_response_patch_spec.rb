@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Net::HTTPResponse patch header read timeout', feature_category: :integrations do
+RSpec.describe 'Net::HTTPResponse patch header read timeout', feature_category: :shared do
   describe '.each_response_header' do
     let(:server_response) do
       <<~HTTP

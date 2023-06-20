@@ -1,0 +1,8 @@
+---
+name: disable_cancel_redundant_pipelines_service
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123032
+rollout_issue_url:
+milestone: '16.1'
+type: ops
+group: group::pipeline execution
+default_enabled: false

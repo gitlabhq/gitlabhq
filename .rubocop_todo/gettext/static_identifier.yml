@@ -1,6 +1,5 @@
 ---
 Gettext/StaticIdentifier:
-  Details: grace period
   Exclude:
     - 'app/graphql/types/project_type.rb'
     - 'app/models/integrations/apple_app_store.rb'

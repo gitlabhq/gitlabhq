@@ -60,6 +60,7 @@ The token also includes custom claims provided by GitLab:
 | `user_id`               | Always                       | ID of the user executing the job. |
 | `user_login`            | Always                       | Username of the user executing the job. |
 | `user_email`            | Always                       | Email of the user executing the job. |
+| `user_identities`       | User Preference setting      | List of the user's external identities ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0). |
 | `pipeline_id`           | Always                       | ID of the pipeline. |
 | `pipeline_source`       | Always                       | [Pipeline source](../jobs/job_control.md#common-if-clauses-for-rules). |
 | `job_id`                | Always                       | ID of the job. |
@@ -73,6 +74,7 @@ The token also includes custom claims provided by GitLab:
 | `runner_id`             | Always                       | ID of the runner executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `runner_environment`    | Always                       | The type of runner used by the job. Can be either `gitlab-hosted` or `self-hosted`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `sha`                   | Always                       | The commit SHA for the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
+| `ci_config_ref_uri`     | Always                       | The ref path to the top-level pipeline definition, for example, `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.1 behind the `ci_jwt_v2_ref_uri_claim` feature flag. This claim is `null` unless the pipeline definition is located in the same project. |
 
 ```json
 {
@@ -83,6 +85,10 @@ The token also includes custom claims provided by GitLab:
   "user_id": "1",
   "user_login": "sample-user",
   "user_email": "sample-user@example.com",
+  "user_identities": [
+      {"provider": "github", "extern_uid": "2435223452345"},
+      {"provider": "bitbucket", "extern_uid": "john.smith"},
+  ],
   "pipeline_id": "574",
   "pipeline_source": "push",
   "job_id": "302",
@@ -96,6 +102,7 @@ The token also includes custom claims provided by GitLab:
   "runner_id": 1,
   "runner_environment": "self-hosted",
   "sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
+  "ci_config_ref_uri": "gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main",
   "jti": "235b3a54-b797-45c7-ae9a-f72d7bc6ef5b",
   "iss": "https://gitlab.example.com",
   "iat": 1681395193,
@@ -179,9 +186,40 @@ ID token authentication is now always available, and JSON Web Token access is al
 
 To enable automatic ID token authentication:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
-1. Toggle **Limit JSON Web Token (JWT) access** to enabled.
+1. Turn on the **Limit JSON Web Token (JWT) access** toggle.
 
 <!--- end_remove -->
+
+## Troubleshooting
+
+### `400: missing token` status code
+
+This error indicates that one or more basic components necessary for ID tokens are
+either missing or not configured as expect.
+
+To find the problem, an administrator can look for more details in the instance's
+`exceptions_json.log` for the specific method that failed.
+
+#### `GitLab::Ci::Jwt::NoSigningKeyError`
+
+This error in the `exceptions_json.log` file is likely because the signing key is
+missing from the database and the token could not be generated. To verify this is the issue,
+run the following query on the instance's PostgreSQL terminal:
+
+```sql
+SELECT encrypted_ci_jwt_signing_key FROM application_settings;
+```
+
+If the returned value is empty, use the Rails snippet below to generate a new key
+and replace it internally:
+
+```ruby
+  key = OpenSSL::PKey::RSA.new(2048).to_pem
+
+  ApplicationSetting.find_each do |application_setting|
+    application_setting.update(ci_jwt_signing_key: key)
+  end
+```

@@ -11,7 +11,7 @@ Enterprise users have user accounts that are administered by an organization tha
 has purchased a [GitLab subscription](../../subscriptions/index.md).
 
 Enterprise users are identified by the [**Enterprise** badge](../project/badges.md)
-next to their names on the [Members list](../group/manage.md#filter-and-sort-members-in-a-group).
+next to their names on the [Members list](../group/index.md#filter-and-sort-members-in-a-group).
 
 ## Provision an enterprise user
 
@@ -25,7 +25,8 @@ A user account is considered an enterprise account when:
 A user can also [manually connect an identity provider (IdP) to a GitLab account whose email address matches the subscribing organization's domain](../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
 By selecting **Authorize** when connecting these two accounts, the user account
 with the matching email address is classified as an enterprise user. However, this
-user account does not have an **Enterprise** badge in GitLab.
+user account does not have an **Enterprise** badge in GitLab, and a group Owner cannot
+disable the user's two-factor authentication.
 
 Although a user can be a member of more than one group, each user account can be
 provisioned by only one group. As a result, a user is considered an enterprise
@@ -43,11 +44,18 @@ Prerequisites:
 
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
+- A project in the group.
+- You must have the Owner role in the top-level group.
 
 Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you must:
 
-- Link the domain to a project. For more information on group-level domain verification, see [issue 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
-- Configure the DNS `TXT` record to verify the domain's ownership.
+- Link the domain to a single project.
+- Configure the `TXT` only in the DNS record to verify the domain's ownership.
+
+Domain verification is tied to the project you choose. A project is required because domain verification reuses the GitLab Pages verification feature, which requires a project. Domain verification applies at the top-level group and to all subgroups and projects nested under that top-level parent group.
+A member in the chosen project with [at least the Maintainer role](../permissions.md#project-members-permissions) can modify or remove the domain verification.
+If needed, you can create a new project to set up domain verification directly under your top-level group. This limits the ability to modify the domain verification to members with at least the Maintainer role.
+For more information on group-level domain verification, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
 
 Steps:
 
@@ -55,14 +63,20 @@ Steps:
 
 The custom domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
 
-1. On the top bar, select **Main menu > Groups** and find your top group.
-1. On the left sidebar, select **Settings > Domain Verification**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. Select **Settings > Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. In **Domain**, enter the domain name.
 1. In **Project**, link to a project.
-1. Optional. In **Certificate**, switch the **Manually enter certificate information** toggle to add an SSL/TLS
-   certificate. You can also add the certificate and key later.
+1. In **Certificate**:
+   - If you do not have or do not want to use an SSL certificate, leave **Automatic certificate management using Let's
+     Encrypt** selected.
+   - Optional. Turn on the **Manually enter certificate information** toggle to add an SSL/TLS certificate. You can also
+     add the certificate and key later.
 1. Select **Add Domain**.
+
+NOTE:
+A valid certificate is not required for domain verification. You can ignore error messages regarding the certificate if you are not using GitLab Pages.
 
 #### 2. Get a verification code
 
@@ -75,8 +89,8 @@ and paste them in your domain's control panel as a `TXT` record.
 
 After you have added all the DNS records:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Domain Verification**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Domain Verification**.
 1. On the domain table row, Select **Retry verification** (**{retry}**).
 
 ![Verify your domain](../img/retry_domain_verification_v16_0.png)
@@ -97,13 +111,14 @@ from the GitLab project.
 > - Once your domain has been verified, leave the verification record
   in place. Your domain is periodically reverified, and may be
   disabled if the record is removed.
+> - A valid certificate is not required for domain verification.
 
 ### View domains in group
 
 To view all configured domains in your group:
 
-1. On the top bar, select **Main menu > Groups** and find your top-level group.
-1. On the left sidebar, select **Settings > Domain Verification**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. Select **Settings > Domain Verification**.
 
 You then see:
 
@@ -127,8 +142,8 @@ Top-level group Owners can disable two-factor authentication (2FA) for enterpris
 
 To disable 2FA:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Group information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** (**{ellipsis_v}**) and select **Disable two-factor authentication**.
 
@@ -149,3 +164,9 @@ A top-level group Owner can [set up verified domains to bypass confirmation emai
 
 A top-level group Owner can use the [group and project members API](../../api/members.md)
 to access users' information, including email addresses.
+
+## Troubleshooting
+
+### Cannot disable two-factor authentication for an enterprise user
+
+If an enterprise user does not have an **Enterprise** badge, a top-level group Owner cannot [disable or reset 2FA](#disable-two-factor-authentication) for that user. Instead, the Owner should tell the enterprise user to consider available [recovery options](../profile/account/two_factor_authentication.md#recovery-options).

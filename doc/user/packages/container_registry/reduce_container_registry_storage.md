@@ -18,30 +18,10 @@ to automatically manage your container registry usage.
 ## Check Container Registry storage use
 
 The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages.
-This page includes the Container Registry usage, which is only available on GitLab.com.
+This page includes the [Container Registry usage](../../usage_quotas.md#container-registry-usage), which is only available on GitLab.com.
 Measuring usage is only possible on the new version of the GitLab Container Registry backed by a
-metadata database. Support for improvements is proposed in epic [5523](https://gitlab.com/groups/gitlab-org/-/epics/5523).
-On self-managed instances, you cannot use the Container Registry with a metadata database. For the plan to change this behavior, see [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
-
-Image layers stored in the Container Registry are deduplicated at the root namespace level.
-
-An image is only counted once if:
-
-- You tag the same image more than once in the same repository.
-- You tag the same image across distinct repositories under the same root namespace.
-
-An image layer is only counted once if:
-
-- You share the image layer across multiple images in the same container repository, project, or group.
-- You share the image layer across different repositories.
-
-Only layers that are referenced by tagged images are accounted for. Untagged images and any layers
-referenced exclusively by them are subject to [online garbage collection](delete_container_registry_images.md).
-Untagged images are automatically deleted after 24 hours if they remain unreferenced during that period.
-
-Image layers are stored on the storage backend in the original (usually compressed) format. This
-means that the measured size for any given image layer should match the size displayed on the
-corresponding [image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md#example-image-manifest).
+metadata database, which is [available on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/5523) since GitLab 15.7.
+For information on the planned availability for self-managed instances, see [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
 ## Cleanup policy
 
@@ -249,8 +229,10 @@ For self-managed instances, those settings can be updated in the [Rails console]
 
 They are also available in the [administrator area](../../admin_area/index.md):
 
-1. On the top bar, select **Main menu > Admin**.
-1. Go to **Settings > CI/CD > Container Registry**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Settings > CI/CD**
+1. Expand **Container Registry**.
 
 ### Use the cleanup policy API
 

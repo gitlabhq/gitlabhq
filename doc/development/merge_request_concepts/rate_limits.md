@@ -14,7 +14,7 @@ Every new feature should have safe usage limits included in its implementation.
 Limits are applicable for:
 
 - System-level resource pools such as API requests, SSHD connections, database connections, storage, and so on.
-- Domain-level objects such as CI/CD minutes, groups, sign-in attempts, and so on.
+- Domain-level objects such as compute quota, groups, sign-in attempts, and so on.
 
 ## When limits are required
 

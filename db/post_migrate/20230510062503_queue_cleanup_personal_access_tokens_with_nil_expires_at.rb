@@ -1,23 +1,15 @@
 # frozen_string_literal: true
 
 class QueueCleanupPersonalAccessTokensWithNilExpiresAt < Gitlab::Database::Migration[2.1]
-  MIGRATION = "CleanupPersonalAccessTokensWithNilExpiresAt"
-  DELAY_INTERVAL = 2.minutes
-  BATCH_SIZE = 50_000
+  # per: https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#requeuing-batched-background-migrations
+  # > When you requeue the batched background migration, turn the original queuing
+  # > into a no-op by clearing up the #up and #down methods of the migration
+  # > performing the requeuing. Otherwise, the batched background migration is
+  # > queued multiple times on systems that are upgrading multiple patch releases
+  # > at once.
+  #
+  # being re-run via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123002
+  def up; end
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
-
-  def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :personal_access_tokens,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE
-    )
-  end
-
-  def down
-    delete_batched_background_migration(MIGRATION, :personal_access_tokens, :id, [])
-  end
+  def down; end
 end

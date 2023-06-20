@@ -39,7 +39,6 @@ class Issue < ApplicationRecord
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
   IssueTypeOutOfSyncError = Class.new(StandardError)
-  ForbiddenColumnUsed = Class.new(StandardError)
 
   SORTING_PREFERENCE_FIELD = :issues_sort
   MAX_BRANCH_TEMPLATE = 255
@@ -138,28 +137,8 @@ class Issue < ApplicationRecord
   validate :issue_type_attribute_present
 
   enum issue_type: WorkItems::Type.base_types
-
   # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/402699
-  WorkItems::Type.base_types.each do |base_type, _value|
-    define_method "#{base_type}?".to_sym do
-      error_message = <<~ERROR
-        `#{base_type}?` uses the `issue_type` column underneath. As we want to remove the column,
-        its usage is forbidden. You should use the `work_item_types` table instead.
-
-        # Before
-
-        issue.requirement? => true
-
-        # After
-
-        issue.work_item_type.requirement? => true
-
-        More details in https://gitlab.com/groups/gitlab-org/-/epics/10529
-      ERROR
-
-      raise ForbiddenColumnUsed, error_message
-    end
-  end
+  include ::Issues::ForbidIssueTypeColumnUsage
 
   alias_method :issuing_parent, :project
   alias_attribute :issuing_parent_id, :project_id
@@ -219,8 +198,28 @@ class Issue < ApplicationRecord
       project: [:project_namespace, :project_feature, :route, { group: :route }, { namespace: :route }],
       duplicated_to: { project: [:project_feature] })
   }
-  scope :with_issue_type, ->(types) { where(issue_type: types) }
-  scope :without_issue_type, ->(types) { where.not(issue_type: types) }
+  scope :with_issue_type, ->(types) {
+    types = Array(types)
+
+    if Feature.enabled?(:issue_type_uses_work_item_types_table)
+      # Using != 1 since we also want the guard clause to handle empty arrays
+      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+
+      where(
+        '"issues"."work_item_type_id" = (?)',
+        WorkItems::Type.by_type(types.first).select(:id).limit(1)
+      )
+    else
+      where(issue_type: types)
+    end
+  }
+  scope :without_issue_type, ->(types) {
+    if Feature.enabled?(:issue_type_uses_work_item_types_table)
+      joins(:work_item_type).where.not(work_item_types: { base_type: types })
+    else
+      where.not(issue_type: types)
+    end
+  }
 
   scope :public_only, -> { where(confidential: false) }
 
@@ -601,6 +600,10 @@ class Issue < ApplicationRecord
     spammable_attribute_changed?
   end
 
+  def supports_recaptcha?
+    true
+  end
+
   def as_json(options = {})
     super(options).tap do |json|
       if options.key?(:labels)
@@ -757,6 +760,12 @@ class Issue < ApplicationRecord
     end
   end
 
+  def unsubscribe_email_participant(email)
+    return if email.blank?
+
+    issue_email_participants.find_by_email(email)&.destroy
+  end
+
   private
 
   def check_issue_type_in_sync!
@@ -826,11 +835,9 @@ class Issue < ApplicationRecord
   end
 
   def spammable_attribute_changed?
-    title_changed? ||
-      description_changed? ||
-      # NOTE: We need to check them for spam when issues are made non-confidential, because spam
-      # may have been added while they were confidential and thus not being checked for spam.
-      confidential_changed?(from: true, to: false)
+    # NOTE: We need to check them for spam when issues are made non-confidential, because spam
+    # may have been added while they were confidential and thus not being checked for spam.
+    super || confidential_changed?(from: true, to: false)
   end
 
   def ensure_metrics!

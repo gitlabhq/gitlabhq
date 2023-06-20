@@ -97,15 +97,16 @@ function retrieve_failed_tests() {
 
 function rspec_args() {
   local rspec_opts="${1}"
-  local junit_report_file="${2:-${JUNIT_RESULT_FILE}}"
+  local json_report_file="${2:-rspec/rspec-${CI_JOB_ID}.json}"
+  local junit_report_file="${3:-rspec/rspec-${CI_JOB_ID}.xml}"
 
-  echo "-Ispec -rspec_helper --color --failure-exit-code 1 --error-exit-code 2 --format documentation --format RspecJunitFormatter --out ${junit_report_file} ${rspec_opts}"
+  echo "-Ispec -rspec_helper --color --failure-exit-code 1 --error-exit-code 2 --format documentation --format Support::Formatters::JsonFormatter --out ${json_report_file} --format RspecJunitFormatter --out ${junit_report_file} ${rspec_opts}"
 }
 
 function rspec_simple_job() {
   export NO_KNAPSACK="1"
 
-  local rspec_cmd="bin/rspec $(rspec_args "${1}" "${2}")"
+  local rspec_cmd="bin/rspec $(rspec_args "${1}" "${2}" "${3}")"
   echoinfo "Running RSpec command: ${rspec_cmd}"
 
   eval "${rspec_cmd}"
@@ -114,7 +115,7 @@ function rspec_simple_job() {
 function rspec_simple_job_with_retry () {
   local rspec_run_status=0
 
-  rspec_simple_job "${1}" "${2}" || rspec_run_status=$?
+  rspec_simple_job "${1}" "${2}" "${3}" || rspec_run_status=$?
 
   handle_retry_rspec_in_new_process $rspec_run_status
 }
@@ -265,13 +266,16 @@ function retry_failed_rspec_examples() {
 
   local default_knapsack_pattern="{,ee/,jh/}spec/{,**/}*_spec.rb"
   local knapsack_test_file_pattern="${KNAPSACK_TEST_FILE_PATTERN:-$default_knapsack_pattern}"
+  local json_retry_file="rspec/rspec-retry-${CI_JOB_ID}.json"
+  local junit_retry_file="rspec/rspec-retry-${CI_JOB_ID}.xml"
 
   # Retry only the tests that failed on first try
-  rspec_simple_job "--only-failures --pattern \"${knapsack_test_file_pattern}\"" "${JUNIT_RETRY_FILE}"
+  rspec_simple_job "--only-failures --pattern \"${knapsack_test_file_pattern}\"" "${json_retry_file}" "${junit_retry_file}"
   rspec_run_status=$?
 
-  # Merge the JUnit report from retry into the first-try report
-  junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}" --update-only
+  # Merge the reports from retry into the first-try report
+  scripts/merge-reports "rspec/rspec-${CI_JOB_ID}.json" "${json_retry_file}"
+  junit_merge "${junit_retry_file}" "rspec/rspec-${CI_JOB_ID}.xml" --update-only
 
   if [[ $rspec_run_status -eq 0 ]]; then
     # The test is flaky because it succeeded after being retried.

@@ -12,13 +12,13 @@ JWT provides you with a secret key for you to use.
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -30,7 +30,7 @@ JWT provides you with a secret key for you to use.
    account provisioning for users who do not have an existing GitLab account.
 1. Add the provider configuration.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -49,7 +49,7 @@ JWT provides you with a secret key for you to use.
    ]
    ```
 
-   For installation from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'jwt',
@@ -70,11 +70,14 @@ JWT provides you with a secret key for you to use.
    For more information on each configuration option refer to
    the [OmniAuth JWT usage documentation](https://github.com/mbleigh/omniauth-jwt#usage).
 
+   WARNING:
+   Incorrectly configuring these settings can result in an insecure instance.
+
 1. Change `YOUR_APP_SECRET` to the client secret and set `auth_url` to your redirect URL.
 1. Save the configuration file.
-1. For the changes to take effect:
-   - If you installed via Omnibus, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-   - If you installed from source, [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. For changes to take effect, if you:
+   - Used the Linux package to install GitLab, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#installations-from-source).
 
 On the sign in page there should now be a JWT icon below the regular sign in form.
 Select the icon to begin the authentication process. JWT asks the user to

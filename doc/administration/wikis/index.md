@@ -82,6 +82,51 @@ so you should keep your wiki repositories as compact as possible.
 For more information about tools to compact repositories,
 read the documentation on [reducing repository size](../../user/project/repository/reducing_the_repo_size_using_git.md).
 
+## Allow URI includes for AsciiDoc
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348687) in GitLab 16.1.
+
+Include directives import content from separate pages or external URLs,
+and display them as part of the content of the current document. To enable
+AsciiDoc includes, enable the feature through the Rails console or the API.
+
+### Through the Rails console
+
+To configure this setting through the Rails console:
+
+1. Start the Rails console:
+
+   ```shell
+   # For Omnibus installations
+   sudo gitlab-rails console
+
+   # For installations from source
+   sudo -u git -H bundle exec rails console -e production
+   ```
+
+1. Update the wiki to allow URI includes for AsciiDoc:
+
+   ```ruby
+   ApplicationSetting.first.update!(wiki_asciidoc_allow_uri_includes: true)
+   ```
+
+To check if includes are enabled, start the Rails console and run:
+
+  ```ruby
+  Gitlab::CurrentSettings.wiki_asciidoc_allow_uri_includes
+  ```
+
+### Through the API
+
+To set the wiki to allow URI includes for AsciiDoc through the
+[Application Settings API](../../api/settings.md#change-application-settings),
+use a `curl` command:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  "https://gitlab.example.com/api/v4/application/settings?wiki_asciidoc_allow_uri_includes=true"
+```
+
 ## Related topics
 
 - [User documentation for wikis](../../user/project/wiki/index.md)

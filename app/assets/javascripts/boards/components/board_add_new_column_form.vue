@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlFormGroup } from '@gitlab/ui';
-import { mapActions } from 'vuex';
 import { __ } from '~/locale';
 
 export default {
@@ -33,7 +32,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['setAddColumnFormVisibility']),
     onSubmit() {
       this.$emit('add-list');
     },
@@ -83,9 +81,11 @@ export default {
           @click="onSubmit"
           >{{ $options.i18n.add }}</gl-button
         >
-        <gl-button data-testid="cancelAddNewColumn" @click="setAddColumnFormVisibility(false)">{{
-          $options.i18n.cancel
-        }}</gl-button>
+        <gl-button
+          data-testid="cancelAddNewColumn"
+          @click="$emit('setAddColumnFormVisibility', false)"
+          >{{ $options.i18n.cancel }}</gl-button
+        >
       </div>
     </div>
   </div>

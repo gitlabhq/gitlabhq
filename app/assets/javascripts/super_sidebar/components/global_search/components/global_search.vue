@@ -24,6 +24,7 @@ import {
   SEARCH_RESULTS_LOADING,
   SEARCH_RESULTS_SCOPE,
 } from '~/vue_shared/global_search/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
@@ -35,6 +36,9 @@ import {
   SEARCH_INPUT_SELECTOR,
   SEARCH_RESULTS_ITEM_SELECTOR,
 } from '../constants';
+import CommandPaletteItems from '../command_palette/command_palette_items.vue';
+import FakeSearchInput from '../command_palette/fake_search_input.vue';
+import { COMMON_HANDLES, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from './global_search_default_items.vue';
 import GlobalSearchScopedItems from './global_search_scoped_items.vue';
@@ -60,7 +64,10 @@ export default {
     GlIcon,
     GlToken,
     GlModal,
+    CommandPaletteItems,
+    FakeSearchInput,
   },
+  mixins: [glFeatureFlagMixin()],
   computed: {
     ...mapState(['search', 'loading', 'searchContext']),
     ...mapGetters(['searchQuery', 'searchOptions', 'scopedSearchOptions']),
@@ -71,6 +78,9 @@ export default {
       set(value) {
         this.setSearch(value);
       },
+    },
+    searchPlaceholder() {
+      return this.glFeatures?.commandPalette ? SEARCH_OR_COMMAND_MODE_PLACEHOLDER : SEARCH_GITLAB;
     },
     showDefaultItems() {
       return !this.searchText;
@@ -104,7 +114,7 @@ export default {
       };
     },
     showScopeHelp() {
-      return this.searchTermOverMin;
+      return this.searchTermOverMin && !this.isCommandMode;
     },
     searchBarItem() {
       return this.searchOptions?.[0];
@@ -120,10 +130,26 @@ export default {
         scope: this.infieldHelpContent,
       });
     },
+
+    searchTextFirstChar() {
+      return this.searchText?.trim().charAt(0);
+    },
+    isCommandMode() {
+      return this.glFeatures?.commandPalette && COMMON_HANDLES.includes(this.searchTextFirstChar);
+    },
+    commandPaletteQuery() {
+      if (this.isCommandMode) {
+        return this.searchText?.trim().substring(1);
+      }
+      return '';
+    },
   },
   methods: {
     ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
+      if (this.isCommandMode) {
+        return;
+      }
       if (!searchTerm) {
         this.clearAutocomplete();
       } else {
@@ -222,12 +248,12 @@ export default {
   >
     <form
       role="search"
-      :aria-label="$options.i18n.SEARCH_GITLAB"
+      :aria-label="searchPlaceholder"
       class="gl-relative gl-rounded-base gl-w-full"
       :class="searchBarClasses"
       data-testid="global-search-form"
     >
-      <div class="gl-p-1">
+      <div class="gl-p-1 gl-relative">
         <gl-search-box-by-type
           id="search"
           ref="searchInputBox"
@@ -236,7 +262,7 @@ export default {
           data-testid="global-search-input"
           data-qa-selector="global_search_input"
           autocomplete="off"
-          :placeholder="$options.i18n.SEARCH_GITLAB"
+          :placeholder="searchPlaceholder"
           :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
           borderless
           @input="getAutocompleteOptions"
@@ -266,6 +292,13 @@ export default {
         <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">
           {{ $options.i18n.SEARCH_DESCRIBED_BY_WITH_RESULTS }}
         </span>
+
+        <fake-search-input
+          v-if="isCommandMode"
+          :user-input="commandPaletteQuery"
+          :scope="searchTextFirstChar"
+          class="gl-absolute"
+        />
       </div>
       <span
         role="region"
@@ -282,13 +315,20 @@ export default {
         class="global-search-results gl-overflow-y-auto gl-w-full gl-pb-2"
         @keydown="onKeydown"
       >
-        <global-search-default-items v-if="showDefaultItems" />
+        <command-palette-items
+          v-if="isCommandMode"
+          :search-query="commandPaletteQuery"
+          :handle="searchTextFirstChar"
+        />
+
         <template v-else>
-          <global-search-scoped-items v-if="showScopedSearchItems" />
-          <global-search-autocomplete-items />
+          <global-search-default-items v-if="showDefaultItems" />
+          <template v-else>
+            <global-search-scoped-items v-if="showScopedSearchItems" />
+            <global-search-autocomplete-items />
+          </template>
         </template>
       </div>
-
       <template v-if="searchContext">
         <input
           v-if="searchContext.group"

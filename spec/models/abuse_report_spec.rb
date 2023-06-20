@@ -13,8 +13,10 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
   it { expect(subject).to be_valid }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:reporter).class_name('User') }
-    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:reporter).class_name('User').inverse_of(:reported_abuse_reports) }
+    it { is_expected.to belong_to(:resolved_by).class_name('User').inverse_of(:resolved_abuse_reports) }
+    it { is_expected.to belong_to(:assignee).class_name('User').inverse_of(:assigned_abuse_reports) }
+    it { is_expected.to belong_to(:user).inverse_of(:abuse_reports) }
     it { is_expected.to have_many(:events).class_name('ResourceEvents::AbuseReportEvent').inverse_of(:abuse_report) }
 
     it "aliases reporter to author" do
@@ -28,8 +30,8 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
-    it { is_expected.to validate_presence_of(:reporter) }
-    it { is_expected.to validate_presence_of(:user) }
+    it { is_expected.to validate_presence_of(:reporter).on(:create) }
+    it { is_expected.to validate_presence_of(:user).on(:create) }
     it { is_expected.to validate_presence_of(:message) }
     it { is_expected.to validate_presence_of(:category) }
 
@@ -46,6 +48,8 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.not_to allow_value(javascript).for(:reported_from_url) }
     it { is_expected.to allow_value('http://localhost:9000').for(:reported_from_url) }
     it { is_expected.to allow_value('https://gitlab.com').for(:reported_from_url) }
+
+    it { is_expected.to validate_length_of(:mitigation_steps).is_at_most(1000).allow_blank }
 
     it { is_expected.to allow_value([]).for(:links_to_spam) }
     it { is_expected.to allow_value(nil).for(:links_to_spam) }
@@ -81,6 +85,48 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
       it { is_expected.to allow_value(nil).for(:screenshot) }
       it { is_expected.to allow_value('').for(:screenshot) }
+    end
+
+    describe 'evidence' do
+      it { is_expected.not_to allow_value("string").for(:evidence) }
+      it { is_expected.not_to allow_value(1.0).for(:evidence) }
+
+      it { is_expected.to allow_value(nil).for(:evidence) }
+
+      it {
+        is_expected.to allow_value(
+          {
+            issues: [
+              {
+                id: 1,
+                title: "test issue title",
+                description: "test issue content"
+              }
+            ],
+            snippets: [
+              {
+                id: 2,
+                content: "snippet content"
+              }
+            ],
+            notes: [
+              {
+                id: 44,
+                content: "notes content"
+              }
+            ],
+            user: {
+              login_count: 1,
+              account_age: 3,
+              spam_score: 0.3,
+              telesign_score: 0.4,
+              arkos_score: 0.2,
+              pvs_score: 0.8,
+              product_coverage: 0.8,
+              virus_total_score: 0.2
+            }
+          }).for(:evidence)
+      }
     end
   end
 

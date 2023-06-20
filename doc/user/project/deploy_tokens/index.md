@@ -92,10 +92,8 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project or group.
 
-1. On the top bar, select **Main menu**, and:
-   - For a project deploy token, select **Projects** and find your project.
-   - For a group deploy token, select **Groups** and find your group.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Settings > Repository**.
 1. Expand **Deploy tokens**.
 1. Complete the fields, and select the desired [scopes](#scope).
 1. Select **Create deploy token**.
@@ -113,10 +111,8 @@ Prerequisites:
 
 To revoke a deploy token:
 
-1. On the top bar, select **Main menu**, and:
-   - For a project deploy token, select **Projects** and find your project.
-   - For a group deploy token, select **Groups** and find your group.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Settings > Repository**.
 1. Expand **Deploy tokens**.
 1. In the **Active Deploy Tokens** section, by the token you want to revoke, select **Revoke**.
 

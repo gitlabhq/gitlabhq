@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :projects do
+RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :groups_and_projects do
   include Gitlab::Routing
   include ProjectForksHelper
 
@@ -66,7 +66,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
 
         wait_for_requests
 
-        expect(page).to have_css('.ci-status.ci-success', text: 'passed')
+        expect(page).to have_css('[data-testid="ci-badge-passed"]', text: 'passed')
       end
 
       it 'shows commit`s data', :js do
@@ -548,24 +548,24 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
         end
 
         context 'when there is a cluster used for the deployment' do
-          let(:cluster) { create(:cluster, name: 'the-cluster') }
-          let(:deployment) { create(:deployment, :success, cluster: cluster, environment: environment, project: environment.project) }
+          let(:deployment) { create(:deployment, :success, :on_cluster, environment: environment) }
           let(:user_access_level) { :maintainer }
+          let(:cluster) { deployment.cluster }
 
           it 'shows a link to the cluster' do
-            expect(page).to have_link 'the-cluster'
+            expect(page).to have_link cluster.name
           end
 
           it 'shows the name of the cluster' do
-            expect(page).to have_content 'using cluster the-cluster'
+            expect(page).to have_content "using cluster #{cluster.name}"
           end
 
           context 'when the user is not able to view the cluster' do
             let(:user_access_level) { :reporter }
 
             it 'includes only the name of the cluster without a link' do
-              expect(page).to have_content 'using cluster the-cluster'
-              expect(page).not_to have_link 'the-cluster'
+              expect(page).to have_content "using cluster #{cluster.name}"
+              expect(page).not_to have_link cluster.name
             end
           end
         end

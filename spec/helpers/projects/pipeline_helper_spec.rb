@@ -10,11 +10,11 @@ RSpec.describe Projects::PipelineHelper do
   let_it_be(:raw_pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
   let_it_be(:pipeline) { Ci::PipelinePresenter.new(raw_pipeline, current_user: user) }
 
-  describe '#js_pipeline_tabs_data' do
-    before do
-      project.add_developer(user)
-    end
+  before do
+    project.add_developer(user)
+  end
 
+  describe '#js_pipeline_tabs_data' do
     subject(:pipeline_tabs_data) { helper.js_pipeline_tabs_data(project, pipeline, user) }
 
     it 'returns pipeline tabs data' do
@@ -35,6 +35,34 @@ RSpec.describe Projects::PipelineHelper do
         empty_state_image_path: match_asset_path('illustrations/empty-state/empty-test-cases-lg.svg'),
         artifacts_expired_image_path: match_asset_path('illustrations/pipeline.svg'),
         tests_count: pipeline.test_report_summary.total[:count]
+      })
+    end
+  end
+
+  describe '#js_pipeline_details_header_data' do
+    subject(:pipeline_details_header_data) { helper.js_pipeline_details_header_data(project, pipeline) }
+
+    it 'returns pipeline details header data' do
+      expect(pipeline_details_header_data).to include({
+        full_path: project.full_path,
+        graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
+        pipeline_iid: pipeline.iid,
+        pipelines_path: project_pipelines_path(project),
+        name: pipeline.name,
+        total_jobs: pipeline.total_size,
+        yaml_errors: pipeline.yaml_errors,
+        failure_reason: pipeline.failure_reason,
+        triggered_by_path: '',
+        schedule: pipeline.schedule?.to_s,
+        child: pipeline.child?.to_s,
+        latest: pipeline.latest?.to_s,
+        merge_train_pipeline: pipeline.merge_train_pipeline?.to_s,
+        invalid: pipeline.has_yaml_errors?.to_s,
+        failed: pipeline.failure_reason?.to_s,
+        auto_devops: pipeline.auto_devops_source?.to_s,
+        detached: pipeline.detached_merge_request_pipeline?.to_s,
+        stuck: pipeline.stuck?,
+        ref_text: pipeline.ref_text
       })
     end
   end

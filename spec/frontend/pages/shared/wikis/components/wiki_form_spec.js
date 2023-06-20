@@ -14,6 +14,7 @@ import {
   WIKI_FORMAT_LABEL,
   WIKI_FORMAT_UPDATED_ACTION,
 } from '~/pages/shared/wikis/constants';
+import { DRAWIO_ORIGIN } from 'spec/test_constants';
 
 jest.mock('~/emoji');
 
@@ -69,12 +70,12 @@ describe('WikiForm', () => {
     AsciiDoc: 'asciidoc',
     Org: 'org',
   };
-
   function createWrapper({
     mountFn = shallowMount,
     persisted = false,
     pageInfo,
     glFeatures = { wikiSwitchBetweenContentEditorRawMarkdown: false },
+    provide = { drawioUrl: null },
   } = {}) {
     wrapper = extendedWrapper(
       mountFn(WikiForm, {
@@ -85,6 +86,7 @@ describe('WikiForm', () => {
             ...(persisted ? pageInfoPersisted : pageInfoNew),
             ...pageInfo,
           },
+          ...provide,
         },
         stubs: {
           GlAlert,
@@ -332,6 +334,22 @@ describe('WikiForm', () => {
           },
         });
       });
+    });
+  });
+
+  describe('when drawioURL is provided', () => {
+    it('enables drawio editor in the Markdown Editor', () => {
+      createWrapper({ provide: { drawioUrl: DRAWIO_ORIGIN } });
+
+      expect(findMarkdownEditor().props().drawioEnabled).toBe(true);
+    });
+  });
+
+  describe('when drawioURL is empty', () => {
+    it('disables drawio editor in the Markdown Editor', () => {
+      createWrapper();
+
+      expect(findMarkdownEditor().props().drawioEnabled).toBe(false);
     });
   });
 });

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "Compare", :js, feature_category: :projects do
+RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
   let(:user)    { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -189,7 +189,6 @@ RSpec.describe "Compare", :js, feature_category: :projects do
   context "when super sidebar is enabled" do
     before do
       user.update!(use_new_navigation: true)
-      stub_feature_flags(super_sidebar_nav: true)
     end
 
     it_behaves_like "compare view of branches"

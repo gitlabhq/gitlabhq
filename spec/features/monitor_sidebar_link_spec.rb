@@ -11,7 +11,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
   before do
     project.add_role(user, role) if role
     sign_in(user)
-    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   shared_examples 'shows Monitor menu based on the access level' do
@@ -53,7 +52,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
 
-      expect(page).not_to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
@@ -85,7 +83,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
 
-      expect(page).not_to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
@@ -99,7 +96,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
 
     it 'has the correct `Monitor` menu items' do
       visit project_issues_path(project)
-      expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
@@ -116,7 +112,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
 
     it 'has the correct `Monitor` menu items' do
       visit project_issues_path(project)
-      expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
@@ -132,7 +127,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
 
     it 'has the correct `Monitor` menu items' do
       visit project_issues_path(project)
-      expect(page).to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))

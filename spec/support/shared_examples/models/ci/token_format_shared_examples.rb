@@ -18,12 +18,6 @@ RSpec.shared_examples_for 'ensures runners_token is prefixed' do |factory|
       it 'generates runners_token which starts with runner prefix' do
         expect(record.runners_token).to match(a_string_starting_with(runners_prefix))
       end
-
-      it 'changes the attribute values for runners_token and runners_token_encrypted' do
-        expect { record.runners_token }
-          .to change { record[:runners_token] }.from(invalid_runners_token).to(nil)
-          .and change { record[:runners_token_encrypted] }.from(nil)
-      end
     end
   end
 end

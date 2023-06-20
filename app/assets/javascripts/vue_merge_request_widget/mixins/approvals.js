@@ -39,7 +39,7 @@ export default {
           };
         },
         skip() {
-          return !this.mr?.id || !this.isRealtimeEnabled;
+          return !this.mr?.id;
         },
         updateQuery(
           _,
@@ -62,14 +62,6 @@ export default {
       approvals: {},
       disableCommittersApproval: false,
     };
-  },
-  computed: {
-    isRealtimeEnabled() {
-      // This mixin needs glFeatureFlagsMixin, but fatals if it's included here.
-      // Parents that include this mixin (approvals) should also include the
-      // glFeatureFlagsMixin mixin, or this will always be false.
-      return Boolean(this.glFeatures?.realtimeApprovals);
-    },
   },
   methods: {
     clearError() {

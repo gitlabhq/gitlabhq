@@ -2,11 +2,11 @@
   = render Pajamas::AlertComponent.new(alert_options: { class: 'auto-devops-implicitly-enabled-banner', data: { qa_selector: 'auto_devops_banner_content' } },
     close_button_options: { class: 'hide-auto-devops-implicitly-enabled-banner',
                             data: { project_id: project.id }}) do |c|
-    = c.body do
+    - c.with_body do
       = s_("AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found.")
       - unless Gitlab.config.registry.enabled
         %div
           = _('Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work.')
-    = c.actions do
+    - c.with_actions do
       = link_to _('Settings'), project_settings_ci_cd_path(project), class: 'alert-link btn gl-button btn-confirm'
       = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank', class: 'alert-link btn gl-button btn-default gl-ml-3'

@@ -3,6 +3,7 @@
 module Projects
   module Prometheus
     class MetricsController < Projects::ApplicationController
+      before_action :check_feature_availability!
       before_action :authorize_admin_project!
       before_action :require_prometheus_metrics!
 
@@ -126,6 +127,10 @@ module Projects
 
       def metrics_params
         params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend, :group)
+      end
+
+      def check_feature_availability!
+        render_404 if Feature.enabled?(:remove_monitor_metrics)
       end
     end
   end

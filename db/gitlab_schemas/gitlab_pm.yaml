@@ -1,0 +1,7 @@
+name: gitlab_pm
+description: Schema for all Cell-local package management features.
+allow_cross_joins:
+  - gitlab_shared
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared

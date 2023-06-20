@@ -38,7 +38,7 @@ module MembersHelper
 
   def leave_confirmation_message(member_source)
     "Are you sure you want to leave the " \
-    "\"#{member_source.human_name}\" #{member_source.class.to_s.humanize(capitalize: false)}?"
+    "\"#{member_source.human_name}\" #{member_source.model_name.to_s.humanize(capitalize: false)}?"
   end
 
   def filter_group_project_member_path(options = {})

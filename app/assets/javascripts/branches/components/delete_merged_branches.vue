@@ -103,8 +103,18 @@ export default {
       no-caret
       placement="right"
       data-qa-selector="delete_merged_branches_dropdown_button"
+      class="gl-display-none gl-md-display-block!"
       :items="dropdownItems"
     />
+    <gl-button
+      data-qa-selector="delete_merged_branches_button"
+      category="secondary"
+      variant="danger"
+      class="gl-display-block gl-md-display-none!"
+      @click="openModal"
+    >
+      {{ $options.i18n.deleteButtonText }}
+    </gl-button>
     <gl-modal
       ref="modal"
       size="sm"

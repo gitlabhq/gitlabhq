@@ -2,51 +2,48 @@
 
 module AlertManagement
   module HttpIntegrations
-    class UpdateService
+    class UpdateService < BaseService
       # @param integration [AlertManagement::HttpIntegration]
       # @param current_user [User]
       # @param params [Hash]
       def initialize(integration, current_user, params)
         @integration = integration
-        @current_user = current_user
-        @params = params.with_indifferent_access
+
+        super(integration.project, current_user, params)
       end
 
       def execute
         return error_no_permissions unless allowed?
 
-        params[:token] = nil if params.delete(:regenerate_token)
+        integration.transaction do
+          if integration.update(permitted_params.merge(token_params))
+            @response = success(integration)
 
-        if integration.update(permitted_params)
-          success
-        else
-          error(integration.errors.full_messages.to_sentence)
+            if type_update? && too_many_integrations?(integration)
+              @response = error_multiple_integrations
+
+              raise ActiveRecord::Rollback
+            end
+          else
+            @response = error_on_save(integration)
+          end
         end
+
+        @response
       end
 
       private
 
-      attr_reader :integration, :current_user, :params
+      attr_reader :integration
 
-      def allowed?
-        current_user&.can?(:admin_operations, integration)
+      def token_params
+        return {} unless params[:regenerate_token]
+
+        { token: nil }
       end
 
-      def permitted_params
-        params.slice(*permitted_params_keys)
-      end
-
-      # overriden in EE
-      def permitted_params_keys
-        %i[name active token]
-      end
-
-      def error(message)
-        ServiceResponse.error(message: message)
-      end
-
-      def success
-        ServiceResponse.success(payload: { integration: integration.reset })
+      def type_update?
+        params[:type_identifier].present?
       end
 
       def error_no_permissions
@@ -55,5 +52,3 @@ module AlertManagement
     end
   end
 end
-
-::AlertManagement::HttpIntegrations::UpdateService.prepend_mod_with('AlertManagement::HttpIntegrations::UpdateService')

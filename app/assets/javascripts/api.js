@@ -97,6 +97,7 @@ const Api = {
   secureFilePath: '/api/:version/projects/:project_id/secure_files/:secure_file_id',
   secureFilesPath: '/api/:version/projects/:project_id/secure_files',
   dependencyProxyPath: '/api/:version/groups/:id/dependency_proxy/cache',
+  markdownPath: '/api/:version/markdown',
 
   group(groupId, callback = () => {}) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -1016,6 +1017,12 @@ const Api = {
     const url = Api.buildUrl(this.dependencyProxyPath).replace(':id', groupId);
 
     return axios.delete(url, { params: { ...options } });
+  },
+
+  markdown(data = {}) {
+    const url = Api.buildUrl(this.markdownPath);
+
+    return axios.post(url, data);
   },
 };
 

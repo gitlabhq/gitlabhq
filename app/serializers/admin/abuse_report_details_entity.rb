@@ -71,6 +71,7 @@ module Admin
     end
 
     expose :report do
+      expose :status
       expose :message
       expose :created_at, as: :reported_at
       expose :category
@@ -78,26 +79,8 @@ module Admin
       expose :reported_content, as: :content
       expose :reported_from_url, as: :url
       expose :screenshot_path, as: :screenshot
-    end
-
-    expose :actions, if: ->(report) { report.user } do
-      expose :user_blocked do |report|
-        report.user.blocked?
-      end
-      expose :block_user_path do |report|
-        block_admin_user_path(report.user)
-      end
-      expose :remove_report_path do |report|
+      expose :update_path do |report|
         admin_abuse_report_path(report)
-      end
-      expose :remove_user_and_report_path do |report|
-        admin_abuse_report_path(report, remove_user: true)
-      end
-      expose :reported_user do |report|
-        UserEntity.represent(report.user, only: [:name, :created_at])
-      end
-      expose :redirect_path do |_|
-        admin_abuse_reports_path
       end
     end
   end

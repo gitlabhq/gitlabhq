@@ -30,7 +30,7 @@ import TaskList from '~/content_editor/extensions/task_list';
 import TaskItem from '~/content_editor/extensions/task_item';
 import Video from '~/content_editor/extensions/video';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
-import markdownSerializer from '~/content_editor/services/markdown_serializer';
+import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import { SAFE_VIDEO_EXT, SAFE_AUDIO_EXT, DIAGRAM_LANGUAGES } from '~/content_editor/constants';
 
 import { createTestEditor, createDocBuilder } from './test_utils';
@@ -158,7 +158,7 @@ describe('Client side Markdown processing', () => {
   };
 
   const serialize = (document) =>
-    markdownSerializer({}).serialize({
+    new MarkdownSerializer().serialize({
       doc: document,
       pristineDoc: document,
     });

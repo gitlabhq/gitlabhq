@@ -4,7 +4,7 @@ module API
   class Topics < ::API::Base
     include PaginationParams
 
-    feature_category :projects
+    feature_category :groups_and_projects
 
     desc 'Get topics' do
       detail 'This feature was introduced in GitLab 14.5.'

@@ -50,7 +50,6 @@ RSpec.describe Mutations::Issues::Create do
       stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
       project.add_guest(assignee1)
       project.add_guest(assignee2)
-      stub_spam_services
     end
 
     def resolve

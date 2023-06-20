@@ -47,6 +47,54 @@ RSpec.describe 'Project Environments query', feature_category: :continuous_deliv
     expect(environment_data['environmentType']).to eq(production.environment_type)
   end
 
+  context 'with cluster agent' do
+    let_it_be(:agent_management_project) { create(:project, :private, :repository) }
+    let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
+
+    let_it_be(:deployment_project) { create(:project, :private, :repository) }
+    let_it_be(:environment) { create(:environment, project: deployment_project, cluster_agent: cluster_agent) }
+
+    let!(:authorization) do
+      create(:agent_user_access_project_authorization, project: deployment_project, agent: cluster_agent)
+    end
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{deployment_project.full_path}") {
+            environment(name: "#{environment.name}") {
+              clusterAgent {
+                name
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before_all do
+      deployment_project.add_developer(developer)
+    end
+
+    it 'returns the cluster agent of the environment' do
+      subject
+
+      cluster_agent_data = graphql_data.dig('project', 'environment', 'clusterAgent')
+      expect(cluster_agent_data['name']).to eq(cluster_agent.name)
+    end
+
+    context 'when the cluster is not authorized in the project' do
+      let!(:authorization) { nil }
+
+      it 'does not return the cluster agent of the environment' do
+        subject
+
+        cluster_agent_data = graphql_data.dig('project', 'environment', 'clusterAgent')
+        expect(cluster_agent_data).to be_nil
+      end
+    end
+  end
+
   describe 'user permissions' do
     let(:query) do
       %(

@@ -20,7 +20,11 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
 
       find('body').send_keys([:shift, 'M'])
 
-      check_page_title('Merge requests')
+      check_page_title('Assigned merge requests')
+
+      find('body').send_keys([:shift, 'R'])
+
+      check_page_title('Review requests')
 
       find('body').send_keys([:shift, 'T'])
 

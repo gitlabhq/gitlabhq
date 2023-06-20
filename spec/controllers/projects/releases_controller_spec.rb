@@ -317,7 +317,7 @@ RSpec.describe Projects::ReleasesController do
         it 'raises attack error' do
           expect do
             subject
-          end.to raise_error(Gitlab::Utils::PathTraversalAttackError)
+          end.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError)
         end
       end
 

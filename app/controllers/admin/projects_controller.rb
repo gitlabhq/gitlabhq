@@ -6,7 +6,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   before_action :project, only: [:show, :transfer, :repository_check, :destroy, :edit, :update]
   before_action :group, only: [:show, :transfer]
 
-  feature_category :projects, [:index, :show, :transfer, :destroy, :edit, :update]
+  feature_category :groups_and_projects, [:index, :show, :transfer, :destroy, :edit, :update]
   feature_category :source_code_management, [:repository_check]
 
   def index

@@ -6,53 +6,51 @@
 # Read more about this script on this blog post https://about.gitlab.com/2018/10/24/setting-up-gitlab-ci-for-android-projects/, by Jason Lenny
 # If you are interested in using Android with FastLane for publishing take a look at the Android-Fastlane template.
 
-image: openjdk:8-jdk
+image: eclipse-temurin:17-jdk-jammy
 
 variables:
 
   # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
   # It should match compileSdkVersion.
-  ANDROID_COMPILE_SDK: "29"
+  ANDROID_COMPILE_SDK: "33"
 
   # ANDROID_BUILD_TOOLS is the version of the Android build tools you are using.
   # It should match buildToolsVersion.
-  ANDROID_BUILD_TOOLS: "29.0.3"
+  ANDROID_BUILD_TOOLS: "33.0.2"
 
   # It's what version of the command line tools we're going to download from the official site.
   # Official Site-> https://developer.android.com/studio/index.html
   # There, look down below at the cli tools only, sdk tools package is of format:
   #        commandlinetools-os_type-ANDROID_SDK_TOOLS_latest.zip
   # when the script was last modified for latest compileSdkVersion, it was which is written down below
-  ANDROID_SDK_TOOLS: "6514223"
+  ANDROID_SDK_TOOLS: "9477386"
 
 # Packages installation before running script
 before_script:
   - apt-get --quiet update --yes
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - apt-get --quiet install --yes wget unzip
 
   # Setup path as android_home for moving/exporting the downloaded sdk into it
-  - export ANDROID_HOME="${PWD}/android-home"
+  - export ANDROID_HOME="${PWD}/android-sdk-root"
   # Create a new directory at specified location
   - install -d $ANDROID_HOME
   # Here we are installing androidSDK tools from official source,
   # (the key thing here is the url from where you are downloading these sdk tool for command line, so please do note this url pattern there and here as well)
   # after that unzipping those tools and
   # then running a series of SDK manager commands to install necessary android SDK packages that'll allow the app to build
-  - wget --output-document=$ANDROID_HOME/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
-  # move to the archive at ANDROID_HOME
-  - pushd $ANDROID_HOME
-  - unzip -d cmdline-tools cmdline-tools.zip
-  - popd
-  - export PATH=$PATH:${ANDROID_HOME}/cmdline-tools/tools/bin/
+  - wget --no-verbose --output-document=$ANDROID_HOME/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+  - unzip -q -d "$ANDROID_HOME/cmdline-tools" "$ANDROID_HOME/cmdline-tools.zip"
+  - mv -T "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/tools"
+  - export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/cmdline-tools/tools/bin
 
   # Nothing fancy here, just checking sdkManager version
   - sdkmanager --version
 
   # use yes to accept all licenses
-  - yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses || true
-  - sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-${ANDROID_COMPILE_SDK}"
-  - sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools"
-  - sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;${ANDROID_BUILD_TOOLS}"
+  - yes | sdkmanager --licenses > /dev/null || true
+  - sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}"
+  - sdkmanager "platform-tools"
+  - sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}"
 
   # Not necessary, but just for surity
   - chmod +x ./gradlew
@@ -64,6 +62,11 @@ lintDebug:
   stage: build
   script:
     - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
+  artifacts:
+    paths:
+      - app/lint/reports/lint-results-debug.html
+    expose_as: "lint-report"
+    when: always
 
 # Make Project
 assembleDebug:
@@ -77,6 +80,7 @@ assembleDebug:
 
 # Run all tests, if any fails, interrupt the pipeline(fail it)
 debugTests:
+  needs: [lintDebug, assembleDebug]
   interruptible: true
   stage: test
   script:

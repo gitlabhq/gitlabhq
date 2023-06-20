@@ -9,7 +9,9 @@ export const RUNNER_DETAILS_PROJECTS_PAGE_SIZE = 5;
 export const RUNNER_DETAILS_JOBS_PAGE_SIZE = 30;
 
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
-export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
+export const I18N_CREATE_ERROR = s__(
+  'Runners|An error occurred while creating the runner. Please try again.',
+);
 
 export const FILTER_CSS_CLASSES =
   'gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1 gl-border-b-1';
@@ -102,6 +104,26 @@ export const I18N_CREATED_AT_LABEL = s__('Runners|Created %{timeAgo}');
 export const I18N_CREATED_AT_BY_LABEL = s__('Runners|Created %{timeAgo} by %{avatar}');
 export const I18N_SHOW_ONLY_INHERITED = s__('Runners|Show only inherited');
 export const I18N_ADMIN = s__('Runners|Administrator');
+
+// No runners registered
+export const I18N_GET_STARTED = s__('Runners|Get started with runners');
+export const I18N_RUNNERS_ARE_AGENTS = s__(
+  'Runners|Runners are the agents that run your CI/CD jobs.',
+);
+export const I18N_CREATE_RUNNER_LINK = s__(
+  'Runners|%{linkStart}Create a new runner%{linkEnd} to get started.',
+);
+export const I18N_STILL_USING_REGISTRATION_TOKENS = s__('Runners|Still using registration tokens?');
+export const I18N_CONTACT_ADMIN_TO_REGISTER = s__(
+  'Runners|To register new runners, contact your administrator.',
+);
+export const I18N_FOLLOW_REGISTRATION_INSTRUCTIONS = s__(
+  'Runners|Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner.',
+);
+
+// No runners found
+export const I18N_NO_RESULTS = s__('Runners|No results found');
+export const I18N_EDIT_YOUR_SEARCH = s__('Runners|Edit your search and try again');
 
 // Runner details
 
@@ -256,3 +278,5 @@ export const SERVICE_COMMANDS_HELP_URL =
 export const CHANGELOG_URL = 'https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md';
 export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
 export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';
+export const RUNNER_MANAGERS_HELP_URL =
+  'https://docs.gitlab.com/runner/fleet_scaling/#workers-executors-and-autoscaling-capabilities';

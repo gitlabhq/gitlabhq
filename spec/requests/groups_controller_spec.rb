@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupsController, feature_category: :subgroups do
+RSpec.describe GroupsController, feature_category: :groups_and_projects do
   context 'token authentication' do
     context 'when public group' do
       let_it_be(:public_group) { create(:group, :public) }

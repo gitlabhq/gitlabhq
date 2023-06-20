@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'groups/edit.html.haml', feature_category: :subgroups do
+RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects do
   include Devise::Test::ControllerHelpers
 
   before do
     stub_template 'groups/settings/_code_suggestions' => ''
+    stub_template 'groups/settings/_ai_third_party_settings' => ''
   end
 
   describe '"Share with group lock" setting' do

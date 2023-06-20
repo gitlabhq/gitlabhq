@@ -10,13 +10,14 @@ RSpec.shared_examples 'visible participants for issuable with read ability' do |
     allow(model).to receive(:participant_attrs).and_return([:bar])
   end
 
-  shared_examples 'check for participables read ability' do |ability_name|
+  shared_examples 'check for participables read ability' do |ability_name, ability_source: nil|
     it 'receives expected ability' do
       instance = model.new
+      source = ability_source == :participable_source ? participable_source : instance
 
       allow(instance).to receive(:bar).and_return(participable_source)
 
-      expect(Ability).to receive(:allowed?).with(anything, ability_name, instance)
+      expect(Ability).to receive(:allowed?).with(anything, ability_name, source)
 
       expect(instance.visible_participants(user1)).to be_empty
     end
@@ -38,5 +39,11 @@ RSpec.shared_examples 'visible participants for issuable with read ability' do |
     let(:participable_source) { build(:note, :confidential) }
 
     it_behaves_like 'check for participables read ability', :read_internal_note
+  end
+
+  context 'when source is a system note' do
+    let(:participable_source) { build(:system_note) }
+
+    it_behaves_like 'check for participables read ability', :read_note, ability_source: :participable_source
   end
 end

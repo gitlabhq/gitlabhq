@@ -316,6 +316,8 @@ nuget push <package_file> -Source <source_name>
 
 ### Publish a package with the .NET CLI
 
+> Publishing a package with `--api-key` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) in GitLab 16.1.
+
 Prerequisites:
 
 - [A NuGet package created with .NET CLI](https://learn.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
@@ -334,6 +336,21 @@ For example:
 
 ```shell
 dotnet nuget push MyPackage.1.0.0.nupkg --source gitlab
+```
+
+You can publish a package using the `--api-key` option instead of `username` and `password`:
+
+```shell
+dotnet nuget push <package_file> --source <source_url> --api-key <gitlab_personal_access_token, deploy_token or job token>
+```
+
+- `<package_file>` is your package filename, ending in `.nupkg`.
+- `<source_url>` is the URL of the NuGet Package Registry.
+
+For example:
+
+```shell
+dotnet nuget push MyPackage.1.0.0.nupkg --source https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json --api-key <gitlab_personal_access_token, deploy_token or job token>
 ```
 
 ### Publish a NuGet package by using CI/CD

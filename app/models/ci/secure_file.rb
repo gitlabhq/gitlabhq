@@ -29,6 +29,7 @@ module Ci
 
     scope :order_by_created_at, -> { order(created_at: :desc) }
     scope :project_id_in, ->(ids) { where(project_id: ids) }
+    scope :with_files_stored_locally, -> { where(file_store: Ci::SecureFileUploader::Store::LOCAL) }
 
     def checksum_algorithm
       CHECKSUM_ALGORITHM
@@ -67,6 +68,10 @@ module Ci
         Gitlab::AppLogger.error("Secure File Parser Failure (#{id}): #{err.message} - #{parser.error}.")
         nil
       end
+    end
+
+    def local?
+      file_store == ObjectStorage::Store::LOCAL
     end
 
     private

@@ -11,9 +11,10 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
   let_it_be(:mrs_by_title) { create_list(:merge_request, 4, :unique_branches, :jira_title) }
   let_it_be(:mrs_by_branch) { create_list(:merge_request, 2, :jira_branch) }
   let_it_be(:red_herrings) { create_list(:merge_request, 1, :unique_branches) }
+  let_it_be(:mrs_by_description) { create_list(:merge_request, 2, :unique_branches, :jira_description) }
 
   let_it_be(:pipelines) do
-    (red_herrings + mrs_by_branch + mrs_by_title).map do |mr|
+    (red_herrings + mrs_by_branch + mrs_by_title + mrs_by_description).map do |mr|
       create(:ci_pipeline, merge_request: mr)
     end
   end
@@ -253,7 +254,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
     it 'only sends information about relevant MRs' do
       expect(subject).to receive(:post).with(
-        '/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 6) }
+        '/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 8) }
       ).and_call_original
 
       subject.send(:store_deploy_info, project: project, deployments: deployments)
@@ -378,7 +379,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
     it 'only sends information about relevant MRs' do
       expect(subject).to receive(:post)
-        .with('/rest/builds/0.1/bulk', { builds: have_attributes(size: 6) })
+        .with('/rest/builds/0.1/bulk', { builds: have_attributes(size: 8) })
         .and_call_original
 
       subject.send(:store_build_info, project: project, pipelines: pipelines)

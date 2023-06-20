@@ -1,0 +1,7 @@
+name: gitlab_main
+description: Legacy schema for all Cell-local tables, ex. projects, issues, etc.
+allow_cross_joins:
+  - gitlab_shared
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared

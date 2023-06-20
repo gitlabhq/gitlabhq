@@ -35,9 +35,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       render 'create'
     else
       @error = { message: _('Invalid pin code.') }
-      @qr_code = build_qr_code
       @account_string = account_string
-      setup_webauthn_registration
+
+      setup_show_page
 
       render 'show'
     end

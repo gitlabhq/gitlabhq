@@ -34,9 +34,9 @@ module RuboCop
     module Graphql
       class EnumNames < RuboCop::Cop::Base
         SEE_SG_MSG = "See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums"
-        CLASS_NAME_SUFFIX_MSG = "Enum class names must end with `Enum`. #{SEE_SG_MSG}"
-        GRAPHQL_NAME_MISSING_MSG = "A `graphql_name` must be defined for a GraphQL enum. #{SEE_SG_MSG}"
-        GRAPHQL_NAME_WITH_ENUM_MSG = "The `graphql_name` must not contain the string \"Enum\". #{SEE_SG_MSG}"
+        CLASS_NAME_SUFFIX_MSG = "Enum class names must end with `Enum`. #{SEE_SG_MSG}".freeze
+        GRAPHQL_NAME_MISSING_MSG = "A `graphql_name` must be defined for a GraphQL enum. #{SEE_SG_MSG}".freeze
+        GRAPHQL_NAME_WITH_ENUM_MSG = "The `graphql_name` must not contain the string \"Enum\". #{SEE_SG_MSG}".freeze
 
         def_node_matcher :enum_subclass, <<~PATTERN
           (class $(const nil? _) (const {nil? cbase} /.*Enum$/) ...)

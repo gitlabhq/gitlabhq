@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project settings > repositories > Branch names', :js, feature_category: :projects do
+RSpec.describe 'Project settings > repositories > Branch names', :js, feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 

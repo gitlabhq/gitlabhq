@@ -54,7 +54,8 @@ Example response:
     "billable_members_count": 1,
     "plan": "default",
     "trial_ends_on": null,
-    "trial": false
+    "trial": false,
+    "root_repository_size": 100
   },
   {
     "id": 2,
@@ -69,7 +70,8 @@ Example response:
     "billable_members_count": 2,
     "plan": "default",
     "trial_ends_on": null,
-    "trial": false
+    "trial": false,
+    "root_repository_size": 100
   },
   {
     "id": 3,
@@ -84,7 +86,8 @@ Example response:
     "billable_members_count": 5,
     "plan": "default",
     "trial_ends_on": null,
-    "trial": false
+    "trial": false,
+    "root_repository_size": 100
   }
 ]
 ```
@@ -124,7 +127,7 @@ once a day.
 ```
 
 NOTE:
-Only group owners are presented with `members_count_with_descendants` and `plan`.
+Only group owners are presented with `members_count_with_descendants`, `root_repository_size` and `plan`.
 
 ## Get namespace by ID
 
@@ -162,7 +165,8 @@ Example response:
   "seats_in_use": 0,
   "plan": "default",
   "trial_ends_on": null,
-  "trial": false
+  "trial": false,
+  "root_repository_size": 100
 }
 ```
 
@@ -190,7 +194,8 @@ Example response:
   "seats_in_use": 0,
   "plan": "default",
   "trial_ends_on": null,
-  "trial": false
+  "trial": false,
+  "root_repository_size": 100
 }
 ```
 

@@ -20,6 +20,10 @@ module API
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
     INTEGER_ID_REGEX = /^-?\d+$/.freeze
 
+    def logger
+      API.logger
+    end
+
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
       declared(params, options).to_h.symbolize_keys
@@ -202,6 +206,7 @@ module API
       not_found!('Namespace')
     end
 
+    # find_namespace returns the namespace regardless of user access level on the namespace
     # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if id.to_s =~ INTEGER_ID_REGEX
@@ -212,6 +217,8 @@ module API
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # find_namespace! returns the namespace if the current user can read the given namespace
+    # Otherwise, returns a not_found! error
     def find_namespace!(id)
       check_namespace_access(find_namespace(id))
     end
@@ -484,6 +491,12 @@ module API
 
     def file_too_large!
       render_api_error!('413 Request Entity Too Large', 413)
+    end
+
+    def too_many_requests!(message = nil, retry_after: 1.minute)
+      header['Retry-After'] = retry_after.to_i if retry_after
+
+      render_api_error!(message || '429 Too Many Requests', 429)
     end
 
     def not_modified!

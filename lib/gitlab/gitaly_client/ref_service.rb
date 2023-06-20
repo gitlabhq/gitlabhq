@@ -50,8 +50,8 @@ module Gitlab
         consume_find_all_branches_response(response)
       end
 
-      def default_branch_name
-        request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo)
+      def default_branch_name(head_only: false)
+        request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo, head_only: head_only)
         response = gitaly_client_call(@storage, :ref_service, :find_default_branch_name, request, timeout: GitalyClient.fast_timeout)
         Gitlab::Git.branch_name(response.name)
       end

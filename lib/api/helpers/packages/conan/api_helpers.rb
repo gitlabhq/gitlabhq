@@ -125,20 +125,18 @@ module API
           end
 
           def project
-            strong_memoize(:project) do
-              case package_scope
-              when :project
-                user_project(action: :read_package)
-              when :instance
-                full_path = ::Packages::Conan::Metadatum.full_path_from(package_username: params[:package_username])
-                find_project!(full_path)
-              end
+            case package_scope
+            when :project
+              user_project(action: :read_package)
+            when :instance
+              full_path = ::Packages::Conan::Metadatum.full_path_from(package_username: params[:package_username])
+              find_project!(full_path)
             end
           end
+          strong_memoize_attr :project
 
           def package
-            strong_memoize(:package) do
-              project.packages
+            project.packages
                 .conan
                 .with_name(params[:package_name])
                 .with_version(params[:package_version])
@@ -147,18 +145,17 @@ module API
                 .order_created
                 .not_pending_destruction
                 .last
-            end
           end
+          strong_memoize_attr :package
 
           def token
-            strong_memoize(:token) do
-              token = nil
-              token = ::Gitlab::ConanToken.from_personal_access_token(find_personal_access_token.user_id, access_token_from_request) if find_personal_access_token
-              token = ::Gitlab::ConanToken.from_deploy_token(deploy_token_from_request) if deploy_token_from_request
-              token = ::Gitlab::ConanToken.from_job(find_job_from_token) if find_job_from_token
-              token
-            end
+            token = nil
+            token = ::Gitlab::ConanToken.from_personal_access_token(find_personal_access_token.user_id, access_token_from_request) if find_personal_access_token
+            token = ::Gitlab::ConanToken.from_deploy_token(deploy_token_from_request) if deploy_token_from_request
+            token = ::Gitlab::ConanToken.from_job(find_job_from_token) if find_job_from_token
+            token
           end
+          strong_memoize_attr :token
 
           def download_package_file(file_type)
             authorize_read_package!(project)
@@ -227,17 +224,15 @@ module API
           # We override this method from auth_finders because we need to
           # extract the token from the Conan JWT which is specific to the Conan API
           def find_personal_access_token
-            strong_memoize(:find_personal_access_token) do
-              PersonalAccessToken.find_by_token(access_token_from_request)
-            end
+            PersonalAccessToken.find_by_token(access_token_from_request)
           end
+          strong_memoize_attr :find_personal_access_token
 
           def access_token_from_request
-            strong_memoize(:access_token_from_request) do
-              find_personal_access_token_from_conan_jwt ||
-                find_password_from_basic_auth
-            end
+            find_personal_access_token_from_conan_jwt ||
+              find_password_from_basic_auth
           end
+          strong_memoize_attr :access_token_from_request
 
           def find_password_from_basic_auth
             return unless route_authentication_setting[:basic_auth_personal_access_token]

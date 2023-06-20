@@ -70,8 +70,7 @@ For user contributions to be mapped, each user must complete the following befor
 > Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 
 1. Sign in to GitLab.
-1. On the top bar, select **New** (**{plus}**).
-1. Select **New project/repository**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Bitbucket Cloud**.
 1. Log in to Bitbucket and grant GitLab access to your Bitbucket account.

@@ -13,22 +13,3 @@
       ref: master
   actions:
     - quarantine
-
-- name: Dequarantine E2E tests in Master that pass consistently
-  plugin:
-    name: gitlab # https://gitlab.com/gitlab-org/quality/confiner/-/blob/main/doc/plugins/gitlab.md
-    args:
-      threshold: 10 # at least 10 passes consecutively with no failures to be a candidate for dequarantine
-      private_token: $QA_GITLAB_CI_TOKEN
-
-      # we do not run quarantined jobs automatically on master, but we still commit to master
-      project_id: gitlab-org/quality/nightly # https://gitlab.com/gitlab-org/quality/nightly/
-      target_project: gitlab-org/gitlab # https://gitlab.com/gitlab-org/gitlab
-      failure_issue_labels: QA,Quality
-      failure_issue_prefix: "Failure in "
-      pwd: qa # E2E specs reside in the qa subdirectory
-      timeout: 30
-      ref: master
-      job_pattern: '.+-quarantine'
-  actions:
-    - dequarantine

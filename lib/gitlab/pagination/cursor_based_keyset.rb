@@ -6,7 +6,8 @@ module Gitlab
       SUPPORTED_ORDERING = {
         Group => { name: :asc },
         AuditEvent => { id: :desc },
-        ::Ci::Build => { id: :desc }
+        ::Ci::Build => { id: :desc },
+        ::Packages::BuildInfo => { id: :desc }
       }.freeze
 
       # Relation types that are enforced in this list

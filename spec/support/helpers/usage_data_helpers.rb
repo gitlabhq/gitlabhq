@@ -12,9 +12,6 @@ module UsageDataHelpers
     auto_devops_enabled
     auto_devops_disabled
     deploy_keys
-    deployments
-    successful_deployments
-    failed_deployments
     environments
     clusters
     clusters_enabled
@@ -70,9 +67,6 @@ module UsageDataHelpers
     protected_branches_except_default
     releases
     remote_mirrors
-    snippets
-    personal_snippets
-    project_snippets
     suggestions
     terraform_reports
     terraform_states

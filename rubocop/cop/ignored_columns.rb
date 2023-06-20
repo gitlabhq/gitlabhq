@@ -2,39 +2,59 @@
 
 module RuboCop
   module Cop
-    # Cop that blacklists the usage of `ActiveRecord::Base.ignored_columns=` directly
+    # Cop that flags the usage of `ActiveRecord::Base.ignored_columns=` directly
+    #
+    # @example
+    #   # bad
+    #   class User < ApplicationRecord
+    #     self.ignored_columns = [:name]
+    #     self.ignored_columns += [:full_name]
+    #   end
+    #
+    #   # good
+    #   class User < ApplicationRecord
+    #     include IgnorableColumns
+    #
+    #     ignore_column :name, remove_after: '2023-05-22', remove_with: '16.0'
+    #     ignore_column :full_name, remove_after: '2023-05-22', remove_with: '16.0'
+    #   end
     class IgnoredColumns < RuboCop::Cop::Base
-      USE_CONCERN_MSG = 'Use `IgnoredColumns` concern instead of adding to `self.ignored_columns`.'
-      WRONG_MODEL_MSG = 'If the model exists in CE and EE, the column has to be ignored ' \
-        'in the CE model. If the model only exists in EE, then it has to be added there.'
+      USE_CONCERN_ADD_MSG = 'Use `IgnoredColumns` concern instead of adding to `self.ignored_columns`.'
+      USE_CONCERN_SET_MSG = 'Use `IgnoredColumns` concern instead of setting `self.ignored_columns`.'
+      WRONG_MODEL_MSG = <<~MSG
+        If the model exists in CE and EE, the column has to be ignored
+        in the CE model. If the model only exists in EE, then it has to be added there.
+      MSG
 
-      def_node_matcher :ignored_columns?, <<~PATTERN
+      RESTRICT_ON_SEND = %i[ignored_columns ignored_columns= ignore_column ignore_columns].freeze
+
+      def_node_matcher :ignored_columns_add?, <<~PATTERN
         (send (self) :ignored_columns)
       PATTERN
 
-      def_node_matcher :ignore_columns?, <<~PATTERN
-        (send nil? :ignore_columns ...)
+      def_node_matcher :ignored_columns_set?, <<~PATTERN
+        (send (self) :ignored_columns= ...)
       PATTERN
 
-      def_node_matcher :ignore_column?, <<~PATTERN
-        (send nil? :ignore_column ...)
+      def_node_matcher :using_ignore_columns?, <<~PATTERN
+        (send nil? {:ignore_columns :ignore_column}...)
       PATTERN
 
       def on_send(node)
-        if ignored_columns?(node)
-          add_offense(node, message: USE_CONCERN_MSG)
+        if ignored_columns_add?(node)
+          add_offense(node.loc.selector, message: USE_CONCERN_ADD_MSG)
         end
 
-        if using_ignore?(node) && used_in_wrong_model?
+        if ignored_columns_set?(node)
+          add_offense(node.loc.selector, message: USE_CONCERN_SET_MSG)
+        end
+
+        if using_ignore_columns?(node) && used_in_wrong_model?
           add_offense(node, message: WRONG_MODEL_MSG)
         end
       end
 
       private
-
-      def using_ignore?(node)
-        ignore_columns?(node) || ignore_column?(node)
-      end
 
       def used_in_wrong_model?
         file_path = processed_source.file_path

@@ -75,11 +75,9 @@ sequenceDiagram
 The backend is also cleanly abstracted via mixin modules and helper methods. The three main
 changes required to the relevant backend controller actions (normally just `create`/`update`) are:
 
-1. Create a `SpamParams` parameter object instance based on the request, using the static
-   `#new_from_request` factory method. This method takes a request, and returns a `SpamParams` instance.
-1. Pass the created `SpamParams` instance as the `spam_params` named argument to the
-   Service class constructor, which you should have already added. If the spam check indicates
-   the changes to the model are possibly spam, then:
+1. Pass `perform_spam_check: true` to the Update Service class constructor.
+   It is set to `true` by default in the Create Service.
+1. If the spam check indicates the changes to the model are possibly spam, then:
    - An error is added to the model.
    - The `needs_recaptcha` property on the model is set to true.
 1. Wrap the existing controller action return value (rendering or redirecting) in a block passed to
@@ -116,12 +114,10 @@ module WidgetsActions
   include SpammableActions::CaptchaCheck::JsonFormatActionsSupport
 
   def create
-    spam_params = ::Spam::SpamParams.new_from_request(request: request)
     widget = ::Widgets::CreateService.new(
       project: project,
       current_user: current_user,
-      params: params,
-      spam_params: spam_params
+      params: params
     ).execute
 
     respond_to do |format|
@@ -166,13 +162,11 @@ class WidgetsController < ApplicationController
 
   def update
     # Existing logic to find the `widget` model instance...
-
-    spam_params = ::Spam::SpamParams.new_from_request(request: request)
     ::Widgets::UpdateService.new(
       project: project,
       current_user: current_user,
       params: params,
-      spam_params: spam_params
+      perform_spam_check: true
     ).execute(widget)
 
     respond_to do |format|

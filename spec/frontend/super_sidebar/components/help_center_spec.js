@@ -4,7 +4,7 @@ import toggleWhatsNewDrawer from '~/whats_new';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { DOMAIN, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL, FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { helpCenterState } from '~/super_sidebar/constants';
@@ -25,6 +25,7 @@ describe('HelpCenter component', () => {
   };
   const withinComponent = () => within(wrapper.element);
   const findButton = (name) => withinComponent().getByRole('button', { name });
+  const findNotificationDot = () => wrapper.findByTestId('notification-dot');
 
   // eslint-disable-next-line no-shadow
   const createWrapper = (sidebarData) => {
@@ -52,7 +53,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.docs,
-      href: `https://docs.${DOMAIN}`,
+      href: DOCS_URL,
       extraAttrs: trackingAttrs('gitlab_documentation'),
     },
     {
@@ -62,7 +63,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.forum,
-      href: `https://forum.${DOMAIN}/`,
+      href: FORUM_URL,
       extraAttrs: trackingAttrs('community_forum'),
     },
     {
@@ -91,22 +92,22 @@ describe('HelpCenter component', () => {
       ]);
     });
 
-    it('passes popper options to the dropdown', () => {
-      expect(findDropdown().props('popperOptions')).toEqual({
-        modifiers: [{ name: 'offset', options: { offset: [-4, 4] } }],
+    it('passes custom offset to the dropdown', () => {
+      expect(findDropdown().props('dropdownOffset')).toEqual({
+        crossAxis: -4,
+        mainAxis: 4,
       });
     });
 
     describe('with show_tanuki_bot true', () => {
       beforeEach(() => {
         createWrapper({ ...sidebarData, show_tanuki_bot: true });
-        jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
       });
 
       it('shows Ask GitLab Chat with the help items', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           expect.objectContaining({
-            icon: 'tanuki',
+            icon: 'tanuki-ai',
             text: HelpCenter.i18n.chat,
             extraAttrs: trackingAttrs('tanuki_bot_help_dropdown'),
           }),
@@ -117,10 +118,6 @@ describe('HelpCenter component', () => {
       describe('when Ask GitLab Chat button is clicked', () => {
         beforeEach(() => {
           findButton('Ask GitLab Chat').click();
-        });
-
-        it('closes the dropdown', () => {
-          expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
         });
 
         it('sets helpCenterState.showTanukiBotChatDrawer to true', () => {
@@ -150,14 +147,7 @@ describe('HelpCenter component', () => {
       let button;
 
       beforeEach(() => {
-        jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
-
         button = findButton('Keyboard shortcuts ?');
-      });
-
-      it('closes the dropdown', () => {
-        button.click();
-        expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
       });
 
       it('shows the keyboard shortcuts modal', () => {
@@ -179,15 +169,10 @@ describe('HelpCenter component', () => {
 
     describe('showWhatsNew', () => {
       beforeEach(() => {
-        jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
         beforeEach(() => {
           createWrapper({ ...sidebarData, show_version_check: true });
         });
         findButton("What's new 5").click();
-      });
-
-      it('closes the dropdown', () => {
-        expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
       });
 
       it('shows the "What\'s new" slideout', () => {
@@ -219,8 +204,8 @@ describe('HelpCenter component', () => {
           createWrapper({ ...sidebarData, display_whats_new: false });
         });
 
-        it('is false', () => {
-          expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+        it('does not render notification dot', () => {
+          expect(findNotificationDot().exists()).toBe(false);
         });
       });
 
@@ -231,8 +216,8 @@ describe('HelpCenter component', () => {
           createWrapper({ ...sidebarData, display_whats_new: true });
         });
 
-        it('is true', () => {
-          expect(wrapper.vm.showWhatsNewNotification).toBe(true);
+        it('renders notification dot', () => {
+          expect(findNotificationDot().exists()).toBe(true);
         });
 
         describe('when "What\'s new" drawer got opened', () => {
@@ -240,8 +225,8 @@ describe('HelpCenter component', () => {
             findButton("What's new 5").click();
           });
 
-          it('is false', () => {
-            expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+          it('does not render notification dot', () => {
+            expect(findNotificationDot().exists()).toBe(false);
           });
         });
 
@@ -251,8 +236,8 @@ describe('HelpCenter component', () => {
             createWrapper({ ...sidebarData, display_whats_new: true });
           });
 
-          it('is false', () => {
-            expect(wrapper.vm.showWhatsNewNotification).toBe(false);
+          it('does not render notification dot', () => {
+            expect(findNotificationDot().exists()).toBe(false);
           });
         });
       });

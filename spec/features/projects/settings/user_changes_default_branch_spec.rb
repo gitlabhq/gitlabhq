@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User changes default branch', feature_category: :projects do
+RSpec.describe 'Projects > Settings > User changes default branch', feature_category: :groups_and_projects do
   include ListboxHelpers
 
   let(:user) { create(:user) }

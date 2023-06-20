@@ -184,6 +184,44 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
     end
   end
 
+  context "clickup project" do
+    before_all do
+      create(:clickup_integration, project: project)
+    end
+
+    before do
+      project.update!(issues_enabled: false)
+    end
+
+    context "with right markdown" do
+      let(:issue) { ExternalIssue.new("PRJ-123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with underscores in the prefix" do
+      let(:issue) { ExternalIssue.new("PRJ_1-123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with a hash prefix and alphanumeric" do
+      let(:issue) { ExternalIssue.new("#abcd123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with prefix and alphanumeric" do
+      let(:issue) { ExternalIssue.new("CU-abcd123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+  end
+
   context "jira project" do
     let_it_be(:service) { create(:jira_integration, project: project) }
 

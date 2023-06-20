@@ -7,7 +7,7 @@ group: unassigned
 # Documenting Experiment and Beta features
 
 Some features are not generally available and are instead considered
-[Experiment or Beta](../../policy/alpha-beta-support.md).
+[Experiment or Beta](../../policy/experiment-beta-support.md).
 
 When you document a feature in one of these three statuses:
 
@@ -25,7 +25,7 @@ For example:
 ```markdown
 ## Great new feature (Experiment)
 
-> [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/alpha-beta-support.md).
+> [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -34,7 +34,7 @@ On GitLab.com, this feature is not available. This feature is not ready for prod
 
 Use this great new feature when you need to do this new thing.
 
-This feature is an [Experiment](<link_to>/policy/alpha-beta-support.md). To join
+This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](link).
 ```

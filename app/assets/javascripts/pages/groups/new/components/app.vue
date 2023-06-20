@@ -1,6 +1,6 @@
 <script>
-import importGroupIllustration from '@gitlab/svgs/dist/illustrations/group-import.svg';
-import newGroupIllustration from '@gitlab/svgs/dist/illustrations/group-new.svg';
+import importGroupIllustration from '@gitlab/svgs/dist/illustrations/group-import.svg?raw';
+import newGroupIllustration from '@gitlab/svgs/dist/illustrations/group-new.svg?raw';
 
 import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
@@ -35,6 +35,11 @@ export default {
       default: '',
     },
     hasErrors: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isSaas: {
       type: Boolean,
       required: false,
       default: false,
@@ -93,6 +98,7 @@ export default {
     :initial-breadcrumbs="initialBreadcrumbs"
     :panels="panels"
     :title="s__('GroupsNew|Create new group')"
+    :is-saas="isSaas"
     persistence-key="new_group_last_active_tab"
   />
 </template>

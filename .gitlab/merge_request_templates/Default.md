@@ -1,8 +1,8 @@
 ## What does this MR do and why?
 
-_Describe in detail what your merge request does and why._
-
 <!--
+Describe in detail what your merge request does and why.
+
 Please keep this description updated with any discussion that takes place so
 that reviewers can understand your intent. Keeping the description updated is
 especially important if they didn't participate in the discussion.
@@ -19,6 +19,10 @@ Please include any relevant screenshots or screen recordings that will assist
 reviewers and future readers. If you need help visually verifying the change,
 please leave a comment and ping a GitLab reviewer, maintainer, or MR coach.
 -->
+
+| Before | After  |
+| ------ | ------ |
+|        |        |
 
 ## How to set up and validate locally
 

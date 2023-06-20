@@ -25,6 +25,11 @@ module Gitlab
         return true if INVALID_FORMATS.include?(request_accepts.first)
 
         false
+
+      rescue ActionDispatch::Http::MimeNegotiation::InvalidType, Mime::Type::InvalidMimeType
+        # Malformed requests with invalid MIME types prevent the checks from
+        # being executed correctly, so we should intercept those requests.
+        true
       end
 
       private

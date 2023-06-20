@@ -36,8 +36,8 @@ you must enable CRM features for the subgroup.
 
 To enable customer relations management in a group or subgroup:
 
-1. On the top bar, select **Main menu > Groups** and find your group or subgroup.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group or subgroup.
+1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Customer relations is enabled**.
 1. Select **Save changes**.
@@ -52,8 +52,8 @@ Prerequisites:
 
 To view a group's contacts:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Contacts**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer contacts**.
 
 ![Contacts list](crm_contacts_v14_10.png)
 
@@ -65,8 +65,8 @@ Prerequisites:
 
 To create a contact:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Contacts**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer contacts**.
 1. Select **New contact**.
 1. Complete all required fields.
 1. Select **Create new contact**.
@@ -82,8 +82,8 @@ Prerequisites:
 
 To edit an existing contact:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Contacts**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer contacts**.
 1. Next to the contact you wish to edit, select **Edit** (**{pencil}**).
 1. Edit the required fields.
 1. Select **Save changes**.
@@ -100,8 +100,8 @@ Each contact can be in one of two states:
 
 To change the state of a contact:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Contacts**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer contacts**.
 1. Next to the contact you wish to edit, select **Edit** (**{pencil}**).
 1. Select or clear the **Active** checkbox.
 1. Select **Save changes**.
@@ -116,8 +116,8 @@ Prerequisites:
 
 To view a group's organizations:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Organizations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer organizations**.
 
 ![Organizations list](crm_organizations_v14_10.png)
 
@@ -129,8 +129,8 @@ Prerequisites:
 
 To create an organization:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Organizations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer organizations**.
 1. Select **New organization**.
 1. Complete all required fields.
 1. Select **Create new organization**.
@@ -146,8 +146,8 @@ Prerequisites:
 
 To edit an existing organization:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Organizations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer organizations**.
 1. Next to the organization you wish to edit, select **Edit** (**{pencil}**).
 1. Edit the required fields.
 1. Select **Save changes**.
@@ -168,8 +168,8 @@ Prerequisites:
 
 To view a contact's issues, select a contact from the issue sidebar, or:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Contacts**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer contacts**.
 1. Next to the contact whose issues you wish to view, select **View issues** (**{issues}**).
 
 ### View issues linked to an organization
@@ -180,8 +180,8 @@ Prerequisites:
 
 To view an organization's issues:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Customer relations > Organizations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Plan > Customer organizations**.
 1. Next to the organization whose issues you wish to view, select **View issues** (**{issues}**).
 
 ### View contacts linked to an issue

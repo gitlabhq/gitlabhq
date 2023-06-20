@@ -43,11 +43,11 @@ RSpec.describe InstanceConfigurationHelper do
     end
 
     it 'accepts the value in bytes' do
-      expect(helper.instance_configuration_human_size_cell(1024)).to eq('1 KB')
+      expect(helper.instance_configuration_human_size_cell(1024)).to eq('1 KiB')
     end
 
     it 'returns the value in human size readable format' do
-      expect(helper.instance_configuration_human_size_cell(1048576)).to eq('1 MB')
+      expect(helper.instance_configuration_human_size_cell(1048576)).to eq('1 MiB')
     end
   end
 

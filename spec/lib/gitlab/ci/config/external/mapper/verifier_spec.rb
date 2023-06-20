@@ -147,43 +147,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         expect(access_check_queries.values.sum).to eq(2)
       end
 
-      context 'when the FF ci_batch_project_includes_context is disabled' do
-        before do
-          stub_feature_flags(ci_batch_project_includes_context: false)
-        end
-
-        it 'returns an array of file objects' do
-          expect(process.map(&:location)).to contain_exactly(
-            'myfolder/file1.yml', 'myfolder/file2.yml', 'myfolder/file3.yml',
-            'myfolder/file1.yml', 'myfolder/file2.yml'
-          )
-        end
-
-        it 'adds files to the expandset' do
-          expect { process }.to change { context.expandset.count }.by(5)
-        end
-
-        it 'calls Gitaly for all files', :request_store do
-          files # calling this to load project creations and the `project.commit.id` call
-
-          # 5 for the sha check, 2 for the files in batch
-          expect { process }.to change { Gitlab::GitalyClient.get_request_count }.by(7)
-        end
-
-        it 'queries without batch', :use_sql_query_cache do
-          files # calling this to load project creations and the `project.commit.id` call
-
-          queries = ActiveRecord::QueryRecorder.new(skip_cached: false) { process }
-          projects_queries = queries.occurrences_starting_with('SELECT "projects"')
-          access_check_queries = queries.occurrences_starting_with(
-            'SELECT MAX("project_authorizations"."access_level")'
-          )
-
-          expect(projects_queries.values.sum).to eq(5)
-          expect(access_check_queries.values.sum).to eq(5)
-        end
-      end
-
       context 'when a project is missing' do
         let(:files) do
           [
@@ -202,20 +165,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
           )
 
           expect(process.all?(&:valid?)).to be_falsey
-        end
-
-        context 'when the FF ci_batch_project_includes_context is disabled' do
-          before do
-            stub_feature_flags(ci_batch_project_includes_context: false)
-          end
-
-          it 'returns an array of file objects' do
-            expect(process.map(&:location)).to contain_exactly(
-              'myfolder/file1.yml', 'myfolder/file2.yml'
-            )
-
-            expect(process.all?(&:valid?)).to be_falsey
-          end
         end
       end
     end

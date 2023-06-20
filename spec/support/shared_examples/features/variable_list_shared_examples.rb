@@ -32,7 +32,7 @@ RSpec.shared_examples 'variable list' do
 
     page.within('[data-testid="ci-variable-table"]') do
       expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Protected'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Protected'))
     end
   end
 
@@ -47,7 +47,7 @@ RSpec.shared_examples 'variable list' do
 
     page.within('[data-testid="ci-variable-table"]') do
       expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).not_to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -116,8 +116,8 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Protected'))
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).not_to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Protected'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -145,7 +145,7 @@ RSpec.shared_examples 'variable list' do
     end
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -170,15 +170,13 @@ RSpec.shared_examples 'variable list' do
     expect(find('[data-testid="alert-danger"]').text).to have_content('(key) has already been taken')
   end
 
-  it 'prevents a variable to be added if no values are provided when a variable is set to masked' do
+  it 'allows variable to be added even if no value is provided' do
     click_button('Add variable')
 
     page.within('#add-ci-variable') do
       find('[data-testid="pipeline-form-ci-variable-key"] input').set('empty_mask_key')
-      find('[data-testid="ci-variable-protected-checkbox"]').click
-      find('[data-testid="ci-variable-masked-checkbox"]').click
 
-      expect(find_button('Add variable', disabled: true)).to be_present
+      expect(find_button('Add variable', disabled: false)).to be_present
     end
   end
 
@@ -186,7 +184,7 @@ RSpec.shared_examples 'variable list' do
     click_button('Add variable')
 
     fill_variable('empty_mask_key', '???', protected: true, masked: true) do
-      expect(page).to have_content('This variable can not be masked')
+      expect(page).to have_content('This variable value does not meet the masking requirements.')
       expect(find_button('Add variable', disabled: true)).to be_present
     end
   end

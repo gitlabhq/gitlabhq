@@ -15,8 +15,6 @@ module Ci
     feature_category :build_artifacts
 
     def perform
-      return unless ::Feature.enabled?(:ci_job_artifacts_backlog_work)
-
       artifact_counts = Ci::JobArtifacts::UpdateUnknownLockedStatusService.new.execute
 
       log_extra_metadata_on_done(:removed_count, artifact_counts[:removed])

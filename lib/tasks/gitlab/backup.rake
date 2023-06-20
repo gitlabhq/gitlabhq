@@ -206,6 +206,16 @@ namespace :gitlab do
         Tasks::Gitlab::Backup.restore_task('packages')
       end
     end
+
+    namespace :ci_secure_files do
+      task create: :gitlab_environment do
+        Tasks::Gitlab::Backup.create_task('ci_secure_files')
+      end
+
+      task restore: :gitlab_environment do
+        Tasks::Gitlab::Backup.restore_task('ci_secure_files')
+      end
+    end
   end
   # namespace end: backup
 end

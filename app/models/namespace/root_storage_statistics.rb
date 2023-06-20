@@ -21,7 +21,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
 
   scope :for_namespace_ids, ->(namespace_ids) { where(namespace_id: namespace_ids) }
 
-  delegate :all_projects, to: :namespace
+  delegate :all_projects_except_soft_deleted, to: :namespace
 
   enum notification_level: {
     storage_remaining: 100,
@@ -60,8 +60,6 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def attributes_for_forks_statistics
-    return {} unless ::Feature.enabled?(:root_storage_statistics_calculate_forks, namespace)
-
     visibility_levels_to_storage_size_columns = {
       Gitlab::VisibilityLevel::PRIVATE => :private_forks_storage_size,
       Gitlab::VisibilityLevel::INTERNAL => :internal_forks_storage_size,
@@ -78,7 +76,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def for_forks_statistics
-    all_projects
+    all_projects_except_soft_deleted
       .joins([:statistics, :fork_network])
       .where('fork_networks.root_project_id != projects.id')
       .group('projects.visibility_level')
@@ -94,7 +92,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def from_project_statistics
-    all_projects
+    all_projects_except_soft_deleted
       .joins('INNER JOIN project_statistics ps ON ps.project_id  = projects.id')
       .select(
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',

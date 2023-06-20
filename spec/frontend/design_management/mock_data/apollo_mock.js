@@ -119,6 +119,8 @@ export const reorderedDesigns = [
     notesCount: 2,
     image: 'image-2',
     imageV432x230: 'image-2',
+    description: '',
+    descriptionHtml: '',
     currentUserTodos: {
       __typename: 'ToDo',
       nodes: [],
@@ -132,6 +134,8 @@ export const reorderedDesigns = [
     notesCount: 3,
     image: 'image-1',
     imageV432x230: 'image-1',
+    description: '',
+    descriptionHtml: '',
     currentUserTodos: {
       __typename: 'ToDo',
       nodes: [],
@@ -145,6 +149,8 @@ export const reorderedDesigns = [
     notesCount: 1,
     image: 'image-3',
     imageV432x230: 'image-3',
+    description: '',
+    descriptionHtml: '',
     currentUserTodos: {
       __typename: 'ToDo',
       nodes: [],
@@ -319,4 +325,60 @@ export const mockCreateImageNoteDiffResponse = {
       },
     },
   },
+};
+
+export const designFactory = ({
+  updateDesign = true,
+  discussions = {},
+  description = 'Test description',
+  descriptionHtml = '<p data-sourcepos="1:1-1:16" dir="auto">Test description</p>',
+} = {}) => ({
+  id: 'gid::/gitlab/Design/1',
+  iid: 1,
+  filename: 'test.jpg',
+  fullPath: 'full-design-path',
+  image: 'test.jpg',
+  description,
+  descriptionHtml,
+  updatedAt: '01-01-2019',
+  updatedBy: {
+    name: 'test',
+  },
+  issue: {
+    id: 'gid::/gitlab/Issue/1',
+    title: 'My precious issue',
+    webPath: 'full-issue-path',
+    webUrl: 'full-issue-url',
+    participants: {
+      nodes: [
+        {
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'link-to-author',
+          avatarUrl: 'link-to-avatar',
+          __typename: 'UserCore',
+        },
+      ],
+      __typename: 'UserCoreConnection',
+    },
+    userPermissions: {
+      updateDesign,
+      __typename: 'IssuePermissions',
+    },
+    __typename: 'Issue',
+  },
+  discussions,
+  __typename: 'Design',
+});
+
+export const designUpdateFactory = (options) => {
+  return {
+    data: {
+      designManagementUpdate: {
+        errors: [],
+        design: designFactory(options),
+      },
+      __typename: 'DesignManagementUpdatePayload',
+    },
+  };
 };

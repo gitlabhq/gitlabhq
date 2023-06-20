@@ -74,7 +74,7 @@ export default {
     <div class="gl-text-truncate">
       <gl-link
         v-if="canReadJob"
-        class="gl-text-gray-500!"
+        class="gl-text-blue-600!"
         :href="jobPath"
         data-testid="job-id-link"
       >
@@ -92,9 +92,12 @@ export default {
       />
 
       <div
-        class="gl-display-flex gl-align-items-center gl-lg-justify-content-start gl-justify-content-end"
+        class="gl-display-flex gl-text-gray-700 gl-align-items-center gl-lg-justify-content-start gl-justify-content-end"
       >
-        <div v-if="jobRef" class="gl-max-w-15 gl-text-truncate">
+        <div
+          v-if="jobRef"
+          class="gl-px-2 gl-rounded-base gl-bg-gray-50 gl-max-w-15 gl-text-truncate"
+        >
           <gl-icon
             v-if="createdByTag"
             name="label"
@@ -103,7 +106,7 @@ export default {
           />
           <gl-icon v-else name="fork" :size="$options.iconSize" data-testid="fork-icon" />
           <gl-link
-            class="gl-font-weight-bold gl-text-gray-500!"
+            class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
             :href="job.refPath"
             data-testid="job-ref"
             >{{ job.refName }}</gl-link
@@ -111,10 +114,15 @@ export default {
         </div>
 
         <span v-else>{{ __('none') }}</span>
-
-        <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
-
-        <gl-link :href="job.commitPath" data-testid="job-sha">{{ job.shortSha }}</gl-link>
+        <div class="gl-ml-2 gl-rounded-base gl-px-2 gl-bg-gray-50">
+          <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
+          <gl-link
+            class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
+            :href="job.commitPath"
+            data-testid="job-sha"
+            >{{ job.shortSha }}</gl-link
+          >
+        </div>
       </div>
     </div>
 

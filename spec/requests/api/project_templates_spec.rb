@@ -63,27 +63,6 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(json_response).to satisfy_one { |template| template['key'] == 'mit' }
     end
 
-    it 'returns metrics_dashboard_ymls' do
-      get api("/projects/#{public_project.id}/templates/metrics_dashboard_ymls")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(response).to match_response_schema('public_api/v4/template_list')
-      expect(json_response).to satisfy_one { |template| template['key'] == 'Default' }
-    end
-
-    context 'when metrics dashboard feature is unavailable' do
-      before do
-        stub_feature_flags(remove_monitor_metrics: true)
-      end
-
-      it 'returns 400 bad request like other unknown types' do
-        get api("/projects/#{public_project.id}/templates/metrics_dashboard_ymls")
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
     it 'returns issue templates' do
       get api("/projects/#{private_project.id}/templates/issues", developer)
 
@@ -176,26 +155,6 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       expect(json_response['name']).to eq('Android')
     end
 
-    it 'returns a specific metrics_dashboard_yml' do
-      get api("/projects/#{public_project.id}/templates/metrics_dashboard_ymls/Default")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to match_response_schema('public_api/v4/template')
-      expect(json_response['name']).to eq('Default')
-    end
-
-    context 'when metrics dashboard feature is unavailable' do
-      before do
-        stub_feature_flags(remove_monitor_metrics: true)
-      end
-
-      it 'returns 400 bad request like other unknown types' do
-        get api("/projects/#{public_project.id}/templates/metrics_dashboard_ymls/Default")
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-    end
-
     it 'returns a specific license' do
       get api("/projects/#{public_project.id}/templates/licenses/mit")
 
@@ -254,10 +213,6 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
 
     it_behaves_like 'accepts project paths with dots' do
       subject { get api("/projects/#{url_encoded_path}/templates/gitlab_ci_ymls/Android") }
-    end
-
-    it_behaves_like 'accepts project paths with dots' do
-      subject { get api("/projects/#{url_encoded_path}/templates/metrics_dashboard_ymls/Default") }
     end
 
     shared_examples 'path traversal attempt' do |template_type|

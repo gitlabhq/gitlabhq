@@ -144,6 +144,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
 
+          resource :slack, only: [:destroy, :edit, :update] do
+            get :slack_auth
+          end
+
           resource :repository, only: [:show, :update], controller: :repository do
             # TODO: Removed this "create_deploy_token" route after change was made in app/helpers/ci_variables_helper.rb:14
             # See MR comment for more detail: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27059#note_311585356

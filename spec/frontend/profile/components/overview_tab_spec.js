@@ -1,26 +1,46 @@
 import { GlLoadingIcon, GlTab, GlLink } from '@gitlab/ui';
+import AxiosMockAdapter from 'axios-mock-adapter';
 
 import projects from 'test_fixtures/api/users/projects/get.json';
+import events from 'test_fixtures/controller/users/activity.json';
 import { s__ } from '~/locale';
 import OverviewTab from '~/profile/components/overview_tab.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ActivityCalendar from '~/profile/components/activity_calendar.vue';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import axios from '~/lib/utils/axios_utils';
+import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
+import { createAlert } from '~/alert';
+import waitForPromises from 'helpers/wait_for_promises';
+
+jest.mock('~/alert');
 
 describe('OverviewTab', () => {
   let wrapper;
+  let axiosMock;
 
   const defaultPropsData = {
     personalProjects: convertObjectPropsToCamelCase(projects, { deep: true }),
     personalProjectsLoading: false,
   };
 
+  const defaultProvide = { userActivityPath: '/users/root/activity.json' };
+
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMountExtended(OverviewTab, {
       propsData: { ...defaultPropsData, ...propsData },
+      provide: defaultProvide,
     });
   };
+
+  beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
+  });
 
   it('renders `GlTab` and sets `title` prop', () => {
     createComponent();
@@ -68,6 +88,52 @@ describe('OverviewTab', () => {
           .findComponent(ProjectsList)
           .props('projects'),
       ).toMatchObject(defaultPropsData.personalProjects);
+    });
+  });
+
+  describe('when activity API request is loading', () => {
+    beforeEach(() => {
+      axiosMock.onGet(defaultProvide.userActivityPath).reply(200, events);
+
+      createComponent();
+    });
+
+    it('shows loading icon', () => {
+      expect(wrapper.findByTestId('activity-section').findComponent(GlLoadingIcon).exists()).toBe(
+        true,
+      );
+    });
+  });
+
+  describe('when activity API request is successful', () => {
+    beforeEach(() => {
+      axiosMock.onGet(defaultProvide.userActivityPath).reply(200, events);
+
+      createComponent();
+    });
+
+    it('renders `ContributionEvents` component', async () => {
+      await waitForPromises();
+
+      expect(wrapper.findComponent(ContributionEvents).props('events')).toEqual(events);
+    });
+  });
+
+  describe('when activity API request is not successful', () => {
+    beforeEach(() => {
+      axiosMock.onGet(defaultProvide.userActivityPath).networkError();
+
+      createComponent();
+    });
+
+    it('calls `createAlert`', async () => {
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: OverviewTab.i18n.eventsErrorMessage,
+        error: new Error('Network Error'),
+        captureError: true,
+      });
     });
   });
 });

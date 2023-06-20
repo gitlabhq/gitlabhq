@@ -321,12 +321,6 @@ export const GO_TO_PROJECT_JOBS = {
   defaultKeys: ['g j'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
-export const GO_TO_PROJECT_METRICS = {
-  id: 'project.goToMetrics',
-  description: __('Go to metrics'),
-  defaultKeys: ['g l'], // eslint-disable-line @gitlab/require-i18n-strings
-};
-
 export const GO_TO_PROJECT_ENVIRONMENTS = {
   id: 'project.goToEnvironments',
   description: __('Go to environments'),
@@ -506,30 +500,6 @@ const WEB_IDE_COMMIT = {
   customizable: false,
 };
 
-export const METRICS_EXPAND_PANEL = {
-  id: 'metrics.expandPanel',
-  description: __('Expand panel'),
-  defaultKeys: ['e'],
-};
-
-export const METRICS_DOWNLOAD_CSV = {
-  id: 'metrics.downloadCSV',
-  description: __('Download CSV'),
-  defaultKeys: ['d'],
-};
-
-export const METRICS_COPY_LINK_TO_CHART = {
-  id: 'metrics.copyLinkToChart',
-  description: __('Copy link to chart'),
-  defaultKeys: ['c'],
-};
-
-export const METRICS_SHOW_ALERTS = {
-  id: 'metrics.showAlerts',
-  description: __('Alerts'),
-  defaultKeys: ['a'],
-};
-
 // All keybinding groups
 const GLOBAL_SHORTCUTS_GROUP = {
   id: 'globalShortcuts',
@@ -606,7 +576,6 @@ const PROJECT_SHORTCUTS_GROUP = {
     GO_TO_PROJECT_MERGE_REQUESTS,
     GO_TO_PROJECT_PIPELINES,
     GO_TO_PROJECT_JOBS,
-    ...(gon.features?.removeMonitorMetrics ? [] : [GO_TO_PROJECT_METRICS]),
     GO_TO_PROJECT_ENVIRONMENTS,
     GO_TO_PROJECT_KUBERNETES,
     GO_TO_PROJECT_SNIPPETS,
@@ -670,17 +639,6 @@ const WEB_IDE_SHORTCUTS_GROUP = {
   keybindings: [WEB_IDE_GO_TO_FILE, WEB_IDE_COMMIT],
 };
 
-const METRICS_SHORTCUTS_GROUP = {
-  id: 'metrics',
-  name: __('Metrics'),
-  keybindings: [
-    METRICS_EXPAND_PANEL,
-    METRICS_DOWNLOAD_CSV,
-    METRICS_COPY_LINK_TO_CHART,
-    METRICS_SHOW_ALERTS,
-  ],
-};
-
 export const MISC_SHORTCUTS_GROUP = {
   id: 'misc',
   name: __('Miscellaneous'),
@@ -701,7 +659,6 @@ export const keybindingGroups = [
   MR_COMMITS_SHORTCUTS_GROUP,
   ISSUES_SHORTCUTS_GROUP,
   WEB_IDE_SHORTCUTS_GROUP,
-  ...(gon.features?.removeMonitorMetrics ? [] : [METRICS_SHORTCUTS_GROUP]),
   MISC_SHORTCUTS_GROUP,
 ];
 

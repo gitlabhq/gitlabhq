@@ -60,11 +60,11 @@ export default {
     };
   },
   computed: {
-    drawerOffsetTop() {
+    getDrawerHeaderHeight() {
       // avoid calculating this in advance because it causes layout thrashing
       // https://gitlab.com/gitlab-org/gitlab/-/issues/331172#note_1269378396
       if (!this.showDrawer) return '0';
-      return getContentWrapperHeight('.content-wrapper');
+      return getContentWrapperHeight();
     },
   },
   mounted() {
@@ -81,7 +81,7 @@ export default {
 </script>
 <template>
   <gl-drawer
-    :header-height="drawerOffsetTop"
+    :header-height="getDrawerHeaderHeight"
     :z-index="300"
     :open="showDrawer && mounted"
     @close="closeDrawer"

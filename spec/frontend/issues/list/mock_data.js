@@ -154,6 +154,22 @@ export const setSortPreferenceMutationResponseWithErrors = {
   },
 };
 
+export const setIdTypePreferenceMutationResponse = {
+  data: {
+    userPreferencesUpdate: {
+      errors: [],
+    },
+  },
+};
+
+export const setIdTypePreferenceMutationResponseWithErrors = {
+  data: {
+    userPreferencesUpdate: {
+      errors: ['oh no!'],
+    },
+  },
+};
+
 export const locationSearch = [
   '?search=find+issues',
   'author_username=homer',

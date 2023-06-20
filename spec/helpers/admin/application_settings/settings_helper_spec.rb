@@ -31,4 +31,18 @@ RSpec.describe Admin::ApplicationSettings::SettingsHelper do
       })
     end
   end
+
+  describe 'Code Suggestions for Self-Managed instances', feature_category: :code_suggestions do
+    describe '#code_suggestions_token_explanation' do
+      subject { helper.code_suggestions_token_explanation }
+
+      it { is_expected.to include 'https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#create-a-personal-access-token' }
+    end
+
+    describe '#code_suggestions_agreement' do
+      subject { helper.code_suggestions_agreement }
+
+      it { is_expected.to include 'https://about.gitlab.com/handbook/legal/testing-agreement/' }
+    end
+  end
 end

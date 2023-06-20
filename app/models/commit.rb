@@ -427,7 +427,7 @@ class Commit
   end
 
   def cherry_pick_message(user)
-    %Q{#{message}\n\n#{cherry_pick_description(user)}}
+    %{#{message}\n\n#{cherry_pick_description(user)}}
   end
 
   def revert_description(user)
@@ -439,7 +439,7 @@ class Commit
   end
 
   def revert_message(user)
-    %Q{Revert "#{title.strip}"\n\n#{revert_description(user)}}
+    %{Revert "#{title.strip}"\n\n#{revert_description(user)}}
   end
 
   def reverts_commit?(commit, user)

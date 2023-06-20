@@ -10,6 +10,8 @@ module MetricsDashboard
   extend ActiveSupport::Concern
 
   def metrics_dashboard
+    return not_found if Feature.enabled?(:remove_monitor_metrics)
+
     result = dashboard_finder.find(
       project_for_dashboard,
       current_user,

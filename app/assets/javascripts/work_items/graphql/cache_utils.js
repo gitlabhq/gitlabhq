@@ -1,5 +1,7 @@
 import { produce } from 'immer';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import { findHierarchyWidgetChildren } from '~/work_items/utils';
 
 const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
 
@@ -17,7 +19,6 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
  * @param currentNotes
  * @param subscriptionData
  */
-
 export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData) => {
   if (!subscriptionData.data?.workItemNoteCreated) {
     return currentNotes;
@@ -49,7 +50,6 @@ export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData) => 
  * @param currentNotes
  * @param subscriptionData
  */
-
 export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData) => {
   if (!subscriptionData.data?.workItemNoteDeleted) {
     return currentNotes;
@@ -84,5 +84,39 @@ export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData) => 
     }
 
     updateNotesWidgetDataInDraftData(draftData, notesWidget);
+  });
+};
+
+export const addHierarchyChild = (cache, fullPath, iid, workItem) => {
+  const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
+  const sourceData = cache.readQuery(queryArgs);
+
+  if (!sourceData) {
+    return;
+  }
+
+  cache.writeQuery({
+    ...queryArgs,
+    data: produce(sourceData, (draftState) => {
+      findHierarchyWidgetChildren(draftState.workspace.workItems.nodes[0]).push(workItem);
+    }),
+  });
+};
+
+export const removeHierarchyChild = (cache, fullPath, iid, workItem) => {
+  const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
+  const sourceData = cache.readQuery(queryArgs);
+
+  if (!sourceData) {
+    return;
+  }
+
+  cache.writeQuery({
+    ...queryArgs,
+    data: produce(sourceData, (draftState) => {
+      const children = findHierarchyWidgetChildren(draftState.workspace.workItems.nodes[0]);
+      const index = children.findIndex((child) => child.id === workItem.id);
+      children.splice(index, 1);
+    }),
   });
 };

@@ -109,7 +109,7 @@ module API
                         cache_context: -> (_) { "user:{#{current_user&.id}}" },
                         expires_in: 5.minutes,
                         current_user: current_user,
-                        include_html_description: params[:include_html_description]
+                        include_html_description: declared_params[:include_html_description]
       end
 
       desc 'Get a release by a tag name' do
@@ -135,7 +135,7 @@ module API
 
         not_found! unless release
 
-        present release, with: Entities::Release, current_user: current_user, include_html_description: params[:include_html_description]
+        present release, with: Entities::Release, current_user: current_user, include_html_description: declared_params[:include_html_description]
       end
 
       desc 'Download a project release asset file' do
@@ -162,8 +162,8 @@ module API
 
         not_found! unless release
 
-        link = release.links.find_by_filepath!("/#{params[:filepath]}")
-
+        filepath = declared_params(include_missing: false)[:filepath]
+        link = release.links.find_by_filepath!("/#{filepath}")
         not_found! unless link
 
         redirect link.url
@@ -196,7 +196,7 @@ module API
         redirect_url = api_v4_projects_releases_path(id: user_project.id, tag_name: latest_release.tag)
 
         # Include the additional suffix_path if present
-        redirect_url += "/#{params[:suffix_path]}" if params[:suffix_path].present?
+        redirect_url += "/#{declared_params[:suffix_path]}" if declared_params[:suffix_path].present?
 
         # Include any query parameter except `order_by` since we have plans to extend it in the future.
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/352945 for reference.
@@ -238,7 +238,8 @@ module API
           optional :links, type: Array do
             requires :name, type: String, desc: 'The name of the link. Link names must be unique within the release'
             requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique within the release'
-            optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link', as: :filepath
+            optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'
+            optional :filepath, type: String, desc: 'Deprecated: optional path for a direct asset link'
             optional :link_type, type: String, desc: 'The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`'
           end
         end
@@ -392,7 +393,7 @@ module API
       end
 
       def release
-        @release ||= user_project.releases.find_by_tag(params[:tag])
+        @release ||= user_project.releases.find_by_tag(declared_params[:tag])
       end
 
       def find_latest_release

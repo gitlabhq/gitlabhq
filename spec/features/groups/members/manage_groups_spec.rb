@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :subgroups do
+RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :groups_and_projects do
+  include ListboxHelpers
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers
@@ -75,8 +76,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :subgr
       click_groups_tab
 
       page.within(first_row) do
-        click_button('Developer')
-        click_button('Maintainer')
+        select_from_listbox('Maintainer', from: 'Developer')
 
         wait_for_requests
 

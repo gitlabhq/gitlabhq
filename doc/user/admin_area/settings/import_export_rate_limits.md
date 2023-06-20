@@ -12,8 +12,10 @@ You can configure the rate limits for imports and exports of projects and groups
 
 To change a rate limit:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**, then expand **Import and export rate limits**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **Import and export rate limits**.
 1. Change the value of any rate limit. The rate limits are per minute per user, not per IP address.
    Set to `0` to disable a rate limit.
 

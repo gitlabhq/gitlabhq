@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::LetsEncrypt::Client do
+RSpec.describe ::Gitlab::LetsEncrypt::Client, feature_category: :pages do
   include LetsEncryptHelpers
 
   let(:client) { described_class.new }
@@ -33,7 +33,7 @@ RSpec.describe ::Gitlab::LetsEncrypt::Client do
 
       saved_private_key = Gitlab::CurrentSettings.lets_encrypt_private_key
 
-      expect(saved_private_key).to be
+      expect(saved_private_key).to be_present
       expect(Acme::Client).to have_received(:new).with(
         hash_including(private_key: eq_pem(saved_private_key))
       )

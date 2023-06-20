@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectUpdate::PeriodicRecalculateService, feature_category: :projects do
+RSpec.describe AuthorizedProjectUpdate::PeriodicRecalculateService, feature_category: :groups_and_projects do
   subject(:service) { described_class.new }
 
   describe '#execute' do

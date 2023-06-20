@@ -19,6 +19,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], token_expires_at: 1.day.from_now) }
 
   describe 'POST /runners/reset_authentication_token', :freeze_time do
+    it_behaves_like 'runner migrations backoff' do
+      let(:request) { post api("/runners/reset_authentication_token") }
+    end
+
     context 'current token provided' do
       it "resets authentication token when token doesn't have an expiration" do
         expect do

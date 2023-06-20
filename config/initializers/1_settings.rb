@@ -562,9 +562,6 @@ Settings.cron_jobs['pages_domain_ssl_renewal_cron_worker']['job_class'] = 'Pages
 Settings.cron_jobs['issue_due_scheduler_worker'] ||= {}
 Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
 Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
-Settings.cron_jobs['metrics_dashboard_schedule_annotations_prune_worker'] ||= {}
-Settings.cron_jobs['metrics_dashboard_schedule_annotations_prune_worker']['cron'] ||= '0 1 * * *'
-Settings.cron_jobs['metrics_dashboard_schedule_annotations_prune_worker']['job_class'] = 'Metrics::Dashboard::ScheduleAnnotationsPruneWorker'
 Settings.cron_jobs['schedule_migrate_external_diffs_worker'] ||= {}
 Settings.cron_jobs['schedule_migrate_external_diffs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['schedule_migrate_external_diffs_worker']['job_class'] = 'ScheduleMigrateExternalDiffsWorker'
@@ -655,9 +652,6 @@ Settings.cron_jobs['batched_background_migration_worker_ci_database']['job_class
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances'] ||= {}
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['cron'] ||= '*/15 * * * *'
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['job_class'] = 'Issues::RescheduleStuckIssueRebalancesWorker'
-Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker'] ||= {}
-Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['cron'] ||= '0 * * * *'
-Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['job_class'] = 'Clusters::Integrations::CheckPrometheusHealthWorker'
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker'] ||= {}
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['cron'] ||= '2/17 * * * *'
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['job_class'] = 'Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker'
@@ -674,7 +668,7 @@ Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker'] ||= 
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job_class'] = 'Users::MigrateRecordsToGhostUserInBatchesWorker'
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker'] ||= {}
-Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['cron'] ||= '36 4 * * *'
+Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['cron'] ||= '36 * * * *'
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['job_class'] = 'Ci::Runners::StaleMachinesCleanupCronWorker'
 Settings.cron_jobs['packages_cleanup_delete_orphaned_dependencies_worker'] ||= {}
 Settings.cron_jobs['packages_cleanup_delete_orphaned_dependencies_worker']['cron'] ||= '*/10 * * * *'
@@ -685,6 +679,9 @@ Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['job_class'] 
 Settings.cron_jobs['global_metrics_update_worker'] ||= {}
 Settings.cron_jobs['global_metrics_update_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::GlobalMetricsUpdateWorker'
+Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker'] ||= {}
+Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['cron'] ||= '*/6 * * * *'
+Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_class'] = 'ObjectStorage::DeleteStaleDirectUploadsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -705,12 +702,12 @@ Gitlab.ee do
   Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
   Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
   Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
-  Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= {}
-  Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'
-  Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearSharedRunnersMinutesWorker'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
+  Settings.cron_jobs['database_monitor_locked_tables_cron_worker'] ||= {}
+  Settings.cron_jobs['database_monitor_locked_tables_cron_worker']['cron'] ||= '30 7 */3 * *'
+  Settings.cron_jobs['database_monitor_locked_tables_cron_worker']['job_class'] = 'Database::MonitorLockedTablesWorker'
   Settings.cron_jobs['geo_verification_cron_worker'] ||= {}
   Settings.cron_jobs['geo_verification_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_verification_cron_worker']['job_class'] ||= 'Geo::VerificationCronWorker'
@@ -789,6 +786,12 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
+  Settings.cron_jobs['tanuki_bot_recreate_records_worker'] ||= {}
+  Settings.cron_jobs['tanuki_bot_recreate_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
+  Settings.cron_jobs['tanuki_bot_recreate_records_worker']['job_class'] ||= 'Llm::TanukiBot::RecreateRecordsWorker'
+  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker'] ||= {}
+  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['cron'] ||= '0 0 * * *'
+  Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['job_class'] ||= 'Llm::TanukiBot::RemovePreviousRecordsWorker'
   Settings.cron_jobs['users_create_statistics_worker'] ||= {}
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
   Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
@@ -840,6 +843,10 @@ Gitlab.ee do
   Settings.cron_jobs['compliance_violations_consistency_worker'] ||= {}
   Settings.cron_jobs['compliance_violations_consistency_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['compliance_violations_consistency_worker']['job_class'] = 'ComplianceManagement::MergeRequests::ComplianceViolationsConsistencyWorker'
+  Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
+  Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
+  Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
+
   Gitlab.com do
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= {}
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['cron'] ||= '*/5 * * * *'

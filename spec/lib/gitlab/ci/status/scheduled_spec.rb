@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Scheduled do
+RSpec.describe Gitlab::Ci::Status::Scheduled, feature_category: :continuous_integration do
   subject do
     described_class.new(double('subject'), double('user'))
   end
 
   describe '#text' do
-    it { expect(subject.text).to eq 'delayed' }
+    it { expect(subject.text).to eq 'scheduled' }
   end
 
   describe '#label' do
-    it { expect(subject.label).to eq 'delayed' }
+    it { expect(subject.label).to eq 'scheduled' }
   end
 
   describe '#icon' do

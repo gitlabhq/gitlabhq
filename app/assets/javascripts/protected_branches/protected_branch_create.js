@@ -95,11 +95,7 @@ export default class ProtectedBranchCreate {
   }
 
   hasProtectedBranchSuccessAlert() {
-    return (
-      window.gon?.features?.branchRules &&
-      this.isLocalStorageAvailable &&
-      localStorage.getItem(IS_PROTECTED_BRANCH_CREATED)
-    );
+    return this.isLocalStorageAvailable && localStorage.getItem(IS_PROTECTED_BRANCH_CREATED);
   }
 
   createSuccessAlert() {

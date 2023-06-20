@@ -376,7 +376,7 @@ That's all of the required database changes.
   ```ruby
   def replicate_cool_widget_changes(cool_widget)
     if ::Gitlab::Geo.primary?
-      cool_widget.replicator.handle_after_update if cool_widget
+      cool_widget.geo_handle_after_update if cool_widget
     end
   end
   ```
@@ -386,7 +386,7 @@ That's all of the required database changes.
 - [ ] Make sure the repository removal is also handled. You may need to add something like the following in the destroy service of the repository:
 
   ```ruby
-  cool_widget.replicator.handle_after_destroy if cool_widget.repository
+  cool_widget.replicator.geo_handle_after_destroy if cool_widget.repository
   ```
 
 - [ ] Make sure a Geo secondary site can request and download Cool Widgets on the Geo primary site. You may need to make some changes to `Gitlab::GitAccessCoolWidget`. For example, see [this change for Group-level Wikis](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54914/diffs?commit_id=0f2b36f66697b4addbc69bd377ee2818f648dd33).
@@ -511,13 +511,13 @@ That's all of the required database changes.
   FactoryBot.modify do
     factory :cool_widget do
       trait :verification_succeeded do
-          with_file
+          repository
           verification_checksum { 'abc' }
           verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
       end
 
       trait :verification_failed do
-          with_file
+          repository
           verification_failure { 'Could not calculate the checksum' }
           verification_state { CoolWidget.verification_state_value(:verification_failed) }
       end
@@ -542,7 +542,6 @@ That's all of the required database changes.
 
       belongs_to :cool_widget, inverse_of: :cool_widget_state
 
-      validates :verification_failure, length: { maximum: 255 }
       validates :verification_state, :cool_widget, presence: true
     end
   end
@@ -568,7 +567,6 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Add `[:geo_cool_widget_state, any]` to `skipped` in `spec/models/factories_spec.rb`
 
 #### Step 2. Implement metrics gathering
 
@@ -588,7 +586,7 @@ Metrics are gathered by `Geo::MetricsUpdateWorker`, persisted in `GeoNodeStatus`
   - `cool_widgets_synced_in_percentage`
   - `cool_widgets_verified_in_percentage`
 - [ ] Add the same fields to `GET /geo_nodes/status` example response in
-  `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json`.
+  `ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json` and `ee/spec/fixtures/api/schemas/public_api/v4/geo_site_status.json`.
 - [ ] Add the following fields to the `Sidekiq metrics` table in `doc/administration/monitoring/prometheus/gitlab_metrics.md`:
   ```markdown
   | `geo_cool_widgets` | Gauge | XX.Y | Number of Cool Widgets on primary | `url` |
@@ -723,6 +721,40 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
     registry_factory: :geo_cool_widget_registry,
     registry_foreign_key_field_name: 'coolWidgetId'
   }
+  ```
+
+To allow the new replicable to resync and reverify via GraphQL:
+
+- [ ] Add the `CoolWidgetRegistryType` to the `GEO_REGISTRY_TYPE` constant in `ee/app/graphql/types/geo/registrable_type.rb`:
+
+  ```ruby
+    GEO_REGISTRY_TYPES = {
+      ::Geo::CoolWidgetRegistry => Types::Geo::CoolWidgetRegistryType
+    }
+  ```
+
+- [ ] Include the `CoolWidgetRegistry` in the `let(:registry_classes)` variable of `ee/spec/graphql/types/geo/registry_class_enum_spec.rb`:
+
+  ```ruby
+    let(:registry_classes) do
+      %w[
+       COOL_WIDGET_REGISTRY
+      ]
+    end
+  ```
+
+- [ ] Include the new registry in the Rspec parameterized table of `ee/spec/support/shared_contexts/graphql/geo/registries_shared_context.rb`:
+
+  ```ruby
+     # frozen_string_literal: true
+
+     RSpec.shared_context 'with geo registries shared context' do
+       using RSpec::Parameterized::TableSyntax
+
+       where(:registry_class, :registry_type, :registry_factory) do
+         Geo::CoolWidgetRegistry | Types::Geo::CoolWidgetRegistryType | :geo_cool_widget_registry
+       end
+     end
   ```
 
 - [ ] Update the GraphQL reference documentation:

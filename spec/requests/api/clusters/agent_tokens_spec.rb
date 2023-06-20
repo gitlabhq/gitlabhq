@@ -162,6 +162,28 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    context 'when the active agent tokens limit is reached' do
+      before do
+        # create an additional agent token to make it 2
+        create(:cluster_agent_token, agent: agent)
+      end
+
+      it 'returns a bad request (400) error' do
+        params = {
+          name: 'test-token',
+          description: 'Test description'
+        }
+        post(api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens", user), params: params)
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:bad_request)
+
+          error_message = json_response['message']
+          expect(error_message).to eq('400 Bad request - An agent can have only two active tokens at a time')
+        end
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/cluster_agents/:agent_id/tokens/:token_id' do

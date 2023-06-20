@@ -8,7 +8,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
-  feature_category :projects
+  feature_category :groups_and_projects
   urgency :low
 
   def index

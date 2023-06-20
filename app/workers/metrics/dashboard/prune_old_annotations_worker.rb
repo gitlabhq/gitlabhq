@@ -16,12 +16,7 @@ module Metrics
 
       idempotent! # in the scope of 24 hours
 
-      def perform
-        stale_annotations = ::Metrics::Dashboard::Annotation.ending_before(DEFAULT_CUT_OFF_PERIOD.ago.beginning_of_day)
-        stale_annotations.delete_with_limit(DELETE_LIMIT)
-
-        self.class.perform_async if stale_annotations.exists?
-      end
+      def perform; end
     end
   end
 end

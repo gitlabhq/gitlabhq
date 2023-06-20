@@ -34,6 +34,7 @@ class SearchController < ApplicationController
   before_action only: :show do
     update_scope_for_code_search
   end
+
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
   layout 'search'
@@ -111,11 +112,12 @@ class SearchController < ApplicationController
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
     @filter = params[:filter]
+    @scope = params[:scope]
 
     # Cache the response on the frontend
     expires_in 1.minute
 
-    render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter))
+    render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter, scope: @scope))
   end
 
   def opensearch

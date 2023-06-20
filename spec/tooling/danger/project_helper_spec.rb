@@ -112,6 +112,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
       'scripts/glfm/bar.rb'                                   | [:backend]
       'scripts/glfm/bar.js'                                   | [:frontend]
+      'scripts/remote_development/run-smoke-test-suite.sh'    | [:remote_development]
       'scripts/lib/glfm/bar.rb'                               | [:backend]
       'scripts/lib/glfm/bar.js'                               | [:frontend]
       'scripts/bar.rb'                                        | [:backend, :tooling]

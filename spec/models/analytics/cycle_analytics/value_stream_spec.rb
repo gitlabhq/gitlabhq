@@ -27,6 +27,20 @@ RSpec.describe Analytics::CycleAnalytics::ValueStream, type: :model, feature_cat
     end
   end
 
+  describe 'scopes' do
+    let_it_be(:group) { create(:group) }
+
+    describe '.order_by_name_asc' do
+      let_it_be(:stream1) { create(:cycle_analytics_value_stream, namespace: group, name: 'Bbb') }
+      let_it_be(:stream2) { create(:cycle_analytics_value_stream, namespace: group, name: 'aaa') }
+      let_it_be(:stream3) { create(:cycle_analytics_value_stream, namespace: group, name: 'Aaa') }
+
+      it 'returns in case-insensitive alphabetical order' do
+        expect(described_class.order_by_name_asc).to eq [stream2, stream3, stream1]
+      end
+    end
+  end
+
   describe 'ordering of stages' do
     let(:group) { create(:group) }
     let(:value_stream) do

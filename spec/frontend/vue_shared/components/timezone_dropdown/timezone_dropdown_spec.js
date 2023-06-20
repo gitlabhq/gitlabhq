@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
@@ -9,7 +9,8 @@ describe('Deploy freeze timezone dropdown', () => {
   let wrapper;
   let store;
 
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findSearchBox = () => wrapper.findByTestId('listbox-search-input');
 
   const createComponent = async (searchTerm, selectedTimezone) => {
     wrapper = shallowMountExtended(TimezoneDropdown, {
@@ -19,15 +20,18 @@ describe('Deploy freeze timezone dropdown', () => {
         timezoneData: timezoneDataFixture,
         name: 'user[timezone]',
       },
+      stubs: {
+        GlCollapsibleListbox,
+      },
     });
 
     findSearchBox().vm.$emit('input', searchTerm);
     await nextTick();
   };
 
-  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findDropdownItemByIndex = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
-  const findEmptyResultsItem = () => wrapper.findByTestId('noMatchingResults');
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findDropdownItemByIndex = (index) => findAllDropdownItems().at(index);
+  const findEmptyResultsItem = () => wrapper.findByTestId('listbox-no-results-text');
   const findHiddenInput = () => wrapper.find('input');
 
   describe('No time zones found', () => {
@@ -36,7 +40,8 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders empty results message', () => {
-      expect(findDropdownItemByIndex(0).text()).toBe('No matching results');
+      expect(findEmptyResultsItem().exists()).toBe(true);
+      expect(findEmptyResultsItem().text()).toBe('No matching results');
     });
   });
 
@@ -69,11 +74,13 @@ describe('Deploy freeze timezone dropdown', () => {
       const selectedTz = findTzByName('Alaska');
 
       it('should emit input if a time zone is clicked', () => {
-        findDropdownItemByIndex(0).vm.$emit('click');
+        const payload = formatTimezone(selectedTz);
+
+        findDropdown().vm.$emit('select', payload);
         expect(wrapper.emitted('input')).toEqual([
           [
             {
-              formattedTimezone: formatTimezone(selectedTz),
+              formattedTimezone: payload,
               identifier: selectedTz.identifier,
             },
           ],
@@ -88,7 +95,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders empty selections', () => {
-      expect(wrapper.findComponent(GlDropdown).props().text).toBe('Select timezone');
+      expect(findDropdown().props('toggleText')).toBe('Select timezone');
     });
 
     it('preserves initial value in the associated input', () => {
@@ -102,14 +109,14 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders selected time zone as dropdown label', () => {
-      expect(wrapper.findComponent(GlDropdown).props().text).toBe('[UTC+2] Berlin');
+      expect(findDropdown().props('toggleText')).toBe('[UTC+2] Berlin');
     });
 
     it('adds a checkmark to the selected option', async () => {
-      const selectedTZOption = findAllDropdownItems().at(0);
-      selectedTZOption.vm.$emit('click');
+      findDropdown().vm.$emit('select', formatTimezone(findTzByName('Abu Dhabi')));
       await nextTick();
-      expect(selectedTZOption.attributes('ischecked')).toBe('true');
+
+      expect(findDropdownItemByIndex(0).props('isSelected')).toBe(true);
     });
   });
 });

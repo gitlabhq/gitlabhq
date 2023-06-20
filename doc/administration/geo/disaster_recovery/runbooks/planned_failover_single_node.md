@@ -6,18 +6,18 @@ type: howto
 ---
 
 WARNING:
-This runbook is an [Experiment](../../../../policy/alpha-beta-support.md#experiment). For complete, production-ready documentation, see the
+This runbook is an [Experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
 [disaster recovery documentation](../index.md).
 
 # Disaster Recovery (Geo) promotion runbooks **(PREMIUM SELF)**
 
 ## Geo planned failover for a single-node configuration
 
-| Component   | Configuration   |
-|-------------|-----------------|
-| PostgreSQL  | Omnibus-managed |
-| Geo site    | Single-node     |
-| Secondaries | One             |
+| Component   | Configuration                |
+|:------------|:-----------------------------|
+| PostgreSQL  | Managed by the Linux package |
+| Geo site    | Single-node                  |
+| Secondaries | One                          |
 
 This runbook guides you through a planned failover of a single-node Geo site
 with one secondary. The following general architecture is assumed:
@@ -118,7 +118,8 @@ follow these steps to avoid unnecessary data loss:
       connection.
 
    1. On the **primary** site:
-      1. On the top bar, select **Main menu > Admin**.
+      1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+      1. Select **Admin Area**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dashboard, select **Cron**.
       1. Select `Disable All` to disable any non-Geo periodic background jobs.
@@ -136,7 +137,8 @@ follow these steps to avoid unnecessary data loss:
       [data not managed by Geo](../../replication/datatypes.md#limitations-on-replicationverification),
       trigger the final replication process now.
    1. On the **primary** site:
-      1. On the top bar, select **Main menu > Admin**.
+      1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+      1. Select **Admin Area**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
          those with `geo` in the name to drop to 0.
@@ -151,7 +153,8 @@ follow these steps to avoid unnecessary data loss:
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** site:
-      1. On the top bar, select **Main menu > Admin**.
+      1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+      1. Select **Admin Area**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
          queues to drop to 0 queued and 0 running jobs.
@@ -190,7 +193,7 @@ follow these steps to avoid unnecessary data loss:
 
      NOTE:
      (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
-     started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
+     started if the machine reboots isn't available (see [issue 3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
      It may be safest to uninstall the GitLab package completely with `sudo yum remove gitlab-ee`.
 
      NOTE:

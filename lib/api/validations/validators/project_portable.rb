@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class ProjectPortable < Grape::Validations::Base
+      class ProjectPortable < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
           portable = params[attr_name]
 

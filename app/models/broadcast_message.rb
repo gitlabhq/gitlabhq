@@ -22,12 +22,15 @@ class BroadcastMessage < MainClusterwide::ApplicationRecord
   validates :ends_at,   presence: true
   validates :broadcast_type, presence: true
   validates :target_access_levels, inclusion: { in: ALLOWED_TARGET_ACCESS_LEVELS }
+  validates :show_in_cli, allow_nil: false, inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :color, allow_blank: true, color: true
   validates :font,  allow_blank: true, color: true
 
   attribute :color, default: '#E75E40'
   attribute :font, default: '#FFFFFF'
+
+  scope :current_and_future_messages, -> { where('ends_at > :now', now: Time.current).order_id_asc }
 
   CACHE_KEY = 'broadcast_message_current_json'
   BANNER_CACHE_KEY = 'broadcast_message_current_banner_json'
@@ -60,6 +63,10 @@ class BroadcastMessage < MainClusterwide::ApplicationRecord
       end
     end
 
+    def current_show_in_cli_banner_messages
+      current_banner_messages.select(&:show_in_cli?)
+    end
+
     def current_notification_messages(current_path: nil, user_access_level: nil)
       fetch_messages NOTIFICATION_CACHE_KEY, current_path, user_access_level do
         current_and_future_messages.notification
@@ -72,13 +79,9 @@ class BroadcastMessage < MainClusterwide::ApplicationRecord
       end
     end
 
-    def current_and_future_messages
-      where('ends_at > :now', now: Time.current).order_id_asc
-    end
-
     def cache
       ::Gitlab::SafeRequestStore.fetch(:broadcast_message_json_cache) do
-        Gitlab::JsonCache.new
+        Gitlab::Cache::JsonCaches::JsonKeyed.new
       end
     end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace, feature_category: :subgroups do
+RSpec.describe Namespace, feature_category: :groups_and_projects do
   include ProjectForksHelper
   include ReloadHelpers
 
@@ -1066,6 +1066,18 @@ RSpec.describe Namespace, feature_category: :subgroups do
       expect(described_class.search('PARENT-PATH/NEW-PATH', include_parents: true)).to eq([second_group])
     end
 
+    it 'defaults use_minimum_char_limit to true' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true).once
+
+      described_class.search('my namespace')
+    end
+
+    it 'passes use_minimum_char_limit if it is set' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false).once
+
+      described_class.search('my namespace', use_minimum_char_limit: false)
+    end
+
     context 'with project namespaces' do
       let_it_be(:project) { create(:project, namespace: parent_group, path: 'some-new-path') }
       let_it_be(:project_namespace) { project.project_namespace }
@@ -1091,32 +1103,39 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
     let(:project1) do
       create(:project,
-             namespace: namespace,
-             statistics: build(:project_statistics,
-                               namespace: namespace,
-                               repository_size: 101,
-                               wiki_size: 505,
-                               lfs_objects_size: 202,
-                               build_artifacts_size: 303,
-                               pipeline_artifacts_size: 707,
-                               packages_size: 404,
-                               snippets_size: 605,
-                               uploads_size: 808))
+        namespace: namespace,
+        statistics: build(
+          :project_statistics,
+          namespace: namespace,
+          repository_size: 101,
+          wiki_size: 505,
+          lfs_objects_size: 202,
+          build_artifacts_size: 303,
+          pipeline_artifacts_size: 707,
+          packages_size: 404,
+          snippets_size: 605,
+          uploads_size: 808
+        )
+      )
     end
 
     let(:project2) do
-      create(:project,
-             namespace: namespace,
-             statistics: build(:project_statistics,
-                               namespace: namespace,
-                               repository_size: 10,
-                               wiki_size: 50,
-                               lfs_objects_size: 20,
-                               build_artifacts_size: 30,
-                               pipeline_artifacts_size: 70,
-                               packages_size: 40,
-                               snippets_size: 60,
-                               uploads_size: 80))
+      create(
+        :project,
+        namespace: namespace,
+        statistics: build(
+          :project_statistics,
+          namespace: namespace,
+          repository_size: 10,
+          wiki_size: 50,
+          lfs_objects_size: 20,
+          build_artifacts_size: 30,
+          pipeline_artifacts_size: 70,
+          packages_size: 40,
+          snippets_size: 60,
+          uploads_size: 80
+        )
+      )
     end
 
     it "sums all project storage counters in the namespace" do
@@ -1179,8 +1198,9 @@ RSpec.describe Namespace, feature_category: :subgroups do
         end
 
         it 'raises an error about not movable project' do
-          expect { namespace.move_dir }.to raise_error(Gitlab::UpdatePathError,
-                                                       /Namespace .* cannot be moved/)
+          expect { namespace.move_dir }.to raise_error(
+            Gitlab::UpdatePathError, /Namespace .* cannot be moved/
+          )
         end
       end
     end
@@ -1732,6 +1752,52 @@ RSpec.describe Namespace, feature_category: :subgroups do
     end
   end
 
+  describe '#all_projects_except_soft_deleted' do
+    context 'when namespace is a group' do
+      let_it_be(:namespace) { create(:group) }
+      let_it_be(:child) { create(:group, parent: namespace) }
+      let_it_be(:project1) { create(:project_empty_repo, namespace: namespace) }
+      let_it_be(:project2) { create(:project_empty_repo, namespace: child) }
+      let_it_be(:other_project) { create(:project_empty_repo) }
+
+      before do
+        reload_models(namespace, child)
+      end
+
+      it { expect(namespace.all_projects_except_soft_deleted.to_a).to match_array([project2, project1]) }
+      it { expect(child.all_projects_except_soft_deleted.to_a).to match_array([project2]) }
+
+      context 'with soft deleted projects' do
+        let_it_be(:delayed_deletion_project) { create(:project, namespace: child, marked_for_deletion_at: Date.current) }
+
+        it 'skips delayed deletion project' do
+          expect(namespace.all_projects_except_soft_deleted.to_a).to match_array([project2, project1])
+        end
+      end
+    end
+
+    context 'when namespace is a user namespace' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:user_namespace) { create(:namespace, owner: user) }
+      let_it_be(:project) { create(:project, namespace: user_namespace) }
+      let_it_be(:other_project) { create(:project_empty_repo) }
+
+      before do
+        reload_models(user_namespace)
+      end
+
+      it { expect(user_namespace.all_projects_except_soft_deleted.to_a).to match_array([project]) }
+
+      context 'with soft deleted projects' do
+        let_it_be(:delayed_deletion_project) { create(:project, namespace: user_namespace, marked_for_deletion_at: Date.current) }
+
+        it 'skips delayed deletion project' do
+          expect(user_namespace.all_projects_except_soft_deleted.to_a).to match_array([project])
+        end
+      end
+    end
+  end
+
   describe '#all_projects' do
     context 'with use_traversal_ids feature flag enabled' do
       before do
@@ -1799,16 +1865,12 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
         receive(:bulk_perform_in)
-          .with(1.hour,
-                [[group_one_user.id]],
-                batch_delay: 30.seconds, batch_size: 100)
+          .with(1.hour, [[group_one_user.id]], batch_delay: 30.seconds, batch_size: 100)
       )
 
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
         receive(:bulk_perform_in)
-          .with(1.hour,
-                [[group_two_user.id]],
-                batch_delay: 30.seconds, batch_size: 100)
+          .with(1.hour, [[group_two_user.id]], batch_delay: 30.seconds, batch_size: 100)
       )
 
       execute_update
@@ -1827,12 +1889,10 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
       it 'updates the authorizations in a non-blocking manner' do
         expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async)
-            .with([[group_one_user.id]])).once
+          receive(:bulk_perform_async).with([[group_one_user.id]])).once
 
         expect(AuthorizedProjectsWorker).to(
-          receive(:bulk_perform_async)
-            .with([[group_two_user.id]])).once
+          receive(:bulk_perform_async).with([[group_two_user.id]])).once
 
         execute_update
       end

@@ -24,7 +24,7 @@ module Gitlab
       def uid(object)
         # We want this to only match either username or email depending on the flag state.
         # There should be no fall-through.
-        if Feature.enabled?(:bitbucket_server_user_mapping_by_username)
+        if Feature.enabled?(:bitbucket_server_user_mapping_by_username, type: :ops)
           find_user_id(by: :username, value: object.is_a?(Hash) ? object[:author_username] : object.author_username)
         else
           find_user_id(by: :email, value: object.is_a?(Hash) ? object[:author_email] : object.author_email)

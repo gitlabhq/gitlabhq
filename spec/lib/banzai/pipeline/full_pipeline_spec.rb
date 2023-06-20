@@ -9,6 +9,10 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     let(:project) { create(:project, :public) }
     let(:issue)   { create(:issue, project: project) }
 
+    before do
+      stub_commonmark_sourcepos_disabled
+    end
+
     it 'handles markdown inside a reference' do
       markdown = "[some `code` inside](#{issue.to_reference})"
       result = described_class.call(markdown, project: project)
@@ -49,13 +53,13 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
         <section data-footnotes class="footnotes">
         <ol>
         <li id="fn-1-#{identifier}">
-        <p>one <a href="#fnref-1-#{identifier}" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+        <p>one <a href="#fnref-1-#{identifier}" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
         </li>
         <li id="fn-%F0%9F%98%84second-#{identifier}">
-        <p>two <a href="#fnref-%F0%9F%98%84second-#{identifier}" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+        <p>two <a href="#fnref-%F0%9F%98%84second-#{identifier}" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
         </li>
         <li id="fn-_twenty-#{identifier}">
-        <p>twenty <a href="#fnref-_twenty-#{identifier}" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+        <p>twenty <a href="#fnref-_twenty-#{identifier}" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
         </li>
         </ol>
         </section>
@@ -135,6 +139,8 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
       end
 
       it 'does not insert a table of contents' do
+        stub_commonmark_sourcepos_disabled
+
         output = described_class.to_html(invalid_markdown, project: project)
 
         expect(output).to include("test #{tag_html}")
@@ -163,6 +169,8 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     end
 
     it 'converts user reference with escaped underscore because of italics' do
+      stub_commonmark_sourcepos_disabled
+
       markdown = '_@test\__'
       output = described_class.to_html(markdown, project: project)
 

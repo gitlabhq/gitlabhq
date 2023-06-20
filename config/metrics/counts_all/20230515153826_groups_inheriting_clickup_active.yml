@@ -1,0 +1,21 @@
+---
+key_path: counts.groups_inheriting_clickup_active
+description: Count of active groups inheriting integrations for ClickUp
+product_section: dev
+product_stage: manage
+product_group: integrations
+value_type: number
+status: active
+milestone: "16.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120732
+time_frame: all
+data_source: database
+data_category: optional
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

@@ -12,11 +12,10 @@ module Packages
       belongs_to :project
 
       validates :project, presence: true
-      validates :keep_n_duplicated_package_files,
-                inclusion: {
-                  in: KEEP_N_DUPLICATED_PACKAGE_FILES_VALUES,
-                  message: 'is invalid'
-                }
+      validates :keep_n_duplicated_package_files, inclusion: {
+        in: KEEP_N_DUPLICATED_PACKAGE_FILES_VALUES,
+        message: 'is invalid'
+      }
 
       # used by Schedulable
       def self.active

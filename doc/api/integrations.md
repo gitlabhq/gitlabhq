@@ -39,9 +39,11 @@ Example response:
     "commit_events": true,
     "push_events": true,
     "issues_events": true,
+    "alert_events": true,
     "confidential_issues_events": true,
     "merge_requests_events": true,
     "tag_push_events": false,
+    "deployment_events": false,
     "note_events": true,
     "confidential_note_events": true,
     "pipeline_events": true,
@@ -59,9 +61,11 @@ Example response:
     "commit_events": true,
     "push_events": true,
     "issues_events": true,
+    "alert_events": true,
     "confidential_issues_events": true,
     "merge_requests_events": true,
     "tag_push_events": true,
+    "deployment_events": false,
     "note_events": true,
     "confidential_note_events": true,
     "pipeline_events": true,
@@ -93,6 +97,7 @@ Parameters:
 | `app_store_issuer_id` | string | true | The Apple App Store Connect Issuer ID. |
 | `app_store_key_id` | string | true | The Apple App Store Connect Key ID. |
 | `app_store_private_key` | string | true | The Apple App Store Connect Private Key. |
+| `app_store_protected_refs` | boolean | false | Set variables only on protected branches and tags. Defaults to `true` (enabled). |
 
 ### Disable Apple App Store integration
 
@@ -334,6 +339,43 @@ Get Campfire integration settings for a project.
 GET /projects/:id/integrations/campfire
 ```
 
+## ClickUp
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120732) in GitLab 16.1.
+
+ClickUp issue tracker.
+
+### Create or edit ClickUp integration
+
+Set up ClickUp integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/clickup
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `issues_url` | string | true | Issue URL |
+| `project_url` | string | true | Project URL |
+
+### Disable ClickUp integration
+
+Disable the ClickUp integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/clickup
+```
+
+### Get ClickUp integration settings
+
+Get ClickUp integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/clickup
+```
+
 ## Datadog
 
 Datadog system monitoring.
@@ -372,6 +414,50 @@ Get Datadog integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/datadog
+```
+
+## Telegram
+
+Telegram chat tool.
+
+### Create/Edit Telegram integration
+
+Set the Telegram integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/telegram
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token`   | string | true | The Telegram bot token. For example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`. |
+| `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`) |
+| `push_events` | boolean | true | Enable notifications for push events |
+| `issues_events` | boolean | true | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | true | Enable notifications for merge request events |
+| `tag_push_events` | boolean | true | Enable notifications for tag push events |
+| `note_events` | boolean | true | Enable notifications for note events |
+| `confidential_note_events` | boolean | true | Enable notifications for confidential note events |
+| `pipeline_events` | boolean | true | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | true | Enable notifications for wiki page events |
+
+### Disable Telegram integration
+
+Disable the Telegram integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/telegram
+```
+
+### Get Telegram integration settings
+
+Get Telegram integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/telegram
 ```
 
 ## Unify Circuit
@@ -562,6 +648,17 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | Discord webhook. For example, `https://discord.com/api/webhooks/…` |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is "default" |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
 ### Disable Discord integration
 
@@ -1300,6 +1397,8 @@ Parameters:
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `notify_only_default_branch` | boolean | false | DEPRECATED: This parameter has been replaced with `branches_to_be_notified` |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is "default" |
+| `alert_channel` | string | false | The name of the channel to receive alert events notifications |
+| `alert_events` | boolean | false | Enable notifications for alert events |
 | `commit_events` | boolean | false | Enable notifications for commit events |
 | `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
@@ -1307,6 +1406,8 @@ Parameters:
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events |
 | `deployment_channel` | string | false | The name of the channel to receive deployment events notifications |
 | `deployment_events` | boolean | false | Enable notifications for deployment events |
+| `incident_channel` | string | false | The name of the channel to receive incidents events notifications |
+| `incidents_events` | boolean | false | Enable notifications for incident events |
 | `issue_channel` | string | false | The name of the channel to receive issues events notifications |
 | `issues_events` | boolean | false | Enable notifications for issue events |
 | `job_events` | boolean | false | Enable notifications for job events |

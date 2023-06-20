@@ -2,9 +2,11 @@
 
 module Search
   class GlobalService
+    include Search::Filter
     include Gitlab::Utils::StrongMemoize
 
-    ALLOWED_SCOPES = %w(issues merge_requests milestones users).freeze
+    DEFAULT_SCOPE = 'projects'
+    ALLOWED_SCOPES = %w(projects issues merge_requests milestones users).freeze
 
     attr_accessor :current_user, :params
 
@@ -19,12 +21,12 @@ module Search
                                 projects,
                                 order_by: params[:order_by],
                                 sort: params[:sort],
-                                filters: { state: params[:state], confidential: params[:confidential] })
+                                filters: filters)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def projects
-      @projects ||= ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute.preload(:topics, :project_topics)
+      @projects ||= ProjectsFinder.new(current_user: current_user).execute.preload(:topics, :project_topics)
     end
 
     def allowed_scopes
@@ -33,7 +35,7 @@ module Search
 
     def scope
       strong_memoize(:scope) do
-        allowed_scopes.include?(params[:scope]) ? params[:scope] : 'projects'
+        allowed_scopes.include?(params[:scope]) ? params[:scope] : DEFAULT_SCOPE
       end
     end
   end

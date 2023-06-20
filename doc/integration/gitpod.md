@@ -35,7 +35,7 @@ For more information about Gitpod, see the Gitpod [features](https://www.gitpod.
 
 With the Gitpod integration enabled for your GitLab instance, to enable it for yourself:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Under **Preferences**, locate the **Integrations** section.
 1. Select the **Enable Gitpod integration** checkbox and select **Save changes**.
@@ -45,7 +45,8 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 For self-managed GitLab instances, a GitLab administrator must:
 
 1. Enable the Gitpod integration in GitLab:
-   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
    1. On the left sidebar, select **Settings > General**.
    1. Expand the **Gitpod** configuration section.
    1. Select the **Enable Gitpod integration** checkbox.
@@ -59,16 +60,12 @@ GitLab users can then [enable the Gitpod integration for themselves](#enable-git
 
 You can launch Gitpod directly from GitLab in one of these ways:
 
-- *From your project's page:*
-  1. Go to your project, then go to the page you want to edit.
-  1. Select the caret (**{chevron-lg-down}**) next to **Web IDE**, and select **Gitpod**
-     from the list:
+- **From a project repository:**
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. In the upper right, select **Edit > Gitpod**.
 
-     ![Gitpod Button on Project Page](img/gitpod_button_project_page_v13_4.png)
-
-  1. Select **Open in Gitpod**.
-- *From a merge request:*
+- **From a merge request:**
   1. Go to your merge request.
-  1. In the upper-right corner, select **Code**, then select **Open in Gitpod**.
+  1. In the upper-right corner, select **Code > Open in Gitpod**.
 
 Gitpod builds your development environment for your branch.

@@ -12,10 +12,12 @@ module Profile
     expose(:action, if: ->(event) { include_private_event?(event) }) { |event| event_action(event) }
 
     expose :ref, if: ->(event) { event.visible_to_user?(current_user) && event.push_action? } do
-      expose(:type) { |event| event.ref_type } # rubocop:disable Style/SymbolProc
-      expose(:count) { |event| event.ref_count } # rubocop:disable Style/SymbolProc
-      expose(:name) { |event| event.ref_name } # rubocop:disable Style/SymbolProc
+      expose(:ref_type, as: :type)
+      expose(:ref_count, as: :count)
+      expose(:ref_name, as: :name)
       expose(:path) { |event| ref_path(event) }
+      expose(:new_ref?, as: :is_new)
+      expose(:rm_ref?, as: :is_removed)
     end
 
     expose :commit, if: ->(event) { event.visible_to_user?(current_user) && event.push_action? } do
@@ -34,27 +36,35 @@ module Profile
       end
     end
 
-    expose :author, if: ->(event) { include_private_event?(event) } do
-      expose(:id) { |event| event.author.id }
-      expose(:name) { |event| event.author.name }
-      expose(:path) { |event| event.author.username }
-    end
+    expose :author, if: ->(event) { include_private_event?(event) }, using: ::API::Entities::UserBasic
 
-    expose :target, if: ->(event) { event.visible_to_user?(current_user) } do
-      expose :target_type
-
-      expose(:title) { |event| event.target_title } # rubocop:disable Style/SymbolProc
-      expose :target_url, if: ->(event) { event.target } do |event|
-        Gitlab::UrlBuilder.build(event.target, only_path: true)
-      end
-      expose :reference_link_text, if: ->(event) { event.target&.respond_to?(:reference_link_text) } do |event|
-        event.target.reference_link_text
-      end
-      expose :first_line_in_markdown, if: ->(event) { event.note? && event.target && event.project } do |event|
+    expose :noteable, if: ->(event) { event.visible_to_user?(current_user) && event.note? } do
+      expose(:type) { |event| event.target.noteable_type }
+      expose(:reference_link_text) { |event| event.target.noteable.reference_link_text }
+      expose(:web_url) { |event| Gitlab::UrlBuilder.build(event.target.noteable) }
+      expose(:first_line_in_markdown) do |event|
         first_line_in_markdown(event.target, :note, 150, project: event.project)
       end
-      expose :attachment, if: ->(event) { event.note? && event.target&.attachment } do
-        expose(:url) { |event| event.target.attachment.url }
+    end
+
+    expose :target, if: ->(event) { event.target && event.visible_to_user?(current_user) } do
+      expose(:id) { |event| event.target.id }
+      expose(:target_type, as: :type)
+      expose(:target_title, as: :title)
+      expose(:issue_type, if: ->(event) { event.work_item? }) do |event|
+        event.target.issue_type
+      end
+
+      expose :reference_link_text, if: ->(event) { event.target.respond_to?(:reference_link_text) } do |event|
+        event.target.reference_link_text
+      end
+
+      expose :web_url do |event|
+        if event.wiki_page?
+          event_wiki_page_target_url(event)
+        else
+          Gitlab::UrlBuilder.build(event.target)
+        end
       end
     end
 
@@ -62,6 +72,8 @@ module Profile
       expose(:type) { |event| resource_parent_type(event) }
       expose(:full_name) { |event| event.resource_parent&.full_name }
       expose(:full_path) { |event| event.resource_parent&.full_path }
+      expose(:web_url) { |event| event.resource_parent&.web_url }
+      expose(:avatar_url) { |event| event.resource_parent&.avatar_url }
     end
 
     private

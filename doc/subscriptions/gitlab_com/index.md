@@ -16,7 +16,7 @@ You don't need to install anything to use GitLab SaaS, you only need to
 
 The subscription determines which features are available for your private projects. Organizations with public open source projects can actively apply to our [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/join/).
 
-Qualifying open source projects also get 50,000 CI/CD minutes and free access to the **Ultimate** tier
+Qualifying open source projects also get 50,000 units of compute and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
 ## Obtain a GitLab SaaS subscription
@@ -33,9 +33,9 @@ To subscribe to GitLab SaaS:
    and decide which tier you want.
 1. Create a user account for yourself by using the
    [sign up page](https://gitlab.com/users/sign_up).
-1. Create a [group](../../user/group/manage.md#create-a-group). Your subscription tier applies to the top-level group, its subgroups, and projects.
+1. Create a [group](../../user/group/index.md#create-a-group). Your subscription tier applies to the top-level group, its subgroups, and projects.
 1. Create additional users and
-   [add them to the group](../../user/group/manage.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
+   [add them to the group](../../user/group/index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
    the features of your subscription tier, and they consume a seat in your subscription.
 1. On the left sidebar, select **Settings > Billing** and choose a tier.
 1. Fill out the form to complete your purchase.
@@ -48,8 +48,8 @@ Prerequisite:
 
 To see the status of your GitLab SaaS subscription:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Billing**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Billing**.
 
 The following information is displayed:
 
@@ -99,8 +99,8 @@ In this case, they would see only the features available to that subscription.
 
 To view a list of seats being used:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Usage Quotas**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Usage Quotas**.
 1. On the **Seats** tab, view usage information.
 
 The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
@@ -108,8 +108,8 @@ The counts for **Max seats used** and **Seats owed** are updated once per day.
 
 To view your subscription information and a summary of seat counts:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Billing**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Billing**.
 
 The usage statistics are updated once per day, which may cause
 a difference between the information in the **Usage Quotas** page and the **Billing page**.
@@ -136,8 +136,8 @@ For example:
 
 To export seat usage data as a CSV file:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Billing**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Billing**.
 1. Under **Seats currently in use**, select **See usage**.
 1. Select **Export list**.
 
@@ -197,8 +197,8 @@ The following is emailed to you:
 
 To remove a billable user from your subscription:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Billing**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Billing**.
 1. In the **Seats currently in use** section, select **See usage**.
 1. In the row for the user you want to remove, on the right side, select the ellipsis and **Remove user**.
 1. Re-type the username and select **Remove user**.
@@ -355,18 +355,18 @@ To change the contacts:
    [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
 1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
 
-## CI/CD minutes
+## Compute
 
-CI/CD minutes are the execution time for your [pipelines](../../ci/pipelines/index.md)
+Compute is the resource consumed when running [pipelines](../../ci/pipelines/index.md)
 on GitLab shared runners.
 
-Refer to [CI/CD minutes](../../ci/pipelines/cicd_minutes.md)
+Refer to [Compute usage](../../ci/pipelines/cicd_minutes.md)
 for more information.
 
-### Purchase additional CI/CD minutes
+### Purchase additional units of compute
 
-You can [purchase additional minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-cicd-minutes)
-for your personal or group namespace. CI/CD minutes are a **one-time purchase**, so they do not renew.
+You can [purchase additional units of compute](../../ci/pipelines/cicd_minutes.md#purchase-additional-units-of-compute)
+for your personal or group namespace. Units of compute are a **one-time purchase**, so they do not renew.
 
 ## Add-on subscription for additional Storage and Transfer
 
@@ -424,8 +424,8 @@ main quota. You can find pricing for additional storage on the
 
 To purchase additional storage for your group on GitLab SaaS:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Usage Quotas**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Usage Quotas**.
 1. Select **Storage** tab.
 1. Select **Purchase more storage**.
 1. Complete the details.

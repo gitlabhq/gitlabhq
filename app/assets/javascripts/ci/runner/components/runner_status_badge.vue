@@ -26,21 +26,27 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    runner: {
-      required: true,
-      type: Object,
+    contactedAt: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    status: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   computed: {
     contactedAtTimeAgo() {
-      if (this.runner.contactedAt) {
-        return getTimeago().format(this.runner.contactedAt);
+      if (this.contactedAt) {
+        return getTimeago().format(this.contactedAt);
       }
       // Prevent "just now" from being rendered, in case data is missing.
       return __('never');
     },
     badge() {
-      switch (this.runner?.status) {
+      switch (this.status) {
         case STATUS_ONLINE:
           return {
             icon: 'status-active',
@@ -68,7 +74,7 @@ export default {
             variant: 'warning',
             label: I18N_STATUS_STALE,
             // runner may have contacted (or not) and be stale: consider both cases.
-            tooltip: this.runner.contactedAt
+            tooltip: this.contactedAt
               ? this.timeAgoTooltip(I18N_STALE_TIMEAGO_TOOLTIP)
               : I18N_STALE_NEVER_CONTACTED_TOOLTIP,
           };

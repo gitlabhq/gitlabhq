@@ -24,6 +24,7 @@ class Note < ApplicationRecord
   include Sortable
   include EachBatch
   include IgnorableColumns
+  include Spammable
 
   ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
@@ -67,6 +68,8 @@ class Note < ApplicationRecord
   attr_accessor :skip_keep_around_commits
 
   attribute :system, default: false
+
+  attr_spammable :note, spam_description: true
 
   attr_mentionable :note, pipeline: :note
   participant :author
@@ -141,6 +144,7 @@ class Note < ApplicationRecord
   scope :with_discussion_ids, ->(discussion_ids) { where(discussion_id: discussion_ids) }
   scope :with_suggestions, -> { joins(:suggestions) }
   scope :inc_author, -> { includes(:author) }
+  scope :authored_by, ->(user) { where(author: user) }
   scope :inc_note_diff_file, -> { includes(:note_diff_file) }
   scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, ->(noteable = nil) do
@@ -429,6 +433,10 @@ class Note < ApplicationRecord
     project&.team&.contributor?(self.author_id)
   end
 
+  def human_max_access
+    project&.team&.human_max_access(self.author_id)
+  end
+
   def noteable_author?(noteable)
     noteable.author == self.author
   end
@@ -688,6 +696,7 @@ class Note < ApplicationRecord
   def show_outdated_changes?
     return false unless for_merge_request?
     return false unless system?
+    return false if change_position&.on_file?
     return false unless change_position&.line_range
 
     change_position.line_range["end"] || change_position.line_range["start"]
@@ -771,6 +780,16 @@ class Note < ApplicationRecord
     return true unless system?
 
     readable_by?(user)
+  end
+
+  # Override method defined in Spammable
+  # Wildcard argument because user: argument is not used
+  def check_for_spam?(*)
+    return false if system? || !spammable_attribute_changed? || confidential?
+    return false if noteable.try(:confidential?) == true || noteable.try(:public?) == false
+    return false if noteable.try(:group)&.public? == false || project&.public? == false
+
+    true
   end
 
   private

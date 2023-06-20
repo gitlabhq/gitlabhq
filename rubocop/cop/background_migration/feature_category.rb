@@ -17,7 +17,7 @@ module RuboCop
               "https://docs.gitlab.com/ee/development/feature_categorization/#batched-background-migrations"
 
         INVALID_FEATURE_CATEGORY_MSG = "'feature_category' is invalid. " \
-                                       "List of valid ones can be found in #{FEATURE_CATEGORIES_FILE_PATH}"
+                                       "List of valid ones can be found in #{FEATURE_CATEGORIES_FILE_PATH}".freeze
 
         RESTRICT_ON_SEND = [:feature_category].freeze
 

@@ -4,13 +4,13 @@ module QA
   module Resource
     class GroupMilestone < Base
       attributes :id,
-                 :iid,
-                 :title,
-                 :description,
-                 :start_date,
-                 :due_date,
-                 :updated_at,
-                 :created_at
+        :iid,
+        :title,
+        :description,
+        :start_date,
+        :due_date,
+        :updated_at,
+        :created_at
 
       attribute :group do
         Group.fabricate_via_api! do |resource|

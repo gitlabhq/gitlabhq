@@ -2,32 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe ReleasesFinder do
-  let(:user)  { create(:user) }
-  let(:group) { create :group }
-  let(:project) { create(:project, :repository, group: group) }
+RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
+  let_it_be(:user)  { create(:user) }
+  let_it_be(:group) { create :group }
+  let_it_be(:project) { create(:project, :repository, group: group) }
   let(:params) { {} }
   let(:args) { {} }
   let(:repository) { project.repository }
-  let(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0') }
-  let(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0') }
+  let_it_be(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0') }
+  let_it_be(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0') }
 
-  before do
-    v1_0_0.update_attribute(:released_at, 2.days.ago)
-    v1_1_0.update_attribute(:released_at, 1.day.ago)
-  end
-
-  shared_examples_for 'when the user is not part of the project' do
-    it 'returns no releases' do
-      is_expected.to be_empty
-    end
-  end
-
-  shared_examples_for 'when the user is not part of the group' do
-    before do
-      allow(Ability).to receive(:allowed?).with(user, :read_release, group).and_return(false)
-    end
-
+  shared_examples_for 'when the user is not authorized' do
     it 'returns no releases' do
       is_expected.to be_empty
     end
@@ -62,26 +47,25 @@ RSpec.describe ReleasesFinder do
   describe 'when parent is a project' do
     subject { described_class.new(project, user, params).execute(**args) }
 
-    it_behaves_like 'when the user is not part of the project'
+    it_behaves_like 'when the user is not authorized'
 
-    context 'when the user is a project guest' do
+    context 'when the user has guest privileges or higher' do
       before do
         project.add_guest(user)
+
+        v1_0_0.update!(released_at: 2.days.ago, created_at: 1.day.ago)
+        v1_1_0.update!(released_at: 1.day.ago, created_at: 2.days.ago)
       end
 
-      it 'sorts by release date' do
+      it 'returns the releases' do
         is_expected.to be_present
         expect(subject.size).to eq(2)
-        expect(subject).to eq([v1_1_0, v1_0_0])
+        expect(subject).to match_array([v1_1_0, v1_0_0])
       end
 
       context 'with sorting parameters' do
-        before do
-          v1_1_0.update_attribute(:created_at, 3.days.ago)
-        end
-
-        context 'by default is released_at in descending order' do
-          it { is_expected.to eq([v1_1_0, v1_0_0]) }
+        it 'sorted by released_at in descending order by default' do
+          is_expected.to eq([v1_1_0, v1_0_0])
         end
 
         context 'released_at in ascending order' do
@@ -105,6 +89,140 @@ RSpec.describe ReleasesFinder do
 
       it_behaves_like 'preload'
       it_behaves_like 'when a tag parameter is passed'
+    end
+  end
+
+  describe 'when parent is an array of projects' do
+    let_it_be(:project2) { create(:project, :repository, group: group) }
+    let_it_be(:v2_0_0) { create(:release, project: project2, tag: 'v2.0.0') }
+    let_it_be(:v2_1_0) { create(:release, project: project2, tag: 'v2.1.0') }
+
+    subject { described_class.new([project, project2], user, params).execute(**args) }
+
+    it_behaves_like 'when the user is not authorized'
+
+    context 'when the user has guest privileges or higher on one project' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'returns the releases of only the authorized project' do
+        is_expected.to be_present
+        expect(subject.size).to eq(2)
+        expect(subject).to match_array([v1_1_0, v1_0_0])
+      end
+    end
+
+    context 'when the user has guest privileges or higher on all projects' do
+      before do
+        project.add_guest(user)
+        project2.add_guest(user)
+
+        v1_0_0.update!(released_at: 4.days.ago, created_at: 1.day.ago)
+        v1_1_0.update!(released_at: 3.days.ago, created_at: 2.days.ago)
+        v2_0_0.update!(released_at: 2.days.ago, created_at: 3.days.ago)
+        v2_1_0.update!(released_at: 1.day.ago,  created_at: 4.days.ago)
+      end
+
+      it 'returns the releases of all projects' do
+        is_expected.to be_present
+        expect(subject.size).to eq(4)
+        expect(subject).to match_array([v2_1_0, v2_0_0, v1_1_0, v1_0_0])
+      end
+
+      it_behaves_like 'preload'
+      it_behaves_like 'when a tag parameter is passed'
+
+      context 'with sorting parameters' do
+        it 'sorted by released_at in descending order by default' do
+          is_expected.to eq([v2_1_0, v2_0_0, v1_1_0, v1_0_0])
+        end
+
+        context 'released_at in ascending order' do
+          let(:params) { { sort: 'asc' } }
+
+          it { is_expected.to eq([v1_0_0, v1_1_0, v2_0_0, v2_1_0]) }
+        end
+
+        context 'order by created_at in descending order' do
+          let(:params) { { order_by: 'created_at' } }
+
+          it { is_expected.to eq([v1_0_0, v1_1_0, v2_0_0, v2_1_0]) }
+        end
+
+        context 'order by created_at in ascending order' do
+          let(:params) { { order_by: 'created_at', sort: 'asc' } }
+
+          it { is_expected.to eq([v2_1_0, v2_0_0, v1_1_0, v1_0_0]) }
+        end
+      end
+    end
+  end
+
+  describe 'latest releases' do
+    let_it_be(:project2) { create(:project, :repository, group: group) }
+    let_it_be(:v2_0_0) { create(:release, project: project2) }
+    let_it_be(:v2_1_0) { create(:release, project: project2) }
+
+    let(:params) { { latest: true } }
+
+    subject { described_class.new([project, project2], user, params).execute(**args) }
+
+    before do
+      v1_0_0.update!(released_at: 4.days.ago, created_at: 1.day.ago)
+      v1_1_0.update!(released_at: 3.days.ago, created_at: 2.days.ago)
+      v2_0_0.update!(released_at: 2.days.ago, created_at: 3.days.ago)
+      v2_1_0.update!(released_at: 1.day.ago,  created_at: 4.days.ago)
+    end
+
+    it_behaves_like 'when the user is not authorized'
+
+    context 'when the user has guest privileges or higher on one project' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'returns the latest release of only the authorized project' do
+        is_expected.to eq([v1_1_0])
+      end
+    end
+
+    context 'when the user has guest privileges or higher on all projects' do
+      before do
+        project.add_guest(user)
+        project2.add_guest(user)
+      end
+
+      it 'returns the latest release by released date for each project' do
+        is_expected.to match_array([v1_1_0, v2_1_0])
+      end
+
+      context 'with order_by_for_latest: created' do
+        let(:params) { { latest: true, order_by_for_latest: 'created_at' } }
+
+        it 'returns the latest release by created date for each project' do
+          is_expected.to match_array([v1_0_0, v2_0_0])
+        end
+      end
+
+      context 'when one project does not have releases' do
+        it 'returns the latest release of only the project with releases' do
+          project.releases.delete_all
+
+          is_expected.to eq([v2_1_0])
+        end
+      end
+
+      context 'when all projects do not have releases' do
+        it 'returns empty response' do
+          project.releases.delete_all
+          project2.releases.delete_all
+
+          is_expected.to be_empty
+        end
+      end
+
+      it_behaves_like 'preload'
     end
   end
 end

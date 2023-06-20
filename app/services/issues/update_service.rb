@@ -2,12 +2,12 @@
 
 module Issues
   class UpdateService < Issues::BaseService
-    # NOTE: For Issues::UpdateService, we default the spam_params to nil, because spam_checking is not
-    # necessary in many cases, and we don't want to require every caller to explicitly pass it as nil
+    # NOTE: For Issues::UpdateService, we default perform_spam_check to false, because spam_checking is not
+    # necessary in many cases, and we don't want to require every caller to explicitly pass it
     # to disable spam checking.
-    def initialize(container:, current_user: nil, params: {}, spam_params: nil)
+    def initialize(container:, current_user: nil, params: {}, perform_spam_check: false)
       super(container: container, current_user: current_user, params: params)
-      @spam_params = spam_params
+      @perform_spam_check = perform_spam_check
     end
 
     def execute(issue)
@@ -26,14 +26,9 @@ module Issues
     def before_update(issue, skip_spam_check: false)
       change_work_item_type(issue)
 
-      return if skip_spam_check
+      return if skip_spam_check || !perform_spam_check
 
-      Spam::SpamActionService.new(
-        spammable: issue,
-        spam_params: spam_params,
-        user: current_user,
-        action: :update
-      ).execute
+      issue.check_for_spam(user: current_user, action: :update)
     end
 
     def change_work_item_type(issue)
@@ -115,7 +110,14 @@ module Issues
 
     private
 
-    attr_reader :spam_params
+    attr_reader :perform_spam_check
+
+    override :after_update
+    def after_update(issue, _old_associations)
+      super
+
+      GraphqlTriggers.work_item_updated(issue)
+    end
 
     def handle_date_changes(issue)
       return unless issue.previous_changes.slice('due_date', 'start_date').any?

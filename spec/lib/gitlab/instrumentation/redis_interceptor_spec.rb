@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'rspec-parameterized'
 require 'support/helpers/rails_helpers'
 
-RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_shared_state, :request_store do
+RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_shared_state, :request_store, feature_category: :scalability do
   using RSpec::Parameterized::TableSyntax
 
   describe 'read and write' do
@@ -112,6 +112,15 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
           Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, 'foo', 'bar') }
+        end
+      end
+
+      it 'does not count allowed non-cross-slot requests' do
+        expect(instrumentation_class).not_to receive(:increment_cross_slot_request_count).and_call_original
+        expect(instrumentation_class).not_to receive(:increment_allowed_cross_slot_request_count).and_call_original
+
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          Gitlab::Redis::SharedState.with { |redis| redis.call(:get, 'bar') }
         end
       end
 

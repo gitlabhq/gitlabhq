@@ -1,6 +1,5 @@
 ---
 Lint/NoReturnInBeginEndBlocks:
-  Details: grace period
   Exclude:
     - 'app/models/concerns/metric_image_uploading.rb'
     - 'app/models/merge_request.rb'

@@ -10,6 +10,8 @@ RSpec.describe Namespaces::ProjectsFinder do
   let_it_be(:project_2) { create(:project, :public, group: namespace, path: 'test-project', name: 'Test Project') }
   let_it_be(:project_3) { create(:project, :public, :issues_disabled, path: 'sub-test-project', group: subgroup, name: 'Sub Test Project') }
   let_it_be(:project_4) { create(:project, :public, :merge_requests_disabled, path: 'test-project-2', group: namespace, name: 'Test Project 2') }
+  let_it_be(:project_5) { create(:project, group: subgroup, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
+  let_it_be(:project_6) { create(:project, group: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
 
   let(:params) { {} }
 
@@ -28,14 +30,22 @@ RSpec.describe Namespaces::ProjectsFinder do
 
     context 'with a namespace' do
       it 'returns the project for the namespace' do
-        expect(projects).to contain_exactly(project_1, project_2, project_4)
+        expect(projects).to contain_exactly(project_1, project_2, project_4, project_6)
+      end
+
+      context 'when not_aimed_for_deletion is provided' do
+        let(:params) { { not_aimed_for_deletion: true } }
+
+        it 'returns all projects not aimed for deletion for the namespace' do
+          expect(projects).to contain_exactly(project_1, project_2, project_4)
+        end
       end
 
       context 'when include_subgroups is provided' do
         let(:params) { { include_subgroups: true } }
 
         it 'returns all projects for the namespace' do
-          expect(projects).to contain_exactly(project_1, project_2, project_3, project_4)
+          expect(projects).to contain_exactly(project_1, project_2, project_3, project_4, project_5, project_6)
         end
 
         context 'when ids are provided' do
@@ -43,6 +53,14 @@ RSpec.describe Namespaces::ProjectsFinder do
 
           it 'returns all projects for the ids' do
             expect(projects).to contain_exactly(project_3)
+          end
+        end
+
+        context 'when not_aimed_for_deletion is provided' do
+          let(:params) { { not_aimed_for_deletion: true, include_subgroups: true } }
+
+          it 'returns all projects not aimed for deletion for the namespace' do
+            expect(projects).to contain_exactly(project_1, project_2, project_3, project_4)
           end
         end
       end
@@ -59,7 +77,7 @@ RSpec.describe Namespaces::ProjectsFinder do
         let(:params) { { with_issues_enabled: true, include_subgroups: true } }
 
         it 'returns the projects that have issues enabled' do
-          expect(projects).to contain_exactly(project_1, project_2, project_4)
+          expect(projects).to contain_exactly(project_1, project_2, project_4, project_5, project_6)
         end
       end
 
@@ -67,7 +85,7 @@ RSpec.describe Namespaces::ProjectsFinder do
         let(:params) { { with_merge_requests_enabled: true } }
 
         it 'returns the projects that have merge requests enabled' do
-          expect(projects).to contain_exactly(project_1, project_2)
+          expect(projects).to contain_exactly(project_1, project_2, project_6)
         end
       end
 
@@ -83,7 +101,7 @@ RSpec.describe Namespaces::ProjectsFinder do
         let(:params) { { sort: :similarity } }
 
         it 'returns all projects' do
-          expect(projects).to contain_exactly(project_1, project_2, project_4)
+          expect(projects).to contain_exactly(project_1, project_2, project_4, project_6)
         end
       end
 
@@ -99,13 +117,14 @@ RSpec.describe Namespaces::ProjectsFinder do
         let(:params) { { sort: :latest_activity_desc } }
 
         before do
+          project_6.update!(last_activity_at: 15.minutes.ago)
           project_2.update!(last_activity_at: 10.minutes.ago)
           project_1.update!(last_activity_at: 5.minutes.ago)
           project_4.update!(last_activity_at: 1.minute.ago)
         end
 
         it 'returns projects sorted by latest activity' do
-          expect(projects).to eq([project_4, project_1, project_2])
+          expect(projects).to eq([project_4, project_1, project_2, project_6])
         end
       end
     end

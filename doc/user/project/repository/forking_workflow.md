@@ -54,17 +54,13 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 ### From the UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `synchronize_fork`.
-On GitLab.com, this feature is available for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
 
 To update your fork from the GitLab UI:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the secondary menu, select **Personal**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
 1. Select the fork you want to update.
 1. Below the dropdown list for branch name, find the **Forked from** (**{fork}**)
    information box to determine if your fork is ahead, behind, or both. In this example,
@@ -185,8 +181,8 @@ To restore the fork relationship, [use the API](../../../api/projects.md#create-
 
 To remove a fork relationship:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
 1. To confirm, enter the project path and select **Confirm**.
@@ -199,7 +195,6 @@ to share objects with another repository:
 
 ## Related topics
 
-- GitLab blog post: [Keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/)
 - GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/32469)
 
 ## Troubleshooting

@@ -57,8 +57,8 @@ class AbuseReportsController < ApplicationController
 
     if @user.nil?
       redirect_to root_path, alert: _("Cannot create the abuse report. The user has been deleted.")
-    elsif @user.blocked?
-      redirect_to @user, alert: _("Cannot create the abuse report. This user has been blocked.")
+    elsif @user.banned?
+      redirect_to @user, alert: _("Cannot create the abuse report. This user has been banned.")
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

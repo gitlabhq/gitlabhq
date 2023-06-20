@@ -994,9 +994,25 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.project_specific_integration_names' do
-    specify do
-      expect(described_class.project_specific_integration_names)
-        .to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES)
+    subject { described_class.project_specific_integration_names }
+
+    it { is_expected.to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES) }
+    it { is_expected.to include('gitlab_slack_application') }
+
+    context 'when Rails.env is not test' do
+      before do
+        allow(Rails.env).to receive(:test?).and_return(false)
+      end
+
+      it { is_expected.not_to include('gitlab_slack_application') }
+
+      context 'when `slack_app_enabled` setting is enabled' do
+        before do
+          stub_application_setting(slack_app_enabled: true)
+        end
+
+        it { is_expected.to include('gitlab_slack_application') }
+      end
     end
   end
 

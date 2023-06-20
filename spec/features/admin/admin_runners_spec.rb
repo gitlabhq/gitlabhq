@@ -565,7 +565,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         click_on 'Delete runner'
 
         within_modal do
-          click_on 'Delete runner'
+          click_on 'Permanently delete runner'
         end
       end
 
@@ -603,7 +603,9 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     describe 'runner header', :js do
       it 'contains the runner status, type and id' do
-        expect(page).to have_content("#{s_('Runners|Never contacted')} Project Runner ##{project_runner.id} created")
+        expect(page).to have_content(
+          "##{project_runner.id} (#{project_runner.short_sha}) #{s_('Runners|Never contacted')} Project created"
+        )
       end
     end
 

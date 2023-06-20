@@ -14,6 +14,20 @@ RSpec.shared_examples 'correct total count' do
   end
 end
 
+RSpec.shared_examples 'when there are no releases' do
+  let(:data) { graphql_data.dig(resource_type.to_s, 'releases') }
+
+  before do
+    project.releases.delete_all
+
+    post_query
+  end
+
+  it 'returns an empty array' do
+    expect(data['nodes']).to eq([])
+  end
+end
+
 RSpec.shared_examples 'full access to all repository-related fields' do
   describe 'repository-related fields' do
     before do
@@ -57,6 +71,7 @@ RSpec.shared_examples 'full access to all repository-related fields' do
   end
 
   it_behaves_like 'correct total count'
+  it_behaves_like 'when there are no releases'
 end
 
 RSpec.shared_examples 'no access to any repository-related fields' do

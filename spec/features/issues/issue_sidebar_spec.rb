@@ -162,7 +162,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
             open_assignees_dropdown
 
             page.within '.dropdown-menu-user' do
-              find('.js-dropdown-input-field').find('input').set(user2.name)
+              find('[data-testid="user-search-input"]').set(user2.name)
 
               wait_for_requests
 
@@ -182,7 +182,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
           it 'keeps your filtered term after filtering and dismissing the dropdown' do
             open_assignees_dropdown
 
-            find('.js-dropdown-input-field').find('input').set(user2.name)
+            find('[data-testid="user-search-input"]').set(user2.name)
             wait_for_requests
 
             page.within '.dropdown-menu-user' do
@@ -199,7 +199,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
               expect(page.all('[data-testid="selected-participant"]').length).to eq(1)
             end
 
-            expect(find('.js-dropdown-input-field').find('input').value).to eq(user2.name)
+            expect(find('[data-testid="user-search-input"]').value).to eq(user2.name)
           end
         end
       end

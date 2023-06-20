@@ -7,7 +7,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :component
 
   config.before(:each, type: :component) do
-    @request = controller.request
+    @request = vc_test_controller.request
   end
 
   config.include_context 'when page has no HTML escapes', type: :component

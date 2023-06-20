@@ -113,7 +113,7 @@ describe('ProjectNamespace component', () => {
     });
 
     it('displays fetched namespaces', () => {
-      const listItems = wrapper.findAll('li');
+      const listItems = wrapper.findAll('[role="option"]');
       expect(listItems).toHaveLength(2);
       expect(listItems.at(0).text()).toBe(data.project.forkTargets.nodes[0].fullPath);
       expect(listItems.at(1).text()).toBe(data.project.forkTargets.nodes[1].fullPath);

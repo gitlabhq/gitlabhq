@@ -5,14 +5,13 @@ import KubernetesOverview from '~/environments/components/kubernetes_overview.vu
 import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
 import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
-import { agent } from './graphql/mock_data';
+import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
+import { agent, kubernetesNamespace } from './graphql/mock_data';
 import { mockKasTunnelUrl } from './mock_data';
 
 const propsData = {
-  agentId: agent.id,
-  agentName: agent.name,
-  agentProjectPath: agent.project,
-  namespace: agent.kubernetesNamespace,
+  clusterAgent: agent,
+  namespace: kubernetesNamespace,
 };
 
 const provide = {
@@ -23,6 +22,7 @@ const configuration = {
   basePath: provide.kasTunnelUrl.replace(/\/$/, ''),
   baseOptions: {
     headers: { 'GitLab-Agent-Id': '1' },
+    withCredentials: true,
   },
 };
 
@@ -34,6 +34,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
   const findAgentInfo = () => wrapper.findComponent(KubernetesAgentInfo);
   const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
   const findKubernetesTabs = () => wrapper.findComponent(KubernetesTabs);
+  const findKubernetesStatusBar = () => wrapper.findComponent(KubernetesStatusBar);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createWrapper = () => {
@@ -91,25 +92,64 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('renders kubernetes agent info', () => {
-      expect(findAgentInfo().props()).toEqual({
-        agentName: agent.name,
-        agentId: agent.id,
-        agentProjectPath: agent.project,
-      });
+      expect(findAgentInfo().props('clusterAgent')).toEqual(agent);
     });
 
     it('renders kubernetes pods', () => {
       expect(findKubernetesPods().props()).toEqual({
-        namespace: agent.kubernetesNamespace,
+        namespace: kubernetesNamespace,
         configuration,
       });
     });
 
     it('renders kubernetes tabs', () => {
       expect(findKubernetesTabs().props()).toEqual({
-        namespace: agent.kubernetesNamespace,
+        namespace: kubernetesNamespace,
         configuration,
       });
+    });
+
+    it('renders kubernetes status bar', () => {
+      expect(findKubernetesStatusBar().exists()).toBe(true);
+    });
+  });
+
+  describe('Kubernetes health status', () => {
+    beforeEach(() => {
+      createWrapper();
+      toggleCollapse();
+    });
+
+    it("doesn't set `clusterHealthStatus` when pods are still loading", async () => {
+      findKubernetesPods().vm.$emit('loading', true);
+      await nextTick();
+
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('');
+    });
+
+    it("doesn't set `clusterHealthStatus` when workload types are still loading", async () => {
+      findKubernetesTabs().vm.$emit('loading', true);
+      await nextTick();
+
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('');
+    });
+
+    it('sets `clusterHealthStatus` as error when pods emitted a failure', async () => {
+      findKubernetesPods().vm.$emit('failed');
+      await nextTick();
+
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
+    });
+
+    it('sets `clusterHealthStatus` as error when workload types emitted a failure', async () => {
+      findKubernetesTabs().vm.$emit('failed');
+      await nextTick();
+
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
+    });
+
+    it('sets `clusterHealthStatus` as success when data is loaded and no failures where emitted', () => {
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('success');
     });
   });
 

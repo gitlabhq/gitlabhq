@@ -557,6 +557,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/components/**/*.rb'
     - 'spec/mailers/**/*.rb'
     - 'spec/routes/directs/*.rb'
+    - 'spec/lib/sidebars/**/*.rb'
     - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
     - 'ee/spec/helpers/**/*.rb'
@@ -564,6 +565,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/components/**/*.rb'
     - 'ee/spec/mailers/**/*.rb'
     - 'ee/spec/routes/directs/*.rb'
+    - 'ee/spec/lib/sidebars/**/*.rb'
 
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true
@@ -1007,3 +1009,16 @@ SidekiqLoadBalancing/WorkerDataConsistency:
 # This cop is disabled for Ruby 3.0+ anyway.
 Lint/NonDeterministicRequireOrder:
   Enabled: false
+
+Graphql/ResourceNotAvailableError:
+  Exclude:
+    # Definition of `raise_resource_not_available_error!`
+    - 'lib/gitlab/graphql/authorize/authorize_resource.rb'
+
+RSpec/FactoryBot/LocalStaticAssignment:
+  Include:
+    - spec/factories/**/*.rb
+    - ee/spec/factories/**/*.rb
+
+Rails/TransactionExitStatement:
+  Enabled: true

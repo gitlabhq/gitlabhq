@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipelines', :js, feature_category: :projects do
+RSpec.describe 'Pipelines', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
   include ProjectForksHelper
   include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project) }
   let(:expected_detached_mr_tag) { 'merge request' }
+
+  before do
+    stub_feature_flags(pipeline_details_header_vue: false)
+  end
 
   context 'when user is logged in' do
     let(:user) { create(:user) }
@@ -116,7 +120,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
         it 'indicates that pipeline can be canceled' do
           expect(page).to have_selector('.js-pipelines-cancel-button')
-          expect(page).to have_selector('.ci-running')
+          expect(page).to have_selector('[data-testid="ci-badge-running"]')
         end
 
         context 'when canceling' do
@@ -128,7 +132,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
           it 'indicated that pipelines was canceled', :sidekiq_might_not_need_inline do
             expect(page).not_to have_selector('.js-pipelines-cancel-button')
-            expect(page).to have_selector('.ci-canceled')
+            expect(page).to have_selector('[data-testid="ci-badge-canceled"]')
           end
         end
       end
@@ -146,7 +150,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
         it 'indicates that pipeline can be retried' do
           expect(page).to have_selector('.js-pipelines-retry-button')
-          expect(page).to have_selector('.ci-failed')
+          expect(page).to have_selector('[data-testid="ci-badge-failed"]')
         end
 
         context 'when retrying' do
@@ -157,7 +161,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
           it 'shows running pipeline that is not retryable' do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
-            expect(page).to have_selector('.ci-running')
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
         end
       end
@@ -396,7 +400,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           end
 
           it 'shows the pipeline as preparing' do
-            expect(page).to have_selector('.ci-preparing')
+            expect(page).to have_selector('[data-testid="ci-badge-preparing"]')
           end
         end
 
@@ -417,7 +421,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           end
 
           it 'has pipeline running' do
-            expect(page).to have_selector('.ci-running')
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
 
           context 'when canceling' do
@@ -428,7 +432,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
             it 'indicates that pipeline was canceled', :sidekiq_might_not_need_inline do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
-              expect(page).to have_selector('.ci-canceled')
+              expect(page).to have_selector('[data-testid="ci-badge-canceled"]')
             end
           end
         end
@@ -450,7 +454,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           end
 
           it 'has failed pipeline', :sidekiq_might_not_need_inline do
-            expect(page).to have_selector('.ci-failed')
+            expect(page).to have_selector('[data-testid="ci-badge-failed"]')
           end
         end
       end
@@ -605,17 +609,17 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           wait_for_requests
         end
 
-        it 'changes the Pipeline ID column for Pipeline IID' do
-          page.find('[data-testid="pipeline-key-collapsible-box"]').click
+        it 'changes the Pipeline ID column link to Pipeline IID and persists', :aggregate_failures do
+          expect(page).to have_link(text: "##{pipeline.id}")
 
-          within '.gl-new-dropdown-contents' do
-            dropdown_options = page.find_all '.gl-new-dropdown-item'
+          select_from_listbox('Show Pipeline IID', from: 'Show Pipeline ID')
 
-            dropdown_options[1].click
-          end
+          expect(page).to have_link(text: "##{pipeline.iid}")
 
-          expect(page.find('[data-testid="pipeline-th"]')).to have_content 'Pipeline'
-          expect(page.find('[data-testid="pipeline-url-link"]')).to have_content "##{pipeline.iid}"
+          visit project_pipelines_path(project)
+          wait_for_requests
+
+          expect(page).to have_link(text: "##{pipeline.iid}")
         end
       end
     end
@@ -686,7 +690,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           click_button project.default_branch
           wait_for_requests
 
-          find('.gl-new-dropdown-item', text: '2-mb-file').click
+          find('.gl-new-dropdown-item', text: 'spooky-stuff').click
           wait_for_requests
         end
 

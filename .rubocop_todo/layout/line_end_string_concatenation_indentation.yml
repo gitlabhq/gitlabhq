@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/LineEndStringConcatenationIndentation:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/finders/snippets_finder.rb'
@@ -215,14 +214,12 @@ Layout/LineEndStringConcatenationIndentation:
     - 'rubocop/cop/graphql/descriptions.rb'
     - 'rubocop/cop/graphql/resolver_type.rb'
     - 'rubocop/cop/group_public_or_visible_to_user.rb'
-    - 'rubocop/cop/ignored_columns.rb'
     - 'rubocop/cop/inject_enterprise_edition_module.rb'
     - 'rubocop/cop/migration/add_concurrent_index.rb'
     - 'rubocop/cop/migration/add_limit_to_text_columns.rb'
     - 'rubocop/cop/migration/create_table_with_foreign_keys.rb'
     - 'rubocop/cop/migration/prevent_strings.rb'
     - 'rubocop/cop/migration/remove_concurrent_index.rb'
-    - 'rubocop/cop/migration/update_column_in_batches.rb'
     - 'rubocop/cop/migration/with_lock_retries_with_change.rb'
     - 'rubocop/cop/performance/active_record_subtransaction_methods.rb'
     - 'rubocop/cop/performance/active_record_subtransactions.rb'

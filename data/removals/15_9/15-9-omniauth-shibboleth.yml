@@ -8,4 +8,4 @@
   stage: manage  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388959  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    `omniauth-shibboleth` is an OmniAuth strategy gem that was part of GitLab. The gem has not received security updates and does not meet GitLab quality guidance criteria. This gem was originally scheduled for removal by 14.1, but it was not removed at that time. The gem is being removed now.
+    `omniauth-shibboleth` is an OmniAuth strategy gem that was part of GitLab. The gem has not received security updates and does not meet GitLab quality guidance criteria. This gem was originally scheduled for removal by 14.1, but it was not removed at that time. The gem is being removed now. In GitLab 16.1 or later, use the `omniauth-shibboleth-redux` gem instead.

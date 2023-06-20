@@ -1,10 +1,20 @@
 <script>
-import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/pipelines_empty.svg?url';
-import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/magnifying-glass.svg?url';
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
+import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg?url';
 
 import { GlEmptyState, GlLink, GlSprintf, GlModalDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import {
+  I18N_GET_STARTED,
+  I18N_RUNNERS_ARE_AGENTS,
+  I18N_CREATE_RUNNER_LINK,
+  I18N_STILL_USING_REGISTRATION_TOKENS,
+  I18N_CONTACT_ADMIN_TO_REGISTER,
+  I18N_FOLLOW_REGISTRATION_INSTRUCTIONS,
+  I18N_NO_RESULTS,
+  I18N_EDIT_YOUR_SEARCH,
+} from '~/ci/runner/constants';
 
 export default {
   components: {
@@ -38,9 +48,8 @@ export default {
     shouldShowCreateRunnerWorkflow() {
       // create_runner_workflow_for_admin or create_runner_workflow_for_namespace
       return (
-        this.newRunnerPath &&
-        (this.glFeatures?.createRunnerWorkflowForAdmin ||
-          this.glFeatures?.createRunnerWorkflowForNamespace)
+        this.glFeatures?.createRunnerWorkflowForAdmin ||
+        this.glFeatures?.createRunnerWorkflowForNamespace
       );
     },
   },
@@ -48,35 +57,59 @@ export default {
   svgHeight: 145,
   EMPTY_STATE_SVG_URL,
   FILTERED_SVG_URL,
+
+  I18N_GET_STARTED,
+  I18N_RUNNERS_ARE_AGENTS,
+  I18N_CREATE_RUNNER_LINK,
+  I18N_STILL_USING_REGISTRATION_TOKENS,
+  I18N_CONTACT_ADMIN_TO_REGISTER,
+  I18N_FOLLOW_REGISTRATION_INSTRUCTIONS,
+  I18N_NO_RESULTS,
+  I18N_EDIT_YOUR_SEARCH,
 };
 </script>
 
 <template>
   <gl-empty-state
     v-if="isSearchFiltered"
-    :title="s__('Runners|No results found')"
+    :title="$options.I18N_NO_RESULTS"
     :svg-path="$options.FILTERED_SVG_URL"
     :svg-height="$options.svgHeight"
-    :description="s__('Runners|Edit your search and try again')"
+    :description="$options.I18N_EDIT_YOUR_SEARCH"
   />
   <gl-empty-state
     v-else
-    :title="s__('Runners|Get started with runners')"
+    :title="$options.I18N_GET_STARTED"
     :svg-path="$options.EMPTY_STATE_SVG_URL"
     :svg-height="$options.svgHeight"
   >
-    <template v-if="registrationToken" #description>
-      <gl-sprintf
-        :message="
-          s__(
-            'Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner.',
-          )
-        "
-      >
-        <template v-if="shouldShowCreateRunnerWorkflow" #link="{ content }">
-          <gl-link :href="newRunnerPath">{{ content }}</gl-link>
+    <template #description>
+      {{ $options.I18N_RUNNERS_ARE_AGENTS }}
+      <template v-if="shouldShowCreateRunnerWorkflow">
+        <gl-sprintf v-if="newRunnerPath" :message="$options.I18N_CREATE_RUNNER_LINK">
+          <template #link="{ content }">
+            <gl-link :href="newRunnerPath">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+        <template v-if="registrationToken">
+          <br />
+          <gl-link v-gl-modal="$options.modalId">{{
+            $options.I18N_STILL_USING_REGISTRATION_TOKENS
+          }}</gl-link>
+          <runner-instructions-modal
+            :modal-id="$options.modalId"
+            :registration-token="registrationToken"
+          />
         </template>
-        <template v-else #link="{ content }">
+        <template v-if="!newRunnerPath && !registrationToken">
+          {{ $options.I18N_CONTACT_ADMIN_TO_REGISTER }}
+        </template>
+      </template>
+      <gl-sprintf
+        v-else-if="registrationToken"
+        :message="$options.I18N_FOLLOW_REGISTRATION_INSTRUCTIONS"
+      >
+        <template #link="{ content }">
           <gl-link v-gl-modal="$options.modalId">{{ content }}</gl-link>
           <runner-instructions-modal
             :modal-id="$options.modalId"
@@ -84,13 +117,9 @@ export default {
           />
         </template>
       </gl-sprintf>
-    </template>
-    <template v-else #description>
-      {{
-        s__(
-          'Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator.',
-        )
-      }}
+      <template v-else>
+        {{ $options.I18N_CONTACT_ADMIN_TO_REGISTER }}
+      </template>
     </template>
   </gl-empty-state>
 </template>

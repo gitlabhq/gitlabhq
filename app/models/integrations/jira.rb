@@ -14,6 +14,14 @@ module Integrations
     ATLASSIAN_REFERRER_GITLAB_COM = { atlOrigin: 'eyJpIjoiY2QyZTJiZDRkNGZhNGZlMWI3NzRkNTBmZmVlNzNiZTkiLCJwIjoianN3LWdpdGxhYi1pbnQifQ' }.freeze
     ATLASSIAN_REFERRER_SELF_MANAGED = { atlOrigin: 'eyJpIjoiYjM0MTA4MzUyYTYxNDVkY2IwMzVjOGQ3ZWQ3NzMwM2QiLCJwIjoianN3LWdpdGxhYlNNLWludCJ9' }.freeze
 
+    API_ENDPOINTS = {
+      find_issue: "/rest/api/2/issue/%s",
+      server_info: "/rest/api/2/serverInfo",
+      transition_issue: "/rest/api/2/issue/%s/transitions",
+      issue_comments: "/rest/api/2/issue/%s/comment",
+      link_remote_issue: "/rest/api/2/issue/%s/remotelink"
+    }.freeze
+
     SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
     SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
 
@@ -32,11 +40,11 @@ module Integrations
     validate :validate_jira_cloud_auth_type_is_basic, if: :activated?
 
     validates :jira_issue_transition_id,
-              format: {
-                with: Gitlab::Regex.jira_transition_id_regex,
-                message: ->(*_) { s_("JiraService|IDs must be a list of numbers that can be split with , or ;") }
-              },
-              allow_blank: true
+      format: {
+        with: Gitlab::Regex.jira_transition_id_regex,
+        message: ->(*_) { s_("JiraService|IDs must be a list of numbers that can be split with , or ;") }
+      },
+      allow_blank: true
 
     # Jira Cloud version is deprecating authentication via username and password.
     # We should use username/password for Jira Server and email/api_token for Jira Cloud,
@@ -52,57 +60,57 @@ module Integrations
     self.field_storage = :data_fields
 
     field :url,
-          section: SECTION_TYPE_CONNECTION,
-          required: true,
-          title: -> { s_('JiraService|Web URL') },
-          help: -> { s_('JiraService|Base URL of the Jira instance') },
-          placeholder: 'https://jira.example.com',
-          exposes_secrets: true
+      section: SECTION_TYPE_CONNECTION,
+      required: true,
+      title: -> { s_('JiraService|Web URL') },
+      help: -> { s_('JiraService|Base URL of the Jira instance') },
+      placeholder: 'https://jira.example.com',
+      exposes_secrets: true
 
     field :api_url,
-          section: SECTION_TYPE_CONNECTION,
-          title: -> { s_('JiraService|Jira API URL') },
-          help: -> { s_('JiraService|If different from the Web URL') },
-          exposes_secrets: true
+      section: SECTION_TYPE_CONNECTION,
+      title: -> { s_('JiraService|Jira API URL') },
+      help: -> { s_('JiraService|If different from the Web URL') },
+      exposes_secrets: true
 
     field :jira_auth_type,
-          type: 'select',
-          required: true,
-          section: SECTION_TYPE_CONNECTION,
-          title: -> { s_('JiraService|Authentication type') },
-          choices: -> {
-            [
-              [s_('JiraService|Basic'), AUTH_TYPE_BASIC],
-              [s_('JiraService|Jira personal access token (Jira Data Center and Jira Server only)'), AUTH_TYPE_PAT]
-            ]
-          }
+      type: 'select',
+      required: true,
+      section: SECTION_TYPE_CONNECTION,
+      title: -> { s_('JiraService|Authentication type') },
+      choices: -> {
+        [
+          [s_('JiraService|Basic'), AUTH_TYPE_BASIC],
+          [s_('JiraService|Jira personal access token (Jira Data Center and Jira Server only)'), AUTH_TYPE_PAT]
+        ]
+      }
 
     field :username,
-          section: SECTION_TYPE_CONNECTION,
-          required: false,
-          title: -> { s_('JiraService|Email or username') },
-          help: -> { s_('JiraService|Only required for Basic authentication. Email for Jira Cloud or username for Jira Data Center and Jira Server') }
+      section: SECTION_TYPE_CONNECTION,
+      required: false,
+      title: -> { s_('JiraService|Email or username') },
+      help: -> { s_('JiraService|Email for Jira Cloud or username for Jira Data Center and Jira Server') }
 
     field :password,
-          section: SECTION_TYPE_CONNECTION,
-          required: true,
-          title: -> { s_('JiraService|Password or API token') },
-          non_empty_password_title: -> { s_('JiraService|New API token, password, or Jira personal access token') },
-          non_empty_password_help: -> { s_('JiraService|Leave blank to use your current configuration') },
-          help: -> { s_('JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server') },
-          is_secret: true
+      section: SECTION_TYPE_CONNECTION,
+      required: true,
+      title: -> { s_('JiraService|API token or password') },
+      non_empty_password_title: -> { s_('JiraService|New API token or password') },
+      non_empty_password_help: -> { s_('JiraService|Leave blank to use your current configuration') },
+      help: -> { s_('JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server') },
+      is_secret: true
 
     field :jira_issue_regex,
-           section: SECTION_TYPE_CONFIGURATION,
-           required: false,
-           title: -> { s_('JiraService|Jira issue regex') },
-           help: -> { s_('JiraService|Use regular expression to match Jira issue keys.') }
+      section: SECTION_TYPE_CONFIGURATION,
+      required: false,
+      title: -> { s_('JiraService|Jira issue regex') },
+      help: -> { s_('JiraService|Use regular expression to match Jira issue keys.') }
 
     field :jira_issue_prefix,
-          section: SECTION_TYPE_CONFIGURATION,
-          required: false,
-          title: -> { s_('JiraService|Jira issue prefix') },
-          help: -> { s_('JiraService|Use a prefix to match Jira issue keys.') }
+      section: SECTION_TYPE_CONFIGURATION,
+      required: false,
+      title: -> { s_('JiraService|Jira issue prefix') },
+      help: -> { s_('JiraService|Use a prefix to match Jira issue keys.') }
 
     field :jira_issue_transition_id, api_only: true
 
@@ -277,7 +285,9 @@ module Integrations
       expands << 'transitions' if transitions
       options = { expand: expands.join(',') } if expands.any?
 
-      jira_request { client.Issue.find(issue_key, options || {}) }
+      path = API_ENDPOINTS[:find_issue] % issue_key
+
+      jira_request(path) { client.Issue.find(issue_key, options || {}) }
     end
 
     def close_issue(entity, external_issue, current_user)
@@ -374,9 +384,9 @@ module Integrations
     private
 
     def jira_issue_match_regex
-      match_regex = (jira_issue_regex.presence || Gitlab::Regex.jira_issue_key_regex)
+      return /\b#{jira_issue_prefix}(?<issue>#{Gitlab::Regex.jira_issue_key_regex})/ if jira_issue_regex.blank?
 
-      /\b#{jira_issue_prefix}(?<issue>#{match_regex})/
+      Gitlab::UntrustedRegexp.new("\\b#{jira_issue_prefix}(?P<issue>#{jira_issue_regex})")
     end
 
     def parse_project_from_issue_key(issue_key)
@@ -389,7 +399,7 @@ module Integrations
 
     def server_info
       strong_memoize(:server_info) do
-        client_url.present? ? jira_request { client.ServerInfo.all.attrs } : nil
+        client_url.present? ? jira_request(API_ENDPOINTS[:server_info]) { client.ServerInfo.all.attrs } : nil
       end
     end
 
@@ -419,7 +429,8 @@ module Integrations
 
       true
     rescue StandardError => e
-      log_exception(e, message: 'Issue transition failed', client_url: client_url)
+      path = API_ENDPOINTS[:transition_issue] % issue.id
+      log_exception(e, message: 'Issue transition failed', client_url: client_url, client_path: path, client_status: '400')
       false
     end
 
@@ -518,7 +529,8 @@ module Integrations
     end
 
     def comment_exists?(issue, message)
-      comments = jira_request { issue.comments }
+      path = API_ENDPOINTS[:issue_comments] % issue.id
+      comments = jira_request(path) { issue.comments }
 
       comments.present? && comments.any? { |comment| comment.body.include?(message) }
     end
@@ -526,14 +538,16 @@ module Integrations
     def send_message(issue, message, remote_link_props)
       return unless client_url.present?
 
-      jira_request do
+      path = API_ENDPOINTS[:link_remote_issue] % issue.id
+
+      jira_request(path) do
         remote_link = find_remote_link(issue, remote_link_props[:object][:url])
 
         create_issue_comment(issue, message) unless remote_link
         remote_link ||= issue.remotelink.build
         remote_link.save!(remote_link_props)
 
-        log_info("Successfully posted", client_url: client_url)
+        log_info("Successfully posted", client_url: client_url, client_path: path)
         "SUCCESS: Successfully posted to #{client_url}."
       end
     end
@@ -545,7 +559,8 @@ module Integrations
     end
 
     def find_remote_link(issue, url)
-      links = jira_request { issue.remotelink.all }
+      path = API_ENDPOINTS[:link_remote_issue] % issue.id
+      links = jira_request(path) { issue.remotelink.all }
       return unless links
 
       links.find { |link| link.object["url"] == url }
@@ -612,11 +627,11 @@ module Integrations
     end
 
     # Handle errors when doing Jira API calls
-    def jira_request
+    def jira_request(path)
       yield
     rescue StandardError => e
       @error = e
-      log_exception(e, message: 'Error sending message', client_url: client_url)
+      log_exception(e, message: 'Error sending message', client_url: client_url, client_path: path, client_status: e.try(:code))
       nil
     end
 

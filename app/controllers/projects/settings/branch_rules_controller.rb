@@ -7,9 +7,7 @@ module Projects
 
       feature_category :source_code_management
 
-      def index
-        render_404 unless Feature.enabled?(:branch_rules, project)
-      end
+      def index; end
     end
   end
 end

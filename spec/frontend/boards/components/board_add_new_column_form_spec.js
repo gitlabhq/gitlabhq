@@ -29,10 +29,7 @@ describe('BoardAddNewColumnForm', () => {
       },
       slots,
       store: createStore({
-        actions: {
-          setAddColumnFormVisibility: jest.fn(),
-          ...actions,
-        },
+        actions,
       }),
     });
   };
@@ -48,16 +45,11 @@ describe('BoardAddNewColumnForm', () => {
   });
 
   it('clicking cancel hides the form', () => {
-    const setAddColumnFormVisibility = jest.fn();
-    mountComponent({
-      actions: {
-        setAddColumnFormVisibility,
-      },
-    });
+    mountComponent();
 
     cancelButton().vm.$emit('click');
 
-    expect(setAddColumnFormVisibility).toHaveBeenCalledWith(expect.anything(), false);
+    expect(wrapper.emitted('setAddColumnFormVisibility')).toEqual([[false]]);
   });
 
   describe('Add list button', () => {

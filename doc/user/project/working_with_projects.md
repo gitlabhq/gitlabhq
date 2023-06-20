@@ -11,9 +11,15 @@ code are saved in projects, and most features are in the scope of projects.
 
 ## View projects
 
-To view all your projects, on the top bar, select **Main menu > Projects > View all projects**.
+To view all your projects:
 
-To browse all public projects, select **Main menu > Explore > Projects**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
+
+To browse all projects you can access:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Explore**.
 
 ### Who can view the Projects page
 
@@ -42,11 +48,12 @@ visit the `/projects/:id` URL in your browser or other tool accessing the projec
 
 To explore project topics:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. Select the **Explore topics** tab.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Explore**.
+1. On the left sidebar, select **Topics**.
 1. To view projects associated with a topic, select a topic.
 
-The **Explore topics** tab shows a list of topics sorted by the number of associated projects.
+The **Explore topics** page shows a list of topics, sorted by the number of associated projects.
 
 You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
 
@@ -59,13 +66,14 @@ You can add a star to projects you use frequently to make them easier to find.
 
 To add a star to a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. In the upper-right corner of the page, select **Star**.
 
 ## View starred projects
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. Select the **Starred projects** tab.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
+1. Select the **Starred** tab.
 1. GitLab displays information about your starred projects, including:
 
    - Project description, including name, description, and icon.
@@ -83,17 +91,20 @@ called `my-project` under your username, the project is created at `https://gitl
 
 To view your personal projects:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
 1. In the **Yours** tab, select **Personal**.
 
 ## Delete a project
 
-After you delete a project, projects in personal namespaces are deleted immediately. To delay deletion of projects in a group
-you can [enable delayed project removal](../group/manage.md#enable-delayed-project-deletion).
+After you delete a project:
+
+- Projects in personal namespaces are deleted immediately.
+- Projects in groups are [deleted after a retention period](../project/settings/index.md#delayed-project-deletion).
 
 To delete a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. Scroll down to the **Delete project** section.
@@ -107,12 +118,10 @@ To delete a project:
 > - [Available to all users](https://gitlab.com/gitlab-org/gitlab/-/issues/346976) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `project_owners_list_project_pending_deletion`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) in GitLab 14.9. [Feature flag `project_owners_list_project_pending_deletion`](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) removed.
 
-When delayed project deletion is [enabled for a group](../group/manage.md#enable-delayed-project-deletion),
-projects within that group are not deleted immediately, but only after a delay.
-
 To view a list of all projects that are pending deletion:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your projects**.
 1. Based on your GitLab version:
    - GitLab 14.6 and later: select the **Pending deletion** tab.
    - GitLab 14.5 and earlier: select the **Deleted projects** tab.
@@ -127,18 +136,14 @@ Each project in the list shows:
 
 To view the activity of a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project..
-1. On the left sidebar, select **Project information > Activity**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Activity**.
 1. Select a tab to view the type of project activity.
 
 ## Search in projects
 
-You can search through your projects.
-
-1. On the top bar, select **Main menu**.
-1. In **Search your projects**, type the project name.
-
-GitLab filters as you type.
+To search through your projects, on the left sidebar, at the top, select **Search GitLab**
+(**{search}**). GitLab filters as you type.
 
 You can also look for the projects you [starred](#star-a-project) (**Starred projects**).
 
@@ -161,7 +166,10 @@ You can also choose to hide or show archived projects.
 
 You can filter projects by the programming language they use. To do this:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select either:
+   - **View all your projects**, to filter your projects.
+   - **Explore**, to filter all projects you can access.
 1. From the **Language** dropdown list, select the language you want to filter projects by.
 
 A list of projects that use the selected language is displayed.
@@ -174,8 +182,8 @@ Prerequisite:
 
 - You must have the Owner role for the project.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggle by each feature you want to turn on or off, or change access for.
 1. Select **Save changes**.
@@ -190,7 +198,7 @@ When you leave a project:
 
 To leave a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Leave project**. The **Leave project** option only displays
 on the project dashboard when a project is part of a group under a
 [group namespace](../namespace/index.md).

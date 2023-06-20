@@ -5,6 +5,7 @@ class MergeRequest::DiffLlmSummary < ApplicationRecord
   belongs_to :merge_request_diff
   belongs_to :user, optional: true
 
+  validates :merge_request_diff_id, uniqueness: true
   validates :provider, presence: true
   validates :content, presence: true, length: { maximum: 2056 }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :projects do
+RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :groups_and_projects do
   include Features::SourceEditorSpecHelpers
   include ProjectForksHelper
   include Features::BlobSpecHelpers
@@ -17,10 +17,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     stub_feature_flags(vscode_web_ide: false)
 
     sign_in(user)
-  end
-
-  after do
-    unset_default_button
   end
 
   shared_examples 'unavailable for an archived project' do
@@ -48,9 +44,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'inserts a content of a file' do
-      set_default_button('edit')
       click_link('.gitignore')
-      click_link_or_button('Edit')
+      edit_in_single_file_editor
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
@@ -69,9 +64,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'commits an edited file' do
-      set_default_button('edit')
       click_link('.gitignore')
-      click_link_or_button('Edit')
+      edit_in_single_file_editor
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
@@ -86,9 +80,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'commits an edited file to a new branch' do
-      set_default_button('edit')
       click_link('.gitignore')
-      click_link_or_button('Edit')
+      edit_in_single_file_editor
 
       find('.file-editor', match: :first)
 
@@ -105,10 +98,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'shows loader on commit changes' do
-      set_default_button('edit')
       click_link('.gitignore')
-      click_link_or_button('Edit')
-
+      edit_in_single_file_editor
       # why: We don't want the form to actually submit, so that we can assert the button's changed state
       page.execute_script("document.querySelector('.js-edit-blob-form').addEventListener('submit', e => e.preventDefault())")
 
@@ -120,9 +111,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'shows the diff of an edited file' do
-      set_default_button('edit')
       click_link('.gitignore')
-      click_link_or_button('Edit')
+      edit_in_single_file_editor
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
@@ -158,9 +148,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'inserts a content of a file in a forked project', :sidekiq_might_not_need_inline do
-      set_default_button('edit')
       click_link('.gitignore')
-      click_link_or_button('Edit')
+      edit_in_single_file_editor
 
       expect_fork_prompt
 
@@ -176,9 +165,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'opens the Web IDE in a forked project', :sidekiq_might_not_need_inline do
-      set_default_button('webide')
       click_link('.gitignore')
-      click_link_or_button('Web IDE')
+      edit_in_web_ide
 
       expect_fork_prompt
 
@@ -191,9 +179,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
     end
 
     it 'commits an edited file in a forked project', :sidekiq_might_not_need_inline do
-      set_default_button('edit')
       click_link('.gitignore')
-      click_link_or_button('Edit')
+      edit_in_single_file_editor
 
       expect_fork_prompt
       click_link_or_button('Fork')
@@ -222,9 +209,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :pr
       end
 
       it 'links to the forked project for editing', :sidekiq_might_not_need_inline do
-        set_default_button('edit')
         click_link('.gitignore')
-        click_link_or_button('Edit')
+        edit_in_single_file_editor
 
         expect(page).not_to have_link('Fork')
 

@@ -1,6 +1,5 @@
 <script>
 import { isEmpty } from 'lodash';
-import { produce } from 'immer';
 import {
   GlAlert,
   GlSkeletonLoader,
@@ -11,15 +10,12 @@ import {
   GlTooltipDirective,
   GlEmptyState,
 } from '@gitlab/ui';
-import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
-import * as Sentry from '@sentry/browser';
+import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
-import { isPositiveInteger } from '~/lib/utils/number_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import {
@@ -111,11 +107,6 @@ export default {
       required: false,
       default: false,
     },
-    workItemId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     workItemIid: {
       type: String,
       required: false,
@@ -128,16 +119,12 @@ export default {
     },
   },
   data() {
-    const workItemId = getParameterByName('work_item_id');
-
     return {
       error: undefined,
       updateError: undefined,
       workItem: {},
       updateInProgress: false,
-      modalWorkItemId: isPositiveInteger(workItemId)
-        ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
-        : null,
+      modalWorkItemId: undefined,
       modalWorkItemIid: getParameterByName('work_item_iid'),
       isReportDrawerOpen: false,
       reportedUrl: '',
@@ -279,7 +266,7 @@ export default {
       // Once more types are moved to have Work Items involved
       // we need to handle this properly.
       if (this.parentWorkItemType === WORK_ITEM_TYPE_VALUE_ISSUE) {
-        return `../../issues/${this.parentWorkItem?.iid}`;
+        return `../../-/issues/${this.parentWorkItem?.iid}`;
       }
       return this.parentWorkItem?.webUrl;
     },
@@ -347,10 +334,10 @@ export default {
     },
   },
   mounted() {
-    if (this.modalWorkItemId || this.modalWorkItemIid) {
+    if (this.modalWorkItemIid) {
       this.openInModal({
         event: undefined,
-        modalWorkItem: { id: this.modalWorkItemId, iid: this.modalWorkItemIid },
+        modalWorkItem: { iid: this.modalWorkItemIid },
       });
     }
   },
@@ -409,71 +396,6 @@ export default {
     setEmptyState() {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
-    },
-    addChild(child) {
-      const { defaultClient: client } = this.$apollo.provider.clients;
-      this.toggleChildFromCache(child, child.id, client);
-    },
-    toggleChildFromCache(workItem, childId, store) {
-      const query = {
-        query: workItemByIidQuery,
-        variables: { fullPath: this.fullPath, iid: this.workItemIid },
-      };
-
-      const sourceData = store.readQuery(query);
-
-      const newData = produce(sourceData, (draftState) => {
-        const { widgets } = draftState.workspace.workItems.nodes[0];
-        const widgetHierarchy = widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
-
-        const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
-
-        if (index >= 0) {
-          widgetHierarchy.children.nodes.splice(index, 1);
-        } else {
-          widgetHierarchy.children.nodes.push(workItem);
-        }
-      });
-
-      store.writeQuery({ ...query, data: newData });
-    },
-    async updateWorkItem(workItem, childId, parentId) {
-      return this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
-        update: (store) => this.toggleChildFromCache(workItem, childId, store),
-      });
-    },
-    async undoChildRemoval(workItem, childId) {
-      try {
-        const { data } = await this.updateWorkItem(workItem, childId, this.workItem.id);
-
-        if (data.workItemUpdate.errors.length === 0) {
-          this.activeToast?.hide();
-        }
-      } catch (error) {
-        this.updateError = s__('WorkItem|Something went wrong while undoing child removal.');
-        Sentry.captureException(error);
-      } finally {
-        this.activeToast?.hide();
-      }
-    },
-    async removeChild({ id }) {
-      try {
-        const { data } = await this.updateWorkItem(null, id, null);
-
-        if (data.workItemUpdate.errors.length === 0) {
-          this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
-            action: {
-              text: s__('WorkItem|Undo'),
-              onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, id),
-            },
-          });
-        }
-      } catch (error) {
-        this.updateError = s__('WorkItem|Something went wrong while removing child.');
-        Sentry.captureException(error);
-      }
     },
     updateHasNotes() {
       this.$emit('has-notes');
@@ -593,7 +515,6 @@ export default {
             @error="updateError = $event"
           />
           <work-item-actions
-            v-if="canUpdate || canDelete"
             :work-item-id="workItem.id"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
@@ -602,6 +523,9 @@ export default {
             :can-update="canUpdate"
             :is-confidential="workItem.confidential"
             :is-parent-confidential="parentWorkItemConfidentiality"
+            :work-item-reference="workItem.reference"
+            :work-item-create-note-email="workItem.createNoteEmail"
+            :is-modal="isModal"
             @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
             @toggleWorkItemConfidentiality="toggleConfidentiality"
             @error="updateError = $event"
@@ -713,8 +637,10 @@ export default {
         />
         <work-item-award-emoji
           v-if="workItemAwardEmoji"
-          :work-item="workItem"
+          :work-item-id="workItem.id"
+          :work-item-fullpath="workItem.project.fullPath"
           :award-emoji="workItemAwardEmoji.awardEmoji"
+          :work-item-iid="workItemIid"
           @error="updateError = $event"
         />
         <work-item-tree
@@ -726,8 +652,6 @@ export default {
           :children="children"
           :can-update="canUpdate"
           :confidential="workItem.confidential"
-          @addWorkItemChild="addChild"
-          @removeChild="removeChild"
           @show-modal="openInModal"
         />
         <work-item-notes

@@ -66,7 +66,9 @@ All AI features are experimental.
    1. Enable **Experiment features**
    1. Enable **Third-party AI services**
 1. Enable the specific feature flag for the feature you want to test
-1. Set either the required access token `OpenAi` or `Vertex`. Ask in [`#ai_enablement_team`](https://gitlab.slack.com/archives/C051K31F30R) to receive an access token.
+1. Set the required access token. To receive an access token:
+   1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
+   1. For all other providers, like Anthropic or OpenAI, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
 
 ### Set up the embedding database
 
@@ -82,28 +84,38 @@ For features that use the embedding database, additional setup is needed.
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database
 
-### Setup for GitLab chat
+### Setup for GitLab documentation chat (legacy chat)
 
 To populate the embedding database for GitLab chat:
 
 1. Open a rails console
 1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
 
+### Debugging
+
+To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.
+To follow the debugging messages related to the AI requests on the abstraction layer, you can use:
+
+```shell
+tail -f log/llm.log
+```
+
 ### Configure GCP Vertex access
 
 In order to obtain a GCP service key for local development, please follow the steps below:
 
-- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions
+- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request). At this time, access to any endpoints outside of `text-bison` or `chat-bison` must be made through the group environment.
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
-- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account. Your full settings should then be:
+- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
+- Open the Rails console. Update the settings to:
 
 ```ruby
-Gitlab::CurrentSettings.update(tofa_credentials: File.read('/YOUR_FILE.json'))
+Gitlab::CurrentSettings.update(vertex_ai_credentials: File.read('/YOUR_FILE.json'))
 
 # Note: These credential examples will not work locally for all models
-Gitlab::CurrentSettings.update(tofa_host: "<root-domain>") # Example: us-central1-aiplatform.googleapis.com
-Gitlab::CurrentSettings.update(tofa_url: "<full-api-endpoint>") # Example: https://ROOT-DOMAIN/v1/projects/MY-COOL-PROJECT/locations/us-central1/publishers/google/models/MY-SPECIAL-MODEL:predict
+Gitlab::CurrentSettings.update(vertex_ai_host: "<root-domain>") # Example: us-central1-aiplatform.googleapis.com
+Gitlab::CurrentSettings.update(vertex_ai_project: "<project-id>") # Example: cloud-large-language-models
 ```
 
 Internal team members can [use this snippet](https://gitlab.com/gitlab-com/gl-infra/production/-/snippets/2541742) for help configuring these endpoints.
@@ -308,7 +320,6 @@ We recommend to use [policies](policies.md) to deal with authorization for a fea
 1. Feature specific feature flag is enabled
 1. The namespace has the required license for the feature
 1. User is a member of the group/project
-1. Resource is allowed to be sent (see `send_to_ai?` method)
 1. `experiment_features_enabled` and `third_party_ai_features_enabled` flags are set on the `Namespace`
 
 For our example, we need to implement the `allowed?(:amazing_new_ai_feature)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
@@ -322,8 +333,7 @@ module EE
     prepended do
       with_scope :subject
       condition(:ai_available) do
-        ::Feature.enabled?(:openai_experimentation) &&
-          @subject.send_to_ai?
+        ::Feature.enabled?(:openai_experimentation)
       end
 
       with_scope :subject
@@ -337,19 +347,6 @@ module EE
       end.enable :amazing_new_ai_feature
     end
   end
-end
-```
-
-### Implement `send_to_ai?`
-
-To make sure we only send data that is allowed to be sent, we have the `send_to_ai?` method. It checks if the resource is not confidential and public data.
-Some resources already implement `send_to_ai?`. Make sure yours does as well. In our case, `Issue` is already covered with the `Issuable` concern. This is an example how it could look like:
-
-```ruby
-# ee/app/models/concerns/ee
-
-def send_to_ai?
-  !try(:confidential) && resource_parent.public?
 end
 ```
 
@@ -442,6 +439,13 @@ module Gitlab
     end
   end
 end
+```
+
+Because we support multiple AI providers, you may also use those providers for the same example:
+
+```ruby
+Gitlab::Llm::VertexAi::Client.new(user)
+Gitlab::Llm::Anthropic::Client.new(user)
 ```
 
 ### Add Ai Action to GraphQL

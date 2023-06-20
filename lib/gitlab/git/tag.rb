@@ -76,8 +76,16 @@ module Gitlab
         encode! @message
       end
 
-      def tagger
-        @raw_tag.tagger
+      def user_name
+        encode! tagger.name if tagger
+      end
+
+      def user_email
+        encode! tagger.email if tagger
+      end
+
+      def date
+        Time.at(tagger.date.seconds).utc if tagger
       end
 
       def has_signature?
@@ -104,6 +112,10 @@ module Gitlab
       end
 
       private
+
+      def tagger
+        @raw_tag.tagger
+      end
 
       def message_from_gitaly_tag
         return @raw_tag.message.dup if full_message_fetched_from_gitaly?

@@ -14,7 +14,7 @@ module Projects
         end
 
         success
-      rescue StandardError => e
+      rescue StandardError, GRPC::Core::CallError => e
         error(e.message)
       end
     end

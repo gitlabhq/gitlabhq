@@ -267,7 +267,7 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
       allow(YAML).to receive(:load_file).with(Rails.root.join('config/events/filename.yml')).and_return(test_definition)
     end
 
-    it 'dispatchs the data to .event' do
+    it 'dispatches the data to .event' do
       project = build_stubbed(:project)
       user = build_stubbed(:user)
 
@@ -315,6 +315,20 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
       allow(Gitlab.config).to receive(:snowplow_micro).and_raise(GitlabSettings::MissingSetting)
 
       expect(described_class).not_to be_snowplow_micro_enabled
+    end
+  end
+
+  describe 'tracker' do
+    it 'returns a SnowPlowMicro instance in development' do
+      allow(Rails.env).to receive(:development?).and_return(true)
+
+      expect(described_class.tracker).to be_an_instance_of(Gitlab::Tracking::Destinations::SnowplowMicro)
+    end
+
+    it 'returns a SnowPlow instance when not in development' do
+      allow(Rails.env).to receive(:development?).and_return(false)
+
+      expect(described_class.tracker).to be_an_instance_of(Gitlab::Tracking::Destinations::Snowplow)
     end
   end
 end

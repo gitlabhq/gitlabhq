@@ -3,31 +3,6 @@
   dependencies: []
   cache: {}
 
-create-issues-for-failing-tests:
-  extends:
-    - .notify-defaults
-    - .notify:rules:create-issues-for-failing-tests
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
-  variables:
-    FAILED_TESTS_DIR: "${CI_PROJECT_DIR}/tmp/failed_tests"
-    FAILING_ISSUES_PROJECT: "gitlab-org/quality/engineering-productivity/flaky-tests-playground"
-    FAILING_ISSUE_JSON_DIR: "${CI_PROJECT_DIR}/tmp/issues"
-  before_script:
-    - source ./scripts/utils.sh
-    - source ./scripts/rspec_helpers.sh
-    - install_gitlab_gem
-  script:
-    - mkdir -p "${FAILING_ISSUE_JSON_DIR}"
-    - retrieve_failed_tests "${FAILED_TESTS_DIR}" "json" "latest"
-    - scripts/pipeline/create_test_failure_issues.rb --project "${FAILING_ISSUES_PROJECT}" --tests-report-file "${FAILED_TESTS_DIR}/rspec_failed_tests.json" --issues-json-folder "${FAILING_ISSUE_JSON_DIR}" --api-token "${FAILING_ISSUES_PROJECT_TOKEN}"
-    - scripts/pipeline/create_test_failure_issues.rb --project "${FAILING_ISSUES_PROJECT}" --tests-report-file "${FAILED_TESTS_DIR}/rspec_ee_failed_tests.json" --issues-json-folder "${FAILING_ISSUE_JSON_DIR}" --api-token "${FAILING_ISSUES_PROJECT_TOKEN}"
-  artifacts:
-    paths:
-      - ${FAILED_TESTS_DIR}/
-      - ${FAILING_ISSUE_JSON_DIR}/
-    when: always
-    expire_in: 2 days
-
 notify-package-and-test-failure:
   extends:
     - .notify-defaults

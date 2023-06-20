@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Users API **(FREE)**
 
-This documentation has information on API calls, parameters and responses for the Users API. 
+This documentation has information on API calls, parameters and responses for the Users API.
 
 For information on user activities that update the user event timestamps, see [get user activities](#get-user-activities).
 
@@ -115,6 +115,7 @@ GET /users?without_project_bots=true
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
+> - The `scim_identities` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324247) in GitLab 16.1.
 
 ```plaintext
 GET /users
@@ -128,6 +129,7 @@ GET /users
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
 | `saml_provider_id` **(PREMIUM)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
+| `skip_ldap` **(PREMIUM)** | boolean | no     | Skip LDAP users. |
 
 ```json
 [
@@ -447,6 +449,21 @@ see the `group_saml` option and `provisioned_by_group_id` parameter:
 }
 ```
 
+Users on [GitLab.com Premium or Ultimate](https://about.gitlab.com/pricing/) also
+see the `scim_identities` parameter:
+
+```json
+{
+  ...
+  "extra_shared_runners_minutes_limit": null,
+  "scim_identities": [
+      {"extern_uid": "2435223452345", "group_id": "3", "active": true},
+      {"extern_uid": "john.smith", "group_id": "42", "active": false}
+    ]
+  ...
+}
+```
+
 Administrators can use the `created_by` parameter to see if a user account was created:
 
 - [Manually by an administrator](../user/profile/account/create_accounts.md#create-users-in-admin-area).
@@ -498,7 +515,7 @@ Parameters:
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional CI/CD minutes for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional units of compute for this user.                                                                                                 |
 | `force_random_password`              | No       | Set user password to a random value - true or false (default)                                                                                           |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -511,7 +528,7 @@ Parameters:
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
-| `shared_runners_minutes_limit` **(PREMIUM)**  | No       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit` **(PREMIUM)**  | No       | Can be set by administrators only. Maximum number of monthly units of compute for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -548,7 +565,7 @@ Parameters:
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional CI/CD minutes for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional units of compute for this user.                                                                                                 |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `id`                                 | Yes      | ID of the user                                                                                                                                      |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -562,7 +579,7 @@ Parameters:
 | `pronouns`                           | No       | Pronouns                                                                                                                                                |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | Public email of the user (must be already verified)                                                                                                                            |
-| `shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Maximum number of monthly units of compute for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
@@ -875,7 +892,7 @@ Parameters:
 | :------------------------------- | :------- | :--------------------------------------------------------------------------- |
 | `view_diffs_file_by_file`        | Yes      | Flag indicating the user sees only one file diff per page.                   |
 | `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs.                   |
-| `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. |
+| `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. For more information and examples, see [Token Payload](../ci/secrets/id_token_authentication.md#token-payload). |
 
 ## User follow
 
@@ -989,6 +1006,20 @@ Example response:
   "review_requested_merge_requests": 0,
   "todos": 1
 }
+```
+
+## Create Service Account User **(PREMIUM)**
+
+> Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
+
+Creates a service account user with an auto-generated email address and username.
+
+```plaintext
+POST /service_accounts
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/service_accounts"
 ```
 
 ## List user projects
@@ -2204,12 +2235,16 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a CI runner **(FREE SELF)**
+## Create a runner **(FREE)**
 
-It creates a new runner, linked to the current user.
+Creates a runner linked to the current user.
 
-Requires administrator access or ownership of the target namespace or project. Token values are returned once. Make sure you save it because you can't access
-it again.
+Prerequisites:
+
+- You must be an administrator or have the Owner role of the target namespace or project.
+- For `instance_type`, you must be an administrator of the GitLab instance.
+
+Be sure to copy or save the `token` in the response, the value cannot be retrieved again.
 
 ```plaintext
 POST /user/runners

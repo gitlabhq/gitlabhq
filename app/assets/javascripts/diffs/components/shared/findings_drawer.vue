@@ -30,8 +30,8 @@ export default {
     ALLOWED_ATTR: ['href', 'rel'],
   },
   computed: {
-    drawerOffsetTop() {
-      return getContentWrapperHeight('.content-wrapper');
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
     },
   },
   DRAWER_Z_INDEX,
@@ -47,7 +47,7 @@ export default {
 </script>
 <template>
   <gl-drawer
-    :header-height="drawerOffsetTop"
+    :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     class="findings-drawer"
     :open="Object.keys(drawer).length !== 0"

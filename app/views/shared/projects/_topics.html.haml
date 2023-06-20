@@ -5,7 +5,7 @@
     %span.gl-p-2.gl-text-gray-500
       = _('Topics') + ':'
     - project.topics_to_show.each do |topic|
-      - explore_project_topic_path = topic_explore_projects_path(topic_name: topic[:name])
+      - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
       - if topic[:title].length > max_project_topic_length
         %a.gl-p-2.has-tooltip{ data: { container: "body" }, title: topic[:title], href: explore_project_topic_path, itemprop: 'keywords' }
           = gl_badge_tag truncate(topic[:title], length: max_project_topic_length)
@@ -18,7 +18,7 @@
       - content = capture do
         %span.gl-display-inline-flex.gl-flex-wrap
           - project.topics_not_shown.each do |topic|
-            - explore_project_topic_path = topic_explore_projects_path(topic_name: topic[:name])
+            - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
             - if topic[:title].length > max_project_topic_length
               %a.gl-mr-3.gl-mb-3.has-tooltip{ data: { container: "body" }, title: topic[:title], href: explore_project_topic_path, itemprop: 'keywords' }
                 = gl_badge_tag truncate(topic[:title], length: max_project_topic_length)

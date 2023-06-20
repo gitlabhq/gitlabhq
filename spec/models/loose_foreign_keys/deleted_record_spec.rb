@@ -44,9 +44,9 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
         records.each(&:reload)
 
         expect(records).to all(have_attributes(
-                                 cleanup_attempts: 0,
-                                 consume_after: time
-                               ))
+          cleanup_attempts: 0,
+          consume_after: time
+        ))
       end
     end
 

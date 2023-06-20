@@ -1,18 +1,18 @@
-import { sortBy, cloneDeep } from 'lodash';
+import { sortBy, cloneDeep, find, inRange } from 'lodash';
 import {
   TYPENAME_BOARD,
   TYPENAME_ITERATION,
   TYPENAME_MILESTONE,
   TYPENAME_USER,
 } from '~/graphql_shared/constants';
-import { isGid, convertToGraphQLId } from '~/graphql_shared/utils';
+import { isGid, convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   ListType,
   MilestoneIDs,
   AssigneeFilterType,
   MilestoneFilterType,
   boardQuery,
-} from './constants';
+} from 'ee_else_ce/boards/constants';
 
 export function getMilestone() {
   return null;
@@ -28,6 +28,17 @@ export function updateListPosition(listObj) {
   }
 
   return { ...listObj, position };
+}
+
+export function calculateNewPosition(listPosition, initialPosition, targetPosition) {
+  if (
+    listPosition === null ||
+    !(inRange(listPosition, initialPosition, targetPosition) || listPosition === targetPosition)
+  ) {
+    return listPosition;
+  }
+  const offset = initialPosition < targetPosition ? -1 : 1;
+  return listPosition + offset;
 }
 
 export function formatBoardLists(lists) {
@@ -191,6 +202,38 @@ export function moveItemListHelper(item, fromList, toList) {
   return updatedItem;
 }
 
+export function moveItemVariables({
+  iid,
+  epicId,
+  fromListId,
+  toListId,
+  moveBeforeId,
+  moveAfterId,
+  isIssue,
+  boardId,
+  itemToMove,
+}) {
+  if (isIssue) {
+    return {
+      iid,
+      boardId,
+      projectPath: itemToMove.referencePath.split(/[#]/)[0],
+      moveBeforeId: moveBeforeId ? getIdFromGraphQLId(moveBeforeId) : undefined,
+      moveAfterId: moveAfterId ? getIdFromGraphQLId(moveAfterId) : undefined,
+      fromListId: getIdFromGraphQLId(fromListId),
+      toListId: getIdFromGraphQLId(toListId),
+    };
+  }
+  return {
+    epicId,
+    boardId,
+    moveBeforeId,
+    moveAfterId,
+    fromListId,
+    toListId,
+  };
+}
+
 export function isListDraggable(list) {
   return list.listType !== ListType.backlog && list.listType !== ListType.closed;
 }
@@ -316,6 +359,13 @@ export function transformBoardConfig() {
 
 export function getBoardQuery(boardType) {
   return boardQuery[boardType].query;
+}
+
+export function getListByTypeId(lists, type, id) {
+  // type can be assignee/label/milestone/iteration
+  if (type && id) return find(lists, (l) => l.listType === ListType[type] && l[type]?.id === id);
+
+  return null;
 }
 
 export default {

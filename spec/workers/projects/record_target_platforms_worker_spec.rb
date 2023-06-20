@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RecordTargetPlatformsWorker, feature_category: :projects do
+RSpec.describe Projects::RecordTargetPlatformsWorker, feature_category: :groups_and_projects do
   include ExclusiveLeaseHelpers
 
   let_it_be(:swift) { create(:programming_language, name: 'Swift') }

@@ -48,7 +48,7 @@ export default {
     },
   },
   methods: {
-    handleInput(checked) {
+    handleChange(checked) {
       if (checked) {
         this.unselectedArtifacts.forEach((node) => this.$emit('selectArtifact', node, true));
       } else {
@@ -65,6 +65,6 @@ export default {
     :disabled="disabled"
     :checked="checked"
     :indeterminate="indeterminate"
-    @input="handleInput"
+    @change="handleChange"
   />
 </template>

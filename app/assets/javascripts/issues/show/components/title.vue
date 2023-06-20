@@ -60,7 +60,6 @@ export default {
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
       class="title gl-font-size-h-display"
-      data-qa-selector="title_content"
       data-testid="issue-title"
       dir="auto"
     ></h1>

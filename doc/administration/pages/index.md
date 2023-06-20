@@ -146,7 +146,7 @@ The Pages daemon doesn't listen to the outside world.
    pages_external_url "http://pages.example.com" # not a subdomain of external_url
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 
@@ -182,7 +182,7 @@ you must also add the full paths as shown below:
    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
 [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
 to use the HTTPS protocol.
@@ -221,13 +221,13 @@ This setup is primarily intended to be used when [installing a GitLab POC on Ama
    pages_nginx['redirect_http_to_https'] = true
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ### Global settings
 
 Below is a table of all configuration settings known to Pages in Omnibus GitLab,
 and what they do. These options can be adjusted in `/etc/gitlab/gitlab.rb`,
-and take effect after you [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+and take effect after you [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 Most of these settings don't have to be configured manually unless you need more granular
 control over how the Pages daemon runs and serves content in your environment.
 
@@ -343,7 +343,7 @@ world. Custom domains are supported, but no TLS.
 
    If you don't have IPv6, you can omit the IPv6 address.
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ### Custom domains with TLS support
 
@@ -385,7 +385,7 @@ then you need to also add the full paths as shown below:
    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
 [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
 to use the HTTPS protocol.
@@ -406,7 +406,8 @@ domain as a custom domain to their project.
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Clear the **Require users to prove ownership of custom domains** checkbox.
@@ -423,7 +424,8 @@ sites served under a custom domain.
 To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service.
@@ -453,7 +455,7 @@ Pages access control is disabled by default. To enable it:
    gitlab_pages['access_control'] = true
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
 
 NOTE:
@@ -476,8 +478,9 @@ pre-existing applications must modify the GitLab Pages OAuth application. Follow
 this:
 
 1. Enable [access control](#access-control).
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Applications**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Applications**.
 1. Expand **GitLab Pages**.
 1. Clear the `api` scope's checkbox and select the desired scope's checkbox (for example,
    `read_api`).
@@ -495,7 +498,8 @@ This can be helpful to restrict information published with Pages websites to the
 of your instance only.
 To do that:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Select the **Disable public access to Pages sites** checkbox.
@@ -512,7 +516,7 @@ internet connectivity is gated by a proxy. To use a proxy for GitLab Pages:
    gitlab_pages['env']['http_proxy'] = 'http://example:8080'
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Using a custom Certificate Authority (CA)
 
@@ -598,7 +602,7 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
    gitlab_pages['log_verbose'] = true
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Propagating the correlation ID
 
@@ -617,7 +621,7 @@ To enable the propagation of the correlation ID:
    gitlab_pages['propagate_correlation_id'] = true
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Change storage path
 
@@ -632,7 +636,7 @@ are stored.
    gitlab_rails['pages_path'] = "/mnt/storage/pages"
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Configure listener for reverse proxy requests
 
@@ -654,7 +658,7 @@ Follow the steps below to configure the proxy listener of GitLab Pages.
    gitlab_pages['listen_proxy'] = "localhost:10080"
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Set global maximum size of each GitLab Pages site **(FREE SELF)**
 
@@ -664,7 +668,8 @@ Prerequisite:
 
 To set the global maximum pages size for a project:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
 1. In **Maximum size of pages**, enter a value. The default is `100`.
@@ -678,7 +683,7 @@ Prerequisite:
 
 To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Pages**.
 1. Enter a value under **Maximum size** in MB.
@@ -692,7 +697,7 @@ Prerequisite:
 
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. On the left sidebar, select **Settings > Pages**.
 
    If this path is not visible, select **Deployments > Pages**.
@@ -708,7 +713,8 @@ Prerequisite:
 
 To set the maximum number of GitLab Pages custom domains for a project:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**, and expand **Pages**.
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
 1. Select **Save changes**.
@@ -754,7 +760,7 @@ database encryption. Proceed with caution.
 
 1. Configure [the object storage and migrate pages data to it](#using-object-storage).
 
-1. [Reconfigure the **GitLab server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the
+1. [Reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the
    changes to take effect. The `gitlab-secrets.json` file is now updated with the
    new configuration.
 
@@ -794,7 +800,7 @@ database encryption. Proceed with caution.
    mv /var/opt/gitlab/gitlab-rails/shared/pages/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json
    ```
 
-1. [Reconfigure the **Pages server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure the **Pages server**](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 1. On the **GitLab server**, make the following changes to `/etc/gitlab/gitlab.rb`:
 
@@ -804,7 +810,7 @@ database encryption. Proceed with caution.
    pages_nginx['enable'] = false
    ```
 
-1. [Reconfigure the **GitLab server**](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 It's possible to run GitLab Pages on multiple servers if you wish to distribute
 the load. You can do this through standard load balancing practices such as
@@ -853,7 +859,7 @@ To explicitly enable API source:
    gitlab_pages['domain_config_source'] = "gitlab"
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 Or if you want to use legacy configuration source you can:
 
@@ -863,7 +869,7 @@ Or if you want to use legacy configuration source you can:
    gitlab_pages['domain_config_source'] = "disk"
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### GitLab API cache configuration
 
@@ -960,7 +966,7 @@ In Omnibus installations:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)
@@ -1102,7 +1108,7 @@ If you use [object storage](#using-object-storage), you can disable local storag
    gitlab_rails['pages_local_store_enabled'] = false
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 Starting from GitLab 13.12, this setting also disables the [legacy storage](#migrate-legacy-storage-to-zip-storage), so if you were using NFS to serve Pages, you can completely disconnect from it.
 
@@ -1176,7 +1182,7 @@ TLS connection-based rate limits are enforced using the following:
    gitlab_pages['rate_limit_source_ip_burst'] = 600
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 #### Enable HTTP requests rate limits by domain
 
@@ -1189,7 +1195,7 @@ TLS connection-based rate limits are enforced using the following:
    gitlab_pages['rate_limit_domain_burst'] = 5000
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 #### Enable TLS connections rate limits by source-IP
 
@@ -1202,7 +1208,7 @@ TLS connection-based rate limits are enforced using the following:
    gitlab_pages['rate_limit_tls_source_ip_burst'] = 600
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 #### Enable TLS connections rate limits by domain
 
@@ -1215,7 +1221,7 @@ TLS connection-based rate limits are enforced using the following:
    gitlab_pages['rate_limit_tls_domain_burst'] = 5000
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Related topics
 

@@ -41,6 +41,7 @@ describe('CI Lint', () => {
   const findCiLintResults = () => wrapper.findComponent(CiLintResults);
   const findValidateBtn = () => wrapper.find('[data-testid="ci-lint-validate"]');
   const findClearBtn = () => wrapper.find('[data-testid="ci-lint-clear"]');
+  const findDryRunToggle = () => wrapper.find('[data-testid="ci-lint-dryrun"]');
 
   beforeEach(() => {
     createComponent();
@@ -63,18 +64,13 @@ describe('CI Lint', () => {
     });
   });
 
-  it('validate action calls mutation with dry run', async () => {
-    const dryRunEnabled = true;
-
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    await wrapper.setData({ dryRun: dryRunEnabled });
-
+  it('validate action calls mutation with dry run', () => {
+    findDryRunToggle().vm.$emit('input', true);
     findValidateBtn().vm.$emit('click');
 
     expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
       mutation: lintCIMutation,
-      variables: { content, dry: dryRunEnabled, endpoint },
+      variables: { content, dry: true, endpoint },
     });
   });
 

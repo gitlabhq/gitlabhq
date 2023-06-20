@@ -5,6 +5,7 @@ class DeployKeysProject < ApplicationRecord
   belongs_to :deploy_key, inverse_of: :deploy_keys_projects
   scope :in_project, ->(project) { where(project: project) }
   scope :with_write_access, -> { where(can_push: true) }
+  scope :with_readonly_access, -> { where(can_push: false) }
 
   accepts_nested_attributes_for :deploy_key
 

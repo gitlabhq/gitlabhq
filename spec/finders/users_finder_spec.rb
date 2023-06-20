@@ -45,6 +45,46 @@ RSpec.describe UsersFinder do
         expect(users).to be_empty
       end
 
+      describe 'minimum character limit for search' do
+        it 'passes use_minimum_char_limit from params' do
+          search_term = normal_user.username[..1]
+          expect(User).to receive(:search)
+            .with(search_term, use_minimum_char_limit: false, with_private_emails: anything)
+            .once.and_call_original
+
+          described_class.new(user, { search: search_term, use_minimum_char_limit: false }).execute
+        end
+
+        it 'allows searching with 2 characters when use_minimum_char_limit is false' do
+          users = described_class
+                    .new(user, { search: normal_user.username[..1], use_minimum_char_limit: false })
+                    .execute
+
+          expect(users).to include(normal_user)
+        end
+
+        it 'does not allow searching with 2 characters when use_minimum_char_limit is not set' do
+          users = described_class
+                    .new(user, search: normal_user.username[..1])
+                    .execute
+
+          expect(users).to be_empty
+        end
+
+        context 'when autocomplete_users_use_search_service feature flag is disabled' do
+          before do
+            stub_feature_flags(autocomplete_users_use_search_service: false)
+          end
+
+          it 'does not pass use_minimum_char_limit from params' do
+            search_term = normal_user.username[..1]
+            expect(User).to receive(:search).with(search_term, with_private_emails: anything).once.and_call_original
+
+            described_class.new(user, { search: search_term, use_minimum_char_limit: false }).execute
+          end
+        end
+      end
+
       it 'filters by external users' do
         users = described_class.new(user, external: true).execute
 

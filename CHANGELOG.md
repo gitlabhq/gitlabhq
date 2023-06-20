@@ -837,6 +837,75 @@ entry.
 - [Add index to group_group_links table](gitlab-org/gitlab@9a3f2c1a90b54074e61d0abf07101ce664198e81) ([merge request](gitlab-org/gitlab!117386))
 - [Validate the projects.creator_id foregin key synchronously](gitlab-org/gitlab@ed9351984a16f20506babf6eab6706b917904ed1) ([merge request](gitlab-org/gitlab!117147))
 
+## 15.11.9 (2023-06-15)
+
+### Changed (1 change)
+
+- [Make MigrateSharedVulnerabilityIdentifiers use slow iteration](gitlab-org/gitlab@1d91c7b295b22e844b81fb665748c447028525cd) ([merge request](gitlab-org/gitlab!122856)) **GitLab Enterprise Edition**
+
+## 15.11.8 (2023-06-06)
+
+### Fixed (2 changes)
+
+- [Fix memory leak in CI config includes entry](gitlab-org/gitlab@3e367e614c855352295e3bcab25bf5af4ec66bf5) ([merge request](gitlab-org/gitlab!122540))
+- [Fix serialization of pull_requests in Bitbucket Server Import](gitlab-org/gitlab@201ad93dfdf8f4acfb6d6eee32e2bd6a4ff68157) ([merge request](gitlab-org/gitlab!122396))
+
+### Security (1 change)
+
+- [Validate description length in labels](gitlab-org/gitlab@2c821ee0823e37a57a6dc049591097232c933713) ([merge request](gitlab-org/gitlab!122697))
+
+### Performance (1 change)
+
+- [LFS: Serve pre-signed URLs in `/lfs/objects/batch`](gitlab-org/gitlab@df3a9655a0e8f0bdab3433cefcbd37acfb8ebcff) ([merge request](gitlab-org/gitlab!122348))
+
+## 15.11.7 (2023-06-05)
+
+### Security (16 changes)
+
+- [Fix DoS on test report artifacts](gitlab-org/security/gitlab@76133e75ad38326bf971e2d913263349781aecbe) ([merge request](gitlab-org/security/gitlab!3200))
+- [Fix XSS in Abuse Reports form action](gitlab-org/security/gitlab@e9f9b656b34bb30a7bd66ce82a9d8f6ac43c1ba8) ([merge request](gitlab-org/security/gitlab!3290))
+- [Escape the source branch link correctly](gitlab-org/security/gitlab@77ed3e8c2ef51e7bcc89ad1c8c549424a69e3478) ([merge request](gitlab-org/security/gitlab!3288))
+- [Import source owners with maintainer access if importer is a maintainer](gitlab-org/security/gitlab@98f939c9ba3efd5e51807adbaee189f180131544) ([merge request](gitlab-org/security/gitlab!3283))
+- [Filter inaccessible issuable notes when exporting project](gitlab-org/security/gitlab@29fe6582dd81855cdb263e118459aba370a7c7eb) ([merge request](gitlab-org/security/gitlab!3274))
+- [Block tag names that are prepended with refs/tags/, due to conflicts](gitlab-org/security/gitlab@2b39d58eb21cf2ecc581bc5e1bd4dd48dcfd20bc) ([merge request](gitlab-org/security/gitlab!3262))
+- [Set IP in ActionContoller filter before IP enforcement is evaluated](gitlab-org/security/gitlab@8d6e83ff72564f3fa3b24e2040072024b715a073) ([merge request](gitlab-org/security/gitlab!3279))
+- [Prevent primary email returned as verified on unsaved change](gitlab-org/security/gitlab@8ac9a3e3efea62d9b3e6d758ab3f1c43f2354ea5) ([merge request](gitlab-org/security/gitlab!3223))
+- [Use UntrustedRegexp to protect FrontMatter filter](gitlab-org/security/gitlab@5d300c3af9c37a7607d795868ae2b4e51b8802c5) ([merge request](gitlab-org/security/gitlab!3257))
+- [Improve ambiguous_ref? logic to include heads and tags](gitlab-org/security/gitlab@f478b7673efd183971e9375be84ad06af641893f) ([merge request](gitlab-org/security/gitlab!3247))
+- [Use UntrustedRegexp to protect InlineDiff filter](gitlab-org/security/gitlab@4056d6ccc5b592029ea92ebb90b6e6a66c6eb157) ([merge request](gitlab-org/security/gitlab!3254))
+- [Ignore user-defined diff paths in diff notes](gitlab-org/security/gitlab@b21208f4c10e8bd4e6754f9bfd2cc5fc96c8be20) ([merge request](gitlab-org/security/gitlab!3267))
+- [Reject NPM metadata requests with invalid package_name](gitlab-org/security/gitlab@c4d0f6256bae18d9bb9f6afc87afeeb3ff971335) ([merge request](gitlab-org/security/gitlab!3285))
+- [Use UntrustedRegexp to protect MathFilter regex](gitlab-org/security/gitlab@fd8298b140dba65ac77ed340a5f78e1fc8032db6) ([merge request](gitlab-org/security/gitlab!3251))
+- [Resolve Overall Project Vulnerability Disclosure](gitlab-org/security/gitlab@199048eb1c61063409e25d3433e7276faf95709b) ([merge request](gitlab-org/security/gitlab!3230))
+- [Validate description length in labels](gitlab-org/security/gitlab@208342903aabd7c4b78c24c0b9b173dfbd62e405) ([merge request](gitlab-org/security/gitlab!3242))
+
+## 15.11.6 (2023-05-24)
+
+### Changed (1 change)
+
+- [Introduce parallelised BitBucket Server Importer](gitlab-org/gitlab@41fead2e5b8b8c61c269de902282e2aa75b967a5) ([merge request](gitlab-org/gitlab!121332))
+
+## 15.11.5 (2023-05-19)
+
+### Fixed (5 changes)
+
+- [Makes roadmap current day indicator & timeline locale aware](gitlab-org/gitlab@2dc71e59e277d017118d77743d8658be5b05ddf3) ([merge request](gitlab-org/gitlab!121104)) **GitLab Enterprise Edition**
+- [Fix height calculations with roadmap to prevent extra scrollers](gitlab-org/gitlab@58080e99cb0a551c41b557d5a0000d686c512fdf) ([merge request](gitlab-org/gitlab!120965)) **GitLab Enterprise Edition**
+- [Update by_parent filter in EpicsFinder](gitlab-org/gitlab@97115082a328bc01d04abc651e3b54913a19832a) ([merge request](gitlab-org/gitlab!120966)) **GitLab Enterprise Edition**
+- [Fix no_proxy not working when DNS rebinding protection enabled](gitlab-org/gitlab@84012b21559126cde51cfe341ebff44eda9b3d62) ([merge request](gitlab-org/gitlab!120809))
+- [Remove epic date fields authorization](gitlab-org/gitlab@5c36e497d1e43e4ccf05a0684c3388385b247e45) ([merge request](gitlab-org/gitlab!120290)) **GitLab Enterprise Edition**
+
+## 15.11.4 (2023-05-16)
+
+### Fixed (2 changes)
+
+- [Do not autofocus the description field](gitlab-org/gitlab@978ae42ee723d5bc5235115b8ebfd7c67c8d858b) ([merge request](gitlab-org/gitlab!120306))
+- [Fix group blobs search permission when migration is not complete](gitlab-org/gitlab@c718fc80bf2ae389d63760db0c4aa95ec6c67f7e) ([merge request](gitlab-org/gitlab!120159)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Use correct migration finalisation method](gitlab-org/gitlab@db7999c368aa41a155f717206b5b8340c91927f7) ([merge request](gitlab-org/gitlab!120683))
+
 ## 15.11.3 (2023-05-10)
 
 ### Fixed (2 changes)
@@ -1688,6 +1757,30 @@ entry.
 - [Remove full_path_project_search feature flag](gitlab-org/gitlab@18404e701d99fdf9d91dcf0c38496961eb6be89e) ([merge request](gitlab-org/gitlab!114932))
 - [Update header section](gitlab-org/gitlab@cf4ab283267d84fa1c0dc90fefb1b6ddd2617b5c) ([merge request](gitlab-org/gitlab!114102)) **GitLab Enterprise Edition**
 - [Swap merge_request_user_mentions.note_id to bigint](gitlab-org/gitlab@96baed47326db4f0cc9f60b2e74215211effd814) ([merge request](gitlab-org/gitlab!113928))
+
+## 15.10.8 (2023-06-05)
+
+### Fixed (1 change)
+
+- [Convert some regex to use Gitlab::UntrustedRegexp](gitlab-org/security/gitlab@251e0f30177cf458f4384662bdfc14d404c5b98d)
+
+### Security (15 changes)
+
+- [Fix DoS on test report artifacts](gitlab-org/security/gitlab@5893c3c3311052744175051c8393e451771ea100) ([merge request](gitlab-org/security/gitlab!3201))
+- [Fix XSS in Abuse Reports form action](gitlab-org/security/gitlab@da5ecc94a6db6d3e2180d7bd7e2b32e903f7f5c6) ([merge request](gitlab-org/security/gitlab!3291))
+- [Import source owners with maintainer access if importer is a maintainer](gitlab-org/security/gitlab@9995ef153a96621da0d0f2469734dd895485a4d7) ([merge request](gitlab-org/security/gitlab!3284))
+- [Filter inaccessible issuable notes when exporting project](gitlab-org/security/gitlab@cf73c05b31cf466011fbb3492495a7acbcd78d5f) ([merge request](gitlab-org/security/gitlab!3276))
+- [Block tag names that are prepended with refs/tags/, due to conflicts](gitlab-org/security/gitlab@eb4e906ecd8d56ef71c97ab74a32c06c0a9bd7b6) ([merge request](gitlab-org/security/gitlab!3263))
+- [Set IP in ActionContoller filter before IP enforcement is evaluated](gitlab-org/security/gitlab@d10133feff8201b45c8a4c29681db4f167e23d59) ([merge request](gitlab-org/security/gitlab!3280))
+- [Prevent primary email returned as verified on unsaved change](gitlab-org/security/gitlab@ca0f866a5663af8ffa094b0ffd152e5031beecd5) ([merge request](gitlab-org/security/gitlab!3224))
+- [Use UntrustedRegexp to protect FrontMatter filter](gitlab-org/security/gitlab@f66129126262d000c77f36ea2b1b0f5e88f1be13) ([merge request](gitlab-org/security/gitlab!3256))
+- [Improve ambiguous_ref? logic to include heads and tags](gitlab-org/security/gitlab@7fb2dfc1135d74ea261e633ec0a828fa8a8c7ef0) ([merge request](gitlab-org/security/gitlab!3248))
+- [Use UntrustedRegexp to protect InlineDiff filter](gitlab-org/security/gitlab@2a50fd1fd3c4610871644237edc22bbdc9cbcb1d) ([merge request](gitlab-org/security/gitlab!3255))
+- [Ignore user-defined diff paths in diff notes](gitlab-org/security/gitlab@2e969309ad7b3fff551857ee481a154cb3be73f4) ([merge request](gitlab-org/security/gitlab!3268))
+- [Reject NPM metadata requests with invalid package_name](gitlab-org/security/gitlab@7ec6ab8c11d3732b53c7adc951d3da9972695bff) ([merge request](gitlab-org/security/gitlab!3287))
+- [Use UntrustedRegexp to protect MathFilter regex](gitlab-org/security/gitlab@2a2035520eab7263d157b312f5fb7d3d82440ccf) ([merge request](gitlab-org/security/gitlab!3250))
+- [Resolve Overall Project Vulnerability Disclosure](gitlab-org/security/gitlab@457cd1086688b1a44f1f771c407e8d1eaa8f2951) ([merge request](gitlab-org/security/gitlab!3231))
+- [Validate description length in labels](gitlab-org/security/gitlab@c6f95221685f4475a8b91190c61ee4208e257844) ([merge request](gitlab-org/security/gitlab!3243))
 
 ## 15.10.7 (2023-05-10)
 

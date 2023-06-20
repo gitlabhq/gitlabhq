@@ -12,6 +12,7 @@
 module Features
   module WebIdeSpecHelpers
     include Features::SourceEditorSpecHelpers
+    include Features::BlobSpecHelpers
 
     # Open the IDE from anywhere by first visiting the given project's page
     def ide_visit(project)
@@ -21,8 +22,10 @@ module Features
     end
 
     # Open the IDE from the current page by clicking the Web IDE link
-    def ide_visit_from_link(link_sel = 'Web IDE')
-      new_tab = window_opened_by { click_link(link_sel) }
+    def ide_visit_from_link
+      new_tab = window_opened_by do
+        edit_in_web_ide
+      end
 
       switch_to_window new_tab
     end

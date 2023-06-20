@@ -118,10 +118,6 @@ $solarized-light-il: #2aa198;
   @include hljs-override('params', $solarized-light-nb);
 
   // Line numbers
-  .file-line-num {
-    @include line-link($black, 'link');
-  }
-
   .file-line-blame {
     @include line-link($black, 'git');
   }

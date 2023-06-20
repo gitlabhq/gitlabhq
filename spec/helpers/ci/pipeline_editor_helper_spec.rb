@@ -73,7 +73,7 @@ RSpec.describe Ci::PipelineEditorHelper do
 
     context 'with a project with commits' do
       it 'returns pipeline editor data' do
-        expect(pipeline_editor_data).to eq(default_helper_data.merge({
+        expect(pipeline_editor_data).to include(default_helper_data.merge({
           "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
           "total-branches" => project.repository.branches.length
         }))
@@ -84,7 +84,7 @@ RSpec.describe Ci::PipelineEditorHelper do
       let(:project) { create(:project, :empty_repo) }
 
       it 'returns pipeline editor data' do
-        expect(pipeline_editor_data).to eq(default_helper_data.merge({
+        expect(pipeline_editor_data).to include(default_helper_data.merge({
           "pipeline_etag" => '',
           "total-branches" => 0
         }))

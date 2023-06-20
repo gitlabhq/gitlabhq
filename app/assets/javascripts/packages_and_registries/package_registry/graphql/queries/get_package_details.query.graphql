@@ -46,21 +46,6 @@ query getPackageDetails($id: PackagesPackageID!) {
         }
       }
     }
-    packageFiles(first: 100) {
-      pageInfo {
-        hasNextPage
-      }
-      nodes {
-        id
-        fileMd5
-        fileName
-        fileSha1
-        fileSha256
-        size
-        createdAt
-        downloadPath
-      }
-    }
     versions {
       count
     }

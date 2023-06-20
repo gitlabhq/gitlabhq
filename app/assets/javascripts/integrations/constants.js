@@ -57,6 +57,8 @@ export const integrationTriggerEvents = {
   PIPELINE: 'pipeline_events',
   WIKI_PAGE: 'wiki_page_events',
   DEPLOYMENT: 'deployment_events',
+  ALERT: 'alert_events',
+  INCIDENT: 'incident_events',
 };
 
 export const integrationTriggerEventTitles = {
@@ -82,6 +84,10 @@ export const integrationTriggerEventTitles = {
   [integrationTriggerEvents.DEPLOYMENT]: s__(
     'IntegrationEvents|A deployment is started or finished',
   ),
+  [integrationTriggerEvents.ALERT]: s__('IntegrationEvents|A new, unique alert is recorded'),
+  [integrationTriggerEvents.INCIDENT]: s__(
+    'IntegrationEvents|An incident is created, closed, or reopened',
+  ),
 };
 
 export const billingPlans = {
@@ -104,4 +110,25 @@ export const placeholderForType = {
   [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
 };
 
+export const INTEGRATION_FORM_TYPE_JIRA = 'jira';
 export const INTEGRATION_FORM_TYPE_SLACK = 'gitlab_slack_application';
+
+export const jiraIntegrationAuthFields = {
+  AUTH_TYPE: 'jira_auth_type',
+  USERNAME: 'username',
+  PASSWORD: 'password',
+};
+export const jiraAuthTypeFieldProps = [
+  {
+    username: s__('JiraService|Email or username'),
+    password: s__('JiraService|API token or password'),
+    passwordHelp: s__(
+      'JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server',
+    ),
+    nonEmptyPassword: s__('JiraService|New API token or password'),
+  },
+  {
+    password: s__('JiraService|Jira personal access token'),
+    nonEmptyPassword: s__('JiraService|New Jira personal access token'),
+  },
+];

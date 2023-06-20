@@ -37,7 +37,7 @@ module Gitlab
       private
 
       def create_issue(title:, description:)
-        ::Issues::CreateService.new(container: project, current_user: current_user, params: { title: title, description: description }, spam_params: nil).execute
+        ::Issues::CreateService.new(container: project, current_user: current_user, params: { title: title, description: description }, perform_spam_check: false).execute
       end
 
       def presenter(issue)

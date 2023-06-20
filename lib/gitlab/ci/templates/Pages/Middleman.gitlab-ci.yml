@@ -3,12 +3,13 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Middleman.gitlab-ci.yml
 
-# Full project: https://gitlab.com/pages/middleman
-image: ruby:2.6
+default:
+  # Full project: https://gitlab.com/pages/middleman
+  image: ruby:2.6
 
-cache:
-  paths:
-    - vendor
+  cache:
+    paths:
+      - vendor
 
 test:
   script:

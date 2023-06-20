@@ -10,8 +10,10 @@ type: reference
 GitLab exposes certain environment variables which can be used to override
 their defaults values.
 
-People usually configure GitLab with `/etc/gitlab/gitlab.rb` for Omnibus
-installations, or `gitlab.yml` for installations from source.
+People usually configure GitLab with:
+
+- `/etc/gitlab/gitlab.rb` for Linux package installations.
+- `gitlab.yml` for self-compiled installations.
 
 You can use the following environment variables to override certain values:
 
@@ -44,11 +46,10 @@ We welcome merge requests to make more settings configurable by using variables.
 Make changes to the `config/initializers/1_settings.rb` file, and use the
 naming scheme `GITLAB_#{name in 1_settings.rb in upper case}`.
 
-## Omnibus configuration
+## Linux package installation configuration
 
 To set environment variables, follow [these instructions](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
 It's possible to preconfigure the GitLab Docker image by adding the environment
 variable `GITLAB_OMNIBUS_CONFIG` to the `docker run` command.
-For more information, see the [Pre-configure Docker container](../install/docker.md#pre-configure-docker-container)
-section of the Omnibus GitLab documentation.
+For more information, see [Pre-configure Docker container](../install/docker.md#pre-configure-docker-container).

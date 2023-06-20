@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import runnerToggleActiveMutation from '~/ci/runner/graphql/shared/runner_toggle_active.mutation.graphql';
+import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { createAlert } from '~/alert';
@@ -27,7 +27,7 @@ jest.mock('~/ci/runner/sentry_utils');
 
 describe('RunnerPauseButton', () => {
   let wrapper;
-  let runnerToggleActiveHandler;
+  let runnerTogglePausedHandler;
 
   const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
   const findBtn = () => wrapper.findComponent(GlButton);
@@ -39,12 +39,12 @@ describe('RunnerPauseButton', () => {
       propsData: {
         runner: {
           id: mockRunner.id,
-          active: mockRunner.active,
+          paused: mockRunner.paused,
           ...runner,
         },
         ...propsData,
       },
-      apolloProvider: createMockApollo([[runnerToggleActiveMutation, runnerToggleActiveHandler]]),
+      apolloProvider: createMockApollo([[runnerTogglePausedMutation, runnerTogglePausedHandler]]),
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
@@ -57,13 +57,13 @@ describe('RunnerPauseButton', () => {
   };
 
   beforeEach(() => {
-    runnerToggleActiveHandler = jest.fn().mockImplementation(({ input }) => {
+    runnerTogglePausedHandler = jest.fn().mockImplementation(({ input }) => {
       return Promise.resolve({
         data: {
           runnerUpdate: {
             runner: {
               id: input.id,
-              active: input.active,
+              paused: !input.paused,
             },
             errors: [],
           },
@@ -76,15 +76,15 @@ describe('RunnerPauseButton', () => {
 
   describe('Pause/Resume action', () => {
     describe.each`
-      runnerState | icon       | content        | tooltip                | isActive | newActiveValue
-      ${'paused'} | ${'play'}  | ${I18N_RESUME} | ${I18N_RESUME_TOOLTIP} | ${false} | ${true}
-      ${'active'} | ${'pause'} | ${I18N_PAUSE}  | ${I18N_PAUSE_TOOLTIP}  | ${true}  | ${false}
-    `('When the runner is $runnerState', ({ icon, content, tooltip, isActive, newActiveValue }) => {
+      runnerState | icon       | content        | tooltip                | isPaused | newPausedValue
+      ${'paused'} | ${'play'}  | ${I18N_RESUME} | ${I18N_RESUME_TOOLTIP} | ${true}  | ${false}
+      ${'active'} | ${'pause'} | ${I18N_PAUSE}  | ${I18N_PAUSE_TOOLTIP}  | ${false} | ${true}
+    `('When the runner is $runnerState', ({ icon, content, tooltip, isPaused, newPausedValue }) => {
       beforeEach(() => {
         createComponent({
           props: {
             runner: {
-              active: isActive,
+              paused: isPaused,
             },
           },
         });
@@ -106,7 +106,7 @@ describe('RunnerPauseButton', () => {
 
       describe(`Before the ${icon} button is clicked`, () => {
         it('The mutation has not been called', () => {
-          expect(runnerToggleActiveHandler).toHaveBeenCalledTimes(0);
+          expect(runnerTogglePausedHandler).not.toHaveBeenCalled();
         });
       });
 
@@ -134,12 +134,12 @@ describe('RunnerPauseButton', () => {
           await clickAndWait();
         });
 
-        it(`The mutation to that sets active to ${newActiveValue} is called`, () => {
-          expect(runnerToggleActiveHandler).toHaveBeenCalledTimes(1);
-          expect(runnerToggleActiveHandler).toHaveBeenCalledWith({
+        it(`The mutation to that sets "paused" to ${newPausedValue} is called`, () => {
+          expect(runnerTogglePausedHandler).toHaveBeenCalledTimes(1);
+          expect(runnerTogglePausedHandler).toHaveBeenCalledWith({
             input: {
               id: mockRunner.id,
-              active: newActiveValue,
+              paused: newPausedValue,
             },
           });
         });
@@ -158,7 +158,7 @@ describe('RunnerPauseButton', () => {
           const mockErrorMsg = 'Update error!';
 
           beforeEach(async () => {
-            runnerToggleActiveHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
+            runnerTogglePausedHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
             await clickAndWait();
           });
@@ -180,12 +180,12 @@ describe('RunnerPauseButton', () => {
           const mockErrorMsg2 = 'User not allowed!';
 
           beforeEach(async () => {
-            runnerToggleActiveHandler.mockResolvedValueOnce({
+            runnerTogglePausedHandler.mockResolvedValueOnce({
               data: {
                 runnerUpdate: {
                   runner: {
                     id: mockRunner.id,
-                    active: isActive,
+                    paused: isPaused,
                   },
                   errors: [mockErrorMsg, mockErrorMsg2],
                 },
@@ -215,7 +215,7 @@ describe('RunnerPauseButton', () => {
       createComponent({
         props: {
           runner: {
-            active: true,
+            paused: false,
           },
           compact: true,
         },

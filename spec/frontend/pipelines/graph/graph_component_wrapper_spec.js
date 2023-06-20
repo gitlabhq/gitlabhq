@@ -2,6 +2,7 @@ import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon, GlToggle } from '@gitl
 import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -26,7 +27,6 @@ import {
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
 import GraphViewSelector from '~/pipelines/components/graph/graph_view_selector.vue';
-import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import * as Api from '~/pipelines/components/graph_shared/api';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
@@ -34,7 +34,7 @@ import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_head
 import * as sentryUtils from '~/pipelines/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
-import { mapCallouts, mockCalloutsResponse, mockPipelineResponse } from './mock_data';
+import { mapCallouts, mockCalloutsResponse } from './mock_data';
 
 const defaultProvide = {
   graphqlResourceEtag: 'frog/amphibirama/etag/',
@@ -55,8 +55,6 @@ describe('Pipeline graph wrapper', () => {
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
   const findGraph = () => wrapper.findComponent(PipelineGraph);
   const findStageColumnTitle = () => wrapper.findByTestId('stage-column-title');
-  const findAllStageColumnGroupsInColumn = () =>
-    wrapper.findComponent(StageColumnComponent).findAll('[data-testid="stage-column-group"]');
   const findViewSelector = () => wrapper.findComponent(GraphViewSelector);
   const findViewSelectorToggle = () => findViewSelector().findComponent(GlToggle);
   const findViewSelectorTrip = () => findViewSelector().findComponent(GlAlert);
@@ -316,12 +314,10 @@ describe('Pipeline graph wrapper', () => {
       });
 
       it('switches between views', async () => {
-        const groupsInFirstColumn =
-          mockPipelineResponse.data.project.pipeline.stages.nodes[0].groups.nodes.length;
-        expect(findAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn);
-        expect(findStageColumnTitle().text()).toBe('build');
+        expect(findStageColumnTitle().text()).toBe('deploy');
+
         await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
-        expect(findAllStageColumnGroupsInColumn()).toHaveLength(groupsInFirstColumn + 1);
+
         expect(findStageColumnTitle().text()).toBe('');
       });
 
@@ -507,9 +503,9 @@ describe('Pipeline graph wrapper', () => {
     });
 
     describe('with metrics path', () => {
-      const duration = 875;
-      const numLinks = 7;
-      const totalGroups = 8;
+      const duration = 500;
+      const numLinks = 3;
+      const totalGroups = 7;
       const metricsData = {
         histograms: [
           { name: PIPELINES_DETAIL_LINK_DURATION, value: duration / 1000 },
@@ -559,9 +555,6 @@ describe('Pipeline graph wrapper', () => {
           createComponentWithApollo({
             provide: {
               metricsPath,
-              glFeatures: {
-                pipelineGraphLayersView: true,
-              },
             },
             data: {
               currentViewType: LAYER_VIEW,

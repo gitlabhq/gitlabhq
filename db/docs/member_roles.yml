@@ -3,8 +3,7 @@ table_name: member_roles
 classes:
 - MemberRole
 feature_categories:
-- projects
-- subgroups
+- groups_and_projects
 description: Stores custom roles with composable permissions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92152
 milestone: '15.2'

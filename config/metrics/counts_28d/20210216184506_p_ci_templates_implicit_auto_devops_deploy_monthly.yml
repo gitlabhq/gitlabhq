@@ -3,8 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_deploy_monthly
 description: Count of pipelines with implicit Auto Deploy runs
 product_section: ops
-product_stage: configure
-product_group: configure
+product_stage: deploy
+product_group: environments
 value_type: number
 status: removed
 milestone_removed: '14.6'

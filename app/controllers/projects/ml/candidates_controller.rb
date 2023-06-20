@@ -3,7 +3,7 @@
 module Projects
   module Ml
     class CandidatesController < ApplicationController
-      before_action :check_feature_flag, :set_candidate
+      before_action :check_feature_enabled, :set_candidate
 
       feature_category :mlops
 
@@ -26,8 +26,8 @@ module Projects
         render_404 unless @candidate.present?
       end
 
-      def check_feature_flag
-        render_404 unless Feature.enabled?(:ml_experiment_tracking, @project)
+      def check_feature_enabled
+        render_404 unless can?(current_user, :read_model_experiments, @project)
       end
     end
   end

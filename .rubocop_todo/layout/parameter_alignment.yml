@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/ParameterAlignment:
-  Details: grace period
   Exclude:
     - 'lib/gitlab/cross_project_access.rb'
     - 'lib/gitlab/data_builder/push.rb'

@@ -430,4 +430,21 @@ describe('text_utility', () => {
       expect(textUtils.humanizeBranchValidationErrors([])).toEqual('');
     });
   });
+
+  describe('stripQuotes', () => {
+    it.each`
+      inputValue     | outputValue
+      ${'"Foo Bar"'} | ${'Foo Bar'}
+      ${"'Foo Bar'"} | ${'Foo Bar'}
+      ${'FooBar'}    | ${'FooBar'}
+      ${"Foo'Bar"}   | ${"Foo'Bar"}
+      ${'Foo"Bar'}   | ${'Foo"Bar'}
+      ${'Foo Bar'}   | ${'Foo Bar'}
+    `(
+      'returns string $outputValue when called with string $inputValue',
+      ({ inputValue, outputValue }) => {
+        expect(textUtils.stripQuotes(inputValue)).toBe(outputValue);
+      },
+    );
+  });
 });

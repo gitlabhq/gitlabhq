@@ -10,10 +10,16 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
   describe '#execute' do
     subject { service.execute }
 
+    shared_examples 'raises an error' do |error_message|
+      it { expect { subject }.to raise_error(described_class::ExtractionError, error_message) }
+    end
+
     context 'with valid package file id' do
       expected_metadata = {
         package_name: 'DummyProject.DummyPackage',
         package_version: '1.0.0',
+        authors: 'Test',
+        description: 'This is a dummy project',
         package_dependencies: [
           {
             name: 'Newtonsoft.Json',
@@ -72,15 +78,23 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
         allow(service).to receive(:nuspec_file_content).and_return(fixture_file(nuspec_filepath))
       end
 
-      it { expect(subject[:license_url]).to eq('https://opensource.org/licenses/MIT') }
-      it { expect(subject[:project_url]).to eq('https://gitlab.com/gitlab-org/gitlab') }
-      it { expect(subject[:icon_url]).to eq('https://opensource.org/files/osi_keyhole_300X300_90ppi_0.png') }
+      it 'returns the correct metadata' do
+        expected_metadata = {
+          authors: 'Author Test',
+          description: 'Description Test',
+          license_url: 'https://opensource.org/licenses/MIT',
+          project_url: 'https://gitlab.com/gitlab-org/gitlab',
+          icon_url: 'https://opensource.org/files/osi_keyhole_300X300_90ppi_0.png'
+        }
+
+        expect(subject.slice(*expected_metadata.keys)).to eq(expected_metadata)
+      end
     end
 
     context 'with invalid package file id' do
       let(:package_file) { double('file', id: 555) }
 
-      it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'invalid package file') }
+      it_behaves_like 'raises an error', 'invalid package file'
     end
 
     context 'linked to a non nuget package' do
@@ -88,7 +102,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
         package_file.package.maven!
       end
 
-      it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'invalid package file') }
+      it_behaves_like 'raises an error', 'invalid package file'
     end
 
     context 'with a 0 byte package file id' do
@@ -96,7 +110,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
         allow_any_instance_of(Packages::PackageFileUploader).to receive(:size).and_return(0)
       end
 
-      it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'invalid package file') }
+      it_behaves_like 'raises an error', 'invalid package file'
     end
 
     context 'without the nuspec file' do
@@ -104,7 +118,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
         allow_any_instance_of(Zip::File).to receive(:glob).and_return([])
       end
 
-      it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'nuspec file not found') }
+      it_behaves_like 'raises an error', 'nuspec file not found'
     end
 
     context 'with a too big nuspec file' do
@@ -112,18 +126,17 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
         allow_any_instance_of(Zip::File).to receive(:glob).and_return([double('file', size: 6.megabytes)])
       end
 
-      it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'nuspec file too big') }
+      it_behaves_like 'raises an error', 'nuspec file too big'
     end
 
     context 'with a corrupted nupkg file with a wrong entry size' do
       let(:nupkg_fixture_path) { expand_fixture_path('packages/nuget/corrupted_package.nupkg') }
-      let(:expected_error) { "nuspec file has the wrong entry size: entry 'DummyProject.DummyPackage.nuspec' should be 255B, but is larger when inflated." }
 
       before do
         allow(Zip::File).to receive(:new).and_return(Zip::File.new(nupkg_fixture_path, false, false))
       end
 
-      it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, expected_error) }
+      it_behaves_like 'raises an error', "nuspec file has the wrong entry size: entry 'DummyProject.DummyPackage.nuspec' should be 255B, but is larger when inflated."
     end
   end
 end

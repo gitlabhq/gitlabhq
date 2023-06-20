@@ -2,6 +2,7 @@
 
 module Spammable
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   class_methods do
     def attr_spammable(attr, options = {})
@@ -46,14 +47,23 @@ module Spammable
   end
 
   def needs_recaptcha!
-    self.needs_recaptcha = true
+    if self.supports_recaptcha?
+      self.needs_recaptcha = true
+    else
+      self.spam!
+    end
+  end
+
+  # Override in Spammable if recaptcha is supported
+  def supports_recaptcha?
+    false
   end
 
   ##
   # Indicates if a recaptcha should be rendered before allowing this model to be saved.
   #
   def render_recaptcha?
-    return false unless Gitlab::Recaptcha.enabled?
+    return false unless Gitlab::Recaptcha.enabled? && supports_recaptcha?
 
     return false if self.errors.count > 1 # captcha should not be rendered if are still other errors
 
@@ -70,7 +80,7 @@ module Spammable
   end
 
   def invalidate_if_spam
-    if needs_recaptcha? && Gitlab::Recaptcha.enabled?
+    if needs_recaptcha? && Gitlab::Recaptcha.enabled? && supports_recaptcha?
       recaptcha_error!
     elsif needs_recaptcha? || spam?
       unrecoverable_spam_error!
@@ -84,12 +94,24 @@ module Spammable
   end
 
   def unrecoverable_spam_error!
-    self.errors.add(:base, _("Your %{spammable_entity_type} has been recognized as spam and has been discarded.") \
+    self.errors.add(:base, _("Your %{spammable_entity_type} has been recognized as spam. "\
+                    "Please, change the content to proceed.") \
                     % { spammable_entity_type: spammable_entity_type })
   end
 
   def spammable_entity_type
-    self.class.name.underscore
+    case self
+    when Issue
+      _('issue')
+    when MergeRequest
+      _('merge request')
+    when Note
+      _('comment')
+    when Snippet
+      _('snippet')
+    else
+      self.class.model_name.human.downcase
+    end
   end
 
   def spam_title
@@ -117,8 +139,18 @@ module Spammable
   end
 
   # Override in Spammable if further checks are necessary
-  def check_for_spam?(user:)
-    true
+  def check_for_spam?(*)
+    spammable_attribute_changed?
+  end
+
+  def spammable_attribute_changed?
+    (changed & self.class.spammable_attrs.to_h.keys).any?
+  end
+
+  def check_for_spam(user:, action:, extra_features: {})
+    strong_memoize_with(:check_for_spam, user, action, extra_features) do
+      Spam::SpamActionService.new(spammable: self, user: user, action: action, extra_features: extra_features).execute
+    end
   end
 
   # Override in Spammable if differs

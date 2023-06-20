@@ -307,3 +307,5 @@
   aggregation: weekly
 - name: p_ci_templates_terraform_module
   aggregation: weekly
+- name: p_ci_templates_pages_zola
+  aggregation: weekly

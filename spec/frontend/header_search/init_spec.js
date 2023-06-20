@@ -8,7 +8,7 @@ describe('Header Search EventListener', () => {
     jest.restoreAllMocks();
     setHTMLFixture(`
       <div class="js-header-content">
-        <div class="header-search" id="js-header-search" data-autocomplete-path="/search/autocomplete" data-issues-path="/dashboard/issues" data-mr-path="/dashboard/merge_requests" data-search-context="{}" data-search-path="/search">
+        <div class="header-search-form" id="js-header-search" data-autocomplete-path="/search/autocomplete" data-issues-path="/dashboard/issues" data-mr-path="/dashboard/merge_requests" data-search-context="{}" data-search-path="/search">
           <input autocomplete="off" class="form-control gl-form-input gl-search-box-by-type-input" data-qa-selector="search_box" id="search" name="search" placeholder="Search GitLab" type="text">
         </div>
       </div>`);

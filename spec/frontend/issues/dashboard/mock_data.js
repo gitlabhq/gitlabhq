@@ -3,6 +3,7 @@ export const issuesQueryResponse = {
     issues: {
       nodes: [
         {
+          __persist: true,
           __typename: 'Issue',
           id: 'gid://gitlab/Issue/123456',
           iid: '789',
@@ -27,6 +28,7 @@ export const issuesQueryResponse = {
           assignees: {
             nodes: [
               {
+                __persist: true,
                 __typename: 'UserCore',
                 id: 'gid://gitlab/User/234',
                 avatarUrl: 'avatar/url',
@@ -37,6 +39,7 @@ export const issuesQueryResponse = {
             ],
           },
           author: {
+            __persist: true,
             __typename: 'UserCore',
             id: 'gid://gitlab/User/456',
             avatarUrl: 'avatar/url',
@@ -47,6 +50,7 @@ export const issuesQueryResponse = {
           labels: {
             nodes: [
               {
+                __persist: true,
                 id: 'gid://gitlab/ProjectLabel/456',
                 color: '#333',
                 title: 'Label title',

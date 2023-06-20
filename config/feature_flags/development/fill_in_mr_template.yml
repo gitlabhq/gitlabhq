@@ -1,0 +1,8 @@
+---
+name: fill_in_mr_template
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121233
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/412796
+milestone: '16.1'
+type: development
+group: group::code review
+default_enabled: false

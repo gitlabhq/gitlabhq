@@ -1,3 +1,6 @@
+.advanced-search-promote
+  = render_if_exists 'shared/promotions/promote_advanced_search'
+
 - if @timeout
   = render partial: "search/results/timeout"
 - elsif @search_results.respond_to?(:failed?) && @search_results.failed?

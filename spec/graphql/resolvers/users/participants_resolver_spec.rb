@@ -8,39 +8,54 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
   describe '#resolve' do
     let_it_be(:user) { create(:user) }
     let_it_be(:guest) { create(:user) }
-    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:project) do
+      create(:project, :public).tap do |r|
+        r.add_developer(user)
+        r.add_guest(guest)
+      end
+    end
+
+    let_it_be(:private_project) { create(:project, :private).tap { |r| r.add_developer(user) } }
+
     let_it_be(:issue) { create(:issue, project: project) }
+    let_it_be(:private_issue) { create(:issue, project: private_project) }
 
     let_it_be(:public_note_author) { create(:user) }
     let_it_be(:public_reply_author) { create(:user) }
     let_it_be(:internal_note_author) { create(:user) }
     let_it_be(:internal_reply_author) { create(:user) }
+    let_it_be(:system_note_author) { create(:user) }
+    let_it_be(:internal_system_note_author) { create(:user) }
 
     let_it_be(:public_note) { create(:note, project: project, noteable: issue, author: public_note_author) }
     let_it_be(:internal_note) { create(:note, :confidential, project: project, noteable: issue, author: internal_note_author) }
 
-    let_it_be(:public_reply) { create(:note, noteable: issue, in_reply_to: public_note, project: project, author: public_reply_author) }
-    let_it_be(:internal_reply) { create(:note, :confidential, noteable: issue, in_reply_to: internal_note, project: project, author: internal_reply_author) }
+    let_it_be(:public_reply) do
+      create(:note, noteable: issue, in_reply_to: public_note, project: project, author: public_reply_author)
+    end
 
-    let_it_be(:note_metadata2) { create(:system_note_metadata, note: public_note) }
+    let_it_be(:internal_reply) do
+      create(:note, :confidential, noteable: issue, in_reply_to: internal_note, project: project, author: internal_reply_author)
+    end
 
-    let_it_be(:issue_emoji) { create(:award_emoji, name: 'thumbsup', awardable: issue) }
-    let_it_be(:note_emoji1) { create(:award_emoji, name: 'thumbsup', awardable: public_note) }
-    let_it_be(:note_emoji2) { create(:award_emoji, name: 'thumbsup', awardable: internal_note) }
-    let_it_be(:note_emoji3) { create(:award_emoji, name: 'thumbsup', awardable: public_reply) }
-    let_it_be(:note_emoji4) { create(:award_emoji, name: 'thumbsup', awardable: internal_reply) }
+    let_it_be(:issue_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: issue).user }
+    let_it_be(:public_note_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: public_note).user }
+    let_it_be(:internal_note_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: internal_note).user }
+    let_it_be(:public_reply_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: public_reply).user }
+    let_it_be(:internal_reply_emoji_author) { create(:award_emoji, name: 'thumbsup', awardable: internal_reply).user }
 
-    let_it_be(:issue_emoji_author) { issue_emoji.user }
-    let_it_be(:public_note_emoji_author) { note_emoji1.user }
-    let_it_be(:internal_note_emoji_author) { note_emoji2.user }
-    let_it_be(:public_reply_emoji_author) { note_emoji3.user }
-    let_it_be(:internal_reply_emoji_author) { note_emoji4.user }
+    subject(:resolved_items) do
+      resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items
+    end
 
-    subject(:resolved_items) { resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items }
-
-    before do
-      project.add_guest(guest)
-      project.add_developer(user)
+    before_all do
+      create(:system_note, project: project, noteable: issue, author: system_note_author)
+      create(
+        :system_note,
+        note: "mentioned in issue #{private_issue.to_reference(full: true)}",
+        project: project, noteable: issue, author: internal_system_note_author
+      )
+      create(:system_note_metadata, note: public_note)
     end
 
     context 'when current user is not set' do
@@ -54,7 +69,8 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
             public_note_author,
             public_note_emoji_author,
             public_reply_author,
-            public_reply_emoji_author
+            public_reply_emoji_author,
+            system_note_author
           ]
         )
       end
@@ -71,7 +87,8 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
             public_note_author,
             public_note_emoji_author,
             public_reply_author,
-            public_reply_emoji_author
+            public_reply_emoji_author,
+            system_note_author
           ]
         )
       end
@@ -92,13 +109,17 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
             internal_note_emoji_author,
             internal_reply_author,
             public_reply_emoji_author,
-            internal_reply_emoji_author
+            internal_reply_emoji_author,
+            system_note_author,
+            internal_system_note_author
           ]
         )
       end
 
       context 'N+1 queries' do
-        let(:query) { -> { resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items } }
+        let(:query) do
+          -> { resolve(described_class, args: {}, ctx: { current_user: current_user }, obj: issue)&.items }
+        end
 
         before do
           # warm-up

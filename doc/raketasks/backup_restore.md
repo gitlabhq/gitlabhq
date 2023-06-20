@@ -55,7 +55,7 @@ If you have a specific reason to change the path, it can be configured in Omnibu
    gitlab_rails['backup_gitaly_backup_path'] = '/path/to/gitaly-backup'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 ## Backup timestamp
@@ -288,7 +288,7 @@ To prepare the new server:
       Edit `/etc/gitlab/gitlab.rb` and set the following:
 
       ```ruby
-      nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+      nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
       ```
 
    1. Reconfigure GitLab:
@@ -319,7 +319,7 @@ To prepare the new server:
    1. Edit `/etc/gitlab/gitlab.rb`, and set the following:
 
       ```ruby
-      nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+      nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
       ```
 
    1. Reconfigure GitLab:
@@ -329,7 +329,8 @@ To prepare the new server:
       ```
 
 1. Disable periodic background jobs:
-   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. Under the Sidekiq dashboard, select **Cron** tab and then
       **Disable All**.
@@ -409,7 +410,8 @@ To prepare the new server:
 
 1. [Restore the GitLab backup](#restore-gitlab).
 1. Verify that the Redis database restored correctly:
-   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. Under the Sidekiq dashboard, verify that the numbers
       match with what was shown on the old server.
@@ -425,7 +427,7 @@ To prepare the new server:
 
    ```ruby
    # The following line must be removed
-   nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+   nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
    ```
 
 1. Reconfigure GitLab:
@@ -570,7 +572,7 @@ after which users must reactivate 2FA.
 
    These are the variables that you need to delete.
 
-1. Drop the table:
+1. Delete all variables:
 
    ```sql
    DELETE FROM ci_group_variables;

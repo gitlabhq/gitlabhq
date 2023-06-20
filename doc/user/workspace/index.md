@@ -13,7 +13,7 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
 
 WARNING:
-This feature is in [Beta](../../policy/alpha-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
 
 A workspace is a virtual sandbox environment for your code in GitLab. You can use workspaces to create and manage isolated development environments for your GitLab projects. These environments ensure that different projects don't interfere with each other.
 
@@ -23,33 +23,36 @@ Each workspace includes its own set of dependencies, libraries, and tools, which
 
 ### Prerequisites
 
-- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#gitlab-agent-for-kubernetes-supported-cluster-versions).
+- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
 - Ensure autoscaling for the Kubernetes cluster is enabled.
 - In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) is defined so that volumes can be dynamically provisioned for each workspace.
 - In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`), and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
 - In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
 - In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
-- Configure remote development settings for the GitLab agent with this snippet:
+- Configure remote development settings for the GitLab agent with this snippet, and update `dns_zone` as needed:
 
-   ```yaml
-   remote_development:
-     enabled: true
-     dns_zone: "workspaces.example.dev"
-   ```
+  ```yaml
+  remote_development:
+    enabled: true
+    dns_zone: "workspaces.example.dev"
+  ```
 
-   Update `dns_zone` as needed.
-
-- In each public project you want to use this feature for, define a [devfile](#devfile). Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
+  You can use any agent defined under the root group of your project, provided that remote development is properly configured for that agent.
+- You must have at least the Developer role in the root group.
+- In each public project you want to use this feature for, create a [devfile](#devfile):
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project
+  1. In the root directory of your project, create a file named `.devfile.yaml`. You can use one of the [example configurations](#example-configurations).
+- Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
 
 ### Create a workspace
 
-To create a workspace in GitLab:
+To create a workspace:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. In the root directory of your project, create a file named `.devfile.yaml`.
-1. On the left sidebar, select **Workspaces**.
-1. In the upper right, select **New workspace**.
-1. From the **Select project** dropdown list, select a project with a `.devfile.yaml` file. You can only create workspaces for public projects.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+1. Select **Workspaces**.
+1. Select **New workspace**.
+1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites). You can only create workspaces for public projects.
 1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
 1. Select **Create workspace**.
@@ -84,9 +87,9 @@ Only these properties are relevant to the GitLab implementation of the `containe
 | `endpoints`    | Port mappings to expose from the container.                                       |
 | `volumeMounts` | Storage volume to mount in the container.                                         |
 
-### Example definition
+### Example configurations
 
-The following is an example devfile:
+The following is an example devfile configuration:
 
 ```yaml
 schemaVersion: 2.2.0
@@ -153,6 +156,6 @@ If you already have running workspaces, an administrator must manually delete th
 ## Arbitrary user IDs
 
 You can provide your own container image, which can run as any Linux user ID. It's not possible for GitLab to predict the Linux user ID for a container image.
-GitLab uses the Linux root group ID permission to create, update, or delete files in the container. CRI-O, the container runtime interface used by Kubernetes, has a default group ID of `0` for all containers.
+GitLab uses the Linux root group ID permission to create, update, or delete files in a container. The container runtime used by the Kubernetes cluster must ensure all containers have a default Linux group ID of `0`.
 
 If you have a container image that does not support arbitrary user IDs, you cannot create, update, or delete files in a workspace. To create a container image that supports arbitrary user IDs, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).

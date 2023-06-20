@@ -14,6 +14,11 @@ module RegistrationsHelper
   def signup_box_template
     'devise/shared/signup_box'
   end
+
+  # overridden in EE
+  def register_omniauth_params(_local_assigns)
+    {}
+  end
 end
 
 RegistrationsHelper.prepend_mod_with('RegistrationsHelper')

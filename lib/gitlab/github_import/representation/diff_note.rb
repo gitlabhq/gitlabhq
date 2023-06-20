@@ -12,7 +12,7 @@ module Gitlab
         expose_attribute :noteable_id, :commit_id, :file_path,
           :diff_hunk, :author, :created_at, :updated_at,
           :original_commit_id, :note_id, :end_line, :start_line,
-          :side, :in_reply_to_id, :discussion_id
+          :side, :in_reply_to_id, :discussion_id, :subject_type
 
         # Builds a diff note from a GitHub API response.
         #
@@ -43,7 +43,8 @@ module Gitlab
             start_line: note[:start_line],
             side: note[:side],
             in_reply_to_id: note[:in_reply_to_id],
-            discussion_id: DiffNotes::DiscussionId.new(note).find_or_generate
+            discussion_id: DiffNotes::DiscussionId.new(note).find_or_generate,
+            subject_type: note[:subject_type]
           }
 
           new(hash)
@@ -84,8 +85,14 @@ module Gitlab
         end
 
         def line_code
-          diff_line = Gitlab::Diff::Parser.new.parse(diff_hunk.lines).to_a.last
+          # on the GitHub side it is possible to leave a comment on a file
+          # or on a line. When the comment is left on a file there is no
+          # diff hunk, but LegacyDiffNote requires line_code to be always present
+          # and DiffFile requires it for text files
+          # so it is set as the first line for any type of file (image, binary, text)
+          return Gitlab::Git.diff_line_code(file_path, 1, 1) if on_file?
 
+          diff_line = Gitlab::Diff::Parser.new.parse(diff_hunk.lines).to_a.last
           Gitlab::Git.diff_line_code(file_path, diff_line.new_pos, diff_line.old_pos)
         end
 
@@ -140,6 +147,10 @@ module Gitlab
 
         def addition?
           side == 'RIGHT'
+        end
+
+        def on_file?
+          subject_type == 'file'
         end
       end
     end

@@ -9,7 +9,7 @@ module Gitlab
 
       def link_dependencies
         link_regex(/^(?<name>(?![a-z+]+:)[^#.-][^ ><=~!;\[]+)/) do |name|
-          "https://pypi.python.org/pypi/#{name}"
+          "https://pypi.org/project/#{name}/"
         end
 
         link_regex(%r{^(?<name>https?://[^ ]+)}, &:itself)

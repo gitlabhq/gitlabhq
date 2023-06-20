@@ -56,23 +56,23 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def web_url
-    url_helpers.project_blob_url(project, ref_qualified_path)
+    url_helpers.project_blob_url(*path_params)
   end
 
   def web_path
-    url_helpers.project_blob_path(project, ref_qualified_path)
+    url_helpers.project_blob_path(*path_params)
   end
 
   def edit_blob_path
-    url_helpers.project_edit_blob_path(project, ref_qualified_path)
+    url_helpers.project_edit_blob_path(*path_params)
   end
 
   def raw_path
-    url_helpers.project_raw_path(project, ref_qualified_path)
+    url_helpers.project_raw_path(*path_params)
   end
 
   def replace_path
-    url_helpers.project_update_blob_path(project, ref_qualified_path)
+    url_helpers.project_update_blob_path(*path_params)
   end
 
   def pipeline_editor_path
@@ -164,6 +164,18 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   private
 
+  def path_params
+    if ref_type.present?
+      [project, ref_qualified_path, { ref_type: ref_type }]
+    else
+      [project, ref_qualified_path]
+    end
+  end
+
+  def ref_type
+    blob.ref_type
+  end
+
   def url_helpers
     Gitlab::Routing.url_helpers
   end
@@ -179,7 +191,12 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def ref_qualified_path
-    File.join(blob.commit_id, blob.path)
+    # If `ref_type` is present the commit_id will include the ref qualifier e.g. `refs/heads/`.
+    # We only accept/return unqualified refs so we need to remove the qualifier from the `commit_id`.
+
+    commit_id = ExtractsRef.unqualify_ref(blob.commit_id, ref_type)
+
+    File.join(commit_id, blob.path)
   end
 
   def load_all_blob_data

@@ -67,6 +67,13 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       end
     end
 
+    context 'with no expires_at set', :freeze_time do
+      let(:params) { { name: 'Test token', impersonation: false, scopes: [:no_valid] } }
+      let(:service) { described_class.new(current_user: user, target_user: user, params: params) }
+
+      it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date }
+    end
+
     context 'when invalid scope' do
       let(:params) { { name: 'Test token', impersonation: false, scopes: [:no_valid], expires_at: Date.today + 1.month } }
 

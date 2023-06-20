@@ -21,6 +21,11 @@ async function observeMergeRequestFinishingPreparation({ apollo, signaler }) {
       query: getMr,
       variables: { projectPath, iid },
     });
+
+    if (!currentStatus.data.project) {
+      return;
+    }
+
     const { id: gqlMrId, preparedAt } = currentStatus.data.project.mergeRequest;
     let preparationObservable;
     let preparationSubscriber;

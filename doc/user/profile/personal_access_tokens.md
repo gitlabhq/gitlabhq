@@ -86,7 +86,12 @@ At any time, you can revoke a personal access token.
 
 ## View the last time a token was used
 
-Token usage information is updated every 24 hours. GitLab considers a token used when the token is used to:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414945) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `update_personal_access_token_usage_information_every_10_minutes`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `update_personal_access_token_usage_information_every_10_minutes`. On GitLab.com, this feature is available.
+
+Token usage information is updated every 10 minutes. GitLab considers a token used when the token is used to:
 
 - Authenticate with the [REST](../../api/rest/index.md) or [GraphQL](../../api/graphql/index.md) APIs.
 - Perform a Git operation.

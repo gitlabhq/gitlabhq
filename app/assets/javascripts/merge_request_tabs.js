@@ -97,6 +97,7 @@ function mountPipelines() {
       targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
       fullPath: pipelineTableViewEl.dataset.fullPath,
       manualActionsLimit: 50,
+      withFailedJobsDetails: true,
     },
     render(createElement) {
       return createElement('commit-pipelines-table', {

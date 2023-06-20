@@ -62,6 +62,40 @@ RSpec.describe 'Two factor auths', feature_category: :user_profile do
           expect(page).to have_link('Try the troubleshooting steps here.', href: help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'))
         end
       end
+
+      context 'when two factor is enforced in global settings' do
+        before do
+          stub_application_setting(require_two_factor_authentication: true)
+        end
+
+        context 'when invalid pin is provided' do
+          let_it_be(:user) { create(:omniauth_user) }
+
+          it 'renders alert for global settings' do
+            visit profile_two_factor_auth_path
+
+            fill_in 'pin_code', with: '123'
+            click_button 'Register with two-factor app'
+
+            expect(page).to have_content('The global settings require you to enable Two-Factor Authentication for your account. You need to do this before ')
+          end
+        end
+
+        context 'when invalid password is provided' do
+          let_it_be(:user) { create(:user) }
+
+          it 'renders a error alert with a link to the troubleshooting section' do
+            visit profile_two_factor_auth_path
+
+            register_2fa(user.current_otp, 'abc')
+            click_button 'Register with two-factor app'
+
+            expect(page).to have_content(
+              'The global settings require you to enable Two-Factor Authentication for your account'
+            )
+          end
+        end
+      end
     end
 
     context 'when user has two-factor authentication enabled' do

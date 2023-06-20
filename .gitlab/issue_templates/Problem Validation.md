@@ -8,7 +8,7 @@ Learn more about it in the handbook: https://about.gitlab.com/handbook/product-d
 
 ## Reach
 
-<!-- Please describe who suffers from this problem. Consider referring to our personas, which are described at https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/ -->
+<!-- Please describe who suffers from this problem. Consider referring to our personas, which are described at https://about.gitlab.com/handbook/product/personas/ -->
 
 <!-- Please also quantify the problem's reach using the following values, considering an aggregate across GitLab.com and self-managed:
 

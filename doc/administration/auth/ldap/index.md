@@ -233,6 +233,7 @@ These configuration settings are available:
 | `user_filter`      | Filter LDAP users. Format: [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | **{dotted-circle}** No | Some examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
 | `lowercase_usernames` | If enabled, GitLab converts the name to lower case. | **{dotted-circle}** No | boolean |
 | `retry_empty_result_with_codes` | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. | **{dotted-circle}** No | `[80]` |
+| `attributes` | A hash of attribute mappings to LDAP for GitLab to use ([see attributes section](#attribute-configuration-settings)). | **{dotted-circle}** No | `'attributes' => { 'username' => ['uid'], 'email' => ['mail', 'email'] },` |
 
 ### SSL configuration settings
 
@@ -255,6 +256,8 @@ attribute can be either:
 - An array of attribute names to try in order. For example, `['mail', 'email']`.
 
 The user's LDAP sign in is the LDAP attribute [specified as `uid`](#basic-configuration-settings).
+
+You must define the following attributes in an `attributes` hash.
 
 | Setting      | Description | Required | Examples |
 |--------------|-------------|----------|----------|
@@ -1034,8 +1037,8 @@ For more information on synchronizing users and groups between LDAP and GitLab, 
 ## Move from LDAP to SAML
 
 1. [Configure SAML](../../../integration/saml.md). Add `auto_link_ldap_user` to:
-   - [`gitlab.rb` for Omnibus](../../../integration/saml.html?tab=Linux+package+%28Omnibus%29).
-   - [`values.yml` for Kubernetes](../../../integration/saml.html?tab=Helm+chart+%28Kubernetes%29).
+   - [`gitlab.rb` for Linux package installations](../../../integration/saml.html?tab=Linux+package+%28Omnibus%29).
+   - [`values.yml` for Helm chart installations](../../../integration/saml.html?tab=Helm+chart+%28Kubernetes%29).
    For more information, see the [initial settings for all providers](../../../integration/omniauth.md#configure-initial-settings).
 
 1. Optional. [Disable the LDAP auth from the sign-in page](#disable-ldap-web-sign-in).
@@ -1047,7 +1050,7 @@ For more information on synchronizing users and groups between LDAP and GitLab, 
 1. In the configuration file, change:
    - `omniauth_auto_link_user` to `saml` only.
    - `omniauth_auto_link_ldap_user` to false.
-   - `ldap_enabled` to `false`. 
+   - `ldap_enabled` to `false`.
    You can also comment out the LDAP provider settings.
 
 ## Troubleshooting

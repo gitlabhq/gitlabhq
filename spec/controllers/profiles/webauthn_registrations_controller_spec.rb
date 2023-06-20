@@ -10,11 +10,27 @@ RSpec.describe Profiles::WebauthnRegistrationsController do
   end
 
   describe '#destroy' do
-    it 'deletes the given webauthn registration' do
-      registration_to_delete = user.webauthn_registrations.first
+    let(:webauthn_id) { user.webauthn_registrations.first.id }
 
-      expect { delete :destroy, params: { id: registration_to_delete.id } }.to change { user.webauthn_registrations.count }.by(-1)
-      expect(response).to be_redirect
+    subject { delete :destroy, params: { id: webauthn_id } }
+
+    it 'redirects to the profile two factor authentication page' do
+      subject
+
+      expect(response).to redirect_to profile_two_factor_auth_path
+    end
+
+    it 'destroys the webauthn registration' do
+      expect { subject }.to change { user.webauthn_registrations.count }.by(-1)
+    end
+
+    it 'calls the Webauthn::DestroyService' do
+      service = double
+
+      expect(Webauthn::DestroyService).to receive(:new).with(user, user, webauthn_id.to_s).and_return(service)
+      expect(service).to receive(:execute)
+
+      subject
     end
   end
 end

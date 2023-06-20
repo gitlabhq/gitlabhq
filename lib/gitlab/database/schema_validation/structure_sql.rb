@@ -19,6 +19,10 @@ module Gitlab
           triggers.find { |trigger| trigger.name == trigger_name }.present?
         end
 
+        def foreign_key_exists?(foreign_key_name)
+          foreign_keys.find { |fk| fk.name == foreign_key_name }.present?
+        end
+
         def fetch_table_by_name(table_name)
           tables.find { |table| table.name == table_name }
         end
@@ -33,6 +37,14 @@ module Gitlab
 
         def triggers
           @triggers ||= map_with_default_schema(trigger_statements, SchemaObjects::Trigger)
+        end
+
+        def foreign_keys
+          @foreign_keys ||= foreign_key_statements.map do |stmt|
+            stmt.relation.schemaname = schema_name if stmt.relation.schemaname == ''
+
+            SchemaObjects::ForeignKey.new(Adapters::ForeignKeyStructureSqlAdapter.new(stmt))
+          end
         end
 
         def tables
@@ -63,6 +75,33 @@ module Gitlab
 
         def table_statements
           statements.filter_map { |s| s.stmt.create_stmt }
+        end
+
+        def foreign_key_statements
+          constraint_statements(:CONSTR_FOREIGN)
+        end
+
+        # Filter constraint statement nodes
+        #
+        # @param constraint_type [Symbol] node type. One of CONSTR_PRIMARY, CONSTR_CHECK, CONSTR_EXCLUSION,
+        #        CONSTR_UNIQUE or CONSTR_FOREIGN.
+        def constraint_statements(constraint_type)
+          alter_table_statements(:AT_AddConstraint).filter do |stmt|
+            stmt.cmds.first.alter_table_cmd.def.constraint.contype == constraint_type
+          end
+        end
+
+        # Filter alter table statement nodes
+        #
+        # @param subtype [Symbol] node subtype +AT_AttachPartition+, +AT_ColumnDefault+ or +AT_AddConstraint+
+        def alter_table_statements(subtype)
+          statements.filter_map do |statement|
+            node = statement.stmt.alter_table_stmt
+
+            next unless node
+
+            node if node.cmds.first.alter_table_cmd.subtype == subtype
+          end
         end
 
         def statements

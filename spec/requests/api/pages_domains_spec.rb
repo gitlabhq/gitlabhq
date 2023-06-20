@@ -440,8 +440,8 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/pages_domain/detail')
         expect(pages_domain_with_letsencrypt.auto_ssl_enabled).to be false
-        expect(pages_domain_with_letsencrypt.key).to be
-        expect(pages_domain_with_letsencrypt.certificate).to be
+        expect(pages_domain_with_letsencrypt.key).to be_present
+        expect(pages_domain_with_letsencrypt.certificate).to be_present
       end
 
       it 'updates pages domain with expired certificate', :aggregate_failures do

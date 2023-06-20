@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupAvatar, feature_category: :subgroups do
+RSpec.describe API::GroupAvatar, feature_category: :groups_and_projects do
   def avatar_path(group)
     "/groups/#{ERB::Util.url_encode(group.full_path)}/avatar"
   end

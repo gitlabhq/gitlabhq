@@ -220,7 +220,7 @@ The `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` CI/CD variable controls whether the
 findings related to programming languages. The languages supported depend on the
 [scanner used](#change-scanners):
 
-- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/language/).
+- [Trivy](https://aquasecurity.github.io/trivy/v0.41/docs/scanner/vulnerability/language/)
 - [Grype](https://github.com/anchore/grype#features).
 
 By default, the report only includes packages managed by the Operating System (OS) package manager

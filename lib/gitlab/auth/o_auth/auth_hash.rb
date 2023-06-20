@@ -78,7 +78,7 @@ module Gitlab
         def get_from_auth_hash_or_info(key)
           if auth_hash.key?(key)
             coerce_utf8(auth_hash[key])
-          elsif auth_hash.key?(:extra) && auth_hash.extra.key?(:raw_info) && !auth_hash.extra.raw_info[key].nil?
+          elsif auth_hash.key?(:extra) && auth_hash.extra.key?(:raw_info) && !auth_hash.extra.raw_info[key].blank?
             coerce_utf8(auth_hash.extra.raw_info[key])
           else
             get_info(key)

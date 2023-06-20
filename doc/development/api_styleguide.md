@@ -303,7 +303,7 @@ from the server to the platform if we identify invalid parameters at the beginni
 If you need to add a custom validator, it would be added to
 it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators) directory.
 Since we use [Grape](https://github.com/ruby-grape/grape) to add our API
-we inherit from the `Grape::Validations::Base` class in our validator class.
+we inherit from the `Grape::Validations::Validators::Base` class in our validator class.
 Now, all you have to do is define the `validate_param!` method which takes
 in two parameters: the `params` hash and the `param` name to validate.
 

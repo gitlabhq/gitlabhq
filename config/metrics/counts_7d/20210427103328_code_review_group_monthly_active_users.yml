@@ -85,6 +85,7 @@ options:
     - 'i_code_review_post_merge_submit_revert_modal'
     - 'i_code_review_post_merge_submit_cherry_pick_modal'
     - 'i_code_review_user_jetbrains_api_request'
+    - 'i_editor_extensions_user_jetbrains_bundled_api_request'
     - 'i_code_review_user_gitlab_cli_api_request'
     - 'i_code_review_user_create_note_in_ipynb_diff'
     - 'i_code_review_user_create_note_in_ipynb_diff_mr'

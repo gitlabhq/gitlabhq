@@ -32,6 +32,7 @@ end
 
 RSpec.shared_examples 'work items comments' do |type|
   let(:form_selector) { '[data-testid="work-item-add-comment"]' }
+  let(:edit_button) { '[data-testid="edit-work-item-note"]' }
   let(:textarea_selector) { '[data-testid="work-item-add-comment"] #work-item-add-or-edit-comment' }
   let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
   let(:modifier_key) { is_mac ? :command : :control }
@@ -53,21 +54,48 @@ RSpec.shared_examples 'work items comments' do |type|
     end
   end
 
+  it 'successfully updates existing comments' do
+    set_comment
+    click_button "Comment"
+    wait_for_all_requests
+
+    find(edit_button).click
+    send_keys(" updated")
+    click_button "Save comment"
+
+    wait_for_all_requests
+
+    page.within(".main-notes-list") do
+      expect(page).to have_content "Test comment updated"
+    end
+  end
+
   context 'for work item note actions signed in user with developer role' do
+    let_it_be(:owner) { create(:user) }
+
+    before do
+      project.add_owner(owner)
+    end
+
     it 'shows work item note actions' do
       set_comment
 
-      click_button "Comment"
-
+      send_keys([modifier_key, :enter])
       wait_for_requests
 
       page.within(".main-notes-list") do
+        expect(page).to have_content comment
+      end
+
+      page.within('.timeline-entry.note.note-wrapper.note-comment:last-child') do
         expect(page).to have_selector('[data-testid="work-item-note-actions"]')
 
-        find('[data-testid="work-item-note-actions"]', match: :first).click
+        find('[data-testid="work-item-note-actions"]').click
 
         expect(page).to have_selector('[data-testid="copy-link-action"]')
-        expect(page).not_to have_selector('[data-testid="assign-note-action"]')
+        expect(page).to have_selector('[data-testid="assign-note-action"]')
+        expect(page).to have_selector('[data-testid="delete-note-action"]')
+        expect(page).to have_selector('[data-testid="edit-work-item-note"]')
       end
     end
   end
@@ -148,7 +176,7 @@ RSpec.shared_examples 'work items assignees' do
     find("body").click
     wait_for_requests
 
-    expect(work_item.assignees).to include(user)
+    expect(work_item.reload.assignees).to include(user)
   end
 end
 
@@ -278,7 +306,6 @@ RSpec.shared_examples 'work items comment actions for guest users' do
         expect(page).to have_selector('[data-testid="work-item-note-actions"]')
 
         find('[data-testid="work-item-note-actions"]', match: :first).click
-
         expect(page).to have_selector('[data-testid="copy-link-action"]')
         expect(page).not_to have_selector('[data-testid="assign-note-action"]')
       end
@@ -344,42 +371,56 @@ RSpec.shared_examples 'work items todos' do
 end
 
 RSpec.shared_examples 'work items award emoji' do
-  let(:award_section_selector) { '[data-testid="work-item-award-list"]' }
-  let(:award_action_selector) { '[data-testid="award-button"]' }
-  let(:selected_award_action_selector) { '[data-testid="award-button"].selected' }
-  let(:emoji_picker_action_selector) { '[data-testid="emoji-picker"]' }
+  let(:award_section_selector) { '.awards' }
+  let(:award_button_selector) { '[data-testid="award-button"]' }
+  let(:selected_award_button_selector) { '[data-testid="award-button"].selected' }
+  let(:emoji_picker_button_selector) { '[data-testid="emoji-picker"]' }
   let(:basketball_emoji_selector) { 'gl-emoji[data-name="basketball"]' }
+  let(:tooltip_selector) { '.gl-tooltip' }
 
   def select_emoji
-    first(award_action_selector).click
+    page.within(award_section_selector) do
+      page.first(award_button_selector).click
+    end
 
     wait_for_requests
   end
 
-  it 'adds award to the work item' do
-    within(award_section_selector) do
-      select_emoji
+  before do
+    emoji_upvote
+  end
 
-      expect(page).to have_selector(selected_award_action_selector)
-      expect(first(award_action_selector)).to have_content '1'
+  it 'adds award to the work item for current user' do
+    select_emoji
+
+    within(award_section_selector) do
+      expect(page).to have_selector(selected_award_button_selector)
+
+      # As the user2 has already awarded the `:thumbsup:` emoji, the emoji count will be 2
+      expect(first(award_button_selector)).to have_content '2'
+    end
+    expect(page.find(tooltip_selector)).to have_content("You and John reacted with :thumbsup:")
+  end
+
+  it 'removes award from work item for current user' do
+    select_emoji
+
+    page.within(award_section_selector) do
+      # As the user2 has already awarded the `:thumbsup:` emoji, the emoji count will be 2
+      expect(first(award_button_selector)).to have_content '2'
+    end
+
+    select_emoji
+
+    page.within(award_section_selector) do
+      # The emoji count will be back to 1
+      expect(first(award_button_selector)).to have_content '1'
     end
   end
 
-  it 'removes award from work item' do
+  it 'add custom award to the work item for current user' do
     within(award_section_selector) do
-      select_emoji
-
-      expect(first(award_action_selector)).to have_content '1'
-
-      select_emoji
-
-      expect(first(award_action_selector)).to have_content '0'
-    end
-  end
-
-  it 'add custom award to the work item' do
-    within(award_section_selector) do
-      find(emoji_picker_action_selector).click
+      find(emoji_picker_button_selector).click
       find(basketball_emoji_selector).click
 
       expect(page).to have_selector(basketball_emoji_selector)

@@ -326,12 +326,14 @@ describe('Issuable output', () => {
 
     describe('when title is in view', () => {
       it('is not shown', () => {
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
         expect(findStickyHeader().exists()).toBe(false);
       });
     });
 
     describe('when title is not in view', () => {
       beforeEach(() => {
+        global.pageYOffset = 100;
         wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
       });
 
@@ -395,7 +397,16 @@ describe('Issuable output', () => {
       `('$title', async ({ isLocked }) => {
         await wrapper.setProps({ isLocked });
 
-        expect(findLockedBadge().exists()).toBe(isLocked);
+        const lockedBadge = findLockedBadge();
+
+        expect(lockedBadge.exists()).toBe(isLocked);
+
+        if (isLocked) {
+          expect(lockedBadge.attributes('title')).toBe(
+            'This issue is locked. Only project members can comment.',
+          );
+          expect(getBinding(lockedBadge.element, 'gl-tooltip')).not.toBeUndefined();
+        }
       });
 
       it.each`

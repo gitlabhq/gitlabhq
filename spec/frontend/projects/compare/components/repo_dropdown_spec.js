@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import RepoDropdown from '~/projects/compare/components/repo_dropdown.vue';
@@ -13,10 +13,14 @@ describe('RepoDropdown component', () => {
         ...defaultProps,
         ...props,
       },
+      stubs: {
+        GlCollapsibleListbox,
+        GlListboxItem,
+      },
     });
   };
 
-  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findHiddenInput = () => wrapper.find('input[type="hidden"]');
 
   describe('Source Revision', () => {
@@ -29,8 +33,10 @@ describe('RepoDropdown component', () => {
     });
 
     it('displays the project name in the disabled dropdown', () => {
-      expect(findGlDropdown().props('text')).toBe(defaultProps.selectedProject.name);
-      expect(findGlDropdown().props('disabled')).toBe(true);
+      expect(findGlCollapsibleListbox().props('toggleText')).toBe(
+        defaultProps.selectedProject.name,
+      );
+      expect(findGlCollapsibleListbox().props('disabled')).toBe(true);
     });
 
     it('does not emit `changeTargetProject` event', async () => {
@@ -57,18 +63,21 @@ describe('RepoDropdown component', () => {
     });
 
     it('displays matching project name of the source revision initially in the dropdown', () => {
-      expect(findGlDropdown().props('text')).toBe(defaultProps.selectedProject.name);
+      expect(findGlCollapsibleListbox().props('toggleText')).toBe(
+        defaultProps.selectedProject.name,
+      );
     });
 
-    it('updates the hidden input value when onClick method is triggered', async () => {
+    it('updates the hidden input value when dropdown item is selected', () => {
       const repoId = '1';
-      wrapper.vm.onClick({ id: repoId });
-      await nextTick();
+      findGlCollapsibleListbox().vm.$emit('select', repoId);
       expect(findHiddenInput().attributes('value')).toBe(repoId);
     });
 
     it('emits `selectProject` event when another target project is selected', async () => {
-      findGlDropdown().findAllComponents(GlDropdownItem).at(0).vm.$emit('click');
+      const repoId = '1';
+      findGlCollapsibleListbox().vm.$emit('select', repoId);
+
       await nextTick();
 
       expect(wrapper.emitted('selectProject')[0][0]).toEqual({

@@ -5,10 +5,10 @@ module WorkItems
     extend Gitlab::Utils::Override
     include WidgetableService
 
-    def initialize(container:, current_user: nil, params: {}, spam_params: nil, widget_params: {})
+    def initialize(container:, current_user: nil, params: {}, perform_spam_check: false, widget_params: {})
       params[:widget_params] = true if widget_params.present?
 
-      super(container: container, current_user: current_user, params: params, spam_params: spam_params)
+      super(container: container, current_user: current_user, params: params, perform_spam_check: perform_spam_check)
 
       @widget_params = widget_params
     end
@@ -59,6 +59,7 @@ module WorkItems
       super
     end
 
+    override :after_update
     def after_update(work_item, old_associations)
       super
 

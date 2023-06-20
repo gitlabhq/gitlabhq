@@ -4,17 +4,6 @@
   box-shadow: inset 0 0 0 $gl-border-size-1 $red-500 if-important($important);
 }
 
-.timezone-dropdown {
-  .gl-dropdown-item-text-primary {
-    @include gl-overflow-hidden;
-    @include gl-text-overflow-ellipsis;
-  }
-
-  .btn-block {
-    margin-bottom: 0;
-  }
-}
-
 .modal-footer {
   @include gl-bg-gray-10;
 }
@@ -52,65 +41,17 @@ $scroll-top-gradient: linear-gradient(to bottom, $gradient-dark-gray 0%, $gradie
 $scroll-bottom-gradient: linear-gradient(to bottom, $gradient-gray 0%, $gradient-dark-gray 100%);
 $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradient-gray 100%);
 
-.schedule-shell {
-  @include gl-relative;
-  @include gl-h-full;
-  @include gl-w-full;
-  @include gl-overflow-x-auto;
-}
-
 .timeline-section {
-  @include gl-sticky;
-  @include gl-top-0;
   z-index: 20;
 
-  .timeline-header-label,
-  .timeline-header-item {
-    @include gl-float-left;
-  }
-
   .timeline-header-label {
-    @include gl-sticky;
-    @include gl-top-0;
-    @include gl-left-0;
     width: $details-cell-width;
-    z-index: 2;
   }
 
   .timeline-header-item {
-    .item-sublabel .sublabel-value {
-      color: var(--gray-700, $gray-700);
-      @include gl-font-weight-normal;
-
-      &.label-dark {
-        color: var(--gray-900, $gray-900);
-      }
-
-      &.label-bold {
-        @include gl-font-weight-bold;
-      }
-    }
-
-    .item-sublabel {
-      @include gl-relative;
-      @include gl-display-flex;
-
-      .sublabel-value {
-        @include gl-flex-grow-1;
-        @include gl-flex-basis-0;
-
-        text-align: center;
-        @include gl-font-base;
-      }
-    }
-
     .current-day-indicator-header {
-      @include gl-absolute;
-      @include gl-bottom-0;
       height: $grid-size;
       width: $grid-size;
-      background-color: var(--red-500, $red-500);
-      @include gl-rounded-full;
       transform: translate(-50%, 50%);
     }
 
@@ -137,35 +78,19 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
 .details-cell,
 .timeline-cell {
-  @include gl-float-left;
   height: $item-height;
 }
 
 .details-cell {
-  @include gl-sticky;
-  @include gl-left-0;
   width: $details-cell-width;
-  @include gl-font-base;
   z-index: 10;
 }
 
 .timeline-cell {
-  @include gl-relative;
-  @include gl-bg-transparent;
-  border-right: $border-style;
-
-  &:last-child {
-    @include gl-border-r-0;
-  }
-
   .current-day-indicator {
-    @include gl-absolute;
     top: -1px;
     width: $gl-spacing-scale-1;
     height: calc(100% + 1px);
-    background-color: var(--red-500, $red-500);
-    @include gl-pointer-events-none;
-    transform: translateX(-50%);
   }
 }
 

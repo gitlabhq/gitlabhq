@@ -15,27 +15,27 @@ export default {
     title: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
     id: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
     minimumPasswordLength: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
     qaSelector: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
     testid: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
     autocomplete: {
       type: String,

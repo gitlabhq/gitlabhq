@@ -7,6 +7,8 @@ export const MOCK_QUERY = {
   confidential: null,
   group_id: 1,
   language: ['C', 'JavaScript'],
+  labels: ['60', '37'],
+  search: '*',
 };
 
 export const MOCK_GROUP = {
@@ -540,5 +542,348 @@ export const MOCK_NAVIGATION_ITEMS = [
     is_active: false,
     pill_count: '0',
     items: [],
+  },
+];
+
+export const PROCESS_LABELS_DATA = [
+  {
+    key: '60',
+    count: 14,
+    title: 'Brist',
+    color: 'rgb(170, 174, 187)',
+    type: 'GroupLabel',
+    parent_full_name: 'Twitter',
+  },
+  {
+    key: '69',
+    count: 13,
+    title: 'Brouneforge',
+    color: 'rgb(170, 174, 187)',
+    type: 'GroupLabel',
+    parent_full_name: 'Twitter',
+  },
+  {
+    key: '33',
+    count: 12,
+    title: 'Brifunc',
+    color: 'rgb(170, 174, 187)',
+    type: 'GroupLabel',
+    parent_full_name: 'Commit451',
+  },
+  {
+    key: '37',
+    count: 12,
+    title: 'Aftersync',
+    color: 'rgb(170, 174, 187)',
+    type: 'GroupLabel',
+    parent_full_name: 'Commit451',
+  },
+];
+
+export const APPLIED_SELECTED_LABELS = [
+  {
+    key: '60',
+    count: 14,
+    title: 'Brist',
+    color: '#aaaebb',
+    type: 'GroupLabel',
+    parent_full_name: 'Twitter',
+  },
+  {
+    key: '37',
+    count: 12,
+    title: 'Aftersync',
+    color: '#79fdbf',
+    type: 'GroupLabel',
+    parent_full_name: 'Commit451',
+  },
+];
+
+export const MOCK_LABEL_AGGREGATIONS = {
+  fetching: false,
+  error: false,
+  data: [
+    {
+      name: 'labels',
+      buckets: [
+        {
+          key: '60',
+          count: 14,
+          title: 'Brist',
+          color: '#aaaebb',
+          type: 'GroupLabel',
+          parent_full_name: 'Twitter',
+        },
+        {
+          key: '37',
+          count: 12,
+          title: 'Aftersync',
+          color: '#79fdbf',
+          type: 'GroupLabel',
+          parent_full_name: 'Commit451',
+        },
+        {
+          key: '6',
+          count: 12,
+          title: 'Cosche',
+          color: '#cea786',
+          type: 'GroupLabel',
+          parent_full_name: 'Toolbox',
+        },
+        {
+          key: '73',
+          count: 12,
+          title: 'Accent',
+          color: '#a5c6fb',
+          type: 'ProjectLabel',
+          parent_full_name: 'Toolbox / Gitlab Smoke Tests',
+        },
+      ],
+    },
+  ],
+};
+
+export const MOCK_LABEL_SEARCH_RESULT = {
+  key: '37',
+  count: 12,
+  title: 'Aftersync',
+  color: '#79fdbf',
+  type: 'GroupLabel',
+  parent_full_name: 'Commit451',
+};
+
+export const MOCK_FILTERED_UNSELECTED_LABELS = [
+  {
+    key: '6',
+    count: 12,
+    title: 'Cosche',
+    color: '#cea786',
+    type: 'GroupLabel',
+    parent_full_name: 'Toolbox',
+  },
+  {
+    key: '73',
+    count: 12,
+    title: 'Accent',
+    color: '#a5c6fb',
+    type: 'ProjectLabel',
+    parent_full_name: 'Toolbox / Gitlab Smoke Tests',
+  },
+];
+
+export const MOCK_FILTERED_APPLIED_SELECTED_LABELS = [
+  {
+    key: '60',
+    count: 14,
+    title: 'Brist',
+    color: '#aaaebb',
+    type: 'GroupLabel',
+    parent_full_name: 'Twitter',
+  },
+  {
+    key: '37',
+    count: 12,
+    title: 'Aftersync',
+    color: '#79fdbf',
+    type: 'GroupLabel',
+    parent_full_name: 'Commit451',
+  },
+];
+
+export const MOCK_FILTERED_LABELS = [
+  {
+    key: '60',
+    count: 14,
+    title: 'Brist',
+    color: '#aaaebb',
+    type: 'GroupLabel',
+    parent_full_name: 'Twitter',
+  },
+  {
+    key: '69',
+    count: 13,
+    title: 'Brouneforge',
+    color: '#8a13d3',
+    type: 'GroupLabel',
+    parent_full_name: 'Twitter',
+  },
+  {
+    key: '33',
+    count: 12,
+    title: 'Brifunc',
+    color: '#b76463',
+    type: 'GroupLabel',
+    parent_full_name: 'Commit451',
+  },
+  {
+    key: '37',
+    count: 12,
+    title: 'Aftersync',
+    color: '#79fdbf',
+    type: 'GroupLabel',
+    parent_full_name: 'Commit451',
+  },
+  {
+    key: '6',
+    count: 12,
+    title: 'Cosche',
+    color: '#cea786',
+    type: 'GroupLabel',
+    parent_full_name: 'Toolbox',
+  },
+  {
+    key: '73',
+    count: 12,
+    title: 'Accent',
+    color: '#a5c6fb',
+    type: 'ProjectLabel',
+    parent_full_name: 'Toolbox / Gitlab Smoke Tests',
+  },
+  {
+    key: '9',
+    count: 12,
+    title: 'Briph',
+    color: '#e69182',
+    type: 'GroupLabel',
+    parent_full_name: 'Toolbox',
+  },
+  {
+    key: '91',
+    count: 12,
+    title: 'Cobalt',
+    color: '#9eae75',
+    type: 'ProjectLabel',
+    parent_full_name: 'Commit451 / Lab Coat',
+  },
+  {
+    key: '94',
+    count: 12,
+    title: 'Protege',
+    color: '#777b83',
+    type: 'ProjectLabel',
+    parent_full_name: 'Commit451 / Lab Coat',
+  },
+  {
+    key: '84',
+    count: 11,
+    title: 'Avenger',
+    color: '#5c5161',
+    type: 'ProjectLabel',
+    parent_full_name: 'Gitlab Org / Gitlab Shell',
+  },
+  {
+    key: '99',
+    count: 11,
+    title: 'Cobalt',
+    color: '#9eae75',
+    type: 'ProjectLabel',
+    parent_full_name: 'Jashkenas / Underscore',
+  },
+  {
+    key: '77',
+    count: 10,
+    title: 'Avenger',
+    color: '#5c5161',
+    type: 'ProjectLabel',
+    parent_full_name: 'Gitlab Org / Gitlab Test',
+  },
+  {
+    key: '79',
+    count: 10,
+    title: 'Fiero',
+    color: '#681cd0',
+    type: 'ProjectLabel',
+    parent_full_name: 'Gitlab Org / Gitlab Test',
+  },
+  {
+    key: '98',
+    count: 9,
+    title: 'Golf',
+    color: '#007aaf',
+    type: 'ProjectLabel',
+    parent_full_name: 'Jashkenas / Underscore',
+  },
+  {
+    key: '101',
+    count: 7,
+    title: 'Accord',
+    color: '#a72b3b',
+    type: 'ProjectLabel',
+    parent_full_name: 'Flightjs / Flight',
+  },
+  {
+    key: '53',
+    count: 7,
+    title: 'Amsche',
+    color: '#9964cf',
+    type: 'GroupLabel',
+    parent_full_name: 'Flightjs',
+  },
+  {
+    key: '11',
+    count: 3,
+    title: 'Aquasync',
+    color: '#347e7f',
+    type: 'GroupLabel',
+    parent_full_name: 'Gitlab Org',
+  },
+  {
+    key: '15',
+    count: 3,
+    title: 'Lunix',
+    color: '#aad577',
+    type: 'GroupLabel',
+    parent_full_name: 'Gitlab Org',
+  },
+  {
+    key: '88',
+    count: 3,
+    title: 'Aztek',
+    color: '#59160a',
+    type: 'ProjectLabel',
+    parent_full_name: 'Gnuwget / Wget2',
+  },
+  {
+    key: '89',
+    count: 3,
+    title: 'Intrigue',
+    color: '#5039bd',
+    type: 'ProjectLabel',
+    parent_full_name: 'Gnuwget / Wget2',
+  },
+  {
+    key: '96',
+    count: 2,
+    title: 'Trailblazer',
+    color: '#5a3e93',
+    type: 'ProjectLabel',
+    parent_full_name: 'Jashkenas / Underscore',
+  },
+  {
+    key: '54',
+    count: 1,
+    title: 'NB',
+    color: '#a4a53a',
+    type: 'GroupLabel',
+    parent_full_name: 'Flightjs',
+  },
+];
+
+export const MOCK_FILTERED_UNAPPLIED_SELECTED_LABELS = [
+  {
+    key: '6',
+    count: 12,
+    title: 'Cosche',
+    color: '#cea786',
+    type: 'GroupLabel',
+    parent_full_name: 'Toolbox',
+  },
+  {
+    key: '73',
+    count: 12,
+    title: 'Accent',
+    color: '#a5c6fb',
+    type: 'ProjectLabel',
+    parent_full_name: 'Toolbox / Gitlab Smoke Tests',
   },
 ];

@@ -17,6 +17,10 @@ module Ci
           return ServiceResponse.error(message: 'user not allowed to assign runner', http_status: :forbidden)
         end
 
+        unless @user.can?(:register_project_runners, @project)
+          return ServiceResponse.error(message: 'user not allowed to add runners to project', http_status: :forbidden)
+        end
+
         if @runner.assign_to(@project, @user)
           ServiceResponse.success
         else

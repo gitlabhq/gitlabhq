@@ -74,7 +74,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
       :merge_request, :simple, author: user, assignees: [user2], reviewers: [user],
       source_project: project2, target_project: project2,
       state: 'locked',
-      title: 'thing WIP thing'
+      title: 'thing Draft thing'
     )
   end
 
@@ -82,7 +82,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     create(
       :merge_request, :simple, author: user,
       source_project: project3, target_project: project3,
-      title: 'WIP thing'
+      title: 'Draft - thing'
     )
   end
 
@@ -90,7 +90,7 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     create(
       :merge_request, :simple, author: user,
       source_project: project4, target_project: project4,
-      title: '[WIP]'
+      title: '[Draft]'
     )
   end
 

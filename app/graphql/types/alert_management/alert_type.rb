@@ -144,10 +144,6 @@ module Types
             null: false,
             description: 'URL of the alert.'
 
-      def notes
-        object.ordered_notes
-      end
-
       def metrics_dashboard_url
         return if Feature.enabled?(:remove_monitor_metrics)
 

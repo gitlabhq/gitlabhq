@@ -5,7 +5,7 @@ module WebHooks
     include ApplicationWorker
 
     data_consistency :always
-    feature_category :integrations
+    feature_category :webhooks
     urgency :low
     sidekiq_options retry: 3
     loggable_arguments 0, 2, 3

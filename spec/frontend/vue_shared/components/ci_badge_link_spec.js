@@ -1,4 +1,4 @@
-import { GlLink } from '@gitlab/ui';
+import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -46,12 +46,26 @@ describe('CI Badge Link Component', () => {
       icon: 'status_pending',
       details_path: 'status/pending',
     },
+    preparing: {
+      text: 'preparing',
+      label: 'preparing',
+      group: 'preparing',
+      icon: 'status_preparing',
+      details_path: 'status/preparing',
+    },
     running: {
       text: 'running',
       label: 'running',
       group: 'running',
       icon: 'status_running',
       details_path: 'status/running',
+    },
+    scheduled: {
+      text: 'scheduled',
+      label: 'scheduled',
+      group: 'scheduled',
+      icon: 'status_scheduled',
+      details_path: 'status/scheduled',
     },
     skipped: {
       text: 'skipped',
@@ -61,8 +75,8 @@ describe('CI Badge Link Component', () => {
       details_path: 'status/skipped',
     },
     success_warining: {
-      text: 'passed',
-      label: 'passed',
+      text: 'warning',
+      label: 'passed with warnings',
       group: 'success-with-warnings',
       icon: 'status_warning',
       details_path: 'status/warning',
@@ -77,6 +91,8 @@ describe('CI Badge Link Component', () => {
   };
 
   const findIcon = () => wrapper.findComponent(CiIcon);
+  const findBadge = () => wrapper.findComponent(GlBadge);
+  const findBadgeText = () => wrapper.find('[data-testid="ci-badge-text"');
 
   const createComponent = (propsData) => {
     wrapper = shallowMount(CiBadgeLink, { propsData });
@@ -87,10 +103,32 @@ describe('CI Badge Link Component', () => {
 
     expect(wrapper.attributes('href')).toBe(statuses[status].details_path);
     expect(wrapper.text()).toBe(statuses[status].text);
-    expect(wrapper.classes()).toContain('ci-status');
-    expect(wrapper.classes()).toContain(`ci-${statuses[status].group}`);
+    expect(findBadge().props('size')).toBe('md');
     expect(findIcon().exists()).toBe(true);
   });
+
+  it.each`
+    status                       | textColor               | variant
+    ${statuses.success}          | ${'gl-text-green-700'}  | ${'success'}
+    ${statuses.success_warining} | ${'gl-text-orange-700'} | ${'warning'}
+    ${statuses.failed}           | ${'gl-text-red-700'}    | ${'danger'}
+    ${statuses.running}          | ${'gl-text-blue-700'}   | ${'info'}
+    ${statuses.pending}          | ${'gl-text-orange-700'} | ${'warning'}
+    ${statuses.preparing}        | ${'gl-text-gray-600'}   | ${'muted'}
+    ${statuses.canceled}         | ${'gl-text-gray-700'}   | ${'neutral'}
+    ${statuses.scheduled}        | ${'gl-text-gray-600'}   | ${'muted'}
+    ${statuses.skipped}          | ${'gl-text-gray-600'}   | ${'muted'}
+    ${statuses.manual}           | ${'gl-text-gray-700'}   | ${'neutral'}
+    ${statuses.created}          | ${'gl-text-gray-600'}   | ${'muted'}
+  `(
+    'should contain correct badge class and variant for status: $status.text',
+    ({ status, textColor, variant }) => {
+      createComponent({ status });
+
+      expect(findBadgeText().classes()).toContain(textColor);
+      expect(findBadge().props('variant')).toBe(variant);
+    },
+  );
 
   it('should not render label', () => {
     createComponent({ status: statuses.canceled, showText: false });
@@ -98,11 +136,17 @@ describe('CI Badge Link Component', () => {
     expect(wrapper.text()).toBe('');
   });
 
-  it('should emit ciStatusBadgeClick event', async () => {
+  it('should emit ciStatusBadgeClick event', () => {
     createComponent({ status: statuses.success });
 
-    await wrapper.findComponent(GlLink).vm.$emit('click');
+    findBadge().vm.$emit('click');
 
     expect(wrapper.emitted('ciStatusBadgeClick')).toEqual([[]]);
+  });
+
+  it('should render dynamic badge size', () => {
+    createComponent({ status: statuses.success, badgeSize: 'lg' });
+
+    expect(findBadge().props('size')).toBe('lg');
   });
 });

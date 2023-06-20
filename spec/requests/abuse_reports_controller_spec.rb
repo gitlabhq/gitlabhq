@@ -90,16 +90,16 @@ RSpec.describe AbuseReportsController, feature_category: :insider_threat do
       end
     end
 
-    context 'when the user has already been blocked' do
+    context 'when the user has already been banned' do
       let(:request_params) { { user_id: user.id, abuse_report: { category: abuse_category } } }
 
       it 'redirects the reporter to the user\'s profile' do
-        user.block
+        user.ban
 
         subject
 
         expect(response).to redirect_to user
-        expect(flash[:alert]).to eq(_('Cannot create the abuse report. This user has been blocked.'))
+        expect(flash[:alert]).to eq(_('Cannot create the abuse report. This user has been banned.'))
       end
     end
   end

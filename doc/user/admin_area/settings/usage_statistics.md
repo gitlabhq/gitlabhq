@@ -14,7 +14,7 @@ All usage statistics are [opt-out](#enable-or-disable-usage-statistics).
 ## Service Ping
 
 Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
-For more information, see the [Service Ping guide](../../../development/service_ping/index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../analytics/index.md)
+For more information, see the [Service Ping guide](../../../development/internal_analytics/service_ping/index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../analytics/index.md)
 that are dependent on Service Ping.
 
 ### Why enable Service Ping?
@@ -64,8 +64,9 @@ Registration is not yet required for participation, but may be added in a future
 ### Enable registration features
 
 1. Sign in as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. If not enabled, select the **Enable Service Ping** checkbox.
 1. Select the **Enable Registration Features** checkbox.
@@ -112,7 +113,7 @@ sequenceDiagram
 ## Configure your network
 
 To send usage statistics to GitLab Inc., you must allow network traffic from your
-GitLab instance to the IP address `104.196.17.203:443`.
+GitLab instance to the host `version.gitlab.com` on port `443`.
 
 If your GitLab instance is behind a proxy, set the appropriate
 [proxy configuration variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
@@ -121,8 +122,9 @@ If your GitLab instance is behind a proxy, set the appropriate
 
 To enable or disable Service Ping and version check:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable version check** and **Enable Service Ping** checkboxes.
 1. Select **Save changes**.
@@ -136,7 +138,7 @@ The payload is available in the [Service Usage data](#manually-upload-service-pi
 
 NOTE:
 The method to disable Service Ping in the GitLab configuration file does not work in
-GitLab versions 9.3 to 13.12.3. For more information about how to disable it, see [troubleshooting](../../../development/service_ping/troubleshooting.md#cannot-disable-service-ping-with-the-configuration-file).
+GitLab versions 9.3 to 13.12.3. For more information about how to disable it, see [troubleshooting](../../../development/internal_analytics/service_ping/troubleshooting.md#cannot-disable-service-ping-with-the-configuration-file).
 
 To disable Service Ping and prevent it from being configured in the future through
 the Admin Area:
@@ -178,12 +180,13 @@ the Admin Area:
 You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
 
 1. Sign in as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. Select **Preview payload**.
 
-For an example payload, see [Example Service Ping payload](../../../development/service_ping/index.md#example-service-ping-payload).
+For an example payload, see [Example Service Ping payload](../../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
 
 ## Manually upload Service Ping payload
 
@@ -191,13 +194,14 @@ For an example payload, see [Example Service Ping payload](../../../development/
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83265) in GitLab 14.10.
 
 You can upload the Service Ping payload to GitLab even if your instance doesn't have internet access,
-or if the Service Ping [cron job](../../../development/service_ping/index.md#how-service-ping-works) is not enabled.
+or if the Service Ping [cron job](../../../development/internal_analytics/service_ping/index.md#how-service-ping-works) is not enabled.
 
 To upload the payload manually:
 
 1. Sign in as a user with administrator access.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Service** usage data.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Service** usage data.
 1. Select **Download payload**.
 1. Save the JSON file.
 1. Visit [Service usage data center](https://version.gitlab.com/usage_data/new).
@@ -211,7 +215,8 @@ If there are problems with the manual upload:
 
 1. Open a confidential issue in the [security fork of version app project](https://gitlab.com/gitlab-org/security/version.gitlab.com).
 1. Attach the JSON payload if possible.
-1. Tag `@gitlab-org/analytics-section/product-intelligence` who will triage the issue.
+1. Tag `@gitlab-org/analytics-section/analytics-instrumentation` who will triage the issue.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

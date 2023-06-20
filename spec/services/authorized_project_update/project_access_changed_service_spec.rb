@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectUpdate::ProjectAccessChangedService, feature_category: :projects do
+RSpec.describe AuthorizedProjectUpdate::ProjectAccessChangedService, feature_category: :groups_and_projects do
   describe '#execute' do
     it 'executes projects_authorizations refresh' do
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)

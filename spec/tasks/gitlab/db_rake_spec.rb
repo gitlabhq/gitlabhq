@@ -445,6 +445,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         end
       end
 
+      let(:table_without_model) do
+        Class.new(Gitlab::Database::Partitioning::TableWithoutModel) do
+          self.table_name = 'table1'
+        end
+      end
+
       table_metadata = {
         'table_name' => 'table1',
         'classes' => ['TableClass'],
@@ -470,7 +476,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         File.write(table_file_path, table_metadata.to_yaml)
         File.write(view_file_path, view_metadata.to_yaml)
 
-        allow(model).to receive(:descendants).and_return([table_class, migration_table_class, view_class])
+        allow(model).to receive(:descendants).and_return([table_class, migration_table_class, view_class, table_without_model])
       end
 
       it 'appends new classes to the dictionary' do
@@ -563,8 +569,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
 
       if Gitlab.ee?
-        allow(File).to receive(:open).with(Rails.root.join(Gitlab::Database::EMBEDDING_DATABASE_DIR, 'structure.sql').to_s, any_args).and_yield(output)
-        allow(File).to receive(:open).with(Rails.root.join(Gitlab::Database::GEO_DATABASE_DIR, 'structure.sql').to_s, any_args).and_yield(output)
+        allow(File).to receive(:open).with(Rails.root.join('ee/db/geo/structure.sql').to_s, any_args).and_yield(output)
+        allow(File).to receive(:open).with(Rails.root.join('ee/db/embedding/structure.sql').to_s, any_args).and_yield(output)
       end
     end
 
@@ -1018,7 +1024,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
 
     where(:db) do
-      Gitlab::Database::DATABASE_NAMES.map(&:to_sym)
+      ::Gitlab::Database.db_config_names(with_schema: :gitlab_shared).map(&:to_sym)
     end
 
     with_them do

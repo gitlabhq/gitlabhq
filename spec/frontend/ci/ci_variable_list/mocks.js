@@ -51,6 +51,45 @@ export const mockVariables = (kind) => {
   ];
 };
 
+export const mockInheritedVariables = [
+  {
+    id: 'gid://gitlab/Ci::GroupVariable/120',
+    key: 'INHERITED_VAR_1',
+    variableType: 'ENV_VAR',
+    environmentScope: '*',
+    masked: true,
+    protected: true,
+    raw: false,
+    groupName: 'group-name',
+    groupCiCdSettingsPath: '/groups/group-name/-/settings/ci_cd',
+    __typename: 'InheritedCiVariable',
+  },
+  {
+    id: 'gid://gitlab/Ci::GroupVariable/121',
+    key: 'INHERITED_VAR_2',
+    variableType: 'ENV_VAR',
+    environmentScope: 'staging',
+    masked: false,
+    protected: false,
+    raw: true,
+    groupName: 'subgroup-name',
+    groupCiCdSettingsPath: '/groups/group-name/subgroup-name/-/settings/ci_cd',
+    __typename: 'InheritedCiVariable',
+  },
+  {
+    id: 'gid://gitlab/Ci::GroupVariable/122',
+    key: 'INHERITED_VAR_3',
+    variableType: 'FILE',
+    environmentScope: 'production',
+    masked: false,
+    protected: true,
+    raw: true,
+    groupName: 'subgroup-name',
+    groupCiCdSettingsPath: '/groups/group-name/subgroup-name/-/settings/ci_cd',
+    __typename: 'InheritedCiVariable',
+  },
+];
+
 export const mockVariablesWithScopes = (kind) =>
   mockVariables(kind).map((variable) => {
     return { ...variable, environmentScope: '*' };

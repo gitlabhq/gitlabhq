@@ -99,7 +99,7 @@ module BulkImports
     end
 
     def validate_tmpdir
-      Gitlab::Utils.check_allowed_absolute_path!(tmpdir, [Dir.tmpdir])
+      Gitlab::PathTraversal.check_allowed_absolute_path!(tmpdir, [Dir.tmpdir])
     end
 
     def filepath

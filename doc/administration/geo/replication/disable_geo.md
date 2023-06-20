@@ -7,7 +7,7 @@ type: howto
 
 # Disabling Geo **(PREMIUM SELF)**
 
-If you want to revert to a regular Omnibus setup after a test, or you have encountered a Disaster Recovery
+If you want to revert to a regular Linux package installation setup after a test, or you have encountered a Disaster Recovery
 situation and you want to disable Geo momentarily, you can use these instructions to disable your
 Geo setup.
 
@@ -36,7 +36,8 @@ to do that.
 To remove the **primary** site:
 
 1. [Remove all secondary Geo sites](remove_geo_site.md)
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Select **Remove** for the **primary** node.
 1. Confirm by selecting **Remove** when the prompt appears.
@@ -80,7 +81,7 @@ Geo node in a PostgreSQL console (`sudo gitlab-psql`):
    roles ['geo_primary_role']
    ```
 
-1. After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 ## (Optional) Revert PostgreSQL settings to use a password and listen on an IP

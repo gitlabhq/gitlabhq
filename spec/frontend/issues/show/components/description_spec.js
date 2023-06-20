@@ -10,6 +10,7 @@ import Description from '~/issues/show/components/description.vue';
 import eventHub from '~/issues/show/event_hub';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import workItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import TaskList from '~/task_list';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import {
@@ -17,6 +18,7 @@ import {
   createWorkItemMutationResponse,
   getIssueDetailsResponse,
   projectWorkItemTypesQueryResponse,
+  workItemByIidResponseFactory,
 } from 'jest/work_items/mock_data';
 import {
   descriptionProps as initialProps,
@@ -52,9 +54,23 @@ describe('Description component', () => {
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(issueDetailsResponse),
     createWorkItemMutationHandler,
   } = {}) {
+    const mockApollo = createMockApollo([
+      [workItemTypesQuery, workItemTypesQueryHandler],
+      [getIssueDetailsQuery, issueDetailsQueryHandler],
+      [createWorkItemMutation, createWorkItemMutationHandler],
+    ]);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: workItemByIidQuery,
+      variables: { fullPath: 'gitlab-org/gitlab-test', iid: '1' },
+      data: workItemByIidResponseFactory().data,
+    });
+
     wrapper = shallowMountExtended(Description, {
+      apolloProvider: mockApollo,
       propsData: {
         issueId: 1,
+        issueIid: 1,
         ...initialProps,
         ...props,
       },
@@ -63,11 +79,6 @@ describe('Description component', () => {
         hasIterationsFeature: true,
         ...provide,
       },
-      apolloProvider: createMockApollo([
-        [workItemTypesQuery, workItemTypesQueryHandler],
-        [getIssueDetailsQuery, issueDetailsQueryHandler],
-        [createWorkItemMutation, createWorkItemMutationHandler],
-      ]),
       mocks: {
         $toast,
       },

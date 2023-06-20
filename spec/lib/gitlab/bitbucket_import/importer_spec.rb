@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integrations do
+RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, feature_category: :importers do
   include ImportSpecHelper
 
   before do
@@ -104,10 +104,12 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integration
         title: 'This is a title',
         description: 'This is a test pull request',
         state: 'merged',
-        author: 'other',
+        author: pull_request_author,
         created_at: Time.now,
         updated_at: Time.now)
     end
+
+    let(:pull_request_author) { 'other' }
 
     let(:author_line) { "*Created by: someuser*\n\n" }
 
@@ -168,6 +170,16 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integration
       expect(reply_note.note).to include(author_line)
     end
 
+    context 'when author is blank' do
+      let(:pull_request_author) { nil }
+
+      it 'adds created by anonymous in the description', :aggregate_failures do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        expect(MergeRequest.first.description).to include('Created by: Anonymous')
+      end
+    end
+
     context 'when user exists in GitLab' do
       let!(:existing_user) { create(:user, username: 'someuser') }
       let!(:identity) { create(:identity, provider: 'bitbucket', extern_uid: existing_user.username, user: existing_user) }
@@ -218,6 +230,17 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integration
       end
     end
 
+    context "when target_branch_sha is blank" do
+      let(:target_branch_sha) { nil }
+
+      it 'creates the merge request with no target branch', :aggregate_failures do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        merge_request = MergeRequest.first
+        expect(merge_request.target_branch_sha).to eq(nil)
+      end
+    end
+
     context 'metrics' do
       before do
         allow(Gitlab::Metrics).to receive(:counter) { counter }
@@ -233,6 +256,29 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integration
         expect(counter).to receive(:increment)
 
         subject.execute
+      end
+    end
+
+    context 'when pull request was already imported' do
+      let(:pull_request_already_imported) do
+        instance_double(
+          BitbucketServer::Representation::PullRequest,
+          iid: 11)
+      end
+
+      let(:cache_key) do
+        format(described_class::ALREADY_IMPORTED_CACHE_KEY, project: project.id, collection: :pull_requests)
+      end
+
+      before do
+        allow(subject.client).to receive(:pull_requests).and_return([pull_request, pull_request_already_imported])
+        Gitlab::Cache::Import::Caching.set_add(cache_key, pull_request_already_imported.iid)
+      end
+
+      it 'does not import the previously imported pull requests', :aggregate_failures do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        expect(Gitlab::Cache::Import::Caching.set_includes?(cache_key, pull_request.iid)).to eq(true)
       end
     end
   end
@@ -403,6 +449,24 @@ RSpec.describe Gitlab::BitbucketImport::Importer, feature_category: :integration
           expect(comment.note).to include(inline_note.note)
           expect(comment.note).to include(inline_note.author)
           expect(importer.errors).to be_empty
+        end
+      end
+
+      context 'when issue was already imported' do
+        let(:cache_key) do
+          format(described_class::ALREADY_IMPORTED_CACHE_KEY, project: project.id, collection: :issues)
+        end
+
+        before do
+          Gitlab::Cache::Import::Caching.set_add(cache_key, sample_issues_statuses.first[:id])
+        end
+
+        it 'does not import previously imported issues', :aggregate_failures do
+          expect { subject.execute }.to change { Issue.count }.by(sample_issues_statuses.size - 1)
+
+          sample_issues_statuses.each do |sample_issues_status|
+            expect(Gitlab::Cache::Import::Caching.set_includes?(cache_key, sample_issues_status[:id])).to eq(true)
+          end
         end
       end
     end

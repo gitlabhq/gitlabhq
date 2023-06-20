@@ -72,6 +72,14 @@ contents, individual commits, and the files containing changes.
 Diff content is usually accessed through this class. Logic is often applied
 to diff, file, and commit content before it is returned to a user.
 
+#### `MergeRequestDiff#commits_count`
+
+When `MergeRequestDiff` is saved, associated `MergeRequestDiffCommit` records are
+counted and cached into the `commits_count` column. This number displays on the
+merge request page as the counter for the **Commits** tab.
+
+If `MergeRequestDiffCommit` records are deleted, the counter doesn't update.
+
 ### `MergeRequestDiffCommit`
 
 `MergeRequestDiffCommit` is defined in `app/models/merge_request_diff_commit.rb`.
@@ -118,6 +126,23 @@ relationship to the change, such as:
 - Whether it is added or renamed.
 - Its ordering in the diff.
 - The raw diff output itself.
+
+#### External diff storage
+
+By default, diff data of a `MergeRequestDiffFile` is stored in `diff` column in
+the `merge_request_diff_files` table. On some installations, the table can grow
+too large, so they're configured to store diffs on external storage to save space.
+To configure it, see [Merge request diffs storage](../../../administration/merge_request_diffs.md).
+
+When configured to use external storage:
+
+- The `diff` column in the database is left `NULL`.
+- The associated `MergeRequestDiff` record sets the `stored_externally` attribute
+  to `true` on creation of `MergeRequestDiff`.
+
+A cron job named `ScheduleMigrateExternalDiffsWorker` is also scheduled at
+minute 15 of every hour. This migrates `diff` that are still stored in the
+database to external storage.
 
 ### `MergeRequestDiffDetail`
 

@@ -6,7 +6,6 @@ import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
 } from '../../constants';
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -61,10 +60,10 @@ export default {
   },
   data() {
     return {
+      error: undefined,
       isShownAddForm: false,
       formType: null,
       childType: null,
-      prefetchedWorkItem: null,
     };
   },
   computed: {
@@ -95,31 +94,17 @@ export default {
     showModal({ event, child }) {
       this.$emit('show-modal', { event, modalWorkItem: child });
     },
-    addWorkItemQuery(iid) {
-      if (!iid) {
-        return;
-      }
-
-      this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: workItemByIidQuery,
-        variables: {
-          fullPath: this.fullPath,
-          iid,
-        },
-        update(data) {
-          return data.workspace.workItems.nodes[0];
-        },
-        context: {
-          isSingleRequest: true,
-        },
-      });
-    },
   },
 };
 </script>
 
 <template>
-  <widget-wrapper ref="wrapper" data-testid="work-item-tree">
+  <widget-wrapper
+    ref="wrapper"
+    :error="error"
+    data-testid="work-item-tree"
+    @dismissAlert="error = undefined"
+  >
     <template #header>
       {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
     </template>
@@ -151,12 +136,12 @@ export default {
         ref="wiLinksForm"
         data-testid="add-tree-form"
         :issuable-gid="workItemId"
+        :work-item-iid="workItemIid"
         :form-type="formType"
         :parent-work-item-type="parentWorkItemType"
         :children-type="childType"
         :children-ids="childrenIds"
         :parent-confidential="confidential"
-        @addWorkItemChild="$emit('addWorkItemChild', $event)"
         @cancel="hideAddForm"
       />
       <work-item-children-wrapper
@@ -165,8 +150,7 @@ export default {
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
-        fetch-by-iid
-        @removeChild="$emit('removeChild', $event)"
+        @error="error = $event"
         @show-modal="showModal"
       />
     </template>

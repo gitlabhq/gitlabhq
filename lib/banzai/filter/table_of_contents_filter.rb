@@ -55,7 +55,7 @@ module Banzai
 
       def anchor_tag(href)
         escaped_href = CGI.escape(href) # account for non-ASCII characters
-        %Q{<a id="user-content-#{href}" class="anchor" href="##{escaped_href}" aria-hidden="true"></a>}
+        %{<a id="user-content-#{href}" class="anchor" href="##{escaped_href}" aria-hidden="true"></a>}
       end
 
       def push_toc(children, root: false)
@@ -69,7 +69,7 @@ module Banzai
       end
 
       def push_anchor(header_node)
-        result[:toc] << %Q{<li><a href="##{header_node.href}">#{header_node.text}</a>}
+        result[:toc] << %{<li><a href="##{header_node.href}">#{header_node.text}</a>}
         push_toc(header_node.children)
         result[:toc] << '</li>'
       end

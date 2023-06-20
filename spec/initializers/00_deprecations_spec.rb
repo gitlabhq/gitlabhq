@@ -120,21 +120,27 @@ RSpec.describe '00_deprecations', feature_category: :shared do
 
       subject { ActiveSupport::Deprecation.warn('This is disallowed warning 1.') }
 
-      it 'raises ActiveSupport::DeprecationException' do
-        expect { subject }.to raise_error(ActiveSupport::DeprecationException)
+      it 'raises Exception and warns on stderr' do
+        expect { subject }
+          .to raise_error(Exception)
+          .and output(match(/^DEPRECATION WARNING: This is disallowed warning 1\./)).to_stderr
       end
 
       context 'when in production environment' do
         let(:rails_env) { 'production' }
 
-        it 'does not raise ActiveSupport::DeprecationException' do
+        it_behaves_like 'does not log to stderr'
+
+        it 'does not raise' do
           expect { subject }.not_to raise_error
         end
 
         context 'when GITLAB_LOG_DEPRECATIONS is set' do
           let(:gitlab_log_deprecations) { '1' }
 
-          it 'does not raise ActiveSupport::DeprecationException' do
+          it_behaves_like 'does not log to stderr'
+
+          it 'does not raise' do
             expect { subject }.not_to raise_error
           end
         end

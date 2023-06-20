@@ -11,7 +11,7 @@ RSpec.describe SshKeysHelper do
 
       quoted_allowed_algorithms = allowed_algorithms.map { |name| "'#{name}'" }
 
-      expected_string = Gitlab::Utils.to_exclusive_sentence(quoted_allowed_algorithms)
+      expected_string = Gitlab::Sentence.to_exclusive_sentence(quoted_allowed_algorithms)
 
       expect(ssh_key_allowed_algorithms).to eq(expected_string)
     end

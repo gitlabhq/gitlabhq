@@ -9,7 +9,7 @@ module API
 
     helpers Helpers::GroupsHelpers
 
-    feature_category :subgroups, ['/groups/:id/custom_attributes', '/groups/:id/custom_attributes/:key']
+    feature_category :groups_and_projects, ['/groups/:id/custom_attributes', '/groups/:id/custom_attributes/:key']
 
     helpers do
       params :statistics_params do
@@ -198,7 +198,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      get feature_category: :subgroups do
+      get feature_category: :groups_and_projects do
         groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups_with_pagination_strategies params, groups
       end
@@ -214,7 +214,7 @@ module API
 
         use :optional_params
       end
-      post feature_category: :subgroups, urgency: :low do
+      post feature_category: :groups_and_projects, urgency: :low do
         parent_group = find_group!(params[:parent_id]) if params[:parent_id].present?
         if parent_group
           authorize! :create_subgroup, parent_group
@@ -248,7 +248,7 @@ module API
         use :optional_update_params
         use :optional_update_params_ee
       end
-      put ':id', feature_category: :subgroups, urgency: :low do
+      put ':id', feature_category: :groups_and_projects, urgency: :low do
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
@@ -272,7 +272,7 @@ module API
         optional :with_projects, type: Boolean, default: true, desc: 'Omit project details'
       end
       # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357841
-      get ":id", feature_category: :subgroups, urgency: :low do
+      get ":id", feature_category: :groups_and_projects, urgency: :low do
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
@@ -282,7 +282,7 @@ module API
       desc 'Remove a group.' do
         tags %w[groups]
       end
-      delete ":id", feature_category: :subgroups, urgency: :low do
+      delete ":id", feature_category: :groups_and_projects, urgency: :low do
         group = find_group!(params[:id])
         authorize! :admin_group, group
         check_subscription! group
@@ -320,7 +320,7 @@ module API
         use :optional_projects_params
       end
       # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/211498
-      get ":id/projects", feature_category: :subgroups, urgency: :low do
+      get ":id/projects", feature_category: :groups_and_projects, urgency: :low do
         finder_options = {
           only_owned: !params[:with_shared],
           include_subgroups: params[:include_subgroups],
@@ -356,7 +356,7 @@ module API
         use :pagination
         use :with_custom_attributes
       end
-      get ":id/projects/shared", feature_category: :subgroups do
+      get ":id/projects/shared", feature_category: :groups_and_projects do
         projects = find_group_projects(params, { only_shared: true })
 
         present_projects(params, projects)
@@ -371,7 +371,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      get ":id/subgroups", feature_category: :subgroups, urgency: :low do
+      get ":id/subgroups", feature_category: :groups_and_projects, urgency: :low do
         groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups
       end
@@ -385,7 +385,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      get ":id/descendant_groups", feature_category: :subgroups, urgency: :low do
+      get ":id/descendant_groups", feature_category: :groups_and_projects, urgency: :low do
         finder_params = declared_params(include_missing: false).merge(include_parent_descendants: true)
         groups = find_groups(finder_params, params[:id])
         present_groups params, groups
@@ -398,7 +398,7 @@ module API
       params do
         requires :project_id, type: String, desc: 'The ID or path of the project'
       end
-      post ":id/projects/:project_id", requirements: { project_id: /.+/ }, feature_category: :projects do
+      post ":id/projects/:project_id", requirements: { project_id: /.+/ }, feature_category: :groups_and_projects do
         authenticated_as_admin!
         group = find_group!(params[:id])
         group.preload_shared_group_links
@@ -421,7 +421,7 @@ module API
         optional :search, type: String, desc: 'Return list of namespaces matching the search criteria'
         use :pagination
       end
-      get ':id/transfer_locations', feature_category: :subgroups do
+      get ':id/transfer_locations', feature_category: :groups_and_projects do
         authorize! :admin_group, user_group
         args = declared_params(include_missing: false)
 
@@ -440,7 +440,7 @@ module API
                  desc: 'The ID of the target group to which the group needs to be transferred to.'\
                        'If not provided, the source group will be promoted to a root group.'
       end
-      post ':id/transfer', feature_category: :subgroups do
+      post ':id/transfer', feature_category: :groups_and_projects do
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
@@ -465,7 +465,7 @@ module API
         requires :group_access, type: Integer, values: Gitlab::Access.all_values, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
-      post ":id/share", feature_category: :subgroups, urgency: :low do
+      post ":id/share", feature_category: :groups_and_projects, urgency: :low do
         shared_with_group = find_group!(params[:group_id])
 
         group_link_create_params = {
@@ -487,7 +487,7 @@ module API
         requires :group_id, type: Integer, desc: 'The ID of the shared group'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete ":id/share/:group_id", feature_category: :subgroups do
+      delete ":id/share/:group_id", feature_category: :groups_and_projects do
         shared_group = find_group!(params[:id])
 
         link = shared_group.shared_with_group_links.find_by(shared_with_group_id: params[:group_id])

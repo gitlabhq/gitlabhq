@@ -1,9 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { throttle } from 'lodash';
 import DiffView from '~/diffs/components/diff_view.vue';
 import DiffLine from '~/diffs/components/diff_line.vue';
 import { diffCodeQuality } from '../mock_data/diff_code_quality';
+
+jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
+const lodash = jest.requireActual('lodash');
 
 describe('DiffView', () => {
   const DiffExpansionCell = { template: `<div/>` };
@@ -50,6 +54,14 @@ describe('DiffView', () => {
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell, DraftNote };
     return shallowMount(DiffView, { propsData, store, stubs });
   };
+
+  beforeEach(() => {
+    throttle.mockImplementation(lodash.throttle);
+  });
+
+  afterEach(() => {
+    throttle.mockReset();
+  });
 
   it('does not render a diff-line component when there is no finding', () => {
     const wrapper = createWrapper();
@@ -137,6 +149,19 @@ describe('DiffView', () => {
       diffRow.$emit('stopdragging');
       expect(wrapper.vm.idState.dragStart).toBeNull();
       expect(showCommentForm).toHaveBeenCalled();
+    });
+
+    it('throttles multiple calls to enterdragging', () => {
+      const wrapper = createWrapper({ diffLines: [{}] });
+      const diffRow = getDiffRow(wrapper);
+
+      diffRow.$emit('startdragging', { line: { chunk: 1, index: 1 } });
+      diffRow.$emit('enterdragging', { chunk: 1, index: 2 });
+      diffRow.$emit('enterdragging', { chunk: 1, index: 2 });
+
+      jest.runOnlyPendingTimers();
+
+      expect(setSelectedCommentPosition).toHaveBeenCalledTimes(1);
     });
   });
 });

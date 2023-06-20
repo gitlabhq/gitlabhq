@@ -1,7 +1,7 @@
 import { ApolloMutation } from 'vue-apollo';
 import { nextTick } from 'vue';
-import { GlAvatar, GlAvatarLink, GlDropdown } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlAvatar, GlAvatarLink, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -38,11 +38,13 @@ describe('Design note component', () => {
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findEditButton = () => wrapper.findByTestId('note-edit');
   const findNoteContent = () => wrapper.findByTestId('note-text');
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-button"]');
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownItems = () => findDropdown().findAllComponents(GlDisclosureDropdownItem);
+  const findEditDropdownItem = () => findDropdownItems().at(0);
+  const findDeleteDropdownItem = () => findDropdownItems().at(1);
 
   function createComponent(props = {}, data = { isEditing: false }) {
-    wrapper = shallowMountExtended(DesignNote, {
+    wrapper = mountExtended(DesignNote, {
       propsData: {
         note: {},
         noteableId: 'gid://gitlab/DesignManagement::Design/6',
@@ -61,6 +63,13 @@ describe('Design note component', () => {
       },
       stubs: {
         ApolloMutation,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
+        TimelineEntryItem: true,
+        TimeAgoTooltip: true,
+        GlAvatarLink: true,
+        GlAvatar: true,
+        GlLink: true,
       },
     });
   }
@@ -151,6 +160,23 @@ describe('Design note component', () => {
         );
       });
 
+      it('should open an edit form on edit button click', async () => {
+        createComponent({
+          note: {
+            ...note,
+            userPermissions: {
+              adminNote: true,
+            },
+          },
+        });
+
+        findEditDropdownItem().find('button').trigger('click');
+
+        await nextTick();
+        expect(findReplyForm().exists()).toBe(true);
+        expect(findNoteContent().exists()).toBe(false);
+      });
+
       it('should not render note content and should render reply form', () => {
         expect(findNoteContent().exists()).toBe(false);
         expect(findReplyForm().exists()).toBe(true);
@@ -174,7 +200,7 @@ describe('Design note component', () => {
     });
   });
 
-  describe('when user has a permission to delete note', () => {
+  describe('when user has admin permissions', () => {
     it('should display a dropdown', () => {
       createComponent({
         note: {
@@ -186,6 +212,9 @@ describe('Design note component', () => {
       });
 
       expect(findDropdown().exists()).toBe(true);
+      expect(findEditDropdownItem().exists()).toBe(true);
+      expect(findDeleteDropdownItem().exists()).toBe(true);
+      expect(findDropdown().props('items')[0].extraAttrs.class).toBe('gl-sm-display-none!');
     });
   });
 
@@ -203,7 +232,7 @@ describe('Design note component', () => {
       },
     });
 
-    findDeleteNoteButton().vm.$emit('click');
+    findDeleteDropdownItem().find('button').trigger('click');
 
     expect(wrapper.emitted()).toEqual({ 'delete-note': [[{ ...payload }]] });
   });

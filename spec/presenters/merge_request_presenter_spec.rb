@@ -474,7 +474,7 @@ RSpec.describe MergeRequestPresenter do
         allow(resource).to receive(:source_branch_exists?) { true }
 
         is_expected
-          .to eq("<a class=\"ref-name\" href=\"#{presenter.source_branch_commits_path}\">#{presenter.source_branch}</a>")
+          .to eq("<a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{presenter.source_branch_commits_path}\">#{presenter.source_branch}</a>")
       end
     end
 
@@ -497,7 +497,7 @@ RSpec.describe MergeRequestPresenter do
         allow(resource).to receive(:target_branch_exists?) { true }
 
         is_expected
-          .to eq("<a class=\"ref-name\" href=\"#{presenter.target_branch_commits_path}\">#{presenter.target_branch}</a>")
+          .to eq("<a class=\"ref-name gl-link gl-bg-blue-50 gl-rounded-base gl-px-2\" href=\"#{presenter.target_branch_commits_path}\">#{presenter.target_branch}</a>")
       end
     end
 

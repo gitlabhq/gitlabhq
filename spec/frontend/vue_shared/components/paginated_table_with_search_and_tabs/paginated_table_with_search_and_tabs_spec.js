@@ -94,16 +94,15 @@ describe('AlertManagementEmptyState', () => {
   const ItemsTable = () => wrapper.find('.gl-table');
   const ErrorAlert = () => wrapper.findComponent(GlAlert);
   const Pagination = () => wrapper.findComponent(GlPagination);
-  const Tabs = () => wrapper.findComponent(GlTabs);
   const ActionButton = () => wrapper.find('.header-actions > button');
-  const Filters = () => wrapper.findComponent(FilteredSearchBar);
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findPagination = () => wrapper.findComponent(GlPagination);
   const findStatusFilterTabs = () => wrapper.findAllComponents(GlTab);
   const findStatusTabs = () => wrapper.findComponent(GlTabs);
   const findStatusFilterBadge = () => wrapper.findAllComponents(GlBadge);
 
   const handleFilterItems = (filters) => {
-    Filters().vm.$emit('onFilter', filters);
+    findFilteredSearchBar().vm.$emit('onFilter', filters);
     return nextTick();
   };
 
@@ -140,7 +139,7 @@ describe('AlertManagementEmptyState', () => {
         },
       });
 
-      expect(Tabs().exists()).toBe(true);
+      expect(findStatusTabs().exists()).toBe(true);
     });
 
     it('renders the header action buttons if present', () => {
@@ -176,7 +175,7 @@ describe('AlertManagementEmptyState', () => {
         props: { filterSearchTokens: [TOKEN_TYPE_ASSIGNEE] },
       });
 
-      expect(Filters().exists()).toBe(true);
+      expect(findFilteredSearchBar().exists()).toBe(true);
     });
   });
 
@@ -291,8 +290,9 @@ describe('AlertManagementEmptyState', () => {
     });
 
     it('renders the search component for incidents', () => {
-      expect(Filters().props('searchInputPlaceholder')).toBe('Search or filter results…');
-      expect(Filters().props('tokens')).toEqual([
+      const filteredSearchBar = findFilteredSearchBar();
+      expect(filteredSearchBar.props('searchInputPlaceholder')).toBe('Search or filter results…');
+      expect(filteredSearchBar.props('tokens')).toEqual([
         {
           type: TOKEN_TYPE_AUTHOR,
           icon: 'user',
@@ -316,14 +316,14 @@ describe('AlertManagementEmptyState', () => {
           fetchUsers: expect.any(Function),
         },
       ]);
-      expect(Filters().props('recentSearchesStorageKey')).toBe('items');
+      expect(filteredSearchBar.props('recentSearchesStorageKey')).toBe('items');
     });
 
     it('returns correctly applied filter search values', async () => {
       const searchTerm = 'foo';
       await handleFilterItems([{ type: 'filtered-search-term', value: { data: searchTerm } }]);
       await nextTick();
-      expect(Filters().props('initialFilterValue')).toEqual([searchTerm]);
+      expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([searchTerm]);
     });
 
     it('updates props tied to getIncidents GraphQL query', async () => {
@@ -337,7 +337,7 @@ describe('AlertManagementEmptyState', () => {
           value: { data: assigneeUsername },
         },
         searchTerm,
-      ] = Filters().props('initialFilterValue');
+      ] = findFilteredSearchBar().props('initialFilterValue');
 
       expect(authorUsername).toBe('root');
       expect(assigneeUsername).toEqual('root2');
@@ -346,7 +346,7 @@ describe('AlertManagementEmptyState', () => {
 
     it('updates props `searchTerm` and `authorUsername` with empty values when passed filters param is empty', async () => {
       await handleFilterItems([]);
-      expect(Filters().props('initialFilterValue')).toEqual([]);
+      expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([]);
     });
   });
 });

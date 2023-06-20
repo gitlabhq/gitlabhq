@@ -15,6 +15,28 @@ RSpec.describe Gitlab::Ci::Config::Entry::IdToken do
     end
   end
 
+  context 'when given `aud` is a variable' do
+    it 'is valid' do
+      config = { aud: '$WATHEVER' }
+      id_token = described_class.new(config)
+
+      id_token.compose!
+
+      expect(id_token).to be_valid
+    end
+  end
+
+  context 'when given `aud` includes a variable' do
+    it 'is valid' do
+      config = { aud: 'blah-$WATHEVER' }
+      id_token = described_class.new(config)
+
+      id_token.compose!
+
+      expect(id_token).to be_valid
+    end
+  end
+
   context 'when given `aud` as an array' do
     it 'is valid and concatenates the values' do
       config = { aud: ['https://gitlab.com', 'https://aws.com'] }
@@ -24,6 +46,17 @@ RSpec.describe Gitlab::Ci::Config::Entry::IdToken do
 
       expect(id_token).to be_valid
       expect(id_token.value).to eq(aud: ['https://gitlab.com', 'https://aws.com'])
+    end
+  end
+
+  context 'when given `aud` as an array with variables' do
+    it 'is valid and concatenates the values' do
+      config = { aud: ['$WATHEVER', 'blah-$WATHEVER'] }
+      id_token = described_class.new(config)
+
+      id_token.compose!
+
+      expect(id_token).to be_valid
     end
   end
 

@@ -6,7 +6,6 @@ import {
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
@@ -21,8 +20,6 @@ describe('CreateMenu component', () => {
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
   const findGlTooltip = () => wrapper.findComponent(GlTooltip);
 
-  const closeAndFocusMock = jest.fn();
-
   const createWrapper = () => {
     wrapper = shallowMountExtended(CreateMenu, {
       propsData: {
@@ -30,9 +27,7 @@ describe('CreateMenu component', () => {
       },
       stubs: {
         InviteMembersTrigger,
-        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
-          methods: { closeAndFocus: closeAndFocusMock },
-        }),
+        GlDisclosureDropdown,
       },
     });
   };
@@ -42,11 +37,12 @@ describe('CreateMenu component', () => {
       createWrapper();
     });
 
-    it('passes popper options to the dropdown', () => {
+    it('passes custom offset to the dropdown', () => {
       createWrapper();
 
-      expect(findGlDisclosureDropdown().props('popperOptions')).toEqual({
-        modifiers: [{ name: 'offset', options: { offset: [-147, 4] } }],
+      expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
+        crossAxis: -147,
+        mainAxis: 4,
       });
     });
 
@@ -92,11 +88,6 @@ describe('CreateMenu component', () => {
       await nextTick();
 
       expect(findGlTooltip().exists()).toBe(true);
-    });
-
-    it('closes the dropdown when invite members modal is opened', () => {
-      findInviteMembersTrigger().vm.$emit('modal-opened');
-      expect(closeAndFocusMock).toHaveBeenCalled();
     });
   });
 });

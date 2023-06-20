@@ -21,6 +21,7 @@ including:
 - Packages ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332006) in GitLab 14.7)
 - Snippets
 - [Group wikis](../user/project/wiki/group.md)
+- Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
 
 Backups do not include:
 
@@ -146,7 +147,7 @@ the GitLab container according to the documentation, it should be in the
 
 For [GitLab Helm chart installations](https://gitlab.com/gitlab-org/charts/gitlab)
 on a Kubernetes cluster, you must follow the
-[Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
+[Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#back-up-the-secrets)
 instructions.
 
 You may also want to back up any TLS keys and certificates (`/etc/gitlab/ssl`, `/etc/gitlab/trusted-certs`), and your
@@ -240,6 +241,7 @@ You can exclude specific directories from the backup by adding the environment v
 - `pages` (Pages content)
 - `repositories` (Git repositories data)
 - `packages` (Packages)
+- `ci_secure_files` (Project-level Secure Files)
 
 NOTE:
 When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../user/packages/package_registry/index.md).
@@ -396,23 +398,25 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=stora
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
 
-You can back up a specific repositories using the `REPOSITORIES_PATHS` option.
-The option accepts a comma-separated list of project and group paths. If you
+You can back up specific repositories using the `REPOSITORIES_PATHS` option.
+Similarly, you can use `SKIP_REPOSITORIES_PATHS` to skip certain repositories.
+Both options accept a comma-separated list of project or group paths. If you
 specify a group path, all repositories in all projects in the group and
-descendent groups are included.
+descendent groups are included or skipped, depending on which option you used.
 
-For example, to back up all repositories for all projects in **Group A** (`group-a`), and the repository for **Project C** in **Group B** (`group-b/project-c`):
+For example, to back up all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
+and skip the **Project D** in **Group A** (`group-a/project-d`):
 
 - Omnibus GitLab installations:
 
   ```shell
-  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c
+  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 - Installations from source:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c
+  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 ### Upload backups to a remote (cloud) storage
@@ -449,7 +453,7 @@ For Omnibus GitLab packages:
    # gitlab_rails['backup_multipart_chunk_size'] = 104857600
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 #### S3 Encrypted Buckets
@@ -533,7 +537,7 @@ This example can be used for a bucket in Amsterdam (AMS3):
    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 If you see a `400 Bad Request` error message when using Digital Ocean Spaces,
@@ -674,7 +678,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 For installations from source:
@@ -712,7 +716,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_remote_directory'] = '<AZURE BLOB CONTAINER>'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
 For installations from source:
@@ -813,7 +817,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For installations from source:
@@ -851,7 +855,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For installations from source:
@@ -935,7 +939,7 @@ For Omnibus GitLab packages:
    gitlab_rails['backup_keep_time'] = 604800
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 For installations from source:

@@ -7,7 +7,7 @@ RSpec.describe ::Gitlab::Metrics::LooseForeignKeysSlis do
   # config/database.yml and the specs need to work for all configurations. That
   # means this assertion is a copy of the implementation.
   let(:possible_labels) do
-    ::Gitlab::Database.db_config_names.map do |db_config_name|
+    ::Gitlab::Database.db_config_names(with_schema: :gitlab_shared).map do |db_config_name|
       {
         db_config_name: db_config_name,
         feature_category: :database

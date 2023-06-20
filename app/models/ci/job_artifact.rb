@@ -372,11 +372,11 @@ module Ci
       file_stored_after_transaction_hooks
     end
 
-    # method overriden in EE
+    # method overridden in EE
     def file_stored_after_transaction_hooks
     end
 
-    # method overriden in EE
+    # method overridden in EE
     def file_stored_in_transaction_hooks
     end
 

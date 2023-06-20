@@ -1,14 +1,17 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlDropdownDivider, GlDropdownSectionHeader } from '@gitlab/ui';
+import { GlDisclosureDropdownGroup, GlDisclosureDropdown } from '@gitlab/ui';
+import { s__, __ } from '~/locale';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
+  i18n: {
+    gitlabTag: s__('CreateTag|Tag'),
+  },
+
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
-    GlDropdownSectionHeader,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
   },
   inject: {
     newProjectTagPath: {
@@ -43,66 +46,117 @@ export default {
     showDivider() {
       return this.canRevert || this.canCherryPick || this.canTag;
     },
+    cherryPickItem() {
+      return {
+        text: s__('ChangeTypeAction|Cherry-pick'),
+        extraAttrs: {
+          'data-testid': 'cherry-pick-link',
+          'data-qa-selector': 'cherry_pick_button',
+        },
+        action: () => this.showModal(OPEN_CHERRY_PICK_MODAL),
+      };
+    },
+
+    revertLinkItem() {
+      return {
+        text: s__('ChangeTypeAction|Revert'),
+        extraAttrs: {
+          'data-testid': 'revert-link',
+          'data-qa-selector': 'revert_button',
+        },
+        action: () => this.showModal(OPEN_REVERT_MODAL),
+      };
+    },
+
+    tagLinkItem() {
+      return {
+        text: s__('CreateTag|Tag'),
+        href: this.newProjectTagPath,
+        extraAttrs: {
+          'data-testid': 'tag-link',
+        },
+      };
+    },
+    plainDiffItem() {
+      return {
+        text: s__('DownloadCommit|Plain Diff'),
+        href: this.plainDiffPath,
+        extraAttrs: {
+          download: '',
+          rel: 'nofollow',
+          'data-testid': 'plain-diff-link',
+          'data-qa-selector': 'plain_diff',
+        },
+      };
+    },
+    patchesItem() {
+      return {
+        text: __('Patches'),
+        href: this.emailPatchesPath,
+        extraAttrs: {
+          download: '',
+          rel: 'nofollow',
+          'data-testid': 'email-patches-link',
+          'data-qa-selector': 'email_patches',
+        },
+      };
+    },
+
+    downloadsGroup() {
+      const items = [];
+      if (this.canEmailPatches) {
+        items.push(this.patchesItem);
+      }
+      items.push(this.plainDiffItem);
+      return {
+        name: __('Downloads'),
+        items,
+      };
+    },
+
+    optionsGroup() {
+      const items = [];
+      if (this.canRevert) {
+        items.push(this.revertLinkItem);
+      }
+      if (this.canCherryPick) {
+        items.push(this.cherryPickItem);
+      }
+      if (this.canTag) {
+        items.push(this.tagLinkItem);
+      }
+      return {
+        items,
+      };
+    },
   },
+
   methods: {
     showModal(modalId) {
       eventHub.$emit(modalId);
     },
+    closeDropdown() {
+      this.$refs.userDropdown.close();
+    },
   },
-  openRevertModal: OPEN_REVERT_MODAL,
-  openCherryPickModal: OPEN_CHERRY_PICK_MODAL,
 };
 </script>
 
 <template>
-  <gl-dropdown
-    :text="__('Options')"
+  <gl-disclosure-dropdown
+    ref="userDropdown"
+    :toggle-text="__('Options')"
     right
     data-testid="commit-options-dropdown"
     data-qa-selector="options_button"
-    class="gl-xs-w-full"
+    class="gl-xs-w-full gl-line-height-20"
   >
-    <gl-dropdown-item
-      v-if="canRevert"
-      data-testid="revert-link"
-      data-qa-selector="revert_button"
-      @click="showModal($options.openRevertModal)"
-    >
-      {{ s__('ChangeTypeAction|Revert') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item
-      v-if="canCherryPick"
-      data-testid="cherry-pick-link"
-      data-qa-selector="cherry_pick_button"
-      @click="showModal($options.openCherryPickModal)"
-    >
-      {{ s__('ChangeTypeAction|Cherry-pick') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item v-if="canTag" :href="newProjectTagPath" data-testid="tag-link">
-      {{ s__('CreateTag|Tag') }}
-    </gl-dropdown-item>
-    <gl-dropdown-divider v-if="showDivider" />
-    <gl-dropdown-section-header>
-      {{ __('Download') }}
-    </gl-dropdown-section-header>
-    <gl-dropdown-item
-      v-if="canEmailPatches"
-      :href="emailPatchesPath"
-      download
-      rel="nofollow"
-      data-testid="email-patches-link"
-      data-qa-selector="email_patches"
-    >
-      {{ __('Patches') }}
-    </gl-dropdown-item>
-    <gl-dropdown-item
-      :href="plainDiffPath"
-      download
-      rel="nofollow"
-      data-testid="plain-diff-link"
-      data-qa-selector="plain_diff"
-    >
-      {{ s__('DownloadCommit|Plain Diff') }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+    <gl-disclosure-dropdown-group :group="optionsGroup" @action="closeDropdown" />
+
+    <gl-disclosure-dropdown-group
+      :bordered="showDivider"
+      :group="downloadsGroup"
+      @action="closeDropdown"
+    />
+  </gl-disclosure-dropdown>
 </template>

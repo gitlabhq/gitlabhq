@@ -26,10 +26,16 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.protected_ref_accessible_to?(ref, user, project:, action:, protected_refs: nil)
-    # Maintainers, owners and admins are allowed to create the default branch
+    if project.empty_repo?
+      member_access = project.team.max_member_access(user.id)
 
-    if project.empty_repo? && project.default_branch_protected?
+      # Admins are always allowed to create the default branch
       return true if user.admin? || user.can?(:admin_project, project)
+
+      # Developers can push if it is allowed by default branch protection settings
+      if member_access == Gitlab::Access::DEVELOPER && project.initial_push_to_default_branch_allowed_for_developer?
+        return true
+      end
     end
 
     super

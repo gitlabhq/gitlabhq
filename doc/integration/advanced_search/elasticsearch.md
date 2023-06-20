@@ -172,7 +172,8 @@ Prerequisite:
 
 To enable advanced search:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 
    NOTE:
@@ -219,8 +220,7 @@ The following Elasticsearch settings are available:
 | `URL`                                                 | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields described below. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. |
 | `Username`                                                 | The `username` of your Elasticsearch instance. |
 | `Password`                                                 | The password of your Elasticsearch instance. |
-| `Number of Elasticsearch shards`                      | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least 5 shards, and indices with tens of millions of documents need to have more shards ([see below](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
-| `Number of Elasticsearch replicas`                    | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value increases total disk space required by the index. |
+| `Number of Elasticsearch shards and replicas per index`    | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least five shards. Indices with tens of millions of documents should have more shards ([see the guidance](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until you re-create the index. For more information about scalability and resilience, see the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). Each Elasticsearch shard can have a number of replicas. These replicas are a complete copy of the shard and can provide increased query performance or resilience against hardware failure. Increasing this value increases the total disk space required by the index. You can set the number of shards and replicas for each of the indices. |
 | `Limit the number of namespaces and projects that can be indexed`   | Enabling this allows you to select namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this option but do not select any namespaces or projects, none are indexed. [Read more below](#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).|
 | `Using AWS OpenSearch Service with IAM credentials` | Sign your OpenSearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | `AWS Region`                                          | The AWS region in which your OpenSearch Service is located. |
@@ -377,7 +377,8 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable languages support:
 
 1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
@@ -398,7 +399,8 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 To disable the Elasticsearch integration:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Clear the **Elasticsearch indexing** and **Search with Elasticsearch enabled** checkboxes.
 1. Select **Save changes**.
@@ -414,7 +416,8 @@ To disable the Elasticsearch integration:
 
 ## Unpause Indexing
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
@@ -441,7 +444,8 @@ You can use zero-downtime reindexing to configure index settings or mappings tha
 To trigger the reindexing process:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
@@ -458,7 +462,8 @@ While the reindexing is running, you can follow its progress under that same sec
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55681) in GitLab 13.12.
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**, and you'll
    find the following options:
@@ -506,7 +511,8 @@ Sometimes, you might want to abandon the unfinished reindex job and resume the i
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
@@ -578,11 +584,17 @@ is recreated with the correct up-to-date schema.
 
 ### All migrations must be finished before doing a major upgrade
 
-Before doing a major version GitLab upgrade, you should have completed all
+Before upgrading to a major GitLab version, you must complete all
 migrations that exist up until the latest minor version before that major
-version. If you have halted migrations, these need to be resolved and
-[retried](#retry-a-halted-migration) before proceeding with a major version
-upgrade. Read more about [upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
+version. You must also resolve and [retry any halted migrations](#retry-a-halted-migration)
+before proceeding with a major version upgrade. For more information, see [Upgrading to a new major version](../../update/index.md#upgrading-to-a-new-major-version).
+
+Migrations that have been removed are
+[marked as obsolete](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63001).
+If you upgrade GitLab before all pending advanced search migrations are completed,
+any pending migrations that have been removed in the new version cannot be executed or retried.
+In this case, you must
+[re-create your index from scratch](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
 
 ## GitLab advanced search Rake tasks
 

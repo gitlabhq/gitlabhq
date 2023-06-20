@@ -111,7 +111,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
 
     describe 'enabling Merge when pipeline succeeds' do
       shared_examples 'Set to auto-merge activator' do
-        it 'activates the Merge when pipeline succeeds feature' do
+        it 'activates the Merge when pipeline succeeds feature', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410055' do
           click_button "Set to auto-merge"
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
@@ -182,7 +182,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'allows to cancel the automatic merge' do
+    it 'allows to cancel the automatic merge', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412416' do
       click_button "Cancel auto-merge"
 
       expect(page).to have_button "Merge when pipeline succeeds"

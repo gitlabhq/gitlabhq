@@ -15,20 +15,14 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
     ReleaseHighlight.instance_variable_set(:@file_paths, nil)
   end
 
-  describe '.paginated' do
-    let(:dot_com) { false }
-
-    before do
-      allow(Gitlab).to receive(:com?).and_return(dot_com)
-    end
-
+  describe '.paginated_query' do
     context 'with page param' do
-      subject { ReleaseHighlight.paginated(page: page) }
+      subject { ReleaseHighlight.paginated_query(page: page) }
 
       context 'when there is another page of results' do
         let(:page) { 3 }
 
-        it 'responds with paginated results' do
+        it 'responds with paginated query results' do
           expect(subject[:items].first['name']).to eq('bright')
           expect(subject[:next_page]).to eq(4)
         end
@@ -37,7 +31,7 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
       context 'when there is NOT another page of results' do
         let(:page) { 4 }
 
-        it 'responds with paginated results and no next_page' do
+        it 'responds with paginated query results and no next_page' do
           expect(subject[:items].first['name']).to eq("It's gonna be a bright")
           expect(subject[:next_page]).to eq(nil)
         end
@@ -51,7 +45,9 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
         end
       end
     end
+  end
 
+  describe '.paginated' do
     context 'with no page param' do
       subject { ReleaseHighlight.paginated }
 
@@ -69,19 +65,21 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
       end
 
       it 'parses the description as markdown and returns html, and links are target="_blank"' do
-        expect(subject[:items].first['description']).to match('<p data-sourcepos="1:1-1:62" dir="auto">bright and sunshinin\' <a href="https://en.wikipedia.org/wiki/Day" rel="nofollow noreferrer noopener" target="_blank">day</a></p>')
+        stub_commonmark_sourcepos_disabled
+
+        expect(subject[:items].first['description']).to eq('<p dir="auto">bright and sunshinin\' <a href="https://en.wikipedia.org/wiki/Day" rel="nofollow noreferrer noopener" target="_blank">day</a></p>')
       end
 
       it 'logs an error if theres an error parsing markdown for an item, and skips it' do
+        whats_new_items_count = 6
+
         allow(Banzai).to receive(:render).and_raise
 
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).exactly(whats_new_items_count).times
         expect(subject[:items]).to be_empty
       end
 
-      context 'when Gitlab.com' do
-        let(:dot_com) { true }
-
+      context 'when Gitlab.com', :saas do
         it 'responds with a different set of data' do
           expect(subject[:items].count).to eq(1)
           expect(subject[:items].first['name']).to eq("I think I can make it now the pain is gone")
@@ -90,10 +88,12 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
 
       context 'YAML parsing throws an exception' do
         it 'fails gracefully and logs an error' do
+          whats_new_files_count = 4
+
           allow(YAML).to receive(:safe_load).and_raise(Psych::Exception)
 
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
-          expect(subject).to be_nil
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).exactly(whats_new_files_count).times
+          expect(subject[:items]).to be_empty
         end
       end
     end
@@ -173,6 +173,18 @@ RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache, feature_category: :r
 
         expect(items.count).to eq(1)
         expect(items.first['name']).to eq("View epics on a board")
+      end
+    end
+
+    context 'YAML parsing throws an exception' do
+      it 'fails gracefully and logs an error' do
+        allow(YAML).to receive(:safe_load).and_raise(Psych::Exception)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+
+        items = described_class.load_items(page: 2)
+
+        expect(items).to be_empty
       end
     end
   end

@@ -1,13 +1,11 @@
 ---
 Rails/LexicallyScopedActionFilter:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/groups_controller.rb'
     - 'app/controllers/admin/hooks_controller.rb'
     - 'app/controllers/clusters/base_controller.rb'
     - 'app/controllers/clusters/clusters_controller.rb'
     - 'app/controllers/concerns/enforces_two_factor_authentication.rb'
-    - 'app/controllers/concerns/integrations/actions.rb'
     - 'app/controllers/concerns/oauth_applications.rb'
     - 'app/controllers/concerns/spammable_actions/captcha_check/html_format_actions_support.rb'
     - 'app/controllers/confirmations_controller.rb'

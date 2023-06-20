@@ -82,7 +82,11 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
         before do
           stub_artifacts_object_storage(JobArtifactUploader, direct_upload: true)
-          allow(JobArtifactUploader).to receive(:generate_final_store_path).and_return(final_store_path)
+
+          allow(JobArtifactUploader)
+            .to receive(:generate_final_store_path)
+            .with(root_id: project.id)
+            .and_return(final_store_path)
         end
 
         it 'includes the authorize headers' do
@@ -103,14 +107,6 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
         it_behaves_like 'handling lsif artifact'
         it_behaves_like 'validating requirements'
-
-        context 'with ci_artifacts_upload_to_final_location feature flag disabled' do
-          before do
-            stub_feature_flags(ci_artifacts_upload_to_final_location: false)
-          end
-
-          it_behaves_like 'uploading to temp location', :object_storage
-        end
       end
 
       context 'and direct upload is disabled' do

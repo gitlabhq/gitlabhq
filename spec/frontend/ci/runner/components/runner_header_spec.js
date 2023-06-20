@@ -17,6 +17,7 @@ import RunnerStatusBadge from '~/ci/runner/components/runner_status_badge.vue';
 import { runnerData } from '../mock_data';
 
 const mockRunner = runnerData.data.runner;
+const mockRunnerSha = mockRunner.shortSha;
 
 describe('RunnerHeader', () => {
   let wrapper;
@@ -71,7 +72,7 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(wrapper.text()).toContain('Runner #99');
+    expect(wrapper.text()).toContain(`#99 (${mockRunnerSha})`);
   });
 
   it('displays the runner locked icon', () => {
@@ -100,7 +101,7 @@ describe('RunnerHeader', () => {
       },
     });
 
-    expect(wrapper.text()).toContain('Runner #99');
+    expect(wrapper.text()).toContain(`#99 (${mockRunnerSha})`);
     expect(wrapper.text()).not.toMatch(/created .+/);
     expect(findTimeAgo().exists()).toBe(false);
   });

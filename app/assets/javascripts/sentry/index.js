@@ -13,7 +13,7 @@ const index = function index() {
       process.env.NODE_ENV === 'production'
         ? [gon.gitlab_url]
         : [gon.gitlab_url, 'webpack-internal://'],
-    release: gon.revision,
+    release: gon?.version,
     tags: {
       revision: gon?.revision,
       feature_category: gon?.feature_category,

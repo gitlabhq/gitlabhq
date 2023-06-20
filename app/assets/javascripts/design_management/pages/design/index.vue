@@ -385,6 +385,7 @@ export default {
     </div>
     <design-sidebar
       :design="design"
+      :design-variables="designVariables"
       :resolved-discussions-expanded="resolvedDiscussionsExpanded"
       :markdown-preview-path="markdownPreviewPath"
       :is-loading="isLoading"

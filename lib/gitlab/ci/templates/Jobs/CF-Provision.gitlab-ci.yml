@@ -7,7 +7,7 @@ cloud_formation:
   script:
     - gl-cloudformation create-stack
   rules:
-    - if: '($AUTO_DEVOPS_PLATFORM_TARGET != "EC2") || ($AUTO_DEVOPS_PLATFORM_TARGET != "ECS")'
+    - if: '($AUTO_DEVOPS_PLATFORM_TARGET != "EC2") && ($AUTO_DEVOPS_PLATFORM_TARGET != "ECS")'
       when: never
     - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never

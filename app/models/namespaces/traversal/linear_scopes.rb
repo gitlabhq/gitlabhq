@@ -25,8 +25,6 @@ module Namespaces
         end
 
         def self_and_ancestors(include_self: true, upto: nil, hierarchy_order: nil)
-          return super unless use_traversal_ids_for_ancestor_scopes?
-
           self_and_ancestors_from_inner_join(
             include_self: include_self,
             upto: upto, hierarchy_order:
@@ -35,8 +33,6 @@ module Namespaces
         end
 
         def self_and_ancestor_ids(include_self: true)
-          return super unless use_traversal_ids_for_ancestor_scopes?
-
           self_and_ancestors(include_self: include_self).as_ids
         end
 
@@ -84,11 +80,6 @@ module Namespaces
 
         def use_traversal_ids_roots?
           Feature.enabled?(:use_traversal_ids_roots) &&
-          use_traversal_ids?
-        end
-
-        def use_traversal_ids_for_ancestor_scopes?
-          Feature.enabled?(:use_traversal_ids_for_ancestor_scopes) &&
           use_traversal_ids?
         end
 

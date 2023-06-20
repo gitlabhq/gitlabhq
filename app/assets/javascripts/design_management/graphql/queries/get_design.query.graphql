@@ -25,6 +25,10 @@ query getDesign(
                   ...Author
                 }
               }
+              userPermissions {
+                createDesign
+                updateDesign
+              }
             }
           }
         }

@@ -8,11 +8,11 @@ module Banzai
 
       INLINE_DIFF_DELETION_UNTRUSTED = '(?:\[\-(.*?)\-\]|\{\-(.*?)\-\})'
       INLINE_DIFF_DELETION_UNTRUSTED_REGEX =
-        Gitlab::UntrustedRegexp.new(INLINE_DIFF_DELETION_UNTRUSTED, multiline: false)
+        Gitlab::UntrustedRegexp.new(INLINE_DIFF_DELETION_UNTRUSTED, multiline: false).freeze
 
       INLINE_DIFF_ADDITION_UNTRUSTED = '(?:\[\+(.*?)\+\]|\{\+(.*?)\+\})'
       INLINE_DIFF_ADDITION_UNTRUSTED_REGEX =
-        Gitlab::UntrustedRegexp.new(INLINE_DIFF_ADDITION_UNTRUSTED, multiline: false)
+        Gitlab::UntrustedRegexp.new(INLINE_DIFF_ADDITION_UNTRUSTED, multiline: false).freeze
 
       def call
         doc.xpath('descendant-or-self::text()').each do |node|

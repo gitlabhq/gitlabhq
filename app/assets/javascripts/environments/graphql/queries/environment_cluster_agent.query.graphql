@@ -1,0 +1,19 @@
+query getEnvironmentClusterAgent($projectFullPath: ID!, $environmentName: String) {
+  project(fullPath: $projectFullPath) {
+    id
+    environment(name: $environmentName) {
+      id
+      clusterAgent {
+        id
+        name
+        webPath
+        tokens {
+          nodes {
+            id
+            lastUsedAt
+          }
+        }
+      }
+    }
+  }
+}

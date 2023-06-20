@@ -800,11 +800,13 @@ export const resolvedDeploymentDetails = {
 };
 
 export const agent = {
-  project: 'agent-project',
   id: 'gid://gitlab/ClusterAgent/1',
   name: 'agent-name',
-  kubernetesNamespace: 'agent-namespace',
+  webPath: 'path/to/agent-page',
+  tokens: { nodes: [] },
 };
+
+export const kubernetesNamespace = 'agent-namespace';
 
 const runningPod = { status: { phase: 'Running' } };
 const pendingPod = { status: { phase: 'Pending' } };

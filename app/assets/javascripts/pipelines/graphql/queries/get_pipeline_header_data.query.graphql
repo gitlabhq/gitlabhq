@@ -32,6 +32,15 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
           emoji
         }
       }
+      commit {
+        id
+        shortId
+        title
+        webPath
+      }
+      finishedAt
+      queuedDuration
+      duration
     }
   }
 }

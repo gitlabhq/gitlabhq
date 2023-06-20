@@ -221,16 +221,7 @@ export default {
       });
     },
   },
-  popperOptions: {
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
-        },
-      },
-    ],
-  },
+  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
 };
 </script>
 
@@ -238,9 +229,10 @@ export default {
   <div>
     <gl-disclosure-dropdown
       ref="userDropdown"
-      :popper-options="$options.popperOptions"
+      :dropdown-offset="$options.dropdownOffset"
       data-testid="user-dropdown"
       data-qa-selector="user_menu"
+      :auto-close="false"
       @shown="onShow"
     >
       <template #toggle>

@@ -49,7 +49,7 @@ module QA
             end
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_editable_item.vue' do
-              element :edit_link
+              element :edit_button
             end
 
             base.view 'app/helpers/dropdowns_helper.rb' do
@@ -59,7 +59,7 @@ module QA
 
           def assign_milestone(milestone)
             wait_milestone_block_finish_loading do
-              click_element(:edit_link)
+              click_element(:edit_button)
               click_on(milestone.title)
             end
 
@@ -134,7 +134,7 @@ module QA
 
           def select_labels(labels)
             within_element(:labels_block) do
-              click_element(:edit_link)
+              click_element(:edit_button)
 
               labels.each do |label|
                 within_element(:labels_dropdown_content) do
@@ -144,7 +144,7 @@ module QA
               end
             end
 
-            click_element(:title_content) # to blur dropdown
+            click_element(:issue_title) # to blur dropdown
           end
 
           def toggle_more_assignees_link

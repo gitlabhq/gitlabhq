@@ -13,6 +13,8 @@ The deploy keys API can return in responses fingerprints of the public key in th
 
 ## List all deploy keys **(FREE SELF)**
 
+> `projects_with_readonly_access` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) in GitLab 16.0.
+
 Get a list of all deploy keys across all projects of the GitLab instance. This
 endpoint requires administrator access and is not available on GitLab.com.
 
@@ -63,7 +65,8 @@ Example response:
         "path_with_namespace": "sidney_jones/project3",
         "created_at": "2021-10-25T18:33:17.666Z"
       }
-    ]
+    ],
+    "projects_with_readonly_access": []
   },
   {
     "id": 3,
@@ -73,7 +76,18 @@ Example response:
     "fingerprint_sha256": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
     "expires_at": null,
-    "projects_with_write_access": []
+    "projects_with_write_access": [],
+    "projects_with_readonly_access": [
+      {
+        "id": 74,
+        "description": null,
+        "name": "project3",
+        "name_with_namespace": "Sidney Jones / project3",
+        "path": "project3",
+        "path_with_namespace": "sidney_jones/project3",
+        "created_at": "2021-10-25T18:33:17.666Z"
+      }
+    ]
   }
 ]
 ```

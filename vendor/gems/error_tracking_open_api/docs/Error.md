@@ -14,6 +14,7 @@
 | **last_seen_at** | **Time** |  | [optional] |
 | **first_seen_at** | **Time** |  | [optional] |
 | **status** | **String** | Status of the error | [optional] |
+| **stats** | [**ErrorStats**](ErrorStats.md) |  | [optional] |
 
 ## Example
 
@@ -30,7 +31,8 @@ instance = ErrorTrackingOpenAPI::Error.new(
   approximated_user_count: null,
   last_seen_at: null,
   first_seen_at: null,
-  status: null
+  status: null,
+  stats: null
 )
 ```
 

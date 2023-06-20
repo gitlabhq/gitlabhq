@@ -33,7 +33,6 @@ Style/SoleNestedConditional:
     - 'ee/app/workers/ee/post_receive.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/auth_hash.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/commit_check.rb'
-    - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/elastic/latest/issue_class_proxy.rb'
     - 'ee/lib/gitlab/code_owners/groups_loader.rb'
     - 'lib/api/deploy_keys.rb'

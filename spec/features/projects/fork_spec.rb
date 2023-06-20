@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project fork', feature_category: :projects do
+RSpec.describe 'Project fork', feature_category: :groups_and_projects do
   include ListboxHelpers
   include ProjectForksHelper
 

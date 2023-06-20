@@ -8,8 +8,8 @@ RSpec.shared_examples 'assigns build to package' do
     it 'assigns the pipeline to the package' do
       package = subject
 
-      expect(package.original_build_info).to be_present
-      expect(package.original_build_info.pipeline).to eq job.pipeline
+      expect(package.last_build_info).to be_present
+      expect(package.last_build_info.pipeline).to eq job.pipeline
     end
   end
 end
@@ -214,6 +214,7 @@ RSpec.shared_examples 'filters on each package_type' do |is_project: false|
   let_it_be(:package11) { create(:helm_package, project: project) }
   let_it_be(:package12) { create(:terraform_module_package, project: project) }
   let_it_be(:package13) { create(:rpm_package, project: project) }
+  let_it_be(:package14) { create(:ml_model_package, project: project) }
 
   Packages::Package.package_types.keys.each do |package_type|
     context "for package type #{package_type}" do

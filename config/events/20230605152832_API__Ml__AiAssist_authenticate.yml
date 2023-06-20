@@ -1,0 +1,22 @@
+---
+description: An event triggered when a user is authorized to use Code Suggestions
+category: API::Ml::AiAssist
+action: authenticate
+label_description: code_suggestions
+property_description:
+value_description:
+extra_properties:
+identifiers:
+- user
+product_section: dev
+product_stage: modelops
+product_group: ai_assisted
+milestone: "16.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122774
+distributions:
+- ee
+tiers:
+- free
+- premium
+- ultimate
+

@@ -3,12 +3,15 @@ data_category: optional
 key_path: counts.successful_deployments
 description: Total successful deployments
 product_section: ops
-product_stage: release
-product_group: release
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 time_frame: all
 data_source: database
+instrumentation_class: CountDeploymentsMetric
+options:
+  type: success
 distribution:
 - ce
 - ee

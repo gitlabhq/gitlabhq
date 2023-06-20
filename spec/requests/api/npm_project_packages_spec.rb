@@ -265,7 +265,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
               upload_package_with_token
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect(project.reload.packages.find(json_response['id']).original_build_info.pipeline).to eq job.pipeline
+              expect(project.reload.packages.find(json_response['id']).last_build_info.pipeline).to eq job.pipeline
             end
           end
         end

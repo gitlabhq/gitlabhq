@@ -5,7 +5,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
-  feature_category :subgroups, [:create, :destroy, :edit, :index, :members_update, :new, :show, :update]
+  feature_category :groups_and_projects, [:create, :destroy, :edit, :index, :members_update, :new, :show, :update]
 
   def index
     @groups = groups.sort_by_attribute(@sort = params[:sort])

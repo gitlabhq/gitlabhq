@@ -91,7 +91,7 @@ describe('AdminUserActions component', () => {
           initComponent({ actions: [LDAP] });
         });
 
-        it('renders the LDAP dropdown item without a link', () => {
+        it('renders the LDAP dropdown footer without a link', () => {
           const dropdownAction = wrapper.find(`[data-testid="${LDAP}"]`);
           expect(dropdownAction.exists()).toBe(true);
           expect(dropdownAction.attributes('href')).toBe(undefined);

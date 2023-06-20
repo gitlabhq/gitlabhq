@@ -1,0 +1,8 @@
+---
+name: adherence_report_ui
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122374
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414495
+milestone: '16.1'
+type: development
+group: group::compliance
+default_enabled: false

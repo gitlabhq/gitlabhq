@@ -158,9 +158,11 @@ The examples in this document all use the project-level prefix.
 
 ## Service Index
 
-> Introduced in GitLab 12.6.
+> - Introduced in GitLab 12.6.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) to be public in GitLab 16.1.
 
-Returns a list of available API resources:
+Returns a list of available API resources.
+Authentication is not required:
 
 ```plaintext
 GET <route-prefix>/index
@@ -169,7 +171,7 @@ GET <route-prefix>/index
 Example Request:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/index"
+curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/index"
 ```
 
 Example response:
@@ -265,13 +267,14 @@ Example response:
           "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
           "catalogEntry": {
             "@id": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/1.3.0.17.json",
-            "authors": "",
+            "authors": "Author1, Author2",
             "dependencyGroups": [],
             "id": "MyNuGetPkg",
             "version": "1.3.0.17",
             "tags": "",
             "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
-            "summary": ""
+            "summary": "Summary of the package",
+            "published": "2023-05-08T17:23:25Z",
           }
         }
       ]
@@ -307,13 +310,14 @@ Example response:
   "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
   "catalogEntry": {
     "@id": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/1.3.0.17.json",
-    "authors": "",
+    "authors": "Author1, Author2",
     "dependencyGroups": [],
     "id": "MyNuGetPkg",
     "version": "1.3.0.17",
     "tags": "",
     "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
-    "summary": ""
+    "summary": "Summary of the package",
+    "published": "2023-05-08T17:23:25Z",
   }
 }
 ```
@@ -347,10 +351,10 @@ Example response:
   "data": [
     {
       "@type": "Package",
-      "authors": "",
+      "authors": "Author1, Author2",
       "id": "MyNuGetPkg",
       "title": "MyNuGetPkg",
-      "summary": "",
+      "summary": "Summary of the package",
       "totalDownloads": 0,
       "verified": true,
       "version": "1.3.0.17",

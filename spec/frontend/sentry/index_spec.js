@@ -4,6 +4,7 @@ import LegacySentryConfig from '~/sentry/legacy_sentry_config';
 import SentryConfig from '~/sentry/sentry_config';
 
 describe('Sentry init', () => {
+  const version = '1.0.0';
   const dsn = 'https://123@sentry.gitlab.test/123';
   const environment = 'test';
   const currentUserId = '1';
@@ -13,6 +14,7 @@ describe('Sentry init', () => {
 
   beforeEach(() => {
     window.gon = {
+      version,
       sentry_dsn: dsn,
       sentry_environment: environment,
       current_user_id: currentUserId,
@@ -42,7 +44,7 @@ describe('Sentry init', () => {
         currentUserId,
         allowUrls: [gitlabUrl, 'webpack-internal://'],
         environment,
-        release: revision,
+        release: version,
         tags: {
           revision,
           feature_category: featureCategory,

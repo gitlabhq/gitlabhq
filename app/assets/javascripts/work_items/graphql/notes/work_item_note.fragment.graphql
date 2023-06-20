@@ -10,6 +10,8 @@ fragment WorkItemNote on Note {
   createdAt
   lastEditedAt
   url
+  authorIsContributor
+  maxAccessLevelOfAuthor
   lastEditedBy {
     ...User
     webPath
@@ -27,5 +29,12 @@ fragment WorkItemNote on Note {
     createNote
     resolveNote
     repositionNote
+  }
+  systemNoteMetadata {
+    id
+    descriptionVersion {
+      id
+      description
+    }
   }
 }

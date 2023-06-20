@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'explore/projects/page_out_of_bounds.html.haml', feature_category: :projects do
+RSpec.describe 'explore/projects/page_out_of_bounds.html.haml', feature_category: :groups_and_projects do
   let(:page_limit) { 10 }
   let(:unsafe_param) { 'hacked_using_unsafe_param!' }
 

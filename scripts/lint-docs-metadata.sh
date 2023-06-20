@@ -38,10 +38,10 @@ function check_file {
   file="$1"
   TOTAL_FILES=$((TOTAL_FILES + 1))
   if [ "$(head -n1 "$file")" != "---" ]; then
-    printf "${COLOR_RED}Documentation metadata missing in %s.${COLOR_RESET}\n" "$file" >&2
+    printf "${COLOR_RED}ERROR: Documentation metadata missing in %s.${COLOR_RESET}\n" "$file" >&2
     FAILING_FILES=$((FAILING_FILES + 1))
   elif [ "$VERBOSE" == "true" ]; then
-    printf "Documentation metadata found in %s.\n" "$file"
+    printf "${COLOR_GREEN}INFO: Documentation metadata found in %s.${COLOR_RESET}\n" "$file"
   fi
 }
 
@@ -53,7 +53,7 @@ function check_all_files {
 
 if [[ "$CHECK_ALL" = "true" ]]; then
   # shellcheck disable=SC2059
-  printf "No files supplied. Checking all markdown files in doc/.\n"
+  printf "${COLOR_GREEN}INFO: No files supplied! Checking all markdown files in doc/...${COLOR_RESET}\n"
   check_all_files
 else
   # Takes a list of Markdown files as a parameter
@@ -66,10 +66,10 @@ fi
 
 if [ "$FAILING_FILES" -gt 0 ]; then
   # shellcheck disable=SC2059
-  printf "\n${COLOR_RED}Documentation metadata is missing in ${FAILING_FILES} of ${TOTAL_FILES} documentation files.${COLOR_RESET} For more information, see https://docs.gitlab.com/ee/development/documentation/#metadata.\n" >&2
+  printf "\n${COLOR_RED}ERROR: Documentation metadata is missing in ${FAILING_FILES} of ${TOTAL_FILES} documentation files.${COLOR_RESET} For more information, see https://docs.gitlab.com/ee/development/documentation/#metadata.\n" >&2
   exit 1
 else
   # shellcheck disable=SC2059
-  printf "${COLOR_GREEN}Documentation metadata found in ${TOTAL_FILES} documentation files.${COLOR_RESET}\n"
+  printf "${COLOR_GREEN}INFO: Documentation metadata found in ${TOTAL_FILES} documentation files.${COLOR_RESET}\n"
   exit 0
 fi

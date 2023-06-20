@@ -1,0 +1,38 @@
+.web-ide-loader {
+  max-width: 400px;
+}
+
+.web-ide-loader .tanuki-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.web-ide-loader .tanuki,
+.web-ide-loader .right-cheek,
+.web-ide-loader .chin,
+.web-ide-loader .left-cheek {
+  animation: animate-tanuki 1.5s infinite;
+}
+
+.web-ide-loader .right-cheek {
+  animation-delay: 0.35s;
+}
+
+.web-ide-loader .chin {
+  animation-delay: 0.7s;
+}
+
+.web-ide-loader .left-cheek {
+  animation-delay: 1.05s;
+}
+
+@keyframes animate-tanuki {
+  0%,
+  50% {
+    filter: brightness(1) grayscale(0);
+  }
+
+  25% {
+    filter: brightness(1.2) grayscale(0.2);
+  }
+}

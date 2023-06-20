@@ -474,6 +474,8 @@ To delete older package versions, consider using the Packages API or the UI.
 
 ### Do not allow duplicate Maven packages
 
+> Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+
 To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
 
 In the UI:

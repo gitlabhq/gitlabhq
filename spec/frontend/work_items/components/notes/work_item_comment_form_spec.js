@@ -1,6 +1,8 @@
+import { GlFormCheckbox, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
@@ -40,6 +42,8 @@ describe('Work item comment form component', () => {
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
   const findConfirmButton = () => wrapper.find('[data-testid="confirm-button"]');
+  const findInternalNoteCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findInternalNoteTooltipIcon = () => wrapper.findComponent(GlIcon);
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
@@ -67,6 +71,9 @@ describe('Work item comment form component', () => {
       },
       provide: {
         fullPath: 'test-project-path',
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -168,7 +175,9 @@ describe('Work item comment form component', () => {
     createComponent();
     findConfirmButton().vm.$emit('click');
 
-    expect(wrapper.emitted('submitForm')).toEqual([[draftComment]]);
+    expect(wrapper.emitted('submitForm')).toEqual([
+      [{ commentText: draftComment, isNoteInternal: false }],
+    ]);
   });
 
   it('emits `submitForm` event on pressing enter with meta key on markdown editor', () => {
@@ -178,7 +187,9 @@ describe('Work item comment form component', () => {
       new KeyboardEvent('keydown', { key: ENTER_KEY, metaKey: true }),
     );
 
-    expect(wrapper.emitted('submitForm')).toEqual([[draftComment]]);
+    expect(wrapper.emitted('submitForm')).toEqual([
+      [{ commentText: draftComment, isNoteInternal: false }],
+    ]);
   });
 
   it('emits `submitForm` event on pressing ctrl+enter on markdown editor', () => {
@@ -188,7 +199,9 @@ describe('Work item comment form component', () => {
       new KeyboardEvent('keydown', { key: ENTER_KEY, ctrlKey: true }),
     );
 
-    expect(wrapper.emitted('submitForm')).toEqual([[draftComment]]);
+    expect(wrapper.emitted('submitForm')).toEqual([
+      [{ commentText: draftComment, isNoteInternal: false }],
+    ]);
   });
 
   describe('when used as a top level/is a new discussion', () => {
@@ -246,6 +259,38 @@ describe('Work item comment form component', () => {
         expect(wrapper.emitted('error')).toEqual([
           ['Something went wrong while updating the task. Please try again.'],
         ]);
+      });
+    });
+  });
+
+  describe('internal note', () => {
+    it('internal note checkbox should not be visible by default', () => {
+      createComponent();
+
+      expect(findInternalNoteCheckbox().exists()).toBe(false);
+    });
+
+    describe('when used as a new discussion', () => {
+      beforeEach(() => {
+        createComponent({ isNewDiscussion: true });
+      });
+
+      it('should have the add as internal note capability', () => {
+        expect(findInternalNoteCheckbox().exists()).toBe(true);
+      });
+
+      it('should have the tooltip explaining the internal note capabilities', () => {
+        expect(findInternalNoteTooltipIcon().exists()).toBe(true);
+        expect(findInternalNoteTooltipIcon().attributes('title')).toBe(
+          WorkItemCommentForm.i18n.internalVisibility,
+        );
+      });
+
+      it('should change the submit button text on change of value', async () => {
+        findInternalNoteCheckbox().vm.$emit('input', true);
+        await nextTick();
+
+        expect(findConfirmButton().text()).toBe(WorkItemCommentForm.i18n.addInternalNote);
       });
     });
   });

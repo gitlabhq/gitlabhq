@@ -5,7 +5,7 @@ module QA
     module Project
       module Branches
         class Show < Page::Base
-          view 'app/assets/javascripts/branches/components/delete_branch_button.vue' do
+          view 'app/assets/javascripts/branches/components/branch_more_actions.vue' do
             element :delete_branch_button
           end
 

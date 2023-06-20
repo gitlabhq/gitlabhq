@@ -6,11 +6,11 @@ FactoryBot.define do
 
     package_json do
       {
-        'name': package.name,
-        'version': package.version,
-        'dist': {
-          'tarball': 'http://localhost/tarball.tgz',
-          'shasum': '1234567890'
+        name: package.name,
+        version: package.version,
+        dist: {
+          tarball: 'http://localhost/tarball.tgz',
+          shasum: '1234567890'
         }
       }
     end

@@ -5,6 +5,6 @@ FactoryBot.define do
     association :user, factory: :user
     association :merge_request_diff, factory: :merge_request_diff
     provider { 0 }
-    content { 'test' }
+    content { FFaker::Lorem.sentence }
   end
 end

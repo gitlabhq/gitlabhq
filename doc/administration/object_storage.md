@@ -114,6 +114,7 @@ The following table lists the valid `objects` that can be used:
 | `dependency_proxy` | [Dependency Proxy](packages/dependency_proxy.md)                    |
 | `terraform_state`  | [Terraform state files](terraform_state.md)                                |
 | `pages`            | [Pages](pages/index.md)                                             |
+| `ci_secure_files`  | [Project-level Secure Files](secure_files.md)                              |
 
 Within each object type, three parameters can be defined:
 
@@ -161,6 +162,7 @@ supported by consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|
+| [Project-level Secure Files](secure_files.md#using-object-storage) | **{dotted-circle}** No |
 | [Backups](../raketasks/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |
@@ -315,8 +317,7 @@ Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.go
 
 #### GCS example
 
-For Omnibus installations, this is an example of the `connection` setting
-in the consolidated form:
+For Linux Package installations, this is an example of the `connection` setting in the consolidated form:
 
 ```ruby
 gitlab_rails['object_store']['connection'] = {
@@ -376,8 +377,7 @@ The following are the valid connection parameters for Azure. For more informatio
 | `azure_storage_access_key`   | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
 | `azure_storage_domain`       | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
 
-- For Omnibus installations, this is an example of the `connection` setting
-  in the consolidated form:
+- For Linux package installations, this is an example of the `connection` setting in the consolidated form:
 
   ```ruby
   gitlab_rails['object_store']['connection'] = {
@@ -388,8 +388,8 @@ The following are the valid connection parameters for Azure. For more informatio
   }
   ```
 
-- For source installations, Workhorse also needs to be configured with Azure
-  credentials. This isn't needed in Omnibus installs, because the Workhorse
+- For self-compiled installations, Workhorse also needs to be configured with Azure
+  credentials. This isn't needed in Linux package installations because the Workhorse
   settings are populated from the previous settings.
 
   1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
@@ -465,7 +465,6 @@ The following example uses AWS S3 to enable object storage for all supported ser
    gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
    gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
    gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
-   gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
    gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 
@@ -728,6 +727,7 @@ To migrate existing local data to object storage see the following guides:
 - [Dependency Proxy](packages/dependency_proxy.md#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage)
 - [Terraform state files](terraform_state.md#migrate-to-object-storage)
 - [Pages content](pages/index.md#migrate-pages-deployments-to-object-storage)
+- [Project-level Secure Files](secure_files.md#migrate-to-object-storage)
 
 ## Transition to consolidated form
 
@@ -738,7 +738,7 @@ Prior to GitLab 13.2:
 - Object store connection parameters such as passwords and endpoint URLs had to be
   duplicated for each type.
 
-For example, an Omnibus GitLab install might have the following configuration:
+For example, a Linux package installation might have the following configuration:
 
 ```ruby
 # Original object storage configuration
@@ -833,10 +833,9 @@ your object storage provider instead.
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 This ensures there are no collisions across the various types of data GitLab stores.
-There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab-org/gitlab/-/issues/292958)
-in the future.
+[Issue 292958](https://gitlab.com/gitlab-org/gitlab/-/issues/292958) proposes to enable the use of a single bucket.
 
-With Omnibus and source installations it is possible to split a single
+With Linux package and self-compiled installations, it is possible to split a single
 real bucket into multiple virtual buckets. If your object storage
 bucket is called `my-gitlab-objects` you can configure uploads to go
 into `my-gitlab-objects/uploads`, artifacts into
@@ -941,7 +940,7 @@ mismatch` error during an upload.
 
 When the consolidated form is:
 
-- Used with an S3-compatible object storage or an istance profile, Workhorse
+- Used with an S3-compatible object storage or an instance profile, Workhorse
   uses its internal S3 client which has S3 credentials so that it can compute
   the `Content-MD5` header. This eliminates the need to compare ETag headers
   returned from the S3 server.

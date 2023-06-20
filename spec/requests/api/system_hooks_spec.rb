@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::SystemHooks, feature_category: :integrations do
+RSpec.describe API::SystemHooks, feature_category: :webhooks do
   let_it_be(:non_admin) { create(:user) }
   let_it_be(:admin) { create(:admin) }
   let_it_be_with_refind(:hook) { create(:system_hook, url: "http://example.com") }

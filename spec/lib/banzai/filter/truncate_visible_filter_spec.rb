@@ -16,7 +16,7 @@ RSpec.describe Banzai::Filter::TruncateVisibleFilter, feature_category: :team_pl
   # Since we're truncating nodes of an html document, actually use the
   # full pipeline to generate full documents.
   def convert_markdown(text, context = {})
-    Banzai::Pipeline::FullPipeline.to_html(text, { project: project }.merge(context))
+    Banzai::Pipeline::FullPipeline.to_html(text, { project: project, no_sourcepos: true }.merge(context))
   end
 
   shared_examples_for 'truncates text' do

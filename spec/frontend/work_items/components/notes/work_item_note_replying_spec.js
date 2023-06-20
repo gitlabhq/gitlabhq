@@ -10,10 +10,11 @@ describe('Work Item Note Replying', () => {
   const findTimelineEntry = () => wrapper.findComponent(TimelineEntryItem);
   const findNoteHeader = () => wrapper.findComponent(NoteHeader);
 
-  const createComponent = ({ body = mockNoteBody } = {}) => {
+  const createComponent = ({ body = mockNoteBody, isInternalNote = false } = {}) => {
     wrapper = shallowMount(WorkItemNoteReplying, {
       propsData: {
         body,
+        isInternalNote,
       },
     });
 
@@ -30,5 +31,10 @@ describe('Work Item Note Replying', () => {
   it('should have the note body and header', () => {
     expect(findTimelineEntry().exists()).toBe(true);
     expect(findNoteHeader().html()).toMatchSnapshot();
+  });
+
+  it('should have the correct class when internal note', () => {
+    createComponent({ isInternalNote: true });
+    expect(findTimelineEntry().classes()).toContain('internal-note');
   });
 });

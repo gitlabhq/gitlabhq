@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, :sidekiq_inline,
-  feature_category: :subgroups do
+  feature_category: :groups_and_projects do
   let_it_be(:source, reload: true) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:member) { create(:user) }

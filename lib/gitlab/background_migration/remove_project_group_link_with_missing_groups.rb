@@ -7,7 +7,7 @@ module Gitlab
     class RemoveProjectGroupLinkWithMissingGroups < Gitlab::BackgroundMigration::BatchedMigrationJob
       scope_to ->(relation) { relation }
       operation_name :delete_all
-      feature_category :subgroups
+      feature_category :groups_and_projects
 
       def perform
         each_sub_batch do |sub_batch|

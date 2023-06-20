@@ -110,7 +110,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from Gitlab::Git::ResourceExhaustedError do |e|
     response.headers.merge!(e.headers)
-    render plain: e.message, status: :too_many_requests
+    render plain: e.message, status: :service_unavailable
   end
 
   content_security_policy do |p|

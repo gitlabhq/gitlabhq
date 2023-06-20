@@ -193,8 +193,7 @@ module Gitlab
           keys = commands.map { |command| extract_keys(command) }.flatten
 
           {
-            # calculate key-slots only if not allowed
-            valid: allow_cross_slot_commands? || !has_cross_slot_keys?(keys),
+            valid: !has_cross_slot_keys?(keys),
             command_name: command_name,
             key_count: keys.size,
             allowed: allow_cross_slot_commands?
@@ -211,6 +210,10 @@ module Gitlab
           Thread.current[:allow_cross_slot_commands] -= 1
         end
 
+        def allow_cross_slot_commands?
+          Thread.current[:allow_cross_slot_commands].to_i > 0
+        end
+
         private
 
         def extract_keys(command)
@@ -224,10 +227,6 @@ module Gitlab
 
         def has_cross_slot_keys?(keys)
           keys.map { |key| key_slot(key) }.uniq.many? # rubocop: disable CodeReuse/ActiveRecord
-        end
-
-        def allow_cross_slot_commands?
-          Thread.current[:allow_cross_slot_commands].to_i > 0
         end
 
         def key_slot(key)

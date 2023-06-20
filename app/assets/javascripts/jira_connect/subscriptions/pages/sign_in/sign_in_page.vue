@@ -22,6 +22,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <sign-in-gitlab-multiversion
     v-if="isOauthSelfManagedEnabled"

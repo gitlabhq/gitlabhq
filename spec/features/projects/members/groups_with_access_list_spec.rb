@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Groups with access list', :js, feature_category: :subgroups do
+RSpec.describe 'Projects > Members > Groups with access list', :js, feature_category: :groups_and_projects do
+  include ListboxHelpers
   include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
   include Features::InviteMembersModalHelpers
@@ -26,8 +27,7 @@ RSpec.describe 'Projects > Members > Groups with access list', :js, feature_cate
   end
 
   it 'updates group access level' do
-    click_button group_link.human_access
-    click_button 'Guest'
+    select_from_listbox('Guest', from: group_link.human_access)
 
     wait_for_requests
 

@@ -48,6 +48,7 @@ module Ci
     # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
+    has_many :job_annotations, class_name: 'Ci::JobAnnotation', foreign_key: :job_id, inverse_of: :job
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :build
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
@@ -259,10 +260,6 @@ module Ci
         !build.any_unmet_prerequisites? # If false is returned, it stops the transition
       end
 
-      before_transition on: :enqueue do |build|
-        !build.waiting_for_deployment_approval? # If false is returned, it stops the transition
-      end
-
       before_transition any => [:pending] do |build|
         build.ensure_token
         true
@@ -428,11 +425,7 @@ module Ci
     end
 
     def playable?
-      action? && !archived? && (manual? || scheduled? || retryable?) && !waiting_for_deployment_approval?
-    end
-
-    def waiting_for_deployment_approval?
-      manual? && deployment_job? && deployment&.blocked?
+      action? && !archived? && (manual? || scheduled? || retryable?)
     end
 
     def outdated_deployment?
@@ -598,14 +591,6 @@ module Ci
           .append(key: 'CI_JOB_URL', value: Gitlab::Routing.url_helpers.project_job_url(project, self))
           .append(key: 'CI_JOB_TOKEN', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_JOB_STARTED_AT', value: started_at&.iso8601)
-
-        if Feature.disabled?(:ci_remove_legacy_predefined_variables, project)
-          variables
-            .append(key: 'CI_BUILD_ID', value: id.to_s)
-            .append(key: 'CI_BUILD_TOKEN', value: token.to_s, public: false, masked: true)
-        end
-
-        variables
           .append(key: 'CI_REGISTRY_USER', value: ::Gitlab::Auth::CI_JOB_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token.to_s, public: false, masked: true)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url.to_s, public: false)
@@ -658,9 +643,8 @@ module Ci
 
     def apple_app_store_variables
       return [] unless apple_app_store_integration.try(:activated?)
-      return [] unless pipeline.protected_ref?
 
-      Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables)
+      Gitlab::Ci::Variables::Collection.new(apple_app_store_integration.ci_variables(protected_ref: pipeline.protected_ref?))
     end
 
     def google_play_variables
@@ -1274,12 +1258,25 @@ module Ci
     def id_tokens_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         id_tokens.each do |var_name, token_data|
-          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['aud'])
+          token = Gitlab::Ci::JwtV2.for_build(self, aud: expanded_id_token_aud(token_data['aud']))
 
           variables.append(key: var_name, value: token, public: false, masked: true)
         end
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
+      end
+    end
+
+    def expanded_id_token_aud(aud)
+      return unless aud
+
+      strong_memoize_with(:expanded_id_token_aud, aud) do
+        # `aud` can be a string or an array of strings.
+        if aud.is_a?(Array)
+          aud.map { |x| ExpandVariables.expand(x, -> { scoped_variables.sort_and_expand_all }) }
+        else
+          ExpandVariables.expand(aud, -> { scoped_variables.sort_and_expand_all })
+        end
       end
     end
 

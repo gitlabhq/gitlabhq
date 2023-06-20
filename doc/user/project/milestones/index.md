@@ -37,9 +37,8 @@ For information about project and group milestones API, see:
 
 To view the milestone list:
 
-1. On the top bar, select **Main menu > Projects** and find your project or
-   **Main menu > Groups** and find your group.
-1. Select **Issues > Milestones**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Plan > Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
 In a group, GitLab displays milestones that belong to the group and all projects in the group.
@@ -67,7 +66,8 @@ You might not see some milestones because they're in projects or groups you're n
 
 To do so:
 
-1. On the top bar select **Main menu > Your work**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
 1. On the left sidebar, select **Milestones**.
 
 ### View milestone details
@@ -121,8 +121,8 @@ Prerequisites:
 
 To create a milestone:
 
-1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Issues > Milestones**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Plan > Milestones**.
 1. Select **New milestone**.
 1. Enter the title.
 1. Optional. Enter description, start date, and due date.
@@ -140,7 +140,8 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Plan > Milestones**.
 1. Select a milestone's title.
 1. In the top right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Edit**.
 1. Edit the title, start date, due date, or description.
@@ -156,7 +157,8 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the top bar, select **Main menu > Projects** and find your project or **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Plan > Milestones**.
 1. Select a milestone's title.
 1. In the top right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Delete**.
 1. Select **Delete milestone**.
@@ -181,8 +183,8 @@ Prerequisites:
 
 To promote a project milestone:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Issues > Milestones**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Plan > Milestones**.
 1. Either:
    - Select **Promote to Group Milestone** (**{level-up}**) next to the milestone you want to promote.
    - Select the milestone title, and then select **Milestone actions** (**{ellipsis_v}**) > **Promote**.

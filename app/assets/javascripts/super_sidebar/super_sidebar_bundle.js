@@ -72,6 +72,8 @@ export const initSuperSidebar = () => {
 
   const sidebarData = JSON.parse(sidebar);
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
+  const commandPaletteCommands = sidebarData.create_new_menu_groups || [];
+  const commandPaletteLinks = convertObjectPropsToCamelCase(sidebarData.current_menu_items || []);
 
   const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
@@ -85,6 +87,10 @@ export const initSuperSidebar = () => {
       toggleNewNavEndpoint,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
+      commandPaletteCommands,
+      commandPaletteLinks,
+      autocompletePath,
+      searchContext,
     },
     store: createStore({
       searchPath,

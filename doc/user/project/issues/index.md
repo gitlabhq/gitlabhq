@@ -22,6 +22,13 @@ For more information about using issues, see the GitLab blog post:
 Issues are always associated with a specific project. If you have multiple
 projects in a group, you can view all of the projects' issues at once.
 
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=tTE6omrBBZI">Issues - Setting up your Organization with GitLab</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/tTE6omrBBZI" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To learn how the GitLab Strategic Marketing department uses GitLab issues with [labels](../labels.md) and
 [issue boards](../issue_board.md), see the video on

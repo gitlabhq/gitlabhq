@@ -100,6 +100,40 @@ class AuditEvent < ApplicationRecord
     super || details[:target_details]
   end
 
+  def self.by_group(group)
+    group_id = group.id
+
+    # Bring entity_type and entity_id from projects and group into one query
+    scope1 = Group.find(group_id).all_projects.select("'Project' as entity_type", 'id AS entity_id')
+    scope2 = Project.from("(VALUES ('Group', #{group_id})) as projects(entity_type, entity_id)").select('entity_type',
+      'entity_id')
+    array_scope = Project.from_union([scope1, scope2], remove_duplicates: false).select(:entity_type, :entity_id)
+
+    # order by created_at (id is the tie breaker)
+    scope = AuditEvent.order(:created_at, :id)
+
+    array_mapping_scope = ->(entity_type_expression, entity_id_expression) do
+      AuditEvent.where(AuditEvent.arel_table[:entity_id].eq(entity_id_expression))
+        .where(AuditEvent.arel_table[:entity_type].eq(entity_type_expression))
+    end
+
+    finder_query = ->(created_at_expression, id_expression) do
+      # we need to add created_at filter as well because that's the partitioning key
+      AuditEvent.where(
+        AuditEvent.arel_table[:id].eq(id_expression)
+      ).where(
+        AuditEvent.arel_table[:created_at].eq(created_at_expression)
+      )
+    end
+
+    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+      scope: scope,
+      array_scope: array_scope,
+      array_mapping_scope: array_mapping_scope,
+      finder_query: finder_query
+    ).execute
+  end
+
   private
 
   def sanitize_message

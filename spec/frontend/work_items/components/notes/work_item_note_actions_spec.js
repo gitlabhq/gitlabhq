@@ -1,8 +1,9 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
@@ -18,11 +19,14 @@ describe('Work Item Note Actions', () => {
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
   const findEditButton = () => wrapper.find('[data-testid="edit-work-item-note"]');
   const findEmojiButton = () => wrapper.find('[data-testid="note-emoji-button"]');
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-action"]');
   const findCopyLinkButton = () => wrapper.find('[data-testid="copy-link-action"]');
   const findAssignUnassignButton = () => wrapper.find('[data-testid="assign-note-action"]');
   const findReportAbuseToAdminButton = () => wrapper.find('[data-testid="abuse-note-action"]');
+  const findAuthorBadge = () => wrapper.find('[data-testid="author-badge"]');
+  const findMaxAccessLevelBadge = () => wrapper.find('[data-testid="max-access-level-badge"]');
+  const findContributorBadge = () => wrapper.find('[data-testid="contributor-badge"]');
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -41,6 +45,11 @@ describe('Work Item Note Actions', () => {
     showAwardEmoji = true,
     showAssignUnassign = false,
     canReportAbuse = false,
+    workItemType = 'Task',
+    isWorkItemAuthor = false,
+    isAuthorContributor = false,
+    maxAccessLevelOfAuthor = '',
+    projectName = 'Project name',
   } = {}) => {
     wrapper = shallowMount(WorkItemNoteActions, {
       propsData: {
@@ -50,6 +59,11 @@ describe('Work Item Note Actions', () => {
         showAwardEmoji,
         showAssignUnassign,
         canReportAbuse,
+        workItemType,
+        isWorkItemAuthor,
+        isAuthorContributor,
+        maxAccessLevelOfAuthor,
+        projectName,
       },
       provide: {
         glFeatures: {
@@ -60,7 +74,11 @@ describe('Work Item Note Actions', () => {
         EmojiPicker: EmojiPickerStub,
       },
       apolloProvider: createMockApollo([[addAwardEmojiMutation, addEmojiMutationResolver]]),
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
+    wrapper.vm.$refs.dropdown.close = jest.fn();
   };
 
   describe('reply button', () => {
@@ -152,7 +170,7 @@ describe('Work Item Note Actions', () => {
         showEdit: true,
       });
 
-      findDeleteNoteButton().vm.$emit('click');
+      findDeleteNoteButton().vm.$emit('action');
 
       expect(wrapper.emitted('deleteNote')).toEqual([[]]);
     });
@@ -167,7 +185,7 @@ describe('Work Item Note Actions', () => {
     });
 
     it('should emit `notifyCopyDone` event when copy link note action is clicked', () => {
-      findCopyLinkButton().vm.$emit('click');
+      findCopyLinkButton().vm.$emit('action');
 
       expect(wrapper.emitted('notifyCopyDone')).toEqual([[]]);
     });
@@ -193,7 +211,7 @@ describe('Work Item Note Actions', () => {
         showAssignUnassign: true,
       });
 
-      findAssignUnassignButton().vm.$emit('click');
+      findAssignUnassignButton().vm.$emit('action');
 
       expect(wrapper.emitted('assignUser')).toEqual([[]]);
     });
@@ -219,9 +237,63 @@ describe('Work Item Note Actions', () => {
         canReportAbuse: true,
       });
 
-      findReportAbuseToAdminButton().vm.$emit('click');
+      findReportAbuseToAdminButton().vm.$emit('action');
 
       expect(wrapper.emitted('reportAbuse')).toEqual([[]]);
+    });
+  });
+
+  describe('user role badges', () => {
+    describe('author badge', () => {
+      it('does not show the author badge by default', () => {
+        createComponent();
+
+        expect(findAuthorBadge().exists()).toBe(false);
+      });
+
+      it('shows the author badge when the work item is author by the current User', () => {
+        createComponent({ isWorkItemAuthor: true });
+
+        expect(findAuthorBadge().exists()).toBe(true);
+        expect(findAuthorBadge().text()).toBe('Author');
+        expect(findAuthorBadge().attributes('title')).toBe('This user is the author of this task.');
+      });
+    });
+
+    describe('Max access level badge', () => {
+      it('does not show the access level badge by default', () => {
+        createComponent();
+
+        expect(findMaxAccessLevelBadge().exists()).toBe(false);
+      });
+
+      it('shows the access badge when we have a valid value', () => {
+        createComponent({ maxAccessLevelOfAuthor: 'Owner' });
+
+        expect(findMaxAccessLevelBadge().exists()).toBe(true);
+        expect(findMaxAccessLevelBadge().text()).toBe('Owner');
+        expect(findMaxAccessLevelBadge().attributes('title')).toBe(
+          'This user has the owner role in the Project name project.',
+        );
+      });
+    });
+
+    describe('Contributor badge', () => {
+      it('does not show the contributor badge by default', () => {
+        createComponent();
+
+        expect(findContributorBadge().exists()).toBe(false);
+      });
+
+      it('shows the contributor badge the note author is a contributor', () => {
+        createComponent({ isAuthorContributor: true });
+
+        expect(findContributorBadge().exists()).toBe(true);
+        expect(findContributorBadge().text()).toBe('Contributor');
+        expect(findContributorBadge().attributes('title')).toBe(
+          'This user has previously committed to the Project name project.',
+        );
+      });
     });
   });
 });

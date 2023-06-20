@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe IdeController, feature_category: :web_ide do
+  include ContentSecurityPolicyHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:reporter) { create(:user) }
@@ -19,18 +20,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
   let_it_be(:top_nav_partial) { 'layouts/header/_default' }
 
   let(:user) { creator }
-
-  def find_csp_source(key)
-    csp = response.headers['Content-Security-Policy']
-
-    # Transform "default-src foo bar; connect-src foo bar; script-src ..."
-    # into array of values for a single directive based on the given key
-    csp.split(';')
-      .map(&:strip)
-      .find { |entry| entry.starts_with?(key) }
-      .split(' ')
-      .drop(1)
-  end
 
   before do
     stub_feature_flags(vscode_web_ide: true)
@@ -198,8 +187,8 @@ RSpec.describe IdeController, feature_category: :web_ide do
       it 'updates the content security policy with the correct frame sources' do
         subject
 
-        expect(find_csp_source('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.vscode-cdn.net/")
-        expect(find_csp_source('worker-src')).to include("http://www.example.com/assets/webpack/")
+        expect(find_csp_directive('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.vscode-cdn.net/")
+        expect(find_csp_directive('worker-src')).to include("http://www.example.com/assets/webpack/")
       end
 
       it 'with relative_url_root, updates the content security policy with the correct frame sources' do
@@ -207,8 +196,8 @@ RSpec.describe IdeController, feature_category: :web_ide do
 
         subject
 
-        expect(find_csp_source('frame-src')).to include("http://www.example.com/gitlab/assets/webpack/")
-        expect(find_csp_source('worker-src')).to include("http://www.example.com/gitlab/assets/webpack/")
+        expect(find_csp_directive('frame-src')).to include("http://www.example.com/gitlab/assets/webpack/")
+        expect(find_csp_directive('worker-src')).to include("http://www.example.com/gitlab/assets/webpack/")
       end
     end
   end

@@ -19,6 +19,10 @@ module QA
             open_plan_submenu("Wiki")
           end
 
+          def go_to_milestones
+            open_plan_submenu('Milestones')
+          end
+
           private
 
           def open_plan_submenu(sub_menu)

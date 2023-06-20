@@ -227,7 +227,7 @@ Code Quality can be customized by defining available CI/CD variables:
 | CI/CD variable              | Description |
 | --------------------------- | ----------- |
 | `SOURCE_CODE`               | Path to the source code to scan. |
-| `TIMEOUT_SECONDS`           | Custom timeout for the `codeclimate analyze` command. |
+| `TIMEOUT_SECONDS`           | Custom timeout per engine container for the `codeclimate analyze` command, default is 900 seconds (15 minutes). |
 | `CODECLIMATE_DEBUG`         | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables) |
 | `CODECLIMATE_DEV`           | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
 | `REPORT_STDOUT`             | Set to print the report to `STDOUT` instead of generating the usual report file. |
@@ -492,6 +492,23 @@ Example:
 ]
 ```
 
+## Integrate multiple tools
+
+Code Quality combines the results from all jobs in a pipeline into a single `gl-code-quality-report.json` file. As a result, multiple individual tools can be used in a pipeline, either alongside, or in place of, the supported `Code-Quality.gitlab-ci.yml` template.
+
+Here is an example that returns ESLint output in the necessary format:
+
+```yaml
+eslint:
+  image: node:18-alpine
+  script:
+    - npm ci
+    - npx eslint --format gitlab .
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+```
+
 ## Using Analysis Plugins
 
 Code Quality functionality can be extended by using Code Climate
@@ -521,6 +538,12 @@ for more details.
 
 ## Troubleshooting
 
+### The code cannot be found and the pipeline runs always with default configuration
+
+You are probably using a private runner with the Docker-in-Docker socket-binding configuration.
+You should configure Code Quality checks to run on your worker as documented in section
+"[Improve Code Quality performance with private runners](#improve-code-quality-performance-with-private-runners)".
+
 ### Changing the default configuration has no effect
 
 A common issue is that the terms `Code Quality` (GitLab specific) and `Code Climate`
@@ -549,12 +572,9 @@ This can be due to multiple reasons:
 
 ### Only a single Code Quality report is displayed, but more are defined
 
-Starting [in GitLab 15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/340525), Code Quality combines the results from all jobs in a pipeline.
+Code Quality automatically [combines multiple reports](#integrate-multiple-tools).
 
-In previous versions, GitLab only uses the Code Quality artifact from the latest created job (with the largest job ID).
-If multiple jobs in a pipeline generate a code quality artifact, those of earlier jobs are ignored.
-
-To avoid confusion, configure only one job to generate a `gl-code-quality-report.json` file.
+In GitLab 15.6 and earlier, Code Quality used only the artifact from the latest created job (with the largest job ID). Code Quality artifacts from earlier jobs were ignored.
 
 ### RuboCop errors
 

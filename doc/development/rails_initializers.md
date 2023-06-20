@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Rails initializers
 
+Initializers are executed when the Rails process is started. That means that initializers are also executed during every deploy.
+
 By default, Rails loads Zeitwerk after the initializers in `config/initializers` are loaded.
 Autoloading before Zeitwerk is loaded is now deprecated but because we use a lot of autoloaded
 constants in our initializers, we had to move the loading of Zeitwerk earlier than these

@@ -65,6 +65,14 @@ RSpec.shared_context 'structured_logger' do
     )
   end
 
+  let(:deferred_payload) do
+    end_payload.merge(
+      'message' => 'TestWorker JID-da883554ee4fe414012f5f42: deferred: 0.0 sec',
+      'job_status' => 'deferred',
+      'job_deferred_by' => :feature_flag
+    )
+  end
+
   let(:exception_payload) do
     end_payload.merge(
       'message' => 'TestWorker JID-da883554ee4fe414012f5f42: fail: 0.0 sec',

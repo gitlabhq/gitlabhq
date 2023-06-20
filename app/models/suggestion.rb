@@ -5,7 +5,7 @@ class Suggestion < ApplicationRecord
   include Suggestible
   include IgnorableColumns
 
-  ignore_column :note_id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
+  ignore_column :note_id_convert_to_bigint, remove_with: '16.2', remove_after: '2023-07-22'
 
   belongs_to :note, inverse_of: :suggestions
   validates :note, presence: true, unless: :importing?

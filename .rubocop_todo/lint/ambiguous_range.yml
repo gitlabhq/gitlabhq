@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/AmbiguousRange:
-  Details: grace period
   Exclude:
     - 'app/models/ci/runner.rb'
     - 'app/models/ci/runner_manager.rb'

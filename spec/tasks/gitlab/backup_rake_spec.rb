@@ -5,9 +5,12 @@ require 'rake_helper'
 RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: :backup_restore do
   let(:enable_registry) { true }
   let(:backup_restore_pid_path) { "#{Rails.application.root}/tmp/backup_restore.pid" }
-  let(:backup_tasks) { %w[db repo uploads builds artifacts pages lfs terraform_state registry packages] }
+  let(:backup_tasks) do
+    %w[db repo uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
+  end
+
   let(:backup_types) do
-    %w[db repositories uploads builds artifacts pages lfs terraform_state registry packages]
+    %w[db repositories uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
   end
 
   def tars_glob
@@ -27,6 +30,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       terraform_state.tar.gz
       pages.tar.gz
       packages.tar.gz
+      ci_secure_files.tar.gz
     ]
   end
 
@@ -315,6 +319,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... done")
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... done")
 
         backup_tasks.each do |task|
           run_rake_task("gitlab:backup:#{task}:create")
@@ -391,6 +397,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
             terraform_state.tar.gz
             registry.tar.gz
             packages.tar.gz
+            ci_secure_files.tar.gz
           ]
         )
 
@@ -405,6 +412,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         expect(tar_contents).to match('terraform_state.tar.gz')
         expect(tar_contents).to match('registry.tar.gz')
         expect(tar_contents).to match('packages.tar.gz')
+        expect(tar_contents).to match('ci_secure_files.tar.gz')
         expect(tar_contents).not_to match(%r{^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|
                                                              pages.tar.gz|artifacts.tar.gz|registry.tar.gz)/$})
       end
@@ -564,7 +572,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
         expect(::Backup::Repositories).to receive(:new)
-          .with(anything, strategy: anything, storages: [], paths: [])
+          .with(anything, strategy: anything, storages: [], paths: [], skip_paths: [])
           .and_call_original
         expect(::Backup::GitalyBackup).to receive(:new).with(
           anything,
@@ -612,6 +620,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           terraform_state.tar.gz
           registry.tar.gz
           packages.tar.gz
+          ci_secure_files.tar.gz
         ]
       )
 
@@ -624,6 +633,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       expect(tar_contents).to match('pages.tar.gz')
       expect(tar_contents).to match('registry.tar.gz')
       expect(tar_contents).to match('packages.tar.gz')
+      expect(tar_contents).to match('ci_secure_files.tar.gz')
       expect(tar_contents).not_to match('repositories/')
       expect(tar_contents).to match('repositories: Not found in archive')
     end
@@ -668,7 +678,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         'pages.tar.gz',
         'registry.tar.gz',
         'packages.tar.gz',
-        'repositories'
+        'repositories',
+        'ci_secure_files.tar.gz'
       )
     end
 

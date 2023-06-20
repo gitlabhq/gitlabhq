@@ -4,40 +4,33 @@
     %a.show-suppressed-diff.cursor-pointer.js-show-suppressed-diff= _("Changes suppressed. Click to show.")
 
 %table.text-file.diff-wrap-lines.code.code-commit.js-syntax-highlight.commit-diff{ data: diff_view_data, class: too_big ? 'hide' : '' }
-  - if Feature.enabled?(:inline_haml_diff_line_rendering, @project)
-    - diff_file.highlighted_diff_lines.each do |line|
-      - line_code = diff_file.line_code(line)
+  - diff_file.highlighted_diff_lines.each do |line|
+    - line_code = diff_file.line_code(line)
 
-      %tr.line_holder{ class: line.type, id: line_code }
-        - case line.type
-        - when 'match'
-          = diff_match_line line.old_pos, line.new_pos, text: line.text
-        - when 'old-nomappinginraw', 'new-nomappinginraw', 'unchanged-nomappinginraw'
-          = diff_nomappinginraw_line line, %w[old_line diff-line-num], %w[new_line diff-line-num], %w[line_content]
-        - when 'old-nonewline', 'new-nonewline'
-          %td.old_line.diff-line-num
-          %td.new_line.diff-line-num
-          %td.line_content.match= line.text
-        - else
-          %td.old_line.diff-line-num{ class: "#{line.type} js-avatar-container", data: { linenumber: line.old_pos } }
-            = add_diff_note_button(line_code, diff_file.position(line), line.type)
-            %a{ href: "##{line_code}", data: { linenumber: diff_link_number(line.type, "new", line.old_pos) } }
+    %tr.line_holder{ class: line.type, id: line_code }
+      - case line.type
+      - when 'match'
+        = diff_match_line line.old_pos, line.new_pos, text: line.text
+      - when 'old-nomappinginraw', 'new-nomappinginraw', 'unchanged-nomappinginraw'
+        = diff_nomappinginraw_line line, %w[old_line diff-line-num], %w[new_line diff-line-num], %w[line_content]
+      - when 'old-nonewline', 'new-nonewline'
+        %td.old_line.diff-line-num
+        %td.new_line.diff-line-num
+        %td.line_content.match= line.text
+      - else
+        %td.old_line.diff-line-num{ class: "#{line.type} js-avatar-container", data: { linenumber: line.old_pos } }
+          = add_diff_note_button(line_code, diff_file.position(line), line.type)
+          %a{ href: "##{line_code}", data: { linenumber: diff_link_number(line.type, "new", line.old_pos) } }
 
-          %td.new_line.diff-line-num{ class: line.type, data: { linenumber: line.new_pos } }
-            %a{ href: "##{line_code}", data: { linenumber: diff_link_number(line.type, "old", line.new_pos) } }
+        %td.new_line.diff-line-num{ class: line.type, data: { linenumber: line.new_pos } }
+          %a{ href: "##{line_code}", data: { linenumber: diff_link_number(line.type, "old", line.new_pos) } }
 
-          %td.line_content{ class: line.type }<
-            = diff_line_content(line.rich_text)
+        %td.line_content{ class: line.type }<
+          = diff_line_content(line.rich_text)
 
-      - if line.discussable? && @grouped_diff_discussions.present? && @grouped_diff_discussions[line_code]
-        - line_discussions = @grouped_diff_discussions[line_code]
-        = render "discussions/diff_discussion", discussions: line_discussions, expanded: line_discussions.any?(&:expanded?)
-
-  - else
-    = render partial: "projects/diffs/line",
-      collection: diff_file.highlighted_diff_lines,
-      as: :line,
-      locals: { diff_file: diff_file, discussions: @grouped_diff_discussions }
+    - if line.discussable? && @grouped_diff_discussions.present? && @grouped_diff_discussions[line_code]
+      - line_discussions = @grouped_diff_discussions[line_code]
+      = render "discussions/diff_discussion", discussions: line_discussions, expanded: line_discussions.any?(&:expanded?)
 
   - if !diff_file.new_file? && !diff_file.deleted_file? && diff_file.highlighted_diff_lines.any?
     - last_line = diff_file.highlighted_diff_lines.last

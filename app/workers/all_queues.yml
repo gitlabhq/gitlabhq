@@ -417,6 +417,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:database_monitor_locked_tables
+  :worker_name: Database::MonitorLockedTablesWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:database_partition_management
   :worker_name: Database::PartitionManagementWorker
   :feature_category: :database
@@ -545,7 +554,7 @@
   :tags: []
 - :name: cronjob:member_invitation_reminder_emails
   :worker_name: MemberInvitationReminderEmailsWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -587,6 +596,15 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: cronjob:object_storage_delete_stale_direct_uploads
+  :worker_name: ObjectStorage::DeleteStaleDirectUploadsWorker
+  :feature_category: :build_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:packages_cleanup_delete_orphaned_dependencies
   :worker_name: Packages::Cleanup::DeleteOrphanedDependenciesWorker
@@ -1245,33 +1263,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: github_importer:github_import_import_pull_request_merged_by
-  :worker_name: Gitlab::GithubImport::ImportPullRequestMergedByWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: github_importer:github_import_import_pull_request_review
-  :worker_name: Gitlab::GithubImport::ImportPullRequestReviewWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: github_importer:github_import_import_release_attachments
-  :worker_name: Gitlab::GithubImport::ImportReleaseAttachmentsWorker
-  :feature_category: :importers
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: github_importer:github_import_pull_requests_import_merged_by
   :worker_name: Gitlab::GithubImport::PullRequests::ImportMergedByWorker
   :feature_category: :importers
@@ -1787,6 +1778,15 @@
   :tags: []
 - :name: package_repositories:packages_maven_metadata_sync
   :worker_name: Packages::Maven::Metadata::SyncWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: package_repositories:packages_npm_create_metadata_cache
+  :worker_name: Packages::Npm::CreateMetadataCacheWorker
   :feature_category: :package_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -2633,7 +2633,7 @@
   :tags: []
 - :name: disallow_two_factor_for_group
   :worker_name: DisallowTwoFactorForGroupWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2642,7 +2642,7 @@
   :tags: []
 - :name: disallow_two_factor_for_subgroups
   :worker_name: DisallowTwoFactorForSubgroupsWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2714,7 +2714,7 @@
   :tags: []
 - :name: file_hook
   :worker_name: FileHookWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2777,7 +2777,7 @@
   :tags: []
 - :name: group_destroy
   :worker_name: GroupDestroyWorker
-  :feature_category: :subgroups
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3023,6 +3023,15 @@
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_mergeability_check_batch
+  :worker_name: MergeRequests::MergeabilityCheckBatchWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -3380,7 +3389,7 @@
   :tags: []
 - :name: projects_record_target_platforms
   :worker_name: Projects::RecordTargetPlatformsWorker
-  :feature_category: :projects
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3632,7 +3641,7 @@
   :tags: []
 - :name: web_hook
   :worker_name: WebHookWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -3641,7 +3650,7 @@
   :tags: []
 - :name: web_hooks_log_destroy
   :worker_name: WebHooks::LogDestroyWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3650,7 +3659,7 @@
   :tags: []
 - :name: web_hooks_log_execution
   :worker_name: WebHooks::LogExecutionWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

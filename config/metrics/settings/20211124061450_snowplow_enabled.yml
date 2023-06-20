@@ -4,7 +4,7 @@ name: snowplow_enabled_gitlab_instance
 description: Whether snowplow is enabled for the GitLab instance
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: boolean
 status: active
 milestone: "14.6"

@@ -28,7 +28,6 @@ RSpec.describe MemberSerializer do
 
       expect { representation }.to change(group_member, :last_owner)
                                      .from(nil).to(true)
-                                     .and change(group_member, :last_blocked_owner).from(nil).to(false)
     end
   end
 

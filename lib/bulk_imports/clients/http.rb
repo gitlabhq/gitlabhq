@@ -158,15 +158,13 @@ module BulkImports
         { timeout: SIDEKIQ_REQUEST_TIMEOUT } if Gitlab::Runtime.sidekiq?
       end
 
+      # @raise [BulkImports::NetworkError] when unsuccessful
       def with_error_handling
         response = yield
 
         return response if response.success?
 
         raise ::BulkImports::NetworkError.new("Unsuccessful response #{response.code} from #{response.request.path.path}. Body: #{response.parsed_response}", response: response)
-
-      rescue Gitlab::HTTP::BlockedUrlError => e
-        raise e
       rescue *Gitlab::HTTP::HTTP_ERRORS => e
         raise ::BulkImports::NetworkError, e
       end

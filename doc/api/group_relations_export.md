@@ -4,14 +4,16 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group Relations Export API **(FREE)**
+# Group relations export API **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59978) in GitLab 13.12.
 
-With the Group Relations Export API, you can partially export group structure. This API is similar
-to [group export](group_import_export.md),
-but it exports each top-level relation (for example, milestones/boards/labels) as a separate file
-instead of one archive. The group relations export API is primarily used in [group migration](../user/group/import/index.md).
+The group relations export API partially exports a group's structure as separate files for each top-level
+relation (for example, milestones, boards, and labels).
+
+The group relations export API is primarily used in
+[group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) and
+can't be used with the [group import and export API](group_import_export.md).
 
 ## Schedule new export
 
@@ -101,3 +103,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name \
 ls labels.ndjson.gz
 labels.ndjson.gz
 ```
+
+## Related topics
+
+- [Project relations export API](project_relations_export.md)

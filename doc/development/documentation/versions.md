@@ -120,8 +120,8 @@ To deprecate a page or topic:
    You can add any additional context-specific details that might help users.
 
 1. Add the following HTML comments above and below the content.
-   For the `remove_date`, set a date three months after the release where it
-   was deprecated.
+   For `remove_date`, set a date three months after the release where it
+   will be removed.
 
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
@@ -181,7 +181,7 @@ To remove a topic:
    including the version history items and the word `WARNING:`.
 1. Add `(removed)` after the title.
 1. Add the following HTML comments above and below the topic.
-   For the `remove_date`, set a date three months after the release where it was removed.
+   For `remove_date`, set a date three months after the release where it was removed.
 
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
@@ -201,8 +201,8 @@ This content is removed from the documentation as part of the Technical Writing 
 ## Which versions are removed
 
 GitLab supports the current major version and two previous major versions.
-For example, if 15.0 is the current major version, all major and minor releases of
-GitLab 15.0, 14.0, and 13.0 are supported.
+For example, if 16.0 is the current major version, all major and minor releases of
+GitLab 16.0, 15.0, and 14.0 are supported.
 
 [View the list of supported versions](https://about.gitlab.com/support/statement-of-support/#version-support).
 

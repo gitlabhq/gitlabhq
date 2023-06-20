@@ -27,11 +27,17 @@ module AvatarsHelper
     end
   end
 
-  def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
+  def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true, by_commit_email: false)
     return default_avatar if email.blank?
 
     Gitlab::AvatarCache.by_email(email, size, scale, only_path) do
-      avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path: only_path)
+      avatar_icon_by_user_email_or_gravatar(
+        email,
+        size,
+        scale,
+        only_path: only_path,
+        by_commit_email: by_commit_email
+      )
     end
   end
 
@@ -115,8 +121,13 @@ module AvatarsHelper
 
   private
 
-  def avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path:)
-    user = User.with_public_email(email).first
+  def avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path:, by_commit_email: false)
+    user =
+      if by_commit_email
+        User.find_by_any_email(email)
+      else
+        User.with_public_email(email).first
+      end
 
     if user
       avatar_icon_for_user(user, size, scale, only_path: only_path)

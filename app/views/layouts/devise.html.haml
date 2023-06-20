@@ -1,4 +1,5 @@
 - add_page_specific_style 'page_bundles/login'
+- custom_text = custom_sign_in_description
 !!! 5
 %html.devise-layout-html{ class: system_message_class }
   = render "layouts/head", { startup_filename: 'signin' }
@@ -10,14 +11,13 @@
         .container.navless-container
           .content
             = render "layouts/flash"
-            - if current_appearance&.description?
+            - if custom_text.present?
               .row
                 .col-md.order-12.sm-bg-gray-10
                   .col-sm-12
                     %h1.mb-3.gl-font-size-h2
                       = brand_title
-                    = brand_text
-                    = render_if_exists 'layouts/devise_help_text'
+                    = custom_text
                 .col-md.order-md-12
                   .col-sm-12.bar
                     .gl-text-center
@@ -29,7 +29,6 @@
                   = brand_image
                   %h1.mb-3.gl-font-size-h2
                     = brand_title
-                  = render_if_exists 'layouts/devise_help_text'
               .mb-3
                 .gl-w-half.gl-xs-w-full.gl-ml-auto.gl-mr-auto.bar
                   = yield
@@ -49,8 +48,8 @@
               .col-md-6.order-12.order-sm-1.brand-holder
                 - unless recently_confirmed_com?
                   = brand_image
-                  - if current_appearance&.description?
-                    = brand_text
+                  - if custom_text.present?
+                    = custom_text
                   - else
                     %h3.gl-sm-mt-0
                       = _('A complete DevOps platform')
@@ -60,11 +59,6 @@
 
                     %p
                       = _('This is a self-managed instance of GitLab.')
-
-                - if Gitlab::CurrentSettings.sign_in_text.present?
-                  = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
-
-                = render_if_exists 'layouts/devise_help_text'
 
               .col-md-6.order-1.new-session-forms-container{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
                 = yield

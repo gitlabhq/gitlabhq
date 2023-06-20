@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_shared_state, :sidekiq_inline,
-  feature_category: :subgroups do
+  feature_category: :groups_and_projects do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:project_user) { create(:user) }

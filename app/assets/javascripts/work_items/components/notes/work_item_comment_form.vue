@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __, sprintf } from '~/locale';
@@ -19,12 +19,24 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import { getUpdateWorkItemMutation } from '~/work_items/components/update_work_item';
 
 export default {
+  i18n: {
+    internal: s__('Notes|Make this an internal note'),
+    internalVisibility: s__(
+      'Notes|Internal notes are only visible to members with the role of Reporter or higher',
+    ),
+    addInternalNote: __('Add internal note'),
+  },
   constantOptions: {
     markdownDocsPath: helpPagePath('user/markdown'),
   },
   components: {
     GlButton,
     MarkdownEditor,
+    GlFormCheckbox,
+    GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['fullPath'],
@@ -89,6 +101,7 @@ export default {
     return {
       commentText: getDraft(this.autosaveKey) || this.initialValue || '',
       updateInProgress: false,
+      isNoteInternal: false,
     };
   },
   computed: {
@@ -117,6 +130,9 @@ export default {
     },
     cancelButtonText() {
       return this.isNewDiscussion ? this.toggleWorkItemStateText : __('Cancel');
+    },
+    commentButtonTextComputed() {
+      return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
   },
   methods: {
@@ -213,18 +229,33 @@ export default {
           supports-quick-actions
           :autofocus="autofocus"
           @input="setCommentText"
-          @keydown.meta.enter="$emit('submitForm', commentText)"
-          @keydown.ctrl.enter="$emit('submitForm', commentText)"
+          @keydown.meta.enter="$emit('submitForm', { commentText, isNoteInternal })"
+          @keydown.ctrl.enter="$emit('submitForm', { commentText, isNoteInternal })"
           @keydown.esc.stop="cancelEditing"
         />
+        <gl-form-checkbox
+          v-if="isNewDiscussion"
+          v-model="isNoteInternal"
+          class="gl-mb-2"
+          data-testid="internal-note-checkbox"
+        >
+          {{ $options.i18n.internal }}
+          <gl-icon
+            v-gl-tooltip:tooltipcontainer.bottom
+            name="question-o"
+            :size="16"
+            :title="$options.i18n.internalVisibility"
+            class="gl-text-blue-500"
+          />
+        </gl-form-checkbox>
         <gl-button
           category="primary"
           variant="confirm"
           data-testid="confirm-button"
           :disabled="!commentText.length"
           :loading="isSubmitting"
-          @click="$emit('submitForm', commentText)"
-          >{{ commentButtonText }}
+          @click="$emit('submitForm', { commentText, isNoteInternal })"
+          >{{ commentButtonTextComputed }}
         </gl-button>
         <gl-button
           data-testid="cancel-button"

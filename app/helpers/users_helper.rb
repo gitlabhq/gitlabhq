@@ -184,12 +184,26 @@ module UsersHelper
 
   def user_profile_tabs_app_data(user)
     {
-      followees: user.followees.count,
-      followers: user.followers.count,
+      followees_count: user.followees.count,
+      followers_count: user.followers.count,
       user_calendar_path: user_calendar_path(user, :json),
+      user_activity_path: user_activity_path(user, :json),
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
-      user_id: user.id
+      user_id: user.id,
+      snippets_empty_state: image_path('illustrations/empty-state/empty-snippets-md.svg')
     }
+  end
+
+  def moderation_status(user)
+    return unless user.present?
+
+    if user.banned?
+      _('Banned')
+    elsif user.blocked?
+      _('Blocked')
+    else
+      _('Active')
+    end
   end
 
   private

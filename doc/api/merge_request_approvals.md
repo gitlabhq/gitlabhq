@@ -596,6 +596,20 @@ Supported attributes:
 }
 ```
 
+<!--- start_remove The following content will be removed on remove_date: '2023-08-17' -->
+
+### Change approval configuration (removed)
+
+> - Endpoint `/approvals` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
+> - Endpoint `approvals` [disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0 [with a flag](../administration/feature_flags.md) named `remove_deprecated_approvals`. Disabled by default.
+
+The endpoint `POST /projects/:id/merge_requests/:merge_request_iid/approvals` was
+deprecated in GitLab 12.3, and removed in GitLab 16.0. To change the approvals
+required for a merge request, use the `/approval_rules` endpoint described in
+[Create merge request level rule](#create-merge-request-level-rule) on this page.
+
+<!--- end_remove -->
+
 ### Get the approval state of merge requests
 
 > Moved to GitLab Premium in 13.9.

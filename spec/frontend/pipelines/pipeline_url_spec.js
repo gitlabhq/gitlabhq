@@ -24,7 +24,7 @@ describe('Pipeline Url Component', () => {
   const findPipelineNameContainer = () => wrapper.findByTestId('pipeline-name-container');
   const findCommitTitle = (commitWrapper) => commitWrapper.find('[data-testid="commit-title"]');
 
-  const defaultProps = mockPipeline(projectPath);
+  const defaultProps = { ...mockPipeline(projectPath), refClass: 'gl-text-black' };
 
   const createComponent = (props) => {
     wrapper = shallowMountExtended(PipelineUrlComponent, {
@@ -67,6 +67,18 @@ describe('Pipeline Url Component', () => {
     expect(findRefName().exists()).toBe(true);
     expect(findCommitShortSha().exists()).toBe(true);
     expect(findPipelineNameContainer().exists()).toBe(false);
+  });
+
+  it('should pass the refClass prop to merge request link', () => {
+    createComponent();
+
+    expect(findRefName().classes()).toContain(defaultProps.refClass);
+  });
+
+  it('should pass the refClass prop to the commit ref name link', () => {
+    createComponent(mockPipelineBranch());
+
+    expect(findCommitRefName().classes()).toContain(defaultProps.refClass);
   });
 
   describe('commit user avatar', () => {

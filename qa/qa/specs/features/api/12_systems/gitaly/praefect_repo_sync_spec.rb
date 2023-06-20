@@ -27,7 +27,7 @@ module QA
       end
 
       it 'allows admin to manage difference between praefect database and disk state',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347606' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347606' do
         # Some repos are on disk that praefect is not aware of
         untracked_repositories = praefect_manager.list_untracked_repositories
         expect(untracked_repositories).to include(repo1)
@@ -77,7 +77,7 @@ module QA
       end
 
       it 'allows admin to control the number of replicas of data',
-         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347566' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347566' do
         praefect_manager
           .track_repository_in_praefect(repo1['relative_path'], repo1['storage'], repo1['virtual_storage'])
 

@@ -165,4 +165,23 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       expect(wrapper.emitted('cluster-error')).toEqual([[error]]);
     });
   });
+
+  describe('summary tab', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('emits loading event when gets it from the component', () => {
+      findKubernetesSummary().vm.$emit('loading', true);
+      expect(wrapper.emitted('loading')[0]).toEqual([true]);
+
+      findKubernetesSummary().vm.$emit('loading', false);
+      expect(wrapper.emitted('loading')[1]).toEqual([false]);
+    });
+
+    it('emits a failed event when gets it from the component', () => {
+      findKubernetesSummary().vm.$emit('failed');
+      expect(wrapper.emitted('failed')).toHaveLength(1);
+    });
+  });
 });

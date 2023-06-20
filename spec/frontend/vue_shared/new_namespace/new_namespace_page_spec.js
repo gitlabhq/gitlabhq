@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_container.vue';
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
+import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
 import { sidebarState } from '~/super_sidebar/constants';
 
@@ -14,6 +15,7 @@ describe('Experimental new namespace creation app', () => {
   const findWelcomePage = () => wrapper.findComponent(WelcomePage);
   const findLegacyContainer = () => wrapper.findComponent(LegacyContainer);
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
+  const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
   const findSuperSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
 
   const DEFAULT_PROPS = {
@@ -123,6 +125,41 @@ describe('Experimental new namespace creation app', () => {
 
     it(`${isToggleVisible ? 'is visible' : 'is not visible'}`, () => {
       expect(findSuperSidebarToggle().exists()).toBe(isToggleVisible);
+    });
+  });
+
+  describe('top level group alert', () => {
+    beforeEach(() => {
+      window.location.hash = `#${DEFAULT_PROPS.panels[0].name}`;
+    });
+
+    describe('when self-managed', () => {
+      it('does not render alert', () => {
+        createComponent();
+
+        expect(findNewTopLevelGroupAlert().exists()).toBe(false);
+      });
+    });
+
+    describe('when on .com', () => {
+      it('does not render alert', () => {
+        createComponent({ propsData: { isSaas: true } });
+
+        expect(findNewTopLevelGroupAlert().exists()).toBe(false);
+      });
+
+      describe('when empty parent group name', () => {
+        it('renders alert', () => {
+          createComponent({
+            propsData: {
+              isSaas: true,
+              panels: [{ ...DEFAULT_PROPS.panels[0], detailProps: { parentGroupName: '' } }],
+            },
+          });
+
+          expect(findNewTopLevelGroupAlert().exists()).toBe(true);
+        });
+      });
     });
   });
 });

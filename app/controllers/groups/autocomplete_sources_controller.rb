@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Groups::AutocompleteSourcesController < Groups::ApplicationController
-  feature_category :subgroups, [:members]
+  feature_category :groups_and_projects, [:members]
   feature_category :team_planning, [:issues, :labels, :milestones, :commands]
   feature_category :code_review_workflow, [:merge_requests]
 

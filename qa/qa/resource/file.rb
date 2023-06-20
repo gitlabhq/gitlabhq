@@ -4,11 +4,11 @@ module QA
   module Resource
     class File < Base
       attr_accessor :author_email,
-                    :author_name,
-                    :content,
-                    :commit_message,
-                    :name,
-                    :start_branch
+        :author_name,
+        :content,
+        :commit_message,
+        :name,
+        :start_branch
       attr_writer :branch
 
       attribute :project do

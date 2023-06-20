@@ -69,7 +69,7 @@ RSpec.describe Import::GitlabGroupsController, feature_category: :importers do
 
         expect(GroupImportWorker).to have_received(:perform_async).with(user.id, group.id)
         expect(group.description).to eq 'A voluptate non sequi temporibus quam at.'
-        expect(group.visibility_level).to eq Gitlab::VisibilityLevel::PRIVATE
+        expect(group.visibility_level).to eq Gitlab::VisibilityLevel::PUBLIC
       end
     end
 

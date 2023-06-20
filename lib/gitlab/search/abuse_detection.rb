@@ -8,7 +8,6 @@ module Gitlab
 
       ABUSIVE_TERM_SIZE = 100
       ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\/\.!]+\z}.freeze
-      MINIMUM_SEARCH_CHARS = 2
 
       ALLOWED_SCOPES = %w(
         blobs
@@ -50,7 +49,8 @@ module Gitlab
         exclusion: { in: STOP_WORDS, message: 'stopword only abusive search detected' }, allow_blank: true
 
       validates :query_string,
-        length: { minimum: MINIMUM_SEARCH_CHARS, message: 'abusive tiny search detected' }, unless: :skip_tiny_search_validation?, allow_blank: true
+        length: { minimum: Params::MIN_TERM_LENGTH, message: 'abusive tiny search detected' },
+        unless: :skip_tiny_search_validation?, allow_blank: true
 
       validates :query_string,
         no_abusive_term_length: { maximum: ABUSIVE_TERM_SIZE, maximum_for_url: ABUSIVE_TERM_SIZE * 2 }

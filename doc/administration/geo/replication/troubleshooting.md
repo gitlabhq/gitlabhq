@@ -27,7 +27,8 @@ Before attempting more advanced troubleshooting:
 
 On the **primary** site:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 
 We perform the following health checks on each **secondary** site
@@ -104,9 +105,7 @@ Checking Geo ... Finished
 You can also specify a custom NTP server using environment variables. For example:
 
 ```shell
-export NTP_HOST="ntp.ubuntu.com"
-export NTP_TIMEOUT="30"
-sudo gitlab-rake gitlab:geo:check
+sudo gitlab-rake gitlab:geo:check NTP_HOST="ntp.ubuntu.com" NTP_TIMEOUT="30"
 ```
 
 The following environment variables are supported.
@@ -120,7 +119,9 @@ The following environment variables are supported.
 #### Sync status Rake task
 
 Current sync information can be found manually by running this Rake task on any
-node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** site:
+node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** site.
+
+GitLab does **not** verify objects that are stored in Object Storage. If you are using Object Storage, you will see all of the "verified" checks showing 0 successes. This is expected and not a cause for concern.
 
 ```shell
 sudo gitlab-rake geo:status
@@ -208,8 +209,8 @@ Geo finds the current Puma or Sidekiq node's Geo [site](../glossary.md) name in
 
 1. Get the "Geo node name" (there is
    [an issue to rename the settings to "Geo site name"](https://gitlab.com/gitlab-org/gitlab/-/issues/335944)):
-   - Omnibus GitLab: Get the `gitlab_rails['geo_node_name']` setting.
-   - GitLab Helm Charts: Get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/index.html)).
+   - Linux package: get the `gitlab_rails['geo_node_name']` setting.
+   - GitLab Helm charts: get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/index.html)).
 1. If that is not defined, then get the `external_url` setting.
 
 This name is used to look up the Geo site with the same **Name** in the **Geo Sites**
@@ -598,7 +599,7 @@ To help us resolve this problem, consider commenting on
 
 ### Message: `FATAL:  could not connect to the primary server: server certificate for "PostgreSQL" does not match host name`
 
-This happens because the PostgreSQL certificate that the Omnibus GitLab package automatically creates contains
+This happens because the PostgreSQL certificate that the Linux package automatically creates contains
 the Common Name `PostgreSQL`, but the replication is connecting to a different host and GitLab attempts to use
 the `verify-full` SSL mode by default.
 
@@ -852,8 +853,11 @@ to start again from scratch, there are a few steps that can help you:
 
 ### Design repository failures on mirrored projects and project imports
 
-On the top bar, under **Main menu > Admin > Geo > Sites**,
-if the Design repositories progress bar shows
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Geo > Sites**.
+
+If the Design repositories progress bar shows
 `Synced` and `Failed` greater than 100%, and negative `Queued`, the instance
 is likely affected by
 [a bug in GitLab 13.2 and 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/241668).
@@ -1156,7 +1160,7 @@ get_ctl_options': invalid option: --force (OptionParser::InvalidOption)
 ```
 
 This can happen with XFS or file systems that list files in lexical order, because the
-load order of the Omnibus GitLab command files can be different than expected, and a global function would get redefined.
+load order of the Linux package command files can be different than expected, and a global function would get redefined.
 More details can be found in [the related issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6076).
 
 The workaround is to manually run the preflight checks and promote the database, by running
@@ -1188,7 +1192,8 @@ site's URL matches its external URL.
 
 On the **primary** site:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`
@@ -1206,7 +1211,7 @@ This section documents common error messages reported in the Admin Area on the w
 
 GitLab cannot find or doesn't have permission to access the `database_geo.yml` configuration file.
 
-In an Omnibus GitLab installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
+In a Linux package installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
 If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
 
 If this path is mounted on a remote volume, ensure your volume configuration
@@ -1239,7 +1244,7 @@ This error message indicates that the replica database in the **secondary** site
 To restore the database and resume replication, you can do one of the following:
 
 - [Reset the Geo secondary site replication](#resetting-geo-secondary-site-replication).
-- [Set up a new secondary Geo Omnibus instance](../setup/index.md#using-omnibus-gitlab).
+- [Set up a new Geo secondary using the Linux package](../setup/index.md#using-linux-package-installations).
 
 If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](remove_geo_site.md#removing-secondary-geo-sites).
 
@@ -1258,7 +1263,7 @@ Make sure you follow the [Geo database replication](../setup/database.md) instru
 
 ### Geo database version (...) does not match latest migration (...)
 
-If you are using Omnibus GitLab installation, something might have failed during upgrade. You can:
+If you are using the Linux package installation, something might have failed during upgrade. You can:
 
 - Run `sudo gitlab-ctl reconfigure`.
 - Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the **secondary** site.
@@ -1359,7 +1364,9 @@ If you have installed GitLab using the Linux package (Omnibus) and have configur
 - `15.6.0`-`15.6.3`
 - `15.7.0`-`15.7.1`
 
-This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with Omnibus GitLab 15.4.6 and later. You are encouraged to upgrade to a later version where this has been [fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
+This is due to [a bug introduced in the included version of cURL](https://github.com/curl/curl/issues/10122) shipped with
+the Linux package 15.4.6 and later. You should upgrade to a later version where this has been
+[fixed](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/).
 
 The bug causes all wildcard domains (`.example.com`) to be ignored except for the last on in the `no_proxy` environment variable list. Therefore, if for any reason you cannot upgrade to a newer version, you can work around the issue by moving your wildcard domain to the end of the list:
 
@@ -1392,8 +1399,9 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 
 In this case, make sure to update the changed URL on all your sites:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Admin > Geo > Sites**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **Geo > Sites**.
 1. Change the URL and save the change.
 
 ## Fixing non-PostgreSQL replication failures
@@ -1474,7 +1482,31 @@ Geo::PackageFileRegistry.where(last_sync_failure: 'The file is missing on the Ge
 This iterates over all package files on the secondary, looking at the
 `verification_checksum` stored in the database (which came from the primary)
 and then calculate this value on the secondary to check if they match. This
-does not change anything in the UI:
+does not change anything in the UI.
+
+For GitLab 14.4 and later:
+
+```ruby
+# Run on secondary
+status = {}
+
+Packages::PackageFile.find_each do |package_file|
+  primary_checksum = package_file.verification_checksum
+  secondary_checksum = Packages::PackageFile.sha256_hexdigest(package_file.file.path)
+  verification_status = (primary_checksum == secondary_checksum)
+
+  status[verification_status.to_s] ||= []
+  status[verification_status.to_s] << package_file.id
+end
+
+# Count how many of each value we get
+status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
+
+# See the output in its entirety
+status
+```
+
+For GitLab 14.3 and earlier:
 
 ```ruby
 # Run on secondary
@@ -1557,7 +1589,7 @@ registry.replicator.send(:sync_repository)
 #### Find repository verification failures
 
 [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to gather the following, basic troubleshooting information.
+**on the secondary Geo site** to gather more information.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -1583,14 +1615,14 @@ Geo::ProjectRegistry.sync_failed('repository')
 #### Resync project and project wiki repositories
 
 [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to enact the following, basic troubleshooting steps.
+**on the secondary Geo site** to perform the following changes.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ##### Queue up all repositories for resync
 
-When you run this, Sidekiq handles each sync.
+When you run this, the sync is handled in the background by Sidekiq.
 
 ```ruby
 Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
@@ -1602,6 +1634,27 @@ Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
 project = Project.find_by_full_path('<group/project>')
 
 Geo::RepositorySyncService.new(project).execute
+```
+
+##### Sync all failed repositories now
+
+The following script:
+
+- Loops over all currently failed repositories.
+- Displays the project details and the reasons for the last failure.
+- Attempts to resync the repository.
+- Reports back if a failure occurs, and why.
+
+```ruby
+Geo::ProjectRegistry.sync_failed('repository').find_each do |p|
+   begin
+     project = p.project
+     puts "#{project.full_path} | id: #{p.project_id} | last error: '#{p.last_repository_sync_failure}'"
+     Geo::RepositorySyncService.new(project).execute
+   rescue => e
+     puts "ID: #{p.project_id} failed: '#{e}'", e.backtrace.join("\n")
+   end
+end ; nil
 ```
 
 #### Find repository check failures in a Geo secondary site
@@ -1721,7 +1774,7 @@ If the above steps are **not successful**, proceed through the next steps:
 
 If different operating systems or different operating system versions are deployed across Geo sites, you should perform a locale data compatibility check before setting up Geo.
 
-Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723).
+Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites. PostgreSQL uses locale data provided by the operating system's C library for sorting text. If the locale data in the C library is incompatible across Geo sites, it can cause erroneous query results that lead to [incorrect behavior on secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/360723).
 
 For example, Ubuntu 18.04 (and earlier) and RHEL/Centos7 (and earlier) are incompatible with their later releases.
 See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Locale_data_changes).

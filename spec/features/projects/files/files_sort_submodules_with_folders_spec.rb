@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User views files page', feature_category: :projects do
+RSpec.describe 'Projects > Files > User views files page', feature_category: :groups_and_projects do
   let(:project) { create(:forked_project_with_submodules) }
   let(:user) { project.first_owner }
 

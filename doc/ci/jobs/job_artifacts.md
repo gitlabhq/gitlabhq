@@ -294,17 +294,13 @@ You can also delete individual artifacts from the [**Artifacts** page](#bulk-del
 
 ### Bulk delete artifacts
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/398581) in GitLab 16.1.
 
 You can delete multiple artifacts at the same time:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Artifacts**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Artifacts**.
 1. Select the checkboxes next to the artifacts you want to delete. You can select up to 50 artifacts.
 1. Select **Delete selected**.
 
@@ -334,7 +330,7 @@ With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to t
 
 By default artifacts are always kept for successful pipelines for the most recent commit on
 each ref. This means that the latest artifacts do not immediately expire according
-to the `expire_in` specification.
+to the `expire_in` configuration.
 
 If a pipeline for a new commit on the same ref completes successfully, the previous pipeline's
 artifacts are deleted according to the `expire_in` configuration. The artifacts
@@ -345,10 +341,14 @@ Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in
 a project, you can disable this behavior to save space:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Artifacts**.
 1. Clear the **Keep artifacts from most recent successful jobs** checkbox.
+
+After disabling this setting, all new artifacts expire according to the `expire_in` configuration.
+Artifacts in old pipelines continue to be kept until a new pipeline runs for the same ref.
+Then the artifacts in the earlier pipeline for that ref are allowed to expire too.
 
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).

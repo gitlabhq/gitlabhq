@@ -28,7 +28,7 @@ export default {
     variant="info"
     :primary-button-link="autoDevopsPath"
     :primary-button-text="$options.i18n.primaryButtonText"
-    data-qa-selector="autodevops_container"
+    data-testid="autodevops-container"
     @dismiss="dismissMethod"
   >
     <gl-sprintf :message="$options.i18n.body">

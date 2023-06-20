@@ -12,8 +12,12 @@ class NamespaceSetting < ApplicationRecord
   enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
   enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
 
+  attribute :default_branch_protection_defaults, default: -> { {} }
+
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
   validates :code_suggestions, allow_nil: false, inclusion: { in: [true, false] }
+  validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
+  validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
 
   validate :allow_mfa_for_group
   validate :allow_resource_access_token_creation_for_group
@@ -21,6 +25,8 @@ class NamespaceSetting < ApplicationRecord
   sanitizes! :default_branch_name
 
   before_validation :normalize_default_branch_name
+
+  after_create :set_code_suggestions_default
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval
@@ -40,6 +46,9 @@ class NamespaceSetting < ApplicationRecord
     subgroup_runner_token_expiration_interval
     project_runner_token_expiration_interval
   ].freeze
+
+  # matches the size set in the database constraint
+  DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
 
   self.primary_key = :namespace_id
 
@@ -85,6 +94,14 @@ class NamespaceSetting < ApplicationRecord
 
   def normalize_default_branch_name
     self.default_branch_name = default_branch_name.presence
+  end
+
+  def set_code_suggestions_default
+    # users should have code suggestions disabled by default
+    return if namespace&.user_namespace?
+
+    # groups should have code suggestions enabled by default
+    update_column(:code_suggestions, true)
   end
 
   def allow_mfa_for_group

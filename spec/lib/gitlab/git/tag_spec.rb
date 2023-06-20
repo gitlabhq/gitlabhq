@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Tag do
+RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:repository) { project.repository.raw }
 
@@ -17,10 +17,9 @@ RSpec.describe Gitlab::Git::Tag do
       it { expect(tag.has_signature?).to be_falsey }
       it { expect(tag.signature_type).to eq(:NONE) }
       it { expect(tag.signature).to be_nil }
-      it { expect(tag.tagger.name).to eq("Dmitriy Zaporozhets") }
-      it { expect(tag.tagger.email).to eq("dmitriy.zaporozhets@gmail.com") }
-      it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1393491299)) }
-      it { expect(tag.tagger.timezone).to eq("+0200") }
+      it { expect(tag.user_name).to eq("Dmitriy Zaporozhets") }
+      it { expect(tag.user_email).to eq("dmitriy.zaporozhets@gmail.com") }
+      it { expect(tag.date).to eq(Time.at(1393491299).utc) }
     end
 
     describe 'signed tag' do
@@ -33,10 +32,9 @@ RSpec.describe Gitlab::Git::Tag do
       it { expect(tag.has_signature?).to be_truthy }
       it { expect(tag.signature_type).to eq(:X509) }
       it { expect(tag.signature).not_to be_nil }
-      it { expect(tag.tagger.name).to eq("Roger Meier") }
-      it { expect(tag.tagger.email).to eq("r.meier@siemens.com") }
-      it { expect(tag.tagger.date).to eq(Google::Protobuf::Timestamp.new(seconds: 1574261780)) }
-      it { expect(tag.tagger.timezone).to eq("+0100") }
+      it { expect(tag.user_name).to eq("Roger Meier") }
+      it { expect(tag.user_email).to eq("r.meier@siemens.com") }
+      it { expect(tag.date).to eq(Time.at(1574261780).utc) }
     end
 
     it { expect(repository.tags.size).to be > 0 }

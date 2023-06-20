@@ -20,6 +20,8 @@ RSpec.describe Gitlab::GithubImport::ImportProtectedBranchWorker, feature_catego
     end
 
     it 'imports protected branch rule' do
+      allow(import_state).to receive(:in_progress?).and_return(true)
+
       expect(Gitlab::GithubImport::Importer::ProtectedBranchImporter)
         .to receive(:new)
         .with(

@@ -40,6 +40,8 @@ To restore a namespace to its standard state, you can:
 | CI/CD | Create, edit, admin, and run pipelines <br>  Create, edit, admin, and run builds <br>  Create and edit admin environments <br> Create and edit admin deployments <br>  Create and edit admin clusters <br> Create and edit admin releases |
 | Namespaces | **For exceeded free user limits:** Invite new users |
 
+When you try to execute a restricted action in a read-only namespace, you might get a `404` error.
+
 ## Related topics
 
 - [Frequently Asked Questions - GitLab SaaS Free Tier](https://about.gitlab.com/pricing/faq-efficient-free-tier/)

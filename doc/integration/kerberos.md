@@ -82,7 +82,7 @@ For source installations, make sure the `kerberos` gem group
    To avoid GitLab creating users automatically on their first sign in through Kerberos,
    don't set `kerberos` for `gitlab_rails['omniauth_allow_single_sign_on']`.
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 GitLab now offers the `negotiate` authentication method for signing in and
 HTTP Git access, enabling Git clients that support this authentication protocol
@@ -106,7 +106,8 @@ set up GitLab to create a new account when a Kerberos user tries to sign in.
 If you're an administrator, you can link a Kerberos account to an
 existing GitLab account. To do so:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select a user, then select the **Identities** tab.
 1. From the **Provider** dropdown list, select **Kerberos**.
@@ -115,7 +116,7 @@ existing GitLab account. To do so:
 
 If you're not an administrator:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect Kerberos**.
@@ -147,7 +148,8 @@ With that information at hand:
       ```
 
       1. As an administrator, you can confirm the new, blocked account:
-         1. On the top bar, select **Main menu > Admin**.
+         1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+         1. Select **Admin Area**.
          1. On the left sidebar, select **Overview > Users** and review the **Blocked** tab.
       1. You can enable the user.
    1. If `block_auto_created_users` is false, the Kerberos user is
@@ -193,7 +195,7 @@ ignored and an LDAP identity is not linked.
    gitlab_rails['kerberos_simple_ldap_linking_allowed_realms'] = ['example.com','kerberos.example.com']
    ```
 
-1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
 ---
@@ -284,7 +286,7 @@ this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token
    gitlab_rails['kerberos_https'] = true
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 After this change, Git remote URLs have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` to use
@@ -332,7 +334,7 @@ To disable password-based Kerberos sign-ins, remove the OmniAuth provider
    ]
    ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 NOTE:
 Removing the `kerberos` OmniAuth provider can also resolve a rare

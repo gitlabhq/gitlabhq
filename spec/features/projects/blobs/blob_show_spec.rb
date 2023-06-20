@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'File blob', :js, feature_category: :projects do
+RSpec.describe 'File blob', :js, feature_category: :groups_and_projects do
   include MobileHelpers
 
   let(:project) { create(:project, :public, :repository) }
@@ -575,66 +575,6 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
 
           # shows a learn more link
           expect(page).to have_link('Learn more')
-        end
-      end
-    end
-
-    describe '.gitlab/dashboards/custom-dashboard.yml' do
-      let(:remove_monitor_metrics) { false }
-
-      before do
-        stub_feature_flags(remove_monitor_metrics: remove_monitor_metrics)
-
-        project.add_maintainer(project.creator)
-
-        Files::CreateService.new(
-          project,
-          project.creator,
-          start_branch: 'master',
-          branch_name: 'master',
-          commit_message: "Add .gitlab/dashboards/custom-dashboard.yml",
-          file_path: '.gitlab/dashboards/custom-dashboard.yml',
-          file_content: file_content
-        ).execute
-
-        visit_blob('.gitlab/dashboards/custom-dashboard.yml')
-      end
-
-      context 'valid dashboard file' do
-        let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
-
-        it 'displays an auxiliary viewer' do
-          aggregate_failures do
-            # shows that dashboard yaml is valid
-            expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
-
-            # shows a learn more link
-            expect(page).to have_link('Learn more')
-          end
-        end
-
-        context 'when metrics dashboard feature is unavailable' do
-          let(:remove_monitor_metrics) { true }
-
-          it 'displays the blob without an auxiliary viewer' do
-            expect(page).to have_content('Environment metrics')
-            expect(page).not_to have_content('Metrics Dashboard YAML definition', wait: 0)
-          end
-        end
-      end
-
-      context 'invalid dashboard file' do
-        let(:file_content) { "dashboard: 'invalid'" }
-
-        it 'displays an auxiliary viewer' do
-          aggregate_failures do
-            # shows that dashboard yaml is invalid
-            expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
-            expect(page).to have_content("panel_groups: should be an array of panel_groups objects")
-
-            # shows a learn more link
-            expect(page).to have_link('Learn more')
-          end
         end
       end
     end

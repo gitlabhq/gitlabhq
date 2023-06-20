@@ -6,7 +6,7 @@
 - if Gitlab::ServiceDesk.supported?
   .empty-state
     .svg-content
-      = render partial: 'shared/empty_states/icons/service_desk_empty_state', formats: :svg
+      = render partial: 'projects/issues/service_desk/icons/service_desk_empty_state', formats: :svg
 
     .text-content
       %h4= title_text
@@ -25,7 +25,7 @@
 - else
   .empty-state
     .svg-content
-      = render partial: 'shared/empty_states/icons/service_desk_setup', formats: :svg
+      = render partial: 'projects/issues/service_desk/icons/service_desk_setup', formats: :svg
     .text-content
       - if can_edit_project_settings
         %h4= s_('ServiceDesk|Service Desk is not supported')

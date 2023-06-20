@@ -108,7 +108,7 @@ export default {
           @click="lint"
           >{{ __('Validate') }}</gl-button
         >
-        <gl-form-checkbox v-model="dryRun"
+        <gl-form-checkbox v-model="dryRun" data-testid="ci-lint-dryrun"
           >{{ __('Simulate a pipeline created for the default branch') }}
           <gl-link :href="pipelineSimulationHelpPagePath" target="_blank"
             ><gl-icon class="gl-text-blue-600" name="question-o" /></gl-link

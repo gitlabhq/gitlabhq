@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 
-	gitalyclient "gitlab.com/gitlab-org/gitaly/v15/client"
-	"gitlab.com/gitlab-org/gitaly/v15/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/gitaly/v15/streamio"
+	gitalyclient "gitlab.com/gitlab-org/gitaly/v16/client"
+	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v16/streamio"
 )
 
 type SmartHTTPClient struct {

@@ -229,13 +229,13 @@ de:
       storage_units:
         format: "%n %u"
         units:
-          byte:
-            one: Byte
-            other: Bytes
-          gb: GB
-          kb: KB
-          mb: MB
-          tb: TB
+          byte: B
+          kb: KiB
+          mb: MiB
+          gb: GiB
+          tb: TiB
+          pb: PiB
+          eb: EiB
     percentage:
       format:
         delimiter: ''

@@ -21,7 +21,7 @@ module QA
       def runner(**kwargs)
         fail_msg = "Wait for runner '#{name}' to register in group '#{group.name}'"
         Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1, message: fail_msg) do
-          auto_paginated_response(request_url("/runners", **kwargs)).find { |runner| runner[:description] == name }
+          group.runners(**kwargs).find { |runner| runner[:description] == name }
         end
       end
     end

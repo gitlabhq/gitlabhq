@@ -65,7 +65,9 @@ FactoryBot.define do
     end
 
     trait :service_account do
+      name { 'Service account user' }
       user_type { :service_account }
+      skip_confirmation { true }
     end
 
     trait :migration_bot do
@@ -128,6 +130,8 @@ FactoryBot.define do
       transient { registrations_count { 5 } }
 
       after(:create) do |user, evaluator|
+        user.generate_otp_backup_codes!
+
         create_list(:webauthn_registration, evaluator.registrations_count, user: user)
       end
     end

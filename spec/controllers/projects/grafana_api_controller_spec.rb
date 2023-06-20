@@ -250,6 +250,19 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
 
         it_behaves_like 'error response', :bad_request
       end
+
+      context 'when metrics dashboard feature is unavailable' do
+        before do
+          stub_feature_flags(remove_monitor_metrics: true)
+        end
+
+        it 'returns 404 Not found' do
+          get :metrics_dashboard, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to be_empty
+        end
+      end
     end
   end
 end

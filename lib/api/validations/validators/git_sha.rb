@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class GitSha < Grape::Validations::Base
+      class GitSha < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
           sha = params[attr_name]
 

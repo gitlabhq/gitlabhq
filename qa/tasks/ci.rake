@@ -30,6 +30,18 @@ namespace :ci do
     # on run-all label of framework changes do not infer specific tests
     tests = run_all_label_present || qa_changes.framework_changes? ? nil : qa_changes.qa_tests
 
+    # When QA_TESTS only contain folders and no specific specs, populate KNAPSACK_TEST_FILE_PATTERN
+    if tests && tests.split(' ').none? { |item| item.include?('_spec') }
+      test_paths = tests.split(' ').map { |item| "#{item}**/*" }
+
+      files_pattern = "{#{test_paths.join(',')}}"
+
+      logger.info(" Files pattern for tests: #{files_pattern}")
+      append_to_file(env_file, <<~TXT)
+        KNAPSACK_TEST_FILE_PATTERN='#{files_pattern}'
+      TXT
+    end
+
     if run_all_label_present
       logger.info(" merge request has pipeline:run-all-e2e label, full test suite will be executed")
       append_to_file(env_file, "QA_RUN_ALL_E2E_LABEL=true\n")

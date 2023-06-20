@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ArchivedAbilities, feature_category: :projects do
+RSpec.describe ArchivedAbilities, feature_category: :groups_and_projects do
   let(:test_class) do
     Class.new do
       include ArchivedAbilities

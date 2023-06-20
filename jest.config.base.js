@@ -96,6 +96,10 @@ module.exports = (path, options = {}) => {
   const TEST_FIXTURES_RAW_LOADER_PATTERN = `(${TEST_FIXTURES_HOME}|${TEST_FIXTURES_STATIC_HOME}).*\\.html$`;
 
   const moduleNameMapper = {
+    [TEST_FIXTURES_PATTERN]: `<rootDir>${TEST_FIXTURES_HOME}$1`,
+    '^test_fixtures_static(/.*)$': `<rootDir>${TEST_FIXTURES_STATIC_HOME}$1`,
+    '\\.(svg|gif|png|mp4)(\\?\\w+)?$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
+    '\\.css$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     '^~(/.*)\\?(worker|raw)$': '<rootDir>/app/assets/javascripts$1',
     '^(.*)\\?(worker|raw)$': '$1',
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',
@@ -109,10 +113,6 @@ module.exports = (path, options = {}) => {
     '^any_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
-    [TEST_FIXTURES_PATTERN]: `<rootDir>${TEST_FIXTURES_HOME}$1`,
-    '^test_fixtures_static(/.*)$': `<rootDir>${TEST_FIXTURES_STATIC_HOME}$1`,
-    '\\.(jpg|jpeg|png|svg|css)$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
-    '\\.svg\\?url$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     '^public(/.*)$': '<rootDir>/public$1',
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',

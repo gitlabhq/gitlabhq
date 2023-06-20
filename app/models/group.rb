@@ -38,7 +38,7 @@ class Group < Namespace
   has_many :users, through: :group_members
   has_many :owners,
     -> { where(members: { access_level: Gitlab::Access::OWNER }) },
-    through: :group_members,
+    through: :all_group_members,
     source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
@@ -92,7 +92,7 @@ class Group < Namespace
   has_many :badges, class_name: 'GroupBadge'
 
   # AR defaults to nullify when trying to delete via has_many associations unless we set dependent: :delete_all
-  has_many :organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :crm_organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :cluster_groups, class_name: 'Clusters::Group'
@@ -152,17 +152,19 @@ class Group < Namespace
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   validates :name,
-            html_safety: true,
-            format: { with: Gitlab::Regex.group_name_regex,
-                      message: Gitlab::Regex.group_name_regex_message },
-            if: :name_changed?
+    html_safety: true,
+    format: {
+      with: Gitlab::Regex.group_name_regex,
+      message: Gitlab::Regex.group_name_regex_message
+    },
+    if: :name_changed?
 
   validates :group_feature, presence: true
 
   add_authentication_token_field :runners_token,
-                                 encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
-                                 format_with_prefix: :runners_token_prefix,
-                                 require_prefix_for_validation: true
+    encrypted: :required,
+    format_with_prefix: :runners_token_prefix,
+    require_prefix_for_validation: true
 
   after_create :post_create_hook
   after_create -> { create_or_load_association(:group_feature) }
@@ -186,6 +188,8 @@ class Group < Namespace
 
     Group.from_union([by_id(ids), by_id(ids_by_full_path), where('LOWER(path) IN (?)', paths.map(&:downcase))])
   end
+
+  scope :excluding_groups, ->(groups) { where.not(id: groups) }
 
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
@@ -469,7 +473,7 @@ class Group < Namespace
   def has_owner?(user)
     return false unless user
 
-    members_with_parents.owners.exists?(user_id: user)
+    members_with_parents.all_owners.exists?(user_id: user)
   end
 
   def blocked_owners
@@ -490,35 +494,23 @@ class Group < Namespace
   # Excludes non-direct owners for top-level group
   # Excludes project_bots
   def last_owner?(user)
-    has_owner?(user) && member_owners_excluding_project_bots.size == 1
-  end
+    return false unless user
 
-  def member_last_owner?(member)
-    return member.last_owner unless member.last_owner.nil?
+    all_owners = member_owners_excluding_project_bots
 
-    last_owner?(member.user)
+    all_owners.size == 1 && all_owners.first.user_id == user.id
   end
 
   # Excludes non-direct owners for top-level group
   # Excludes project_bots
   def member_owners_excluding_project_bots
-    if root?
-      members
-    else
-      members_with_parents
-    end.owners.merge(User.without_project_bot)
-  end
+    members_from_hiearchy = if root?
+                              members.non_minimal_access.without_invites_and_requests
+                            else
+                              members_with_parents(only_active_users: false)
+                            end
 
-  def single_blocked_owner?
-    blocked_owners.size == 1
-  end
-
-  def member_last_blocked_owner?(member)
-    return member.last_blocked_owner unless member.last_blocked_owner.nil?
-
-    return false if member_owners_excluding_project_bots.any?
-
-    single_blocked_owner? && blocked_owners.exists?(user_id: member.user)
+    members_from_hiearchy.all_owners.left_outer_joins(:user).merge(User.without_project_bot)
   end
 
   def ldap_synced?
@@ -606,7 +598,7 @@ class Group < Namespace
                             members_from_self_and_ancestor_group_shares]).authorizable
   end
 
-  def members_with_parents
+  def members_with_parents(only_active_users: true)
     # Avoids an unnecessary SELECT when the group has no parents
     source_ids =
       if has_parent?
@@ -615,10 +607,15 @@ class Group < Namespace
         id
       end
 
-    group_hierarchy_members = GroupMember.active_without_invites_and_requests
-                                         .non_minimal_access
+    group_hierarchy_members = GroupMember.non_minimal_access
                                          .where(source_id: source_ids)
                                          .select(*GroupMember.cached_column_list)
+
+    group_hierarchy_members = if only_active_users
+                                group_hierarchy_members.active_without_invites_and_requests
+                              else
+                                group_hierarchy_members.without_invites_and_requests
+                              end
 
     GroupMember.from_union([group_hierarchy_members,
                             members_from_self_and_ancestor_group_shares])
@@ -972,9 +969,11 @@ class Group < Namespace
   end
 
   def max_member_access(user_ids)
-    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(User),
-                                      resource_ids: user_ids,
-                                      default_value: Gitlab::Access::NO_ACCESS) do |user_ids|
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: max_member_access_for_resource_key(User),
+      resource_ids: user_ids,
+      default_value: Gitlab::Access::NO_ACCESS
+    ) do |user_ids|
       members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
     end
   end
@@ -1035,8 +1034,7 @@ class Group < Namespace
     # the respective group_group_links.group_access.
     member_columns = GroupMember.attribute_names.map do |column_name|
       if column_name == 'access_level'
-        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]],
-                            'access_level')
+        smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]], 'access_level')
       else
         group_member_table[column_name]
       end

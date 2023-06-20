@@ -635,22 +635,6 @@ RSpec.describe ProjectStatistics do
       let(:stat) { :build_artifacts_size }
 
       it_behaves_like 'a statistic that increases storage_size asynchronously'
-
-      context 'when :project_statistics_bulk_increment flag is disabled' do
-        before do
-          stub_feature_flags(project_statistics_bulk_increment: false)
-        end
-
-        it 'calls increment_statistic on once with the sum of the increments' do
-          total_amount = increments.sum(&:amount)
-          expect(statistics)
-            .to receive(:increment_statistic).with(stat, have_attributes(amount: total_amount)).and_call_original
-
-          described_class.bulk_increment_statistic(project, stat, increments)
-        end
-
-        it_behaves_like 'a statistic that increases storage_size asynchronously'
-      end
     end
 
     context 'when adjusting :pipeline_artifacts_size' do

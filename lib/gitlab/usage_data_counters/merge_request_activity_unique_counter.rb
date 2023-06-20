@@ -64,20 +64,15 @@ module Gitlab
         end
 
         def track_create_mr_action(user:, merge_request:)
-          track_unique_action_by_user(MR_USER_CREATE_ACTION, user)
           track_unique_action_by_merge_request(MR_CREATE_ACTION, merge_request)
 
           project = merge_request.target_project
-          Gitlab::Tracking.event(
-            name,
-            :create,
-            project: project,
-            namespace: project.namespace,
-            user: user,
-            property: MR_USER_CREATE_ACTION,
-            label: 'redis_hll_counters.code_review.i_code_review_user_create_mr_monthly',
-            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                               event: MR_USER_CREATE_ACTION).to_context]
+
+          Gitlab::InternalEvents.track_event(
+            MR_USER_CREATE_ACTION,
+            user_id: user.id,
+            project_id: project.id,
+            namespace_id: project.namespace_id
           )
         end
 

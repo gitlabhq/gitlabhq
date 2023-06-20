@@ -53,16 +53,6 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
       let(:notes_metadata_threshold) { 1 }
 
       it_behaves_like 'N+1 queries'
-
-      context 'when external_note_author_service_desk feature flag is disabled' do
-        let(:notes_metadata_threshold) { 0 }
-
-        before do
-          stub_feature_flags(external_note_author_service_desk: false)
-        end
-
-        it_behaves_like 'N+1 queries'
-      end
     end
 
     it 'limits Gitaly queries', :request_store do

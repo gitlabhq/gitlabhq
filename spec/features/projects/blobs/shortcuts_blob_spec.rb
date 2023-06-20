@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Blob shortcuts', :js, feature_category: :projects do
+RSpec.describe 'Blob shortcuts', :js, feature_category: :groups_and_projects do
   include TreeHelper
   let(:project) { create(:project, :public, :repository) }
   let(:path) { project.repository.ls_files(project.repository.root_ref)[0] }

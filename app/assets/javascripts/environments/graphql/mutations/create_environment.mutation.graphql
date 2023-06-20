@@ -1,0 +1,9 @@
+mutation createEnvironment($input: EnvironmentCreateInput!) {
+  environmentCreate(input: $input) {
+    environment {
+      id
+      path
+    }
+    errors
+  }
+}

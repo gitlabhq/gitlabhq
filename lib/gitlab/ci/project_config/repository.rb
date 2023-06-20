@@ -20,6 +20,11 @@ module Gitlab
           :repository_source
         end
 
+        override :url
+        def url
+          File.join(Settings.build_ci_component_fqdn, project.full_path, '//', ci_config_path)
+        end
+
         private
 
         def file_in_repository?

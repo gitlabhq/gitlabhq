@@ -14,10 +14,11 @@ export default {
   ADD_NAMESPACE_MODAL_ID,
 };
 </script>
+
 <template>
   <div>
     <gl-button v-gl-modal="$options.ADD_NAMESPACE_MODAL_ID" category="primary" variant="info">
-      {{ s__('Integrations|Add namespace') }}
+      {{ s__('JiraConnect|Link groups') }}
     </gl-button>
     <add-namespace-modal />
   </div>

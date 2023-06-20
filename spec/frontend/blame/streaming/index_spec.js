@@ -4,12 +4,14 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import { renderHtmlStreams } from '~/streaming/render_html_streams';
 import { rateLimitStreamRequests } from '~/streaming/rate_limit_stream_requests';
 import { handleStreamedAnchorLink } from '~/streaming/handle_streamed_anchor_link';
+import { handleStreamedRelativeTimestamps } from '~/streaming/handle_streamed_relative_timestamps';
 import { toPolyfillReadable } from '~/streaming/polyfills';
 import { createAlert } from '~/alert';
 
 jest.mock('~/streaming/render_html_streams');
 jest.mock('~/streaming/rate_limit_stream_requests');
 jest.mock('~/streaming/handle_streamed_anchor_link');
+jest.mock('~/streaming/handle_streamed_relative_timestamps');
 jest.mock('~/streaming/polyfills');
 jest.mock('~/sentry');
 jest.mock('~/alert');
@@ -18,6 +20,7 @@ global.fetch = jest.fn();
 
 describe('renderBlamePageStreams', () => {
   let stopAnchor;
+  let stopTimetamps;
   const PAGES_URL = 'https://example.com/';
   const findStreamContainer = () => document.querySelector('#blame-stream-container');
   const findStreamLoadingIndicator = () => document.querySelector('#blame-stream-loading');
@@ -34,6 +37,7 @@ describe('renderBlamePageStreams', () => {
   };
 
   handleStreamedAnchorLink.mockImplementation(() => stopAnchor);
+  handleStreamedRelativeTimestamps.mockImplementation(() => Promise.resolve(stopTimetamps));
   rateLimitStreamRequests.mockImplementation(({ factory, total }) => {
     return Array.from({ length: total }, (_, i) => {
       return Promise.resolve(factory(i));
@@ -43,6 +47,7 @@ describe('renderBlamePageStreams', () => {
 
   beforeEach(() => {
     stopAnchor = jest.fn();
+    stopTimetamps = jest.fn();
     fetch.mockClear();
   });
 
@@ -50,6 +55,7 @@ describe('renderBlamePageStreams', () => {
     await renderBlamePageStreams();
 
     expect(handleStreamedAnchorLink).not.toHaveBeenCalled();
+    expect(handleStreamedRelativeTimestamps).not.toHaveBeenCalled();
     expect(renderHtmlStreams).not.toHaveBeenCalled();
   });
 
@@ -64,7 +70,9 @@ describe('renderBlamePageStreams', () => {
     renderBlamePageStreams(stream);
 
     expect(handleStreamedAnchorLink).toHaveBeenCalledTimes(1);
+    expect(handleStreamedRelativeTimestamps).toHaveBeenCalledTimes(1);
     expect(stopAnchor).toHaveBeenCalledTimes(0);
+    expect(stopTimetamps).toHaveBeenCalledTimes(0);
     expect(renderHtmlStreams).toHaveBeenCalledWith([stream], findStreamContainer());
     expect(findStreamLoadingIndicator()).not.toBe(null);
 
@@ -72,6 +80,7 @@ describe('renderBlamePageStreams', () => {
     await waitForPromises();
 
     expect(stopAnchor).toHaveBeenCalledTimes(1);
+    expect(stopTimetamps).toHaveBeenCalledTimes(1);
     expect(findStreamLoadingIndicator()).toBe(null);
   });
 

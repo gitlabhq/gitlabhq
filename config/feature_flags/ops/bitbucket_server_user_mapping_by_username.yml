@@ -1,0 +1,8 @@
+---
+name: bitbucket_server_user_mapping_by_username
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885
+rollout_issue_url: # No rollout: This is an ops-flag
+milestone: '13.4'
+type: ops
+group: group::import
+default_enabled: false # Flag should be kept disabled by default

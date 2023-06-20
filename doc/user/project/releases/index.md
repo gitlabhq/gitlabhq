@@ -74,8 +74,8 @@ Prerequisites:
 
 To create a release in the Releases page:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Releases** and select **New release**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Build > Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
      results in a validation error.
@@ -215,8 +215,8 @@ To delete a release, use either the
 
 In the UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Releases**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Deploy > Releases**.
 1. In the upper-right corner of the release you want to delete, select **Edit this release**
    (**{pencil}**).
 1. On the **Edit Release** page, select **Delete**.

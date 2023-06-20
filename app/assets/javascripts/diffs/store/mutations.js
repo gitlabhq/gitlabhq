@@ -5,6 +5,7 @@ import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   INLINE_DIFF_LINES_KEY,
   EXPANDED_LINE_TYPE,
+  FILE_DIFF_POSITION_TYPE,
 } from '../constants';
 import * as types from './mutation_types';
 import {
@@ -168,6 +169,7 @@ export default {
     const { latestDiff } = state;
 
     const originalStartLineCode = discussion.original_position?.line_range?.start?.line_code;
+    const positionType = discussion.position?.position_type;
     const discussionLineCodes = [
       discussion.line_code,
       originalStartLineCode,
@@ -212,16 +214,7 @@ export default {
 
     state.diffFiles.forEach((file) => {
       if (file.file_hash === fileHash) {
-        if (file[INLINE_DIFF_LINES_KEY].length) {
-          file[INLINE_DIFF_LINES_KEY].forEach((line) => {
-            Object.assign(
-              line,
-              setDiscussionsExpanded(lineCheck(line) ? mapDiscussions(line) : line),
-            );
-          });
-        }
-
-        if (!file[INLINE_DIFF_LINES_KEY].length) {
+        if (positionType === FILE_DIFF_POSITION_TYPE) {
           const newDiscussions = (file.discussions || [])
             .filter((d) => d.id !== discussion.id)
             .concat(discussion);
@@ -229,6 +222,25 @@ export default {
           Object.assign(file, {
             discussions: newDiscussions,
           });
+        } else {
+          if (file[INLINE_DIFF_LINES_KEY].length) {
+            file[INLINE_DIFF_LINES_KEY].forEach((line) => {
+              Object.assign(
+                line,
+                setDiscussionsExpanded(lineCheck(line) ? mapDiscussions(line) : line),
+              );
+            });
+          }
+
+          if (!file[INLINE_DIFF_LINES_KEY].length) {
+            const newDiscussions = (file.discussions || [])
+              .filter((d) => d.id !== discussion.id)
+              .concat(discussion);
+
+            Object.assign(file, {
+              discussions: newDiscussions,
+            });
+          }
         }
       }
     });
@@ -377,5 +389,15 @@ export default {
   },
   [types.DISABLE_VIRTUAL_SCROLLING](state) {
     state.disableVirtualScroller = true;
+  },
+  [types.TOGGLE_FILE_COMMENT_FORM](state, filePath) {
+    const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+
+    file.hasCommentForm = !file.hasCommentForm;
+  },
+  [types.ADD_DRAFT_TO_FILE](state, { filePath, draft }) {
+    const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+
+    file?.drafts.push(draft);
   },
 };

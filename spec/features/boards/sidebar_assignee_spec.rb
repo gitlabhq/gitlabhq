@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar assignee', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332230',
+RSpec.describe 'Project issue boards sidebar assignee', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332078',
                                                              feature_category: :team_planning do
   include BoardHelpers
 

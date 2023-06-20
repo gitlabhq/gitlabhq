@@ -17,7 +17,7 @@
     -# Only show it in the first page
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
     .prioritized-labels.gl-rounded-base.gl-border.gl-bg-gray-10.gl-mt-4{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
-      .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-base.gl-border-b{ class: 'gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!' }
+      .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-top-base.gl-border-b
         %h3.card-title.h5.gl-m-0.gl-relative.gl-line-height-24
           = _('Prioritized labels')
         .gl-font-sm.gl-font-weight-semibold.gl-text-gray-500
@@ -33,7 +33,7 @@
 
     - if @labels.any?
       .other-labels.gl-rounded-base.gl-border.gl-bg-gray-10.gl-mt-4
-        .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-base.gl-border-b{ class: 'gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!' }
+        .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-top-base.gl-border-b
           %h3.card-title.h5.gl-m-0.gl-relative.gl-line-height-24{ class: ('hide' if hide) }= _('Other labels')
         .js-other-labels.gl-px-3.gl-rounded-base.manage-labels-list
           = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }

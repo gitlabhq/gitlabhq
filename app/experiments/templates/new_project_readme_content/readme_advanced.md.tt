@@ -31,7 +31,7 @@ git push -uf origin <%= @project.default_branch_or_main %>
 - [ ] [Create a new merge request](<%= redirect("https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html") %>)
 - [ ] [Automatically close issues from merge requests](<%= redirect("https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically") %>)
 - [ ] [Enable merge request approvals](<%= redirect("https://docs.gitlab.com/ee/user/project/merge_requests/approvals/") %>)
-- [ ] [Automatically merge when pipeline succeeds](<%= redirect("https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html") %>)
+- [ ] [Set auto-merge](<%= redirect("https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html") %>)
 
 ## Test and Deploy
 

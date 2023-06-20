@@ -1,14 +1,17 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import RulesItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/rules_item.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   JOB_TEMPLATE,
   JOB_RULES_WHEN,
   JOB_RULES_START_IN,
+  HELP_PATHS,
 } from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
 
 describe('Rules item', () => {
   let wrapper;
 
+  const findLink = () => wrapper.findComponent(GlLink);
   const findRulesWhenSelect = () => wrapper.findByTestId('rules-when-select');
   const findRulesStartInNumberInput = () => wrapper.findByTestId('rules-start-in-number-input');
   const findRulesStartInUnitSelect = () => wrapper.findByTestId('rules-start-in-unit-select');
@@ -25,11 +28,20 @@ describe('Rules item', () => {
         isStartValid: true,
         job: JSON.parse(JSON.stringify(JOB_TEMPLATE)),
       },
+      stubs: {
+        GlSprintf,
+      },
     });
   };
 
   beforeEach(() => {
     createComponent();
+  });
+
+  it('should render help link with correct href', () => {
+    createComponent();
+
+    expect(findLink().attributes('href')).toEqual(HELP_PATHS.rulesHelpPath);
   });
 
   it('should emit update job event when filling inputs', () => {

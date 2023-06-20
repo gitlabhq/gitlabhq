@@ -3,10 +3,8 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
-  flag_values = [true, false]
-  flag_values.each do |val|
+  shared_examples 'signup validation' do
     before do
-      stub_feature_flags(restyle_login_page: val)
       visit new_user_registration_path
     end
 
@@ -42,6 +40,18 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
       end
     end
   end
+
+  include_examples 'signup validation'
+
+  # Inline `shared_example 'signup validation'` again after feature flag
+  # `restyle_login_page` was removed.
+  context 'with feature flag restyle_login_page disabled' do
+    before do
+      stub_feature_flags(restyle_login_page: false)
+    end
+
+    include_examples 'signup validation'
+  end
 end
 
 RSpec.describe 'Signup', :js, feature_category: :user_profile do
@@ -49,25 +59,32 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
   let(:new_user) { build_stubbed(:user) }
 
-  def fill_in_signup_form
-    fill_in 'new_user_username', with: new_user.username
-    fill_in 'new_user_email', with: new_user.email
-    fill_in 'new_user_first_name', with: new_user.first_name
-    fill_in 'new_user_last_name', with: new_user.last_name
-    fill_in 'new_user_password', with: new_user.password
+  let(:terms_text) do
+    <<~TEXT.squish
+      By clicking Register or registering through a third party you accept the
+      Terms of Use and acknowledge the Privacy Policy and Cookie Policy
+    TEXT
   end
 
-  def confirm_email
-    new_user_token = User.find_by_email(new_user.email).confirmation_token
+  shared_examples 'signup process' do
+    def fill_in_signup_form
+      fill_in 'new_user_username', with: new_user.username
+      fill_in 'new_user_email', with: new_user.email
+      fill_in 'new_user_first_name', with: new_user.first_name
+      fill_in 'new_user_last_name', with: new_user.last_name
+      fill_in 'new_user_password', with: new_user.password
 
-    visit user_confirmation_path(confirmation_token: new_user_token)
-  end
+      wait_for_all_requests
+    end
 
-  flag_values = [true, false]
-  flag_values.each do |val|
+    def confirm_email
+      new_user_token = User.find_by_email(new_user.email).confirmation_token
+
+      visit user_confirmation_path(confirmation_token: new_user_token)
+    end
+
     before do
       stub_feature_flags(arkose_labs_signup_challenge: false)
-      stub_feature_flags(restyle_login_page: val)
       stub_application_setting(require_admin_approval_after_user_signup: false)
     end
 
@@ -162,7 +179,8 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         expect(page).to have_content("Invalid input, please avoid emojis")
       end
 
-      it 'shows a pending message if the username availability is being fetched', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/31484' do
+      it 'shows a pending message if the username availability is being fetched',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/31484' do
         fill_in 'new_user_username', with: 'new-user'
 
         expect(find('.username > .validation-pending')).not_to have_css '.hide'
@@ -263,7 +281,10 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
           expect { click_button 'Register' }.to change { User.count }.by(1)
           expect(page).to have_current_path new_user_session_path, ignore_query: true
-          expect(page).to have_content("You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator")
+          expect(page).to have_content(<<~TEXT.squish)
+            You have signed up successfully. However, we could not sign you in
+            because your account is awaiting approval from your GitLab administrator
+          TEXT
         end
       end
     end
@@ -305,13 +326,26 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
       it 'renders text that the user confirms terms by signing in' do
         visit new_user_registration_path
-        expect(page).to have_content(/By clicking Register, I agree that I have read and accepted the Terms of Use and Privacy Policy/)
+        expect(page).to have_content(terms_text)
 
         fill_in_signup_form
         click_button 'Register'
 
-        expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
+        expect(page).to have_current_path(users_sign_up_welcome_path), ignore_query: true
+        visit new_project_path
+
+        select 'Software Developer', from: 'user_role'
+        click_button 'Get started!'
+
+        created_user = User.find_by_username(new_user.username)
+
+        expect(created_user.software_developer_role?).to be_truthy
+        expect(created_user.setup_for_company).to be_nil
+        expect(page).to have_current_path(new_project_path)
       end
+
+      it_behaves_like 'Signup name validation', 'new_user_first_name', 127, 'First name'
+      it_behaves_like 'Signup name validation', 'new_user_last_name', 127, 'Last name'
     end
 
     context 'when reCAPTCHA and invisible captcha are enabled' do
@@ -337,7 +371,8 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
           expect { click_button 'Register' }.not_to change { User.count }
           expect(page).to have_content(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
-          expect(page).to have_content("Minimum length is #{Gitlab::CurrentSettings.minimum_password_length} characters")
+          expect(page).to have_content(
+            "Minimum length is #{Gitlab::CurrentSettings.minimum_password_length} characters")
         end
       end
 
@@ -357,7 +392,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
       visit new_user_registration_path
 
       fill_in_signup_form
-      wait_for_all_requests
 
       click_button 'Register'
 
@@ -393,34 +427,22 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
     end
   end
 
-  context 'when terms are enforced' do
+  include_examples 'signup process'
+
+  # Inline `shared_example 'signup process'` again after feature flag
+  # `restyle_login_page` was removed.
+  context 'with feature flag restyle_login_page disabled' do
+    let(:terms_text) do
+      <<~TEXT.squish
+        By clicking Register, I agree that I have read and accepted the Terms of
+        Use and Privacy Policy
+      TEXT
+    end
+
     before do
-      enforce_terms
+      stub_feature_flags(restyle_login_page: false)
     end
 
-    it 'renders text that the user confirms terms by signing in' do
-      visit new_user_registration_path
-
-      expect(page).to have_content(/By clicking Register, I agree that I have read and accepted the Terms of Use and Privacy Policy/)
-
-      fill_in_signup_form
-      click_button 'Register'
-
-      visit new_project_path
-
-      expect(page).to have_current_path(users_sign_up_welcome_path)
-
-      select 'Software Developer', from: 'user_role'
-      click_button 'Get started!'
-
-      created_user = User.find_by_username(new_user.username)
-
-      expect(created_user.software_developer_role?).to be_truthy
-      expect(created_user.setup_for_company).to be_nil
-      expect(page).to have_current_path(new_project_path)
-    end
-
-    it_behaves_like 'Signup name validation', 'new_user_first_name', 127, 'First name'
-    it_behaves_like 'Signup name validation', 'new_user_last_name', 127, 'Last name'
+    include_examples 'signup process'
   end
 end

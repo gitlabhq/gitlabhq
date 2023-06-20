@@ -418,11 +418,21 @@ these keywords:
 
 ### `include` with `rules:if`
 
+> Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+
 Use [`rules:if`](index.md#rulesif) to conditionally include other configuration files
 based on the status of CI/CD variables. For example:
 
 ```yaml
 include:
+  - local: builds.yml
+    rules:
+      - if: $DONT_INCLUDE_BUILDS == "true"
+        when: never
+  - local: builds.yml
+    rules:
+      - if: $ALWAYS_INCLUDE_BUILDS == "true"
+        when: always
   - local: builds.yml
     rules:
       - if: $INCLUDE_BUILDS == "true"
@@ -437,11 +447,23 @@ test:
 
 ### `include` with `rules:exists`
 
+> Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
+
 Use [`rules:exists`](index.md#rulesexists) to conditionally include other configuration files
 based on the existence of files. For example:
 
 ```yaml
 include:
+  - local: builds.yml
+    rules:
+      - exists:
+          - exception-file.md
+        when: never
+  - local: builds.yml
+    rules:
+      - exists:
+          - important-file.md
+        when: always
   - local: builds.yml
     rules:
       - exists:
@@ -508,7 +530,7 @@ When the pipeline runs, GitLab:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 
 FLAG:
-`spec` and `with` are experimental [Open Beta features](../../policy/alpha-beta-support.md#beta)
+`spec` and `with` are experimental [Open Beta features](../../policy/experiment-beta-support.md#beta)
 and subject to change without notice.
 
 ### Define input parameters with `spec:inputs`

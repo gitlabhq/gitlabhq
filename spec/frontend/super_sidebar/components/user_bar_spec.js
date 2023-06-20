@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
 import SearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
+import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
 import Counter from '~/super_sidebar/components/counter.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
@@ -23,7 +24,7 @@ describe('UserBar component', () => {
   const findMRsCounter = () => findCounter(1);
   const findTodosCounter = () => findCounter(2);
   const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
-  const findBrandLogo = () => wrapper.findByTestId('brand-header-custom-logo');
+  const findBrandLogo = () => wrapper.findComponent(BrandLogo);
   const findCollapseButton = () => wrapper.findByTestId('super-sidebar-collapse-button');
   const findSearchButton = () => wrapper.findByTestId('super-sidebar-search-button');
   const findSearchModal = () => wrapper.findComponent(SearchModal);
@@ -47,7 +48,6 @@ describe('UserBar component', () => {
         sidebarData: { ...sidebarData, ...extraSidebarData },
       },
       provide: {
-        rootPath: '/',
         toggleNewNavEndpoint: '/-/profile/preferences',
         isImpersonating: false,
         ...provideOverrides,
@@ -116,7 +116,7 @@ describe('UserBar component', () => {
 
     it('renders branding logo', () => {
       expect(findBrandLogo().exists()).toBe(true);
-      expect(findBrandLogo().attributes('src')).toBe(sidebarData.logo_url);
+      expect(findBrandLogo().props('logoUrl')).toBe(sidebarData.logo_url);
     });
 
     it('does not render the "Stop impersonating" button', () => {

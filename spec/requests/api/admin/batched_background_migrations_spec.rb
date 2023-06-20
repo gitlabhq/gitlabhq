@@ -50,6 +50,27 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
 
         show_migration
       end
+
+      context 'when migration has completed jobs' do
+        let(:migration) do
+          Gitlab::Database::SharedModel.using_connection(ci_model.connection) do
+            create(:batched_background_migration, :active, total_tuple_count: 100)
+          end
+        end
+
+        let!(:batched_job) do
+          Gitlab::Database::SharedModel.using_connection(ci_model.connection) do
+            create(:batched_background_migration_job, :succeeded, batched_migration: migration, batch_size: 8)
+          end
+        end
+
+        it 'calculates the progress using the CI database' do
+          show_migration
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['progress']).to eq(8)
+        end
+      end
     end
 
     context 'when the database name does not exist' do

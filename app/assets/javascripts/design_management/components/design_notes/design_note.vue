@@ -3,8 +3,7 @@ import {
   GlAvatar,
   GlAvatarLink,
   GlButton,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
   GlLink,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -29,8 +28,7 @@ export default {
     GlAvatar,
     GlAvatarLink,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
     GlLink,
     TimeAgoTooltip,
     TimelineEntryItem,
@@ -83,14 +81,37 @@ export default {
         id: this.note.id,
       };
     },
-    isEditButtonVisible() {
-      return !this.isEditing && this.adminPermissions;
-    },
-    isMoreActionsButtonVisible() {
+    isEditingAndHasPermissions() {
       return !this.isEditing && this.adminPermissions;
     },
     adminPermissions() {
       return this.note.userPermissions.adminNote;
+    },
+    dropdownItems() {
+      return [
+        {
+          text: this.$options.i18n.editCommentLabel,
+          action: () => {
+            this.isEditing = true;
+          },
+          extraAttrs: {
+            'data-testid': 'delete-note-button',
+            'data-qa-selector': 'delete_design_note_button',
+            class: 'gl-sm-display-none!',
+          },
+        },
+        {
+          text: this.$options.i18n.deleteCommentText,
+          action: () => {
+            this.$emit('delete-note', this.note);
+          },
+          extraAttrs: {
+            'data-testid': 'delete-note-button',
+            'data-qa-selector': 'delete_design_note_button',
+            class: 'gl-text-red-500!',
+          },
+        },
+      ];
     },
   },
   methods: {
@@ -131,50 +152,41 @@ export default {
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
           <gl-link
-            class="note-timestamp system-note-separator gl-display-block gl-mb-2"
+            class="note-timestamp system-note-separator gl-display-block gl-mb-2 gl-font-sm"
             :href="`#note_${noteAnchorId}`"
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
           </gl-link>
         </span>
       </div>
-      <div class="gl-display-flex gl-align-items-baseline">
+      <div class="gl-display-flex gl-align-items-baseline gl-mt-n2 gl-mr-n2">
         <slot name="resolve-discussion"></slot>
         <gl-button
-          v-if="isEditButtonVisible"
+          v-if="isEditingAndHasPermissions"
           v-gl-tooltip
+          class="gl-display-none gl-sm-display-inline-flex!"
           :aria-label="$options.i18n.editCommentLabel"
           :title="$options.i18n.editCommentLabel"
           category="tertiary"
           data-testid="note-edit"
           icon="pencil"
-          size="small"
           @click="isEditing = true"
         />
-        <gl-dropdown
-          v-if="isMoreActionsButtonVisible"
+        <gl-disclosure-dropdown
+          v-if="isEditingAndHasPermissions"
           v-gl-tooltip.hover
-          class="gl-display-none gl-sm-display-inline-flex! gl-ml-3"
+          toggle-class="btn-sm"
           icon="ellipsis_v"
           category="tertiary"
           data-qa-selector="design_discussion_actions_ellipsis_dropdown"
           data-testid="more-actions-dropdown"
-          :text="$options.i18n.moreActionsLabel"
           text-sr-only
           :title="$options.i18n.moreActionsLabel"
           :aria-label="$options.i18n.moreActionsLabel"
           no-caret
           left
-        >
-          <gl-dropdown-item
-            variant="danger"
-            data-qa-selector="delete_design_note_button"
-            data-testid="delete-note-button"
-            @click="$emit('delete-note', note)"
-          >
-            {{ $options.i18n.deleteCommentText }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+          :items="dropdownItems"
+        />
       </div>
     </div>
     <template v-if="!isEditing">

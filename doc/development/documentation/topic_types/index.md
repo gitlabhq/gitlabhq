@@ -23,7 +23,7 @@ The acronym refers to the first letter of each topic type.
 
 In addition to the four primary topic types, you can use the following:
 
-- Page types: [Tutorials](tutorial.md) and [Get started](#get-started)
+- Page type: [Tutorials](tutorial.md)
 - Topic type: [Related topics](#related-topics)
 - Page or topic type: [Glossaries](glossary.md)
 
@@ -36,6 +36,7 @@ You should avoid:
 - Topics that have one or two sentences only. In these cases:
   - Incorporate the information in another topic.
   - If the sentence links to another page, use a [Related topics](#related-topics) link instead.
+- Get started topics. To document a procedure for a single feature, use a [task](task.md). For a set of steps, use a [tutorial](tutorial.md).
 
 ## Topic title guidelines
 
@@ -63,27 +64,3 @@ full sentences, and so should not end in a period.
 - [CI/CD variables](link-to-topic)
 - [Environment variables](link-to-topic)
 ```
-
-## Get started
-
-A get started page is a set of steps to help a user get set up
-quickly to use a single GitLab feature or tool.
-It consists of more than one task.
-
-Get started pages should be in this format:
-
-```markdown
-# Title ("Get started with <feature>")
-
-Complete the following steps to ... .
-
-1. First step.
-1. Another step.
-1. Another step.
-
-If you need to add more than one task,
-consider using subsections for each distinct task.
-```
-
-In the left nav, use `Get started` as the text. On the page itself, spell out
-the full name. For example, `Get started with application security`.

@@ -29,7 +29,7 @@ Before you can install the agent in your cluster, you need:
 
 To install the agent in your cluster:
 
-1. Optional. [Create an agent configuration file](#create-an-agent-configuration-file).
+1. [Create an agent configuration file](#create-an-agent-configuration-file).
 1. [Register the agent with GitLab](#register-the-agent-with-gitlab).
 1. [Install the agent in your cluster](#install-the-agent-in-the-cluster).
 
@@ -44,8 +44,7 @@ For configuration settings, the agent uses a YAML file in the GitLab project. Yo
 
 - You use [a GitOps workflow](../gitops.md#gitops-workflow-steps).
 - You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#gitlab-cicd-workflow-steps) and want to authorize a different project to use the agent.
-
-Otherwise it is optional.
+- You [allow specific project or group members to access Kubernetes](../user_access.md).
 
 To create an agent configuration file:
 
@@ -58,13 +57,11 @@ To create an agent configuration file:
    - Start with an alphanumeric character.
    - End with an alphanumeric character.
 
-1. In the repository, in the default branch, create this directory at the root:
+1. In the repository, in the default branch, create an agent configuration file at the root:
 
    ```plaintext
-   .gitlab/agents/<agent-name>
+   .gitlab/agents/<agent-name>/config.yaml
    ```
-
-1. In the directory, create a `config.yaml` file. Ensure the filename ends in `.yaml`, not `.yml`.
 
 You can leave the file blank for now, and [configure it](#configure-your-agent) later.
 
@@ -83,10 +80,10 @@ Prerequisites:
 
 You must register an agent before you can install the agent in your cluster. To register an agent:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
    If you have an [agent configuration file](#create-an-agent-configuration-file),
    it must be in this project. Your cluster manifest files should also be in this project.
-1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select **Operate > Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
    - If you want to create a configuration with CI/CD defaults, type a name.
    - If you already have an [agent configuration file](#create-an-agent-configuration-file), select it from the list.
@@ -144,7 +141,7 @@ When [KAS](../../../../administration/clusters/kas.md) is behind a self-signed c
 you can set the value of `config.caCert` to the certificate. For example:
 
 ```shell
-helm update --install gitlab-agent gitlab/gitlab-agent \
+helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   --set-file config.caCert=my-custom-ca.pem
 ```
 

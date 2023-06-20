@@ -20,7 +20,7 @@ module API
       end
       resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
-          requires :tag_name, type: String, desc: 'The tag associated with the release', as: :tag
+          requires :tag_name, type: String, desc: 'The tag associated with the release'
         end
         resource 'releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
           resource :assets do
@@ -56,7 +56,8 @@ module API
             params do
               requires :name, type: String, desc: 'The name of the link. Link names must be unique in the release'
               requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique in the release.'
-              optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link', as: :filepath
+              optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'
+              optional :filepath, type: String, desc: 'Deprecated: optional path for a direct asset link'
               optional :link_type,
                 type: String,
                 values: %w[other runbook image package],
@@ -110,7 +111,8 @@ module API
               params do
                 optional :name, type: String, desc: 'The name of the link'
                 optional :url, type: String, desc: 'The URL of the link'
-                optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link', as: :filepath
+                optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'
+                optional :filepath, type: String, desc: 'Deprecated: optional path for a direct asset link'
                 optional :link_type,
                   type: String,
                   values: %w[other runbook image package],
@@ -164,11 +166,11 @@ module API
 
       helpers do
         def release
-          @release ||= user_project.releases.find_by_tag!(params[:tag])
+          @release ||= user_project.releases.find_by_tag!(declared_params(include_parent_namespaces: true)[:tag_name])
         end
 
         def link
-          @link ||= release.links.find(params[:link_id])
+          @link ||= release.links.find(declared_params(include_parent_namespaces: true)[:link_id])
         end
       end
     end

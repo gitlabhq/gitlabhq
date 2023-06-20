@@ -130,8 +130,7 @@ module Gitlab
             strong_memoize_attr :content_hash
 
             def interpolator
-              External::Interpolator
-                .new(content_result, content_inputs, context)
+              Yaml::Interpolator.new(content_result, content_inputs, context)
             end
             strong_memoize_attr :interpolator
 

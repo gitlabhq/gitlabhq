@@ -6,7 +6,7 @@ require 'spec_helper'
 require 'mail'
 require_relative '../../config/initializers/mail_starttls_patch'
 
-RSpec.describe 'Mail STARTTLS patch', feature_category: :integrations do
+RSpec.describe 'Mail STARTTLS patch', feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   let(:message) do

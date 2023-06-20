@@ -73,7 +73,7 @@ RSpec.describe Packages::Go::SyncPackagesWorker, type: :worker, feature_category
 
     context 'with a package that exceeds project limits' do
       before do
-        Plan.default.actual_limits.update!({ 'golang_max_file_size': 1 })
+        Plan.default.actual_limits.update!({ golang_max_file_size: 1 })
       end
 
       it 'logs an exception' do

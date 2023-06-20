@@ -1,0 +1,39 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getUserSnippets(
+  $id: UserID!
+  $first: Int
+  $last: Int
+  $afterToken: String
+  $beforeToken: String
+) {
+  user(id: $id) {
+    id
+    avatarUrl
+    name
+    username
+    snippets(first: $first, last: $last, before: $beforeToken, after: $afterToken) {
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        id
+        title
+        webUrl
+        visibilityLevel
+        createdAt
+        updatedAt
+        blobs {
+          nodes {
+            name
+          }
+        }
+        notes {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}

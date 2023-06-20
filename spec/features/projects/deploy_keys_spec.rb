@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project deploy keys', :js, feature_category: :projects do
+RSpec.describe 'Project deploy keys', :js, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project_empty_repo) }
   let_it_be(:deploy_keys_project) { create(:deploy_keys_project, project: project) }

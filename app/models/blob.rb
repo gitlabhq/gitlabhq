@@ -33,6 +33,7 @@ class Blob < SimpleDelegator
     BlobViewer::Notebook,
     BlobViewer::SVG,
     BlobViewer::OpenApi,
+    BlobViewer::GeoJson,
 
     BlobViewer::Image,
     BlobViewer::Sketch,
@@ -54,7 +55,6 @@ class Blob < SimpleDelegator
     BlobViewer::License,
     BlobViewer::Contributing,
     BlobViewer::Changelog,
-    BlobViewer::MetricsDashboardYml,
 
     BlobViewer::CargoToml,
     BlobViewer::Cartfile,
@@ -72,6 +72,7 @@ class Blob < SimpleDelegator
   ].freeze
 
   attr_reader :container
+  attr_accessor :ref_type
 
   delegate :repository, to: :container, allow_nil: true
   delegate :project, to: :repository, allow_nil: true

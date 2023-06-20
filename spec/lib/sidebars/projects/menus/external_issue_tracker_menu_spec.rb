@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::ExternalIssueTrackerMenu do
+RSpec.describe Sidebars::Projects::Menus::ExternalIssueTrackerMenu, feature_category: :navigation do
   let(:project) { build(:project) }
   let(:user) { project.first_owner }
   let(:jira_issues_integration_active) { false }

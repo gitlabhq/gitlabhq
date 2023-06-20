@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Group, feature_category: :subgroups do
+RSpec.describe Group, feature_category: :groups_and_projects do
   include ReloadHelpers
   include StubGitlabCalls
 
@@ -10,10 +10,11 @@ RSpec.describe Group, feature_category: :subgroups do
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
+    it { is_expected.to have_many(:all_group_members).dependent(:destroy) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
-    it { is_expected.to have_many(:owners).through(:group_members) }
+    it { is_expected.to have_many(:owners).through(:all_group_members) }
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:members_and_requesters) }
@@ -49,7 +50,7 @@ RSpec.describe Group, feature_category: :subgroups do
     end
 
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
-    it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
+    it { is_expected.to have_many(:crm_organizations).class_name('CustomerRelations::Organization') }
     it { is_expected.to have_many(:protected_branches).inverse_of(:group).with_foreign_key(:namespace_id) }
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
@@ -1040,6 +1041,28 @@ RSpec.describe Group, feature_category: :subgroups do
       end
     end
 
+    describe 'excluding_groups' do
+      let!(:another_group) { create(:group) }
+
+      subject { described_class.excluding_groups(excluded_groups) }
+
+      context 'when passing a single group' do
+        let(:excluded_groups) { group }
+
+        it 'does not return excluded group' do
+          expect(subject).not_to include(group)
+        end
+      end
+
+      context 'when passing an array with groups' do
+        let(:excluded_groups) { [group, another_group] }
+
+        it 'does not return excluded groups' do
+          expect(subject).not_to include(group, another_group)
+        end
+      end
+    end
+
     describe 'accessible_to_user' do
       subject { described_class.accessible_to_user(user) }
 
@@ -1276,124 +1299,8 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
-  describe '#member_last_blocked_owner?' do
-    let!(:blocked_user) { create(:user, :blocked) }
-
-    let!(:member) { group.add_member(blocked_user, GroupMember::OWNER) }
-
-    context 'when last_blocked_owner is set' do
-      before do
-        expect(group).not_to receive(:member_owners_excluding_project_bots)
-      end
-
-      it 'returns true' do
-        member.last_blocked_owner = true
-
-        expect(group.member_last_blocked_owner?(member)).to be(true)
-      end
-
-      it 'returns false' do
-        member.last_blocked_owner = false
-
-        expect(group.member_last_blocked_owner?(member)).to be(false)
-      end
-    end
-
-    context 'when last_blocked_owner is not set' do
-      it { expect(group.member_last_blocked_owner?(member)).to be(true) }
-
-      context 'with another active owner' do
-        before do
-          group.add_member(create(:user), GroupMember::OWNER)
-        end
-
-        it { expect(group.member_last_blocked_owner?(member)).to be(false) }
-      end
-
-      context 'with another active project_bot owner' do
-        before do
-          group.add_member(create(:user, :project_bot), GroupMember::OWNER)
-        end
-
-        it { expect(group.member_last_blocked_owner?(member)).to be(true) }
-      end
-
-      context 'with 2 blocked owners' do
-        before do
-          group.add_member(create(:user, :blocked), GroupMember::OWNER)
-        end
-
-        it { expect(group.member_last_blocked_owner?(member)).to be(false) }
-      end
-
-      context 'with owners from a parent' do
-        context 'when top-level group' do
-          it { expect(group.member_last_blocked_owner?(member)).to be(true) }
-
-          context 'with group sharing' do
-            let!(:subgroup) { create(:group, parent: group) }
-
-            before do
-              create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
-              create(:group_member, :owner, group: subgroup)
-            end
-
-            it { expect(group.member_last_blocked_owner?(member)).to be(true) }
-          end
-        end
-
-        context 'when subgroup' do
-          let!(:subgroup) { create(:group, :nested) }
-
-          let!(:member) { subgroup.add_member(blocked_user, GroupMember::OWNER) }
-
-          it { expect(subgroup.member_last_blocked_owner?(member)).to be(true) }
-
-          context 'with two owners' do
-            before do
-              create(:group_member, :owner, group: subgroup.parent)
-            end
-
-            it { expect(subgroup.member_last_blocked_owner?(member)).to be(false) }
-          end
-        end
-      end
-    end
-  end
-
   context 'when analyzing blocked owners' do
     let_it_be(:blocked_user) { create(:user, :blocked) }
-
-    describe '#single_blocked_owner?' do
-      context 'when there is only one blocked owner' do
-        before do
-          group.add_member(blocked_user, GroupMember::OWNER)
-        end
-
-        it 'returns true' do
-          expect(group.single_blocked_owner?).to eq(true)
-        end
-      end
-
-      context 'when there are multiple blocked owners' do
-        let_it_be(:blocked_user_2) { create(:user, :blocked) }
-
-        before do
-          group.add_member(blocked_user, GroupMember::OWNER)
-          group.add_member(blocked_user_2, GroupMember::OWNER)
-        end
-
-        it 'returns true' do
-          expect(group.single_blocked_owner?).to eq(false)
-        end
-      end
-
-      context 'when there are no blocked owners' do
-        it 'returns false' do
-          expect(group.single_blocked_owner?).to eq(false)
-        end
-      end
-    end
 
     describe '#blocked_owners' do
       let_it_be(:user) { create(:user) }
@@ -1468,40 +1375,25 @@ RSpec.describe Group, feature_category: :subgroups do
         expect(empty_group.member_owners_excluding_project_bots).to be_empty
       end
     end
-  end
 
-  describe '#member_last_owner?' do
-    let_it_be(:user) { create(:user) }
-
-    let(:member) { group.members.last }
-
-    before do
-      group.add_member(user, GroupMember::OWNER)
-    end
-
-    context 'when last_owner is set' do
-      before do
-        expect(group).not_to receive(:last_owner?)
+    context 'when user is blocked' do
+      let(:blocked_user) { create(:user, :blocked) }
+      let!(:blocked_member) do
+        group.add_member(blocked_user, GroupMember::OWNER)
       end
 
-      it 'returns true' do
-        member.last_owner = true
-
-        expect(group.member_last_owner?(member)).to be(true)
+      context 'and it is a direct member' do
+        it 'does include blocked user' do
+          expect(group.member_owners_excluding_project_bots).to include(blocked_member)
+        end
       end
 
-      it 'returns false' do
-        member.last_owner = false
+      context 'and it is a member of a parent' do
+        let!(:subgroup) { create(:group, parent: group) }
 
-        expect(group.member_last_owner?(member)).to be(false)
-      end
-    end
-
-    context 'when last_owner is not set' do
-      it 'returns true' do
-        expect(group).to receive(:last_owner?).and_call_original
-
-        expect(group.member_last_owner?(member)).to be(true)
+        it 'does include blocked user' do
+          expect(subgroup.member_owners_excluding_project_bots).to include(blocked_member)
+        end
       end
     end
   end
@@ -1557,10 +1449,9 @@ RSpec.describe Group, feature_category: :subgroups do
     let(:developer) { create(:user) }
 
     it 'returns the owners of a Group' do
-      group.add_owner(owner)
-      group.add_developer(developer)
+      members = setup_group_members(group)
 
-      expect(group.owners).to eq([owner])
+      expect(group.owners).to eq([members[:owner]])
     end
   end
 
@@ -1785,12 +1676,14 @@ RSpec.describe Group, feature_category: :subgroups do
     let!(:developer) { group.add_member(create(:user), GroupMember::DEVELOPER) }
     let!(:pending_maintainer) { create(:group_member, :awaiting, :maintainer, group: group.parent) }
     let!(:pending_developer) { create(:group_member, :awaiting, :developer, group: group) }
+    let!(:inactive_developer) { group.add_member(create(:user, :deactivated), GroupMember::DEVELOPER) }
 
     it 'returns parents active members' do
       expect(group.members_with_parents).to include(developer)
       expect(group.members_with_parents).to include(maintainer)
       expect(group.members_with_parents).not_to include(pending_developer)
       expect(group.members_with_parents).not_to include(pending_maintainer)
+      expect(group.members_with_parents).not_to include(inactive_developer)
     end
 
     context 'group sharing' do
@@ -1805,6 +1698,18 @@ RSpec.describe Group, feature_category: :subgroups do
           include(developer))
         expect(shared_group.members_with_parents).not_to(
           include(pending_developer))
+      end
+    end
+
+    context 'when only_active_users is false' do
+      subject { group.members_with_parents(only_active_users: false) }
+
+      it 'returns parents all members' do
+        expect(subject).to include(developer)
+        expect(subject).to include(maintainer)
+        expect(subject).not_to include(pending_developer)
+        expect(subject).not_to include(pending_maintainer)
+        expect(subject).to include(inactive_developer)
       end
     end
   end
@@ -3154,13 +3059,13 @@ RSpec.describe Group, feature_category: :subgroups do
     end
   end
 
-  describe '.organizations' do
-    it 'returns organizations belonging to the group' do
+  describe '.crm_organizations' do
+    it 'returns crm_organizations belonging to the group' do
       crm_organization1 = create(:crm_organization, group: group)
       create(:crm_organization)
       crm_organization3 = create(:crm_organization, group: group)
 
-      expect(group.organizations).to contain_exactly(crm_organization1, crm_organization3)
+      expect(group.crm_organizations).to contain_exactly(crm_organization1, crm_organization3)
     end
   end
 

@@ -23,6 +23,7 @@ class MergeRequest < ApplicationRecord
   include Approvable
   include IdInOrdered
   include Todoable
+  include Spammable
 
   extend ::Gitlab::Utils::Override
 
@@ -95,9 +96,9 @@ class MergeRequest < ApplicationRecord
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
-  has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline'
+  has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline', inverse_of: :merge_request
   has_many :suggestions, through: :notes
-  has_many :unresolved_notes, -> { unresolved }, as: :noteable, class_name: 'Note'
+  has_many :unresolved_notes, -> { unresolved }, as: :noteable, class_name: 'Note', inverse_of: :noteable
 
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
@@ -153,6 +154,9 @@ class MergeRequest < ApplicationRecord
 
   # Flag to skip triggering mergeRequestMergeStatusUpdated GraphQL subscription.
   attr_accessor :skip_merge_status_trigger
+
+  attr_spammable :title, spam_title: true
+  attr_spammable :description, spam_description: true
 
   participant :reviewers
 
@@ -307,6 +311,13 @@ class MergeRequest < ApplicationRecord
   scope :open_and_closed, -> { with_states(:opened, :closed) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
+  scope :by_sorted_source_branches, ->(branches) do
+    from_source_branches(branches)
+      .order(source_branch: :asc, id: :desc)
+  end
+  scope :including_target_project, -> do
+    includes(:target_project)
+  end
   scope :by_commit_sha, ->(sha) do
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
   end
@@ -420,7 +431,7 @@ class MergeRequest < ApplicationRecord
     includes(:metrics)
   end
 
-  scope :with_jira_issue_keys, -> { where('title ~ :regex OR merge_requests.description ~ :regex', regex: Gitlab::Regex.jira_issue_key_regex.source) }
+  scope :with_jira_issue_keys, -> { where('title ~ :regex OR merge_requests.description ~ :regex', regex: Gitlab::Regex.jira_issue_key_regex(expression_escape: '\m').source) }
 
   scope :review_requested, -> do
     where(reviewers_subquery.exists)
@@ -2042,6 +2053,10 @@ class MergeRequest < ApplicationRecord
 
   def prepare
     NewMergeRequestWorker.perform_async(id, author_id)
+  end
+
+  def check_for_spam?(*)
+    spammable_attribute_changed? && project.public?
   end
 
   private

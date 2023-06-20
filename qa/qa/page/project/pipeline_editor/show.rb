@@ -11,8 +11,6 @@ module QA
 
           view 'app/assets/javascripts/ci/pipeline_editor/components/file_nav/branch_switcher.vue' do
             element :branch_selector_button, required: true
-            element :branch_menu_item_button
-            element :branch_menu_container
           end
 
           view 'app/assets/javascripts/ci/pipeline_editor/components/commit/commit_form.vue' do
@@ -68,17 +66,6 @@ module QA
           def dismiss_file_tree_popover
             # clicking outside the popover will dismiss it
             click_element(:pipeline_editor_app)
-          end
-
-          def open_branch_selector_dropdown
-            click_element(:branch_selector_button)
-          end
-
-          def select_branch_from_dropdown(branch_name)
-            wait_for_animated_element(:branch_menu_container)
-            click_element(:branch_menu_item_button, text: branch_name)
-
-            wait_for_requests
           end
 
           def source_branch_name

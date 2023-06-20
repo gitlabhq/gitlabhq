@@ -1,16 +1,16 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import { s__ } from '~/locale';
 import { defaultIntegrationLevel, overrideDropdownDescriptions } from '~/integrations/constants';
 
 const dropdownOptions = [
   {
-    value: false,
+    value: 'default',
     text: s__('Integrations|Use default settings'),
   },
   {
-    value: true,
+    value: 'custom',
     text: s__('Integrations|Use custom settings'),
   },
 ];
@@ -19,8 +19,7 @@ export default {
   dropdownOptions,
   name: 'OverrideDropdown',
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlLink,
   },
   props: {
@@ -39,8 +38,10 @@ export default {
     },
   },
   data() {
+    const selectedValue = this.override ? 'custom' : 'default';
     return {
-      selected: dropdownOptions.find((x) => x.value === this.override),
+      selectedValue,
+      selectedOption: dropdownOptions.find((x) => x.value === selectedValue),
     };
   },
   computed: {
@@ -54,9 +55,10 @@ export default {
     },
   },
   methods: {
-    onClick(option) {
-      this.selected = option;
-      this.$emit('change', option.value);
+    onSelect(value) {
+      this.selectedValue = value;
+      this.selectedOption = dropdownOptions.find((item) => item.value === value);
+      this.$emit('change', value === 'custom');
     },
   },
 };
@@ -73,14 +75,11 @@ export default {
       }}</gl-link>
     </span>
     <input name="service[inherit_from_id]" :value="override ? '' : inheritFromId" type="hidden" />
-    <gl-dropdown :text="selected.text">
-      <gl-dropdown-item
-        v-for="option in $options.dropdownOptions"
-        :key="option.value"
-        @click="onClick(option)"
-      >
-        {{ option.text }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+    <gl-collapsible-listbox
+      v-model="selectedValue"
+      :toggle-text="selectedOption.text"
+      :items="$options.dropdownOptions"
+      @select="onSelect"
+    />
   </div>
 </template>

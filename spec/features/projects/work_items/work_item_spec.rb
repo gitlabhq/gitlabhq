@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:user2) { create(:user, name: 'John') }
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
   let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
@@ -31,6 +33,10 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       within('[data-testid="breadcrumb-current-link"]') do
         expect(page).to have_link("##{work_item.iid}", href: work_items_path)
       end
+    end
+
+    it 'actions dropdown is displayed' do
+      expect(page).to have_selector('[data-testid="work-item-actions-dropdown"]')
     end
 
     it_behaves_like 'work items title'
@@ -72,10 +78,6 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   context 'for user not signed in' do
     before do
       visit work_items_path
-    end
-
-    it 'actions dropdown is not displayed' do
-      expect(page).not_to have_selector('[data-testid="work-item-actions-dropdown"]')
     end
 
     it 'todos action is not displayed' do

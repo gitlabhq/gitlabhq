@@ -9,16 +9,20 @@
     "vue": "https://gitlab.com/gitlab-org/gitlab/-/issues/340511"
   },
   "devDependencies": {
+    "react": "16.14.0",
+    "@storybook/addons": "^6.5.10",
+    "@storybook/api": "^6.5.10",
+    "@storybook/components": "^6.5.10",
+    "@storybook/core-events": "^6.5.10",
     "@storybook/addon-a11y": "^6.5.10",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-controls": "^6.5.10",
     "@storybook/addon-essentials": "^6.5.10",
-    "@storybook/vue": "6.5.10",
+    "@storybook/vue": "^6.5.10",
     "graphql-tag": "^2.12.5",
     "postcss-loader": "3.0.0",
     "sass": "^1.49.9",
-    "sass-loader": "^7.1.0",
-    "storybook-mirage": "^0.0.4"
+    "sass-loader": "^7.1.0"
   },
   "resolutions": {
     "chokidar": "^3.5.2"

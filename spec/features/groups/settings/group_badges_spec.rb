@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Badges', feature_category: :subgroups do
+RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
   include WaitForRequests
 
   let(:user) { create(:user) }

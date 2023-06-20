@@ -3263,6 +3263,52 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     specify { is_expected.to be_disallowed(:read_namespace_catalog) }
   end
 
+  describe 'read_model_registry' do
+    let(:project_with_feature) { project }
+    let(:current_user) { owner }
+
+    before do
+      stub_feature_flags(model_registry: false)
+      stub_feature_flags(model_registry: project_with_feature) if project_with_feature
+    end
+
+    context 'feature flag is enabled' do
+      specify { is_expected.to be_allowed(:read_model_registry) }
+    end
+
+    context 'feature flag is disabled' do
+      let(:project_with_feature) { nil }
+
+      specify { is_expected.not_to be_allowed(:read_model_registry) }
+    end
+  end
+
+  describe ':read_model_experiments' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ff_ml_experiment_tracking, :current_user, :access_level, :allowed) do
+      false | ref(:owner)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::ENABLED  | true
+      true  | ref(:guest)      | Featurable::PRIVATE  | true
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:non_member) | Featurable::ENABLED  | true
+      true  | ref(:non_member) | Featurable::PRIVATE  | false
+      true  | ref(:non_member) | Featurable::DISABLED | false
+    end
+    with_them do
+      before do
+        stub_feature_flags(ml_experiment_tracking: ff_ml_experiment_tracking)
+        project.project_feature.update!(model_experiments_access_level: access_level)
+      end
+
+      if params[:allowed]
+        it { is_expected.to be_allowed(:read_model_experiments) }
+      else
+        it { is_expected.not_to be_allowed(:read_model_experiments) }
+      end
+    end
+  end
+
   private
 
   def project_subject(project_type)

@@ -78,11 +78,7 @@ module Gitlab
 
       def increment(increment)
         result = redis_state do |redis|
-          if Feature.enabled?(:project_statistics_bulk_increment, type: :development)
-            redis.eval(LUA_INCREMENT_WITH_DEDUPLICATION_SCRIPT, **increment_args(increment)).to_i
-          else
-            redis.incrby(key, increment.amount)
-          end
+          redis.eval(LUA_INCREMENT_WITH_DEDUPLICATION_SCRIPT, **increment_args(increment)).to_i
         end
 
         FlushCounterIncrementsWorker.perform_in(WORKER_DELAY, counter_record.class.name, counter_record.id, attribute)
@@ -94,11 +90,7 @@ module Gitlab
         result = redis_state do |redis|
           redis.pipelined do |pipeline|
             increments.each do |increment|
-              if Feature.enabled?(:project_statistics_bulk_increment, type: :development)
-                pipeline.eval(LUA_INCREMENT_WITH_DEDUPLICATION_SCRIPT, **increment_args(increment))
-              else
-                pipeline.incrby(key, increment.amount)
-              end
+              pipeline.eval(LUA_INCREMENT_WITH_DEDUPLICATION_SCRIPT, **increment_args(increment))
             end
           end
         end

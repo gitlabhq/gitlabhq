@@ -18,10 +18,9 @@ module Packages
       private
 
       def policy
-        strong_memoize(:policy) do
-          project.packages_cleanup_policy
-        end
+        project.packages_cleanup_policy
       end
+      strong_memoize_attr :policy
 
       def allowed?
         can?(current_user, :admin_package, project)

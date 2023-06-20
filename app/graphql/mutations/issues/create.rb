@@ -81,9 +81,7 @@ module Mutations
       def resolve(project_path:, **attributes)
         project = authorized_find!(project_path)
         params = build_create_issue_params(attributes.merge(author_id: current_user.id), project)
-
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        result = ::Issues::CreateService.new(container: project, current_user: current_user, params: params, spam_params: spam_params).execute
+        result = ::Issues::CreateService.new(container: project, current_user: current_user, params: params).execute
 
         check_spam_action_response!(result[:issue]) if result[:issue]
 

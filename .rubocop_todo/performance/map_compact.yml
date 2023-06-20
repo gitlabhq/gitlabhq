@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Performance/MapCompact:
-  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/concerns/resolves_ids.rb'
     - 'app/graphql/resolvers/todos_resolver.rb'

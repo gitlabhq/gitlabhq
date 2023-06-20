@@ -198,42 +198,6 @@ module QA
         destination_storage[:type] == :praefect ? verify_storage_move_to_praefect(repo_path, destination_storage[:name]) : verify_storage_move_to_gitaly(repo_path, destination_storage[:name])
       end
 
-      def praefect_sql_ping_healthy?
-        cmd = "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-ping'"
-        wait_until_shell_command(cmd) do |line|
-          QA::Runtime::Logger.debug(line.chomp)
-          break line.include?('praefect sql-ping: OK')
-        end
-      end
-
-      def wait_for_dial_nodes_successful
-        Support::Waiter.repeat_until(max_attempts: 3, max_duration: 120, sleep_interval: 1) do
-          nodes_confirmed = {
-            @primary_node => false,
-            @secondary_node => false,
-            @tertiary_node => false
-          }
-
-          nodes_confirmed.each_key do |node|
-            nodes_confirmed[node] = true if praefect_dial_nodes_status?(node)
-          end
-
-          nodes_confirmed.values.all?
-        end
-      end
-
-      def praefect_dial_nodes_status?(node, expect_healthy = true)
-        cmd = "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes -timeout 1s'"
-        if expect_healthy
-          wait_until_shell_command_matches(cmd, /SUCCESS: confirmed Gitaly storage "#{node}" in virtual storages \[#{@virtual_storage}\] is served/)
-        else
-          wait_until_shell_command(cmd, raise_on_failure: false) do |line|
-            QA::Runtime::Logger.debug(line.chomp)
-            break true if line.include?('the following nodes are not healthy') && line.include?(node)
-          end
-        end
-      end
-
       def praefect_dataloss_information(project_id)
         dataloss_info = []
         cmd = "docker exec #{@praefect} praefect -config /var/opt/gitlab/praefect/config.toml dataloss --partially-unavailable=true"

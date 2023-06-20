@@ -12,7 +12,7 @@ type: howto
 NOTE:
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before proceeding.
+If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
 
 Make sure you [set up the database replication](../setup/database.md), and [configured fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md) in **both primary and secondary sites**.
 
@@ -202,7 +202,8 @@ keys must be manually replicated to the **secondary** site.
    ```
 
 1. Navigate to the Primary Node GitLab Instance:
-   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
    1. On the left sidebar, select **Geo > Sites**.
    1. Select **Add site**.
    ![Add secondary site](img/adding_a_secondary_v15_8.png)
@@ -311,12 +312,13 @@ method to be enabled. This is enabled by default, but if converting an existing 
 
 On the **primary** site:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. If using Git over SSH, then:
    1. Ensure "Enabled Git access protocols" is set to "Both SSH and HTTP(S)".
-   1. Follow [Fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on both primary and secondary sites.
+   1. Follow [Fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on **all primary and secondary** sites.
 1. If not using Git over SSH, then set "Enabled Git access protocols" to "Only HTTP(S)".
 
 ### Step 6. Verify proper functioning of the **secondary** site
@@ -324,7 +326,8 @@ On the **primary** site:
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.

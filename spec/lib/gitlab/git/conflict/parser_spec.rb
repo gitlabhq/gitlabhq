@@ -229,7 +229,7 @@ RSpec.describe Gitlab::Git::Conflict::Parser do
           .to raise_error(Gitlab::Git::Conflict::Parser::UnmergeableFile)
       end
 
-      it 'raises UnmergeableFile when the file is over 200 KB' do
+      it 'raises UnmergeableFile when the file is over 200 KiB' do
         expect { parse_text('a' * 204801) }
           .to raise_error(Gitlab::Git::Conflict::Parser::UnmergeableFile)
       end

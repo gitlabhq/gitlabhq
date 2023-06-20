@@ -53,7 +53,9 @@ module Ml
       {
         user: {
           path: user_path(user),
-          username: user.username
+          username: user.username,
+          name: user.name,
+          avatar: user.avatar_url
         }
       }
     end
@@ -64,6 +66,7 @@ module Ml
       {
         merge_request: {
           path: project_merge_request_path(mr.project, mr),
+          iid: mr.iid,
           title: mr.title
         }
       }

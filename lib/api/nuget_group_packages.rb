@@ -17,11 +17,6 @@ module API
 
     default_format :json
 
-    authenticate_with do |accept|
-      accept.token_types(:personal_access_token_with_username, :deploy_token_with_username, :job_token_with_username)
-            .sent_through(:http_basic_auth)
-    end
-
     rescue_from ArgumentError do |e|
       render_api_error!(e.message, 400)
     end
@@ -31,9 +26,16 @@ module API
     end
 
     helpers do
+      include ::Gitlab::Utils::StrongMemoize
+
       def project_or_group
         find_authorized_group!
       end
+
+      def project_or_group_without_auth
+        find_group(params[:id]).presence || not_found!
+      end
+      strong_memoize_attr :project_or_group_without_auth
 
       def require_authenticated!
         unauthorized! unless current_user
@@ -43,23 +45,38 @@ module API
         { namespace: find_authorized_group! }
       end
 
+      def snowplow_gitlab_standard_context_without_auth
+        { namespace: project_or_group_without_auth }
+      end
+
       def required_permission
         :read_group
       end
     end
 
     params do
-      requires :id, types: [Integer, String], desc: 'The group ID or full group path.', regexp: ::API::Concerns::Packages::NugetEndpoints::POSITIVE_INTEGER_REGEX
+      requires :id, types: [Integer, String], desc: 'The group ID or full group path.', regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      namespace ':id/-/packages/nuget' do
-        after_validation do
-          # This API can't be accessed anonymously
-          require_authenticated!
+      namespace ':id/-/packages' do
+        namespace '/nuget' do
+          include ::API::Concerns::Packages::Nuget::PublicEndpoints
         end
 
-        include ::API::Concerns::Packages::NugetEndpoints
+        authenticate_with do |accept|
+          accept.token_types(:personal_access_token_with_username, :deploy_token_with_username, :job_token_with_username)
+                .sent_through(:http_basic_auth)
+        end
+
+        namespace '/nuget' do
+          after_validation do
+            # This API can't be accessed anonymously
+            require_authenticated!
+          end
+
+          include ::API::Concerns::Packages::Nuget::PrivateEndpoints
+        end
       end
     end
   end

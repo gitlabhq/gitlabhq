@@ -4,7 +4,6 @@ module HasUserType
   extend ActiveSupport::Concern
 
   USER_TYPES = {
-    human_deprecated: nil,
     human: 0,
     support_bot: 1,
     alert_bot: 2,
@@ -39,25 +38,20 @@ module HasUserType
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations
   # `service_user` is an internal, `gitlab-com`-specific user type for integrations like suggested reviewers
-  NON_INTERNAL_USER_TYPES = %w[human human_deprecated project_bot service_user service_account].freeze
+  NON_INTERNAL_USER_TYPES = %w[human project_bot service_user service_account].freeze
   INTERNAL_USER_TYPES = (USER_TYPES.keys - NON_INTERNAL_USER_TYPES).freeze
 
   included do
     enum user_type: USER_TYPES
 
-    scope :humans, -> { where(user_type: :human).or(where(user_type: :human_deprecated)) }
-    # Override default scope to include temporary human type. See https://gitlab.com/gitlab-org/gitlab/-/issues/386474
-    scope :human, -> { humans }
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
-    scope :without_bots, -> { humans.or(where(user_type: USER_TYPES.keys - BOT_USER_TYPES)) }
-    scope :non_internal, -> { humans.or(where(user_type: NON_INTERNAL_USER_TYPES)) }
-    scope :without_ghosts, -> { humans.or(where(user_type: USER_TYPES.keys - ['ghost'])) }
-    scope :without_project_bot, -> { humans.or(where(user_type: USER_TYPES.keys - ['project_bot'])) }
-    scope :human_or_service_user, -> { humans.or(where(user_type: :service_user)) }
+    scope :without_bots, -> { where(user_type: USER_TYPES.keys - BOT_USER_TYPES) }
+    scope :non_internal, -> { where(user_type: NON_INTERNAL_USER_TYPES) }
+    scope :without_ghosts, -> { where(user_type: USER_TYPES.keys - ['ghost']) }
+    scope :without_project_bot, -> { where(user_type: USER_TYPES.keys - ['project_bot']) }
+    scope :human_or_service_user, -> { where(user_type: %i[human service_user]) }
 
-    def human?
-      super || human_deprecated? || user_type.nil?
-    end
+    validates :user_type, presence: true
   end
 
   def bot?

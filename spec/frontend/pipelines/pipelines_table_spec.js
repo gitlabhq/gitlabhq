@@ -10,6 +10,7 @@ import PipelineTriggerer from '~/pipelines/components/pipelines_list/pipeline_tr
 import PipelineUrl from '~/pipelines/components/pipelines_list/pipeline_url.vue';
 import PipelinesTable from '~/pipelines/components/pipelines_list/pipelines_table.vue';
 import PipelinesTimeago from '~/pipelines/components/pipelines_list/time_ago.vue';
+import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import {
   PipelineKeyOptions,
   BUTTON_TOOLTIP_RETRY,
@@ -26,6 +27,18 @@ describe('Pipelines Table', () => {
   let wrapper;
   let trackingSpy;
 
+  const defaultProvide = {
+    glFeatures: {},
+    withFailedJobsDetails: false,
+  };
+
+  const provideWithDetails = {
+    glFeatures: {
+      ciJobFailuresInMr: true,
+    },
+    withFailedJobsDetails: true,
+  };
+
   const defaultProps = {
     pipelines: [],
     viewType: 'root',
@@ -38,13 +51,18 @@ describe('Pipelines Table', () => {
     return pipelines.find((p) => p.user !== null && p.commit !== null);
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = extendedWrapper(
       mount(PipelinesTable, {
         propsData: {
           ...defaultProps,
           ...props,
         },
+        provide: {
+          ...defaultProvide,
+          ...provide,
+        },
+        stubs: ['PipelineFailedJobsWidget'],
       }),
     );
   };
@@ -56,6 +74,7 @@ describe('Pipelines Table', () => {
   const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
   const findTimeAgo = () => wrapper.findComponent(PipelinesTimeago);
   const findActions = () => wrapper.findComponent(PipelineOperations);
+  const findPipelineFailedJobsWidget = () => wrapper.findComponent(PipelineFailedJobsWidget);
 
   const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findStatusTh = () => wrapper.findByTestId('status-th');
@@ -160,6 +179,68 @@ describe('Pipelines Table', () => {
     describe('triggerer cell', () => {
       it('should render the pipeline triggerer', () => {
         expect(findTriggerer().exists()).toBe(true);
+      });
+    });
+
+    describe('failed jobs details', () => {
+      describe('row', () => {
+        describe('when the FF is disabled', () => {
+          beforeEach(() => {
+            createComponent({ pipelines: [pipeline] });
+          });
+
+          it('does not render', () => {
+            expect(findTableRows()).toHaveLength(1);
+          });
+        });
+
+        describe('when the FF is enabled', () => {
+          describe('and `withFailedJobsDetails` value is provided', () => {
+            beforeEach(() => {
+              createComponent({ pipelines: [pipeline] }, provideWithDetails);
+            });
+            it('renders', () => {
+              expect(findTableRows()).toHaveLength(2);
+            });
+          });
+
+          describe('and `withFailedJobsDetails` value is not provided', () => {
+            beforeEach(() => {
+              createComponent(
+                { pipelines: [pipeline] },
+                { glFeatures: { ciJobFailuresInMr: true } },
+              );
+            });
+
+            it('does not render', () => {
+              expect(findTableRows()).toHaveLength(1);
+            });
+          });
+        });
+      });
+
+      describe('widget', () => {
+        describe('when there are no failed jobs', () => {
+          beforeEach(() => {
+            createComponent(
+              { pipelines: [{ ...pipeline, failed_builds: [] }] },
+              provideWithDetails,
+            );
+          });
+
+          it('does not renders', () => {
+            expect(findPipelineFailedJobsWidget().exists()).toBe(false);
+          });
+        });
+
+        describe('when there are failed jobs', () => {
+          beforeEach(() => {
+            createComponent({ pipelines: [pipeline] }, provideWithDetails);
+          });
+          it('renders', () => {
+            expect(findPipelineFailedJobsWidget().exists()).toBe(true);
+          });
+        });
       });
     });
 

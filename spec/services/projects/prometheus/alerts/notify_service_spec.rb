@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :metrics do
+RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :incident_management do
   include PrometheusHelpers
   using RSpec::Parameterized::TableSyntax
 
@@ -163,6 +163,24 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :m
           raise "invalid result: #{result.inspect}"
         end
       end
+
+      context 'with simultaneous manual configuration' do
+        let_it_be(:integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
+        let_it_be(:old_prometheus_integration) { create(:prometheus_integration, project: project) }
+        let_it_be(:alerting_setting) { create(:project_alerting_setting, project: project, token: integration.token) }
+
+        subject { service.execute(integration.token, integration) }
+
+        it_behaves_like 'processes one firing and one resolved prometheus alerts'
+
+        context 'when HTTP integration is inactive' do
+          before do
+            integration.update!(active: false)
+          end
+
+          it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
+        end
+      end
     end
 
     context 'incident settings' do
@@ -206,12 +224,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :m
     end
 
     context 'process Alert Management alerts' do
-      let(:process_service) { instance_double(AlertManagement::ProcessPrometheusAlertService) }
+      let(:integration) { build_stubbed(:alert_management_http_integration, project: project, token: token) }
 
-      before do
-        create(:prometheus_integration, project: project)
-        create(:project_alerting_setting, project: project, token: token)
-      end
+      subject { service.execute(token_input, integration) }
 
       context 'with multiple firing alerts and resolving alerts' do
         let(:payload_raw) do
@@ -221,7 +236,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :m
         it 'processes Prometheus alerts' do
           expect(AlertManagement::ProcessPrometheusAlertService)
             .to receive(:new)
-            .with(project, kind_of(Hash))
+            .with(project, kind_of(Hash), integration: integration)
             .exactly(3).times
             .and_call_original
 

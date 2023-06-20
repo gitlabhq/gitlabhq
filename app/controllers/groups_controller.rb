@@ -36,6 +36,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:or_issuable_queries, group)
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
+    push_frontend_feature_flag(:issues_grid_view)
   end
 
   before_action only: :merge_requests do
@@ -51,14 +52,12 @@ class GroupsController < Groups::ApplicationController
 
   layout :determine_layout
 
-  feature_category :subgroups, [
+  feature_category :groups_and_projects, [
     :index, :new, :create, :show, :edit, :update,
-    :destroy, :details, :transfer, :activity
+    :destroy, :details, :transfer, :activity, :projects
   ]
-
   feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review_workflow, [:merge_requests, :unfoldered_environment_names]
-  feature_category :projects, [:projects]
   feature_category :importers, [:export, :download_export]
   urgency :low, [:export, :download_export]
 

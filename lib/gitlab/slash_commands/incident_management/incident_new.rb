@@ -16,6 +16,14 @@ module Gitlab
           text == 'incident declare'
         end
 
+        def execute(_match)
+          response = ::Integrations::SlackInteractions::IncidentManagement::IncidentModalOpenedService
+          .new(slack_installation, current_user, params)
+          .execute
+
+          presenter.present(response.message)
+        end
+
         private
 
         def presenter

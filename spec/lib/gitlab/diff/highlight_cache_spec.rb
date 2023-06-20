@@ -217,7 +217,7 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache, feature_
 
   describe '#clear' do
     it 'clears cache' do
-      expect_any_instance_of(Redis).to receive(:del).with(cache_key)
+      Gitlab::Redis::Cache.with { |r| expect(r).to receive(:del).with(cache_key) }
 
       cache.clear
     end
@@ -241,7 +241,8 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache, feature_
     end
 
     it "uses ActiveSupport::Gzip to compress data when writing to cache" do
-      expect(ActiveSupport::Gzip).to receive(:compress).and_call_original
+      # at least once as Gitlab::Redis::Cache is a multistore
+      expect(ActiveSupport::Gzip).to receive(:compress).at_least(1).and_call_original
 
       cache.send(:write_to_redis_hash, diff_hash)
     end

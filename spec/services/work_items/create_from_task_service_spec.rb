@@ -8,7 +8,6 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
   let_it_be(:list_work_item, refind: true) { create(:work_item, project: project, description: "- [ ] Item to be converted\n    second line\n    third line") }
 
   let(:work_item_to_update) { list_work_item }
-  let(:spam_params) { double }
   let(:link_params) { {} }
   let(:current_user) { developer }
   let(:params) do
@@ -38,11 +37,7 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
   end
 
   describe '#execute' do
-    subject(:service_result) { described_class.new(work_item: work_item_to_update, current_user: current_user, work_item_params: params, spam_params: spam_params).execute }
-
-    before do
-      stub_spam_services
-    end
+    subject(:service_result) { described_class.new(work_item: work_item_to_update, current_user: current_user, work_item_params: params).execute }
 
     context 'when work item params are valid' do
       it { is_expected.to be_success }

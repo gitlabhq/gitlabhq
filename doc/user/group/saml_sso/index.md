@@ -38,8 +38,8 @@ If you are having issues setting up your identity provider, see the
 
 To set up SSO with Azure as your identity provider:
 
-1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > SAML SSO**.
 1. Note the information on this page.
 1. Go to Azure and [follow the instructions for configuring SSO for an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
 
@@ -71,8 +71,8 @@ For more information, see an [example configuration page](example_saml_config.md
 
 To set up Google Workspace as your identity provider:
 
-1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en). The following GitLab settings correspond to the Google Workspace fields.
 
@@ -115,8 +115,8 @@ View a demo of [how to configure SAML with Google Workspaces and set up Group Sy
 
 To set up SSO with Okta as your identity provider:
 
-1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
 
@@ -152,8 +152,8 @@ OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-n
 
 To set up OneLogin as your identity provider:
 
-1. In GitLab, on the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > SAML SSO**.
 1. Note the information on this page.
 1. If you use the OneLogin generic
    [SAML Test Connector (Advanced)](https://onelogin.service-now.com/support?id=kb_article&sys_id=b2c19353dbde7b8024c780c74b9619fb&kb_category=93e869b0db185340d5505eea4b961934),
@@ -179,8 +179,8 @@ To set up OneLogin as your identity provider:
 To configure some identity providers, you need a GitLab metadata URL.
 To find this URL:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > SAML SSO**.
 1. Copy the provided **GitLab metadata URL**.
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
 
@@ -208,7 +208,7 @@ To change identity providers:
 
 To migrate users to a new email domain, tell users to:
 
-1. Add their new email as the primary email to their accounts and verify it.
+1. [Add their new email](../../profile/index.md#change-your-primary-email) as the primary email to their accounts and verify it.
 1. Optional. Remove their old email from the account.
 
 If the **NameID** is configured with the email address, [change the **NameID** for users](#manage-user-saml-identity).
@@ -217,8 +217,8 @@ If the **NameID** is configured with the email address, [change the **NameID** f
 
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > SAML SSO**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > SAML SSO**.
 1. Complete the fields:
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
    - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
@@ -432,7 +432,7 @@ group owner, and then you can unlink the account.
 
 For example, to unlink the `MyOrg` account:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Disconnect** next to the connected account.

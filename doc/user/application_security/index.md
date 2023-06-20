@@ -104,6 +104,7 @@ The following vulnerability scanners and their databases are regularly updated:
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
 | [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
+| [Secret Detection](secret_detection/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/index.md#detected-secrets) and [accepts community contributions](secret_detection/index.md#adding-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |
 
 In versions of GitLab that use the same major version of the analyzer, you do not have to update
@@ -498,14 +499,12 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
   are recommended when:
 
   - Scan execution enforcement is required for DAST which uses a DAST site or scan profile.
-  - Scan execution enforcement is required for SAST, Secret Detection, Dependency Scanning, or Container Scanning with project-specific
+  - Scan execution enforcement is required for SAST, SAST IaC, Secret Detection, Dependency Scanning, or Container Scanning with project-specific
 variable customizations. To accomplish this, users must create a separate security policy per project.
   - Scans are required to run on a regular, scheduled cadence.
 
 - Either solution can be used equally well when:
 
-  - Scan execution enforcement is required for SAST or Secret Detection when custom rulesets are not
-    used.
   - Scan execution enforcement is required for Container Scanning with no project-specific variable
     customizations.
 
@@ -513,7 +512,7 @@ Additional details about the differences between the two solutions are outlined 
 
 | | Compliance Framework Pipelines | Scan Execution Policies |
 | ------ | ------ | ------ |
-| **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, Secret Detection, Dependency Scanning, and Container Scanning scans are supported. |
+| **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, SAST IaC, Secret Detection, Dependency Scanning, and Container Scanning scans are supported. |
 | **Usability** | Requires knowledge of CI YAML. | Follows a `rules` and `actions`-based YAML structure. |
 | **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `.gitlab-ci.yml` file. To include the project's `.gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. All jobs can be customized as part of the security policy itself with the same variables that are usually available to the CI job. |
 | **Schedulable** | Can be scheduled through a scheduled pipeline on the group. | Can be scheduled natively through the policy configuration itself. |

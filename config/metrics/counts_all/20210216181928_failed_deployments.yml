@@ -3,8 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.release.failed_deployments
 description: Total failed deployments
 product_section: ops
-product_stage: release
-product_group: release
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 time_frame: all

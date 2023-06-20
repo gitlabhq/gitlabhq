@@ -112,10 +112,10 @@ module QA
         let(:disabled_after) { 4 }
 
         it 'hook is auto-disabled',
-           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595', quarantine: {
-             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393274',
-             type: :investigating
-           } do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595', quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/393274',
+            type: :investigating
+          } do
           Resource::ProjectWebHook.setup(fail_mock, session: session, issues: true) do |webhook, smocker|
             hook_trigger_times.times do
               Resource::Issue.fabricate_via_api! do |issue_init|

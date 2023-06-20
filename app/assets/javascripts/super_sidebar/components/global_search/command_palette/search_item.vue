@@ -1,0 +1,57 @@
+<script>
+import { GlAvatar, GlIcon } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import highlight from '~/lib/utils/highlight';
+import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+
+export default {
+  name: 'CommandPaletteSearchItem',
+  components: {
+    GlAvatar,
+    GlIcon,
+  },
+  directives: {
+    SafeHtml,
+  },
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+    searchQuery: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    highlightedName() {
+      return highlight(this.item.text, this.searchQuery);
+    },
+  },
+  AVATAR_SHAPE_OPTION_RECT,
+};
+</script>
+
+<template>
+  <div class="gl-display-flex gl-align-items-center">
+    <gl-avatar
+      v-if="item.avatar_url !== undefined"
+      class="gl-mr-3"
+      :src="item.avatar_url"
+      :entity-id="item.entity_id"
+      :entity-name="item.entity_name"
+      :size="item.avatar_size"
+      :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+      aria-hidden="true"
+    />
+    <gl-icon v-if="item.icon" class="gl-mr-3" :name="item.icon" />
+    <span class="gl-display-flex gl-flex-direction-column">
+      <span v-safe-html="highlightedName" class="gl-text-gray-900"></span>
+      <span
+        v-if="item.namespace"
+        v-safe-html="item.namespace"
+        class="gl-font-sm gl-text-gray-500"
+      ></span>
+    </span>
+  </div>
+</template>

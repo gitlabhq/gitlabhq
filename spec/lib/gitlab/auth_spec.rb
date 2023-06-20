@@ -115,26 +115,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
     end
 
-    context 'with admin_mode_for_api feature flag disabled' do
-      before do
-        stub_feature_flags(admin_mode_for_api: false)
-      end
-
-      it 'contains all non-default scopes' do
-        expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode read_observability write_observability]
-      end
-
-      it 'contains for admin user all non-default scopes with ADMIN access and without observability scopes' do
-        user = build_stubbed(:user, admin: true)
-
-        expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo]
-      end
-
-      it 'optional_scopes contains all non-default scopes' do
-        expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode openid profile email read_observability write_observability]
-      end
-    end
-
     context 'registry_scopes' do
       context 'when registry is disabled' do
         before do

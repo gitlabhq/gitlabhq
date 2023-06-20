@@ -127,7 +127,7 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
 
     it 'deletes a runner' do
       within_modal do
-        click_on 'Delete runner'
+        click_on 'Permanently delete runner'
       end
 
       expect(page.find('.gl-toast')).to have_text(/Runner .+ deleted/)
@@ -201,13 +201,13 @@ RSpec.shared_examples 'submits edit runner form' do
 
   describe 'runner header', :js do
     it 'contains the runner id' do
-      expect(page).to have_content("Runner ##{runner.id} created")
+      expect(page).to have_content("##{runner.id} (#{runner.short_sha})")
     end
   end
 
   context 'when a runner is updated', :js do
     before do
-      find('[data-testid="runner-field-description"] input').set('new-runner-description')
+      fill_in s_('Runners|Runner description'), with: 'new-runner-description'
 
       click_on _('Save changes')
       wait_for_requests
@@ -232,7 +232,7 @@ RSpec.shared_examples 'creates runner and shows register page' do
     before do
       fill_in s_('Runners|Runner description'), with: 'runner-foo'
       fill_in s_('Runners|Tags'), with: 'tag1'
-      click_on _('Submit')
+      click_on s_('Runners|Create runner')
       wait_for_requests
     end
 

@@ -12,7 +12,7 @@ To enable the feature, ask an administrator to [enable the feature flag](../../.
 On GitLab.com, this feature is in private testing only.
 
 NOTE:
-Model experiment tracking is an [experimental feature](../../../../policy/alpha-beta-support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
+Model experiment tracking is an [experimental feature](../../../../policy/experiment-beta-support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
 
 When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature
 engineering to improve the performance of the model. Keeping track of all this metadata and the associated
@@ -70,8 +70,8 @@ Prerequisites:
 
 To list the current active experiments, either go to `https/-/ml/experiments` or:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Packages & registries > Model experiments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Deploy > Model experiments**.
 1. To display all candidates that have been logged, along with their metrics, parameters, and metadata, select an experiment.
 1. To display details for a candidate, select **Details**.
 

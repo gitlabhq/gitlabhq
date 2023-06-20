@@ -183,7 +183,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
                         #{all_graphql_fields_for('CiBuildNeed')}
                       }
                       ... on CiJob {
-                        #{all_graphql_fields_for('CiJob')}
+                        #{all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis])}
                       }
                     }
                 }
@@ -433,8 +433,6 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     end
 
     it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
-      admin2 = create(:admin)
-
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: admin)
       end
@@ -442,7 +440,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
       runner_manager2 = create(:ci_runner_machine)
       create(:ci_build, pipeline: pipeline, name: 'my test job2', runner_manager: runner_manager2)
 
-      expect { post_graphql(query, current_user: admin2) }.not_to exceed_all_query_limit(control)
+      expect { post_graphql(query, current_user: admin) }.not_to exceed_all_query_limit(control)
     end
   end
 

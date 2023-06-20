@@ -19,7 +19,7 @@ Broadcast messages can be managed using the [broadcast messages API](../../api/b
 
 ## Banners
 
-Banners are shown on the top of a page and in Git remote responses.
+Banners are shown on the top of a page and optionally in the command line as a Git remote response.
 
 ![Broadcast Message Banner](img/broadcast_messages_banner_v15_0.png)
 
@@ -32,7 +32,7 @@ remote:
 ...
 ```
 
-If more than one banner is active at one time, they are displayed in a stack in order of creation.
+If more than one banner is active at one time, they are displayed at the top of the page in order of creation. In the command line, only the latest banner is shown.
 
 ## Notifications
 
@@ -57,8 +57,9 @@ To display messages to users on your GitLab instance, add a broadcast message.
 
 To add a broadcast message:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Messages**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Messages**.
 1. Add the text for the message to the **Message** field. You can style a message's content using Markdown, emoji, and the `a` and `br` HTML tags.
    The `br` tag inserts a line break. The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
     - `color`
@@ -69,6 +70,7 @@ To add a broadcast message:
     - `text-decoration`
 1. Select a **Theme**. The default theme is `indigo`.
 1. Select the **Dismissable** checkbox to enable users to dismiss the broadcast message.
+1. Optional. Clear the **Git remote responses** checkbox to prevent broadcast messages from being displayed in the command line as Git remote responses.
 1. Optional. Select **Target roles** to only show the broadcast message to users with the selected roles. The message displays on group, subgroup, and project pages, and does not display in Git remote responses.
 1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `mygroup/myproject*`.
 1. Select a date and time (UTC) for the message to start and end.
@@ -83,8 +85,9 @@ If you must make changes to a broadcast message, you can edit it.
 
 To edit a broadcast message:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Messages**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Messages**.
 1. From the list of broadcast messages, select the edit button for the message.
 1. After making the required changes, select **Update broadcast message**.
 
@@ -97,8 +100,9 @@ You can delete a broadcast message while it's active.
 
 To delete a broadcast message:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Messages**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Messages**.
 1. From the list of broadcast messages, select the delete button for the message.
 
 When a broadcast message is deleted, it's removed from the list of broadcast messages.

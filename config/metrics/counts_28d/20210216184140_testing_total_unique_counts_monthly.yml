@@ -4,7 +4,7 @@ key_path: redis_hll_counters.testing.testing_total_unique_counts_monthly
 description: Total users for events under testing category
 product_section: analytics
 product_stage: analytics
-product_group: product_intelligence
+product_group: analytics_instrumentation
 value_type: number
 status: removed
 time_frame: 28d

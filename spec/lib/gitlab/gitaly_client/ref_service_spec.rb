@@ -138,101 +138,64 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_default_branch_name)
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(name: 'foo'))
+        .and_return(double(name: 'refs/heads/main'))
 
-      client.default_branch_name
+      response = client.default_branch_name
+
+      expect(response).to eq('main')
     end
   end
 
   describe '#local_branches' do
     let(:remote_name) { 'my_remote' }
 
-    shared_examples 'common examples' do
-      it 'sends a find_local_branches message' do
-        target_commits = create_list(:gitaly_commit, 4)
-        branches = target_commits.each_with_index.map do |gitaly_commit, i|
-          Gitaly::FindLocalBranchResponse.new(
-            name: "#{remote_name}/#{i}",
-            commit: gitaly_commit,
-            commit_author: Gitaly::FindLocalBranchCommitAuthor.new(
-              name: gitaly_commit.author.name,
-              email: gitaly_commit.author.email,
-              date: gitaly_commit.author.date,
-              timezone: gitaly_commit.author.timezone
-            ),
-            commit_committer: Gitaly::FindLocalBranchCommitAuthor.new(
-              name: gitaly_commit.committer.name,
-              email: gitaly_commit.committer.email,
-              date: gitaly_commit.committer.date,
-              timezone: gitaly_commit.committer.timezone
-            )
-          )
-        end
+    it 'sends a find_local_branches message' do
+      target_commits = create_list(:gitaly_commit, 4)
 
-        local_branches = target_commits.each_with_index.map do |gitaly_commit, i|
-          Gitaly::Branch.new(name: "#{remote_name}/#{i}", target_commit: gitaly_commit)
-        end
-
-        response = if set_local_branches
-                     [
-                       Gitaly::FindLocalBranchesResponse.new(local_branches: local_branches[0, 2]),
-                       Gitaly::FindLocalBranchesResponse.new(local_branches: local_branches[2, 2])
-                     ]
-                   else
-                     [
-                       Gitaly::FindLocalBranchesResponse.new(branches: branches[0, 2]),
-                       Gitaly::FindLocalBranchesResponse.new(branches: branches[2, 2])
-                     ]
-                   end
-
-        expect_any_instance_of(Gitaly::RefService::Stub)
-          .to receive(:find_local_branches)
-                .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-                .and_return(response)
-
-        subject = client.local_branches
-
-        expect(subject.length).to be(target_commits.length)
+      local_branches = target_commits.each_with_index.map do |gitaly_commit, i|
+        Gitaly::Branch.new(name: "#{remote_name}/#{i}", target_commit: gitaly_commit)
       end
 
-      it 'parses and sends the sort parameter' do
-        expect_any_instance_of(Gitaly::RefService::Stub)
-          .to receive(:find_local_branches)
-                .with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash))
-                .and_return([])
+      response = [
+        Gitaly::FindLocalBranchesResponse.new(local_branches: local_branches[0, 2]),
+        Gitaly::FindLocalBranchesResponse.new(local_branches: local_branches[2, 2])
+      ]
 
-        client.local_branches(sort_by: 'updated_desc')
-      end
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_local_branches)
+              .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+              .and_return(response)
 
-      it 'translates known mismatches on sort param values' do
-        expect_any_instance_of(Gitaly::RefService::Stub)
-          .to receive(:find_local_branches)
-                .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
-                .and_return([])
+      subject = client.local_branches
 
-        client.local_branches(sort_by: 'name_asc')
-      end
-
-      it 'uses default sort by name' do
-        expect_any_instance_of(Gitaly::RefService::Stub)
-          .to receive(:find_local_branches)
-                .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
-                .and_return([])
-
-        client.local_branches(sort_by: 'invalid')
-      end
+      expect(subject.length).to be(target_commits.length)
     end
 
-    context 'when local_branches variable is not set' do
-      let(:set_local_branches) { false }
+    it 'parses and sends the sort parameter' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_local_branches)
+              .with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash))
+              .and_return([])
 
-      it_behaves_like 'common examples'
+      client.local_branches(sort_by: 'updated_desc')
     end
 
-    context 'when local_branches variable is set' do
-      let(:set_local_branches) { true }
+    it 'translates known mismatches on sort param values' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_local_branches)
+              .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
+              .and_return([])
 
-      it_behaves_like 'common examples'
+      client.local_branches(sort_by: 'name_asc')
+    end
+
+    it 'uses default sort by name' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_local_branches)
+              .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
+              .and_return([])
+
+      client.local_branches(sort_by: 'invalid')
     end
   end
 

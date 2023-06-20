@@ -18,13 +18,16 @@ module Gitlab
               ExtraTableColumns,
               ExtraIndexes,
               ExtraTriggers,
+              ExtraForeignKeys,
               MissingTables,
               MissingTableColumns,
               MissingIndexes,
               MissingTriggers,
+              MissingForeignKeys,
               DifferentDefinitionTables,
               DifferentDefinitionIndexes,
-              DifferentDefinitionTriggers
+              DifferentDefinitionTriggers,
+              DifferentDefinitionForeignKeys
             ]
           end
 

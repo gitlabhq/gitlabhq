@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -24,11 +24,10 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
       propsData: { ...DEFAULT_PROPS, ...props },
     });
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findGlListboxItem = () => wrapper.findAllComponents(GlListboxItem).at(0);
 
   describe('with user lists', () => {
-    const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
-
     beforeEach(() => {
       Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [userList] });
       wrapper = factory();
@@ -37,22 +36,19 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
     it('should show the input for userListId with the correct value', () => {
       const dropdownWrapper = findDropdown();
       expect(dropdownWrapper.exists()).toBe(true);
-      expect(dropdownWrapper.props('text')).toBe(userList.name);
+      expect(dropdownWrapper.props('toggleText')).toBe(userList.name);
     });
 
     it('should show a check for the selected list', () => {
-      const itemWrapper = findDropdownItem();
-      expect(itemWrapper.props('isChecked')).toBe(true);
+      expect(findGlListboxItem().props('isSelected')).toBe(true);
     });
 
     it('should display the name of the list in the drop;down', () => {
-      const itemWrapper = findDropdownItem();
-      expect(itemWrapper.text()).toBe(userList.name);
+      expect(findGlListboxItem().text()).toBe(userList.name);
     });
 
     it('should emit a change event when altering the userListId', () => {
-      const inputWrapper = findDropdownItem();
-      inputWrapper.vm.$emit('click');
+      findDropdown().vm.$emit('select', userList.id);
       expect(wrapper.emitted('change')).toEqual([
         [
           {
@@ -63,25 +59,19 @@ describe('~/feature_flags/components/strategies/gitlab_user_list.vue', () => {
     });
 
     it('should search when the filter changes', async () => {
+      findDropdown().vm.$emit('search', 'new');
       let r;
       Api.searchFeatureFlagUserLists.mockReturnValue(
         new Promise((resolve) => {
           r = resolve;
         }),
       );
-      const searchWrapper = wrapper.findComponent(GlSearchBoxByType);
-      searchWrapper.vm.$emit('input', 'new');
-      await nextTick();
-      const loadingIcon = wrapper.findComponent(GlLoadingIcon);
 
-      expect(loadingIcon.exists()).toBe(true);
       expect(Api.searchFeatureFlagUserLists).toHaveBeenCalledWith('1', 'new');
 
       r({ data: [userList] });
 
       await nextTick();
-
-      expect(loadingIcon.exists()).toBe(false);
     });
   });
 

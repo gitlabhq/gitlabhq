@@ -9,54 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This page includes information about how and when to remove or make breaking changes
 to GitLab features.
 
-## Terminology
-
-<!--
-If updating these definitions, be sure to update them in the handbook as well:
-https://about.gitlab.com/handbook/product/gitlab-the-product/#definitions
--->
-
-**Deprecation**:
-
-- Required before ending support for a feature or removing a feature.
-- Feature not recommended for use.
-- Development restricted to Priority 1 / Severity 1 bug fixes.
-- Will be removed in a future major release.
-- Begins after a deprecation announcement outlining an end-of-support or removal date.
-- Ends after the end-of-support date or removal date has passed.
-
-**End of Support**:
-
-- Optional step before removal.
-- Feature usage strongly discouraged.
-- No support or fixes provided.
-- No longer tested internally.
-- Will be removed in a future major release.
-- Begins after an end-of-support date has passed.
-
-[Announcing an End of Support period](https://about.gitlab.com/handbook/marketing/blog/release-posts/#announcing-an-end-of-support-period)
-should only be used in special circumstances and is not recommended for general use.
-Most features should be deprecated and then removed.
-
-**Removal**:
-
-- Feature usage impossible.
-- Feature no longer supported (if End of Support period hasn't already been announced).
-- Happens in a major release in line with our
-  [semantic versioning policy](../../policy/maintenance.md).
-- Begins after removal date has passed.
-
-**Breaking change**:
-
-A "breaking change" is any change that requires users to make a corresponding change to their code, settings, or workflow. "Users" might be humans, API clients, or even code classes that "use" another class. Examples of breaking changes include:
-
-- Removing a user-facing feature without a replacement/workaround.
-- Changing the definition of an existing API (by doing things like re-naming query parameters or changing routes).
-- Removing a public method from a code class.
-
-A breaking change can be considered major if it affects many users, or represents a significant change in behavior.
-
-![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
+For details about the terms used on this page, see [the terminology](../../update/terminology.md).
 
 ## When can a feature be deprecated?
 
@@ -67,6 +20,8 @@ Deprecations should be announced [no later than the third milestone preceding in
 Do not include the deprecation announcement in the merge request that introduces a code change for the deprecation.
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
 [Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+
+![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
 
 ## How are Community Contributions to a deprecated feature handled?
 

@@ -9,12 +9,18 @@ import Sidebar from '~/right_sidebar';
 import MountMilestoneSidebar from '~/sidebar/mount_milestone_sidebar';
 import Translate from '~/vue_shared/translate';
 import ZenMode from '~/zen_mode';
+import TaskList from '~/task_list';
+import { TYPE_MILESTONE } from '~/issues/constants';
+import { createAlert } from '~/alert';
+import { __ } from '~/locale';
 import DeleteMilestoneModal from './components/delete_milestone_modal.vue';
 import PromoteMilestoneModal from './components/promote_milestone_modal.vue';
 import eventHub from './event_hub';
 
 // See app/views/shared/milestones/_description.html.haml
 export const MILESTONE_DESCRIPTION_ELEMENT = '.milestone-detail .description';
+export const MILESTONE_DESCRIPTION_TASK_LIST_CONTAINER_ELEMENT = `${MILESTONE_DESCRIPTION_ELEMENT}.js-task-list-container`;
+export const MILESTONE_DETAIL_ELEMENT = '.milestone-detail';
 
 export function initForm(initGFM = true) {
   new ZenMode(); // eslint-disable-line no-new
@@ -40,6 +46,26 @@ export function initShow() {
   new MountMilestoneSidebar(); // eslint-disable-line no-new
 
   renderGFM(document.querySelector(MILESTONE_DESCRIPTION_ELEMENT));
+
+  const el = document.querySelector(MILESTONE_DESCRIPTION_TASK_LIST_CONTAINER_ELEMENT);
+
+  if (!el) {
+    return null;
+  }
+
+  return new TaskList({
+    dataType: TYPE_MILESTONE,
+    fieldName: 'description',
+    selector: MILESTONE_DETAIL_ELEMENT,
+    lockVersion: el.dataset.lockVersion,
+    onError: () => {
+      createAlert({
+        message: __(
+          'Someone edited this milestone at the same time you did. Please refresh the page to see changes.',
+        ),
+      });
+    },
+  });
 }
 
 export function initPromoteMilestoneModal() {

@@ -22,10 +22,8 @@ module Gitlab
         keys_to_expire = keys.map { |key| cache_key(key) }
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          if ::Feature.enabled?(:use_pipeline_over_multikey)
-            redis.pipelined do |pipeline|
-              keys_to_expire.each { |key| pipeline.unlink(key) }
-            end.sum
+          if Gitlab::Redis::ClusterUtil.cluster?(redis)
+            Gitlab::Redis::ClusterUtil.batch_unlink(keys_to_expire, redis)
           else
             redis.unlink(*keys_to_expire)
           end

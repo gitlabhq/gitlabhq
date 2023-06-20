@@ -185,18 +185,25 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
     describe 'Model experiments' do
       let(:item_id) { :model_experiments }
 
-      context 'when :ml_experiment_tracking is enabled' do
-        it 'shows the menu item' do
-          stub_feature_flags(ml_experiment_tracking: true)
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?)
+                             .with(user, :read_model_experiments, project)
+                             .and_return(model_experiments_enabled)
+      end
 
+      context 'when user can access model experiments' do
+        let(:model_experiments_enabled) { true }
+
+        it 'shows the menu item' do
           is_expected.not_to be_nil
         end
       end
 
-      context 'when :ml_experiment_tracking is disabled' do
-        it 'does not show the menu item' do
-          stub_feature_flags(ml_experiment_tracking: false)
+      context 'when user does not have access model experiments' do
+        let(:model_experiments_enabled) { false }
 
+        it 'does not show the menu item' do
           is_expected.to be_nil
         end
       end

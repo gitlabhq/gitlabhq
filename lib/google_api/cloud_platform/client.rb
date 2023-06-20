@@ -123,6 +123,10 @@ module GoogleApi
         enable_service(gcp_project_id, 'servicenetworking.googleapis.com')
       end
 
+      def enable_vision_api(gcp_project_id)
+        enable_service(gcp_project_id, 'vision.googleapis.com')
+      end
+
       def revoke_authorizations
         uri = URI(REVOKE_URL)
         Gitlab::HTTP.post(uri, body: { 'token' => access_token })

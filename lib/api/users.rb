@@ -99,6 +99,7 @@ module API
         optional :exclude_internal, as: :non_internal, type: Boolean, default: false, desc: 'Filters only non internal users'
         optional :without_project_bots, type: Boolean, default: false, desc: 'Filters users without project bots'
         optional :admins, type: Boolean, default: false, desc: 'Filters only admin users'
+        optional :two_factor, type: String, desc: 'Filter users by Two-factor authentication.'
         all_or_none_of :extern_uid, :provider
 
         use :sort_params
@@ -108,10 +109,12 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get feature_category: :user_profile, urgency: :low do
-        authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
+        index_params = declared_params(include_missing: false)
+
+        authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?
 
         unless current_user&.can_read_all_resources?
-          params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
+          index_params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
         authorized = can?(current_user, :read_users_list)
@@ -121,11 +124,11 @@ module API
         # a list of all the users on the GitLab instance. `UsersFinder` performs
         # an exact match on the `username` parameter, so we are guaranteed to
         # get either 0 or 1 `users` here.
-        authorized &&= params[:username].present? if current_user.blank?
+        authorized &&= index_params[:username].present? if current_user.blank?
 
         forbidden!("Not authorized to access /api/v4/users") unless authorized
 
-        users = UsersFinder.new(current_user, params).execute
+        users = UsersFinder.new(current_user, index_params).execute
         users = reorder_users(users)
 
         entity = current_user&.can_read_all_resources? ? Entities::UserWithAdmin : Entities::UserBasic
@@ -707,9 +710,13 @@ module API
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
-        forbidden!('A blocked user must be unblocked to be activated') if user.blocked?
 
-        user.activate
+        result = ::Users::ActivateService.new(current_user).execute(user)
+        if result[:status] == :success
+          true
+        else
+          render_api_error!(result[:message], result[:reason] || :bad_request)
+        end
       end
 
       desc 'Approve a pending user. Available only for admins.'
@@ -1239,7 +1246,7 @@ module API
       params do
         optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
-        optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: 'Flag indicating the user passes their external identities as CI information'
+        optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: 'Flag indicating the user passes their external identities to a CI job as part of a JSON web token.'
         at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt
       end
       put "preferences", feature_category: :user_profile, urgency: :high do

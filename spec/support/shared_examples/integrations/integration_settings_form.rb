@@ -20,6 +20,8 @@ RSpec.shared_examples 'integration settings form' do
 
           fields = parse_json(fields_for_integration(integration))
           fields.each do |field|
+            next if exclude_field?(integration, field)
+
             field_name = field[:name]
             expect(page).to have_field(field[:title], wait: 0),
                             "#{integration.title} field #{field_name} not present"
@@ -52,6 +54,11 @@ RSpec.shared_examples 'integration settings form' do
 
   def parse_json(json)
     Gitlab::Json.parse(json, symbolize_names: true)
+  end
+
+  # Fields that have specific handling on the frontend
+  def exclude_field?(integration, field)
+    integration.is_a?(Integrations::Jira) && field[:name] == 'jira_auth_type'
   end
 
   def trigger_event_title(name)

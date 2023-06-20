@@ -1,11 +1,9 @@
 - max_first_name_length = max_last_name_length = 127
-- omniauth_providers_placement ||= :bottom
 - borderless ||= false
 - form_resource_name = "new_#{resource_name}"
 
 .gl-mb-3.gl-p-4{ class: (borderless ? '' : 'gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base') }
-  - if show_omniauth_providers && omniauth_providers_placement == :top
-    = render 'devise/shared/signup_omniauth_providers_top'
+  = yield :omniauth_providers_top if show_omniauth_providers
 
   = gitlab_ui_form_for(resource, as: form_resource_name, url: url, html: { class: 'new_user gl-show-field-errors js-arkose-labs-form', 'aria-live' => 'assertive' }, data: { testid: 'signup-form' }) do |f|
     .devise-errors
@@ -77,5 +75,5 @@
       .gl-pt-5
         = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
     = render 'devise/shared/terms_of_service_notice', button_text: button_text
-    - if show_omniauth_providers && omniauth_providers_placement == :bottom
-      = render 'devise/shared/signup_omniauth_providers'
+
+  = yield :omniauth_providers_bottom if show_omniauth_providers

@@ -53,7 +53,7 @@ RSpec.describe Integrations::MicrosoftTeams do
     context 'with issue events' do
       let(:opts) { { title: 'Awesome issue', description: 'please fix' } }
       let(:issues_sample_data) do
-        service = Issues::CreateService.new(container: project, current_user: user, params: opts, spam_params: nil)
+        service = Issues::CreateService.new(container: project, current_user: user, params: opts)
         issue = service.execute[:issue]
         service.hook_data(issue, 'open')
       end
@@ -133,10 +133,13 @@ RSpec.describe Integrations::MicrosoftTeams do
 
     context 'when commit comment event executed' do
       let(:commit_note) do
-        create(:note_on_commit, author: user,
-                                project: project,
-                                commit_id: project.repository.commit.id,
-                                note: 'a comment on a commit')
+        create(
+          :note_on_commit,
+          author: user,
+          project: project,
+          commit_id: project.repository.commit.id,
+          note: 'a comment on a commit'
+        )
       end
 
       it "calls Microsoft Teams API for commit comment events" do
@@ -150,8 +153,7 @@ RSpec.describe Integrations::MicrosoftTeams do
 
     context 'when merge request comment event executed' do
       let(:merge_request_note) do
-        create(:note_on_merge_request, project: project,
-                                       note: "merge request note")
+        create(:note_on_merge_request, project: project, note: "merge request note")
       end
 
       it "calls Microsoft Teams API for merge request comment events" do
@@ -179,8 +181,7 @@ RSpec.describe Integrations::MicrosoftTeams do
 
     context 'when snippet comment event executed' do
       let(:snippet_note) do
-        create(:note_on_project_snippet, project: project,
-                                         note: "snippet note")
+        create(:note_on_project_snippet, project: project, note: "snippet note")
       end
 
       it "calls Microsoft Teams API for snippet comment events" do
@@ -197,9 +198,11 @@ RSpec.describe Integrations::MicrosoftTeams do
     let_it_be_with_refind(:project) { create(:project, :repository) }
 
     let(:pipeline) do
-      create(:ci_pipeline,
-             project: project, status: status,
-             sha: project.commit.sha, ref: project.default_branch)
+      create(
+        :ci_pipeline,
+        project: project, status: status,
+        sha: project.commit.sha, ref: project.default_branch
+      )
     end
 
     before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New project', :js, feature_category: :projects do
+RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   include Features::TopNavSpecHelpers
 
   before do
@@ -99,7 +99,6 @@ RSpec.describe 'New project', :js, feature_category: :projects do
     context 'when the new navigation is enabled' do
       before do
         user.update!(use_new_navigation: true)
-        stub_feature_flags(super_sidebar_nav: true)
       end
 
       include_examples '"New project" page'

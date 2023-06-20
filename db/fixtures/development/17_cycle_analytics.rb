@@ -3,6 +3,8 @@
 require './spec/support/sidekiq_middleware'
 require './spec/support/helpers/test_env'
 require 'active_support/testing/time_helpers'
+require './spec/support/helpers/cycle_analytics_helpers'
+require './ee/db/seeds/shared/dora_metrics' if Gitlab.ee?
 
 # Usage:
 #
@@ -21,6 +23,7 @@ require 'active_support/testing/time_helpers'
 # rubocop:disable Rails/Output
 class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChildren
   include ActiveSupport::Testing::TimeHelpers
+  include CycleAnalyticsHelpers
 
   attr_reader :project, :issues, :merge_requests, :developers
 
@@ -67,22 +70,49 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       return
     end
 
-    create_developers!
-    create_issues!
-
-    seed_lead_time!
-    seed_issue_stage!
-    seed_plan_stage!
-    seed_code_stage!
-    seed_test_stage!
-    seed_review_stage!
-    seed_staging_stage!
-
-    puts "Successfully seeded '#{project.full_path}' for Value Stream Management!"
-    puts "URL: #{Rails.application.routes.url_helpers.project_url(project)}"
+    seed_data!
   end
 
   private
+
+  def seed_data!
+    Sidekiq::Worker.skipping_transaction_check do
+      create_developers!
+      create_issues!
+
+      seed_lead_time!
+      seed_issue_stage!
+      seed_plan_stage!
+      seed_code_stage!
+      seed_test_stage!
+      seed_review_stage!
+      seed_staging_stage!
+
+      if Gitlab.ee?
+        create_vulnerabilities_count_report!
+        seed_dora_metrics!
+        create_custom_value_stream!
+        create_value_stream_aggregation(project.group)
+      end
+
+      puts "Successfully seeded '#{project.full_path}' for Value Stream Management!"
+      puts "URL: #{Rails.application.routes.url_helpers.project_url(project)}"
+    end
+  end
+
+  def create_custom_value_stream!
+    [project.project_namespace.reload, project.group].each do |parent|
+      Analytics::CycleAnalytics::ValueStreams::CreateService.new(
+        current_user: admin,
+        namespace: parent,
+        params: { name: "vs #{suffix}", stages: Gitlab::Analytics::CycleAnalytics::DefaultStages.all }
+      ).execute
+    end
+  end
+
+  def seed_dora_metrics!
+    Gitlab::Seeder::DoraMetrics.new(project: project).execute
+  end
 
   def seed_issue_stage!
     issues.each do |issue|
@@ -170,6 +200,23 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       travel_to(start_time + rand(5).days) do
         title = "#{FFaker::Product.brand}-#{suffix}"
         @issues << Issue.create!(project: project, title: title, author: developers.sample)
+      end
+    end
+  end
+
+  def create_vulnerabilities_count_report!
+    4.times do |i|
+      critical_count = rand(5..10)
+      high_count = rand(5..10)
+
+      [i.months.ago.end_of_month, i.months.ago.beginning_of_month].each do |date|
+        FactoryBot.create(:vulnerability_historical_statistic,
+          date: date,
+          total: critical_count + high_count,
+          critical: critical_count,
+          high: high_count,
+          project: project
+        )
       end
     end
   end

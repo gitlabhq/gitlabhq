@@ -9,7 +9,6 @@ identifiers:
 product_section: sec
 product_stage: secure
 product_group: group::static_analysis
-product_category:
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58230
 distributions:

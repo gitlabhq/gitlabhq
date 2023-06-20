@@ -60,14 +60,8 @@ describe('Job table app', () => {
     handler = successHandler,
     countHandler = countSuccessHandler,
     mountFn = shallowMount,
-    data = {},
   } = {}) => {
     wrapper = mountFn(JobsTableApp, {
-      data() {
-        return {
-          ...data,
-        };
-      },
       provide: {
         fullPath: projectPath,
       },
@@ -108,34 +102,28 @@ describe('Job table app', () => {
     });
 
     it('should refetch jobs query on fetchJobsByStatus event', async () => {
-      jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
-
-      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+      expect(successHandler).toHaveBeenCalledTimes(1);
 
       await findTabs().vm.$emit('fetchJobsByStatus');
 
-      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
+      expect(successHandler).toHaveBeenCalledTimes(2);
     });
 
     it('avoids refetch jobs query when scope has not changed', async () => {
-      jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
-
-      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+      expect(successHandler).toHaveBeenCalledTimes(1);
 
       await findTabs().vm.$emit('fetchJobsByStatus', null);
 
-      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+      expect(successHandler).toHaveBeenCalledTimes(1);
     });
 
     it('should refetch jobs count query when the amount jobs and count do not match', async () => {
-      jest.spyOn(wrapper.vm.$apollo.queries.jobsCount, 'refetch').mockImplementation(jest.fn());
-
-      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(0);
+      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
       // after applying filter a new count is fetched
       findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
 
-      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(1);
+      expect(countSuccessHandler).toHaveBeenCalledTimes(2);
 
       // tab is switched to `finished`, no count
       await findTabs().vm.$emit('fetchJobsByStatus', ['FAILED', 'SUCCESS', 'CANCELED']);
@@ -143,7 +131,7 @@ describe('Job table app', () => {
       // tab is switched back to `all`, the old filter count has to be overwritten with new count
       await findTabs().vm.$emit('fetchJobsByStatus', null);
 
-      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(2);
+      expect(countSuccessHandler).toHaveBeenCalledTimes(3);
     });
 
     describe('when infinite scrolling is triggered', () => {
@@ -261,25 +249,21 @@ describe('Job table app', () => {
     it('refetches jobs query when filtering', async () => {
       createComponent();
 
-      jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
-
-      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+      expect(successHandler).toHaveBeenCalledTimes(1);
 
       await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
 
-      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
+      expect(successHandler).toHaveBeenCalledTimes(2);
     });
 
     it('refetches jobs count query when filtering', async () => {
       createComponent();
 
-      jest.spyOn(wrapper.vm.$apollo.queries.jobsCount, 'refetch').mockImplementation(jest.fn());
-
-      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(0);
+      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
       await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
 
-      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(1);
+      expect(countSuccessHandler).toHaveBeenCalledTimes(2);
     });
 
     it('shows raw text warning when user inputs raw text', async () => {
@@ -292,14 +276,14 @@ describe('Job table app', () => {
 
       createComponent();
 
-      jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
-      jest.spyOn(wrapper.vm.$apollo.queries.jobsCount, 'refetch').mockImplementation(jest.fn());
+      expect(successHandler).toHaveBeenCalledTimes(1);
+      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
       await findFilteredSearch().vm.$emit('filterJobsBySearch', ['raw text']);
 
       expect(createAlert).toHaveBeenCalledWith(expectedWarning);
-      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
-      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(0);
+      expect(successHandler).toHaveBeenCalledTimes(1);
+      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
     });
 
     it('updates URL query string when filtering jobs by status', async () => {

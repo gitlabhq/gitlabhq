@@ -66,15 +66,19 @@ module QA
       end
 
       def verify_comment_content(author, comment_content)
-        Page::Dashboard::Snippet::Show.perform do |comment|
-          expect(comment).to have_comment_author(author)
-          expect(comment).to have_comment_content(comment_content)
+        Page::Dashboard::Snippet::Show.perform do |snippet|
+          expect(snippet).to have_comment_author(author)
+          expect(snippet).to have_comment_content(comment_content)
         end
       end
 
       def verify_comment_deleted
-        expect(page).not_to have_content(comment_author.username)
-        expect(page).not_to have_content(edited_comment_content)
+        Page::Dashboard::Snippet::Show.perform do |snippet|
+          snippet.within_notes_list do
+            expect(snippet).not_to have_content(comment_author.username)
+            expect(snippet).not_to have_content(edited_comment_content)
+          end
+        end
       end
     end
   end

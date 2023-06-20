@@ -29,13 +29,13 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
 
 1. On your GitLab server, open the configuration file:
 
-   For Omnibus GitLab installations:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
@@ -47,7 +47,7 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
    GitLab account.
 1. Add the provider configuration for Atlassian:
 
-   For Omnibus GitLab installations:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -61,7 +61,7 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: "atlassian_oauth2",
@@ -76,8 +76,8 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
 1. Save the configuration file.
 
 1. For the changes to take effect:
-   - If you installed via Omnibus, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-   - If you installed from source, [restart GitLab](../restart_gitlab.md#installations-from-source).
+   - If you installed using the Linux package, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+   - If you self-compiled your installation, [restart GitLab](../restart_gitlab.md#installations-from-source).
 
 On the sign-in page there should now be an Atlassian icon below the regular sign in form. Select the icon to begin the authentication process.
 

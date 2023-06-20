@@ -1,7 +1,7 @@
 = render 'devise/shared/tab_single', tab_title: _('Change your password')
 .login-box
   .login-body
-    = form_for(resource, as: resource_name, url: password_path(:user), html: { method: :put, class: 'gl-show-field-errors gl-pt-5' }) do |f|
+    = gitlab_ui_form_for(resource, as: resource_name, url: password_path(:user), html: { method: :put, class: 'gl-show-field-errors gl-pt-5' }) do |f|
       .devise-errors.gl-px-5
         = render "devise/shared/error_messages", resource: resource
       = f.hidden_field :reset_password_token
@@ -13,7 +13,8 @@
         = f.label _('Confirm new password'), for: "user_password_confirmation"
         = f.password_field :password_confirmation, autocomplete: 'new-password', class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { qa_selector: 'password_confirmation_field' }, required: true
       .clearfix.gl-px-5.gl-pb-5
-        = f.submit _("Change your password"), class: "gl-button btn btn-confirm", data: { qa_selector: 'change_password_button' }
+        = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { qa_selector: 'change_password_button' } }) do
+          = _('Change your password')
 
 .clearfix.prepend-top-20
   %p

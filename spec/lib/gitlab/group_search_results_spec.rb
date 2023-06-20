@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GroupSearchResults do
+RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
   # group creation calls GroupFinder, so need to create the group
   # before so expect(GroupsFinder) check works
   let_it_be(:group) { create(:group) }
@@ -44,6 +44,19 @@ RSpec.describe Gitlab::GroupSearchResults do
     end
 
     include_examples 'search results filtered by state'
+  end
+
+  describe '#projects' do
+    let(:scope) { 'projects' }
+    let(:query) { 'Test' }
+
+    describe 'filtering' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:unarchived_project) { create(:project, :public, group: group, name: 'Test1') }
+      let_it_be(:archived_project) { create(:project, :archived, :public, group: group, name: 'Test2') }
+
+      it_behaves_like 'search results filtered by archived'
+    end
   end
 
   describe 'user search' do

@@ -46,8 +46,8 @@ describe('MlExperimentsIndex', () => {
       expect(findPagination().exists()).toBe(false);
     });
 
-    it('does not render header', () => {
-      expect(findTitleHeader().exists()).toBe(false);
+    it('renders header', () => {
+      expect(findTitleHeader().exists()).toBe(true);
     });
   });
 

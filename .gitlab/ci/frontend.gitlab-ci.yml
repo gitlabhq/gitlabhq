@@ -3,7 +3,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-16.14:rubygems-${RUBYGEMS_VERSION}-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-18.16:rubygems-${RUBYGEMS_VERSION}-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -12,6 +12,7 @@
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
+  needs: []
   script:
     - yarn_install_script
     - export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
@@ -109,6 +110,7 @@ retrieve-frontend-fixtures:
     - .default-retry
     - .frontend:rules:default-frontend-jobs
   stage: prepare
+  needs: []
   script:
     - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
@@ -128,8 +130,8 @@ retrieve-frontend-fixtures:
   extends:
     - .default-retry
     - .default-before_script
-    - .rails-cache
-    - .use-pg13
+    - .ruby-cache
+    - .use-pg14
   stage: fixtures
   needs: ["setup-test-env", "retrieve-tests-metadata", "retrieve-frontend-fixtures"]
   variables:
@@ -206,7 +208,7 @@ graphql-schema-dump:
     SETUP_DB: "false"
   extends:
     - .default-retry
-    - .rails-cache
+    - .ruby-cache
     - .default-before_script
     - .frontend:rules:default-frontend-jobs
   stage: fixtures
@@ -260,7 +262,7 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
-  parallel: 7
+  parallel: 12
 
 jest predictive:
   extends:
@@ -278,7 +280,7 @@ jest as-if-foss:
     - .frontend:rules:jest:as-if-foss
     - .as-if-foss
   needs: ["rspec-all frontend_fixture as-if-foss"]
-  parallel: 4
+  parallel: 10
 
 jest predictive as-if-foss:
   extends:

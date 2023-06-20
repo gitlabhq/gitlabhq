@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_execution,
+    quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411510',
+      type: :flaky
+    } do
     context 'when pipeline is blocked' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 

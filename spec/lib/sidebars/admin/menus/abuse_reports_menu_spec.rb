@@ -11,7 +11,7 @@ RSpec.describe Sidebars::Admin::Menus::AbuseReportsMenu, feature_category: :navi
   it_behaves_like 'Admin menu without sub menus', active_routes: { controller: :abuse_reports }
 
   describe '#pill_count' do
-    let_it_be(:user) { create(:user, :admin) }
+    let(:user) { build_stubbed(:user, :admin) }
 
     let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
 

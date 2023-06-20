@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User manages project members', feature_category: :projects do
+RSpec.describe 'Projects > Settings > User manages project members', feature_category: :groups_and_projects do
   include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers

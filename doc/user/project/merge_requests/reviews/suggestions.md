@@ -17,8 +17,8 @@ merge request, authored by the user who suggested the changes.
 
 ## Create suggestions
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests** and find your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests** and find your merge request.
 1. On the secondary menu, select **Changes**.
 1. Find the lines of code you want to change.
    - To select a single line:
@@ -80,8 +80,8 @@ Prerequisites:
 
 To apply suggested changes directly from the merge request:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests** and find your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests** and find your merge request.
 1. Find the comment containing the suggestion you want to apply.
    - To apply suggestions individually, select **Apply suggestion**.
    - To apply multiple suggestions in a single commit, select **Add suggestion to batch**.
@@ -128,8 +128,8 @@ Merge requests created from forks use the template defined in the target project
 To meet your project's needs, you can customize these messages and include other
 placeholder variables:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. Scroll to **Merge suggestions**, and alter the text to meet your needs.
    See [Supported variables](#supported-variables) for a list of placeholders
    you can use in this message.
@@ -155,7 +155,7 @@ For example, to customize the commit message to output
 
 ## Batch suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [Experiment](../../../../policy/alpha-beta-support.md#experiment) with a flag named `batch_suggestions`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25486) in GitLab 13.1 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) with a flag named `batch_suggestions`, disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/227799) in GitLab 13.2.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) in GitLab 13.11. [Feature flag `batch_suggestions`](https://gitlab.com/gitlab-org/gitlab/-/issues/320755) removed.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
@@ -163,8 +163,8 @@ For example, to customize the commit message to output
 To reduce the number of commits added to your branch, you can apply multiple
 suggestions in a single commit.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests** and find your merge request.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests** and find your merge request.
 1. For each suggestion you want to apply, and select **Add suggestion to batch**.
 1. Optional. To remove a suggestion, select **Remove from batch**.
 1. After you add your desired suggestions, select **Apply suggestions**.

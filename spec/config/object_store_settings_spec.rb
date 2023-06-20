@@ -43,6 +43,9 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
               },
               'pages' => {
                 'bucket' => 'pages'
+              },
+              'ci_secure_files' => {
+                'bucket' => 'ci_secure_files'
               }
             }
           }

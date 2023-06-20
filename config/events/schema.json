@@ -1,6 +1,8 @@
 {
   "type": "object",
-  "required": [],
+  "required": [
+
+  ],
   "properties": {
     "description": {
       "type": "string"
@@ -66,12 +68,6 @@
     },
     "product_group": {
       "type": "string"
-    },
-    "product_category": {
-      "type": [
-        "string",
-        "null"
-      ]
     },
     "introduced_by_url": {
       "type": [

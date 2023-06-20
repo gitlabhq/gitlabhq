@@ -10,13 +10,15 @@ module Backup
     # @param [IO] progress IO interface to output progress
     # @param [Object] :strategy Fetches backups from gitaly
     # @param [Array<String>] :storages Filter by specified storage names. Empty means all storages.
-    # @param [Array<String>] :paths Filter by specified project paths. Empty means all projects, groups and snippets.
-    def initialize(progress, strategy:, storages: [], paths: [])
+    # @param [Array<String>] :paths Filter by specified project paths. Empty means all projects, groups, and snippets.
+    # @param [Array<String>] :skip_paths Skip specified project paths. Empty means all projects, groups, and snippets.
+    def initialize(progress, strategy:, storages: [], paths: [], skip_paths: [])
       super(progress)
 
       @strategy = strategy
       @storages = storages
       @paths = paths
+      @skip_paths = skip_paths
     end
 
     override :dump
@@ -42,7 +44,7 @@ module Backup
 
     private
 
-    attr_reader :strategy, :storages, :paths
+    attr_reader :strategy, :storages, :paths, :skip_paths
 
     def remove_all_repositories
       return if paths.present?
@@ -84,6 +86,7 @@ module Backup
         )
       end
 
+      scope = scope.and(skipped_path_relation) if skip_paths.any?
       scope
     end
 
@@ -98,7 +101,18 @@ module Backup
         )
       end
 
+      if skip_paths.any?
+        scope = scope.where(project: skipped_path_relation)
+        scope = scope.or(Snippet.where(project: nil)) if !paths.any? && !storages.any?
+      end
+
       scope
+    end
+
+    def skipped_path_relation
+      Project.where.not(id: Project.where_full_path_in(skip_paths).or(
+        Project.where(namespace_id: Namespace.where_full_path_in(skip_paths).self_and_descendants)
+      ))
     end
 
     def restore_object_pools

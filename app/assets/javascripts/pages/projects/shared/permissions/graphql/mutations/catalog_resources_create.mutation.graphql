@@ -1,0 +1,5 @@
+mutation catalogResourcesCreate($input: CatalogResourcesCreateInput!) {
+  catalogResourcesCreate(input: $input) {
+    errors
+  }
+}

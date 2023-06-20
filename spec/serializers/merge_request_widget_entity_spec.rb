@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestWidgetEntity do
+RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow do
   include ProjectForksHelper
   include Gitlab::Routing.url_helpers
 

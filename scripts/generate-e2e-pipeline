@@ -40,7 +40,6 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GITLAB_QA_CACHE_KEY: "$qa_cache_key"
   GITLAB_SEMVER_VERSION: "$(cat VERSION)"
-  SKIP_OMNIBUS_TRIGGER: "false"
   QA_EXPORT_TEST_METRICS: "${QA_EXPORT_TEST_METRICS:-true}"
   QA_FEATURE_FLAGS: "${QA_FEATURE_FLAGS}"
   QA_FRAMEWORK_CHANGES: "${QA_FRAMEWORK_CHANGES:-false}"
@@ -49,6 +48,7 @@ variables:
   QA_SAVE_TEST_METRICS: "${QA_SAVE_TEST_METRICS:-false}"
   QA_SUITES: "$QA_SUITES"
   QA_TESTS: "$QA_TESTS"
+  KNAPSACK_TEST_FILE_PATTERN: "$KNAPSACK_TEST_FILE_PATTERN"
 YML
 )
 
@@ -63,3 +63,4 @@ for key in "${!qa_pipelines[@]}"; do
 done
 
 echoinfo "Successfully generated qa pipeline files"
+echo "$variables"

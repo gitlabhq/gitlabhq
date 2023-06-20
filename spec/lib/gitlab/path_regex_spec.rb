@@ -258,6 +258,23 @@ RSpec.describe Gitlab::PathRegex do
     end
   end
 
+  describe '.organization_path_regex' do
+    subject { described_class.organization_path_regex }
+
+    it 'rejects reserved words' do
+      expect(subject).not_to match('admin/')
+      expect(subject).not_to match('api/')
+      expect(subject).not_to match('create/')
+      expect(subject).not_to match('new/')
+    end
+
+    it 'accepts other words' do
+      expect(subject).to match('simple/')
+      expect(subject).to match('org/')
+      expect(subject).to match('my_org/')
+    end
+  end
+
   describe '.full_namespace_path_regex' do
     subject { described_class.full_namespace_path_regex }
 

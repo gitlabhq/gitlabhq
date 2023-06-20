@@ -9,7 +9,7 @@ import {
   MOCK_LANGUAGE_AGGREGATIONS_BUCKETS,
 } from 'jest/search/mock_data';
 import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
-import CheckboxFilter from '~/search/sidebar/components/checkbox_filter.vue';
+import CheckboxFilter from '~/search/sidebar/components/language_filter/checkbox_filter.vue';
 
 import {
   TRACKING_LABEL_SHOW_MORE,
@@ -32,7 +32,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   let trackingSpy;
 
   const actionSpies = {
-    fetchLanguageAggregation: jest.fn(),
+    fetchAllAggregation: jest.fn(),
     applyQuery: jest.fn(),
   };
 
@@ -61,10 +61,6 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
     });
   };
 
-  afterEach(() => {
-    unmockTracking();
-  });
-
   const findForm = () => wrapper.findComponent(GlForm);
   const findCheckboxFilter = () => wrapper.findComponent(CheckboxFilter);
   const findApplyButton = () => wrapper.findByTestId('apply-button');
@@ -78,6 +74,10 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
     beforeEach(() => {
       createComponent();
       trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
     });
 
     it('renders form', () => {
@@ -108,19 +108,19 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
 
   describe('resetButton', () => {
     describe.each`
-      description                          | sidebarDirty | queryFilters     | isDisabled
-      ${'sidebar dirty only'}              | ${true}      | ${[]}            | ${undefined}
-      ${'query filters only'}              | ${false}     | ${['JSON', 'C']} | ${undefined}
-      ${'sidebar dirty and query filters'} | ${true}      | ${['JSON', 'C']} | ${undefined}
-      ${'no sidebar and no query filters'} | ${false}     | ${[]}            | ${'true'}
-    `('$description', ({ sidebarDirty, queryFilters, isDisabled }) => {
+      description                          | sidebarDirty | queryFilters     | exists
+      ${'sidebar dirty only'}              | ${true}      | ${[]}            | ${false}
+      ${'query filters only'}              | ${false}     | ${['JSON', 'C']} | ${false}
+      ${'sidebar dirty and query filters'} | ${true}      | ${['JSON', 'C']} | ${true}
+      ${'no sidebar and no query filters'} | ${false}     | ${[]}            | ${false}
+    `('$description', ({ sidebarDirty, queryFilters, exists }) => {
       beforeEach(() => {
         getterSpies.queryLanguageFilters = jest.fn(() => queryFilters);
         createComponent({ sidebarDirty, query: { ...MOCK_QUERY, language: queryFilters } });
       });
 
-      it(`button is ${isDisabled ? 'enabled' : 'disabled'}`, () => {
-        expect(findResetButton().attributes('disabled')).toBe(isDisabled);
+      it(`button is ${exists ? 'shown' : 'hidden'}`, () => {
+        expect(findResetButton().exists()).toBe(exists);
       });
     });
   });
@@ -151,6 +151,10 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
     beforeEach(() => {
       createComponent();
       trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
     });
 
     it(`renders ${MAX_ITEM_LENGTH} amount of items`, async () => {
@@ -196,13 +200,16 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       createComponent({});
       trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
+    afterEach(() => {
+      unmockTracking();
+    });
 
     it('uses getter languageAggregationBuckets', () => {
       expect(getterSpies.languageAggregationBuckets).toHaveBeenCalled();
     });
 
-    it('uses action fetchLanguageAggregation', () => {
-      expect(actionSpies.fetchLanguageAggregation).toHaveBeenCalled();
+    it('uses action fetchAllAggregation', () => {
+      expect(actionSpies.fetchAllAggregation).toHaveBeenCalled();
     });
 
     it('clicking ApplyButton calls applyQuery', () => {

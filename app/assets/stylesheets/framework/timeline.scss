@@ -40,8 +40,9 @@
 
   &:target,
   &.target {
-    .timeline-content {
-      background: $line-target-blue !important;
+    .timeline-content,
+    + .public-note.discussion-reply-holder {
+      background-color: $line-target-blue !important;
     }
 
     &.system-note .note-body .note-text.system-note-commit-list::after {

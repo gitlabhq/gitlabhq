@@ -9,6 +9,7 @@ module Gitlab
     # config/initializers/7_redis.rb, instrumented, and used in health- & readiness checks.
     ALL_CLASSES = [
       Gitlab::Redis::Cache,
+      Gitlab::Redis::ClusterCache,
       Gitlab::Redis::DbLoadBalancing,
       Gitlab::Redis::FeatureFlag,
       Gitlab::Redis::Queues,
@@ -16,7 +17,8 @@ module Gitlab
       Gitlab::Redis::RepositoryCache,
       Gitlab::Redis::Sessions,
       Gitlab::Redis::SharedState,
-      Gitlab::Redis::TraceChunks
+      Gitlab::Redis::TraceChunks,
+      Gitlab::Redis::Chat
     ].freeze
   end
 end

@@ -99,6 +99,9 @@ describe('Access Level Dropdown', () => {
   const findDropdownItemWithText = (items, text) =>
     items.filter((item) => item.text().includes(text)).at(0);
 
+  const findSelected = (type) =>
+    wrapper.findAllByTestId(`${type}-dropdown-item`).filter((w) => w.props('isChecked'));
+
   describe('data request', () => {
     it('should make an api call for users, groups && deployKeys when user has a license', () => {
       createComponent();
@@ -305,9 +308,6 @@ describe('Access Level Dropdown', () => {
       { id: 122, type: 'deploy_key', deploy_key_id: 12 },
     ];
 
-    const findSelected = (type) =>
-      wrapper.findAllByTestId(`${type}-dropdown-item`).filter((w) => w.props('isChecked'));
-
     beforeEach(async () => {
       createComponent({ preselectedItems });
       await waitForPromises();
@@ -336,6 +336,34 @@ describe('Access Level Dropdown', () => {
       expect(selectedDeployKeys).toHaveLength(2);
       expect(selectedDeployKeys.at(0).text()).toContain('key11 (sha256-abcdefg...)');
       expect(selectedDeployKeys.at(1).text()).toContain('key12 (md5-abcdefghij...)');
+    });
+  });
+
+  describe('handling two-way data binding', () => {
+    it('emits a formatted update on selection', async () => {
+      createComponent();
+      await waitForPromises();
+      const dropdownItems = findAllDropdownItems();
+      // select new item from each group
+      findDropdownItemWithText(dropdownItems, 'role1').trigger('click');
+      findDropdownItemWithText(dropdownItems, 'group4').trigger('click');
+      findDropdownItemWithText(dropdownItems, 'user7').trigger('click');
+      findDropdownItemWithText(dropdownItems, 'key10').trigger('click');
+
+      await wrapper.setProps({ items: [{ user_id: 7 }] });
+
+      const selectedUsers = findSelected(LEVEL_TYPES.USER);
+      expect(selectedUsers).toHaveLength(1);
+      expect(selectedUsers.at(0).text()).toBe('user7');
+
+      const selectedRoles = findSelected(LEVEL_TYPES.ROLE);
+      expect(selectedRoles).toHaveLength(0);
+
+      const selectedGroups = findSelected(LEVEL_TYPES.GROUP);
+      expect(selectedGroups).toHaveLength(0);
+
+      const selectedDeployKeys = findSelected(LEVEL_TYPES.DEPLOY_KEY);
+      expect(selectedDeployKeys).toHaveLength(0);
     });
   });
 

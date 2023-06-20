@@ -17,4 +17,22 @@ any_time: false)
       end
     end
   end
+
+  # Finds the given csp directive values as an array
+  #
+  # Example:
+  # ```
+  # find_csp_directive('connect-src')
+  # ```
+  def find_csp_directive(key)
+    csp = response.headers['Content-Security-Policy']
+
+    # Transform "default-src foo bar; connect-src foo bar; script-src ..."
+    # into array of values for a single directive based on the given key
+    csp.split(';')
+      .map(&:strip)
+      .find { |entry| entry.starts_with?(key) }
+      .split(' ')
+      .drop(1)
+  end
 end

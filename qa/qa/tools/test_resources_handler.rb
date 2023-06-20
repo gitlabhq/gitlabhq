@@ -93,15 +93,16 @@ module QA
       # Download files from GCS bucket by environment name
       # Delete the files afterward
       def download(ci_project_name)
-        bucket_items = gcs_storage.list_objects(BUCKET, prefix: ci_project_name).items
+        logger.info("Downloading resource files from GCS for #{ci_project_name}...")
+        bucket_items = gcs_storage.list_objects(BUCKET, prefix: "#{ci_project_name}/").items
 
-        files_list = bucket_items&.each_with_object([]) do |obj, arr|
-          arr << obj.name
-        end
-
-        if files_list.blank?
+        if bucket_items.blank?
           logger.info("\nNothing to download!")
           return
+        end
+
+        files_list = bucket_items.each_with_object([]) do |obj, arr|
+          arr << obj.name
         end
 
         FileUtils.mkdir_p('tmp/')
@@ -217,11 +218,10 @@ module QA
 
       def api_client
         abort("\nPlease provide GITLAB_ADDRESS") unless ENV['GITLAB_ADDRESS']
-        abort("\nPlease provide GITLAB_QA_ACCESS_TOKEN") unless ENV['GITLAB_QA_ACCESS_TOKEN']
 
         @api_client ||= Runtime::API::Client.new(
           ENV['GITLAB_ADDRESS'],
-          personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN']
+          personal_access_token: personal_access_token
         )
       end
 
@@ -242,6 +242,17 @@ module QA
         end
 
         @json_key ||= ENV["QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS"]
+      end
+
+      # In environments that we can run tests with admin scope,
+      # we should use GITLAB_QA_ADMIN_ACCESS_TOKEN to clean up resources.
+      # This is necessary for cleaning up User resources.
+      def personal_access_token
+        if ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'].blank? && ENV['GITLAB_QA_ACCESS_TOKEN'].blank?
+          abort("\nPlease provide either GITLAB_QA_ADMIN_ACCESS_TOKEN or GITLAB_QA_ACCESS_TOKEN")
+        end
+
+        @personal_access_token ||= ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'] || ENV['GITLAB_QA_ACCESS_TOKEN']
       end
     end
   end

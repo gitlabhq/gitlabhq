@@ -16,11 +16,7 @@ module Metrics
 
       idempotent! # PruneOldAnnotationsWorker worker is idempotent in the scope of 24 hours
 
-      def perform
-        # Process is split into two jobs to avoid long running jobs, which are more prone to be disrupted
-        # mid work, which may cause some data not be delete, especially because cronjobs has retry option disabled
-        PruneOldAnnotationsWorker.perform_async
-      end
+      def perform; end
     end
   end
 end

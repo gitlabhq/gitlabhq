@@ -110,6 +110,7 @@ export default {
       data-testid="rollback-button"
       :title="rollbackButtonTitle"
       :icon="rollbackIcon"
+      :aria-label="rollbackButtonTitle"
       @click="onRollbackClick"
     />
     <environment-approval

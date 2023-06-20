@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   include Ci::JobTokenScopeHelpers
 
-  let(:project) { create(:project, :repository, :private) }
-  let(:maintainer) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:reporter) { create(:user) }
-  let(:non_project_member) { create(:user) }
-  let(:commit) { create(:commit, project: project) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :private) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:non_project_member) { create(:user) }
+  let_it_be(:commit) { create(:commit, project: project) }
 
   let!(:release) do
     create(:release,
@@ -19,7 +19,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
            author: maintainer)
   end
 
-  before do
+  before_all do
     project.add_maintainer(maintainer)
     project.add_developer(developer)
     project.add_reporter(reporter)

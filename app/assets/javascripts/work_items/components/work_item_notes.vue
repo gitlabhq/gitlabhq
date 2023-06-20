@@ -21,6 +21,7 @@ import {
   updateCacheAfterDeletingNote,
 } from '~/work_items/graphql/cache_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { collapseSystemNotes } from '~/work_items/notes/collapse_utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemHistoryOnlyFilterNote from '~/work_items/components/notes/work_item_history_only_filter_note.vue';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -128,7 +129,9 @@ export default {
     notesArray() {
       const notes = this.workItemNotes?.nodes || [];
 
-      const visibleNotes = notes.filter((note) => {
+      let visibleNotes = collapseSystemNotes(notes);
+
+      visibleNotes = visibleNotes.filter((note) => {
         const isSystemNote = this.isSystemNote(note);
 
         if (this.discussionFilter === WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS && isSystemNote) {
@@ -145,6 +148,7 @@ export default {
       if (this.sortOrder === DESC) {
         return [...visibleNotes].reverse();
       }
+
       return visibleNotes;
     },
     commentsDisabled() {

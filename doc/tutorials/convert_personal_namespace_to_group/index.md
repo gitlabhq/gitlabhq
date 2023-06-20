@@ -33,8 +33,7 @@ rename the `alex` namespace to `alex-user`, and `alex-group` namespace to the no
 
 ## Create a group
 
-1. On the top bar, select **Main menu > Groups > View all groups**.
-1. On the right of the page, select **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.
    Don't worry about the actual path, this is only temporary. You'll change this URL to the username of the personal namespace in the [final step](#rename-the-new-group-namespace-to-the-original-username).
@@ -57,8 +56,8 @@ Before you start the transfer process, make sure you:
 
 To transfer a project to a group:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the group to transfer the project to.
 1. Select **Transfer project**.
@@ -73,7 +72,7 @@ From the moment you rename the personal namespace, the username becomes availabl
 
 To [change a user's username](../../user/profile/index.md#change-your-username):
 
-1. On the top bar, in the top-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
@@ -85,8 +84,8 @@ Finally, rename the new group's URL to the username of the original personal nam
 
 To [change your group path](../../user/group/manage.md#change-a-groups-path) (group URL):
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General page**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter the user's original username.
 1. Select **Change group URL**.

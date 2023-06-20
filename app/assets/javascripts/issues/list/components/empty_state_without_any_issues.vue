@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDropdown, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
@@ -12,7 +12,7 @@ export default {
   components: {
     CsvImportExportButtons,
     GlButton,
-    GlDropdown,
+    GlDisclosureDropdown,
     GlEmptyState,
     GlLink,
     GlSprintf,
@@ -56,7 +56,11 @@ export default {
 
 <template>
   <div v-if="isSignedIn">
-    <gl-empty-state :title="$options.i18n.noIssuesTitle" :svg-path="emptyStateSvgPath">
+    <gl-empty-state
+      :title="$options.i18n.noIssuesTitle"
+      :svg-path="emptyStateSvgPath"
+      :svg-height="150"
+    >
       <template #description>
         <gl-link :href="$options.issuesHelpPagePath">
           {{ $options.i18n.noIssuesDescription }}
@@ -73,17 +77,17 @@ export default {
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
 
-        <gl-dropdown
+        <gl-disclosure-dropdown
           v-if="showCsvButtons"
           class="gl-w-full gl-sm-w-auto gl-sm-mr-3"
-          :text="$options.i18n.importIssues"
+          :toggle-text="$options.i18n.importIssues"
           data-qa-selector="import_issues_dropdown"
         >
           <csv-import-export-buttons
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />
-        </gl-dropdown>
+        </gl-disclosure-dropdown>
 
         <new-resource-dropdown
           v-if="showNewIssueDropdown"

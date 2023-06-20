@@ -28,7 +28,7 @@ RSpec.describe Admin::AbuseReportsHelper, feature_category: :insider_threat do
     subject(:data) { helper.abuse_report_data(report)[:abuse_report_data] }
 
     it 'has the expected attributes' do
-      expect(data).to include('user', 'reporter', 'report', 'actions')
+      expect(data).to include('user', 'reporter', 'report')
     end
   end
 end

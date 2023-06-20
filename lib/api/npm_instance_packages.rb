@@ -10,6 +10,12 @@ module API
       render_api_error!(e.message, 400)
     end
 
+    helpers do
+      def endpoint_scope
+        :instance
+      end
+    end
+
     namespace 'packages/npm' do
       include ::API::Concerns::Packages::NpmEndpoints
     end

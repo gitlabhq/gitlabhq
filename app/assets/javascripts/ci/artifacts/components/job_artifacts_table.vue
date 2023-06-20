@@ -9,12 +9,12 @@ import {
   GlIcon,
   GlPagination,
   GlFormCheckbox,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import getJobArtifactsQuery from '../graphql/queries/get_job_artifacts.query.graphql';
 import { totalArtifactsSizeForJob, mapArchivesToJobNodes, mapBooleansToJobNodes } from '../utils';
@@ -38,11 +38,11 @@ import {
   INITIAL_NEXT_PAGE_CURSOR,
   JOBS_PER_PAGE,
   INITIAL_LAST_PAGE_SIZE,
-  BULK_DELETE_FEATURE_FLAG,
   I18N_BULK_DELETE_ERROR,
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
   SELECTED_ARTIFACTS_MAX_COUNT,
+  I18N_BULK_DELETE_MAX_SELECTED,
 } from '../constants';
 import JobCheckbox from './job_checkbox.vue';
 import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
@@ -78,7 +78,9 @@ export default {
     ArtifactsTableRowDetails,
     FeedbackBanner,
   },
-  mixins: [glFeatureFlagsMixin()],
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   inject: ['projectId', 'projectPath', 'canDestroyArtifacts'],
   apollo: {
     jobArtifacts: {
@@ -156,13 +158,32 @@ export default {
       return this.selectedArtifacts.length >= SELECTED_ARTIFACTS_MAX_COUNT;
     },
     canBulkDestroyArtifacts() {
-      return this.glFeatures[BULK_DELETE_FEATURE_FLAG] && this.canDestroyArtifacts;
+      return this.canDestroyArtifacts;
     },
     isDeletingArtifactsForJob() {
       return this.jobArtifactsToDelete.length > 0;
     },
     artifactsToDelete() {
       return this.isDeletingArtifactsForJob ? this.jobArtifactsToDelete : this.selectedArtifacts;
+    },
+    isAnyVisibleArtifactSelected() {
+      return this.jobArtifacts.some((job) =>
+        job.artifacts.nodes.some((artifactNode) =>
+          this.selectedArtifacts.includes(artifactNode.id),
+        ),
+      );
+    },
+    areAllVisibleArtifactsSelected() {
+      return this.jobArtifacts.every((job) =>
+        job.artifacts.nodes.every((artifactNode) =>
+          this.selectedArtifacts.includes(artifactNode.id),
+        ),
+      );
+    },
+    selectAllTooltipText() {
+      return this.isSelectedArtifactsLimitReached && !this.isAnyVisibleArtifactSelected
+        ? I18N_BULK_DELETE_MAX_SELECTED
+        : '';
     },
   },
   methods: {
@@ -205,11 +226,11 @@ export default {
       }
     },
     selectArtifact(artifactNode, checked) {
-      if (checked) {
-        if (!this.isSelectedArtifactsLimitReached) {
-          this.selectedArtifacts.push(artifactNode.id);
-        }
-      } else {
+      const isSelected = this.selectedArtifacts.includes(artifactNode.id);
+
+      if (checked && !isSelected && !this.isSelectedArtifactsLimitReached) {
+        this.selectedArtifacts.push(artifactNode.id);
+      } else if (isSelected) {
         this.selectedArtifacts.splice(this.selectedArtifacts.indexOf(artifactNode.id), 1);
       }
     },
@@ -274,6 +295,11 @@ export default {
       this.isBulkDeleteModalVisible = false;
       this.jobArtifactsToDelete = [];
     },
+    handleSelectAllChecked(checked) {
+      this.jobArtifacts.map((job) =>
+        job.artifacts.nodes.map((artifactNode) => this.selectArtifact(artifactNode, checked)),
+      );
+    },
     clearSelectedArtifacts() {
       this.selectedArtifacts = [];
     },
@@ -284,7 +310,13 @@ export default {
       return !job.archive?.downloadPath;
     },
     browseButtonDisabled(job) {
-      return !job.browseArtifactsPath;
+      return !job.browseArtifactsPath || !job.hasMetadata;
+    },
+    browseButtonHref(job) {
+      // make href blank when button is disabled so `cursor: not-allowed` is applied
+      if (this.browseButtonDisabled(job)) return '';
+
+      return job.browseArtifactsPath;
     },
     deleteButtonDisabled(job) {
       return !job.hasArtifacts || !this.canBulkDestroyArtifacts;
@@ -369,10 +401,12 @@ export default {
       </template>
       <template v-if="canBulkDestroyArtifacts" #head(checkbox)>
         <gl-form-checkbox
-          :disabled="!anyArtifactsSelected"
-          :checked="anyArtifactsSelected"
-          :indeterminate="anyArtifactsSelected"
-          @change="clearSelectedArtifacts"
+          v-gl-tooltip.right
+          :title="selectAllTooltipText"
+          :checked="isAnyVisibleArtifactSelected"
+          :indeterminate="isAnyVisibleArtifactSelected && !areAllVisibleArtifactsSelected"
+          :disabled="isSelectedArtifactsLimitReached && !isAnyVisibleArtifactSelected"
+          @change="handleSelectAllChecked"
         />
       </template>
       <template
@@ -469,7 +503,7 @@ export default {
           <gl-button
             icon="folder-open"
             :disabled="browseButtonDisabled(item)"
-            :href="item.browseArtifactsPath"
+            :href="browseButtonHref(item)"
             :title="$options.i18n.browse"
             :aria-label="$options.i18n.browse"
             data-testid="job-artifacts-browse-button"

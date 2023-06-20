@@ -48,8 +48,8 @@ Selecting an individual job shows you its job log, and allows you to:
 
 To view the full list of jobs that ran in a project:
 
-1. On the top bar, select **Main menu > Projects** and find the project.
-1. On the left sidebar, select **CI/CD > Jobs**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Jobs**.
 
 You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline).
 
@@ -342,7 +342,7 @@ In the example above:
   job log, but they are displayed in the raw job log. To see them, in the upper-right corner
   of the job log, select **Show complete raw** (**{doc-text}**).
   - `\r`: carriage return.
-  - `\e[0K`: clear line ANSI escape code.
+  - `\e[0K`: clear line ANSI escape sequence (`\e[K` does not work, the `0` must be included).
 
 Sample raw job log:
 

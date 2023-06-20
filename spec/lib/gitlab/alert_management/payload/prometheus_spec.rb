@@ -297,4 +297,18 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#source' do
+    subject { parsed_payload.source }
+
+    it { is_expected.to eq('Prometheus') }
+
+    context 'with alerting integration provided' do
+      before do
+        parsed_payload.integration = instance_double('::AlertManagement::HttpIntegration', name: 'INTEGRATION')
+      end
+
+      it { is_expected.to eq('INTEGRATION') }
+    end
+  end
 end

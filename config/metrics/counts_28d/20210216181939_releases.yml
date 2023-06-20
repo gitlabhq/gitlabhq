@@ -3,8 +3,8 @@ data_category: operational
 key_path: usage_activity_by_stage_monthly.release.releases
 description: Unique users creating release tags
 product_section: ops
-product_stage: release
-product_group: release
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 time_frame: 28d
@@ -16,8 +16,5 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type:
-- gmau
-- paid_gmau
-- smau
+performance_indicator_type: []
 milestone: "<13.9"

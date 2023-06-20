@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/UnusedBlockArgument:
-  Details: grace period
   Exclude:
     - 'app/controllers/application_controller.rb'
     - 'app/controllers/concerns/project_unauthorized.rb'

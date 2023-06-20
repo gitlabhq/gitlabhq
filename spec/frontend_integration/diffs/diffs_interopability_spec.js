@@ -3,6 +3,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import initDiffsApp from '~/diffs';
+import { initMrStateLazyLoad } from '~/mr_notes/init';
 import { createStore } from '~/mr_notes/stores';
 import {
   getDiffCodePart,
@@ -53,23 +54,35 @@ const startDiffsApp = () => {
     endpointBatch: `${TEST_BASE_URL}diffs_batch.json`,
     projectPath: TEST_PROJECT_PATH,
     helpPagePath: '/help',
-    currentUserData: 'null',
+    currentUserData: '{}',
     changesEmptyStateIllustration: '',
     isFluidLayout: 'false',
     dismissEndpoint: '',
     showSuggestPopover: 'false',
     showWhitespaceDefault: 'true',
-    viewDiffsFileByFile: 'false',
+    fileByFileDefault: 'false',
     defaultSuggestionCommitMessage: 'Lorem ipsum',
   });
 
+  const notesEl = document.createElement('div');
+  notesEl.id = 'js-vue-mr-discussions';
+  document.body.appendChild(notesEl);
+  Object.assign(notesEl.dataset, {
+    noteableData: '{ "current_user": {} }',
+    notesData: '{}',
+    currentUserData: '{}',
+  });
+
+  window.mrTabs = {
+    getCurrentAction: () => 'diffs',
+    eventHub: {
+      $on() {},
+    },
+  };
   const store = createStore();
+  initMrStateLazyLoad(store);
 
-  const vm = initDiffsApp(store);
-
-  store.dispatch('setActiveTab', 'diffs');
-
-  return vm;
+  return initDiffsApp(store);
 };
 
 describe('diffs third party interoperability', () => {
@@ -117,7 +130,7 @@ describe('diffs third party interoperability', () => {
     ${'parallel view right side'} | ${'parallel'} | ${'.diff-tr.line_holder'} | ${'.diff-td.line_content.right-side'} | ${EXPECT_PARALLEL_RIGHT_SIDE}
   `('$desc', ({ view, rowSelector, codeSelector, expectation }) => {
     beforeEach(async () => {
-      setWindowLocation(`${TEST_HOST}/${TEST_BASE_URL}/diffs?view=${view}`);
+      setWindowLocation(`${TEST_HOST}${TEST_BASE_URL}diffs?view=${view}`);
 
       vm = startDiffsApp();
 

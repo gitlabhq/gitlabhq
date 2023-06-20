@@ -691,7 +691,7 @@ class Repository
     @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths)
   end
 
-  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil)
+  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil)
     if sha == :head
       return if empty? || root_ref.nil?
 
@@ -699,10 +699,11 @@ class Repository
         return head_tree(skip_flat_paths: skip_flat_paths)
       else
         sha = head_commit.sha
+        ref_type = nil
       end
     end
 
-    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params)
+    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params, ref_type: ref_type)
   end
 
   def blob_at_branch(branch_name, path)
@@ -880,10 +881,12 @@ class Repository
   end
 
   def merge(user, source_sha, merge_request, message)
-    merge_to_branch(user,
-                    source_sha: source_sha,
-                    target_branch: merge_request.target_branch,
-                    message: message) do |commit_id|
+    merge_to_branch(
+      user,
+      source_sha: source_sha,
+      target_branch: merge_request.target_branch,
+      message: message
+    ) do |commit_id|
       merge_request.update_and_mark_in_progress_merge_commit_sha(commit_id)
       nil # Return value does not matter.
     end
@@ -1136,10 +1139,13 @@ class Repository
   end
 
   def squash(user, merge_request, message)
-    raw.squash(user, start_sha: merge_request.diff_start_sha,
-                     end_sha: merge_request.diff_head_sha,
-                     author: merge_request.author,
-                     message: message)
+    raw.squash(
+      user,
+      start_sha: merge_request.diff_start_sha,
+      end_sha: merge_request.diff_head_sha,
+      author: merge_request.author,
+      message: message
+    )
   end
 
   def submodule_links
@@ -1271,11 +1277,13 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(shard,
-                                disk_path + '.git',
-                                repo_type.identifier_for_container(container),
-                                container.full_path,
-                                container: container)
+    Gitlab::Git::Repository.new(
+      shard,
+      disk_path + '.git',
+      repo_type.identifier_for_container(container),
+      container.full_path,
+      container: container
+    )
   end
 end
 

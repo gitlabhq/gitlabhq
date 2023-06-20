@@ -385,8 +385,12 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
         expect(Compare)
           .to receive(:new)
-          .with(instance_of(Gitlab::Git::Compare), merge_request.target_project,
-                base_sha: diff.base_commit_sha, straight: false)
+          .with(
+            instance_of(Gitlab::Git::Compare),
+            merge_request.target_project,
+            base_sha: diff.base_commit_sha,
+            straight: false
+          )
           .and_call_original
 
         diff.diffs
@@ -1178,14 +1182,14 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '.latest_diff_for_merge_requests' do
-    let_it_be(:merge_request_1) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_1) { create(:merge_request, :skip_diff_creation) }
     let_it_be(:merge_request_1_diff_1) { create(:merge_request_diff, merge_request: merge_request_1, created_at: 3.days.ago) }
     let_it_be(:merge_request_1_diff_2) { create(:merge_request_diff, merge_request: merge_request_1, created_at: 1.day.ago) }
 
-    let_it_be(:merge_request_2) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_2) { create(:merge_request, :skip_diff_creation) }
     let_it_be(:merge_request_2_diff_1) { create(:merge_request_diff, merge_request: merge_request_2, created_at: 3.days.ago) }
 
-    let_it_be(:merge_request_3) { create(:merge_request_without_merge_request_diff) }
+    let_it_be(:merge_request_3) { create(:merge_request, :skip_diff_creation) }
 
     subject { described_class.latest_diff_for_merge_requests([merge_request_1, merge_request_2]) }
 
@@ -1274,7 +1278,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         it 'raises' do
           allow(diff).to receive(:external_diff_cache_dir).and_return(File.join(cache_dir, '..'))
 
-          expect { diff.remove_cached_external_diff }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+          expect { diff.remove_cached_external_diff }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
         end
       end
 

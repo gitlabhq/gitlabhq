@@ -94,7 +94,7 @@ meet the other online upgrade requirements mentioned above.
 
 WARNING:
 You can only upgrade one minor release at a time. So from 15.6 to 15.7, not to 15.8.
-If you attempt more than one minor release, the upgrade may fail. 
+If you attempt more than one minor release, the upgrade may fail.
 
 ### Use a load balancer in front of web (Puma) nodes
 

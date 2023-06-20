@@ -101,7 +101,13 @@ module QA
         end
 
         def pipeline_from_project_name(project_name)
-          project_name.to_s.start_with?('gitlab-qa') ? Runtime::Env.default_branch : project_name
+          if project_name.to_s.start_with?('gitlab-qa')
+            Runtime::Env.default_branch
+          elsif project_name.to_s == 'gitlab' && Runtime::Env.schedule_type == 'nightly'
+            'nightly'
+          else
+            project_name
+          end
         end
 
         # Get production domain value based on GitLab edition and URI's top level domain

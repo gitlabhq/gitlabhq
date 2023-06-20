@@ -1,0 +1,10 @@
+---
+table_name: dependency_proxy_packages_settings
+classes:
+- DependencyProxy::Packages::Setting
+feature_categories:
+- dependency_proxy
+description: Settings for the dependency proxy for packages.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120894
+milestone: '16.1'
+gitlab_schema: gitlab_main

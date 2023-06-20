@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SubscriptionsDropdown from '~/sidebar/components/subscriptions/subscriptions_dropdown.vue';
@@ -7,12 +7,17 @@ import { subscriptionsDropdownOptions } from '~/sidebar/constants';
 describe('SubscriptionsDropdown component', () => {
   let wrapper;
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
   const findHiddenInput = () => wrapper.find('input');
 
   function createComponent() {
-    wrapper = shallowMount(SubscriptionsDropdown);
+    wrapper = shallowMount(SubscriptionsDropdown, {
+      stubs: {
+        GlCollapsibleListbox,
+        GlListboxItem,
+      },
+    });
   }
 
   describe('with no value selected', () => {
@@ -25,48 +30,59 @@ describe('SubscriptionsDropdown component', () => {
     });
 
     it('renders default text', () => {
-      expect(findDropdown().props('text')).toBe(SubscriptionsDropdown.i18n.defaultDropdownText);
+      expect(findDropdown().props('toggleText')).toBe(
+        SubscriptionsDropdown.i18n.defaultDropdownText,
+      );
     });
 
-    it('renders dropdown items with `is-checked` prop set to `false`', () => {
+    it('renders dropdown items with `isSelected` prop set to `false`', () => {
       const dropdownItems = findAllDropdownItems();
 
-      expect(dropdownItems.at(0).props('isChecked')).toBe(false);
-      expect(dropdownItems.at(1).props('isChecked')).toBe(false);
+      expect(dropdownItems.at(0).props('isSelected')).toBe(false);
+      expect(dropdownItems.at(1).props('isSelected')).toBe(false);
     });
   });
 
   describe('when selecting a value', () => {
+    const optionToSelect = subscriptionsDropdownOptions[0];
+
     beforeEach(() => {
       createComponent();
-      findAllDropdownItems().at(0).vm.$emit('click');
+      findDropdown().vm.$emit('select', optionToSelect.value);
     });
 
     it('updates value of the hidden input', () => {
-      expect(findHiddenInput().attributes('value')).toBe(subscriptionsDropdownOptions[0].value);
+      expect(findHiddenInput().attributes('value')).toBe(optionToSelect.value);
     });
 
     it('updates the dropdown text prop', () => {
-      expect(findDropdown().props('text')).toBe(subscriptionsDropdownOptions[0].text);
+      expect(findDropdown().props('toggleText')).toBe(optionToSelect.text);
     });
 
-    it('sets dropdown item `is-checked` prop to `true`', () => {
+    it('sets dropdown item `isSelected` prop to `true`', () => {
       const dropdownItems = findAllDropdownItems();
 
-      expect(dropdownItems.at(0).props('isChecked')).toBe(true);
-      expect(dropdownItems.at(1).props('isChecked')).toBe(false);
+      expect(dropdownItems.at(0).props('isSelected')).toBe(true);
+      expect(dropdownItems.at(1).props('isSelected')).toBe(false);
+    });
+  });
+
+  describe('when reset is triggered', () => {
+    beforeEach(() => {
+      createComponent();
+      findDropdown().vm.$emit('select', subscriptionsDropdownOptions[0].value);
     });
 
-    describe('when selecting the value that is already selected', () => {
-      it('clears dropdown selection', async () => {
-        findAllDropdownItems().at(0).vm.$emit('click');
-        await nextTick();
-        const dropdownItems = findAllDropdownItems();
+    it('clears dropdown selection', async () => {
+      findDropdown().vm.$emit('reset');
+      await nextTick();
+      const dropdownItems = findAllDropdownItems();
 
-        expect(dropdownItems.at(0).props('isChecked')).toBe(false);
-        expect(dropdownItems.at(1).props('isChecked')).toBe(false);
-        expect(findDropdown().props('text')).toBe(SubscriptionsDropdown.i18n.defaultDropdownText);
-      });
+      expect(dropdownItems.at(0).props('isSelected')).toBe(false);
+      expect(dropdownItems.at(1).props('isSelected')).toBe(false);
+      expect(findDropdown().props('toggleText')).toBe(
+        SubscriptionsDropdown.i18n.defaultDropdownText,
+      );
     });
   });
 });

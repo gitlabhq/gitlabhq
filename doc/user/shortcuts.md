@@ -310,18 +310,6 @@ These shortcuts are available when viewing [epics](group/epics/index.md):
 | <kbd>e</kbd>      | Edit description. |
 | <kbd>l</kbd>      | Change label.     |
 
-## Metrics
-
-These shortcuts are available when using metrics:
-
-| Keyboard shortcut | Description         |
-|-------------------|---------------------|
-| <kbd>e</kbd>      | Expand panel.       |
-| <kbd>l</kbd>      | View logs.          |
-| <kbd>d</kbd>      | Download CSV.       |
-| <kbd>c</kbd>      | Copy link to chart. |
-| <kbd>a</kbd>      | Alerts.             |
-
 ## Disable keyboard shortcuts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22113) in GitLab 12.8.
@@ -336,7 +324,7 @@ press <kbd>?</kbd> to display the list of shortcuts.
 
 To enable keyboard shortcuts:
 
-1. On the top bar, select the Help menu (**{question}**), then **Keyboard shortcuts**.
+1. On the left sidebar, at the bottom, select **Help** (**{question}**), then **Keyboard shortcuts**.
 1. Select **Toggle shortcuts**.
 
 ## Troubleshooting

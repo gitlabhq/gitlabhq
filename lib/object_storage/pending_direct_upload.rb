@@ -2,31 +2,97 @@
 
 module ObjectStorage
   class PendingDirectUpload
-    KEY = 'pending_direct_uploads'
+    include ObjectStorage::FogHelpers
 
-    def self.prepare(location_identifier, path)
-      ::Gitlab::Redis::SharedState.with do |redis|
+    KEY = 'pending_direct_uploads'
+    MAX_UPLOAD_DURATION = 3.hours.freeze
+
+    def self.prepare(location_identifier, object_storage_path)
+      with_redis do |redis|
         # We need to store the location_identifier together with the timestamp to properly delete
         # this object if ever this upload gets stale. The location identifier will be used
         # by the clean up worker to properly generate the storage options through ObjectStorage::Config.for_location
-        redis.hset(KEY, key(location_identifier, path), Time.current.utc.to_i)
+        key = redis_key(location_identifier, object_storage_path)
+        redis.hset(KEY, key, Time.current.utc.to_i)
+        log_event(:prepared, key)
       end
     end
 
-    def self.exists?(location_identifier, path)
-      ::Gitlab::Redis::SharedState.with do |redis|
-        redis.hexists(KEY, key(location_identifier, path))
+    def self.exists?(location_identifier, object_storage_path)
+      with_redis do |redis|
+        redis.hexists(KEY, redis_key(location_identifier, object_storage_path))
       end
     end
 
-    def self.complete(location_identifier, path)
-      ::Gitlab::Redis::SharedState.with do |redis|
-        redis.hdel(KEY, key(location_identifier, path))
+    def self.complete(location_identifier, object_storage_path)
+      with_redis do |redis|
+        key = redis_key(location_identifier, object_storage_path)
+        redis.hdel(KEY, key)
+        log_event(:completed, key)
       end
     end
 
-    def self.key(location_identifier, path)
-      [location_identifier, path].join(':')
+    def self.redis_key(location_identifier, object_storage_path)
+      [location_identifier, object_storage_path].join(':')
     end
+
+    def self.count
+      with_redis do |redis|
+        redis.hlen(KEY)
+      end
+    end
+
+    def self.each
+      with_redis do |redis|
+        redis.hscan_each(KEY) do |entry|
+          redis_key, timestamp = entry
+          storage_location_identifier, object_storage_path = redis_key.split(':')
+
+          object = new(
+            redis_key: redis_key,
+            storage_location_identifier: storage_location_identifier,
+            object_storage_path: object_storage_path,
+            timestamp: timestamp
+          )
+
+          yield(object)
+        end
+      end
+    end
+
+    def self.with_redis(&block)
+      Gitlab::Redis::SharedState.with(&block) # rubocop:disable CodeReuse/ActiveRecord
+    end
+
+    def self.log_event(event, redis_key)
+      Gitlab::AppLogger.info(
+        message: "Pending direct upload #{event}",
+        redis_key: redis_key
+      )
+    end
+
+    def initialize(redis_key:, storage_location_identifier:, object_storage_path:, timestamp:)
+      @redis_key = redis_key
+      @storage_location_identifier = storage_location_identifier.to_sym
+      @object_storage_path = object_storage_path
+      @timestamp = timestamp.to_i
+    end
+
+    def stale?
+      timestamp < MAX_UPLOAD_DURATION.ago.utc.to_i
+    end
+
+    def delete
+      delete_object(object_storage_path)
+
+      self.class.with_redis do |redis|
+        redis.hdel(self.class::KEY, redis_key)
+        self.class.log_event(:deleted, redis_key)
+      end
+    end
+
+    private
+
+    attr_reader :redis_key, :storage_location_identifier, :object_storage_path, :timestamp
   end
 end

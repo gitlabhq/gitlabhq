@@ -49,6 +49,11 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
           it_behaves_like 'creates runner and shows register page' do
             let(:register_path_pattern) { register_project_runner_path(project, '.*') }
           end
+
+          it 'shows the locked field' do
+            expect(page).to have_selector('input[type="checkbox"][name="locked"]')
+            expect(page).to have_content(_('Lock to current projects'))
+          end
         end
       end
 

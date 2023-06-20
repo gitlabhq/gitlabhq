@@ -1,5 +1,5 @@
 - ajax = local_assigns.fetch(:ajax, false)
-- title = local_assigns.fetch(:title, _('Add a %{type}') % { type: type })
+- title = local_assigns.fetch(:title, s_('AccessTokens|Add a %{type}') % { type: type })
 - prefix = local_assigns.fetch(:prefix, :personal_access_token)
 - description_prefix = local_assigns.fetch(:description_prefix, prefix)
 - help_path = local_assigns.fetch(:help_path)
@@ -10,7 +10,7 @@
 %h5.gl-mt-0
   = title
 %p.profile-settings-content
-  = _("Enter the name of your application, and we'll return a unique %{type}.") % { type: type }
+  = s_("AccessTokens|Enter the name of your application, and we'll return a unique %{type}.") % { type: type }
 
 = gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { id: 'js-new-access-token-form', class: 'js-requires-input' }, remote: ajax do |f|
 
@@ -19,11 +19,11 @@
   .row
     .form-group.col
       .row
-        = f.label :name, _('Token name'), class: 'label-bold col-md-12'
+        = f.label :name, s_('AccessTokens|Token name'), class: 'label-bold col-md-12'
         .col-md-6
           - resource_type = resource.is_a?(Group) ? "group" : "project"
           = f.text_field :name, class: 'form-control gl-form-input', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
-        %span.form-text.text-muted.col-md-12#access_token_help_text= _("For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
+        %span.form-text.text-muted.col-md-12#access_token_help_text= s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
 
   .row
     .col
@@ -33,18 +33,18 @@
   - if resource
     .row
       .form-group.col-md-6
-        = label_tag :access_level, _("Select a role"), class: "label-bold"
+        = label_tag :access_level, s_("AccessTokens|Select a role"), class: "label-bold"
         .select-wrapper
           = select_tag :"#{prefix}[access_level]", options_for_select(access_levels, default_access_level), class: "form-control select-control", data: { qa_selector: 'access_token_access_level' }
           = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
 
   .form-group
     %b{ :'aria-describedby' => 'select_scope_help_text' }
-      = s_('Tokens|Select scopes')
+      = s_('AccessTokens|Select scopes')
     %p.text-secondary#select_scope_help_text
-      = s_('Tokens|Scopes set the permission levels granted to the token.')
+      = s_('AccessTokens|Scopes set the permission levels granted to the token.')
       = link_to _("Learn more."), help_path, target: '_blank', rel: 'noopener noreferrer'
     = render 'shared/tokens/scopes_form', prefix: prefix, description_prefix: description_prefix, token: token, scopes: scopes, f: f
 
   .gl-mt-3
-    = f.submit _('Create %{type}') % { type: type }, data: { qa_selector: 'create_token_button' }, pajamas_button: true
+    = f.submit s_('AccessTokens|Create %{type}') % { type: type }, data: { qa_selector: 'create_token_button' }, pajamas_button: true

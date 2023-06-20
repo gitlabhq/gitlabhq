@@ -18,12 +18,13 @@ Uncomment and customize if you want to change the default time zone of the GitLa
 
 To see all available time zones, run `bundle exec rake time:zones:all`.
 
-For Omnibus installations, run `gitlab-rake time:zones:all`.
+For Linux package installations, run `gitlab-rake time:zones:all`.
 
 NOTE:
-This Rake task does not list time zones in TZInfo format required by Omnibus GitLab during a reconfigure: [#27209](https://gitlab.com/gitlab-org/gitlab/-/issues/27209).
+This Rake task does not list time zones in TZInfo format required by a Linux package installation during a reconfigure. For more information,
+see [issue 27209](https://gitlab.com/gitlab-org/gitlab/-/issues/27209).
 
-## Changing time zone in Omnibus installations
+## Changing time zone in Linux package installations
 
 GitLab defaults its time zone to UTC. It has a global time zone configuration parameter in `/etc/gitlab/gitlab.rb`.
 

@@ -5,6 +5,14 @@ require 'capybara/dsl'
 module QA
   module Page
     class Base
+      # Generic matcher for common css selectors like:
+      # - class name '.someclass'
+      # - id '#someid'
+      # - selection by attributes 'input[attribute=name][value=value]'
+      #
+      # @return [Regex]
+      CSS_SELECTOR_PATTERN = /^(\.[a-z-]+|\#[a-z-]+)+|([a-z]+\[.*\])$/i
+
       prepend Support::Page::Logging
       prepend Mobile::Page::Base if QA::Runtime::Env.mobile_layout?
 
@@ -386,6 +394,7 @@ module QA
 
       def element_selector_css(name, *attributes)
         return name.selector_css if name.is_a? Page::Element
+        return name if name.is_a?(String) && name.match?(CSS_SELECTOR_PATTERN)
 
         Page::Element.new(name, *attributes).selector_css
       end
@@ -506,8 +515,8 @@ module QA
         return element_when_flag_disabled if has_element?(element_when_flag_disabled, visible: visibility)
 
         raise ElementNotFound,
-              "Could not find the expected element as #{element_when_flag_enabled} or #{element_when_flag_disabled}." \
-              "The relevant feature flag is #{feature_flag}"
+          "Could not find the expected element as #{element_when_flag_enabled} or #{element_when_flag_disabled}." \
+          "The relevant feature flag is #{feature_flag}"
       end
     end
   end

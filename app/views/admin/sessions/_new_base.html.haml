@@ -3,5 +3,5 @@
     = label_tag :user_password, _('Password'), class: 'label-bold'
     = password_field_tag 'user[password]', nil, { class: 'form-control js-password', data: { id: 'user_password', name: 'user[password]', qa_selector: 'password_field', testid: 'password-field' } }
 
-  .submit-container.move-submit-down
+  .submit-container
     = submit_tag _('Enter admin mode'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'enter_admin_mode_button' }

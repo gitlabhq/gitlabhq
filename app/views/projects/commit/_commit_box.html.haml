@@ -29,15 +29,14 @@
     %pre.commit-description<
       = preserve(markdown_field(@commit, :description))
 
-.info-well.js-commit-box-info{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
+.info-well
   .well-segment
     .icon-container.commit-icon
       = custom_icon("icon_commit")
     %span.cgray= n_('parent', 'parents', @commit.parents.count)
     - @commit.parents.each do |parent|
       = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
-    .commit-info.branches
-      = gl_loading_icon(inline: true, css_class: 'gl-vertical-align-middle')
+    #js-commit-branches-and-tags{ data: { full_path: @project.full_path, commit_sha: @commit.short_id } }
 
   .well-segment.merge-request-info
     .icon-container

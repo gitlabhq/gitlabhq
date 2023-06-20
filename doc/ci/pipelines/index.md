@@ -109,10 +109,9 @@ Select a pipeline to open the **Pipeline Details** page and show
 the jobs that were run for that pipeline. From here you can cancel a running pipeline,
 retry jobs on a failed pipeline, or [delete a pipeline](#delete-a-pipeline).
 
-[Starting in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50499), a link to the
-latest pipeline for the last commit of a given branch is available at `/project/pipelines/[branch]/latest`.
-Also, `/project/pipelines/latest` redirects you to the latest pipeline for the last commit
-on the project's default branch.
+A link to the latest pipeline for the last commit of a given branch is available at
+`/project/-/pipelines/[branch]/latest`. Also, `/project/-/pipelines/latest` redirects
+you to the latest pipeline for the last commit on the project's default branch.
 
 [Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/215367),
 you can filter the pipeline list by:
@@ -140,8 +139,8 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Pipelines**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipelines**.
 1. Select **Run pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
 1. Enter any [CI/CD variables](../variables/index.md) required for the pipeline to run.
@@ -188,6 +187,11 @@ In this example:
   The user is expected to define the value each time the pipeline is run manually.
 - `DEPLOY_ENVIRONMENT` is pre-filled in the **Run pipeline** page with `canary` as the default value,
   and the message explains the other options.
+
+NOTE:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines) can have prefilled variables not appear
+when running a pipeline manually. To workaround this issue,
+[change the compliance pipeline configuration](../../user/group/compliance_frameworks.md#prefilled-variables-are-not-shown).
 
 #### Configure a list of selectable prefilled variable values
 
@@ -345,8 +349,8 @@ Prerequisites:
 
 To trigger the pipeline when the upstream project is rebuilt:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
    For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.

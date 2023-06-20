@@ -7,7 +7,7 @@ class AutocompleteController < ApplicationController
   before_action :check_search_rate_limit!, only: [:users, :projects]
 
   feature_category :user_profile, [:users, :user]
-  feature_category :projects, [:projects]
+  feature_category :groups_and_projects, [:projects]
   feature_category :team_planning, [:award_emojis]
   feature_category :code_review_workflow, [:merge_request_target_branches]
   feature_category :continuous_delivery, [:deploy_keys_with_owners]

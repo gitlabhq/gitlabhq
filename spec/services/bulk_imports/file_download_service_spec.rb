@@ -95,7 +95,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
         it 'raises an error' do
           expect { subject.execute }.to raise_error(
             described_class::ServiceError,
-            'File size 1000 Bytes exceeds limit of 1 Byte'
+            'File size 1000 B exceeds limit of 1 B'
           )
         end
       end
@@ -128,7 +128,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
       it 'raises an error' do
         expect { subject.execute }.to raise_error(
           described_class::ServiceError,
-          'File size 151 Bytes exceeds limit of 150 Bytes'
+          'File size 151 B exceeds limit of 150 B'
         )
       end
     end
@@ -281,7 +281,7 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
       it 'raises an error' do
         expect { subject.execute }.to raise_error(
-          Gitlab::Utils::PathTraversalAttackError,
+          Gitlab::PathTraversal::PathTraversalAttackError,
           'Invalid path'
         )
       end

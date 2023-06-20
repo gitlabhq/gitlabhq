@@ -12,7 +12,7 @@ It is used by GitLab to read and write Git data.
 Gitaly is present in every GitLab installation and coordinates Git repository
 storage and retrieval. Gitaly can be:
 
-- A background service operating on a single instance Omnibus GitLab (all of
+- A background service operating on a single instance Linux package installation (all of
   GitLab on one machine).
 - Separated onto its own instance and configured in a full cluster configuration,
   depending on scaling and availability requirements.
@@ -164,11 +164,11 @@ E --> F
 
 ### Configure Gitaly
 
-Gitaly comes pre-configured with Omnibus GitLab, which is a configuration
+Gitaly comes pre-configured with a Linux package installation, which is a configuration
 [suitable for up to 1000 users](../reference_architectures/1k_users.md). For:
 
-- Omnibus GitLab installations for up to 2000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
-- Source installations or custom Gitaly installations, see [Configure Gitaly](configure_gitaly.md).
+- Linux package installations for up to 2000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
+- Self-compiled installations or custom Gitaly installations, see [Configure Gitaly](configure_gitaly.md).
 
 GitLab installations for more than 2000 active users performing daily Git write operation may be
 best suited by using Gitaly Cluster.
@@ -481,8 +481,7 @@ You can [monitor distribution of reads](monitoring.md#monitor-gitaly-cluster) us
 
 #### Strong consistency
 
-> - In GitLab 13.6 to 13.12, strong consistency must be manually configured. Refer to [the 13.12 documentation](https://docs.gitlab.com/13.12/ee/administration/gitaly/praefect.html#strong-consistency).
-> - In GitLab 14.0, strong consistency is the primary replication method.
+> In GitLab 14.0, strong consistency is the primary replication method.
 
 Gitaly Cluster provides strong consistency by writing changes synchronously to all healthy, up-to-date replicas. If a
 replica is outdated or unhealthy at the time of the transaction, the write is asynchronously replicated to it.
@@ -596,7 +595,7 @@ Direct access to Git uses code in GitLab known as the "Rugged patches".
 
 Before Gitaly existed, what are now Gitaly clients accessed Git repositories directly, either:
 
-- On a local disk in the case of a single-machine Omnibus GitLab installation.
+- On a local disk in the case of a single-machine Linux package installation.
 - Using NFS in the case of a horizontally-scaled GitLab installation.
 
 In addition to running plain `git` commands, GitLab used a Ruby library called

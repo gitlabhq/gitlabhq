@@ -13,16 +13,33 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
   end
 
   describe 'GET /orgs/:namespace/repos' do
+    let_it_be(:group) { create(:group) }
+
     it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
       subject do
-        group = create(:group)
         jira_get v3_api("/orgs/#{group.path}/repos", user)
       end
     end
 
-    it 'returns an empty array' do
-      group = create(:group)
+    it 'logs when the endpoint is hit and `jira_dvcs_end_of_life_amnesty` is enabled' do
+      expect(Gitlab::JsonLogger).to receive(:info).with(
+        including(
+          namespace: group.path,
+          user_id: user.id,
+          message: 'Deprecated Jira DVCS endpoint request'
+        )
+      )
 
+      jira_get v3_api("/orgs/#{group.path}/repos", user)
+
+      stub_feature_flags(jira_dvcs_end_of_life_amnesty: false)
+
+      expect(Gitlab::JsonLogger).not_to receive(:info)
+
+      jira_get v3_api("/orgs/#{group.path}/repos", user)
+    end
+
+    it 'returns an empty array' do
       jira_get v3_api("/orgs/#{group.path}/repos", user)
 
       expect(response).to have_gitlab_http_status(:ok)

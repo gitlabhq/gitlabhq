@@ -11,8 +11,9 @@ configured to make sure that long-running Gitaly calls don't needlessly take up 
 
 To access Gitaly timeout settings:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Preferences**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Preferences**.
 1. Expand the **Gitaly timeouts** section.
 
 ## Available timeouts

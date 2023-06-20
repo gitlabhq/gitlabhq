@@ -260,7 +260,7 @@ test:
 
 This example uses [PHPUnit](https://phpunit.de/) with the `--log-junit` flag.
 You can also add this option using
-[XML](https://phpunit.readthedocs.io/en/9.5/configuration.html#the-junit-element)
+[XML](https://docs.phpunit.de/en/10.2/configuration.html#the-junit-element)
 in the `phpunit.xml` configuration file.
 
 ```yaml

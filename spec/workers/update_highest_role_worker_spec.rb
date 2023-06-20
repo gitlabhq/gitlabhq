@@ -18,7 +18,7 @@ RSpec.describe UpdateHighestRoleWorker, :clean_gitlab_redis_shared_state, featur
       let(:active_attributes) do
         {
           state: 'active',
-          user_type: nil
+          user_type: :human
         }
       end
 

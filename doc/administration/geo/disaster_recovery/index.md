@@ -236,7 +236,7 @@ do this manually.
    roles ['geo_secondary_role']
    ```
 
-   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    on each machine so the changes take effect.
 
 1. Promote the **secondary** to **primary**. SSH into a single application
@@ -444,7 +444,7 @@ required:
    roles ['geo_secondary_role']
    ```
 
-   After making these changes [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   After making these changes [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    on each node so the changes take effect.
 
 1. Promote the **secondary** to **primary**. SSH into a single secondary application
@@ -542,19 +542,19 @@ Geo on the new **primary** site.
 
 To bring a new **secondary** site online, follow the [Geo setup instructions](../index.md#setup-instructions).
 
-### Step 6. (Optional) Removing the secondary's tracking database
+### Step 6. Removing the secondary's tracking database
 
 Every **secondary** has a special tracking database that is used to save the status of the synchronization of all the items from the **primary**.
 Because the **secondary** is already promoted, that data in the tracking database is no longer required.
 
-The data can be removed with the following command:
+You can remove the data with the following command:
 
 ```shell
 sudo rm -rf /var/opt/gitlab/geo-postgresql
 ```
 
 If you have any `geo_secondary[]` configuration options enabled in your `gitlab.rb`
-file, these can be safely commented out or removed, and then [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 for the changes to take effect.
 
 ## Promoting secondary Geo replica in multi-secondary configurations
@@ -681,7 +681,8 @@ Data that was created on the primary while the secondary was paused is lost.
 
 If you are running GitLab 14.5 and later:
 
-1. For each node outside of the **secondary** Kubernetes cluster using Omnibus such as PostgreSQL or Gitaly, SSH into the node and run one of the following commands:
+1. For each node (such as PostgreSQL or Gitaly) outside of the **secondary** Kubernetes cluster using the Linux
+   package, SSH into the node and run one of the following commands:
 
    - To promote the **secondary** site node external to the Kubernetes cluster to primary:
 
@@ -731,7 +732,7 @@ If you are running GitLab 14.4 and earlier:
    roles ['geo_secondary_role']
    ```
 
-   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) on the database node.
+   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on the database node.
 
 1. Find the task runner pod:
 

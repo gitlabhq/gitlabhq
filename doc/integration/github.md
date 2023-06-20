@@ -81,7 +81,7 @@ your website could enable the covert redirect attack.
         ]
         ```
 
-     1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+     1. Save the file and [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
         GitLab.
 
    - **For installations from source**
@@ -187,9 +187,9 @@ To fix this issue, you must disable SSL verification:
      git config --global http.sslVerify false
      ```
 
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
-   if you installed using Omnibus, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
-   if you installed from source.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
+   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   if you self-compiled your installation.
 
 ### Signing in using GitHub Enterprise returns a 500 error
 
@@ -233,7 +233,7 @@ and then connect it to your GitHub account
 
 To fix this issue, you must activate GitHub sign-in in GitLab:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect to GitHub**.

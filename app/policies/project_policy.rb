@@ -163,6 +163,14 @@ class ProjectPolicy < BasePolicy
   condition(:service_desk_enabled) { @subject.service_desk_enabled? }
 
   with_scope :subject
+  condition(:model_experiments_enabled) do
+    Feature.enabled?(:ml_experiment_tracking, @subject) && @subject.feature_available?(:model_experiments, @user)
+  end
+
+  with_scope :subject
+  condition(:model_registry_enabled) { Feature.enabled?(:model_registry, @subject) }
+
+  with_scope :subject
   condition(:resource_access_token_feature_available) do
     resource_access_token_feature_available?
   end
@@ -220,6 +228,7 @@ class ProjectPolicy < BasePolicy
     feature_flags
     releases
     infrastructure
+    model_experiments
   ]
 
   features.each do |f|
@@ -890,6 +899,14 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:owner_access) & namespace_catalog_available }.policy do
     enable :add_catalog_resource
+  end
+
+  rule { model_registry_enabled }.policy do
+    enable :read_model_registry
+  end
+
+  rule { model_experiments_enabled }.policy do
+    enable :read_model_experiments
   end
 
   private

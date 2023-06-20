@@ -67,7 +67,7 @@ if a user approves a merge request and is shown in the reviewer list, a green ch
 
 After a merge request receives the [number and type of approvals](rules.md) you configure, it can merge
 unless it's blocked for another reason. Merge requests can be blocked by other problems,
-such as merge conflicts, [unresolved threads](../../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved),
+such as merge conflicts, [unresolved threads](../index.md#prevent-merge-unless-all-threads-are-resolved),
 or a [failed CI/CD pipeline](../merge_when_pipeline_succeeds.md).
 
 To prevent merge request authors from approving their own merge requests,
@@ -109,11 +109,11 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389905) in GitLab 15.11 [with a flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`. Disabled by default.
+> - [Enabled by default on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.1.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance,
-ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
 
 Whenever an approval rule cannot be satisfied, the rule is displayed as **(!) Auto approved**. This applies to the following conditions:
 

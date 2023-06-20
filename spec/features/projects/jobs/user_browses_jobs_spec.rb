@@ -8,7 +8,7 @@ def visit_jobs_page
   wait_for_requests
 end
 
-RSpec.describe 'User browses jobs', feature_category: :projects do
+RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
   describe 'Jobs', :js do
     let(:project) { create(:project, :repository) }
     let(:user) { create(:user) }
@@ -72,7 +72,7 @@ RSpec.describe 'User browses jobs', feature_category: :projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('.ci-canceled')
+          expect(page).to have_selector('[data-testid="ci-badge-canceled"]')
           expect(page).not_to have_selector('[data-testid="jobs-table-error-alert"]')
         end
       end
@@ -94,7 +94,7 @@ RSpec.describe 'User browses jobs', feature_category: :projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('.ci-pending')
+          expect(page).to have_selector('[data-testid="ci-badge-pending"]')
         end
       end
 
@@ -134,7 +134,7 @@ RSpec.describe 'User browses jobs', feature_category: :projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('.ci-pending')
+          expect(page).to have_selector('[data-testid="ci-badge-pending"]')
         end
 
         it 'unschedules a job successfully' do
@@ -142,7 +142,7 @@ RSpec.describe 'User browses jobs', feature_category: :projects do
 
           wait_for_requests
 
-          expect(page).to have_selector('.ci-manual')
+          expect(page).to have_selector('[data-testid="ci-badge-manual"]')
         end
       end
 

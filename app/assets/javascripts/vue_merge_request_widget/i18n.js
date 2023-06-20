@@ -1,5 +1,9 @@
 import { __, s__ } from '~/locale';
 
+export const MR_WIDGET_PREPARING_ASYNCHRONOUSLY = s__(
+  'mrWidget|Your merge request is almost ready!',
+);
+
 export const MR_WIDGET_MISSING_BRANCH_WHICH = s__(
   'mrWidget|The %{type} branch %{codeStart}%{name}%{codeEnd} does not exist.',
 );

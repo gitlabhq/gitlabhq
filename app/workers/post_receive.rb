@@ -36,6 +36,8 @@ class PostReceive
       process_project_changes(post_received, container)
     elsif repo_type.snippet?
       process_snippet_changes(post_received, container)
+    elsif repo_type.design?
+      process_design_management_repository_changes(post_received, container)
     else
       # Other repos don't have hooks for now
     end
@@ -89,8 +91,21 @@ class PostReceive
     Snippets::UpdateStatisticsService.new(snippet).execute
   end
 
+  def process_design_management_repository_changes(post_received, design_management_repository)
+    user = identify_user(post_received)
+
+    return false unless user
+
+    replicate_design_management_repository_changes(design_management_repository)
+    expire_caches(post_received, design_management_repository.repository)
+  end
+
   def replicate_snippet_changes(snippet)
     # Used by Gitlab Geo
+  end
+
+  def replicate_design_management_repository_changes(design_management_repository)
+    # Used by GitLab Geo
   end
 
   # Expire the repository status, branch, and tag cache once per push.

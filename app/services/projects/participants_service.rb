@@ -45,7 +45,7 @@ module Projects
     def visible_groups
       visible_groups = project.invited_groups
 
-      unless project.team.owner?(current_user)
+      unless project.team.member?(current_user)
         visible_groups = visible_groups.public_or_visible_to_user(current_user)
       end
 

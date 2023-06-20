@@ -6,6 +6,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let!(:pages_domain) { create(:pages_domain, project: project) }
+  let(:domain_presenter) { pages_domain.present(current_user: user) }
 
   let(:request_params) do
     {
@@ -28,15 +29,42 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
   end
 
   describe 'GET show' do
+    before do
+      controller.instance_variable_set(:@domain, pages_domain)
+      allow(pages_domain).to receive(:present).with(current_user: user).and_return(domain_presenter)
+    end
+
     def make_request
       get(:show, params: request_params.merge(id: pages_domain.domain))
     end
 
-    it "displays to the 'show' page" do
-      make_request
+    context 'when domain is verified' do
+      before do
+        allow(domain_presenter).to receive(:needs_verification?).and_return(false)
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to render_template('show')
+      it "displays to the 'show' page without warning" do
+        make_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('show')
+        expect(flash.now[:warning]).to be_nil
+      end
+    end
+
+    context 'when domain is unverified' do
+      before do
+        allow(domain_presenter).to receive(:needs_verification?).and_return(true)
+      end
+
+      it "displays to the 'show' page with warning" do
+        make_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('show')
+        expect(flash.now[:warning])
+          .to eq('This domain is not verified. You will need to verify ownership before access is enabled.')
+      end
     end
 
     context 'when user is developer' do
@@ -78,15 +106,6 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
 
       expect(created_domain).to be_present
       expect(response).to redirect_to(project_pages_domain_path(project, created_domain))
-    end
-  end
-
-  describe 'GET show' do
-    it "displays the 'show' page" do
-      get(:show, params: request_params.merge(id: pages_domain.domain))
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to render_template('show')
     end
   end
 

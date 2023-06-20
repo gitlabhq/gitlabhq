@@ -12,6 +12,7 @@ module MergeRequests
       merge_request.allow_broken = true
 
       if merge_request.close
+        expire_unapproved_key(merge_request)
         create_event(merge_request)
         merge_request_activity_counter.track_close_mr_action(user: current_user)
         create_note(merge_request)
@@ -40,8 +41,14 @@ module MergeRequests
       end
     end
 
+    def expire_unapproved_key(merge_request)
+      nil
+    end
+
     def trigger_merge_request_merge_status_updated(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
   end
 end
+
+MergeRequests::CloseService.prepend_mod

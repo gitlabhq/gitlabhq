@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state, feature_category: :integrations do
+RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state, feature_category: :webhooks do
   include StubRequests
 
   let(:ellipsis) { '…' }

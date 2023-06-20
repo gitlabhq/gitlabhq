@@ -136,7 +136,6 @@ RSpec/InstanceVariable:
     - 'spec/requests/git_http_spec.rb'
     - 'spec/requests/openid_connect_spec.rb'
     - 'spec/requests/projects/issues/discussions_spec.rb'
-    - 'spec/rubocop/cop/migration/update_column_in_batches_spec.rb'
     - 'spec/services/ci/process_sync_events_service_spec.rb'
     - 'spec/services/labels/update_service_spec.rb'
     - 'spec/services/members/destroy_service_spec.rb'

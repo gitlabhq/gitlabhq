@@ -18,8 +18,8 @@ Prerequisites:
 
 To view the available integrations for your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 
 You can also view and manage integration settings across [all projects in an instance or group](../../admin_area/settings/project_integration_management.md).
 For a single project, you can choose to inherit the instance or group configuration,
@@ -50,6 +50,7 @@ You can configure the following integrations.
 | [Bugzilla](bugzilla.md)                                                     | Use Bugzilla as the issue tracker.                                    | **{dotted-circle}** No |
 | Buildkite                                                                   | Run CI/CD pipelines with Buildkite.                                   | **{check-circle}** Yes |
 | Campfire                                                                    | Connect to chat.                                                      | **{dotted-circle}** No |
+| [ClickUp](clickup.md)                                                       | Use ClickUp as the issue tracker.                                    | **{dotted-circle}** No |
 | [Confluence Workspace](../../../api/integrations.md#confluence-integration) | Use Confluence Cloud Workspace as an internal wiki.                   | **{dotted-circle}** No |
 | [Custom issue tracker](custom_issue_tracker.md)                             | Use a custom issue tracker.                                           | **{dotted-circle}** No |
 | [Datadog](../../../integration/datadog.md)                                  | Trace your GitLab pipelines with Datadog.                             | **{check-circle}** Yes |
@@ -80,6 +81,7 @@ You can configure the following integrations.
 | [Slack notifications](slack.md)                                             | Send notifications about project events to Slack.                     | **{dotted-circle}** No |
 | [Slack slash commands](slack_slash_commands.md)                             | Enable slash commands in a workspace.                                 | **{dotted-circle}** No |
 | [Squash TM](squash_tm.md)                                                   | Update Squash TM requirements when GitLab issues are modified.        | **{check-circle}** Yes |
+| [Telegram](telegram.md)                                                     | Send notifications about project events to Telegram.                  | **{dotted-circle}** No |
 | [Unify Circuit](unify_circuit.md)                                           | Send notifications about project events to Unify Circuit.             | **{dotted-circle}** No |
 | [Webex Teams](webex_teams.md)                                               | Receive events notifications.                                         | **{dotted-circle}** No |
 | [YouTrack](youtrack.md)                                                     | Use YouTrack as the issue tracker.                                    | **{dotted-circle}** No |

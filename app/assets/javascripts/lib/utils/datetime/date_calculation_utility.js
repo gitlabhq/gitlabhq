@@ -730,3 +730,13 @@ export const getTimeRemainingInWords = (date) => {
   const years = dateInFuture.getFullYear() - today.getFullYear();
   return n__('1 year remaining', '%d years remaining', years);
 };
+
+/**
+ * Returns the current date according to UTC time at midnight
+ * @return {Date} The current date in UTC
+ */
+export const getCurrentUtcDate = () => {
+  const now = new Date();
+
+  return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+};

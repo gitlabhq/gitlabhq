@@ -52,7 +52,7 @@ RSpec.describe Integrations::Discord do
         subject.execute(sample_data)
 
         expect(builder.to_json_hash[:embeds].first).to include(
-          description: start_with("#{user.name} pushed to branch [master](http://localhost/#{project.namespace.path}/#{project.path}/commits/master) of"),
+          description: start_with("#{user.name} pushed to branch [master](http://localhost/#{project.namespace.path}/#{project.path}/-/commits/master) of"),
           author: hash_including(
             icon_url: start_with('https://www.gravatar.com/avatar/'),
             name: user.name

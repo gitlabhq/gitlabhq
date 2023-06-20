@@ -2,11 +2,11 @@
 
 module WorkItems
   class CreateFromTaskService
-    def initialize(work_item:, spam_params:, current_user: nil, work_item_params: {})
+    def initialize(work_item:, perform_spam_check: true, current_user: nil, work_item_params: {})
       @work_item = work_item
       @current_user = current_user
       @work_item_params = work_item_params
-      @spam_params = spam_params
+      @perform_spam_check = perform_spam_check
       @errors = []
     end
 
@@ -16,7 +16,7 @@ module WorkItems
           project: @work_item.project,
           current_user: @current_user,
           params: @work_item_params.slice(:title, :work_item_type_id),
-          spam_params: @spam_params,
+          perform_spam_check: @perform_spam_check,
           link_params: { parent_work_item: @work_item }
         ).execute
 

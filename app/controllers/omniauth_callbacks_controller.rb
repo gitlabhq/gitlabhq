@@ -15,7 +15,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   feature_category :system_access
 
   def handle_omniauth
-    omniauth_flow(Gitlab::Auth::OAuth)
+    if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
+      saml
+    else
+      omniauth_flow(Gitlab::Auth::OAuth)
+    end
   end
 
   AuthHelper.providers_for_base_controller.each do |provider|
@@ -30,6 +34,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Extend the standard implementation to also increment
   # the number of failed sign in attempts
   def failure
+    update_login_counter_metric(failed_strategy.name, 'failed')
+
     if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
       user = User.find_by_login(params[:username])
 
@@ -79,6 +85,21 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
+  def track_event(user, provider, status)
+    log_audit_event(user, with: provider)
+    update_login_counter_metric(provider, status)
+  end
+
+  def update_login_counter_metric(provider, status)
+    omniauth_login_counter.increment(omniauth_provider: provider, status: status)
+  end
+
+  def omniauth_login_counter
+    @counter ||= Gitlab::Metrics.counter(
+      :gitlab_omniauth_login_total,
+      'Counter of OmniAuth login attempts')
+  end
+
   def log_failed_login(user, provider)
     # overridden in EE
   end
@@ -99,7 +120,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if current_user
       return render_403 unless link_provider_allowed?(oauth['provider'])
 
-      log_audit_event(current_user, with: oauth['provider'])
+      track_event(current_user, oauth['provider'], 'succeeded')
 
       if Gitlab::CurrentSettings.admin_mode
         return admin_mode_flow(auth_module::User) if current_user_mode.admin_mode_requested?
@@ -151,7 +172,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # from that in `#context_user`. Pushing it manually here makes the information
       # available in the logs for this request.
       Gitlab::ApplicationContext.push(user: user)
-      log_audit_event(user, with: oauth['provider'])
+      track_event(user, oauth['provider'], 'succeeded')
       Gitlab::Tracking.event(self.class.name, "#{oauth['provider']}_sso", user: user) if new_user
 
       set_remember_me(user)
@@ -167,7 +188,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         accept_pending_invitations(user: user) if new_user
         persist_accepted_terms_if_required(user) if new_user
 
-        store_after_sign_up_path_for_user if intent_to_register?
+        perform_registration_tasks(user, oauth['provider']) if new_user
         sign_in_and_redirect_or_verify_identity(user, auth_user, new_user)
       end
     else
@@ -249,11 +270,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     (request_params['remember_me'] == '1') if request_params.present?
   end
 
-  def intent_to_register?
-    request_params = request.env['omniauth.params']
-    (request_params['intent'] == 'register') if request_params.present?
-  end
-
   def store_redirect_fragment(redirect_fragment)
     key = stored_location_key_for(:user)
     location = session[key]
@@ -295,8 +311,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Users::RespondToTermsService.new(user, terms).execute(accepted: true)
   end
 
-  def store_after_sign_up_path_for_user
-    store_location_for(:user, users_sign_up_welcome_path)
+  def perform_registration_tasks(_user, _provider)
+    store_location_for(:user, after_sign_up_path)
+  end
+
+  def after_sign_up_path
+    users_sign_up_welcome_path
   end
 
   # overridden in EE

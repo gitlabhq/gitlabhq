@@ -295,7 +295,7 @@ const bindEvents = () => {
   });
 
   $newProjectForm.on('submit', () => {
-    $projectPath.val($projectPath.val().trim());
+    $projectPath.value = $projectPath.value.trim();
   });
 
   const updateUrlPathWarningVisibility = async () => {

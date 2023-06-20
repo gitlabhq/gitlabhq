@@ -117,8 +117,8 @@ Configure the GitLab integration with Jenkins in one of the following ways.
 GitLab recommends this approach for Jenkins integrations because it is easier to configure
 than the [webhook integration](#configure-a-webhook).
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Jenkins**.
 1. Select the **Active** checkbox.
 1. Select the events you want GitLab to trigger a Jenkins build for:
@@ -134,7 +134,7 @@ than the [webhook integration](#configure-a-webhook).
    project.
 1. If your Jenkins server requires
    authentication, enter the **Username** and **Password**.
-1. To test the connection to Jenkins, select **Test settings**.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 ### Configure a webhook

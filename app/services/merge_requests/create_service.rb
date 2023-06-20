@@ -41,6 +41,7 @@ module MergeRequests
       # timeout, we do this before we attempt to save the merge request.
 
       merge_request.skip_ensure_merge_request_diff = true
+      merge_request.check_for_spam(user: current_user, action: :create)
     end
 
     def set_projects!

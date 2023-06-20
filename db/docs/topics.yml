@@ -3,7 +3,7 @@ table_name: topics
 classes:
 - Projects::Topic
 feature_categories:
-- projects
+- groups_and_projects
 description: Stores topics that can be assigned to projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67574
 milestone: '14.3'

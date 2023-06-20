@@ -329,7 +329,8 @@ module API
         post ':id/pipelines/:pipeline_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
-          pipeline.cancel_running
+          # TODO: inconsistent behavior: when pipeline is not cancelable we should return an error
+          ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
 
           status 200
           present pipeline.reset, with: Entities::Ci::Pipeline

@@ -14,7 +14,7 @@ information. Be sure to read and test the complete restore process at least
 once before attempting to perform it in a production environment.
 
 You can restore a backup only to _the exact same version and type (CE/EE)_ of
-GitLab that you created it on (for example CE 9.1.0).
+GitLab that you created it on (for example CE 15.1.4).
 
 If your backup is a different version than the current installation, you must
 [downgrade](../update/package/downgrade.md) or [upgrade](../update/package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) your GitLab installation
@@ -367,24 +367,24 @@ sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
 
-You can restore specific repositories using the `REPOSITORIES_PATHS` option.
-The option accepts a comma-separated list of project and group paths. If you
+You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
+Both options accept a comma-separated list of project and group paths. If you
 specify a group path, all repositories in all projects in the group and
-descendent groups are included. The project and group repositories must exist
-within the specified backup.
+descendent groups are included or skipped, depending on which option you used. The project and group repositories must exist within the specified backup.
 
-For example, to restore all repositories for all projects in **Group A** (`group-a`), and the repository for **Project C** in **Group B** (`group-b/project-c`):
+For example, to restore all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
+and skip the **Project D** in **Group A** (`group-a/project-d`):
 
 - Omnibus GitLab installations:
 
   ```shell
-  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c
+  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 - Installations from source:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
   ```
 
 ### Restore untarred backups

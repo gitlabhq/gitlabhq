@@ -44,9 +44,7 @@ describe('SubscriptionsPage', () => {
           });
         });
 
-        it(`${
-          subscriptionsLoading ? 'does not render' : 'renders'
-        } button to add namespace`, () => {
+        it(`${subscriptionsLoading ? 'does not render' : 'renders'} button to add group`, () => {
           expect(findAddNamespaceButton().exists()).toBe(!subscriptionsLoading);
         });
 

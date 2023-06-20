@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SentNotification do
+RSpec.describe SentNotification, :request_store do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
@@ -46,21 +46,31 @@ RSpec.describe SentNotification do
     end
   end
 
+  shared_examples 'a non-sticky write' do
+    it 'writes without sticking to primary' do
+      subject
+
+      expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).to be false
+    end
+  end
+
   describe '.record' do
-    let(:issue) { create(:issue) }
+    let_it_be(:issue) { create(:issue) }
 
     subject { described_class.record(issue, user.id) }
 
     it_behaves_like 'a successful sent notification'
+    it_behaves_like 'a non-sticky write'
   end
 
   describe '.record_note' do
     subject { described_class.record_note(note, note.author.id) }
 
     context 'for a discussion note' do
-      let(:note) { create(:diff_note_on_merge_request) }
+      let_it_be(:note) { create(:diff_note_on_merge_request) }
 
       it_behaves_like 'a successful sent notification'
+      it_behaves_like 'a non-sticky write'
 
       it 'sets in_reply_to_discussion_id' do
         expect(subject.in_reply_to_discussion_id).to eq(note.discussion_id)
@@ -68,9 +78,10 @@ RSpec.describe SentNotification do
     end
 
     context 'for an individual note' do
-      let(:note) { create(:note_on_merge_request) }
+      let_it_be(:note) { create(:note_on_merge_request) }
 
       it_behaves_like 'a successful sent notification'
+      it_behaves_like 'a non-sticky write'
 
       it 'sets in_reply_to_discussion_id' do
         expect(subject.in_reply_to_discussion_id).to eq(note.discussion_id)
@@ -324,28 +335,6 @@ RSpec.describe SentNotification do
         expect(new_note.in_reply_to?(note)).to be_truthy
         expect(new_note.discussion_id).to eq(note.discussion_id)
       end
-    end
-  end
-
-  describe "#position=" do
-    subject { build(:sent_notification, noteable: create(:issue)) }
-
-    it "doesn't accept non-hash JSON passed as a string" do
-      subject.position = "true"
-
-      expect(subject.attributes_before_type_cast["position"]).to be(nil)
-    end
-
-    it "does accept a position hash as a string" do
-      subject.position = '{ "base_sha": "test" }'
-
-      expect(subject.position.base_sha).to eq("test")
-    end
-
-    it "does accept a hash" do
-      subject.position = { "base_sha" => "test" }
-
-      expect(subject.position.base_sha).to eq("test")
     end
   end
 end

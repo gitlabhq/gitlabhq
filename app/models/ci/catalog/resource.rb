@@ -13,16 +13,21 @@ module Ci
       belongs_to :project
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
+      scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
+      scope :order_by_name_desc, -> { joins(:project).merge(Project.sorted_by_name_desc) }
+      scope :order_by_name_asc, -> { joins(:project).merge(Project.sorted_by_name_asc) }
 
-      delegate :avatar_path, :description, :name, to: :project
+      delegate :avatar_path, :description, :name, :star_count, :forks_count, to: :project
 
       def versions
         project.releases.order_released_desc
       end
 
       def latest_version
-        versions.first
+        project.releases.latest
       end
     end
   end
 end
+
+Ci::Catalog::Resource.prepend_mod_with('Ci::Catalog::Resource')

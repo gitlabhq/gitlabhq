@@ -17,7 +17,7 @@ See [Starting a Rails console session](../../administration/operations/rails_con
 
 To list all available attributes:
 
-1. Open the Rails console (`gitlab rails c`).
+1. Open the Rails console (`sudo gitlab-rails console`).
 1. Run the following command:
 
 ```ruby
@@ -453,3 +453,41 @@ When using fine-grained access control with an IAM role or a role created using 
 ```
 
 To fix this, you need to [map the roles to users](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-mapping) in Kibana.
+
+## Elasticsearch workers overload Sidekiq
+
+In some cases, Elasticsearch cannot connect to GitLab anymore because:
+
+- The Elasticsearch password has been updated on one side only (`Unauthorized [401] ... unable to authenticate user` errors).
+- A firewall or network issue impairs connectivity (`Failed to open TCP connection to <ip>:9200` errors).
+
+These errors are logged in [`gitlab-rails/elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog). To retrieve the errors, use [`jq`](../../administration/logs/log_parsing.md):
+
+```shell
+$ jq --raw-output 'select(.severity == "ERROR") | [.error_class, .error_message] | @tsv' \
+    gitlab-rails/elasticsearch.log |
+  sort | uniq -c
+```
+
+`Elastic` workers and [Sidekiq jobs](../../user/admin_area/index.md#background-jobs) could also appear much more often
+because Elasticsearch frequently attempts to reindex if a previous job fails.
+You can use [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#usage)
+or `jq` to count workers in the [Sidekiq logs](../../administration/logs/index.md#sidekiq-logs):
+
+```shell
+$ fast-stats --print-fields=count,score sidekiq/current
+WORKER                            COUNT   SCORE
+ElasticIndexBulkCronWorker          234  123456
+ElasticIndexInitialBulkCronWorker   345   12345
+Some::OtherWorker                    12     123
+...
+
+$ jq '.class' sidekiq/current | sort | uniq -c | sort -nr
+ 234 "ElasticIndexInitialBulkCronWorker"
+ 345 "ElasticIndexBulkCronWorker"
+  12 "Some::OtherWorker"
+...
+```
+
+In this case, `free -m` on the overloaded GitLab node would also show
+unexpectedly high `buff/cache` usage.

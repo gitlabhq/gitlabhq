@@ -39,10 +39,14 @@ module Gitlab
       ensure
         duration = Gitlab::Metrics::System.monotonic_time - start
 
-        graphql_duration_seconds.observe(tags, duration)
+        graphql_duration_seconds.observe(tags, duration) unless deactivated?
       end
 
       private
+
+      def deactivated?
+        Feature.enabled?(:graphql_generic_tracing_metrics_deactivate)
+      end
 
       def with_labkit_tracing(tags, &block)
         return yield unless Labkit::Tracing.enabled?

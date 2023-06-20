@@ -18,6 +18,8 @@ Rake tasks are available for projects that have been created on Praefect storage
 - The primary Gitaly node.
 - Secondary internal Gitaly nodes.
 
+Run this Rake task on the node that GitLab is installed and not on the node that Praefect is installed.
+
 **Omnibus Installation**
 
 ```shell

@@ -494,6 +494,41 @@ has number of drawbacks, as mentioned in [Why Ruby's Timeout is dangerous (and T
 >
 > Nobody writes code to defend against an exception being raised on literally any line. That's not even possible. So Thread.raise is basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that's unlikely :)
 
+## Manually trigger a cron job
+
+By visiting `/admin/background_jobs`, you can look into what jobs are scheduled/running/pending on your instance.
+
+You can trigger a cron job from the UI by selecting the "Enqueue Now" button. To trigger a cron job programmatically first open a [Rails console](../operations/rails_console.md).
+
+To find the cron job you want to test:
+
+```irb
+job = Sidekiq::Cron::Job.find('job-name')
+
+# get status of job:
+job.status
+
+# enqueue job right now!
+job.enque!
+```
+
+For example, to trigger the `update_all_mirrors_worker` cron job that updates the repository mirrors:
+
+```irb
+irb(main):001:0> job = Sidekiq::Cron::Job.find('update_all_mirrors_worker')
+=>
+#<Sidekiq::Cron::Job:0x00007f147f84a1d0
+...
+irb(main):002:0> job.status
+=> "enabled"
+irb(main):003:0> job.enque!
+=> 257
+```
+
+The list of available jobs can be found in the [workers](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/workers) directory.
+
+For more information about Sidekiq jobs, see the [Sidekiq-cron](https://github.com/sidekiq-cron/sidekiq-cron#work-with-job) documentation.
+
 ## Omnibus GitLab 14.0 and later: remove the `sidekiq-cluster` service
 
 Omnibus GitLab instances that were configured to run `sidekiq-cluster` prior to GitLab 14.0
@@ -550,3 +585,7 @@ This change might reduce the amount of work Sidekiq can do. Symptoms like delays
 indicate that additional Sidekiq processes would be beneficial.
 Consider [adding additional Sidekiq processes](extra_sidekiq_processes.md)
 to compensate for removing the `sidekiq-cluster` service.
+
+## Related topics
+
+- [Elasticsearch workers overload Sidekiq](../../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-workers-overload-sidekiq).

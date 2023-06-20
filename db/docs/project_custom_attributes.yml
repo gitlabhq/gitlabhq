@@ -3,7 +3,7 @@ table_name: project_custom_attributes
 classes:
 - ProjectCustomAttribute
 feature_categories:
-- projects
+- groups_and_projects
 description: Stores custom attributes per project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14593
 milestone: '10.2'

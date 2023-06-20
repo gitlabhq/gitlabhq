@@ -9,29 +9,29 @@ type: reference, concepts
 
 > **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
 
-NOTE:
-[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** become **Set to auto-merge**.
-
 If you review a merge request and it's ready to merge, but the pipeline hasn't
-completed yet, you can set it to merge when the pipeline succeeds (MWPS). You don't
+completed yet, you can set it to auto-merge. You don't
 have to remember later to merge the work manually:
 
-![Enable MWPS on a merge request](img/mwps_v15_4.png)
+![Auto-merge is ready](img/auto_merge_ready_v16_0.png)
+
+NOTE:
+[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** are renamed **Set to auto-merge**.
 
 If the pipeline succeeds, the merge request is merged. If the pipeline fails, the
 author can either retry any failed jobs, or push new commits to fix the failure:
 
 - If a retried job succeeds on the second try, the merge request is merged.
-- If new commits are added to the merge request, GitLab cancels the MWPS request
+- If new commits are added to the merge request, GitLab cancels the request
   to ensure the new changes are reviewed before merge.
 
-## Set a merge request to MWPS
+## Auto-merge a merge request
 
 Prerequisites:
 
 - You must have at least the Developer role in the project.
 - If the project is configured to require it, all threads in the
-  merge request [must be resolved](../../discussions/index.md#resolve-a-thread).
+  merge request [must be resolved](index.md#resolve-a-thread).
 - The merge request must have received all required approvals.
 
 To do this when pushing from the command line, use the `merge_request.merge_when_pipeline_succeeds`
@@ -39,20 +39,20 @@ To do this when pushing from the command line, use the `merge_request.merge_when
 
 To do this from the GitLab user interface:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
    **Squash commits**, or **Edit commit message**.
-1. Select **Merge when pipeline succeeds**.
+1. Select **Auto-merge**.
 
-If a new comment is added to the merge request after you select **Merge when pipeline succeeds**,
+If a new comment is added to the merge request after you select **Auto-merge**,
 but before the pipeline completes, GitLab blocks the merge until you
 resolve all existing threads.
 
 ## Cancel an auto-merge
 
-If a merge request is set to MWPS, you can cancel it.
+If a merge request is set to auto-merge, you can cancel it.
 
 Prerequisites:
 
@@ -62,8 +62,8 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
 
@@ -88,8 +88,8 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. Scroll to **Merge checks**, and select **Pipelines must succeed**.
    This setting also prevents merge requests from being merged if there is no pipeline,
    which can [conflict with some rules](#merge-requests-dont-merge-when-successful-pipeline-is-required).
@@ -109,9 +109,8 @@ Prerequisite:
 
 To change this behavior:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. Under **Merge checks**:
    - Select **Pipelines must succeed**.
    - Select **Skipped pipelines are considered successful**.

@@ -2,6 +2,7 @@
 Lint/MixedRegexpCaptureTypes:
   Exclude:
     - 'app/models/alert_management/alert.rb'
+    - 'app/models/integrations/clickup.rb'
     - 'app/models/integrations/ewm.rb'
     - 'app/uploaders/file_uploader.rb'
     - 'ee/lib/gitlab/code_owners/reference_extractor.rb'

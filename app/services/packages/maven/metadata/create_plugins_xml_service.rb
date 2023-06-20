@@ -40,37 +40,34 @@ module Packages
         end
 
         def plugins_xml_node
-          strong_memoize(:plugins_xml_node) do
-            xml_doc.xpath(XPATH_PLUGINS)
+          xml_doc.xpath(XPATH_PLUGINS)
                    .first
-          end
         end
+        strong_memoize_attr :plugins_xml_node
 
         def plugin_artifact_ids_from_xml
-          strong_memoize(:plugin_artifact_ids_from_xml) do
-            plugins_xml_node.xpath(XPATH_PLUGIN_ARTIFACT_ID)
+          plugins_xml_node.xpath(XPATH_PLUGIN_ARTIFACT_ID)
                             .map(&:content)
-          end
         end
+        strong_memoize_attr :plugin_artifact_ids_from_xml
 
         def plugin_artifact_ids_from_database
-          strong_memoize(:plugin_artifact_ids_from_database) do
-            package_names = plugin_artifact_ids_from_xml.map do |artifact_id|
-              "#{@package.name}/#{artifact_id}"
-            end
-
-            packages = @package.project.packages
-                                       .maven
-                                       .displayable
-                                       .with_name(package_names)
-                                       .has_version
-
-            ::Packages::Maven::Metadatum.for_package_ids(packages.select(:id))
-                                        .order_created
-                                        .pluck_app_name
-                                        .uniq
+          package_names = plugin_artifact_ids_from_xml.map do |artifact_id|
+            "#{@package.name}/#{artifact_id}"
           end
+
+          packages = @package.project.packages
+                                     .maven
+                                     .displayable
+                                     .with_name(package_names)
+                                     .has_version
+
+          ::Packages::Maven::Metadatum.for_package_ids(packages.select(:id))
+                                      .order_created
+                                      .pluck_app_name
+                                      .uniq
         end
+        strong_memoize_attr :plugin_artifact_ids_from_database
 
         def plugin_node_for(artifact_id)
           xml_doc.create_element('plugin').tap do |plugin_node|

@@ -7,7 +7,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
   it { is_expected.to belong_to(:project).required }
   it { is_expected.to belong_to(:environment).required }
-  it { is_expected.to belong_to(:cluster).class_name('Clusters::Cluster') }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
   it { is_expected.to have_one(:deployment_cluster) }
@@ -18,6 +17,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   it { is_expected.to delegate_method(:commit).to(:project) }
   it { is_expected.to delegate_method(:commit_title).to(:commit).as(:try) }
   it { is_expected.to delegate_method(:kubernetes_namespace).to(:deployment_cluster).as(:kubernetes_namespace) }
+  it { is_expected.to delegate_method(:cluster).to(:deployment_cluster) }
 
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
@@ -1474,13 +1474,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         expect { deployment.update_merge_request_metrics! }
           .not_to change { merge_request.reload.metrics.first_deployed_to_production_at }
       end
-    end
-  end
-
-  context 'loose foreign key on deployments.cluster_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:cluster) }
-      let!(:model) { create(:deployment, cluster: parent) }
     end
   end
 end

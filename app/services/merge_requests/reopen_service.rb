@@ -37,3 +37,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::ReopenService.prepend_mod

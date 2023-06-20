@@ -31,8 +31,8 @@ RSpec.describe Gitlab::SidekiqMiddleware do
   shared_examples "a middleware chain" do
     before do
       configurator.call(chain)
+      stub_feature_flags("defer_sidekiq_jobs_#{worker_class.name}": false) # not letting this worker deferring its jobs
     end
-
     it "passes through the right middlewares", :aggregate_failures do
       enabled_sidekiq_middlewares.each do |middleware|
         expect_next_instances_of(middleware, 1, true) do |middleware_instance|
@@ -69,7 +69,8 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         ::Gitlab::SidekiqStatus::ServerMiddleware,
         ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
         ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
-        ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
+        ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
+        ::Gitlab::SidekiqMiddleware::DeferJobs
       ]
     end
 
@@ -78,7 +79,10 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         with_sidekiq_server_middleware do |chain|
           described_class.server_configurator(
             metrics: true,
-            arguments_logger: true
+            arguments_logger: true,
+            # defer_jobs has to be false because this middleware defers jobs from a worker based on
+            # `worker` type feature flag which is enabled by default in test
+            defer_jobs: false
           ).call(chain)
 
           Sidekiq::Testing.inline! { example.run }
@@ -110,14 +114,16 @@ RSpec.describe Gitlab::SidekiqMiddleware do
       let(:configurator) do
         described_class.server_configurator(
           metrics: false,
-          arguments_logger: false
+          arguments_logger: false,
+          defer_jobs: false
         )
       end
 
       let(:disabled_sidekiq_middlewares) do
         [
           Gitlab::SidekiqMiddleware::ServerMetrics,
-          Gitlab::SidekiqMiddleware::ArgumentsLogger
+          Gitlab::SidekiqMiddleware::ArgumentsLogger,
+          Gitlab::SidekiqMiddleware::DeferJobs
         ]
       end
 

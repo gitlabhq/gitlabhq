@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Classification label on project pages', feature_category: :projects do
+RSpec.describe 'Classification label on project pages', feature_category: :groups_and_projects do
   let(:project) do
     create(:project, external_authorization_classification_label: 'authorized label')
   end

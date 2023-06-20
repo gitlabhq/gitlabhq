@@ -129,7 +129,7 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>Add labels                                                                                                                     |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Lock threads                                                                                                                   |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                                                                               |          |          | ✓         | ✓          | ✓        |
-| [Merge requests](project/merge_requests/index.md):<br>[Resolve a thread](discussions/index.md#resolve-a-thread)                                                                      |          |          | ✓         | ✓          | ✓        |
+| [Merge requests](project/merge_requests/index.md):<br>[Resolve a thread](project/merge_requests/index.md#resolve-a-thread)                                                                      |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Manage [merge approval rules](project/merge_requests/approvals/settings.md) (project settings)                                 |          |          |           | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Delete                                                                                                                         |          |          |           |            | ✓        |
 | [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Manage user-starred metrics dashboards (6)                                                                     | ✓        | ✓        | ✓         | ✓          | ✓        |
@@ -369,6 +369,7 @@ The following table lists group permissions available for each role:
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |
 | Create and edit [group wiki](project/wiki/group.md) pages                               |       |          | ✓         | ✓          | ✓     |
 | Create project in group                                                                 |       |          | ✓ (2)(4)  | ✓ (2)      | ✓ (2) |
+| Fork project into a group                                                               |       |          |           | ✓          | ✓     |
 | Create/edit/delete group milestones                                                     |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete iterations                                                           |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |
@@ -400,14 +401,14 @@ The following table lists group permissions available for each role:
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (3) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
-| Manage [subscriptions, and purchase CI/CD minutes and storage](../subscriptions/gitlab_com/index.md)         |       |          |           |            | ✓     |
+| Manage [subscriptions, and purchase storage and units of compute](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 
 1. Groups can be set to allow either Owners, or Owners and users with the Maintainer role, to [create subgroups](group/subgroups/index.md#create-a-subgroup).
 2. Default project creation role can be changed at:
    - The [instance level](admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
-   - The [group level](group/manage.md#specify-who-can-add-projects-to-a-group).
+   - The [group level](group/index.md#specify-who-can-add-projects-to-a-group).
 3. Does not apply to subgroups.
 4. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
 5. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
@@ -463,18 +464,27 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Confidential issues](project/issues/confidential_issues.md)
 - [Container Registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
 - [Release permissions](project/releases/index.md#release-permissions)
+- [Read-only namespaces](../user/read_only_namespaces.md)
 
 ## Custom roles **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
+> - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1.
 
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
+
+The following custom roles are available:
+
+- The Guest+1 role, which allows users with the Guest role to view code.
+- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and update (change status) of the vulnerabilities.
+
+You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
 ### Create a custom role
 
@@ -483,7 +493,21 @@ To enable custom roles for your group, a group member with the Owner role:
 1. Makes sure that there is at least one private project in this group or one of
    its subgroups, so that you can see the effect of giving a Guest a custom role.
 1. Creates a personal access token with the API scope.
-1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create the Guest+1 role for the root group.
+1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create a custom role for the root group.
+
+#### Custom role requirements
+
+For every ability, a minimal access level is defined. To be able to create a custom role which enables a certain ability, the `member_roles` table record has to have the associated minimal access level. For all abilities, the minimal access level is Guest. Only users who have at least the Guest role can be assigned to a custom role.
+
+Some roles and abilities require having other abilities enabled. For example, a custom role can only have administration of vulnerabilities (`admin_vulnerability`) enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
+
+You can see the required minimal access levels and abilities requirements in the following table.
+
+| Ability | Minimal access level | Required ability |
+| -- | -- | -- |
+| `read_code` | Guest    | - |
+| `read_vulnerability` | Guest | - |
+| `admin_vulnerability` | Guest | `read_vulnerability` |
 
 ### Associate a custom role with an existing group member
 

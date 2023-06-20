@@ -51,14 +51,11 @@ tasks:
         [[ -f /workspace/gitpod_start_time.sh ]] && source /workspace/gitpod_start_time.sh
         SECONDS=0
         cd /workspace/gitlab-development-kit
-        make gitlab-update
-        make gitlab-shell-update
-        make gitlab-workhorse-update
         # update GDK
-        if [ "$GITLAB_UPDATE_GDK" == true ]; then
-          echo "$(date) – Updating GDK" | tee -a /workspace/startup.log
-          gdk update
-        fi
+        echo "$(date) – Updating GDK" | tee -a /workspace/startup.log
+        export DEFAULT_BRANCH=$(git branch --show-current)
+        gdk config set gitlab.default_branch "$DEFAULT_BRANCH"
+        gdk update
         # ensure gdk.yml has correct instance settings
         gdk config set gitlab.rails.hostname $(gp url 3000 | sed -e 's+^http[s]*://++')
         gdk config set gitlab.rails.port 443
@@ -79,7 +76,7 @@ tasks:
           make gitlab-db-migrate
         fi
         cd /workspace/gitlab-development-kit/gitlab
-        echo "--- on branch: $(git branch --show-current)"
+        echo "--- on branch: $DEFAULT_BRANCH"
         echo "--- installing lefthook"
         bundle exec lefthook install
         echo "--- resetting db/structure.sql"
@@ -122,11 +119,11 @@ ports:
 
 vscode:
   extensions:
+    - GitLab.gitlab-workflow
     - rebornix.ruby@0.28.1
     - wingrunr21.vscode-ruby@0.28.0
     - karunamurti.haml@1.4.1
-    - octref.vetur@0.36.0
-    - dbaeumer.vscode-eslint@2.2.6
-    - GitLab.gitlab-workflow@3.56.0
-    - DavidAnson.vscode-markdownlint@0.47.0
+    - octref.vetur@0.37.3
+    - dbaeumer.vscode-eslint@2.4.0
+    - DavidAnson.vscode-markdownlint@0.49.0
     - esbenp.prettier-vscode

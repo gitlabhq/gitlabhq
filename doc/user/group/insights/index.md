@@ -23,8 +23,8 @@ Prerequisites:
 
 To access your group's insights:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Insights**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Analyze > Insights**.
 
 ## Interact with insights charts
 
@@ -65,9 +65,9 @@ To configure group insights:
 
 1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md#configure-project-insights)
 in a project that belongs to your group.
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Analytics** tab and find the **Insights** section.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. Expand **Analytics** and find the **Insights** section.
 1. Select the project that contains your `.gitlab/insights.yml` configuration file.
 1. Select **Save changes**.
 

@@ -25,7 +25,7 @@ module Gitlab
         @config = find_config(project, sha, custom_content, pipeline_source, pipeline_source_bridge)
       end
 
-      delegate :content, :source, to: :@config, allow_nil: true
+      delegate :content, :source, :url, to: :@config, allow_nil: true
       delegate :internal_include_prepended?, to: :@config
 
       def exists?

@@ -100,7 +100,6 @@ describe('WorkItemDetail component', () => {
   const createComponent = ({
     isModal = false,
     updateInProgress = false,
-    workItemId = id,
     workItemIid = '1',
     handler = successHandler,
     subscriptionHandler = titleSubscriptionHandler,
@@ -120,7 +119,10 @@ describe('WorkItemDetail component', () => {
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
       isLoggedIn: isLoggedIn(),
-      propsData: { isModal, workItemId, workItemIid },
+      propsData: {
+        isModal,
+        workItemIid,
+      },
       data() {
         return {
           updateInProgress,
@@ -160,9 +162,9 @@ describe('WorkItemDetail component', () => {
     setWindowLocation('');
   });
 
-  describe('when there is no `workItemId` and no `workItemIid` prop', () => {
+  describe('when there is no `workItemIid` prop', () => {
     beforeEach(() => {
-      createComponent({ workItemId: null, workItemIid: null });
+      createComponent({ workItemIid: null });
     });
 
     it('skips the work item query', () => {
@@ -437,7 +439,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
-        expect(findParentButton().attributes().href).toBe('../../issues/5');
+        expect(findParentButton().attributes().href).toBe('../../-/issues/5');
       });
 
       it('sets the parent breadcrumb URL based on parent webUrl when parent type is not `Issue`', async () => {

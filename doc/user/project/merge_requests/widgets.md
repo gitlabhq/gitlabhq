@@ -41,11 +41,11 @@ for environments. If it's the first time the branch is deployed, the link
 returns a `404` error until done. During the deployment, the stop button is
 disabled. If the pipeline fails to deploy, the deployment information is hidden.
 
-![Merge request pipeline](img/merge_request_pipeline.png)
+![Merge request pipeline](img/post_merge_pipeline_v16_0.png)
 
 For more information, [read about pipelines](../../../ci/pipelines/index.md).
 
-## Merge when pipeline succeeds (MWPS)
+## Set auto-merge
 
 Set a merge request that looks ready to merge to
 [merge automatically when CI pipeline succeeds](merge_when_pipeline_succeeds.md).
@@ -65,7 +65,7 @@ faster to preview proposed modifications.
 
 ## License compliance **(ULTIMATE)**
 
-If you have configured [License Compliance](../../compliance/license_compliance/index.md) for your project, then you can view a list of licenses that are detected for your project's dependencies.
+If you have configured [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md) for your project, then you can view a list of licenses that are detected for your project's dependencies.
 
 ![Merge request pipeline](img/license_compliance_widget_v15_3.png)
 

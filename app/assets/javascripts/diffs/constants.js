@@ -12,6 +12,7 @@ export const NEW_LINE_TYPE = 'new';
 export const OLD_LINE_TYPE = 'old';
 export const TEXT_DIFF_POSITION_TYPE = 'text';
 export const IMAGE_DIFF_POSITION_TYPE = 'image';
+export const FILE_DIFF_POSITION_TYPE = 'file';
 
 export const LINE_POSITION_LEFT = 'left';
 export const LINE_POSITION_RIGHT = 'right';

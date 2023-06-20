@@ -46,7 +46,8 @@ module PreferencesHelper
     [
       [s_('ProjectView|Files and Readme (default)'), :files],
       [s_('ProjectView|Activity'), :activity],
-      [s_('ProjectView|Readme'), :readme]
+      [s_('ProjectView|Readme'), :readme],
+      [s_('ProjectView|Wiki'), :wiki]
     ]
   end
 

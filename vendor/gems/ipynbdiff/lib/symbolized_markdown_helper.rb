@@ -12,7 +12,7 @@ module IpynbDiff
       if content.is_a?(Array)
         content.map.with_index { |l, idx| _(symbol / idx, block.call(l)) }
       else
-        _(symbol, content)
+        content.split("\n").map { |c| _(symbol, c) }
       end
     end
   end

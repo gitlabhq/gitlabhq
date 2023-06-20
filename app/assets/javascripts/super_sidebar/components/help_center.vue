@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { DOMAIN, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { FORUM_URL, DOCS_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
@@ -70,7 +70,7 @@ export default {
         helpLinks: {
           items: [
             this.sidebarData.show_tanuki_bot && {
-              icon: 'tanuki',
+              icon: 'tanuki-ai',
               text: this.$options.i18n.chat,
               action: this.showTanukiBotChat,
               extraAttrs: {
@@ -93,7 +93,7 @@ export default {
             },
             {
               text: this.$options.i18n.docs,
-              href: `https://docs.${DOMAIN}`,
+              href: DOCS_URL,
               extraAttrs: {
                 ...this.trackingAttrs('gitlab_documentation'),
               },
@@ -107,7 +107,7 @@ export default {
             },
             {
               text: this.$options.i18n.forum,
-              href: `https://forum.${DOMAIN}/`,
+              href: FORUM_URL,
               extraAttrs: {
                 ...this.trackingAttrs('community_forum'),
               },
@@ -132,7 +132,7 @@ export default {
           items: [
             {
               text: this.$options.i18n.shortcuts,
-              action: this.showKeyboardShortcuts,
+              action: () => {},
               extraAttrs: {
                 class: 'js-shortcuts-modal-trigger',
                 'data-track-action': 'click_button',
@@ -172,18 +172,11 @@ export default {
       return true;
     },
 
-    showKeyboardShortcuts() {
-      this.$refs.dropdown.close();
-    },
-
     showTanukiBotChat() {
-      this.$refs.dropdown.close();
-
       this.helpCenterState.showTanukiBotChatDrawer = true;
     },
 
     async showWhatsNew() {
-      this.$refs.dropdown.close();
       this.showWhatsNewNotification = false;
 
       if (!this.toggleWhatsNewDrawer) {
@@ -211,29 +204,23 @@ export default {
       });
     },
   },
-  popperOptions: {
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
-        },
-      },
-    ],
-  },
+  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
-    ref="dropdown"
-    :popper-options="$options.popperOptions"
+    :dropdown-offset="$options.dropdownOffset"
     @shown="trackDropdownToggle(true)"
     @hidden="trackDropdownToggle(false)"
   >
     <template #toggle>
       <gl-button category="tertiary" icon="question-o" class="btn-with-notification">
-        <span v-if="showWhatsNewNotification" class="notification-dot-info"></span>
+        <span
+          v-if="showWhatsNewNotification"
+          data-testid="notification-dot"
+          class="notification-dot-info"
+        ></span>
         {{ $options.i18n.help }}
       </gl-button>
     </template>
@@ -263,7 +250,7 @@ export default {
       <template #list-item="{ item }">
         <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
           {{ item.text }}
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-orange-500" />
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-purple-600" />
         </span>
       </template>
     </gl-disclosure-dropdown-group>

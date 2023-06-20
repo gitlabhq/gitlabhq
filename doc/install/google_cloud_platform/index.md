@@ -7,7 +7,7 @@ description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
 
 # Installing GitLab on Google Cloud Platform **(FREE SELF)**
 
-You can install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official GitLab Linux package. You should customize it to accommodate your needs.
+You can install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official Linux package. You should customize it to accommodate your needs.
 
 NOTE:
 To deploy production-ready GitLab on
@@ -92,7 +92,7 @@ here's how you configure GitLab to be aware of the change:
    In the future you might want to set up [connecting with an SSH key](https://cloud.google.com/compute/docs/instances/connecting-to-instance)
    instead.
 
-1. Edit the configuration file of Omnibus GitLab using your favorite text editor:
+1. Edit the configuration file of the Linux package using your favorite text editor:
 
    ```shell
    sudo vim /etc/gitlab/gitlab.rb
@@ -123,14 +123,14 @@ Although not needed, it's strongly recommended to secure GitLab with a
 ### Configuring the email SMTP settings
 
 You must configure the email SMTP settings correctly otherwise GitLab cannot send notification emails, like comments, and password changes.
-Check the [Omnibus documentation](https://docs.gitlab.com/omnibus/settings/smtp.html#smtp-settings) how to do so.
+Check the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/smtp.html#smtp-settings) how to do so.
 
 ## Further reading
 
 GitLab can be configured to authenticate with other OAuth providers, like LDAP,
 SAML, and Kerberos. Here are some documents you might be interested in reading:
 
-- [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/)
+- [Linux package documentation](https://docs.gitlab.com/omnibus/)
 - [Integration documentation](../../integration/index.md)
 - [GitLab Pages configuration](../../administration/pages/index.md)
 - [GitLab Container Registry configuration](../../administration/packages/container_registry.md)

@@ -34,17 +34,18 @@ your cluster's level.
 
 **Project-level clusters:**
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Kubernetes clusters**.
 
 **Group-level clusters:**
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Kubernetes**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Operate > Kubernetes clusters**.
 
 **Instance-level clusters:**
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Kubernetes**.
 
 ## Security implications for clusters connected with certificates

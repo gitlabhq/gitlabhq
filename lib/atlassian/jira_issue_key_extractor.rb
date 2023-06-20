@@ -12,7 +12,9 @@ module Atlassian
     end
 
     def issue_keys
-      @text.scan(@match_regex).flatten.uniq
+      return @text.scan(@match_regex).flatten.uniq if @match_regex.is_a?(Regexp)
+
+      @match_regex.scan(@text).flatten.uniq
     end
   end
 end

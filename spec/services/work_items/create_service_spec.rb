@@ -30,7 +30,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
     let_it_be(:user_with_no_access) { create(:user) }
 
     let(:widget_params) { {} }
-    let(:spam_params) { double }
+    let(:perform_spam_check) { false }
     let(:current_user) { guest }
     let(:opts) do
       {
@@ -60,16 +60,12 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
           container: container,
           current_user: current_user,
           params: opts,
-          spam_params: spam_params,
+          perform_spam_check: perform_spam_check,
           widget_params: widget_params
         )
       end
 
       subject(:service_result) { service.execute }
-
-      before do
-        stub_spam_services
-      end
 
       context 'when user is not allowed to create a work item in the container' do
         let(:current_user) { user_with_no_access }
@@ -151,20 +147,26 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
       end
 
       context 'checking spam' do
-        it 'executes SpamActionService' do
-          expect_next_instance_of(
-            Spam::SpamActionService,
-            {
-              spammable: kind_of(WorkItem),
-              spam_params: spam_params,
-              user: an_instance_of(User),
-              action: :create
-            }
-          ) do |instance|
-            expect(instance).to receive(:execute)
+        let(:perform_spam_check) { true }
+
+        it 'checks for spam' do
+          expect_next_instance_of(WorkItem) do |instance|
+            expect(instance).to receive(:check_for_spam).with(user: current_user, action: :create)
           end
 
           service_result
+        end
+
+        context 'when `perform_spam_check` is set to `false`' do
+          let(:perform_spam_check) { false }
+
+          it 'does not check for spam' do
+            expect_next_instance_of(WorkItem) do |instance|
+              expect(instance).not_to receive(:check_for_spam)
+            end
+
+            service_result
+          end
         end
       end
 
@@ -180,7 +182,6 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
             container: container,
             current_user: current_user,
             params: opts,
-            spam_params: spam_params,
             widget_params: widget_params
           )
         end

@@ -35,6 +35,9 @@ RSpec.shared_examples "hotlink interceptor" do
         :not_acceptable | "text/css,*/*;q=0.1"
         :not_acceptable | "text/css"
         :not_acceptable | "text/css,*/*;q=0.1"
+
+        # Invalid MIME definition
+        :not_acceptable | "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
       end
 
       with_them do

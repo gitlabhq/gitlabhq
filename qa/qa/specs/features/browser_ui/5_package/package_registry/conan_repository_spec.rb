@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, product_group: :package_registry, quarantine: {
+  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry, quarantine: {
     only: { job: 'object_storage' },
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/335981',
     type: :bug

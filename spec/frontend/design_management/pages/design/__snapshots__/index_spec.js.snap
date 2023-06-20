@@ -61,6 +61,12 @@ exports[`Design management design index page renders design index 1`] = `
       ull-issue-path
     </a>
      
+    <description-form-stub
+      design="[object Object]"
+      designvariables="[object Object]"
+      markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
+    />
+     
     <participants-stub
       class="gl-mb-4"
       lazy="true"
@@ -191,6 +197,12 @@ exports[`Design management design index page with error GlAlert is rendered in c
     >
       ull-issue-path
     </a>
+     
+    <description-form-stub
+      design="[object Object]"
+      designvariables="[object Object]"
+      markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
+    />
      
     <participants-stub
       class="gl-mb-4"

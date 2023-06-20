@@ -39,11 +39,11 @@ The default theme is Indigo. You can choose between 10 themes:
 
 ## Dark mode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](../../policy/alpha-beta-support.md#experiment) release.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](../../policy/experiment-beta-support.md#experiment) release.
 
 GitLab has started work on dark mode! The dark mode Experiment release is available in the
 spirit of iteration and the lower expectations of
-[Experiment features](../../policy/alpha-beta-support.md#experiment).
+[Experiment features](../../policy/experiment-beta-support.md#experiment).
 
 Progress on dark mode is tracked in the [Dark theme epic](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 See the epic for:
@@ -129,6 +129,8 @@ You can choose between 2 options:
 The **Project overview content** setting allows you to choose what content you want to
 see on a project's home page.
 
+If **Files and Readme** is selected, you can show or hide the shortcut buttons above the file list on the project overview with the **Show shortcut buttons above files on project overview** setting.
+
 ### Tab width
 
 You can set the displayed width of tab characters across various parts of
@@ -181,6 +183,13 @@ To set your time preference:
 NOTE:
 This feature is experimental, and choosing absolute times might break certain layouts.
 Open an issue if you notice that using absolute times breaks a layout.
+
+## User identities in CI job JSON web tokens
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0. False by default.
+
+You can select to include the list of your external identities in the JSON Web Token information that is generated for a CI job.
+For more information and examples, see [Token Payload](../../ci/secrets/id_token_authentication.md#token-payload).
 
 ## Integrations
 

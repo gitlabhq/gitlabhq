@@ -16,7 +16,6 @@ class Deployment < ApplicationRecord
 
   belongs_to :project, optional: false
   belongs_to :environment, optional: false
-  belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true, optional: true, inverse_of: :deployment # rubocop:disable Cop/PolymorphicAssociations
   has_many :deployment_merge_requests
@@ -35,6 +34,7 @@ class Deployment < ApplicationRecord
 
   delegate :name, to: :environment, prefix: true
   delegate :kubernetes_namespace, to: :deployment_cluster, allow_nil: true
+  delegate :cluster, to: :deployment_cluster, allow_nil: true
 
   scope :for_iid, -> (project, iid) { where(project: project, iid: iid) }
   scope :for_environment, -> (environment) { where(environment_id: environment) }

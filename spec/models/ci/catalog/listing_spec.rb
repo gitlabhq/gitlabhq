@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   let_it_be(:namespace) { create(:group) }
-  let_it_be(:project_1) { create(:project, namespace: namespace) }
-  let_it_be(:project_2) { create(:project, namespace: namespace) }
+  let_it_be(:project_1) { create(:project, namespace: namespace, name: 'X Project') }
+  let_it_be(:project_2) { create(:project, namespace: namespace, name: 'B Project') }
   let_it_be(:project_3) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -34,11 +34,32 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the namespace has catalog resources' do
-        let!(:resource) { create(:catalog_resource, project: project_1) }
-        let!(:other_namespace_resource) { create(:catalog_resource, project: project_3) }
+        let_it_be(:resource) { create(:catalog_resource, project: project_1) }
+        let_it_be(:resource_2) { create(:catalog_resource, project: project_2) }
+        let_it_be(:other_namespace_resource) { create(:catalog_resource, project: project_3) }
 
         it 'contains only catalog resources for projects in that namespace' do
-          is_expected.to contain_exactly(resource)
+          is_expected.to contain_exactly(resource, resource_2)
+        end
+
+        context 'with a sort parameter' do
+          subject(:resources) { list.resources(sort: sort) }
+
+          context 'when the sort is name ascending' do
+            let_it_be(:sort) { :name_asc }
+
+            it 'contains catalog resources for projects sorted by name' do
+              is_expected.to eq([resource_2, resource])
+            end
+          end
+
+          context 'when the sort is name descending' do
+            let_it_be(:sort) { :name_desc }
+
+            it 'contains catalog resources for projects sorted by name' do
+              is_expected.to eq([resource, resource_2])
+            end
+          end
         end
       end
     end

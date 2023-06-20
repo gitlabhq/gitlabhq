@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CreateFromTemplateService, feature_category: :projects do
+RSpec.describe Projects::CreateFromTemplateService, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:template_name) { 'rails' }
   let(:project_params) do

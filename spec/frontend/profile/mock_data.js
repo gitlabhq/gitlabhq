@@ -20,3 +20,79 @@ export const userCalendarResponse = {
   '2023-02-06': 2,
   '2023-02-07': 2,
 };
+
+export const MOCK_SNIPPETS_EMPTY_STATE = 'illustrations/empty-state/empty-snippets-md.svg';
+
+export const MOCK_USER = {
+  id: '1',
+  avatarUrl: 'https://www.gravatar.com/avatar/test',
+  name: 'Test User',
+  username: 'test',
+};
+
+const getMockSnippet = (id) => {
+  return {
+    id: `gid://gitlab/PersonalSnippet/${id}`,
+    title: `Test snippet ${id}`,
+    visibilityLevel: 'public',
+    webUrl: `http://gitlab.com/-/snippets/${id}`,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    blobs: {
+      nodes: [
+        {
+          name: 'test.txt',
+        },
+      ],
+    },
+    notes: {
+      nodes: [
+        {
+          id: 'git://gitlab/Note/1',
+        },
+      ],
+    },
+  };
+};
+
+const MOCK_PAGE_INFO = {
+  startCursor: 'asdfqwer',
+  endCursor: 'reqwfdsa',
+  __typename: 'PageInfo',
+};
+
+const getMockSnippetRes = (hasPagination) => {
+  return {
+    data: {
+      user: {
+        ...MOCK_USER,
+        snippets: {
+          pageInfo: {
+            ...MOCK_PAGE_INFO,
+            hasNextPage: hasPagination,
+            hasPreviousPage: hasPagination,
+          },
+          nodes: [getMockSnippet(1), getMockSnippet(2)],
+        },
+      },
+    },
+  };
+};
+
+export const MOCK_SNIPPET = getMockSnippet(1);
+export const MOCK_USER_SNIPPETS_RES = getMockSnippetRes(false);
+export const MOCK_USER_SNIPPETS_PAGINATION_RES = getMockSnippetRes(true);
+export const MOCK_USER_SNIPPETS_EMPTY_RES = {
+  data: {
+    user: {
+      ...MOCK_USER,
+      snippets: {
+        pageInfo: {
+          endCursor: null,
+          startCursor: null,
+        },
+        nodes: [],
+      },
+    },
+  },
+};

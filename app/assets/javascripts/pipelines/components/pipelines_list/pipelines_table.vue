@@ -2,8 +2,10 @@
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import eventHub from '../../event_hub';
 import { TRACKING_CATEGORIES } from '../../constants';
 import PipelineOperations from './pipeline_operations.vue';
@@ -12,7 +14,6 @@ import PipelineTriggerer from './pipeline_triggerer.vue';
 import PipelineUrl from './pipeline_url.vue';
 import PipelinesStatusBadge from './pipelines_status_badge.vue';
 
-const DEFAULT_TD_CLASS = 'gl-p-5!';
 const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
 const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
@@ -20,6 +21,7 @@ const DEFAULT_TH_CLASSES =
 export default {
   components: {
     GlTableLite,
+    PipelineFailedJobsWidget,
     PipelineMiniGraph,
     PipelineOperations,
     PipelinesStatusBadge,
@@ -27,51 +29,15 @@ export default {
     PipelineTriggerer,
     PipelineUrl,
   },
-  tableFields: [
-    {
-      key: 'status',
-      label: s__('Pipeline|Status'),
-      thClass: DEFAULT_TH_CLASSES,
-      columnClass: 'gl-w-15p',
-      tdClass: DEFAULT_TD_CLASS,
-      thAttr: { 'data-testid': 'status-th' },
-    },
-    {
-      key: 'pipeline',
-      label: __('Pipeline'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: `${DEFAULT_TD_CLASS}`,
-      columnClass: 'gl-w-30p',
-      thAttr: { 'data-testid': 'pipeline-th' },
-    },
-    {
-      key: 'triggerer',
-      label: s__('Pipeline|Triggerer'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: `${DEFAULT_TD_CLASS} ${HIDE_TD_ON_MOBILE}`,
-      columnClass: 'gl-w-10p',
-      thAttr: { 'data-testid': 'triggerer-th' },
-    },
-    {
-      key: 'stages',
-      label: s__('Pipeline|Stages'),
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: DEFAULT_TD_CLASS,
-      columnClass: 'gl-w-quarter',
-      thAttr: { 'data-testid': 'stages-th' },
-    },
-    {
-      key: 'actions',
-      thClass: DEFAULT_TH_CLASSES,
-      tdClass: DEFAULT_TD_CLASS,
-      columnClass: 'gl-w-15p',
-      thAttr: { 'data-testid': 'actions-th' },
-    },
-  ],
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  inject: {
+    withFailedJobsDetails: {
+      default: false,
+    },
+  },
   props: {
     pipelines: {
       type: Array,
@@ -104,6 +70,63 @@ export default {
       cancelingPipeline: null,
     };
   },
+  computed: {
+    tableFields() {
+      return [
+        {
+          key: 'status',
+          label: s__('Pipeline|Status'),
+          thClass: DEFAULT_TH_CLASSES,
+          columnClass: 'gl-w-15p',
+          tdClass: this.tdClasses,
+          thAttr: { 'data-testid': 'status-th' },
+        },
+        {
+          key: 'pipeline',
+          label: __('Pipeline'),
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: `${this.tdClasses}`,
+          columnClass: 'gl-w-30p',
+          thAttr: { 'data-testid': 'pipeline-th' },
+        },
+        {
+          key: 'triggerer',
+          label: s__('Pipeline|Triggerer'),
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: `${this.tdClasses} ${HIDE_TD_ON_MOBILE}`,
+          columnClass: 'gl-w-10p',
+          thAttr: { 'data-testid': 'triggerer-th' },
+        },
+        {
+          key: 'stages',
+          label: s__('Pipeline|Stages'),
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: this.tdClasses,
+          columnClass: 'gl-w-quarter',
+          thAttr: { 'data-testid': 'stages-th' },
+        },
+        {
+          key: 'actions',
+          thClass: DEFAULT_TH_CLASSES,
+          tdClass: this.tdClasses,
+          columnClass: 'gl-w-15p',
+          thAttr: { 'data-testid': 'actions-th' },
+        },
+      ];
+    },
+    tdClasses() {
+      return this.withFailedJobsDetails ? 'gl-pb-0! gl-border-none!' : 'pl-p-5!';
+    },
+    pipelinesWithDetails() {
+      if (this.withFailedJobsDetails) {
+        return this.pipelines.map((p) => {
+          return { ...p, _showDetails: true };
+        });
+      }
+
+      return this.pipelines;
+    },
+  },
   watch: {
     pipelines() {
       this.cancelingPipeline = null;
@@ -120,10 +143,16 @@ export default {
       const downstream = pipeline.triggered;
       return keepLatestDownstreamPipelines(downstream);
     },
+    hasFailedJobs(pipeline) {
+      return pipeline?.failed_builds?.length > 0 || false;
+    },
     setModalData(data) {
       this.pipelineId = data.pipeline.id;
       this.pipeline = data.pipeline;
       this.endpoint = data.endpoint;
+    },
+    showFailedJobsWidget(item) {
+      return this.glFeatures.ciJobFailuresInMr && this.hasFailedJobs(item);
     },
     onSubmit() {
       eventHub.$emit('postAction', this.endpoint);
@@ -142,9 +171,8 @@ export default {
 <template>
   <div class="ci-table">
     <gl-table-lite
-      :fields="$options.tableFields"
-      :items="pipelines"
-      tbody-tr-class="commit"
+      :fields="tableFields"
+      :items="pipelinesWithDetails"
       :tbody-tr-attr="$options.TBODY_TR_ATTR"
       stacked="lg"
       fixed
@@ -167,6 +195,7 @@ export default {
           :pipeline="item"
           :pipeline-schedule-url="pipelineScheduleUrl"
           :pipeline-key="pipelineKeyOption.value"
+          ref-color="gl-text-black-normal"
         />
       </template>
 
@@ -187,6 +216,14 @@ export default {
 
       <template #cell(actions)="{ item }">
         <pipeline-operations :pipeline="item" :canceling-pipeline="cancelingPipeline" />
+      </template>
+
+      <template #row-details="{ item }">
+        <pipeline-failed-jobs-widget
+          v-if="showFailedJobsWidget(item)"
+          :pipeline-iid="item.iid"
+          :pipeline-path="item.path"
+        />
       </template>
     </gl-table-lite>
 

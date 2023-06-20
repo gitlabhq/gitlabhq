@@ -25,7 +25,7 @@
       alert_options: { class: 'gl-mt-3 js-import-url-error hide' },
       dismissible: false,
       close_button_options: { class: 'js-close-2fa-enabled-success-alert' }) do |c|
-      = c.body do
+      - c.with_body do
         = s_('Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials.')
   = render_if_exists 'shared/ee/import_form', f: f, ci_cd_only: ci_cd_only
   .row

@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
             context 'when job has artifacts exceeding the max allowed size' do
               let(:expected_error) do
-                "Artifacts archive for job `generator` is too large: max 1 KB"
+                "Artifacts archive for job `generator` is too large: max 1 KiB"
               end
 
               before do

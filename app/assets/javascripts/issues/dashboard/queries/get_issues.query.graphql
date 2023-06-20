@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "./issue.fragment.graphql"
+#import "~/issues/list/queries/issue.fragment.graphql"
 
 query getDashboardIssues(
   $hideUsers: Boolean = false
@@ -44,8 +44,9 @@ query getDashboardIssues(
     before: $beforeCursor
     first: $firstPageSize
     last: $lastPageSize
-  ) {
+  ) @persist {
     nodes {
+      __persist
       ...IssueFragment
       reference(full: true)
     }

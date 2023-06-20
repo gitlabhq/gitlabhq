@@ -21,7 +21,7 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForPro
                    .perform
   end
 
-  it 'sets `legacy_open_source_license_available` to false only for projects less than 1 MB',
+  it 'sets `legacy_open_source_license_available` to false only for projects less than 1 MiB',
      :aggregate_failures do
     project_setting_1_mb = create_legacy_license_project_setting(repo_size: 1)
     project_setting_2_mb = create_legacy_license_project_setting(repo_size: 2)
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::BackgroundMigration::DisableLegacyOpenSourceLicenseForPro
 
   private
 
-  # @param repo_size: Repo size in MB
+  # @param repo_size: Repo size in MiB
   def create_legacy_license_project_setting(repo_size:)
     path = "path-for-repo-size-#{repo_size}"
     namespace = namespaces_table.create!(name: "namespace-#{path}", path: "namespace-#{path}")

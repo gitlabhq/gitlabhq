@@ -25,8 +25,7 @@ RSpec.describe Integrations::FieldEntity, feature_category: :integrations do
             name: 'username',
             title: 'Email or username',
             placeholder: nil,
-            help: 'Only required for Basic authentication. ' \
-                  'Email for Jira Cloud or username for Jira Data Center and Jira Server',
+            help: 'Email for Jira Cloud or username for Jira Data Center and Jira Server',
             required: false,
             choices: nil,
             value: 'jira_username',
@@ -45,7 +44,7 @@ RSpec.describe Integrations::FieldEntity, feature_category: :integrations do
             section: 'connection',
             type: 'password',
             name: 'password',
-            title: 'New API token, password, or Jira personal access token',
+            title: 'New API token or password',
             placeholder: nil,
             help: 'Leave blank to use your current configuration',
             required: true,

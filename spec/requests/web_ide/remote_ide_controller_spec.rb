@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_development do
+  include ContentSecurityPolicyHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -63,7 +64,7 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       end
 
       it "updates the content security policy with the correct connect sources" do
-        expect(find_csp_source('connect-src')).to include(
+        expect(find_csp_directive('connect-src')).to include(
           "ws://#{remote_host}",
           "wss://#{remote_host}",
           "http://#{remote_host}",
@@ -72,7 +73,7 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       end
 
       it "updates the content security policy with the correct frame sources" do
-        expect(find_csp_source('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.vscode-cdn.net/")
+        expect(find_csp_directive('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.vscode-cdn.net/")
       end
     end
 
@@ -84,7 +85,7 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       end
 
       it "updates the content security policy with the correct remote_host" do
-        expect(find_csp_source('connect-src')).to include(
+        expect(find_csp_directive('connect-src')).to include(
           "ws://#{remote_host}",
           "wss://#{remote_host}",
           "http://#{remote_host}",
@@ -120,18 +121,6 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       return_url: ide_attrs['data-return-url'],
       csp_nonce: ide_attrs['data-csp-nonce']
     }
-  end
-
-  def find_csp_source(key)
-    csp = response.headers['Content-Security-Policy']
-
-    # Transform "default-src foo bar; connect-src foo bar; script-src ..."
-    # into array of values for a single directive based on the given key
-    csp.split(';')
-      .map(&:strip)
-      .find { |entry| entry.starts_with?(key) }
-      .split(' ')
-      .drop(1)
   end
 
   def post_to_remote_ide

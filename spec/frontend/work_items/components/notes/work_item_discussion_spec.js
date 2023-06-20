@@ -90,6 +90,16 @@ describe('Work Item Discussion', () => {
       expect(findWorkItemAddNote().exists()).toBe(true);
       expect(findWorkItemAddNote().props('autofocus')).toBe(true);
     });
+
+    it('should send the correct props is when the main comment is internal', async () => {
+      const mainComment = findThreadAtIndex(0);
+
+      mainComment.vm.$emit('startReplying');
+      await nextTick();
+      expect(findWorkItemAddNote().props('isInternalThread')).toBe(
+        mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes[0].internal,
+      );
+    });
   });
 
   describe('When replying to any comment', () => {
@@ -114,6 +124,13 @@ describe('Work Item Discussion', () => {
       await nextTick();
       expect(findToggleRepliesWidget().exists()).toBe(true);
       expect(findToggleRepliesWidget().props('collapsed')).toBe(false);
+    });
+
+    it('should pass `is-internal-note` props to make sure the correct background is set', () => {
+      expect(findWorkItemNoteReplying().exists()).toBe(true);
+      expect(findWorkItemNoteReplying().props('isInternalNote')).toBe(
+        mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes[0].internal,
+      );
     });
   });
 

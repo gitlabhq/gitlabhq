@@ -37,7 +37,7 @@ module FormHelper
       dismissible: false,
       alert_options: { id: 'error_explanation', class: 'gl-mb-5' }
     ) do |c|
-      c.body do
+      c.with_body do
         tag.ul(class: 'gl-pl-5 gl-mb-0') do
           messages
         end

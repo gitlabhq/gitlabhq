@@ -3,9 +3,11 @@
 class ImportFailure < ApplicationRecord
   belongs_to :project
   belongs_to :group
+  belongs_to :user
 
-  validates :project, presence: true, unless: :group
-  validates :group, presence: true, unless: :project
+  validates :project, :group, absence: true, if: :user
+  validates :project, :user, absence: true, if: :group
+  validates :group, :user, absence: true, if: :project
   validates :external_identifiers, json_schema: { filename: "import_failure_external_identifiers" }
 
   scope :with_external_identifiers, -> { where.not(external_identifiers: {}) }

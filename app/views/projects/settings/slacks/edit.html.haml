@@ -1,0 +1,20 @@
+- page_title _('Edit Slack integration')
+
+.row.gl-mt-3.gl-mb-3
+  .col-lg-3
+    %h4.gl-mt-0
+      = s_('Integrations|Edit project alias')
+
+    %p= s_('Integrations|You can use this alias in your Slack commands')
+  .col-lg-9
+    = form_errors(@slack_integration)
+    = form_for(@slack_integration, url: project_settings_slack_path(@project), method: :put, html: { class: 'gl-show-field-errors js-integration-settings-form'}) do |form|
+      .form-group.row
+        = form.label :alias, s_('Integrations|Enter your alias'), class: 'col-form-label'
+        .col-sm-10
+          = form.text_field :alias, class: 'form-control', placeholder: @slack_integration.alias, required: true
+
+      .footer-block.row-content-block
+        = form.submit _('Save changes'), pajamas_button: true
+        &nbsp;
+        = link_to _('Cancel'), edit_project_settings_integration_path(@project, @service), class: 'btn gl-button btn-cancel'

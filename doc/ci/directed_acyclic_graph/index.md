@@ -81,7 +81,7 @@ are certain use cases that you may need to work around. For more information, ch
 
 ## Needs Visualization
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215517) in GitLab 13.1 as a [Beta feature](../../policy/alpha-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215517) in GitLab 13.1 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 > - It became a [standard feature](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38517) in 13.3.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52208) in GitLab 13.9.
 

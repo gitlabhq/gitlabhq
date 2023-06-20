@@ -5,11 +5,14 @@ import {
   GlFormInput,
   GlFormSelect,
   GlFormCheckbox,
+  GlLink,
+  GlSprintf,
 } from '@gitlab/ui';
-import { i18n, JOB_RULES_WHEN, JOB_RULES_START_IN } from '../constants';
+import { i18n, HELP_PATHS, JOB_RULES_WHEN, JOB_RULES_START_IN } from '../constants';
 
 export default {
   i18n,
+  helpPath: HELP_PATHS.rulesHelpPath,
   whenOptions: Object.values(JOB_RULES_WHEN),
   unitOptions: Object.values(JOB_RULES_START_IN),
   components: {
@@ -18,6 +21,8 @@ export default {
     GlFormSelect,
     GlFormCheckbox,
     GlFormGroup,
+    GlLink,
+    GlSprintf,
   },
   props: {
     job: {
@@ -54,6 +59,13 @@ export default {
 </script>
 <template>
   <gl-accordion-item :title="$options.i18n.RULES">
+    <div class="gl-pb-5">
+      <gl-sprintf :message="$options.i18n.RULES_DESCRIPTION">
+        <template #link="{ content }">
+          <gl-link :href="$options.helpPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
     <div class="gl-display-flex">
       <gl-form-group class="gl-flex-grow-1 gl-flex-basis-half gl-mr-3" :label="$options.i18n.WHEN">
         <gl-form-select

@@ -1,0 +1,321 @@
+---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+
+# Gems development guidelines
+
+GitLab uses Gems as a tool to improve code reusability and modularity
+in a monolithic codebase.
+
+Sometimes we create libraries within our codebase that we want to
+extract, either because their functionality is highly isolated,
+we want to use them in other applications
+ourselves, or we think it would benefit the wider community.
+Extracting code to a gem also means that we can be sure that the gem
+does not contain any hidden dependencies on our application code.
+
+## When to use Gems
+
+Gems should be used always when implementing functions that can be considered isolated,
+that are decoupled from the business logic of GitLab and can be developed separately. Consider the
+following examples where Gem logic could be placed:
+
+The best example where we can look for opportunities to introduce new gems
+is the [lib/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/) folder.
+
+The **lib/** folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
+
+If you cannot find a good place for your code in **lib/** you should strongly
+consider creating the new Gem [In the same repo](#in-the-same-repo).
+
+## In the same repo
+
+**Our GitLab Gems should be always put in `gems/` of GitLab monorepo.**
+
+That gives us the advantages of gems (modular code, quicker to run tests in development).
+and prevents complexity (coordinating changes across repos, new permissions, multiple projects, etc.).
+
+Gems stored in the same repo should be referenced in `Gemfile` with the `path:` syntax.
+They should not be published to RubyGems.
+
+### Advantages
+
+Using Gems can provide several benefits for code maintenance:
+
+- Code Reusability - Gems are isolated libraries that serve single purpose. When using Gems, a common functions
+  can be isolated in a simple package, that is well documented, tested, and re-used in different applications.
+
+- Modularity - Gems help to create isolation by encapsulating specific functionality within self-contained library.
+  This helps to better organize code, better define who is owner of a given module, makes it easier to maintain
+  or update specific gems.
+
+- Small - Gems by design due to implementing isolated set of functions are small. Small projects are much easier
+  to comprehend, extend and maintain.
+
+- Testing - Using Gems since they are small makes much faster to run all tests, or be very through with testing of the gem.
+  Since the gem is packaged, not changed too often, it also allows us to run those tests less frequently improving
+  CI testing time.
+
+### To Do
+
+#### Desired use cases
+
+The `gitlab-utils` is a Gem containing as of set of class that implement common intrisic functions
+used by GitLab developers, like `strong_memoize` or `Gitlab::Utils.to_boolean`.
+
+The `gitlab-database-schema-migrations` is a potential Gem containing our extensions to Rails
+framework improving how database migrations are stored in repository. This builds on top of Rails
+and is not specific to GitLab the application, and could be generally used for other projects
+or potentially be upstreamed.
+
+The `gitlab-database-load-balancing` similar to previous is a potential Gem to implement GitLab specific
+load balancing to Rails database handling. Since this is rather complex and highly specific code
+maintaing it's complexity in a isolated and well tested Gem would help with removing this complexity
+from a big monolithic codebase.
+
+The `gitlab-flipper` is another potential Gem implementing all our custom extensions to support feature
+flags in a codebase. Over-time the monolithic codebase did grow with the check for feature flags
+usage, adding consistency checks and various helpers to track owners of feature flags added. This is
+not really part of GitLab business logic and could be used to better track our implementation
+of Flipper and possibly much easier change it to dogfood [GitLab Feature Flags](../operations/feature_flags.md).
+
+The `gitlab-ci-reports-parsers` is a potential Gem that could implement all various parsers for various formats.
+The parsed output would be transformed into objects that could then be used by GitLab the application
+to store it in the database. This functionality could be an additional Gem since it is isolated,
+rarely changed, and GitLab Rails only consumes the data.
+
+The same pattern could be applied to all other type of parsers, like security vulnerabilities, or any
+other complex structures that need to be transformed into a form that is consumed by GitLab Rails.
+
+The `gitlab-active_record` is a gem adding GitLab specific Active Record patches.
+It is very well desired for such to be managed separately to isolate complexity.
+
+#### Other potential use cases
+
+The `gitlab-ci-config` is a potential Gem containing all our CI code used to parse `.gitlab-ci.yml`.
+This code is today lightly interlocked with GitLab the application due to lack of proper abstractions.
+However, moving this to dedicated Gem could allow us to build various adapters to handle integration
+with GitLab the application. The interface would for example define an adapter to resolve `includes:`.
+Once we would have a `gitlab-ci-config` Gem it could be used within GitLab and outside of GitLab Rails
+and [GitLab CLI](https://gitlab.com/gitlab-org/cli).
+
+### Create and use a new Gem
+
+You can see example adding new Gem: [!121676](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121676).
+
+1. Create a new Ruby Gem in `gems/gitlab-<name-of-gem>` with `bundle gem gems/gitlab-<name-of-gem> --no-exe --no-coc --no-ext --no-mit`.
+1. Edit or remove `gitlab-<name-of-gem>/README.md` to provide a simple one paragraph description of the Gem.
+1. Edit `gitlab-<name-of-gem>/gitlab-<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
+
+    ```ruby
+    Gem::Specification.new do |spec|
+      spec.name = "gitlab-<name-of-gem>"
+      spec.version = Gitlab::NameOfGem::VERSION
+      spec.authors = ["group::tenant-scale"]
+      spec.email = ["engineering@gitlab.com"]
+
+      spec.summary = "GitLab's RSpec extensions"
+      spec.description = "A set of useful helpers to configure RSpec with various stubs and CI configs."
+      spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-<name-of-gem>"
+      spec.required_ruby_version = ">= 2.6.0"
+    end
+    ```
+
+1. Update `gems/gitlab-<name-of-gem>/.rubocop` with:
+
+    ```yaml
+    inherit_from:
+      - ../../.rubocop.yml
+
+    CodeReuse/ActiveRecord:
+      Enabled: false
+
+    AllCops:
+      TargetRubyVersion: 3.0
+
+    Naming/FileName:
+      Exclude:
+        - spec/**/*.rb
+    ```
+
+1. Configure CI for a newly added Gem:
+
+- Add `gems/gitlab-<name-of-gem>/.gitlab-ci.yml`:
+
+    ```yaml
+    workflow:
+      rules:
+        - if: $CI_MERGE_REQUEST_ID
+
+    rspec:
+      image: "ruby:${RUBY_VERSION}"
+      cache:
+        key: gitlab-<name-of-gem>
+        paths:
+          - gitlab-<name-of-gem>/vendor/ruby
+      before_script:
+        - cd vendor/gems/bundler-checksum
+        - ruby -v                                   # Print out ruby version for debugging
+        - gem install bundler --no-document         # Bundler is not installed with the image
+        - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
+        - bundle config set with 'development'
+        - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
+        - bundle config                             # Show bundler configuration
+        - bundle install -j $(nproc)
+      script:
+        - bundle exec rspec
+      parallel:
+        matrix:
+          - RUBY_VERSION: ["2.7", "3.0", "3.1", "3.2"]
+    ```
+
+- To `.gitlab/ci/rules.gitlab-ci.yml` add:
+
+    ```yaml
+    .gems:rules:gitlab-<name-of-gem>:
+      rules:
+        - <<: *if-merge-request
+          changes: ["gems/gitlab-<name-of-gem>/**/*"]
+    ```
+
+- To `.gitlab/ci/gitlab-gems.gitlab-ci.yml` add:
+
+    ```yaml
+    gems gitlab-<name-of-gem>:
+      extends:
+        - .gems:rules:gitlab-<name-of-gem>
+      needs: []
+      trigger:
+        include: gems/gitlab-<name-of-gem>/.gitlab-ci.yml
+        strategy: depend
+    ```
+
+1. Reference Gem in `Gemfile` with:
+
+    ```ruby
+    gem 'gitlab-<name-of-gem>', path: 'gems/gitlab-<name-of-gem>'
+    ```
+
+## In the external repo
+
+In general, we want to think carefully before doing this as there are
+severe disadvantages.
+
+Gems stored in the external repo MUST be referenced in `Gemfile` with `version` syntax.
+They MUST be always published to RubyGems.
+
+### Examples
+
+At GitLab we use a number of external gems:
+
+- [LabKit Ruby](https://gitlab.com/gitlab-org/labkit-ruby)
+- [GitLab Ruby Gems](https://gitlab.com/gitlab-org/ruby/gems)
+
+### Potential disadvantages
+
+- Gems - even those maintained by GitLab - do not necessarily go
+  through the same [code review process](code_review.md) as the main
+  Rails application. This is particularly critical for Application Security.
+- Requires setting up CI/CD from scratch, including tools like Danger that
+  support consistent code review standards.
+- Extracting the code into a separate project means that we need a
+  minimum of two merge requests to change functionality: one in the gem
+  to make the functional change, and one in the Rails app to bump the
+  version.
+- Integration with `gitlab-rails` requiring a second MR means integration problems
+  may be discovered late.
+- With a smaller pool of reviewers and maintainers compared to `gitlab-rails`,
+  it may take longer to get code reviewed and the impact of "bus factor" increases.
+- Inconsistent workflows for how a new gem version is released. It is currently at
+  the discretion of library maintainers to decide how it works.
+- Promotes knowledge silos because code has less visibility and exposure than `gitlab-rails`.
+- We have a well defined process for promoting GitLab reviewers to maintainers.
+  This is not true for extracted libraries, increasing the risk of lowering the bar for code reviews,
+  and increasing the risk of shipping a change.
+- Our needs for our own usage of the gem may not align with the wider
+  community's needs. In general, if we are not using the latest version
+  of our own gem, that might be a warning sign.
+
+### Potential advantages
+
+- Faster feedback loops, since CI/CD runs against smaller repositories.
+- Ability to expose the project to the wider community and benefit from external contributions.
+- Repository owners are most likely the best audience to review a change, which reduces
+  the necessity of finding the right reviewers in `gitlab-rails`.
+
+### Create and publish a Ruby gem
+
+The project for a new Gem should always be created in [`gitlab-org/ruby/gems` namespace](https://gitlab.com/gitlab-org/ruby/gems/):
+
+1. Determine a suitable name for the gem. If it's a GitLab-owned gem, prefix
+   the gem name with `gitlab-`. For example, `gitlab-sidekiq-fetcher`.
+1. Create the gem or fork as necessary.
+1. Ensure the `gitlab_rubygems` group is an owner of the new gem by running:
+
+   ```shell
+   gem owner <gem-name> --add gitlab_rubygems
+   ```
+
+1. [Publish the gem to rubygems.org](https://guides.rubygems.org/publishing/#publishing-to-rubygemsorg)
+1. Visit `https://rubygems.org/gems/<gem-name>` and verify that the gem published
+   successfully and `gitlab_rubygems` is also an owner.
+1. Create a project in [`gitlab-org/ruby/gems` namespace](https://gitlab.com/gitlab-org/ruby/gems/).
+
+   - To create this project:
+       1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
+       1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
+       1. Follow the instructions for [publishing a project](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#publishing-a-project).
+   - See [issue #325463](https://gitlab.com/gitlab-org/gitlab/-/issues/325463)
+     for an example.
+   - In some cases we may want to move a gem to its own namespace. Some
+     examples might be that it will naturally have more than one project
+     (say, something that has plugins as separate libraries), or that we
+     expect users outside GitLab to be maintainers on this project as
+     well as GitLab team members.
+
+     The latter situation (maintainers from outside GitLab) could also
+     apply if someone who currently works at GitLab wants to maintain
+     the gem beyond their time working at GitLab.
+
+When publishing a gem to RubyGems.org, also note the section on
+[gem owners](https://about.gitlab.com/handbook/developer-onboarding/#ruby-gems)
+in the handbook.
+
+## The `vendor/gems/`
+
+The purpose of `vendor/` is to pull into GitLab monorepo external dependencies,
+which do have external repositories, but for the sake of simplicity we want
+to store them in monorepo:
+
+- The `vendor/gems/` MUST ONLY be used if we are pulling from external repository either via script, or manually.
+- The `vendor/gems/` MUST NOT be used for storing in-house gems.
+- The `vendor/gems/` MAY accept fixes to make them buildable with GitLab monorepo
+- The `gems/` MUST be used for storing all in-house gems that are part of GitLab monorepo.
+- The **RubyGems** MUST be used for all externally stored dependencies that are not in `gems/` in GitLab monorepo.
+
+### Handling of an existing gems in `vendor/gems`
+
+- For in-house Gems that do not have external repository and are currently stored in `vendor/gems/`:
+
+  - For Gems that are used by other repositories:
+
+    - We will migrate it into its own repository.
+    - We will start or continue publishing them via RubyGems.
+    - Those Gems will be referenced via version in `Gemfile` and fetched from RubyGems.
+
+  - For Gems that are only used by monorepo:
+
+    - We will stop publishing new versions to RubyGems.
+    - We will not pull from RubyGems already published versions since there might
+      be applications depedent on those.
+    - We will move those gems to `gems/`.
+    - Those Gems will be referenced via `path:` in `Gemfile`.
+
+- For `vendor/gems/` that are external and vendored in monorepo:
+
+  - We will maintain them in the repository if they require some fixes that cannot be or are not yet upstreamed.
+  - It is expected that vendored gems might be published by third-party.
+  - Those Gems will not be published by us to RubyGems.
+  - Those Gems will be referenced via `path:` in `Gemfile`, since we cannot depend on RubyGems.

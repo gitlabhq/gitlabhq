@@ -11,9 +11,10 @@ module QA
 
       module_function
 
-      def shell(command, stdin_data: nil, fail_on_exception: true, stream_progress: true, mask_secrets: []) # rubocop:disable Metrics/CyclomaticComplexity
+      def shell(command, stdin_data: nil, fail_on_exception: true, stream_progress: true, mask_secrets: [], return_exit_status: false) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         cmd_string = Array(command).join(' ')
         cmd_output = ''
+        exit_status = 0
 
         QA::Runtime::Logger.info("Executing: `#{mask_secrets_on_string(cmd_string, mask_secrets).cyan}`")
 
@@ -36,7 +37,9 @@ module QA
           # add newline after progress dots
           puts if print_progress_dots && !cmd_output.empty?
 
-          if wait.value.exited? && wait.value.exitstatus.nonzero? && fail_on_exception
+          exit_status = wait.value.exitstatus if wait.value.exited?
+
+          if exit_status.nonzero? && fail_on_exception
             Runtime::Logger.error("Command output:\n#{cmd_output.strip}") unless cmd_output.empty?
             raise CommandError, "Command: `#{mask_secrets_on_string(cmd_string, mask_secrets)}` failed! ✘"
           end
@@ -44,7 +47,7 @@ module QA
           Runtime::Logger.debug("Command output:\n#{cmd_output.strip}") unless cmd_output.empty?
         end
 
-        cmd_output.strip
+        return_exit_status ? [cmd_output.strip, exit_status] : cmd_output.strip
       end
 
       def sql_to_docker_exec_cmd(sql, username, password, database, host, container)

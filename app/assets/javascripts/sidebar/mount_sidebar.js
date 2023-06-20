@@ -2,8 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
-import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
 import { gqlClient } from '~/issues/list/graphql';
 import {
@@ -805,8 +803,6 @@ const isAssigneesWidgetShown =
   (isInIssuePage() || isInDesignPage() || isInMRPage()) && gon.features.issueAssigneesWidget;
 
 export function mountSidebar(mediator, store) {
-  initInviteMembersModal();
-  initInviteMembersTrigger();
   mountSidebarTodoWidget();
   if (isAssigneesWidgetShown) {
     mountSidebarAssigneesWidget();

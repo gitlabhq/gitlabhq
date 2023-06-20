@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MembersFinder, feature_category: :subgroups do
+RSpec.describe MembersFinder, feature_category: :groups_and_projects do
   shared_examples '#execute' do
     let_it_be(:group) { create(:group) }
     let_it_be(:nested_group) { create(:group, parent: group) }

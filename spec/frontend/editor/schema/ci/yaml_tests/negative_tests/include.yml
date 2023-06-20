@@ -1,3 +1,10 @@
+# invalid include:rules
+include:
+  - local: builds.yml
+    rules:
+      - if: '$INCLUDE_BUILDS == "true"'
+        when: on_success
+
 # invalid trigger:include
 trigger missing file property:
   stage: prepare

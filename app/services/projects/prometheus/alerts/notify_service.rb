@@ -36,7 +36,7 @@ module Projects
 
           truncate_alerts! if max_alerts_exceeded?
 
-          process_prometheus_alerts
+          process_prometheus_alerts(integration)
 
           created
         end
@@ -79,12 +79,18 @@ module Projects
         end
 
         def valid_alert_manager_token?(token, integration)
-          valid_for_manual?(token) ||
-            valid_for_alerts_endpoint?(token, integration) ||
+          valid_for_alerts_endpoint?(token, integration) ||
+            valid_for_manual?(token) ||
             valid_for_cluster?(token)
         end
 
         def valid_for_manual?(token)
+          # If migration from Integrations::Prometheus to
+          # AlertManagement::HttpIntegrations is complete,
+          # we should use use the HttpIntegration as SSOT.
+          # Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/409734
+          return false if project.alert_management_http_integrations.legacy.prometheus.any?
+
           prometheus = project.find_or_initialize_integration('prometheus')
           return false unless prometheus.manual_configuration?
 
@@ -145,10 +151,10 @@ module Projects
           ActiveSupport::SecurityUtils.secure_compare(expected, actual)
         end
 
-        def process_prometheus_alerts
+        def process_prometheus_alerts(integration)
           alerts.map do |alert|
             AlertManagement::ProcessPrometheusAlertService
-              .new(project, alert)
+              .new(project, alert, integration: integration)
               .execute
           end
         end

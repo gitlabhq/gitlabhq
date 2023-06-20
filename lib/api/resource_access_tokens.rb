@@ -92,17 +92,30 @@ module API
           success Entities::ResourceAccessTokenWithToken
         end
         params do
-          requires :id, type: String, desc: "The #{source_type} ID", documentation: { example: 2 }
-          requires :name, type: String, desc: "Resource access token name", documentation: { example: 'test' }
-          requires :scopes, type: Array[String], values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s),
-                            desc: "The permissions of the token",
-                            documentation: { example: %w[api read_repository] }
-          optional :access_level, type: Integer,
-                                  values: ALLOWED_RESOURCE_ACCESS_LEVELS.values,
-                                  default: Gitlab::Access::MAINTAINER,
-                                  desc: "The access level of the token in the #{source_type}",
-                                  documentation: { example: 40 }
-          optional :expires_at, type: Date, desc: "The expiration date of the token", documentation: { example: '"2021-01-31' }
+          requires :id,
+            type: String,
+            desc: "The #{source_type} ID",
+            documentation: { example: 2 }
+          requires :name,
+            type: String,
+            desc: "Resource access token name",
+            documentation: { example: 'test' }
+          requires :scopes,
+            type: Array[String],
+            values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s),
+            desc: "The permissions of the token",
+            documentation: { example: %w[api read_repository] }
+          requires :expires_at,
+            type: Date,
+            desc: "The expiration date of the token",
+            default: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now,
+            documentation: { example: '"2021-01-31' }
+          optional :access_level,
+            type: Integer,
+            values: ALLOWED_RESOURCE_ACCESS_LEVELS.values,
+            default: Gitlab::Access::MAINTAINER,
+            desc: "The access level of the token in the #{source_type}",
+            documentation: { example: 40 }
         end
         post ':id/access_tokens' do
           resource = find_source(source_type, params[:id])

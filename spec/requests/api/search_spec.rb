@@ -412,6 +412,22 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
 
+      context 'global snippet search is disabled' do
+        it 'returns forbidden response' do
+          stub_feature_flags(global_search_snippet_titles_tab: false)
+          get api(endpoint, user), params: { search: 'awesome', scope: 'snippet_titles' }
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'global snippet search is enabled' do
+        it 'returns ok response' do
+          stub_feature_flags(global_search_snippet_titles_tab: true)
+          get api(endpoint, user), params: { search: 'awesome', scope: 'snippet_titles' }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       it 'increments the custom search sli error rate with error false if no error occurred' do
         expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
           error: false,

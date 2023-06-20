@@ -116,7 +116,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       it 'change Maximum export size' do
         page.within(find('[data-testid="account-limit"]')) do
-          fill_in 'Maximum export size (MB)', with: 25
+          fill_in 'Maximum export size (MiB)', with: 25
           click_button 'Save changes'
         end
 
@@ -126,7 +126,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       it 'change Maximum import size' do
         page.within(find('[data-testid="account-limit"]')) do
-          fill_in 'Maximum import size (MB)', with: 15
+          fill_in 'Maximum import size (MiB)', with: 15
           click_button 'Save changes'
         end
 
@@ -905,7 +905,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       it 'change Pages settings' do
         page.within('.as-pages') do
-          fill_in 'Maximum size of pages (MB)', with: 15
+          fill_in 'Maximum size of pages (MiB)', with: 15
           check 'Require users to prove ownership of custom domains'
           click_button 'Save changes'
         end
@@ -977,14 +977,24 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
     end
 
-    context 'Service usage data page' do
+    context 'Service usage data page', :with_license do
       before do
         stub_usage_data_connections
         stub_database_flavor_check
       end
 
       context 'when service data cached', :use_clean_rails_memory_store_caching do
+        let(:usage_data) { { uuid: "1111", hostname: "localhost", counts: { issue: 0 } }.deep_stringify_keys }
+
         before do
+          # We are mocking Gitlab::Usage::ServicePingReport because this dataset generation
+          # takes a very long time, and is not what we're testing in this context.
+          #
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/414929
+          allow(Gitlab::UsageData).to receive(:data).and_return(usage_data)
+          allow(Gitlab::Usage::ServicePingReport).to receive(:with_instrumentation_classes)
+            .with(usage_data, :with_value).and_return(usage_data)
+
           visit usage_data_admin_application_settings_path
           visit service_usage_data_admin_application_settings_path
         end

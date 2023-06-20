@@ -91,6 +91,10 @@ module API
     end
 
     after do
+      Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
+    end
+
+    after do
       Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
     end
 
@@ -135,7 +139,7 @@ module API
     end
 
     rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
-      rack_response({ 'message' => exception.message }.to_json, 429, exception.headers)
+      rack_response({ 'message' => exception.message }.to_json, 503, exception.headers)
     end
 
     rescue_from :all do |exception|
@@ -177,7 +181,9 @@ module API
         mount ::API::AccessRequests
         mount ::API::Admin::BatchedBackgroundMigrations
         mount ::API::Admin::Ci::Variables
+        mount ::API::Admin::Dictionary
         mount ::API::Admin::InstanceClusters
+        mount ::API::Admin::Migrations
         mount ::API::Admin::PlanLimits
         mount ::API::AlertManagementAlerts
         mount ::API::Appearance
@@ -255,7 +261,9 @@ module API
         mount ::API::Metadata
         mount ::API::Metrics::Dashboard::Annotations
         mount ::API::Metrics::UserStarredDashboards
+        mount ::API::MlModelPackages
         mount ::API::Namespaces
+        mount ::API::NpmGroupPackages
         mount ::API::NpmInstancePackages
         mount ::API::NpmProjectPackages
         mount ::API::NugetGroupPackages
@@ -321,7 +329,6 @@ module API
       mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::SecureFiles
       mount ::API::Discussions
-      mount ::API::ErrorTracking::Collector
       mount ::API::GroupBoards
       mount ::API::GroupLabels
       mount ::API::GroupMilestones

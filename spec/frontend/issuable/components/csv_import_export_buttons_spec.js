@@ -32,9 +32,9 @@ describe('CsvImportExportButtons', () => {
     });
   }
 
-  const findExportCsvButton = () => wrapper.findByRole('menuitem', { name: 'Export as CSV' });
-  const findImportCsvButton = () => wrapper.findByRole('menuitem', { name: 'Import CSV' });
-  const findImportFromJiraLink = () => wrapper.findByRole('menuitem', { name: 'Import from Jira' });
+  const findExportCsvButton = () => wrapper.findByTestId('export-as-csv-button');
+  const findImportCsvButton = () => wrapper.findByTestId('import-from-csv-button');
+  const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
   const findExportCsvModal = () => wrapper.findComponent(CsvExportModal);
   const findImportCsvModal = () => wrapper.findComponent(CsvImportModal);
 
@@ -111,7 +111,7 @@ describe('CsvImportExportButtons', () => {
           });
 
           it('passes the proper path to the link', () => {
-            expect(findImportFromJiraLink().attributes('href')).toBe(projectImportJiraPath);
+            expect(findImportFromJiraLink().props('item').href).toBe(projectImportJiraPath);
           });
         });
 

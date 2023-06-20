@@ -9,25 +9,27 @@ export const projectData = {
     storageTypes: [
       {
         storageType: {
-          id: 'containerRegistrySize',
+          id: 'containerRegistry',
           name: 'Container Registry',
           description: 'Gitlab-integrated Docker Container Registry for storing Docker Images.',
           helpPath: '/container_registry',
+          detailsPath: 'http://localhost/frontend-fixtures/builds-project/container_registry',
         },
-        value: 3_900_000,
+        value: 3900000,
       },
       {
         storageType: {
-          id: 'buildArtifactsSize',
+          id: 'buildArtifacts',
           name: 'Job artifacts',
           description: 'Job artifacts created by CI/CD.',
           helpPath: '/build-artifacts',
+          detailsPath: 'http://localhost/frontend-fixtures/builds-project/-/artifacts',
         },
         value: 400000,
       },
       {
         storageType: {
-          id: 'pipelineArtifactsSize',
+          id: 'pipelineArtifacts',
           name: 'Pipeline artifacts',
           description: 'Pipeline artifacts created by CI/CD.',
           helpPath: '/pipeline-artifacts',
@@ -36,7 +38,7 @@ export const projectData = {
       },
       {
         storageType: {
-          id: 'lfsObjectsSize',
+          id: 'lfsObjects',
           name: 'LFS',
           description: 'Audio samples, videos, datasets, and graphics.',
           helpPath: '/lsf-objects',
@@ -45,37 +47,41 @@ export const projectData = {
       },
       {
         storageType: {
-          id: 'packagesSize',
+          id: 'packages',
           name: 'Packages',
           description: 'Code packages and container images.',
           helpPath: '/packages',
+          detailsPath: 'http://localhost/frontend-fixtures/builds-project/-/packages',
         },
         value: 3800000,
       },
       {
         storageType: {
-          id: 'repositorySize',
+          id: 'repository',
           name: 'Repository',
           description: 'Git repository.',
           helpPath: '/repository',
+          detailsPath: 'http://localhost/frontend-fixtures/builds-project/-/tree/master',
         },
         value: 3900000,
       },
       {
         storageType: {
-          id: 'snippetsSize',
+          id: 'snippets',
           name: 'Snippets',
           description: 'Shared bits of code and text.',
           helpPath: '/snippets',
+          detailsPath: 'http://localhost/frontend-fixtures/builds-project/-/snippets',
         },
         value: 0,
       },
       {
         storageType: {
-          id: 'wikiSize',
+          id: 'wiki',
           name: 'Wiki',
           description: 'Wiki content.',
           helpPath: '/wiki',
+          detailsPath: 'http://localhost/frontend-fixtures/builds-project/-/wikis/pages',
         },
         value: 300000,
       },

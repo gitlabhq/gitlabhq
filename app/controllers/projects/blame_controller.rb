@@ -9,6 +9,7 @@ class Projects::BlameController < Projects::ApplicationController
   before_action :assign_ref_vars
   before_action :authorize_read_code!
   before_action :load_blob
+  before_action :require_non_binary_blob
 
   feature_category :source_code_management
   urgency :low, [:show]
@@ -38,6 +39,10 @@ class Projects::BlameController < Projects::ApplicationController
     return if @blob
 
     redirect_to_tree_root_for_missing_path(@project, @ref, @path)
+  end
+
+  def require_non_binary_blob
+    redirect_to project_blob_path(@project, File.join(@ref, @path)), notice: _('Blame for binary files is not supported.') if @blob.binary?
   end
 
   def load_environment

@@ -131,8 +131,10 @@
 
       - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
         .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
-          .fade-left= sprite_icon('chevron-lg-left', size: 12)
-          .fade-right= sprite_icon('chevron-lg-right', size: 12)
+          %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
+            = sprite_icon('chevron-lg-left', size: 12)
+          %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
+            = sprite_icon('chevron-lg-right', size: 12)
           %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs.gl-border-b-0
             - if profile_tab?(:overview)
               %li.js-overview-tab

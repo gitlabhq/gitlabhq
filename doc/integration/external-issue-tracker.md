@@ -21,6 +21,16 @@ The references are automatically converted to links to the issues.
 You can keep the GitLab issue tracker enabled in parallel or disable it. When enabled, the **Issues** link in the
 GitLab menu always opens the internal issue tracker. When disabled, the link is not visible in the menu.
 
+## Disable the GitLab issue tracker
+
+To disable the GitLab issue tracker:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Under **Issues**, turn off the toggle.
+1. Select **Save changes**.
+
 ## Configure an external issue tracker
 
 To enable an external issue tracker, you must configure the appropriate [integration](../user/project/integrations/index.md).
@@ -28,6 +38,7 @@ To enable an external issue tracker, you must configure the appropriate [integra
 The following external issue tracker integrations are available:
 
 - [Bugzilla](../user/project/integrations/bugzilla.md)
+- [ClickUp](../user/project/integrations/clickup.md)
 - [Custom Issue Tracker](../user/project/integrations/custom_issue_tracker.md)
 - [Engineering Workflow Management](../user/project/integrations/ewm.md)
 - [Jira](../integration/jira/index.md)

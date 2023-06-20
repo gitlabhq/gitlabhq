@@ -7,24 +7,26 @@ namespace :cache do
 
     desc "GitLab | Cache | Clear redis cache"
     task redis: :environment do
-      Gitlab::Redis::Cache.with do |redis|
-        cache_key_pattern = %W[#{Gitlab::Redis::Cache::CACHE_NAMESPACE}*
-                               projects/*/pipeline_status]
+      [Gitlab::Redis::Cache, Gitlab::Redis::RepositoryCache].each do |redis_instance|
+        redis_instance.with do |redis|
+          cache_key_pattern = %W[#{Gitlab::Redis::Cache::CACHE_NAMESPACE}*
+                                 projects/*/pipeline_status]
 
-        cache_key_pattern.each do |match|
-          cursor = REDIS_SCAN_START_STOP
-          loop do
-            cursor, keys = redis.scan(
-              cursor,
-              match: match,
-              count: REDIS_CLEAR_BATCH_SIZE
-            )
+          cache_key_pattern.each do |match|
+            cursor = REDIS_SCAN_START_STOP
+            loop do
+              cursor, keys = redis.scan(
+                cursor,
+                match: match,
+                count: REDIS_CLEAR_BATCH_SIZE
+              )
 
-            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.del(*keys) if keys.any?
+              Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+                Gitlab::Redis::ClusterUtil.batch_unlink(keys, redis) if keys.any?
+              end
+
+              break if cursor == REDIS_SCAN_START_STOP
             end
-
-            break if cursor == REDIS_SCAN_START_STOP
           end
         end
       end

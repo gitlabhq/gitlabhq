@@ -216,6 +216,14 @@ RSpec.describe Gitlab::OmniauthInitializer do
       expect { subject.execute([hash_config]) }.to raise_error(NameError)
     end
 
+    it 'configures fail_with_empty_uid for shibboleth' do
+      shibboleth_config = { 'name' => 'shibboleth', 'args' => {} }
+
+      expect(devise_config).to receive(:omniauth).with(:shibboleth, { fail_with_empty_uid: true })
+
+      subject.execute([shibboleth_config])
+    end
+
     it 'configures defaults for google_oauth2' do
       google_config = {
         'name' => 'google_oauth2',

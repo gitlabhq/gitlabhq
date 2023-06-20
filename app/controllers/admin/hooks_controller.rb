@@ -3,7 +3,6 @@
 class Admin::HooksController < Admin::ApplicationController
   include ::WebHooks::HookActions
 
-  feature_category :integrations
   urgency :low, [:test]
 
   def test

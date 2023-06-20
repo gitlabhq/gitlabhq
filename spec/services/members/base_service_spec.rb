@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::BaseService, feature_category: :projects do
+RSpec.describe Members::BaseService, feature_category: :groups_and_projects do
   let_it_be(:access_requester) { create(:group_member) }
 
   describe '#resolve_access_request_todos' do

@@ -279,7 +279,6 @@ module Gitlab
           end
 
           def finding_name(data, identifiers, location)
-            return data['message'] if data['message'].present?
             return data['name'] if data['name'].present?
 
             identifier = identifiers.find(&:cve?) || identifiers.find(&:cwe?) || identifiers.first

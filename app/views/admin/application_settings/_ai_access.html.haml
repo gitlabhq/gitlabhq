@@ -1,0 +1,32 @@
+- return if Gitlab.org_or_com?
+
+- expanded = integration_expanded?('ai_access')
+- token_is_present = @application_setting.ai_access_token.present?
+- token_label = token_is_present ? s_('CodeSuggestionsSM|Enter new personal access token') : s_('CodeSuggestionsSM|Personal access token')
+- token_value = token_is_present ? ApplicationSettingMaskedAttrs::MASK : ''
+
+%section.settings.no-animate#js-ai-access-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('CodeSuggestionsSM|Code Suggestions')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = s_('CodeSuggestionsSM|Enable Code Suggestion for users of this GitLab instance.')
+      = link_to sprite_icon('question-o'), code_suggestions_docs_url, target: '_blank', class: 'has-tooltip', title: _('More information')
+
+  .settings-content
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-ai-access-settings'), html: { class: 'fieldset-form', id: 'ai-access-settings' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          = f.gitlab_ui_checkbox_component :instance_level_code_suggestions_enabled,
+            s_('CodeSuggestionsSM|Turn on Code Suggestions for this instance. By turning on this feature, you:'),
+            help_text: code_suggestions_agreement
+          = f.label :ai_access_token, token_label, class: 'label-bold'
+          = f.password_field :ai_access_token, value: token_value, autocomplete: 'on', class: 'form-control gl-form-input', aria: { describedby: 'code_suggestions_token_explanation' }
+          %p.form-text.text-muted{ id: 'code_suggestions_token_explanation' }
+            = code_suggestions_token_explanation
+
+      = f.submit _('Save changes'), pajamas_button: true

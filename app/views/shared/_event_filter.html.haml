@@ -1,8 +1,10 @@
 - show_group_events = local_assigns.fetch(:show_group_events, false)
 
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller.flex-fill
-  .fade-left= sprite_icon('chevron-lg-left', size: 12)
-  .fade-right= sprite_icon('chevron-lg-right', size: 12)
+  %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
+    = sprite_icon('chevron-lg-left', size: 12)
+  %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
+    = sprite_icon('chevron-lg-right', size: 12)
   %ul.nav-links.event-filter.scrolling-tabs.nav.nav-tabs
     = event_filter_link EventFilter::ALL, _('All'), s_('EventFilterBy|Filter by all')
     - if event_filter_visible(:repository)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ProjectsController, :enable_admin_mode, feature_category: :projects do
+RSpec.describe Admin::ProjectsController, :enable_admin_mode, feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project, :public, name: 'test', description: 'test') }
   let_it_be(:admin) { create(:admin) }
 

@@ -30,7 +30,7 @@ WARNING:
 Be mindful of the access levels for your private keys and visibility to
 third parties.
 
-**For Omnibus installations:**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb` and adapt the file paths:
 
@@ -42,11 +42,11 @@ third parties.
    gitlab_rails['gitlab_email_smime_ca_certs_file'] = '/etc/gitlab/ssl/gitlab_smime_cas.crt'
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 The key must be readable by the GitLab system user (`git` by default).
 
-**For installations from source:**
+For self-compiled installations:
 
 1. Edit `config/gitlab.yml`:
 

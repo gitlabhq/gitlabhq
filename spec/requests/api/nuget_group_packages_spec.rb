@@ -26,13 +26,7 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
 
   shared_examples 'handling all endpoints' do
     describe 'GET /api/v4/groups/:id/-/packages/nuget' do
-      it_behaves_like 'handling nuget service requests',
-                      example_names_with_status: {
-                        anonymous_requests_example_name: 'rejects nuget packages access',
-                        anonymous_requests_status: :unauthorized,
-                        guest_requests_example_name: 'process nuget service index request',
-                        guest_requests_status: :success
-                      } do
+      it_behaves_like 'handling nuget service requests' do
         let(:url) { "/groups/#{target.id}/-/packages/nuget/index.json" }
       end
     end

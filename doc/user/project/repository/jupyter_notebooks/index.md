@@ -25,7 +25,7 @@ GitLab.
 
 ## Cleaner diffs and raw diffs
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6589) in GitLab 14.5 as an [Experiment](../../../../policy/alpha-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`. Enabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6589) in GitLab 14.5 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75500) in GitLab 14.9. Feature flag `jupyter_clean_diffs` removed.
 > - [Reintroduced toggle](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85079) in GitLab 15.0 [with a flag](../../../../administration/feature_flags.md) named `ipynb_semantic_diff`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95373) in GitLab 15.6. Feature flag `ipynb_semantic_diff` removed.

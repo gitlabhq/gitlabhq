@@ -1,6 +1,6 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import DeleteEnvironmentModal from '~/environments/components/delete_environment_modal.vue';
 import EnvironmentsDetailHeader from '~/environments/components/environments_detail_header.vue';
 import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
@@ -11,7 +11,6 @@ import { createEnvironment } from './mock_data';
 describe('Environments detail header component', () => {
   const cancelAutoStopPath = '/my-environment/cancel/path';
   const terminalPath = '/my-environment/terminal/path';
-  const metricsPath = '/my-environment/metrics/path';
   const updatePath = '/my-environment/edit/path';
 
   let wrapper;
@@ -22,7 +21,6 @@ describe('Environments detail header component', () => {
   const findCancelAutoStopAtForm = () => wrapper.findByTestId('cancel-auto-stop-form');
   const findTerminalButton = () => wrapper.findByTestId('terminal-button');
   const findExternalUrlButton = () => wrapper.findComponentByTestId('external-url-button');
-  const findMetricsButton = () => wrapper.findByTestId('metrics-button');
   const findEditButton = () => wrapper.findByTestId('edit-button');
   const findStopButton = () => wrapper.findByTestId('stop-button');
   const findDestroyButton = () => wrapper.findByTestId('destroy-button');
@@ -34,7 +32,6 @@ describe('Environments detail header component', () => {
     ['Cancel Auto Stop At', findCancelAutoStopAtButton],
     ['Terminal', findTerminalButton],
     ['External Url', findExternalUrlButton],
-    ['Metrics', findMetricsButton],
     ['Edit', findEditButton],
     ['Stop', findStopButton],
     ['Destroy', findDestroyButton],
@@ -176,48 +173,6 @@ describe('Environments detail header component', () => {
       expect(findExternalUrlButton().attributes('href')).toBe(externalUrl);
       expect(findExternalUrlButton().props('isUnsafeLink')).toBe(true);
     });
-  });
-
-  describe('when metrics are enabled', () => {
-    beforeEach(() => {
-      createWrapper({
-        props: {
-          environment: createEnvironment({ metricsUrl: 'my metrics url' }),
-          metricsPath,
-        },
-      });
-    });
-
-    it('displays the metrics button with correct path', () => {
-      expect(findMetricsButton().attributes('href')).toBe(metricsPath);
-    });
-
-    it('uses a gl tooltip for the title', () => {
-      const button = findMetricsButton();
-      const tooltip = getBinding(button.element, 'gl-tooltip');
-
-      expect(tooltip).toBeDefined();
-      expect(button.attributes('title')).toBe('See metrics');
-    });
-
-    describe.each([true, false])(
-      'and `remove_monitor_metrics` flag is %p',
-      (removeMonitorMetrics) => {
-        beforeEach(() => {
-          createWrapper({
-            props: {
-              environment: createEnvironment({ metricsUrl: 'my metrics url' }),
-              metricsPath,
-            },
-            glFeatures: { removeMonitorMetrics },
-          });
-        });
-
-        it(`${removeMonitorMetrics ? 'does not render' : 'renders'} Metrics button`, () => {
-          expect(findMetricsButton().exists()).toBe(!removeMonitorMetrics);
-        });
-      },
-    );
   });
 
   describe('when has all admin rights', () => {

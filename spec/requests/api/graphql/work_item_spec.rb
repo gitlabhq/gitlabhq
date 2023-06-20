@@ -69,7 +69,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'deleteWorkItem' => false,
           'adminWorkItem' => true,
           'adminParentLink' => true,
-          'setWorkItemMetadata' => true
+          'setWorkItemMetadata' => true,
+          'createNote' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
@@ -536,6 +537,114 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               )
             )
           )
+        end
+      end
+    end
+
+    describe 'notes widget' do
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetNotes {
+              system: discussions(filter: ONLY_ACTIVITY, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+              comments: discussions(filter: ONLY_COMMENTS, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+              all_notes: discussions(filter: ALL_NOTES, first: 10) { nodes { id  notes { nodes { id system internal body } } } }
+            }
+          }
+        GRAPHQL
+      end
+
+      context 'when fetching award emoji from notes' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetNotes {
+                discussions(filter: ONLY_COMMENTS, first: 10) {
+                  nodes {
+                    id
+                    notes {
+                      nodes {
+                        id
+                        body
+                        maxAccessLevelOfAuthor
+                        authorIsContributor
+                        awardEmoji {
+                          nodes {
+                            name
+                            user {
+                              name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        let_it_be(:note) { create(:note, project: work_item.project, noteable: work_item) }
+
+        before_all do
+          create(:award_emoji, awardable: note, name: 'rocket', user: developer)
+        end
+
+        it 'returns award emoji data' do
+          all_widgets = graphql_dig_at(work_item_data, :widgets)
+          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+          notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
+
+          note_with_emoji = notes.find { |n| n['id'] == note.to_gid.to_s }
+
+          expect(note_with_emoji).to include(
+            'awardEmoji' => {
+              'nodes' => include(
+                hash_including(
+                  'name' => 'rocket',
+                  'user' => {
+                    'name' => developer.name
+                  }
+                )
+              )
+            }
+          )
+        end
+
+        it 'returns author contributor status and max access level' do
+          all_widgets = graphql_dig_at(work_item_data, :widgets)
+          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+          notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
+
+          expect(notes).to contain_exactly(
+            hash_including('maxAccessLevelOfAuthor' => 'Owner', 'authorIsContributor' => false)
+          )
+        end
+
+        it 'avoids N+1 queries' do
+          another_user = create(:user).tap { |u| note.resource_parent.add_developer(u) }
+          create(:note, project: note.project, noteable: work_item, author: another_user)
+
+          post_graphql(query, current_user: developer)
+
+          control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: developer) }
+
+          expect_graphql_errors_to_be_empty
+
+          another_note = create(:note, project: work_item.project, noteable: work_item)
+          create(:award_emoji, awardable: another_note, name: 'star', user: guest)
+          another_user = create(:user).tap { |u| note.resource_parent.add_developer(u) }
+          note_with_different_user = create(:note, project: note.project, noteable: work_item, author: another_user)
+          create(:award_emoji, awardable: note_with_different_user, name: 'star', user: developer)
+
+          # TODO: Fix existing N+1 queries in https://gitlab.com/gitlab-org/gitlab/-/issues/414747
+          expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control).with_threshold(3)
+          expect_graphql_errors_to_be_empty
         end
       end
     end

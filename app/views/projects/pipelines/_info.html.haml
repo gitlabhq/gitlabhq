@@ -16,7 +16,7 @@
       .icon-container
         = sprite_icon('clock', css_class: 'gl-top-0!')
       = n_('%d job', '%d jobs', @pipeline.total_size) % @pipeline.total_size
-      = @pipeline.ref_text
+      = @pipeline.ref_text_legacy
     - if @pipeline.finished_at
       - duration = time_interval_in_words(@pipeline.duration)
       - queued_duration = time_interval_in_words(@pipeline.queued_duration)

@@ -32,11 +32,11 @@ kaniko-build:
             VERSION="latest"
           elif [ -n "$CI_COMMIT_TAG" ];then
             NOSLASH=$(echo "$CI_COMMIT_TAG" | tr -s / - )
-            SANITIZED="${NOSLASH//[^a-zA-Z0-9\-\.]/}"
+            SANITIZED="${NOSLASH//[^a-zA-Z0-9.-]/}"
             VERSION="$SANITIZED"
           else \
             NOSLASH=$(echo "$CI_COMMIT_REF_NAME" | tr -s / - )
-            SANITIZED="${NOSLASH//[^a-zA-Z0-9\-]/}"
+            SANITIZED="${NOSLASH//[^a-zA-Z0-9-]/}"
             VERSION="branch-$SANITIZED"
           fi
         export IMAGE_TAG=$CI_REGISTRY_IMAGE:$VERSION

@@ -120,17 +120,26 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
-  it.each`
-    desc                                                                                              | supportsQuickActions
-    ${'passes render_quick_actions param to renderMarkdownPath if quick actions are enabled'}         | ${true}
-    ${'does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled'} | ${false}
-  `('$desc', async ({ supportsQuickActions }) => {
-    buildWrapper({ propsData: { supportsQuickActions } });
+  // quarantine flaky spec:https://gitlab.com/gitlab-org/gitlab/-/issues/412618
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
+    buildWrapper({ propsData: { supportsQuickActions: true } });
 
     await enableContentEditor();
 
     expect(mock.history.post).toHaveLength(1);
-    expect(mock.history.post[0].url).toContain(`render_quick_actions=${supportsQuickActions}`);
+    expect(mock.history.post[0].url).toContain(`render_quick_actions=true`);
+  });
+
+  // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/411565
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled', async () => {
+    buildWrapper({ propsData: { supportsQuickActions: false } });
+
+    await enableContentEditor();
+
+    expect(mock.history.post).toHaveLength(1);
+    expect(mock.history.post[0].url).toContain(`render_quick_actions=false`);
   });
 
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {
@@ -165,6 +174,20 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  describe('when attachments are disabled', () => {
+    beforeEach(() => {
+      buildWrapper({ propsData: { disableAttachments: true } });
+    });
+
+    it('disables canAttachFile', () => {
+      expect(findMarkdownField().props().canAttachFile).toBe(false);
+    });
+
+    it('passes `attach-file` to restrictedToolBarItems', () => {
+      expect(findMarkdownField().props().restrictedToolBarItems).toContain('attach-file');
+    });
+  });
+
   describe('disabled', () => {
     it('disables markdown field when disabled prop is true', () => {
       buildWrapper({ propsData: { disabled: true } });
@@ -178,7 +201,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(findMarkdownField().find('textarea').attributes('disabled')).toBe(undefined);
     });
 
-    it('disables content editor when disabled prop is true', async () => {
+    // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/404734
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('disables content editor when disabled prop is true', async () => {
       buildWrapper({ propsData: { disabled: true } });
 
       await enableContentEditor();

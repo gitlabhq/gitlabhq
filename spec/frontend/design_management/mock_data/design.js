@@ -3,6 +3,8 @@ export default {
   filename: 'test.jpg',
   fullPath: 'full-design-path',
   image: 'test.jpg',
+  description: 'Test description',
+  descriptionHtml: 'Test description',
   updatedAt: '01-01-2019',
   updatedBy: {
     name: 'test',

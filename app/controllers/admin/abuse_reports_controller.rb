@@ -13,7 +13,12 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   def show; end
 
   def update
-    Admin::AbuseReportUpdateService.new(@abuse_report, current_user, permitted_params).execute
+    response = Admin::AbuseReportUpdateService.new(@abuse_report, current_user, permitted_params).execute
+    if response.success?
+      render json: { message: response.message }
+    else
+      render json: { message: response.message }, status: :unprocessable_entity
+    end
   end
 
   def destroy

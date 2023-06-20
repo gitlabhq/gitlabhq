@@ -12,8 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This setting allows you to rate limit the requests to the issue and epic creation endpoints.
 To can change its value:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Issues Rate Limits**.
 1. Under **Max requests per minute**, enter the new value.
 1. Select **Save changes**.

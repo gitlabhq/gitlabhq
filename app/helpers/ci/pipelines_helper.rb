@@ -93,7 +93,7 @@ module Ci
         pipeline_schedule_url: pipeline_schedules_path(project),
         empty_state_svg_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         error_state_svg_path: image_path('illustrations/pipelines_failed.svg'),
-        no_pipelines_svg_path: image_path('illustrations/pipelines_pending.svg'),
+        no_pipelines_svg_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         can_create_pipeline: can?(current_user, :create_pipeline, project).to_s,
         new_pipeline_path: can?(current_user, :create_pipeline, project) && new_project_pipeline_path(project),
         ci_lint_path: can?(current_user, :create_pipeline, project) && project_ci_lint_path(project),
@@ -101,7 +101,8 @@ module Ci
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
-        full_path: project.full_path
+        full_path: project.full_path,
+        visibility_pipeline_id_type: visibility_pipeline_id_type
       }
 
       experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
@@ -112,6 +113,12 @@ module Ci
       end
 
       data
+    end
+
+    def visibility_pipeline_id_type
+      return 'id' unless current_user.present?
+
+      current_user.user_preference.visibility_pipeline_id_type
     end
 
     private

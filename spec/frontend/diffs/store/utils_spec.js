@@ -140,6 +140,7 @@ describe('DiffsStoreUtils', () => {
         old_line: options.noteTargetLine.old_line,
         new_line: options.noteTargetLine.new_line,
         line_range: options.lineRange,
+        ignore_whitespace_change: true,
       });
 
       const postData = {
@@ -198,6 +199,7 @@ describe('DiffsStoreUtils', () => {
         position_type: TEXT_DIFF_POSITION_TYPE,
         old_line: options.noteTargetLine.old_line,
         new_line: options.noteTargetLine.new_line,
+        ignore_whitespace_change: true,
       });
 
       const postData = {
@@ -711,6 +713,14 @@ describe('DiffsStoreUtils', () => {
           viewer: { name: 'mode_changed' },
         }),
       ).toBe('mode_changed');
+    });
+
+    it('returns no_preview if key has no match', () => {
+      expect(
+        utils.getDiffMode({
+          viewer: { name: 'no_preview' },
+        }),
+      ).toBe('no_preview');
     });
 
     it('defaults to replaced', () => {

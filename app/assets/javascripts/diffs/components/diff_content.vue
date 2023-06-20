@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
@@ -21,6 +21,7 @@ import ImageDiffOverlay from './image_diff_overlay.vue';
 export default {
   components: {
     GlLoadingIcon,
+    GlButton,
     DiffView,
     DiffViewer,
     NoteForm,
@@ -59,7 +60,10 @@ export default {
       return this.diffFile.viewer.name;
     },
     isTextFile() {
-      return this.diffViewerMode === diffViewerModes.text;
+      return this.diffViewerMode === diffViewerModes.text && !this.diffFile.viewer.whitespace_only;
+    },
+    isWhitespaceOnly() {
+      return this.diffFile.viewer.whitespace_only;
     },
     noPreview() {
       return this.diffViewerMode === diffViewerModes.no_preview;
@@ -71,7 +75,10 @@ export default {
       return this.getCommentFormForDiffFile(this.diffFileHash);
     },
     showNotesContainer() {
-      return this.imageDiscussions.length || this.diffFileCommentForm;
+      return (
+        this.diffViewerMode === diffViewerModes.image &&
+        (this.imageDiscussionsWithDrafts.length || this.diffFileCommentForm)
+      );
     },
     diffFileHash() {
       return this.diffFile.file_hash;
@@ -82,6 +89,11 @@ export default {
     mappedLines() {
       // TODO: Do this data generation when we receive a response to save a computed property being created
       return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
+    },
+    imageDiscussions() {
+      return this.diffFile.discussions.filter(
+        (f) => f.position?.position_type === IMAGE_DIFF_POSITION_TYPE,
+      );
     },
   },
   updated() {
@@ -107,6 +119,7 @@ export default {
       });
     },
   },
+  IMAGE_DIFF_POSITION_TYPE,
 };
 </script>
 
@@ -122,6 +135,23 @@ export default {
         />
         <gl-loading-icon v-if="diffFile.renderingLines" size="lg" class="mt-3" />
       </template>
+      <div
+        v-else-if="isWhitespaceOnly"
+        class="gl-bg-gray-10 gl--flex-center gl-h-13"
+        data-testid="diff-whitespace-only-state"
+      >
+        {{ __('Contains only whitespace changes.') }}
+        <gl-button
+          category="tertiary"
+          variant="info"
+          size="small"
+          class="gl-ml-3"
+          data-testid="diff-load-file-button"
+          @click="$emit('load-file', { w: '0' })"
+        >
+          {{ __('Show changes') }}
+        </gl-button>
+      </div>
       <not-diffable-viewer v-else-if="notDiffable" />
       <no-preview-viewer v-else-if="noPreview" />
       <diff-viewer
@@ -160,13 +190,17 @@ export default {
             class="d-none d-sm-block new-comment"
           />
           <diff-discussions
-            v-if="diffFile.discussions.length"
+            v-if="imageDiscussions.length"
             class="diff-file-discussions"
-            :discussions="diffFile.discussions"
+            :discussions="imageDiscussions"
             should-collapse-discussions
             render-avatar-badge
           />
-          <diff-file-drafts :file-hash="diffFileHash" class="diff-file-discussions" />
+          <diff-file-drafts
+            :file-hash="diffFileHash"
+            :position-type="$options.IMAGE_DIFF_POSITION_TYPE"
+            class="diff-file-discussions"
+          />
           <note-form
             v-if="diffFileCommentForm"
             ref="noteForm"

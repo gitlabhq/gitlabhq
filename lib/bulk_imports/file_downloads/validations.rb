@@ -22,7 +22,7 @@ module BulkImports
       private
 
       def validate_filepath
-        Gitlab::Utils.check_path_traversal!(filepath)
+        Gitlab::PathTraversal.check_path_traversal!(filepath)
       end
 
       def validate_content_type

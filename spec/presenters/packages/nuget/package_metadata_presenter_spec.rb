@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::PackageMetadataPresenter do
+RSpec.describe Packages::Nuget::PackageMetadataPresenter, feature_category: :package_registry do
   include_context 'with expected presenters dependency groups'
 
   let_it_be(:package) { create(:nuget_package, :with_symbol_package, :with_metadatum) }
@@ -44,13 +44,12 @@ RSpec.describe Packages::Nuget::PackageMetadataPresenter do
 
       expect(entry).to be_a Hash
       %i[json_url archive_url].each { |field| expect(entry[field]).not_to be_blank }
-      %i[authors summary].each { |field| expect(entry[field]).to be_blank }
       expect(entry[:dependency_groups]).to eq expected_dependency_groups(package.project_id, package.name, package.version)
       expect(entry[:package_name]).to eq package.name
       expect(entry[:package_version]).to eq package.version
       expect(entry[:tags].split(::Packages::Tag::NUGET_TAGS_SEPARATOR)).to contain_exactly('tag1', 'tag2')
 
-      %i[project_url license_url icon_url].each do |field|
+      %i[authors description project_url license_url icon_url].each do |field|
         expect(entry.dig(:metadatum, field)).to eq(package.nuget_metadatum.send(field))
       end
     end

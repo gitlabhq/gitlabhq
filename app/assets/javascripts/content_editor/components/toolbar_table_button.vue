@@ -1,11 +1,5 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownDivider,
-  GlDropdownForm,
-  GlButton,
-  GlTooltipDirective as GlTooltip,
-} from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { clamp } from '../services/utils';
 
@@ -19,9 +13,7 @@ const MAX_COLS = 10;
 export default {
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownForm,
+    GlDisclosureDropdown,
   },
   directives: {
     GlTooltip,
@@ -61,45 +53,72 @@ export default {
         .run();
 
       this.resetState();
+      this.$refs.dropdown.close();
 
       this.$emit('execute', { contentType: 'table' });
     },
     getButtonLabel(rows, cols) {
-      return sprintf(__('Insert a %{rows}x%{cols} table.'), { rows, cols });
+      return sprintf(__('Insert a %{rows}×%{cols} table'), { rows, cols });
+    },
+    onKeydown(key) {
+      const delta = {
+        ArrowUp: { rows: -1, cols: 0 },
+        ArrowDown: { rows: 1, cols: 0 },
+        ArrowLeft: { rows: 0, cols: -1 },
+        ArrowRight: { rows: 0, cols: 1 },
+      }[key] || { rows: 0, cols: 0 };
+
+      const rows = clamp(this.rows + delta.rows, 1, this.maxRows);
+      const cols = clamp(this.cols + delta.cols, 1, this.maxCols);
+
+      this.setRowsAndCols(rows, cols);
+    },
+    setFocus(row, col) {
+      this.$refs[`table-${row}-${col}`][0].$el.focus();
     },
   },
+  MAX_COLS,
+  MAX_ROWS,
 };
 </script>
 <template>
-  <gl-dropdown
+  <gl-disclosure-dropdown
+    ref="dropdown"
     v-gl-tooltip
     size="small"
     category="tertiary"
     icon="table"
-    :title="__('Insert table')"
-    :text="__('Insert table')"
-    class="content-editor-dropdown"
-    right
+    :aria-label="__('Insert table')"
+    :toggle-text="__('Insert table')"
+    positioning-strategy="fixed"
+    class="content-editor-table-dropdown"
     text-sr-only
-    lazy
+    :fluid-width="true"
+    @shown="setFocus(1, 1)"
   >
-    <gl-dropdown-form class="gl-px-3! gl-pb-2!">
-      <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex">
-        <gl-button
-          v-for="c of list(maxCols)"
-          :key="c"
-          :data-testid="`table-${r}-${c}`"
-          :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
-          :aria-label="getButtonLabel(r, c)"
-          class="table-creator-grid-item gl-display-inline gl-rounded-0! gl-w-6! gl-h-6! gl-p-0!"
-          @mouseover="setRowsAndCols(r, c)"
-          @click="insertTable()"
-        />
+    <div
+      class="gl-p-3 gl-pt-2"
+      role="grid"
+      :aria-colcount="$options.MAX_COLS"
+      :aria-rowcount="$options.MAX_ROWS"
+    >
+      <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex" role="row">
+        <div v-for="c of list(maxCols)" :key="c" role="gridcell">
+          <gl-button
+            :ref="`table-${r}-${c}`"
+            :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
+            :aria-label="getButtonLabel(r, c)"
+            class="table-creator-grid-item gl-display-inline gl-rounded-0! gl-w-6! gl-h-6! gl-p-0!"
+            @mouseover="setRowsAndCols(r, c)"
+            @focus="setRowsAndCols(r, c)"
+            @click="insertTable()"
+            @keydown="onKeydown($event.key)"
+          />
+        </div>
       </div>
-      <gl-dropdown-divider class="gl-my-3! gl-mx-n3!" />
-      <div class="gl-px-1">
-        {{ getButtonLabel(rows, cols) }}
-      </div>
-    </gl-dropdown-form>
-  </gl-dropdown>
+    </div>
+    <div class="gl-border-t gl-px-4 gl-pt-3 gl-pb-2">
+      {{ getButtonLabel(rows, cols) }}
+    </div>
+  </gl-disclosure-dropdown>
 </template>

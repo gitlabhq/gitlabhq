@@ -105,7 +105,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline do
 
     context 'when file path is being traversed' do
       it 'raises an error' do
-        expect { pipeline.load(context, File.join(tmpdir, '..')) }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+        expect { pipeline.load(context, File.join(tmpdir, '..')) }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
       end
     end
 

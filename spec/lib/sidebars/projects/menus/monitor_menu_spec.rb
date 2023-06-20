@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
+RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :navigation do
   let_it_be_with_refind(:project) { create(:project) }
 
   let(:user) { project.first_owner }
@@ -57,10 +57,6 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
   end
 
   context 'Menu items' do
-    before do
-      stub_feature_flags(remove_monitor_metrics: false)
-    end
-
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
@@ -71,12 +67,6 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
 
         specify { is_expected.to be_nil }
       end
-    end
-
-    describe 'Metrics Dashboard' do
-      let(:item_id) { :metrics }
-
-      it_behaves_like 'access rights checks'
     end
 
     describe 'Error Tracking' do

@@ -41,9 +41,9 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     context 'when Redis calls are made' do
       it 'adds Redis data and omits Gitaly data' do
         stub_rails_env('staging') # to avoid raising CrossSlotError
-        Gitlab::Redis::Cache.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
+        Gitlab::Redis::Sessions.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          Gitlab::Redis::Cache.with { |redis| redis.mget('cache-test', 'cache-test-2') }
+          Gitlab::Redis::Sessions.with { |redis| redis.mget('cache-test', 'cache-test-2') }
         end
         Gitlab::Redis::Queues.with { |redis| redis.set('test-queues', 321) }
 
@@ -63,13 +63,13 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
         expect(payload[:redis_queues_read_bytes]).to be >= 0
         expect(payload[:redis_queues_write_bytes]).to be >= 0
 
-        # Cache payload
-        expect(payload[:redis_cache_calls]).to eq(2)
-        expect(payload[:redis_cache_cross_slot_calls]).to eq(1)
-        expect(payload[:redis_cache_allowed_cross_slot_calls]).to eq(1)
-        expect(payload[:redis_cache_duration_s]).to be >= 0
-        expect(payload[:redis_cache_read_bytes]).to be >= 0
-        expect(payload[:redis_cache_write_bytes]).to be >= 0
+        # Sessions payload
+        expect(payload[:redis_sessions_calls]).to eq(2)
+        expect(payload[:redis_sessions_cross_slot_calls]).to eq(1)
+        expect(payload[:redis_sessions_allowed_cross_slot_calls]).to eq(1)
+        expect(payload[:redis_sessions_duration_s]).to be >= 0
+        expect(payload[:redis_sessions_read_bytes]).to be >= 0
+        expect(payload[:redis_sessions_write_bytes]).to be >= 0
 
         # Gitaly
         expect(payload[:gitaly_calls]).to be_nil

@@ -1,0 +1,10 @@
+name: ci
+description: Cell-local GitLab database holding all CI pipelines, builds, etc.
+gitlab_schemas:
+  - gitlab_internal
+  - gitlab_shared
+  - gitlab_ci
+klass: Ci::ApplicationRecord
+# if CI database is not configured, use this database
+fallback_database: main
+uses_load_balancing: true

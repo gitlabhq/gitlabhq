@@ -32,8 +32,8 @@ View pipeline duration history:
 
 To view CI/CD analytics:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > CI/CD analytics**.
 
 ## View DORA deployment frequency chart **(ULTIMATE)**
 
@@ -50,8 +50,8 @@ The deployment frequency chart is available for groups and projects.
 
 To view the deployment frequency chart:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > CI/CD analytics**.
 1. Select the **Deployment frequency** tab.
 
 ![Deployment frequency](img/deployment_frequency_charts_v13_12.png)
@@ -72,8 +72,8 @@ merge requests to be deployed to a production environment. This chart is availab
 
 To view the lead time for changes chart:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > CI/CD analytics**.
 1. Select the **Lead time** tab.
 
 ![Lead time](img/lead_time_chart_v13_11.png)
@@ -88,8 +88,8 @@ Time to restore service is one of the four DORA metrics that DevOps teams use fo
 
 To view the time to restore service chart:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > CI/CD analytics**.
 1. Select the **Time to restore service** tab.
 
 ![Lead time](img/time_to_restore_service_charts_v15_1.png)
@@ -104,6 +104,6 @@ Change failure rate is one of the four DORA metrics that DevOps teams use for me
 
 To view the change failure rate chart:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Analyze > CI/CD analytics**.
 1. Select the **Change failure rate** tab.

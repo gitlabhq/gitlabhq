@@ -8,7 +8,8 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382077  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and Kubernetes Vanilla Operator to install a runner on Kubernetes is deprecated. Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-    will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for authentication tokens are:
+    will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+    The configuration arguments disabled for authentication tokens are:
 
     - `--locked`
     - `--access-level`

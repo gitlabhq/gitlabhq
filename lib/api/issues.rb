@@ -271,11 +271,9 @@ module API
         issue_params = convert_parameters_from_legacy_format(issue_params)
 
         begin
-          spam_params = ::Spam::SpamParams.new_from_request(request: request)
           result = ::Issues::CreateService.new(container: user_project,
                                                current_user: current_user,
-                                               params: issue_params,
-                                               spam_params: spam_params).execute
+                                               params: issue_params).execute
 
           if result.success?
             present result[:issue], with: Entities::Issue, current_user: current_user, project: user_project
@@ -318,11 +316,10 @@ module API
 
         update_params = convert_parameters_from_legacy_format(update_params)
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: request)
         issue = ::Issues::UpdateService.new(container: user_project,
                                             current_user: current_user,
                                             params: update_params,
-                                            spam_params: spam_params).execute(issue)
+                                            perform_spam_check: true).execute(issue)
 
         if issue.valid?
           present issue, with: Entities::Issue, current_user: current_user, project: user_project

@@ -44,6 +44,7 @@ ignore: |
   #### Folders ####
   node_modules/
   tmp/
+  generator_templates/gitlab_internal_events/
 
 # In CI some YAML files are linted using different rules.
 # See `.gitlab/ci/yaml.gitlab-ci.yml`.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SessionsController do
+RSpec.describe SessionsController, feature_category: :system_access do
   include DeviseHelpers
   include LdapHelpers
 
@@ -180,7 +180,7 @@ RSpec.describe SessionsController do
         end
 
         include_examples 'user login request with unique ip limit', 302 do
-          def request
+          def gitlab_request
             post(:create, params: { user: user_params })
             expect(subject.current_user).to eq user
             subject.sign_out user

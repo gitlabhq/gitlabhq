@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Groups', feature_category: :subgroups do
+RSpec.describe 'Admin Groups', feature_category: :groups_and_projects do
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers

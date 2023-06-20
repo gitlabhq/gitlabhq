@@ -1,7 +1,10 @@
+import * as Sentry from '@sentry/browser';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { safeUrls, unsafeUrls } from './mock_data';
+
+jest.mock('@sentry/browser');
 
 const shas = {
   valid: [
@@ -394,6 +397,62 @@ describe('URL utility', () => {
       const url = urlUtils.setUrlFragment('/home/feature#overview', '#install');
 
       expect(url).toBe('/home/feature#install');
+    });
+  });
+
+  describe('visitUrl', () => {
+    let originalLocation;
+    const mockUrl = 'http://example.com/page';
+
+    beforeAll(() => {
+      originalLocation = window.location;
+
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: {
+          assign: jest.fn(),
+          protocol: 'http:',
+          host: TEST_HOST,
+        },
+      });
+    });
+
+    afterAll(() => {
+      window.location = originalLocation;
+    });
+
+    it('does not navigate to unsafe urls', () => {
+      // eslint-disable-next-line no-script-url
+      const url = 'javascript:alert(document.domain)';
+      urlUtils.visitUrl(url);
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        new RangeError(`Only http and https protocols are allowed: ${url}`),
+      );
+    });
+
+    it('navigates to a page', () => {
+      urlUtils.visitUrl(mockUrl);
+
+      expect(window.location.assign).toHaveBeenCalledWith(mockUrl);
+    });
+
+    it('navigates to a new page', () => {
+      const otherWindow = {
+        location: {
+          assign: jest.fn(),
+        },
+      };
+
+      Object.defineProperty(window, 'open', {
+        writable: true,
+        value: jest.fn().mockReturnValue(otherWindow),
+      });
+
+      urlUtils.visitUrl(mockUrl, true);
+
+      expect(otherWindow.opener).toBe(null);
+      expect(otherWindow.location.assign).toHaveBeenCalledWith(mockUrl);
     });
   });
 

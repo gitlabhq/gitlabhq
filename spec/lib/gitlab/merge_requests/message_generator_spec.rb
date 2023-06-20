@@ -77,6 +77,25 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
       end
     end
 
+    context 'when project has commit template with title and local reference' do
+      let(:merge_request) do
+        double(
+          :merge_request,
+          title: 'Fixes',
+          target_project: project,
+          to_reference: '!123',
+          metrics: nil,
+          merge_user: nil
+        )
+      end
+
+      let(message_template_name) { '%{title} (%{local_reference})' }
+
+      it 'evaluates only necessary variables' do
+        expect(result_message).to eq 'Fixes (!123)'
+      end
+    end
+
     context 'when project has commit template with closed issues' do
       let(message_template_name) { <<~MSG.rstrip }
         Merge branch '%{source_branch}' into '%{target_branch}'

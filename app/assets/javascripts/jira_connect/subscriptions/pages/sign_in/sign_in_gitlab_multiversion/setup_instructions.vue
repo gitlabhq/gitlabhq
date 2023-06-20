@@ -13,11 +13,11 @@ export default {
 
 <template>
   <div class="gl-mt-5">
-    <h3>{{ s__('JiraService|Continue setup in GitLab') }}</h3>
+    <h3>{{ s__('JiraConnect|Continue setup in GitLab') }}</h3>
     <p>
       {{
         s__(
-          'JiraService|In order to complete the set up, you’ll need to complete a few steps in GitLab.',
+          'JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab.',
         )
       }}
       <gl-link

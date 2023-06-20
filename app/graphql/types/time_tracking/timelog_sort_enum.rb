@@ -6,16 +6,10 @@ module Types
       graphql_name 'TimelogSort'
       description 'Values for sorting timelogs'
 
-      sortable_fields = ['Spent at', 'Time spent']
-
-      sortable_fields.each do |field|
-        value "#{field.upcase.tr(' ', '_')}_ASC",
-          value: { field: field.downcase.tr(' ', '_'), direction: :asc },
-          description: "#{field} by ascending order."
-        value "#{field.upcase.tr(' ', '_')}_DESC",
-          value: { field: field.downcase.tr(' ', '_'), direction: :desc },
-          description: "#{field} by descending order."
-      end
+      value 'SPENT_AT_ASC', 'Spent at ascending order.', value: :spent_at_asc
+      value 'SPENT_AT_DESC', 'Spent at descending order.', value: :spent_at_desc
+      value 'TIME_SPENT_ASC', 'Time spent ascending order.', value: :time_spent_asc
+      value 'TIME_SPENT_DESC', 'Time spent descending order.', value: :time_spent_desc
     end
   end
 end

@@ -160,9 +160,9 @@ The following integration guides are internal. Some integrations require access 
 - [Externalization](i18n/externalization.md)
 - [Translation](i18n/translation.md)
 
-## Product Intelligence guides
+## Analytics Instrumentation guides
 
-- [Product Intelligence guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
+- [Analytics Instrumentation guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
 - [Service Ping guide](service_ping/index.md)
 - [Snowplow guide](snowplow/index.md)
 

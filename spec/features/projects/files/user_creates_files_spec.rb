@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :projects do
+RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :groups_and_projects do
   include Features::SourceEditorSpecHelpers
   include Features::BlobSpecHelpers
 
@@ -105,8 +105,6 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
       end
 
       it 'creates and commit a new file with new lines at the end of file' do
-        set_default_button('edit')
-
         editor_set_value('Sample\n\n\n')
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -116,7 +114,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
 
         expect(page).to have_current_path(new_file_path, ignore_query: true)
 
-        click_link('Edit')
+        edit_in_single_file_editor
 
         expect(find('.monaco-editor')).to have_content('Sample\n\n\n')
       end

@@ -188,51 +188,26 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
         context 'expires_at' do
           context 'when no expiration value is passed' do
-            context 'when default_pat_expiration feature flag is true' do
-              it 'defaults to PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
-                freeze_time do
-                  response = subject
-                  access_token = response.payload[:access_token]
-
-                  expect(access_token.expires_at).to eq(
-                    max_pat_access_token_lifetime.to_date
-                  )
-                end
-              end
-
-              context 'expiry of the project bot member' do
-                it 'project bot membership does not expire' do
-                  response = subject
-                  access_token = response.payload[:access_token]
-                  project_bot = access_token.user
-
-                  expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(
-                    max_pat_access_token_lifetime.to_date
-                  )
-                end
-              end
-            end
-
-            context 'when default_pat_expiration feature flag is false' do
-              before do
-                stub_feature_flags(default_pat_expiration: false)
-              end
-
-              it 'uses nil expiration value' do
+            it 'defaults to PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
+              freeze_time do
                 response = subject
                 access_token = response.payload[:access_token]
 
-                expect(access_token.expires_at).to eq(nil)
+                expect(access_token.expires_at).to eq(
+                  max_pat_access_token_lifetime.to_date
+                )
               end
+            end
 
-              context 'expiry of the project bot member' do
-                it 'project bot membership expires' do
-                  response = subject
-                  access_token = response.payload[:access_token]
-                  project_bot = access_token.user
+            context 'expiry of the project bot member' do
+              it 'project bot membership does not expire' do
+                response = subject
+                access_token = response.payload[:access_token]
+                project_bot = access_token.user
 
-                  expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(nil)
-                end
+                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(
+                  max_pat_access_token_lifetime.to_date
+                )
               end
             end
           end

@@ -183,7 +183,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#merge_request_source_branch' do
-    branch_name = 'name<script>test</script>'
+    let(:malicious_branch_name) { 'name<script>test</script>' }
     let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let(:forked_project) { fork_project(project) }
@@ -191,7 +191,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       create(
         :merge_request,
         source_project: forked_project,
-        source_branch: branch_name,
+        source_branch: malicious_branch_name,
         target_project: project
       )
     end
@@ -204,7 +204,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       end
 
       it 'escapes properly' do
-        expect(subject).to include(html_escape(branch_name))
+        expect(subject).to include(html_escape(malicious_branch_name))
       end
     end
 

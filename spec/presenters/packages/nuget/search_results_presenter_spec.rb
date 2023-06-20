@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Nuget::SearchResultsPresenter do
+RSpec.describe Packages::Nuget::SearchResultsPresenter, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:package_a) { create(:nuget_package, :with_metadatum, project: project, name: 'DummyPackageA') }
   let_it_be(:tag1) { create(:packages_tag, package: package_a, name: 'tag1') }
@@ -30,15 +30,12 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter do
       expect_package_result(pkg_c, packages_c.first.name, packages_c.map(&:version))
     end
 
-    # rubocop:disable Metrics/AbcSize
-    def expect_package_result(package_json, name, versions, tags = [], with_metadatum: false)
+    def expect_package_result(package_json, name, versions, tags = [], with_metadatum: false) # rubocop:disable Metrics/AbcSize
       expect(package_json[:type]).to eq 'Package'
-      expect(package_json[:authors]).to be_blank
       expect(package_json[:name]).to eq(name)
-      expect(package_json[:summary]).to be_blank
       expect(package_json[:total_downloads]).to eq 0
-      expect(package_json[:verified]).to be
-      expect(package_json[:version]).to eq VersionSorter.sort(versions).last # rubocop: disable Style/RedundantSort
+      expect(package_json[:verified]).to be_truthy
+      expect(package_json[:version]).to eq presenter.send(:sort_versions, versions).last
       versions.zip(package_json[:versions]).each do |version, version_json|
         expect(version_json[:json_url]).to end_with("#{version}.json")
         expect(version_json[:downloads]).to eq 0
@@ -51,10 +48,9 @@ RSpec.describe Packages::Nuget::SearchResultsPresenter do
         expect(package_json[:tags]).to be_blank
       end
 
-      %i[project_url license_url icon_url].each do |field|
+      %i[authors description project_url license_url icon_url].each do |field|
         expect(package_json.dig(:metadatum, field)).to with_metadatum ? be_present : be_blank
       end
     end
-    # rubocop:enable Metrics/AbcSize
   end
 end

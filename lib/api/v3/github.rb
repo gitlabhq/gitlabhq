@@ -29,10 +29,9 @@ module API
       feature_category :integrations
 
       before do
-        reversible_end_of_life!
-
         authorize_jira_user_agent!(request)
         authenticate!
+        reversible_end_of_life!
       end
 
       helpers do
@@ -50,6 +49,13 @@ module API
         # TODO Make the breaking change irreversible https://gitlab.com/gitlab-org/gitlab/-/issues/408148.
         def reversible_end_of_life!
           not_found! unless Feature.enabled?(:jira_dvcs_end_of_life_amnesty)
+
+          Gitlab::IntegrationsLogger.info(
+            user_id: current_user&.id,
+            namespace: params[:namespace],
+            project: params[:project],
+            message: 'Deprecated Jira DVCS endpoint request'
+          )
         end
 
         def authorize_jira_user_agent!(request)

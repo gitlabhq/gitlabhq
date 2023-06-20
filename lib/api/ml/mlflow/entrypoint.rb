@@ -26,7 +26,7 @@ module API
 
           authenticate!
 
-          not_found! unless Feature.enabled?(:ml_experiment_tracking, user_project)
+          not_found! unless can?(current_user, :read_model_experiments, user_project)
         end
 
         rescue_from ActiveRecord::ActiveRecordError do |e|

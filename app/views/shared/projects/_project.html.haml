@@ -9,7 +9,6 @@
 - compact_mode = false unless local_assigns[:compact_mode] == true
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - css_class = "gl-sm-display-flex gl-align-items-center gl-vertical-align-middle!" if project.description.blank? && !show_last_commit_as_description
-- cache_key = project_list_cache_key(project, pipeline_status: pipeline_status)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
 - show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
@@ -17,14 +16,13 @@
 - css_metadata_classes = "gl-display-flex gl-align-items-center gl-ml-5 gl-reset-color! icon-wrapper has-tooltip"
 
 %li.project-row
-  = cache(cache_key) do
-    - if avatar
-      .project-cell.gl-w-11
-        = link_to project_path(project), class: dom_class(project) do
-          - if project.creator && use_creator_avatar
-            = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '', class: 'gl-mr-5')
-          - else
-            = render Pajamas::AvatarComponent.new(project, size: 48, alt: '', class: 'gl-mr-5')
+  - if avatar
+    .project-cell.gl-w-11
+      = link_to project_path(project), class: dom_class(project) do
+        - if project.creator && use_creator_avatar
+          = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '', class: 'gl-mr-5')
+        - else
+          = render Pajamas::AvatarComponent.new(project, size: 48, alt: '', class: 'gl-mr-5')
   .project-cell{ class: css_class }
     .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-display-flex.gl-flex-direction-column{ data: { qa_selector: 'project_content', qa_project_name: project.name } }
       .gl-display-flex.gl-align-items-center.gl-flex-wrap
@@ -83,7 +81,7 @@
             = _('Updated')
             = updated_tooltip
 
-  .project-cell{ class: "#{css_class} gl-xs-display-none!" }
+  .project-cell{ class: "#{css_class} gl-display-none! gl-sm-display-table-cell!" }
     .project-controls.gl-display-flex.gl-flex-direction-column.gl-align-items-flex-end.gl-w-full{ data: { testid: 'project_controls'} }
       .controls.gl-display-flex.gl-align-items-center.gl-mb-2{ class: "#{css_controls_class} gl-pr-0!" }
         - if show_pipeline_status_icon && last_pipeline.present?

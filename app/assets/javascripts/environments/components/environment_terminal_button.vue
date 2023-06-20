@@ -3,12 +3,12 @@
  * Renders a terminal button to open a web terminal.
  * Used in environments table.
  */
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
   },
   props: {
     terminalPath: {
@@ -22,11 +22,13 @@ export default {
       default: false,
     },
   },
-  title: __('Terminal'),
+  data() {
+    return {
+      item: { text: __('Terminal'), href: this.terminalPath },
+    };
+  },
 };
 </script>
 <template>
-  <gl-dropdown-item :href="terminalPath" :disabled="disabled">
-    {{ $options.title }}
-  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item :item="item" :disabled="disabled" />
 </template>

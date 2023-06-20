@@ -3,13 +3,14 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Gatsby.gitlab-ci.yml
 
-image: node:latest
+default:
+  image: node:latest
 
-# This folder is cached between builds
-# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
-cache:
-  paths:
-    - node_modules/
+  # This folder is cached between builds
+  # https://docs.gitlab.com/ee/ci/yaml/index.html#cache
+  cache:
+    paths:
+      - node_modules/
 
 pages:
   script:

@@ -28,5 +28,15 @@ RSpec.describe Gitlab::Database::PostgresAutovacuumActivity, type: :model, featu
     it 'returns autovacuum activity for queries tables' do
       expect(subject.map(&:table).sort).to eq(tables)
     end
+
+    it 'executes the query' do
+      is_expected.to be_a Array
+    end
+  end
+
+  describe '.wraparound_prevention' do
+    subject { described_class.wraparound_prevention }
+
+    it { expect(subject.where_values_hash).to match(a_hash_including('wraparound_prevention' => true)) }
   end
 end

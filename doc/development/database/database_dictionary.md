@@ -18,7 +18,7 @@ For the `geo` database, the dictionary files are stored under `ee/db/geo/docs/`.
 ## Example dictionary file
 
 ```yaml
-----
+---
 table_name: terraform_states
 classes:
 - Terraform::State

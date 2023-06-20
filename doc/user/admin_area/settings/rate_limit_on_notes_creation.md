@@ -13,8 +13,9 @@ You can configure the per-user rate limit for requests to the note creation endp
 
 To change the note creation rate limit:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Notes rate limit**.
 1. In the **Maximum requests per minute** box, enter the new value.
 1. Optional. In the **Users to exclude from the rate limit** box, list users allowed to exceed the limit.

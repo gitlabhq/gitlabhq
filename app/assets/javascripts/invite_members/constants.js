@@ -25,6 +25,8 @@ export const TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI = 'dropdown-text-emoji';
 export const TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN = 'dropdown-text';
 export const INVITE_MEMBER_MODAL_TRACKING_CATEGORY = 'invite_members_modal';
 export const TRIGGER_DEFAULT_QA_SELECTOR = 'invite_members_button';
+export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY = 'invite_project_members_modal';
+export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL = 'project-members-page';
 export const MEMBERS_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite members');
 export const MEMBERS_MODAL_CELEBRATE_TITLE = s__(
   'InviteMembersModal|GitLab is better with colleagues!',

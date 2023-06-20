@@ -309,6 +309,7 @@ dput
 Dreamweaver
 DRIs
 DSLs
+DSN
 Dynatrace
 Ecto
 eden

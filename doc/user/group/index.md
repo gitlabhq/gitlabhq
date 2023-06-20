@@ -21,10 +21,10 @@ For larger organizations, you can also create [subgroups](subgroups/index.md).
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
 NOTE:
-Self-managed customers should create a top-level group so you can see an overview of
-your organization. For more information about efforts to create an
+For self-managed customers it could be beneficial to create one single top-level group, so you can see an overview of
+your entire organization. For more information about efforts to create an
 organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A top-level group can also have one complete
+A single top-level group provides insights in your entire organization via a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
 [Compliance Report](../compliance/compliance_report/index.md), and
@@ -45,29 +45,242 @@ empty for anonymous users. The group page has a visibility level icon.
 Administrator users cannot create a subgroup or project with a higher visibility level than that of
 the immediate parent group.
 
-## Related topics
+## View groups
 
-- [Group wikis](../project/wiki/index.md)
-- [Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size).
-- [Repositories analytics](repositories_analytics/index.md): View overall activity of all projects with code coverage.
-- [Contribution analytics](contribution_analytics/index.md): View the contributions (pushes, merge requests,
-  and issues) of group members.
-- [Issue analytics](issues_analytics/index.md): View a bar chart of your group's number of issues per month.
-- Use GitLab as a [dependency proxy](../packages/dependency_proxy/index.md) for upstream Docker images.
-- [Epics](epics/index.md): Track groups of issues that share a theme.
-- [Security Dashboard](../application_security/security_dashboard/index.md): View the vulnerabilities of all
-  the projects in a group and its subgroups.
-- [Insights](insights/index.md): Configure insights like triage hygiene, issues created/closed per a given period, and
-  average time for merge requests to be merged.
-- [Webhooks](../project/integrations/webhooks.md).
-- [Kubernetes cluster integration](clusters/index.md).
-- [Audit Events](../../administration/audit_events.md#group-events).
-- [CI/CD minutes quota](../../ci/pipelines/cicd_minutes.md): Keep track of the CI/CD minute quota for the group.
-- [Integrations](../admin_area/settings/project_integration_management.md).
-- [Transfer a project into a group](../project/settings/index.md#transfer-a-project-to-another-namespace).
-- [Share a project with a group](../project/members/share_project_with_groups.md): Give all group members access to the project at once.
-- [Lock the sharing with group feature](access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).
-- [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
-  for all group members.
-- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/index.md).
-- [Control access and visibility](../admin_area/settings/visibility_and_access_controls.md).
+To explore all public groups:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
+1. At the top right, select **Explore groups**.
+
+To view groups where you have a direct or indirect membership:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
+
+This page shows groups that you are a member of:
+
+- Through membership of a subgroup's parent group.
+- Through direct or inherited membership of a project in the group or subgroup.
+
+## Create a group
+
+To create a group:
+
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. Select **Create group**.
+1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
+   [reserved names](../reserved_names.md).
+1. Enter a path for the group in **Group URL**, which is used for the [namespace](../namespace/index.md).
+1. Choose the [visibility level](../public_access.md).
+1. Personalize your GitLab experience by answering the following questions:
+   - What is your role?
+   - Who is using this group?
+   - What are you using this group for?
+1. Invite GitLab members or other users to join the group.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For details about groups, watch [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
+
+## Remove a group
+
+> Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+To remove a group and its contents:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Advanced** section.
+1. In the **Remove group** section, select **Remove group**.
+1. Type the group name.
+1. Select **Confirm**.
+
+A group can also be removed from the groups dashboard:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
+1. Select (**{ellipsis_v}**) for the group you want to delete.
+1. Select **Delete**.
+1. In the Remove group section, select **Remove group**.
+1. Type the group name.
+1. Select **Confirm**.
+
+This action removes the group. It also adds a background job to delete all projects in the group.
+
+In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+
+In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
+
+## Remove a group immediately **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+If you don't want to wait, you can remove a group immediately.
+
+Prerequisites:
+
+- You must have the Owner role for a group.
+- You have [marked the group for deletion](#remove-a-group).
+
+To immediately remove a group marked for deletion:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the "Permanently remove group" section, select **Remove group**.
+1. Confirm the action when asked to.
+
+Your group, its subgroups, projects, and all related resources, including issues and merge requests,
+are deleted.
+
+## Restore a group **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
+
+To restore a group that is marked for deletion:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. Expand the **Advanced** section.
+1. In the Restore group section, select **Restore group**.
+
+## Request access to a group
+
+As a user, you can request to be a member of a group, if an administrator allows it.
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **View all your groups**.
+1. At the top right side, select **Explore groups**.
+1. Under the group name, select **Request Access**.
+
+As many as ten of the most-recently-active group owners receive an email with your request.
+Any group owner can approve or decline the request.
+
+If you change your mind before your request is approved, select
+**Withdraw Access Request**.
+
+## Filter and sort members in a group
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/228675) in GitLab 13.7.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289911) in GitLab 13.8.
+
+To find members in a group, you can sort, filter, or search.
+
+### Filter a group
+
+Filter a group to find members. By default, all members in the group and subgroups are displayed.
+
+In lists of group members, entries can display the following badges:
+
+- **SAML**, to indicate the member has a [SAML account](saml_sso/index.md) connected to them.
+- **Enterprise**, to indicate that the member is an [enterprise user](../enterprise_user/index.md).
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+1. Above the list of members, in the **Filter members** box, enter filter criteria.
+   - To view members in the group only, select **Membership = Direct**.
+   - To view members of the group and its subgroups, select **Membership = Inherited**.
+   - To view members with two-factor authentication enabled or disabled, select **2FA = Enabled** or **Disabled**.
+   - [In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/349887), to view GitLab users created by [SAML SSO](saml_sso/index.md) or [SCIM provisioning](saml_sso/scim_setup.md) select **Enterprise = true**.
+
+### Search a group
+
+You can search for members by name, username, or email.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+1. Above the list of members, in the **Filter members** box, enter search criteria.
+1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
+
+### Sort members in a group
+
+You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in**.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+1. Above the list of members, in the upper-right corner, from the **Account** list, select
+   the criteria to filter by.
+1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
+   arrow (**{sort-lowest}** or **{sort-highest}**).
+
+## Add users to a group
+
+You can give a user access to all projects in a group.
+
+Prerequisite:
+
+- You must have the Owner role.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+1. Select **Invite members**.
+1. Fill in the fields.
+   - The role applies to all projects in the group. For more information, see [permissions](../permissions.md).
+   - On the **Access expiration date**, the user can no longer access projects in the group.
+1. Select **Invite**.
+
+Members that are not automatically added are displayed on the **Invited** tab.
+Users can be on this tab because they:
+
+- Have not yet accepted the invitation.
+- Are waiting for [approval from an administrator](../admin_area/moderate_users.md).
+- [Exceed the group user cap](manage.md#user-cap-for-groups).
+
+## Remove a member from the group
+
+Prerequisites:
+
+- You must have the Owner role.
+- The member must have direct membership in the group. If
+  membership is inherited from a parent group, then the member can be removed
+  from the parent group only.
+
+To remove a member from a group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+1. Next to the member you want to remove, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Remove member**.
+1. Optional. On the **Remove member** confirmation box:
+   - To remove direct user membership from subgroups and projects, select the **Also remove direct user membership from subgroups and projects** checkbox.
+   - To unassign the user from linked issues and merge requests, select the **Also unassign this user from linked issues and merge requests** checkbox.
+1. Select **Remove member**.
+
+## Ensure removed users cannot invite themselves back
+
+Malicious users with the Maintainer or Owner role could exploit a race condition that allows
+them to invite themselves back to a group or project that a GitLab administrator has removed them from.
+
+To avoid this problem, GitLab administrators can [ensure removed users cannot invite themselves back](../project/members/index.md#ensure-removed-users-cannot-invite-themselves-back).
+
+## Add projects to a group
+
+There are two different ways to add a new project to a group:
+
+- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md#create-a-project).
+- While you are creating a project, select a group from the dropdown list.
+
+  ![Select group](img/select_group_dropdown_13_10.png)
+
+### Specify who can add projects to a group
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab 10.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) from GitLab Premium to GitLab Free in 11.10.
+
+By default, users with:
+
+- At least the Developer role can create projects under a group. This default can be changed.
+- At least the Maintainer role can fork projects into a group. This default prevents users with the Developer role from forking projects that
+  contain protected branches and cannot be changed.
+
+To change the role that can create projects under a group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Select the desired option in the **Roles allowed to create projects** dropdown list.
+1. Select **Save changes**.
+
+To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).

@@ -1,14 +1,5 @@
-- variables = @project.group.self_and_ancestors.flat_map(&:variables)
-
-.ci-variable-table
-  %table.gl-table.gl-w-full.gl-table-layout-fixed
-    = render 'ci/group_variables/variable_header'
-    - variables.each do |variable|
-      %tr
-        %td.gl-text-truncate
-          = variable.key
-        %td.gl-text-truncate
-          = variable.environment_scope
-        %td.gl-text-truncate
-          %a.group-origin-link{ href: group_settings_ci_cd_path(variable.group) }
-            = variable.group.name
+#js-inherited-group-ci-variables{
+  data: {
+    project_path: @project.full_path,
+  }
+}

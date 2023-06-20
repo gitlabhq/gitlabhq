@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Topics, :aggregate_failures, feature_category: :projects do
+RSpec.describe API::Topics, :aggregate_failures, feature_category: :groups_and_projects do
   include WorkhorseHelpers
 
   let_it_be(:file) { fixture_file_upload('spec/fixtures/dk.png') }

@@ -14,8 +14,6 @@ module Projects
       def project_update_params
         error_tracking_params
           .merge(alerting_setting_params)
-          .merge(metrics_setting_params)
-          .merge(grafana_integration_params)
           .merge(prometheus_integration_params)
           .merge(incident_management_setting_params)
       end
@@ -35,15 +33,6 @@ module Projects
         end
 
         { alerting_setting_attributes: attr }
-      end
-
-      def metrics_setting_params
-        attribs = params[:metrics_setting_attributes]
-        return {} unless attribs
-
-        attribs[:external_dashboard_url] = attribs[:external_dashboard_url].presence
-
-        { metrics_setting_attributes: attribs }
       end
 
       def error_tracking_params
@@ -97,14 +86,6 @@ module Projects
         params[:error_tracking_setting_attributes][:integrated] = settings[:integrated] unless settings[:integrated].nil?
 
         params
-      end
-
-      def grafana_integration_params
-        return {} unless attrs = params[:grafana_integration_attributes]
-
-        destroy = attrs[:grafana_url].blank? && attrs[:token].blank?
-
-        { grafana_integration_attributes: attrs.merge(_destroy: destroy) }
       end
 
       def prometheus_integration_params

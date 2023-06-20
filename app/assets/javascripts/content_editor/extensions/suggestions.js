@@ -162,7 +162,7 @@ export default Node.create({
         editor: this.editor,
         char: '~',
         dataSource: this.options.autocompleteDataSources.labels,
-        nodeType: 'reference_label',
+        nodeType: 'referenceLabel',
         nodeProps: {
           referenceType: 'label',
         },

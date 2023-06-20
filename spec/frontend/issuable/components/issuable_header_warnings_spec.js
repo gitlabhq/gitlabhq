@@ -1,15 +1,13 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createStore as createMrStore } from '~/mr_notes/stores';
+import mrStore from '~/mr_notes/stores';
 import createIssueStore from '~/notes/stores';
 import IssuableHeaderWarnings from '~/issuable/components/issuable_header_warnings.vue';
 
 const ISSUABLE_TYPE_ISSUE = 'issue';
 const ISSUABLE_TYPE_MR = 'merge_request';
 
-Vue.use(Vuex);
+jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
 describe('IssuableHeaderWarnings', () => {
   let wrapper;
@@ -22,7 +20,9 @@ describe('IssuableHeaderWarnings', () => {
 
   const createComponent = ({ store, provide }) => {
     wrapper = shallowMountExtended(IssuableHeaderWarnings, {
-      store,
+      mocks: {
+        $store: store,
+      },
       provide,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -47,9 +47,14 @@ describe('IssuableHeaderWarnings', () => {
     `(
       `when locked=$lockStatus, confidential=$confidentialStatus, and hidden=$hiddenStatus`,
       ({ lockStatus, confidentialStatus, hiddenStatus }) => {
-        const store = issuableType === ISSUABLE_TYPE_ISSUE ? createIssueStore() : createMrStore();
+        const store = issuableType === ISSUABLE_TYPE_ISSUE ? createIssueStore() : mrStore;
 
         beforeEach(() => {
+          // TODO: simplify to single assignment after issue store is mock
+          if (store === mrStore) {
+            store.getters.getNoteableData = {};
+          }
+
           store.getters.getNoteableData.confidential = confidentialStatus;
           store.getters.getNoteableData.discussion_locked = lockStatus;
           store.getters.getNoteableData.targetType = issuableType;
@@ -58,7 +63,16 @@ describe('IssuableHeaderWarnings', () => {
         });
 
         it(`${renderTestMessage(lockStatus)} the locked icon`, () => {
-          expect(findLockedIcon().exists()).toBe(lockStatus);
+          const lockedIcon = findLockedIcon();
+
+          expect(lockedIcon.exists()).toBe(lockStatus);
+
+          if (lockStatus) {
+            expect(lockedIcon.attributes('title')).toBe(
+              `This ${issuableType.replace('_', ' ')} is locked. Only project members can comment.`,
+            );
+            expect(getBinding(lockedIcon.element, 'gl-tooltip')).not.toBeUndefined();
+          }
         });
 
         it(`${renderTestMessage(confidentialStatus)} the confidential icon`, () => {

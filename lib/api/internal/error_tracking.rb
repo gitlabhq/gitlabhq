@@ -43,7 +43,7 @@ module API
 
             project = Project.find(project_id)
             enabled = error_tracking_enabled? &&
-              Feature.enabled?(:use_click_house_database_for_error_tracking, project) &&
+              Feature.enabled?(:gitlab_error_tracking, project) &&
               ::ErrorTracking::ClientKey.enabled_key_for(project_id, public_key).exists?
 
             status 200

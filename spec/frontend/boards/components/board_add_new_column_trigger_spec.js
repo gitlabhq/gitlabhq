@@ -1,5 +1,5 @@
 import { GlButton } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
@@ -13,11 +13,15 @@ describe('BoardAddNewColumnTrigger', () => {
 
   const findBoardsCreateList = () => wrapper.findByTestId('boards-create-list');
   const findTooltipText = () => getBinding(findBoardsCreateList().element, 'gl-tooltip');
+  const findCreateButton = () => wrapper.findComponent(GlButton);
 
-  const mountComponent = () => {
+  const mountComponent = ({ isNewListShowing = false } = {}) => {
     wrapper = mountExtended(BoardAddNewColumnTrigger, {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
+      },
+      propsData: {
+        isNewListShowing,
       },
       store: createStore(),
     });
@@ -35,17 +39,19 @@ describe('BoardAddNewColumnTrigger', () => {
     });
 
     it('renders an enabled button', () => {
-      const button = wrapper.findComponent(GlButton);
+      expect(findCreateButton().props('disabled')).toBe(false);
+    });
 
-      expect(button.props('disabled')).toBe(false);
+    it('shows form on click button', () => {
+      findCreateButton().vm.$emit('click');
+
+      expect(wrapper.emitted('setAddColumnFormVisibility')).toEqual([[true]]);
     });
   });
 
   describe('when button is disabled', () => {
-    it('shows the tooltip', async () => {
-      wrapper.findComponent(GlButton).vm.$emit('click');
-
-      await nextTick();
+    it('shows the tooltip', () => {
+      mountComponent({ isNewListShowing: true });
 
       const tooltip = findTooltipText();
 

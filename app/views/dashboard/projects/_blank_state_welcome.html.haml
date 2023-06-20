@@ -2,7 +2,7 @@
 
 .gl-display-flex.gl-flex-wrap.gl-justify-content-space-between
   - if current_user.can_create_project?
-    = link_to new_project_path, class: link_classes do
+    = link_to new_project_path, class: link_classes, data: { qa_selector: 'new_project_button' } do
       .blank-state-icon
         = custom_icon("add_new_project", size: 50)
       .blank-state-body.gl-sm-pl-6
@@ -12,7 +12,7 @@
           = _('Projects are where you store your code, access issues, wiki and other features of GitLab.')
   - else
     = render Pajamas::AlertComponent.new(variant: :info, alert_options: { class: 'gl-mb-5 gl-w-full' }) do |c|
-      = c.body do
+      - c.with_body do
         = _("You see projects here when you're added to a group or project.").html_safe
 
   - if current_user.can_create_group?

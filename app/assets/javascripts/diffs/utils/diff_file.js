@@ -53,6 +53,9 @@ export const isNotDiffable = (file) => file?.viewer?.name === viewerModes.not_di
 export function prepareRawDiffFile({ file, allFiles, meta = false, index = -1 }) {
   const additionalProperties = {
     brokenSymlink: fileSymlinkInformation(file, allFiles),
+    hasCommentForm: false,
+    discussions: file.discussions || [],
+    drafts: [],
     viewer: {
       ...file.viewer,
       ...collapsed(file),

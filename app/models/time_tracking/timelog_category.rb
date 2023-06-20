@@ -18,9 +18,9 @@ module TimeTracking
     validates :description, length: { maximum: 1024 }
     validates :color, color: true, allow_blank: false, length: { maximum: 7 }
     validates :billing_rate,
-              if: :billable?,
-              presence: true,
-              numericality: { greater_than: 0 }
+      if: :billable?,
+      presence: true,
+      numericality: { greater_than: 0 }
 
     DEFAULT_COLOR = ::Gitlab::Color.of('#6699cc')
 

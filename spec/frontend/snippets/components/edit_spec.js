@@ -113,7 +113,7 @@ describe('Snippet Edit app', () => {
 
   const triggerBlobActions = (actions) => findBlobActions().vm.$emit('actions', actions);
   const setUploadFilesHtml = (paths) => {
-    wrapper.vm.$el.innerHTML = paths
+    wrapper.element.innerHTML = paths
       .map((path) => `<input name="files[]" value="${path}">`)
       .join('');
   };

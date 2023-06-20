@@ -8,6 +8,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(edit_user_profile_vue: false)
     sign_in(user)
     visit(profile_path)
   end
@@ -529,13 +530,13 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       it 'allows the user to select a time zone from a dropdown list of options' do
-        expect(page.find('.user-time-preferences .dropdown')).not_to have_css('.show')
+        expect(page).not_to have_selector('.user-time-preferences [data-testid="base-dropdown-menu"]')
 
-        page.find('.user-time-preferences .dropdown').click
+        page.find('.user-time-preferences .gl-new-dropdown-toggle').click
 
-        expect(page.find('.user-time-preferences .dropdown')).to have_css('.show')
+        expect(page.find('.user-time-preferences [data-testid="base-dropdown-menu"]')).to be_visible
 
-        page.find("button", text: "Arizona").click
+        page.find("li", text: "Arizona").click
 
         expect(page).to have_field(:user_timezone, with: 'America/Phoenix', type: :hidden)
       end

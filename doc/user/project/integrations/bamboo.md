@@ -36,8 +36,8 @@ integration in GitLab.
 
 ## Configure GitLab
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **Atlassian Bamboo**.
 1. Ensure the **Active** checkbox is selected.
 1. Enter the base URL of your Bamboo server. For example, `https://bamboo.example.com`.
@@ -47,8 +47,7 @@ integration in GitLab.
 1. If necessary, enter a username and password for a Bamboo user that has
    access to trigger the build plan. Leave these fields blank if you do not require
    authentication.
-1. Optional. To test the configuration and trigger a build in Bamboo,
-   select **Test Settings**.
+1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 ### Identify the Bamboo build plan build key

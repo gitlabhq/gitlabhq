@@ -108,27 +108,5 @@ export default class ContextualSidebar {
       const collapse = parseBoolean(getCookie('sidebar_collapsed'));
       this.toggleCollapsedSidebar(collapse, true);
     }
-
-    const modalEl = document.querySelector('.js-invite-members-modal');
-    if (modalEl) {
-      import(
-        /* webpackChunkName: 'initInviteMembersModal' */ '~/invite_members/init_invite_members_modal'
-      )
-        .then(({ default: initInviteMembersModal }) => {
-          initInviteMembersModal();
-        })
-        .catch(() => {});
-
-      const inviteTriggers = document.querySelectorAll('.js-invite-members-trigger');
-      if (inviteTriggers) {
-        import(
-          /* webpackChunkName: 'initInviteMembersTrigger' */ '~/invite_members/init_invite_members_trigger'
-        )
-          .then(({ default: initInviteMembersTrigger }) => {
-            initInviteMembersTrigger();
-          })
-          .catch(() => {});
-      }
-    }
   }
 }

@@ -37,6 +37,7 @@ RSpec.shared_context 'GroupPolicy context' do
       read_crm_contact
       read_crm_organization
       read_internal_note
+      read_confidential_issues
     ]
   end
 
@@ -52,7 +53,6 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:maintainer_permissions) do
     %i[
       destroy_package
-      admin_package
       create_projects
       create_cluster update_cluster admin_cluster add_cluster
       destroy_upload
@@ -67,6 +67,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_group
       admin_namespace
       admin_group_member
+      admin_package
       change_visibility_level
       set_note_created_at
       create_subgroup

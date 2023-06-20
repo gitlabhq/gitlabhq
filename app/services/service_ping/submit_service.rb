@@ -3,7 +3,7 @@
 module ServicePing
   class SubmitService
     PRODUCTION_BASE_URL = 'https://version.gitlab.com'
-    STAGING_BASE_URL = 'https://gitlab-services-version-gitlab-com-staging.gs-staging.gitlab.org'
+    STAGING_BASE_URL = 'https://gitlab-org-gitlab-services-version-gitlab-com-staging.version-staging.gitlab.org'
     USAGE_DATA_PATH = 'usage_data'
     ERROR_PATH = 'usage_ping_errors'
     METADATA_PATH = 'usage_ping_metadata'

@@ -57,16 +57,21 @@ You can share a project with a group by inviting that group to the project.
 
 To invite a group to a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Members**.
 1. Select **Invite a group**.
 1. **Select a group** you want to add to the project.
 1. **Select a role** you want to assign to the group.
 1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
-All group members, members of subgroups, and members of other projects the group has access to
-are given access to the project. In addition:
+The following members are given access to the project:
+
+- All direct group members.
+- Inherited group members.
+- Members of other groups that have access to the group being invited (by [group share](../../group/manage.md#share-a-group-with-another-group))
+
+In addition:
 
 - On the group's page, the project is listed on the **Shared projects** tab.
 - On the project's **Members** page, the group is listed on the **Groups** tab.
@@ -93,8 +98,8 @@ For example, if a group member has the role of Developer, and the group is invit
 
 To view the maximum role assigned to a member:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Project information > Members**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Manage > Members**.
 1. In the **Max role** column, view the user's maximum assigned role.
 
 ## View a group's shared projects
@@ -103,7 +108,7 @@ In a group, a shared project is a project to which the group members gained acce
 
 To view a group's shared projects:
 
-1. On the top bar, select **Main menu > Group** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. On the group page, select the **Shared projects** tab.
 
 A list of shared projects is displayed.

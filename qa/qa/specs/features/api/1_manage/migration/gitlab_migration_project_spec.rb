@@ -6,7 +6,7 @@ module QA
       include_context 'with gitlab project migration'
 
       # this spec is used as a sanity test for gitlab migration because it can run outside of orchestrated setup
-      context 'with import within same instance', orchestrated: false, import: false do
+      context 'with import within same instance', :skip_live_env, orchestrated: false, import: false do
         let!(:source_project_with_readme) { true }
         let!(:source_gitlab_address) { Runtime::Scenario.gitlab_address }
         let!(:source_admin_api_client) { admin_api_client }

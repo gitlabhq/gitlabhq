@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Template selector menu', :js, feature_category: :projects do
+RSpec.describe 'Template selector menu', :js, feature_category: :groups_and_projects do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

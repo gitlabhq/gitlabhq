@@ -567,12 +567,11 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
 
-NOTE:
-Use of the diagrams.net editor is not available on offline environments.
-
 In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
 the Markdown editor and the content editor.
+
+For more information, see [Diagrams.net](../administration/integration/diagrams_net.md).
 
 ##### Markdown editor
 
@@ -631,7 +630,7 @@ GitLab Flavored Markdown recognizes the following:
 |:----------------------------------------------------------------------------|:------------------------------|:----------------------------------------|:-------------------------------|
 | specific user                                                               | `@user_name`                  |                                         |                                |
 | specific group                                                              | `@group_name`                 |                                         |                                |
-| entire team                                                                 | `@all`                        |                                         |                                |
+| entire team                                                                 | [`@all`](discussions/index.md#mentioning-all-members)                        |                                         |                                |
 | project                                                                     | `namespace/project>`          |                                         |                                |
 | issue                                                                       | ``#123``                      | `namespace/project#123`                 | `project#123`                  |
 | merge request                                                               | `!123`                        | `namespace/project!123`                 | `project!123`                  |

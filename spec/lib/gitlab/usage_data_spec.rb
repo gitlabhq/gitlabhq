@@ -356,6 +356,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:project_error_tracking_setting)
         create(:incident)
         create(:incident, alert_management_alert: create(:alert_management_alert))
+        create(:issue, alert_management_alert: create(:alert_management_alert))
         create(:alert_management_http_integration, :active, project: project)
       end
 
@@ -365,7 +366,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         operations_dashboard_default_dashboard: 2,
         projects_with_error_tracking_enabled: 2,
         projects_with_incidents: 4,
-        projects_with_alert_incidents: 2,
+        projects_with_alert_incidents: 4,
         projects_with_enabled_alert_integrations_histogram: { '1' => 2 }
       )
 
@@ -376,7 +377,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         operations_dashboard_default_dashboard: 1,
         projects_with_error_tracking_enabled: 1,
         projects_with_incidents: 2,
-        projects_with_alert_incidents: 1
+        projects_with_alert_incidents: 2
       )
 
       expect(data_28_days).not_to include(:projects_with_enabled_alert_integrations_histogram)
@@ -539,7 +540,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
       expect(count_data[:projects_with_terraform_states]).to eq(2)
-      expect(count_data[:projects_with_alerts_created]).to eq(1)
       expect(count_data[:protected_branches]).to eq(2)
       expect(count_data[:protected_branches_except_default]).to eq(1)
       expect(count_data[:terraform_reports]).to eq(6)
@@ -568,13 +568,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:kubernetes_agents]).to eq(2)
       expect(count_data[:kubernetes_agents_with_token]).to eq(1)
 
-      expect(count_data[:deployments]).to eq(4)
-      expect(count_data[:successful_deployments]).to eq(2)
-      expect(count_data[:failed_deployments]).to eq(2)
       expect(count_data[:feature_flags]).to eq(1)
-      expect(count_data[:snippets]).to eq(6)
-      expect(count_data[:personal_snippets]).to eq(2)
-      expect(count_data[:project_snippets]).to eq(4)
 
       expect(count_data[:projects_creating_incidents]).to eq(2)
       expect(count_data[:projects_with_packages]).to eq(2)
@@ -626,18 +620,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     let_it_be(:project) { create(:project, created_at: 3.days.ago) }
 
     before do
-      env = create(:environment)
       create(:package, project: project, created_at: 3.days.ago)
       create(:package, created_at: 2.months.ago, project: project)
-
-      [3, 31].each do |n|
-        deployment_options = { created_at: n.days.ago, project: env.project, environment: env }
-        create(:deployment, :failed, deployment_options)
-        create(:deployment, :success, deployment_options)
-        create(:project_snippet, project: project, created_at: n.days.ago)
-        create(:personal_snippet, created_at: n.days.ago)
-        create(:alert_management_alert, project: project, created_at: n.days.ago)
-      end
 
       for_defined_days_back do
         create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
@@ -649,23 +633,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     it 'gathers monthly usage counts correctly' do
       counts_monthly = subject[:counts_monthly]
 
-      expect(counts_monthly[:deployments]).to eq(2)
-      expect(counts_monthly[:successful_deployments]).to eq(1)
-      expect(counts_monthly[:failed_deployments]).to eq(1)
-      expect(counts_monthly[:snippets]).to eq(2)
-      expect(counts_monthly[:personal_snippets]).to eq(1)
-      expect(counts_monthly[:project_snippets]).to eq(1)
-      expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
-    end
-  end
-
-  describe '.license_usage_data' do
-    subject { described_class.license_usage_data }
-
-    it 'gathers license data' do
-      expect(subject[:recorded_at]).to be_a(Time)
     end
   end
 

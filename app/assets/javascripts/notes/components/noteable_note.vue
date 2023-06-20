@@ -18,6 +18,7 @@ import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import { renderMarkdown } from '../utils';
+import { UPDATE_COMMENT_FORM } from '../i18n';
 import {
   getStartLineNumber,
   getEndLineNumber,
@@ -113,6 +114,7 @@ export default {
       isResolving: false,
       commentLineStart: {},
       resolveAsThread: true,
+      oldContent: this.note.note_html,
     };
   },
   computed: {
@@ -293,7 +295,7 @@ export default {
     updateSuccess() {
       this.isEditing = false;
       this.isRequesting = false;
-      this.oldContent = null;
+      this.oldContent = this.note.note_html;
       renderGFM(this.$refs.noteBody.$el);
       this.$emit('updateSuccess');
     },
@@ -341,7 +343,6 @@ export default {
       // https://gitlab.com/gitlab-org/gitlab/-/issues/298827
       if (!isEmpty(position)) data.note.note.position = JSON.stringify(position);
       this.isRequesting = true;
-      this.oldContent = this.note.note_html;
       // eslint-disable-next-line vue/no-mutating-props
       this.note.note_html = renderMarkdown(noteText);
 
@@ -350,8 +351,8 @@ export default {
           this.updateSuccess();
           callback();
         })
-        .catch((response) => {
-          if (response.status === HTTP_STATUS_GONE) {
+        .catch((e) => {
+          if (e.status === HTTP_STATUS_GONE) {
             this.removeNote(this.note);
             this.updateSuccess();
             callback();
@@ -360,17 +361,22 @@ export default {
             this.isEditing = true;
             this.setSelectedCommentPositionHover();
             this.$nextTick(() => {
-              this.handleUpdateError(response); // The 'response' parameter is being used in JH, don't remove it
-              this.recoverNoteContent(noteText);
+              this.handleUpdateError(e); // The 'e' parameter is being used in JH, don't remove it
+              this.recoverNoteContent();
               callback();
             });
           }
         });
     },
-    handleUpdateError() {
-      const msg = __('Something went wrong while editing your comment. Please try again.');
+    handleUpdateError(e) {
+      const serverErrorMessage = e?.response?.data?.errors;
+
+      const alertMessage = serverErrorMessage
+        ? sprintf(UPDATE_COMMENT_FORM.error, { reason: serverErrorMessage.toLowerCase() }, false)
+        : UPDATE_COMMENT_FORM.defaultError;
+
       createAlert({
-        message: msg,
+        message: alertMessage,
         parent: this.$el,
       });
     },
@@ -391,22 +397,14 @@ export default {
         });
         if (!confirmed) return;
       }
-      if (this.oldContent) {
-        // eslint-disable-next-line vue/no-mutating-props
-        this.note.note_html = this.oldContent;
-        this.oldContent = null;
-      }
+      this.recoverNoteContent();
       this.isEditing = false;
       this.$emit('cancelForm');
     }),
-    recoverNoteContent(noteText) {
-      // we need to do this to prevent noteForm inconsistent content warning
-      // this is something we intentionally do so we need to recover the content
-      // eslint-disable-next-line vue/no-mutating-props
-      this.note.note = noteText;
-      const { noteBody } = this.$refs;
-      if (noteBody) {
-        noteBody.note.note = noteText;
+    recoverNoteContent() {
+      if (this.oldContent) {
+        // eslint-disable-next-line vue/no-mutating-props
+        this.note.note_html = this.oldContent;
       }
     },
     getLineClasses(lineNumber) {

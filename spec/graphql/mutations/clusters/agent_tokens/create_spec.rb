@@ -50,6 +50,18 @@ RSpec.describe Mutations::Clusters::AgentTokens::Create do
         expect(token.description).to eq(description)
         expect(token.name).to eq(name)
       end
+
+      context 'when the active agent tokens limit is reached' do
+        before do
+          create(:cluster_agent_token, agent: cluster_agent)
+          create(:cluster_agent_token, agent: cluster_agent)
+        end
+
+        it 'raises an error' do
+          expect { subject }.not_to change { ::Clusters::AgentToken.count }
+          expect(subject[:errors]).to eq(["An agent can have only two active tokens at a time"])
+        end
+      end
     end
   end
 end

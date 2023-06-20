@@ -16,6 +16,43 @@ module Gitlab
           PG::Error
         ].freeze
 
+        # This query checks that the current user has permissions before we try and query logical replication status. We
+        # also only allow >= PG14 because these views are only accessible to superuser before PG14 even if the
+        # has_table_privilege says otherwise.
+        CAN_TRACK_LOGICAL_LSN_QUERY = <<~SQL.squish.freeze
+          SELECT
+            has_table_privilege('pg_replication_origin_status', 'select')
+            AND
+            has_function_privilege('pg_show_replication_origin_status()', 'execute')
+            AND current_setting('server_version_num', true)::int >= 140000
+            AS allowed
+        SQL
+
+        # The following is necessary to handle a mix of logical and physical replicas. We assume that if they have
+        # pg_replication_origin_status then they are a logical replica. In a logical replica we need to use
+        # `remote_lsn` rather than `pg_last_wal_replay_lsn` in order for our LSN to be comparable to the source
+        # cluster. This logic would be broken if we have 2 logical subscriptions or if we have a logical subscription
+        # in the source primary cluster. Read more at https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121621
+        LATEST_LSN_WITH_LOGICAL_QUERY = <<~SQL.squish.freeze
+          CASE
+          WHEN (SELECT TRUE FROM pg_replication_origin_status) THEN
+            (SELECT remote_lsn FROM pg_replication_origin_status)
+          WHEN pg_is_in_recovery() THEN
+            pg_last_wal_replay_lsn()
+          ELSE
+            pg_current_wal_insert_lsn()
+          END
+        SQL
+
+        LATEST_LSN_WITHOUT_LOGICAL_QUERY = <<~SQL.squish.freeze
+          CASE
+          WHEN pg_is_in_recovery() THEN
+            pg_last_wal_replay_lsn()
+          ELSE
+            pg_current_wal_insert_lsn()
+          END
+        SQL
+
         # host - The address of the database.
         # load_balancer - The LoadBalancer that manages this Host.
         def initialize(host, load_balancer, port: nil)
@@ -30,6 +67,7 @@ module Gitlab
           @online = true
           @last_checked_at = Time.zone.now
 
+          # Randomly somewhere in between interval and 2*interval we'll refresh the status of the host
           interval = load_balancer.configuration.replica_check_interval
           @intervals = (interval..(interval * 2)).step(0.5).to_a
         end
@@ -91,6 +129,7 @@ module Gitlab
         end
 
         def refresh_status
+          @latest_lsn_query = nil # Periodically clear the cached @latest_lsn_query value in case permissions change
           @online = replica_is_up_to_date?
           @last_checked_at = Time.zone.now
         end
@@ -142,11 +181,11 @@ module Gitlab
         # primary.
         #
         # This method will return nil if no lag size could be calculated.
-        def replication_lag_size
-          location = connection.quote(primary_write_location)
+        def replication_lag_size(location = primary_write_location)
+          location = connection.quote(location)
+
           row = query_and_release(<<-SQL.squish)
-            SELECT pg_wal_lsn_diff(#{location}, pg_last_wal_replay_lsn())::float
-              AS diff
+            SELECT pg_wal_lsn_diff(#{location}, (#{latest_lsn_query}))::float AS diff
           SQL
 
           row['diff'].to_i if row.any?
@@ -173,22 +212,8 @@ module Gitlab
         #
         # location - The transaction write location as reported by a primary.
         def caught_up?(location)
-          string = connection.quote(location)
-
-          # In case the host is a primary pg_last_wal_replay_lsn/pg_last_xlog_replay_location() returns
-          # NULL. The recovery check ensures we treat the host as up-to-date in
-          # such a case.
-          query = <<-SQL.squish
-            SELECT NOT pg_is_in_recovery()
-              OR pg_wal_lsn_diff(pg_last_wal_replay_lsn(), #{string}) >= 0
-              AS result
-          SQL
-
-          row = query_and_release(query)
-
-          ::Gitlab::Utils.to_boolean(row['result'])
-        rescue *CONNECTION_ERRORS
-          false
+          lag = replication_lag_size(location)
+          lag.present? && lag.to_i <= 0
         end
 
         def query_and_release(sql)
@@ -197,6 +222,22 @@ module Gitlab
           {}
         ensure
           release_connection
+        end
+
+        private
+
+        def can_track_logical_lsn?
+          row = query_and_release(CAN_TRACK_LOGICAL_LSN_QUERY)
+
+          ::Gitlab::Utils.to_boolean(row['allowed'])
+        rescue *CONNECTION_ERRORS
+          false
+        end
+
+        # The LATEST_LSN_WITH_LOGICAL query requires permissions that may not be present in self-managed configurations.
+        # We fallback gracefully to the query that does not correctly handle logical replicas for such configurations.
+        def latest_lsn_query
+          @latest_lsn_query ||= can_track_logical_lsn? ? LATEST_LSN_WITH_LOGICAL_QUERY : LATEST_LSN_WITHOUT_LOGICAL_QUERY
         end
       end
     end

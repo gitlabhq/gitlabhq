@@ -39,7 +39,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Package Registry'),
             link: project_packages_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: :packages },
             item_id: :packages_registry,
             container_html_options: { class: 'shortcuts-container-registry' }
@@ -54,7 +54,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Container Registry'),
             link: project_container_registry_index_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'projects/registry/repositories' },
             item_id: :container_registry
           )
@@ -91,14 +91,14 @@ module Sidebars
         end
 
         def model_experiments_menu_item
-          if Feature.disabled?(:ml_experiment_tracking, context.project)
+          unless can?(context.current_user, :read_model_experiments, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :model_experiments)
           end
 
           ::Sidebars::MenuItem.new(
             title: _('Model experiments'),
             link: project_ml_experiments_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: %w[projects/ml/experiments projects/ml/candidates] },
             item_id: :model_experiments
           )

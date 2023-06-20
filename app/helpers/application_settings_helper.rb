@@ -99,11 +99,11 @@ module ApplicationSettingsHelper
         checked_value: level,
         unchecked_value: nil
       ) do |c|
-        c.label do
+        c.with_label do
           visibility_level_icon(level) + content_tag(:span, label, { class: 'gl-ml-2' })
         end
 
-        c.help_text do
+        c.with_help_text do
           restricted_visibility_levels_help_text.fetch(level)
         end
       end
@@ -218,6 +218,7 @@ module ApplicationSettingsHelper
       :admin_mode,
       :after_sign_out_path,
       :after_sign_up_text,
+      :ai_access_token,
       :akismet_api_key,
       :akismet_enabled,
       :allow_local_requests_from_hooks_and_services,
@@ -309,6 +310,7 @@ module ApplicationSettingsHelper
       :inactive_projects_delete_after_months,
       :inactive_projects_min_size_mb,
       :inactive_projects_send_warning_email_after_months,
+      :instance_level_code_suggestions_enabled,
       :invisible_captcha_enabled,
       :jira_connect_application_key,
       :jira_connect_public_key_storage_enabled,
@@ -337,6 +339,8 @@ module ApplicationSettingsHelper
       :kroki_formats,
       :plantuml_enabled,
       :plantuml_url,
+      :diagramsnet_enabled,
+      :diagramsnet_url,
       :polling_interval_multiplier,
       :project_export_enabled,
       :prometheus_metrics_enabled,
@@ -450,6 +454,7 @@ module ApplicationSettingsHelper
       :group_export_limit,
       :group_download_export_limit,
       :wiki_page_max_content_bytes,
+      :wiki_asciidoc_allow_uri_includes,
       :container_registry_delete_tags_service_timeout,
       :rate_limiting_response_text,
       :package_registry_cleanup_policies_worker_capacity,
@@ -491,7 +496,8 @@ module ApplicationSettingsHelper
       :deactivation_email_additional_text,
       :projects_api_rate_limit_unauthenticated,
       :gitlab_dedicated_instance,
-      :ci_max_includes
+      :ci_max_includes,
+      :allow_account_deletion
     ].tap do |settings|
       next if Gitlab.com?
 

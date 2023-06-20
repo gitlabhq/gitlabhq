@@ -61,10 +61,9 @@ module Packages
       end
 
       def version
-        strong_memoize(:version) do
-          params[:versions].each_key.first
-        end
+        params[:versions].each_key.first
       end
+      strong_memoize_attr :version
 
       def version_data
         params[:versions][version]
@@ -79,30 +78,27 @@ module Packages
       end
 
       def package_file_name
-        strong_memoize(:package_file_name) do
-          "#{name}-#{version}.tgz"
-        end
+        "#{name}-#{version}.tgz"
       end
+      strong_memoize_attr :package_file_name
 
       def attachment
-        strong_memoize(:attachment) do
-          params['_attachments'][package_file_name]
-        end
+        params['_attachments'][package_file_name]
       end
+      strong_memoize_attr :attachment
 
       # TODO (technical debt): Extract the package size calculation to its own component and unit test it separately.
       def calculated_package_file_size
-        strong_memoize(:calculated_package_file_size) do
-          # This calculation is based on:
-          # 1. 4 chars in a Base64 encoded string are 3 bytes in the original string. Meaning 1 char is 0.75 bytes.
-          # 2. The encoded string may have 1 or 2 extra '=' chars used for padding. Each padding char means 1 byte less in the original string.
-          # Reference:
-          # - https://blog.aaronlenoir.com/2017/11/10/get-original-length-from-base-64-string/
-          # - https://en.wikipedia.org/wiki/Base64#Decoding_Base64_with_padding
-          encoded_data = attachment['data']
-          ((encoded_data.length * 0.75) - encoded_data[-2..].count('=')).to_i
-        end
+        # This calculation is based on:
+        # 1. 4 chars in a Base64 encoded string are 3 bytes in the original string. Meaning 1 char is 0.75 bytes.
+        # 2. The encoded string may have 1 or 2 extra '=' chars used for padding. Each padding char means 1 byte less in the original string.
+        # Reference:
+        # - https://blog.aaronlenoir.com/2017/11/10/get-original-length-from-base-64-string/
+        # - https://en.wikipedia.org/wiki/Base64#Decoding_Base64_with_padding
+        encoded_data = attachment['data']
+        ((encoded_data.length * 0.75) - encoded_data[-2..].count('=')).to_i
       end
+      strong_memoize_attr :calculated_package_file_size
 
       def file_params
         {
@@ -134,29 +130,26 @@ module Packages
       end
 
       def field_sizes
-        strong_memoize(:field_sizes) do
-          package_json.transform_values do |value|
-            value.to_s.size
-          end
+        package_json.transform_values do |value|
+          value.to_s.size
         end
       end
+      strong_memoize_attr :field_sizes
 
       def filtered_field_sizes
-        strong_memoize(:filtered_field_sizes) do
-          field_sizes.select do |_, size|
-            size >= ::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING
-          end
+        field_sizes.select do |_, size|
+          size >= ::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING
         end
       end
+      strong_memoize_attr :filtered_field_sizes
 
       def largest_fields
-        strong_memoize(:largest_fields) do
-          field_sizes
+        field_sizes
             .sort_by { |a| a[1] }
             .reverse[0..::Packages::Npm::Metadatum::NUM_FIELDS_FOR_ERROR_TRACKING - 1]
             .to_h
-        end
       end
+      strong_memoize_attr :largest_fields
 
       def field_sizes_for_error_tracking
         filtered_field_sizes.empty? ? largest_fields : filtered_field_sizes

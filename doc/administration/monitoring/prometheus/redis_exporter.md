@@ -22,7 +22,7 @@ To enable the Redis exporter:
    redis_exporter['enable'] = true
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 Prometheus begins collecting performance data from

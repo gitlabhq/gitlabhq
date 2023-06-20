@@ -8,6 +8,7 @@ import { updateInstallation, setApiBaseURL } from '~/jira_connect/subscriptions/
 import {
   GITLAB_COM_BASE_PATH,
   I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
+  FAILED_TO_UPDATE_DOC_LINK,
 } from '~/jira_connect/subscriptions/constants';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 
@@ -56,6 +57,7 @@ export default {
         .catch(() => {
           this.setAlert({
             message: I18N_UPDATE_INSTALLATION_ERROR_MESSAGE,
+            linkUrl: FAILED_TO_UPDATE_DOC_LINK,
             variant: 'danger',
           });
           this.loadingVersionSelect = false;
@@ -66,9 +68,9 @@ export default {
     },
   },
   i18n: {
-    title: s__('JiraService|Welcome to GitLab for Jira'),
-    signInSubtitle: s__('JiraService|Sign in to GitLab to link namespaces.'),
-    changeVersionButtonText: s__('JiraService|Change GitLab version'),
+    title: s__('JiraConnect|Welcome to GitLab for Jira'),
+    signInSubtitle: s__('JiraConnect|Sign in to GitLab to link groups.'),
+    changeVersionButtonText: s__('JiraConnect|Change GitLab version'),
   },
 };
 </script>

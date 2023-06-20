@@ -77,7 +77,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         context 'when details contain stderr without prefix' do
           let(:stderr) { "something" }
           let(:stdout) { "GL-HOOK-ERR: stdout is overridden by stderr" }
-          let(:expected_message) { error_message }
+          let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
           let(:expected_raw_message) { stderr }
 
           it_behaves_like 'failed branch creation'
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         context 'when details contain stdout without prefix' do
           let(:stderr) { "      \n" }
           let(:stdout) { "something" }
-          let(:expected_message) { error_message }
+          let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
           let(:expected_raw_message) { stdout }
 
           it_behaves_like 'failed branch creation'
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         context 'when details contain no stderr or stdout' do
           let(:stderr) { "      \n" }
           let(:stdout) { "\n    \n" }
-          let(:expected_message) { error_message }
+          let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
           let(:expected_raw_message) { "\n    \n" }
 
           it_behaves_like 'failed branch creation'
@@ -250,7 +250,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       context 'when details contain stderr' do
         let(:stderr) { "something" }
         let(:stdout) { "GL-HOOK-ERR: stdout is overridden by stderr" }
-        let(:expected_message) { error_message }
+        let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
         let(:expected_raw_message) { stderr }
 
         it_behaves_like 'a failed branch deletion'
@@ -259,7 +259,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       context 'when details contain stdout' do
         let(:stderr) { "      \n" }
         let(:stdout) { "something" }
-        let(:expected_message) { error_message }
+        let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
         let(:expected_raw_message) { stdout }
 
         it_behaves_like 'a failed branch deletion'
@@ -377,7 +377,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       context 'when details contain stderr without prefix' do
         let(:stderr) { "something" }
         let(:stdout) { "GL-HOOK-ERR: stdout is overridden by stderr" }
-        let(:expected_message) { error_message }
+        let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
         let(:expected_raw_message) { stderr }
 
         it_behaves_like 'a failed merge'
@@ -395,7 +395,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       context 'when details contain stdout without prefix' do
         let(:stderr) { "      \n" }
         let(:stdout) { "something" }
-        let(:expected_message) { error_message }
+        let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
         let(:expected_raw_message) { stdout }
 
         it_behaves_like 'a failed merge'
@@ -413,7 +413,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       context 'when details contain no stderr or stdout' do
         let(:stderr) { "      \n" }
         let(:stdout) { "\n    \n" }
-        let(:expected_message) { error_message }
+        let(:expected_message) { Gitlab::GitalyClient::OperationService::CUSTOM_HOOK_FALLBACK_MESSAGE }
         let(:expected_raw_message) { "\n    \n" }
 
         it_behaves_like 'a failed merge'

@@ -69,7 +69,7 @@ module Groups
       return false if group.root_ancestor == @new_parent_group.root_ancestor
 
       return true if group.contacts.exists? && !current_user.can?(:admin_crm_contact, @new_parent_group.root_ancestor)
-      return true if group.organizations.exists? && !current_user.can?(:admin_crm_organization, @new_parent_group.root_ancestor)
+      return true if group.crm_organizations.exists? && !current_user.can?(:admin_crm_organization, @new_parent_group.root_ancestor)
 
       false
     end

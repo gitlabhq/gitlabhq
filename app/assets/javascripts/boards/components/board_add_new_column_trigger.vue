@@ -1,6 +1,5 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 
@@ -12,16 +11,20 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
+  props: {
+    isNewListShowing: {
+      type: Boolean,
+      required: true,
+    },
+  },
   computed: {
-    ...mapState({ isNewListShowing: ({ addColumnForm }) => addColumnForm.visible }),
     tooltip() {
       return this.isNewListShowing ? __('The list creation wizard is already open') : '';
     },
   },
   methods: {
-    ...mapActions(['setAddColumnFormVisibility']),
     handleClick() {
-      this.setAddColumnFormVisibility(true);
+      this.$emit('setAddColumnFormVisibility', true);
       this.track('click_button', { label: 'create_list' });
     },
   },

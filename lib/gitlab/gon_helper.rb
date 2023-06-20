@@ -50,8 +50,12 @@ module Gitlab
       gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
       gon.uf_error_prefix        = ::Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX
+      gon.pat_prefix             = Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+
+      gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
       if current_user
+        gon.version = Gitlab::VERSION # publish version only for logged in users
         gon.current_user_id = current_user.id
         gon.current_username = current_user.username
         gon.current_user_fullname = current_user.name
@@ -66,10 +70,11 @@ module Gitlab
       push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
-      push_frontend_feature_flag(:super_sidebar_peek, current_user)
       push_frontend_feature_flag(:unbatch_graphql_queries, current_user)
+      push_frontend_feature_flag(:command_palette, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
+      push_frontend_feature_flag(:gitlab_duo, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

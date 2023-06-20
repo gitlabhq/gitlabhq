@@ -1,9 +1,9 @@
 <script>
 import {
-  GlCollapse,
-  GlDropdown,
   GlBadge,
   GlButton,
+  GlCollapse,
+  GlDisclosureDropdown,
   GlLink,
   GlSprintf,
   GlTooltipDirective as GlTooltip,
@@ -13,12 +13,12 @@ import { truncate } from '~/lib/utils/text_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
+import getEnvironmentClusterAgent from '../graphql/queries/environment_cluster_agent.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
 import Rollback from './environment_rollback.vue';
 import Pin from './environment_pin.vue';
-import Monitoring from './environment_monitoring.vue';
 import Terminal from './environment_terminal_button.vue';
 import Delete from './environment_delete.vue';
 import Deployment from './deployment.vue';
@@ -27,8 +27,8 @@ import KubernetesOverview from './kubernetes_overview.vue';
 
 export default {
   components: {
+    GlDisclosureDropdown,
     GlCollapse,
-    GlDropdown,
     GlBadge,
     GlButton,
     GlLink,
@@ -39,7 +39,6 @@ export default {
     ExternalUrl,
     StopComponent,
     Rollback,
-    Monitoring,
     Pin,
     Terminal,
     TimeAgoTooltip,
@@ -53,7 +52,7 @@ export default {
     GlTooltip,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['helpPagePath'],
+  inject: ['helpPagePath', 'projectPath'],
   props: {
     environment: {
       required: true,
@@ -83,7 +82,7 @@ export default {
     tierTooltip: s__('Environment|Deployment tier'),
   },
   data() {
-    return { visible: false };
+    return { visible: false, clusterAgent: null };
   },
   computed: {
     icon() {
@@ -133,7 +132,6 @@ export default {
       return Boolean(
         this.retryPath ||
           this.canShowAutoStopDate ||
-          this.canShowMetricsLink ||
           this.terminalPath ||
           this.canDeleteEnvironment,
       );
@@ -154,12 +152,6 @@ export default {
     autoStopPath() {
       return this.environment?.cancelAutoStopPath ?? '';
     },
-    metricsPath() {
-      return this.environment?.metricsPath ?? '';
-    },
-    canShowMetricsLink() {
-      return Boolean(!this.glFeatures.removeMonitorMetrics && this.metricsPath);
-    },
     terminalPath() {
       return this.environment?.terminalPath ?? '';
     },
@@ -172,23 +164,33 @@ export default {
     rolloutStatus() {
       return this.environment?.rolloutStatus;
     },
-    agent() {
-      return this.environment?.agent || {};
-    },
     isKubernetesOverviewAvailable() {
       return this.glFeatures?.kasUserAccessProject;
     },
-    hasRequiredAgentData() {
-      const { project, id, name } = this.agent || {};
-      return project && id && name;
-    },
     showKubernetesOverview() {
-      return this.isKubernetesOverviewAvailable && this.hasRequiredAgentData;
+      return Boolean(this.isKubernetesOverviewAvailable && this.clusterAgent);
     },
   },
   methods: {
-    toggleCollapse() {
+    toggleEnvironmentCollapse() {
       this.visible = !this.visible;
+
+      if (this.visible) {
+        this.getClusterAgent();
+      }
+    },
+    getClusterAgent() {
+      if (!this.isKubernetesOverviewAvailable || this.clusterAgent) return;
+
+      this.$apollo.addSmartQuery('environmentClusterAgent', {
+        variables() {
+          return { environmentName: this.environment.name, projectFullPath: this.projectPath };
+        },
+        query: getEnvironmentClusterAgent,
+        update(data) {
+          this.clusterAgent = data?.project?.environment?.clusterAgent;
+        },
+      });
     },
   },
   deploymentClasses: [
@@ -231,7 +233,7 @@ export default {
           :aria-label="label"
           size="small"
           category="secondary"
-          @click="toggleCollapse"
+          @click="toggleEnvironmentCollapse"
         />
         <gl-link
           v-gl-tooltip
@@ -282,14 +284,14 @@ export default {
             graphql
           />
 
-          <gl-dropdown
+          <gl-disclosure-dropdown
             v-if="hasExtraActions"
-            icon="ellipsis_v"
             text-sr-only
-            :text="__('More actions')"
-            category="secondary"
             no-caret
-            right
+            icon="ellipsis_v"
+            category="secondary"
+            placement="right"
+            :toggle-text="__('More actions')"
           >
             <rollback
               v-if="retryPath"
@@ -309,14 +311,6 @@ export default {
               data-track-label="environment_pin"
             />
 
-            <monitoring
-              v-if="canShowMetricsLink"
-              :monitoring-url="metricsPath"
-              data-track-action="click_button"
-              data-track-label="environment_monitoring"
-              data-testid="environment-monitoring"
-            />
-
             <terminal
               v-if="terminalPath"
               :terminal-path="terminalPath"
@@ -331,7 +325,7 @@ export default {
               data-track-label="environment_delete"
               graphql
             />
-          </gl-dropdown>
+          </gl-disclosure-dropdown>
         </div>
       </div>
     </div>
@@ -376,10 +370,8 @@ export default {
       </div>
       <div v-if="showKubernetesOverview" :class="$options.kubernetesOverviewClasses">
         <kubernetes-overview
-          :agent-project-path="agent.project"
-          :agent-name="agent.name"
-          :agent-id="agent.id"
-          :namespace="agent.kubernetesNamespace"
+          :cluster-agent="clusterAgent"
+          :namespace="environment.kubernetesNamespace"
         />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">

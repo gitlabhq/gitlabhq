@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 =begin
-#Error Trackig REST API
+#Error Tracking REST API
 
 #This schema describes the API endpoints for the error tracking feature
 
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.authors     = ["OpenAPI-Generator"]
   s.email       = [""]
   s.homepage    = "https://openapi-generator.tech"
-  s.summary     = "Error Trackig REST API Ruby Gem"
+  s.summary     = "Error Tracking REST API Ruby Gem"
   s.description = "This schema describes the API endpoints for the error tracking feature"
   s.license     = "MIT"
   s.required_ruby_version = ">= 2.4"

@@ -12,8 +12,7 @@ You can create a project in many ways in GitLab.
 
 To create a blank project:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
@@ -42,8 +41,7 @@ Anyone can [contribute a built-in template](../../development/project_templates.
 
 To create a project from a built-in template:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. From the list of templates:
@@ -73,8 +71,7 @@ Custom project templates are available at:
 - The [instance-level](../../user/admin_area/custom_project_templates.md)
 - The [group-level](../../user/group/custom_project_templates.md)
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Instance** or **Group** tab.
 1. From the list of templates:
@@ -99,8 +96,7 @@ HIPAA Audit Protocol published by the U.S Department of Health and Human Service
 
 To create a project from the HIPAA Audit Protocol template:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. Locate the **HIPAA Audit Protocol** template:
@@ -138,7 +134,7 @@ Prerequisites:
   [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
-  1. On the top bar, select **Main menu > Groups** and find your group.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
   1. In the upper-right corner, confirm that **New project** is visible.
      Contact your GitLab administrator if you require permission.
 

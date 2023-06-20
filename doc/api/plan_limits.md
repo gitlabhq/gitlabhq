@@ -43,8 +43,10 @@ Example response:
   "ci_registered_group_runners": 1000,
   "ci_registered_project_runners": 1000,
   "conan_max_file_size": 3221225472,
+  "enforcement_limit": 10000,
   "generic_packages_max_file_size": 5368709120,
   "helm_max_file_size": 5242880,
+  "notification_limit": 10000,
   "maven_max_file_size": 3221225472,
   "npm_max_file_size": 524288000,
   "nuget_max_file_size": 524288000,
@@ -73,14 +75,16 @@ PUT /application/plan_limits
 | `ci_registered_group_runners`     | integer | no       | Maximum number of runners registered per group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `ci_registered_project_runners`   | integer | no       | Maximum number of runners registered per project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85895) in GitLab 15.0. |
 | `conan_max_file_size`             | integer | no       | Maximum Conan package file size in bytes. |
+| `enforcement_limit`               | integer | no       | Maximum storage size for root namespace limit enforcement in MiB. |
 | `generic_packages_max_file_size`  | integer | no       | Maximum generic package file size in bytes. |
 | `helm_max_file_size`              | integer | no       | Maximum Helm chart file size in bytes. |
 | `maven_max_file_size`             | integer | no       | Maximum Maven package file size in bytes. |
+| `notification_limit`              | integer | no       | Maximum storage size for root namespace limit notifications in MiB. |
 | `npm_max_file_size`               | integer | no       | Maximum NPM package file size in bytes. |
 | `nuget_max_file_size`             | integer | no       | Maximum NuGet package file size in bytes. |
 | `pypi_max_file_size`              | integer | no       | Maximum PyPI package file size in bytes. |
 | `terraform_module_max_file_size`  | integer | no       | Maximum Terraform Module package file size in bytes. |
-| `storage_size_limit`              | integer | no       | Maximum storage size for the root namespace in megabytes. |
+| `storage_size_limit`              | integer | no       | Maximum storage size for the root namespace in MiB. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/plan_limits?plan_name=default&conan_max_file_size=3221225472"

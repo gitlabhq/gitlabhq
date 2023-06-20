@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Users > User browses projects on user page', :js, feature_category: :projects do
+RSpec.describe 'Users > User browses projects on user page', :js, feature_category: :groups_and_projects do
   let!(:user) { create :user }
   let!(:private_project) do
     create :project, :private, name: 'private', namespace: user.namespace do |project|
@@ -129,7 +129,7 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
         end
 
         before do
-          Issues::CreateService.new(container: contributed_project, current_user: user, params: { title: 'Bug in old browser' }, spam_params: nil).execute
+          Issues::CreateService.new(container: contributed_project, current_user: user, params: { title: 'Bug in old browser' }).execute
           event = create(:push_event, project: contributed_project, author: user)
           create(:push_event_payload, event: event, commit_count: 3)
         end

@@ -6,7 +6,7 @@ namespace :gitlab do
   namespace :background_migrations do
     desc 'Synchronously finish executing a batched background migration'
     task :finalize, [:job_class_name, :table_name, :column_name, :job_arguments] => :environment do |_, args|
-      if Gitlab::Database.db_config_names.size > 1
+      if Gitlab::Database.db_config_names(with_schema: :gitlab_shared).size > 1
         puts "Please specify the database".color(:red)
         exit 1
       end

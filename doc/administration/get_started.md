@@ -37,8 +37,8 @@ Watch an overview of [groups and projects](https://www.youtube.com/watch?v=cqb2m
 Get started:
 
 - Create a [project](../user/project/index.md#create-a-project).
-- Create a [group](../user/group/manage.md#create-a-group).
-- [Add members](../user/group/manage.md#add-users-to-a-group) to the group.
+- Create a [group](../user/group/index.md#create-a-group).
+- [Add members](../user/group/index.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
 - [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
 - Enable [external authorization control](../user/admin_area/settings/external_authorization.md#configuration).
@@ -126,11 +126,11 @@ GitLab provides backup methods to keep your data safe and recoverable. Whether y
 
 ### Back up a GitLab self-managed instance
 
-The routine differs, depending on whether you deployed with Omnibus or the Helm chart.
+The routine differs, depending on whether you deployed with the Linux package or the Helm chart.
 
-When you backing up an Omnibus (single node) GitLab server, you can use a single Rake task.
+When backing up (single node) GitLab server installed using the Linux package, you can use a single Rake task.
 
-Learn about [backing up Omnibus or Helm variations](../raketasks/backup_restore.md).
+Learn about [backing up Linux package or Helm variations](../raketasks/backup_restore.md).
 This process backs up your entire instance, but does not back up the configuration files. Ensure those are backed up separately.
 Keep your configuration files and backup archives in a separate location to ensure the encryption keys are not kept with the encrypted data.
 
@@ -138,7 +138,7 @@ Keep your configuration files and backup archives in a separate location to ensu
 
 You can restore a backup only to **the exact same version and type** (Community Edition/Enterprise Edition) of GitLab on which it was created.
 
-- Review the [Omnibus backup and restore documentation](https://docs.gitlab.com/omnibus/settings/backups).
+- Review the [Linux package (Omnibus) backup and restore documentation](https://docs.gitlab.com/omnibus/settings/backups).
 - Review the [Helm Chart backup and restore documentation](https://docs.gitlab.com/charts/backup-restore/).
 
 ### Back up GitLab SaaS
@@ -172,7 +172,7 @@ If your GitLab server contains a lot of Git repository data, you may find the Gi
 Slowness typically starts at a Git repository data size of around 200 GB. In this case, you might consider using file system snapshots as part of your backup strategy.
 For example, consider a GitLab server with the following components:
 
-- Using Omnibus GitLab
+- Using the Linux package.
 - Hosted on AWS with an EBS drive containing an ext4 file system mounted at `/var/opt/gitlab`.
 
 The EC2 instance meets the requirements for an application data backup by taking an EBS snapshot. The backup includes all repositories, uploads, and PostgreSQL data.

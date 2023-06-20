@@ -14,12 +14,12 @@ module SearchHelper
     :project_ids
   ].freeze
 
-  def search_autocomplete_opts(term, filter: nil)
+  def search_autocomplete_opts(term, filter: nil, scope: nil)
     return unless current_user
 
     results = case filter&.to_sym
               when :search
-                resource_results(term)
+                resource_results(term, scope: scope)
               when :generic
                 [
                   recent_items_autocomplete(term),
@@ -36,13 +36,29 @@ module SearchHelper
     results.flatten { |item| item[:label] }
   end
 
-  def resource_results(term)
+  def resource_results(term, scope: nil)
+    return [] if term.length < Gitlab::Search::Params::MIN_TERM_LENGTH
+    return scope_specific_results(term, scope) if scope.present?
+
     [
       groups_autocomplete(term),
       projects_autocomplete(term),
       users_autocomplete(term),
       issue_autocomplete(term)
     ].flatten
+  end
+
+  def scope_specific_results(term, scope)
+    case scope&.to_sym
+    when :project
+      projects_autocomplete(term)
+    when :user
+      users_autocomplete(term)
+    when :issue
+      recent_issues_autocomplete(term)
+    else
+      []
+    end
   end
 
   def generic_results(term)
@@ -307,7 +323,7 @@ module SearchHelper
   # Autocomplete results for the current user's groups
   # rubocop: disable CodeReuse/ActiveRecord
   def groups_autocomplete(term, limit = 5)
-    current_user.authorized_groups.order_id_desc.search(term).limit(limit).map do |group|
+    current_user.authorized_groups.order_id_desc.search(term, use_minimum_char_limit: false).limit(limit).map do |group|
       {
         category: "Groups",
         id: group.id,
@@ -341,7 +357,7 @@ module SearchHelper
   # Autocomplete results for the current user's projects
   # rubocop: disable CodeReuse/ActiveRecord
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true)
+    current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
       .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
       {
         category: "Projects",
@@ -357,10 +373,17 @@ module SearchHelper
   def users_autocomplete(term, limit = 5)
     return [] unless current_user && Ability.allowed?(current_user, :read_users_list)
 
-    SearchService
-      .new(current_user, { scope: 'users', per_page: limit, search: term })
-      .search_objects
-      .map do |user|
+    users = if Feature.enabled?(:autocomplete_users_use_search_service)
+              ::SearchService
+              .new(current_user, { scope: 'users', per_page: limit, search: term })
+              .search_objects
+            else
+              is_current_user_admin = current_user.can_admin_all_resources?
+              scope = is_current_user_admin ? User.all : User.without_forbidden_states
+              scope.search(term, with_private_emails: is_current_user_admin, use_minimum_char_limit: false).limit(limit)
+            end
+
+    users.map do |user|
       {
         category: "Users",
         id: user.id,
@@ -448,38 +471,60 @@ module SearchHelper
     result
   end
 
-  def code_tab_condition
+  def show_code_search_tab?
     return true if project_search_tabs?(:blobs)
 
     @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_code_tab)
   end
 
-  def wiki_tab_condition
-    return true if project_search_tabs?(:wiki)
+  def show_wiki_search_tab?
+    return true if project_search_tabs?(:wiki_blobs)
 
     @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_wiki_tab)
   end
 
-  def commits_tab_condition
+  def show_commits_search_tab?
     return true if project_search_tabs?(:commits)
 
     @project.nil? && search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_commits_tab)
+  end
+
+  def show_issues_search_tab?
+    return true if project_search_tabs?(:issues)
+
+    @project.nil? && feature_flag_tab_enabled?(:global_search_issues_tab)
+  end
+
+  def show_merge_requests_search_tab?
+    return true if project_search_tabs?(:merge_requests)
+
+    @project.nil? && feature_flag_tab_enabled?(:global_search_merge_requests_tab)
+  end
+
+  def show_comments_search_tab?
+    return true if project_search_tabs?(:notes)
+
+    @project.nil? && search_service.show_elasticsearch_tabs?
+  end
+
+  def show_snippets_search_tab?
+    search_service.show_snippets? && @project.nil? && feature_flag_tab_enabled?(:global_search_snippet_titles_tab)
   end
 
   # search page scope navigation
   def search_navigation
     {
       projects: {       sort: 1, label: _("Projects"),                 data: { qa_selector: 'projects_tab' }, condition: @project.nil? },
-      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: code_tab_condition },
+      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: show_code_search_tab? },
       #  sort: 3 is reserved for EE items
-      issues: {         sort: 4, label: _("Issues"),                   condition: project_search_tabs?(:issues) || feature_flag_tab_enabled?(:global_search_issues_tab) },
-      merge_requests: { sort: 5, label: _("Merge requests"),           condition: project_search_tabs?(:merge_requests) || feature_flag_tab_enabled?(:global_search_merge_requests_tab) },
-      wiki_blobs: {     sort: 6, label: _("Wiki"),                     condition: wiki_tab_condition },
-      commits: {        sort: 7, label: _("Commits"),                  condition: commits_tab_condition },
-      notes: {          sort: 8, label: _("Comments"),                 condition: project_search_tabs?(:notes) || search_service.show_elasticsearch_tabs? },
+      issues: {         sort: 4, label: _("Issues"),                   condition: show_issues_search_tab? },
+      merge_requests: { sort: 5, label: _("Merge requests"),           condition: show_merge_requests_search_tab? },
+      wiki_blobs: {     sort: 6, label: _("Wiki"),                     condition: show_wiki_search_tab? },
+      commits: {        sort: 7, label: _("Commits"),                  condition: show_commits_search_tab? },
+      notes: {          sort: 8, label: _("Comments"),                 condition: show_comments_search_tab? },
       milestones: {     sort: 9, label: _("Milestones"),               condition: project_search_tabs?(:milestones) || @project.nil? },
       users: {          sort: 10, label: _("Users"),                   condition: show_user_search_tab? },
-      snippet_titles: { sort: 11, label: _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }, condition: search_service.show_snippets? && @project.nil? }
+      snippet_titles: { sort: 11, label: _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }, condition: show_snippets_search_tab? }
     }
   end
 
@@ -567,7 +612,7 @@ module SearchHelper
   end
 
   def show_user_search_tab?
-    return project_search_tabs?(:members) if @project
+    return project_search_tabs?(:users) if @project
     return false unless can?(current_user, :read_users_list)
     return true if @group
 
@@ -608,7 +653,14 @@ module SearchHelper
 
   def sanitized_search_params
     sanitized_params = params.dup
-    sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential]) if sanitized_params.key?(:confidential)
+
+    if sanitized_params.key?(:confidential)
+      sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential])
+    end
+
+    if sanitized_params.key?(:include_archived)
+      sanitized_params[:include_archived] = Gitlab::Utils.to_boolean(sanitized_params[:include_archived])
+    end
 
     sanitized_params
   end

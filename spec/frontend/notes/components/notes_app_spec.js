@@ -334,14 +334,12 @@ describe('note_app', () => {
     });
 
     it('should listen hashchange event', () => {
-      const notesApp = wrapper.findComponent(NotesApp);
       const hash = 'some dummy hash';
       jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(hash);
-      const setTargetNoteHash = jest.spyOn(notesApp.vm, 'setTargetNoteHash');
-
+      const dispatchMock = jest.spyOn(store, 'dispatch');
       window.dispatchEvent(new Event('hashchange'), hash);
 
-      expect(setTargetNoteHash).toHaveBeenCalled();
+      expect(dispatchMock).toHaveBeenCalledWith('setTargetNoteHash', 'some dummy hash');
     });
   });
 

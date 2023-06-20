@@ -32,6 +32,12 @@ export default {
       error(error) {
         this.$emit('cluster-error', error);
       },
+      result() {
+        this.checkFailed();
+      },
+      watchLoading(isLoading) {
+        this.$emit('loading', isLoading);
+      },
     },
   },
   props: {
@@ -46,7 +52,7 @@ export default {
   },
   computed: {
     summaryLoading() {
-      return this.$apollo.queries.k8sWorkloads.loading;
+      return this.$apollo?.queries?.k8sWorkloads?.loading;
     },
     summaryCount() {
       return this.k8sWorkloads ? Object.values(this.k8sWorkloads).flat().length : 0;
@@ -126,6 +132,17 @@ export default {
         name: this.$options.i18n.cronJobs,
         items: getCronJobsStatuses(items),
       };
+    },
+  },
+  methods: {
+    checkFailed() {
+      const failed = this.summaryObjects.some((workloadType) => {
+        return workloadType.items?.failed?.length > 0;
+      });
+
+      if (failed) {
+        this.$emit('failed');
+      }
     },
   },
   i18n: {

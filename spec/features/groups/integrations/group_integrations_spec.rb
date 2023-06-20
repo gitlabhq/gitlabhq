@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group integrations', :js do
+RSpec.describe 'Group integrations', :js, feature_category: :integrations do
   include_context 'group integration activation'
 
   before do

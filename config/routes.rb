@@ -66,9 +66,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
-        resources :groups_projects, only: [:new, :create] do
-          post :import, on: :collection
-        end
+        resources :groups, only: [:new, :create]
         draw :verification
       end
     end
@@ -158,12 +156,12 @@ InitializerConnections.raise_if_new_database_connection do
 
       draw :operations
       draw :jira_connect
+      draw :organizations
 
       Gitlab.ee do
         draw :remote_development
         draw :security
         draw :smartcard
-        draw :trial
         draw :trial_registration
         draw :country
         draw :country_state
@@ -279,6 +277,7 @@ InitializerConnections.raise_if_new_database_connection do
     draw :user
     draw :project
     draw :unmatched_project
+    draw :well_known
 
     # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/210024
     scope as: 'deprecated' do

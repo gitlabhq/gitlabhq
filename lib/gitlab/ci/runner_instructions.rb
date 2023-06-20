@@ -112,3 +112,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::Ci::RunnerInstructions.prepend_mod

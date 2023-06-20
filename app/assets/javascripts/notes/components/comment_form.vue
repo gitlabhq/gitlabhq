@@ -6,7 +6,6 @@ import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests
 import { createAlert } from '~/alert';
 import { badgeState } from '~/issuable/components/status_box.vue';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
-import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import {
   capitalizeFirstCharacter,
@@ -21,6 +20,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import { COMMENT_FORM } from '../i18n';
+import { getErrorMessages } from '../utils';
 
 import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
@@ -219,11 +219,7 @@ export default {
       'toggleIssueLocalState',
     ]),
     handleSaveError({ data, status }) {
-      if (status === HTTP_STATUS_UNPROCESSABLE_ENTITY && data.errors?.commands_only?.length) {
-        this.errors = data.errors.commands_only;
-      } else {
-        this.errors = [this.$options.i18n.GENERIC_UNSUBMITTABLE_NETWORK];
-      }
+      this.errors = getErrorMessages(data, status);
     },
     handleSaveDraft() {
       this.handleSave({ isDraft: true });

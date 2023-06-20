@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project active tab', feature_category: :projects do
+RSpec.describe 'Project active tab', feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project, :repository, :with_namespace_settings) }
 
   let(:user) { project.first_owner }

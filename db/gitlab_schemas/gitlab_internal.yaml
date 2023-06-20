@@ -1,0 +1,2 @@
+name: gitlab_internal
+description: Schema for all internal tables, like `pg_*`

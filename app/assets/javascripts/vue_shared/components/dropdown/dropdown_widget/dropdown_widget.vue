@@ -131,7 +131,6 @@ export default {
           ref="search"
           :value="searchTerm"
           :placeholder="searchText"
-          class="js-dropdown-input-field"
           @input="setSearchTerm"
         />
       </slot>

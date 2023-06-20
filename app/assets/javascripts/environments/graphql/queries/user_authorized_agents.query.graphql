@@ -1,0 +1,13 @@
+query getUserAuthorizedAgents($projectFullPath: ID!) {
+  project(fullPath: $projectFullPath) {
+    id
+    userAccessAuthorizedAgents {
+      nodes {
+        agent {
+          id
+          name
+        }
+      }
+    }
+  }
+}

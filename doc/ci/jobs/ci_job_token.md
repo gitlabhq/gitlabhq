@@ -44,6 +44,8 @@ in a CI/CD job:
 git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>/<project>
 ```
 
+You can't use a job token to push to a repository, but [issue 389060](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) proposes to change this behavior.
+
 ## GitLab CI/CD job token security
 
 To make sure that this token doesn't leak, GitLab:
@@ -115,8 +117,8 @@ Prerequisite:
 
 To disable the job token scope allowlist:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Toggle **Allow access to this project with a CI_JOB_TOKEN** to disabled.
    Enabled by default in new projects.
@@ -136,8 +138,8 @@ Prerequisite:
 
 To add a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Verify **Allow access to this project with a CI_JOB_TOKEN** is enabled.
 1. Under **Allow CI job tokens from the following projects to access this project**,
@@ -178,8 +180,8 @@ Prerequisite:
 
 To configure the job token scope:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Toggle **Limit CI_JOB_TOKEN access** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a

@@ -1,85 +1,166 @@
 include:
+  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
 
-.run-tests:
+variables:
+  COLORIZED_LOGS: "true"
+  GIT_DEPTH: "20"
+  GIT_STRATEGY: "clone" # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
+  GIT_SUBMODULE_STRATEGY: "none"
+
+.gdk-qa-base:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
+  extends:
+    - .qa-cache
   stage: test
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
     - e2e
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - sysctl -n -w fs.inotify.max_user_watches=524288
-    - echo "SUITE_RAN=true" > suite_status.env
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
-    QA_GDK_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-qa-gdk:master"
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "false"
-    TEST_LICENSE_MODE: $QA_TEST_LICENSE_MODE
-    EE_LICENSE: $QA_EE_LICENSE
-    GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    RSPEC_REPORT_OPTS: "--format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec-${CI_JOB_ID}.htm --color --format documentation"
-  timeout: 2 hours
-  artifacts:
-    when: always
-    paths:
-      - test_output
-      - logs
-    expire_in: 7 days
-    reports:
-      junit: test_output/**/rspec-*.xml
-      dotenv: suite_status.env
-  script:
+    RSPEC_REPORT_OPTS: "--order random --force-color --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json  --format html --out tmp/rspec-${CI_JOB_ID}.htm"
+    FF_NETWORK_PER_BUILD: 1
+    GDK_URL: http://gdk.test:3000
+  before_script:
+    - echo "SUITE_RAN=true" > suite_status.env
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
-    - docker pull ${QA_GDK_IMAGE}
+    - docker pull ${GDK_IMAGE}
     - echo -e "\e[0Ksection_end:`date +%s`:pull_image\r\e[0K"
-    - echo -e "\e[0Ksection_start:`date +%s`:launch_gdk_and_tests\r\e[0KLaunch GDK and run QA tests"
-    - cd qa && bundle install --jobs=$(nproc) --retry=3 --quiet
-    - mkdir -p $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs/gdk $CI_PROJECT_DIR/logs/gitlab
+    # Despite `incremental: false` and `static: true`, GDK sometimes fails to start without increasing max user watches
+    # This is why we're not running the GDK container as a service
+    - sysctl -n -w fs.inotify.max_user_watches=524288
+    - echo -e "\e[0Ksection_start:`date +%s`:launch_gdk\r\e[0KLaunch GDK"
+    - mkdir -p $CI_PROJECT_DIR/log/gdk $CI_PROJECT_DIR/log/gitlab
     # This command matches the permissions of the user that runs GDK inside the container.
-    - chown -R 1000:1000 $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs $CI_PROJECT_DIR/qa/knapsack
+    - chown -R 1000:1000 $CI_PROJECT_DIR/log
     - |
-      docker run --rm --name gdk --add-host gdk.test:127.0.0.1 --shm-size=2gb \
-        --env-file <(bundle exec rake ci:env_var_name_list) \
-        --volume /var/run/docker.sock:/var/run/docker.sock:z \
-        --volume $CI_PROJECT_DIR/test_output:/home/gdk/gdk/gitlab/qa/tmp:z \
-        --volume $CI_PROJECT_DIR/logs/gdk:/home/gdk/gdk/log \
-        --volume $CI_PROJECT_DIR/logs/gitlab:/home/gdk/gdk/gitlab/log \
-        --volume $CI_PROJECT_DIR/qa/knapsack:/home/gdk/gdk/gitlab/qa/knapsack \
-        ${QA_GDK_IMAGE} "${CI_COMMIT_SHA}" "$RSPEC_REPORT_OPTS $TEST_GDK_TAGS --tag ~requires_praefect"
-    # The above image's launch script takes two arguments only - first one is the commit sha and the second one Rspec Args
-  allow_failure: true
+      docker run -d --rm --name gdk --network host \
+        --volume $CI_PROJECT_DIR/log/gdk:/home/gdk/gitlab-development-kit/log \
+        --volume $CI_PROJECT_DIR/log/gitlab:/home/gdk/gitlab-development-kit/gitlab/log \
+        ${GDK_IMAGE}
+    # With `FF_NETWORK_PER_BUILD=1` and `--network host` the IP of the gdk container should be 172.18.0.2, but we get it
+    # dynamically just in case
+    - echo "$(docker exec gdk bash -c "getent hosts \$HOSTNAME" | awk '{print $1}') gdk.test" >> /etc/hosts
+    - source scripts/utils.sh
+    - cd qa && bundle install
+  script:
+    - retry_exponential test_url ${GDK_URL}/users/sign_in
+    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
+    - echo -e "\e[0Ksection_start:`date +%s`:run_tests\r\e[0KRun E2E tests"
+    - QA_COMMAND="bundle exec bin/qa Test::Instance::All ${GDK_URL} -- ${RSPEC_TAGS} ${RSPEC_REPORT_OPTS}"
+    - echo "Running - '${QA_COMMAND}'"
+    - eval "$QA_COMMAND"
+    - echo -e "\e[0Ksection_end:`date +%s`:run_tests\r\e[0K"
   after_script:
     - |
       if [ "$CI_JOB_STATUS" == "failed" ]; then
         echo "SUITE_FAILED=true" >> suite_status.env
       fi
+    - docker stop gdk
+  artifacts:
+    paths:
+      - qa/tmp
+      - log
+    reports:
+      junit: qa/tmp/rspec-*.xml
+      dotenv: suite_status.env
+    expire_in: 7 days
+    when: always
+  allow_failure: true
 
-download-knapsack-report:
+cache-gems:
   extends:
-    - .download-knapsack-report
-    - .rules:download-knapsack
+    - .ruby-image
+    - .qa-cache-push
+    - .rules:update-cache
+  stage: .pre
+  tags:
+    - e2e
+  script:
+    - cd qa && bundle install
 
-test-on-gdk-smoke:
+# Take the existing GDK docker image and reconfigure it with Postgres load
+# balancing. Adding 5s lag to 1 of the replicas to validate robustness of
+# the load balancer.
+.gdk-with-load-balancer-setup:
+  before_script:
+    - !reference [".gdk-qa-base", "before_script"]
+    - |
+      docker exec gdk bash -c "
+        gdk config set postgresql.replica.enabled true &&\
+        gdk config set postgresql.replica_2.enabled true &&\
+        gdk config set load_balancing.enabled true &&\
+        gdk reconfigure &&\
+        gdk restart"
+
+gdk-qa-smoke:
   extends:
-    - .run-tests
-  parallel: 2
+    - .gdk-qa-base
   variables:
     TEST_GDK_TAGS: "--tag smoke"
+    QA_RUN_TYPE: gdk-qa-smoke
+    RSPEC_TAGS: --tag smoke
   rules:
     - when: always
 
-test-on-gdk-full:
+gdk-qa-smoke-with-load-balancer:
   extends:
-    - .run-tests
+    - .gdk-qa-base
+    - .gdk-with-load-balancer-setup
+  variables:
+    TEST_GDK_TAGS: "--tag smoke"
+    QA_RUN_TYPE: gdk-qa-smoke
+    RSPEC_TAGS: --tag smoke
+  rules:
+    - changes:
+        - ".gitlab/ci/test-on-gdk/**"
+        - "lib/gitlab/database/load_balancing/**/*"
+
+# TODO: set non manual once smoke tests prove to be stable
+gdk-qa-reliable:
+  extends:
+    - .gdk-qa-base
   parallel: 5
+  variables:
+    QA_RUN_TYPE: gdk-qa-blocking
+    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
+    RSPEC_TAGS: --tag smoke --tag reliable
+  allow_failure: true
+  rules:
+    - when: manual
+
+gdk-qa-reliable-with-load-balancer:
+  extends:
+    - .gdk-qa-base
+    - .gdk-with-load-balancer-setup
+  parallel: 5
+  variables:
+    QA_RUN_TYPE: gdk-qa-blocking
+    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
+    RSPEC_TAGS: --tag smoke --tag reliable
+  allow_failure: true
+  rules:
+    - changes:
+        - ".gitlab/ci/test-on-gdk/**"
+        - "lib/gitlab/database/load_balancing/**/*"
+
+gdk-qa-non-blocking:
+  extends:
+    - .gdk-qa-base
+  parallel: 5
+  variables:
+    QA_RUN_TYPE: gdk-qa-non-blocking
+    QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
+    QA_SKIP_SMOKE_RELIABLE: "true"
+  allow_failure: true
   rules:
     - when: manual
 
@@ -91,39 +172,37 @@ e2e-test-report:
     - .e2e-test-report
     - .rules:report:allure-report
   variables:
-    ALLURE_RESULTS_GLOB: test_output/allure-results
+    ALLURE_RESULTS_GLOB: qa/tmp/allure-results
 
 upload-knapsack-report:
   extends:
     - .upload-knapsack-report
     - .rules:report:process-results
   variables:
-    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/test_output/knapsack/*/*.json
+    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
 
 export-test-metrics:
   extends:
     - .export-test-metrics
     - .rules:report:process-results
   variables:
-    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/test_output/test-metrics-*.json
+    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
 
-relate-test-failures:
-  extends:
-    - .relate-test-failures
-    - .rules:report:process-results
+.gitlab-qa-report:
   variables:
-    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.json
+    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
+    QA_SYSTEM_LOG_FILE_PATTERN: $CI_PROJECT_DIR/test_output/logs
 
 generate-test-session:
   extends:
     - .generate-test-session
     - .rules:report:process-results
   variables:
-    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.json
+    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
 
 notify-slack:
   extends:
     - .notify-slack
     - .rules:report:process-results
   variables:
-    QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.xml
+    QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.xml

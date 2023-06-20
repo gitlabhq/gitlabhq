@@ -125,7 +125,8 @@ When global group memberships lock is enabled:
 To enable global group memberships lock:
 
 1. [Configure SAML](../../../integration/saml.md) for your self-managed GitLab instance.
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to SAML synchronization** checkbox is selected.
@@ -225,7 +226,7 @@ in the user's SAML assertion.
 With an Azure AD premium subscription, you can allow up to 500 group IDs to be sent in a SAML token using the
 [Azure AD documentation configuration steps](https://support.esri.com/en/technical-article/000022190).
 
-Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/azure/active-directory/hybrid/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
+Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/azure/active-directory/hybrid/connect/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
 
 ![Manage Group Claims](img/Azure-manage-group-claims.png).
 

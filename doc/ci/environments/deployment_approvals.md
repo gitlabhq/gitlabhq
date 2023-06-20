@@ -51,7 +51,7 @@ Example:
 
 There are two ways to configure the approval requirements:
 
-- [Unified approval setting](#unified-approval-setting) ... You can define who can execute **and** approve deployments.
+- [Unified approval setting](#unified-approval-setting-deprecated) ... You can define who can execute **and** approve deployments.
   This is useful when there is no separation of duties between executors and approvers in your organization.
 - [Multiple approval rules](#multiple-approval-rules) ... You can define who can execute **or** approve deployments.
   This is useful when there is a separation of duties between executors and approvers in your organization.
@@ -60,10 +60,17 @@ NOTE:
 Multiple approval rules is a more flexible option than the unified approval setting, thus both configurations shouldn't
 co-exist and multiple approval rules takes the precedence over the unified approval setting if it happens.
 
-#### Unified approval setting
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
+
+#### Unified approval setting (deprecated)
 
 > - UI configuration [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/378447) in GitLab
 >   15.11.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/9662) in GitLab 16.1 and is planned for removal
+in 17.0. Use [multiple approval rules](https://gitlab.com/gitlab-org/gitlab/-/issues/404579) instead. This change
+is a breaking change.
 
 To configure approvals for a protected environment:
 
@@ -84,6 +91,8 @@ curl --header 'Content-Type: application/json' --request POST \
 NOTE:
 To protect, update, or unprotect an environment, you must have at least the
 Maintainer role.
+
+<!--- end_remove -->
 
 #### Multiple approval rules
 
@@ -119,6 +128,41 @@ NOTE:
 To protect, update, or unprotect an environment, you must have at least the
 Maintainer role.
 
+#### Migrate to multiple approval rules
+
+You can migrate a protected environment from unified approval rules to multiple
+approval rules. Unified approval rules allow all entities that can deploy to an
+environment to approve deployment jobs. To migrate to multiple approval rules,
+create a new approval rule for each entity allowed to deploy to the environment.
+
+To migrate with the UI:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Protected environments**.
+1. From the **Environment** list, select your environment.
+1. For each entity allowed to deploy to the environment:
+   1. Select **Add approval rules**.
+   1. In the modal window, select which entity is allowed to approve the
+      deployment job.
+   1. Enter the number of required approvals.
+   1. Select **Save**.
+
+Each deployment requires the specified number of approvals from each entity.
+
+For example, the `Production` environment below requires five total approvals,
+and allows deployments from only the group `Very Important Group` and the user
+`Administrator`:
+
+![unified approval rules](img/unified_approval_rules_v16_0.png)
+
+To migrate, create rules for the `Very Important Group` and `Administrator`. To
+preserve the number of required approvals, set the number of required approvals
+for `Very Important Group` to four and `Administrator` to one. The new rules
+require `Administrator` to approve every deployment job in `Production`.
+
+![multiple approval rules](img/multiple_approval_rules_v16_0.png)
+
 ### Allow self-approval **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.
@@ -126,8 +170,8 @@ Maintainer role.
 By default, the user who triggers a deployment pipeline can't also approve the deployment job.
 To allow self-approval of a deployment job:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
 
@@ -154,8 +198,8 @@ Prerequisites:
 
 To approve or reject a deployment to a protected environment using the UI:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
    Before approving or rejecting the deployment, you can view the number of approvals granted and
@@ -191,8 +235,8 @@ granted.
 
 To view the approval details of a deployment:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
 
@@ -207,8 +251,8 @@ The approval status details are shown:
 
 ### Using the UI
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Environments**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Operate > Environments**.
 1. Select the environment being deployed to.
 1. Look for the `blocked` label.
 
@@ -217,7 +261,7 @@ The approval status details are shown:
 Use the [Deployments API](../../api/deployments.md#get-a-specific-deployment) to see deployments.
 
 - The `status` field indicates if a deployment is blocked.
-- When the [unified approval setting](#unified-approval-setting) is configured:
+- When the [unified approval setting](#unified-approval-setting-deprecated) is configured:
   - The `pending_approval_count` field indicates how many approvals are remaining to run a deployment.
   - The `approvals` field contains the deployment's approvals.
 - When the [multiple approval rules](#multiple-approval-rules) is configured:

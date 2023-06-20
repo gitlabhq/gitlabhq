@@ -1,0 +1,10 @@
+.info-well
+  .well-segment
+    %p
+      = s_("SlackIntegration|This integration allows users to perform common operations on this project by entering slash commands in Slack.")
+      = link_to _('Learn more'), help_page_path('user/project/integrations/gitlab_slack_application.md')
+    %p
+      = s_("SlackIntegration|See the list of available commands in Slack after setting up this integration by entering")
+      %kbd.inline /gitlab help
+- if integration.project_level?
+  = render "shared/integrations/#{integration.to_param}/slack_integration_form", integration: integration

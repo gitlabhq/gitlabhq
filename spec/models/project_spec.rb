@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Project, factory_default: :keep, feature_category: :projects do
+RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_projects do
   include ProjectForksHelper
   include ExternalAuthorizationServiceHelpers
   include ReloadHelpers
@@ -49,6 +49,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
+    it { is_expected.to have_one(:telegram_integration) }
     it { is_expected.to have_one(:unify_circuit_integration) }
     it { is_expected.to have_one(:pumble_integration) }
     it { is_expected.to have_one(:webex_teams_integration) }
@@ -76,11 +77,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_one(:harbor_integration) }
     it { is_expected.to have_one(:redmine_integration) }
     it { is_expected.to have_one(:youtrack_integration) }
+    it { is_expected.to have_one(:clickup_integration) }
     it { is_expected.to have_one(:custom_issue_tracker_integration) }
     it { is_expected.to have_one(:bugzilla_integration) }
     it { is_expected.to have_one(:ewm_integration) }
     it { is_expected.to have_one(:external_wiki_integration) }
     it { is_expected.to have_one(:confluence_integration) }
+    it { is_expected.to have_one(:gitlab_slack_application_integration) }
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:project_repository) }
     it { is_expected.to have_one(:container_expiration_policy) }
@@ -206,9 +209,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       project = create(:project)
       lfs_object = create(:lfs_object)
       [:project, :design].each do |repository_type|
-        create(:lfs_objects_project, project: project,
-                                     lfs_object: lfs_object,
-                                     repository_type: repository_type)
+        create(
+          :lfs_objects_project,
+          project: project,
+          lfs_object: lfs_object,
+          repository_type: repository_type
+        )
       end
 
       expect(project.lfs_objects_projects.size).to eq(2)
@@ -356,12 +362,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         project = create(:project)
 
         expect { project.update!(ci_cd_settings: nil) }.not_to raise_exception
-      end
-    end
-
-    shared_examples 'query without source filters' do
-      it do
-        expect(subject.where_values_hash.keys).not_to include('source_id', 'source_type')
       end
     end
 
@@ -784,14 +784,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     describe 'project pending deletion' do
       let!(:project_pending_deletion) do
-        create(:project,
-               pending_delete: true)
+        create(:project, pending_delete: true)
       end
 
       let(:new_project) do
-        build(:project,
-              path: project_pending_deletion.path,
-              namespace: project_pending_deletion.namespace)
+        build(:project, path: project_pending_deletion.path, namespace: project_pending_deletion.namespace)
       end
 
       before do
@@ -1056,6 +1053,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to delegate_method(:container_registry_enabled?).to(:project_feature) }
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:environments_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:model_experiments_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:feature_flags_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:releases_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:infrastructure_access_level).to(:project_feature) }
@@ -2047,6 +2045,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
+  describe 'sorting by name' do
+    let_it_be(:project1) { create(:project, name: 'A') }
+    let_it_be(:project2) { create(:project, name: 'Z') }
+    let_it_be(:project3) { create(:project, name: 'L') }
+
+    context 'when using .sort_by_name_desc' do
+      it 'reorders the projects by descending name order' do
+        projects = described_class.sorted_by_name_desc
+
+        expect(projects.pluck(:name)).to eq(%w[Z L A])
+      end
+    end
+
+    context 'when using .sort_by_name_asc' do
+      it 'reorders the projects by ascending name order' do
+        projects = described_class.sorted_by_name_asc
+
+        expect(projects.pluck(:name)).to eq(%w[A L Z])
+      end
+    end
+  end
+
   describe '.with_shared_runners_enabled' do
     subject { described_class.with_shared_runners_enabled }
 
@@ -2110,6 +2130,43 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       create(:project, :jira_dvcs_cloud)
 
       expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
+    end
+  end
+
+  describe '.with_slack_application_disabled' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project3) { create(:project) }
+
+    before_all do
+      create(:gitlab_slack_application_integration, project: project2)
+      create(:gitlab_slack_application_integration, project: project3).update!(active: false)
+    end
+
+    context 'when the Slack app setting is enabled' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it 'includes only projects where Slack app is disabled or absent' do
+        projects = described_class.with_slack_application_disabled
+
+        expect(projects).to include(project1, project3)
+        expect(projects).not_to include(project2)
+      end
+    end
+
+    context 'when the Slack app setting is not enabled' do
+      before do
+        stub_application_setting(slack_app_enabled: false)
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+      end
+
+      it 'includes all projects' do
+        projects = described_class.with_slack_application_disabled
+
+        expect(projects).to include(project1, project2, project3)
+      end
     end
   end
 
@@ -2684,10 +2741,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     subject { project.default_branch_protected? }
 
     where(:default_branch_protection_level, :result) do
-      Gitlab::Access::PROTECTION_NONE           | false
-      Gitlab::Access::PROTECTION_DEV_CAN_PUSH   | false
-      Gitlab::Access::PROTECTION_DEV_CAN_MERGE  | true
-      Gitlab::Access::PROTECTION_FULL           | true
+      Gitlab::Access::PROTECTION_NONE                 | false
+      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | false
+      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | true
+      Gitlab::Access::PROTECTION_FULL                 | true
+      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+    end
+
+    with_them do
+      before do
+        expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  describe 'initial_push_to_default_branch_allowed_for_developer?' do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project, namespace: namespace) }
+
+    subject { project.initial_push_to_default_branch_allowed_for_developer? }
+
+    where(:default_branch_protection_level, :result) do
+      Gitlab::Access::PROTECTION_NONE                 | true
+      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | true
+      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | false
+      Gitlab::Access::PROTECTION_FULL                 | false
+      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
     end
 
     with_them do
@@ -2954,6 +3035,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     it 'returns projects with a matching path regardless of the casing' do
       expect(described_class.search(project.path.upcase)).to eq([project])
+    end
+
+    it 'defaults use_minimum_char_limit to true' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true).once
+
+      described_class.search('kitten')
+    end
+
+    it 'passes use_minimum_char_limit if it is set' do
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false).once
+
+      described_class.search('kitten', use_minimum_char_limit: false)
     end
 
     context 'when include_namespace is true' do
@@ -3304,8 +3397,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         before do
           create(:container_repository, project: project, name: 'image')
 
-          stub_container_registry_tags(repository: /image/,
-                                       tags: %w[latest rc1])
+          stub_container_registry_tags(repository: /image/, tags: %w[latest rc1])
         end
 
         it 'has image tags' do
@@ -3315,8 +3407,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
       context 'when tags are present for root repository' do
         before do
-          stub_container_registry_tags(repository: project.full_path,
-                                       tags: %w[latest rc1 pre1])
+          stub_container_registry_tags(repository: project.full_path, tags: %w[latest rc1 pre1])
         end
 
         it 'has image tags' do
@@ -3434,18 +3525,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     let(:second_branch) { project.repository.branches[2] }
 
     let!(:pipeline_for_default_branch) do
-      create(:ci_pipeline, project: project, sha: project.commit.id,
-                           ref: project.default_branch)
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
     end
 
     let!(:pipeline_for_second_branch) do
-      create(:ci_pipeline, project: project, sha: second_branch.target,
-                           ref: second_branch.name)
+      create(:ci_pipeline, project: project, sha: second_branch.target, ref: second_branch.name)
     end
 
     let!(:other_pipeline_for_default_branch) do
-      create(:ci_pipeline, project: project, sha: project.commit.parent.id,
-                           ref: project.default_branch)
+      create(:ci_pipeline, project: project, sha: project.commit.parent.id, ref: project.default_branch)
     end
 
     context 'default repository branch' do
@@ -3475,8 +3563,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
       context 'with provided sha' do
         let!(:latest_pipeline_for_ref) do
-          create(:ci_pipeline, project: project, sha: pipeline_for_second_branch.sha,
-                               ref: pipeline_for_second_branch.ref)
+          create(
+            :ci_pipeline,
+            project: project,
+            sha: pipeline_for_second_branch.sha,
+            ref: pipeline_for_second_branch.ref
+          )
         end
 
         subject { project.latest_pipeline(second_branch.name, second_branch.target) }
@@ -4349,21 +4441,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       let(:project) { create(:project) }
 
       let!(:default_cluster) do
-        create(:cluster,
-                :not_managed,
-                platform_type: :kubernetes,
-                projects: [project],
-                environment_scope: '*',
-                platform_kubernetes: default_cluster_kubernetes)
+        create(
+          :cluster,
+          :not_managed,
+          platform_type: :kubernetes,
+          projects: [project],
+          environment_scope: '*',
+          platform_kubernetes: default_cluster_kubernetes
+        )
       end
 
       let!(:review_env_cluster) do
-        create(:cluster,
-                :not_managed,
-                platform_type: :kubernetes,
-                projects: [project],
-                environment_scope: 'review/*',
-                platform_kubernetes: review_env_cluster_kubernetes)
+        create(
+          :cluster,
+          :not_managed,
+          platform_type: :kubernetes,
+          projects: [project],
+          environment_scope: 'review/*',
+          platform_kubernetes: review_env_cluster_kubernetes
+        )
       end
 
       let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
@@ -6479,12 +6575,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
 
       it 'does not allow access to branches for which the merge request was closed' do
-        create(:merge_request, :closed,
-               target_project: target_project,
-               target_branch: 'target-branch',
-               source_project: project,
-               source_branch: 'rejected-feature-1',
-               allow_collaboration: true)
+        create(
+          :merge_request, :closed,
+          target_project: target_project,
+          target_branch: 'target-branch',
+          source_project: project,
+          source_branch: 'rejected-feature-1',
+          allow_collaboration: true
+        )
 
         expect(project.branch_allows_collaboration?(user, 'rejected-feature-1'))
           .to be_falsy
@@ -6519,8 +6617,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it 'returns the classification label if it was configured on the project' do
       enable_external_authorization_service_check
 
-      project = build(:project,
-                      external_authorization_classification_label: 'hello')
+      project = build(:project, external_authorization_classification_label: 'hello')
 
       expect(project.external_authorization_classification_label)
         .to eq('hello')
@@ -6723,6 +6820,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
           have_attributes(title: 'Pushover')
         ]
       end
+    end
+  end
+
+  describe '#disabled_integrations' do
+    subject { build(:project).disabled_integrations }
+
+    it { is_expected.to include('gitlab_slack_application') }
+    it { is_expected.not_to include('slack_slash_commands') }
+
+    context 'when slack_app_enabled setting is enabled' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it { is_expected.to include('slack_slash_commands') }
+      it { is_expected.not_to include('gitlab_slack_application') }
+    end
+
+    context 'when Rails.env.development?' do
+      before do
+        allow(Rails.env).to receive(:development?).and_return(true)
+      end
+
+      it { is_expected.not_to include('slack_slash_commands') }
+      it { is_expected.not_to include('gitlab_slack_application') }
     end
   end
 
@@ -8948,16 +9070,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
   end
 
   def create_pipeline(project, status = 'success')
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.sha,
-                         ref: project.default_branch,
-                         status: status)
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: project.commit.sha,
+      ref: project.default_branch,
+      status: status
+    )
   end
 
   def create_build(new_pipeline = pipeline, name = 'test')
-    create(:ci_build, :success, :artifacts,
-           pipeline: new_pipeline,
-           status: new_pipeline.status,
-           name: name)
+    create(
+      :ci_build, :success, :artifacts,
+      pipeline: new_pipeline,
+      status: new_pipeline.status,
+      name: name
+    )
   end
 end

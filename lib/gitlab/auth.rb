@@ -401,7 +401,7 @@ module Gitlab
           scopes = non_admin_available_scopes
 
           if resource.admin? # rubocop: disable Cop/UserAdmin
-            scopes += Feature.enabled?(:admin_mode_for_api) ? ADMIN_SCOPES : [SUDO_SCOPE]
+            scopes += ADMIN_SCOPES
           end
 
           scopes

@@ -268,7 +268,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: '"repository" size (101 Bytes) is larger than the limit of 100 Bytes.'
+      message: '"repository" size (101 B) is larger than the limit of 100 B.'
     }
   end
 

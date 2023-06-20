@@ -388,9 +388,10 @@ With [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983) we defined th
 
 For tests that are not meeting the thresholds it is recommended to create issues and improve the tests duration.
 
-| Date | Feature tests | Controllers and Requests tests | Other |
-| --- | --- | --- | --- |
-| 2023-02-15 | 67.42 seconds | 44.66 seconds | 76.86 seconds |
+| Date | Feature tests | Controllers and Requests tests | Unit | Other | Method |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+| 2023-02-15 | 67.42 seconds | 44.66 seconds | - | 76.86 seconds | Top slow test eliminating the maximum |
+| 2023-06-15 | 50.13 seconds | 19.20 seconds | 27.12 | 45.40 seconds | Avg for top 100 slow tests|
 
 #### Avoid repeating expensive actions
 
@@ -1140,8 +1141,17 @@ variables example can be used, but avoid this if at all possible.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61171) in GitLab 14.0.
 
 Specs that require Elasticsearch must be marked with the `:elastic` trait. This
-creates and deletes indices between examples to ensure a clean index, so that there is no room
-for polluting the tests with nonessential data.
+creates and deletes indices before and after all examples.
+
+The `:elastic_delete_by_query` trait was added to reduce runtime for pipelines by creating and deleting indices at the
+start and end of each context only. The [Elasticsearch delete by query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html)
+is used to delete data in all indices between examples to ensure a clean index.
+
+The `:elastic_clean` trait creates and deletes indices between examples to ensure a clean index. This way, tests are not
+polluted with non-essential data. If using the `:elastic` or `:elastic_delete_by_query` trait
+is causing issues, use `:elastic_clean` instead. `:elastic_clean` is significantly slower than the other traits
+and should be used sparingly.
+
 Most tests for Elasticsearch logic relate to:
 
 - Creating data in PostgreSQL and waiting for it to be indexed in Elasticsearch.
@@ -1150,11 +1160,8 @@ Most tests for Elasticsearch logic relate to:
 
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
-The `:elastic_delete_by_query` trait was added to reduce run time for pipelines by creating and deleting indices
-at the start and end of each context only. The [Elasticsearch DeleteByQuery API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html)
-is used to delete data in all indices in between examples to ensure a clean index.
-
-Note that Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../../../ee/development/redis.md#gitlabrediscachesharedstatequeues).
+NOTE:
+Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../../../ee/development/redis.md#gitlabrediscachesharedstatequeues).
 Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
 You do not need to add `:clean_gitlab_redis_shared_state` manually.
 

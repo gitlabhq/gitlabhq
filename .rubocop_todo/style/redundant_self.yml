@@ -232,7 +232,6 @@ Style/RedundantSelf:
     - 'ee/lib/ee/legacy_model.rb'
     - 'ee/lib/ee/model.rb'
     - 'ee/lib/elastic/instance_proxy_util.rb'
-    - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/elastic/latest/commit_config.rb'
     - 'ee/lib/elastic/latest/issue_config.rb'
     - 'ee/lib/elastic/latest/merge_request_config.rb'

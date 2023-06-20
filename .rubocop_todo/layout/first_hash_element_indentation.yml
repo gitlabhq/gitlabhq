@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/FirstHashElementIndentation:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/system_info_controller.rb'
     - 'app/controllers/concerns/milestone_actions.rb'
@@ -50,13 +49,11 @@ Layout/FirstHashElementIndentation:
     - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/services/gitlab_subscriptions/plan_upgrade_service.rb'
     - 'ee/app/services/iterations/create_service.rb'
-    - 'ee/app/services/registrations/base_namespace_create_service.rb'
     - 'ee/app/services/resource_events/change_iteration_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
     - 'ee/app/services/timebox_report_service.rb'
     - 'ee/lib/ee/gitlab/ci/parsers.rb'
     - 'ee/lib/ee/gitlab/usage_data.rb'
-    - 'ee/lib/elastic/latest/application_class_proxy.rb'
     - 'ee/lib/elastic/latest/issue_class_proxy.rb'
     - 'ee/lib/gitlab/analytics/type_of_work/tasks_by_type.rb'
     - 'ee/lib/gitlab/ci/parsers/security/formatters/dependency_list.rb'

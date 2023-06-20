@@ -10,7 +10,6 @@ class DropServerlessDomainCluster < Gitlab::Database::Migration[2.1]
 
   # Based on original migration:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/5f7bd5b1455d87e2f1a2d1ae2c1147d51e97aa55/db/migrate/20191127030005_create_serverless_domain_cluster.rb
-  # rubocop:disable Migration/SchemaAdditionMethodsNoPost
   def down
     create_table :serverless_domain_cluster, id: false, primary_key: :uuid do |t|
       t.string :uuid, null: false, limit: 14, primary_key: true
@@ -29,5 +28,4 @@ class DropServerlessDomainCluster < Gitlab::Database::Migration[2.1]
       t.index :creator_id, name: 'index_serverless_domain_cluster_on_creator_id'
     end
   end
-  # rubocop:enable Migration/SchemaAdditionMethodsNoPost
 end

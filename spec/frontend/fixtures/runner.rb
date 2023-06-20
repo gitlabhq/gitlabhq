@@ -14,6 +14,9 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :runner_fleet d
   let_it_be(:project_2) { create(:project, :repository, :public) }
 
   let_it_be(:runner) { create(:ci_runner, :instance, description: 'My Runner', creator: admin, version: '1.0.0') }
+  let_it_be(:runner_manager_1) { create(:ci_runner_machine, runner: runner, contacted_at: Time.current) }
+  let_it_be(:runner_manager_2) { create(:ci_runner_machine, runner: runner, contacted_at: Time.current) }
+
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], version: '2.0.0') }
   let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group], version: '2.0.0') }
   let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, project_2], version: '2.0.0') }
@@ -131,6 +134,22 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :runner_fleet d
       it "#{fixtures_path}#{runner_jobs_query}.json" do
         post_graphql(query, current_user: admin, variables: {
           id: runner.to_global_id.to_s
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'runner_managers.query.graphql', type: :request do
+      runner_managers_query = 'show/runner_managers.query.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{runner_managers_query}")
+      end
+
+      it "#{fixtures_path}#{runner_managers_query}.json" do
+        post_graphql(query, current_user: admin, variables: {
+          runner_id: runner.to_global_id.to_s
         })
 
         expect_graphql_errors_to_be_empty

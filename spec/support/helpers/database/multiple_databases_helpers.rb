@@ -2,7 +2,7 @@
 
 module Database
   module MultipleDatabasesHelpers
-    EXTRA_DBS = ::Gitlab::Database::DATABASE_NAMES.map(&:to_sym) - [:main]
+    EXTRA_DBS = ::Gitlab::Database.all_database_names.map(&:to_sym) - [:main]
 
     def database_exists?(database_name)
       ::Gitlab::Database.has_database?(database_name)
@@ -69,8 +69,10 @@ module Database
             config_model: base_model
           )
 
-          delete_from_all_tables!(except: deletion_except_tables)
+          # Delete after migrating so that rows created during migration don't impact other
+          # specs (for example, async foreign key creation rows)
           schema_migrate_up!
+          delete_from_all_tables!(except: deletion_except_tables)
         end
       end
 

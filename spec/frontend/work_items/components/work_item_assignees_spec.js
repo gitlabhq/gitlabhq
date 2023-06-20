@@ -26,6 +26,7 @@ import {
   updateWorkItemMutationResponse,
   projectMembersResponseWithCurrentUserWithNextPage,
   projectMembersResponseWithNoMatchingUsers,
+  projectMembersResponseWithDuplicates,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -528,5 +529,15 @@ describe('WorkItemAssignees component', () => {
         fullPath: 'test-project-path',
       });
     });
+  });
+
+  it('filters out the users with the same ID from the list of project members', async () => {
+    createComponent({
+      searchQueryHandler: jest.fn().mockResolvedValue(projectMembersResponseWithDuplicates),
+    });
+    findTokenSelector().vm.$emit('focus');
+    await waitForPromises();
+
+    expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
   });
 });

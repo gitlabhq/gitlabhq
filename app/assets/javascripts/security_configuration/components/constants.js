@@ -15,9 +15,9 @@ import {
   REPORT_TYPE_API_FUZZING,
 } from '~/vue_shared/security_reports/constants';
 
-import kontraLogo from 'images/vulnerability/kontra-logo.svg';
-import scwLogo from 'images/vulnerability/scw-logo.svg';
-import secureflagLogo from 'images/vulnerability/secureflag-logo.svg';
+import kontraLogo from 'images/vulnerability/kontra-logo.svg?raw';
+import scwLogo from 'images/vulnerability/scw-logo.svg?raw';
+import secureflagLogo from 'images/vulnerability/secureflag-logo.svg?raw';
 import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from '../graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';

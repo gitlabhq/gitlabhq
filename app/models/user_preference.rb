@@ -2,11 +2,14 @@
 
 class UserPreference < ApplicationRecord
   include IgnorableColumns
+  include SafelyChangeColumnDefault
 
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
   NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
+
+  columns_changing_default :tab_width, :time_display_relative, :render_whitespace_in_code
 
   belongs_to :user
 
@@ -35,6 +38,7 @@ class UserPreference < ApplicationRecord
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true
   attribute :render_whitespace_in_code, default: false
+  attribute :project_shortcut_buttons, default: true
 
   enum visibility_pipeline_id_type: { id: 0, iid: 1 }
 

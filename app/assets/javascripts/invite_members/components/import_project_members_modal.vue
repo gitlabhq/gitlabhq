@@ -1,15 +1,24 @@
 <script>
 import { GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId, isEmpty } from 'lodash';
 import { importProjectMembers } from '~/api/projects_api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 import eventHub from '../event_hub';
+
 import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '../utils/trigger_successful_invite_alert';
-import { PROJECT_SELECT_LABEL_ID } from '../constants';
+
+import {
+  PROJECT_SELECT_LABEL_ID,
+  IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY,
+  IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL,
+} from '../constants';
+
+import UserLimitNotification from './user_limit_notification.vue';
 import ProjectSelect from './project_select.vue';
 
 export default {
@@ -18,8 +27,15 @@ export default {
     GlFormGroup,
     GlModal,
     GlSprintf,
+    UserLimitNotification,
     ProjectSelect,
   },
+  mixins: [
+    Tracking.mixin({
+      category: IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY,
+      label: IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL,
+    }),
+  ],
   props: {
     projectId: {
       type: String,
@@ -33,6 +49,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    usersLimitDataset: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   data() {
@@ -53,6 +74,12 @@ export default {
     },
     validationState() {
       return this.invalidFeedbackMessage === '' ? null : false;
+    },
+    showUserLimitNotification() {
+      return !isEmpty(this.usersLimitDataset.alertVariant);
+    },
+    limitVariant() {
+      return this.usersLimitDataset.alertVariant;
     },
     actionPrimary() {
       return {
@@ -79,6 +106,7 @@ export default {
   },
   methods: {
     openModal() {
+      this.track('render');
       this.$root.$emit(BV_SHOW_MODAL, this.$options.modalId);
     },
     closeModal() {
@@ -102,6 +130,8 @@ export default {
         });
     },
     onInviteSuccess() {
+      this.track('invite_successful');
+
       if (this.reloadPageOnSubmit) {
         reloadOnInvitationSuccess();
       } else {
@@ -114,6 +144,12 @@ export default {
     },
     showErrorAlert() {
       this.invalidFeedbackMessage = this.$options.i18n.defaultError;
+    },
+    onCancel() {
+      this.track('click_cancel');
+    },
+    onClose() {
+      this.track('click_x');
     },
   },
   toastOptions() {
@@ -153,7 +189,15 @@ export default {
     no-focus-on-show
     @primary="submitImport"
     @hidden="resetFields"
+    @cancel="onCancel"
+    @close="onClose"
   >
+    <user-limit-notification
+      v-if="showUserLimitNotification"
+      class="gl-mb-5"
+      :limit-variant="limitVariant"
+      :users-limit-dataset="usersLimitDataset"
+    />
     <p ref="modalIntro">
       <gl-sprintf :message="modalIntro">
         <template #strong="{ content }">

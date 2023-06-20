@@ -64,8 +64,8 @@ search, or choose a specific group or project.
 
 To search through code or other documents in a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the top bar, in the search field, type the string you want to search for.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and type the string you want to search for.
 1. Press **Enter**.
 
 Code search shows only the first result in the file.
@@ -96,8 +96,6 @@ To filter code search results by one or more languages:
 ## Search for projects by full path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/388473) on GitLab.com in GitLab 15.9.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111808) on self-managed GitLab 15.10.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
 
 You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
@@ -108,12 +106,24 @@ For example, the search query:
 - `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
 - `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
 
+### Exclude archived projects from project search results
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
+
+Archived projects are included in project search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
+
+To include archived projects with `search_projects_hide_archived` enabled, you must add the parameter `include_archived=true` to the URL.
+
 ## Search for a SHA
 
 You can search for a commit SHA.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the top bar, in the search field, type the SHA.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and type the SHA.
 
 If a single result is returned, GitLab redirects to the commit result
 and gives you the option to return to the search results page.

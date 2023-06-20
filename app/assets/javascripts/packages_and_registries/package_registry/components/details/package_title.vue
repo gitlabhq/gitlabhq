@@ -1,7 +1,6 @@
 <script>
 import { GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __, s__, sprintf } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
@@ -61,13 +60,6 @@ export default {
     hasTagsToDisplay() {
       return Boolean(this.packageEntity.tags?.nodes && this.packageEntity.tags?.nodes.length);
     },
-    totalSize() {
-      return this.packageEntity.packageFiles
-        ? numberToHumanSize(
-            this.packageEntity.packageFiles.nodes.reduce((acc, p) => acc + Number(p.size), 0),
-          )
-        : '0';
-    },
   },
   mounted() {
     this.checkBreakpoints();
@@ -124,10 +116,6 @@ export default {
 
     <template v-if="packageTypeDisplay" #metadata-type>
       <metadata-item data-testid="package-type" icon="package" :text="packageTypeDisplay" />
-    </template>
-
-    <template #metadata-size>
-      <metadata-item data-testid="package-size" icon="disk" :text="totalSize" />
     </template>
 
     <template v-if="isGroupPage && packagePipeline" #metadata-pipeline>

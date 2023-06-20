@@ -7,6 +7,18 @@ RSpec.describe Ci::Catalog::ResourcesHelper, feature_category: :pipeline_composi
 
   let_it_be(:project) { build(:project) }
 
+  describe '#can_add_catalog_resource?' do
+    subject { helper.can_add_catalog_resource?(project) }
+
+    before do
+      stub_licensed_features(ci_namespace_catalog: false)
+    end
+
+    it 'user cannot add a catalog resource in CE regardless of permissions' do
+      expect(subject).to be false
+    end
+  end
+
   describe '#can_view_namespace_catalog?' do
     subject { helper.can_view_namespace_catalog?(project) }
 

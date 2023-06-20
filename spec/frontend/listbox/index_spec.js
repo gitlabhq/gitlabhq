@@ -2,16 +2,15 @@ import { nextTick } from 'vue';
 import { getAllByRole, getByTestId } from '@testing-library/dom';
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { createWrapper } from '@vue/test-utils';
+import htmlRedirectListbox from 'test_fixtures/listbox/redirect_listbox.html';
 import { initListbox, parseAttributes } from '~/listbox';
-import { getFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/lib/utils/url_utility');
 
-const fixture = getFixture('listbox/redirect_listbox.html');
-
 const parsedAttributes = (() => {
   const div = document.createElement('div');
-  div.innerHTML = fixture;
+  div.innerHTML = htmlRedirectListbox;
   return parseAttributes(div.firstChild);
 })();
 
@@ -46,7 +45,7 @@ describe('initListbox', () => {
     const findSelectedItems = () => getAllByRole(document.body, 'option', { selected: true });
 
     beforeEach(async () => {
-      setHTMLFixture(fixture);
+      setHTMLFixture(htmlRedirectListbox);
       onChangeSpy = jest.fn();
       setup(document.querySelector('.js-redirect-listbox'), { onChange: onChangeSpy });
 

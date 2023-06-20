@@ -32,7 +32,7 @@ class MergeRequestDiff < ApplicationRecord
     -> { order(:merge_request_diff_id, :relative_order) },
     inverse_of: :merge_request_diff
 
-  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
+  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff
 
   validates :base_commit_sha, :head_commit_sha, :start_commit_sha, sha: true
   validates :merge_request_id, uniqueness: { scope: :diff_type }, if: :merge_head?
@@ -592,8 +592,8 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def remove_cached_external_diff
-    Gitlab::Utils.check_path_traversal!(external_diff_cache_dir)
-    Gitlab::Utils.check_allowed_absolute_path!(external_diff_cache_dir, [Dir.tmpdir])
+    Gitlab::PathTraversal.check_path_traversal!(external_diff_cache_dir)
+    Gitlab::PathTraversal.check_allowed_absolute_path!(external_diff_cache_dir, [Dir.tmpdir])
 
     return unless Dir.exist?(external_diff_cache_dir)
 

@@ -8,26 +8,32 @@ module Gitlab
           def enabled?
             ::AuthHelper.saml_providers.any?
           end
+        end
 
-          def options
-            Gitlab::Auth::OAuth::Provider.config_for('saml')
-          end
+        DEFAULT_PROVIDER_NAME = 'saml'
 
-          def upstream_two_factor_authn_contexts
-            options.args[:upstream_two_factor_authn_contexts]
-          end
+        def initialize(provider = DEFAULT_PROVIDER_NAME)
+          @provider = provider
+        end
 
-          def groups
-            options[:groups_attribute]
-          end
+        def options
+          Gitlab::Auth::OAuth::Provider.config_for(@provider)
+        end
 
-          def external_groups
-            options[:external_groups]
-          end
+        def upstream_two_factor_authn_contexts
+          options.args[:upstream_two_factor_authn_contexts]
+        end
 
-          def admin_groups
-            options[:admin_groups]
-          end
+        def groups
+          options[:groups_attribute]
+        end
+
+        def external_groups
+          options[:external_groups]
+        end
+
+        def admin_groups
+          options[:admin_groups]
         end
       end
     end

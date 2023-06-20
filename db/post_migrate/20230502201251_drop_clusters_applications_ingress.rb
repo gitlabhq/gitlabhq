@@ -10,7 +10,6 @@ class DropClustersApplicationsIngress < Gitlab::Database::Migration[2.1]
 
   # Based on init schema:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/b237f836df215a4ada92b9406733e6cd2483ca2d/db/migrate/20181228175414_init_schema.rb#L704-L715
-  # rubocop:disable Migration/SchemaAdditionMethodsNoPost
   # rubocop:disable Migration/Datetime
   def down
     create_table "clusters_applications_ingress", id: :serial, force: :cascade do |t|
@@ -27,6 +26,5 @@ class DropClustersApplicationsIngress < Gitlab::Database::Migration[2.1]
       t.index ["cluster_id"], name: "index_clusters_applications_ingress_on_cluster_id", unique: true
     end
   end
-  # rubocop:enable Migration/SchemaAdditionMethodsNoPost
   # rubocop:enable Migration/Datetime
 end

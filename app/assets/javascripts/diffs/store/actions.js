@@ -50,6 +50,7 @@ import {
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
   EVT_MR_PREPARED,
+  FILE_DIFF_POSITION_TYPE,
 } from '../constants';
 import { DISCUSSION_SINGLE_DIFF_FAILED, LOAD_SINGLE_DIFF_FAILED } from '../i18n';
 import eventHub from '../event_hub';
@@ -461,6 +462,26 @@ export const setParallelDiffViewType = ({ commit }) => {
 
 export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
   commit(types.TOGGLE_LINE_HAS_FORM, { lineCode, fileHash, hasForm: true });
+
+  // The comment form for diffs gets focussed differently due to the way the virtual scroller
+  // works. If we focus the comment form on mount and the comment form gets removed and then
+  // added again the page will scroll in unexpected ways
+  setTimeout(() => {
+    const el = document.querySelector(`[data-line-code="${lineCode}"] textarea`);
+
+    if (!el) return;
+
+    const { bottom } = el.getBoundingClientRect();
+    const overflowBottom = bottom - window.innerHeight;
+
+    // Prevent the browser scrolling for us
+    // We handle the scrolling to not break the diffs virtual scroller
+    el.focus({ preventScroll: true });
+
+    if (overflowBottom > 0) {
+      window.scrollBy(0, Math.floor(Math.abs(overflowBottom)) + 150);
+    }
+  });
 };
 
 export const cancelCommentForm = ({ commit }, { lineCode, fileHash }) => {
@@ -505,11 +526,12 @@ export const scrollToLineIfNeededParallel = (_, line) => {
   }
 };
 
-export const loadCollapsedDiff = ({ commit, getters, state }, file) => {
+export const loadCollapsedDiff = ({ commit, getters, state }, { file, params = {} }) => {
   const versionPath = state.mergeRequestDiff?.version_path;
   const loadParams = {
     commit_id: getters.commitId,
     w: state.showWhitespace ? '0' : '1',
+    ...params,
   };
 
   if (versionPath) {
@@ -577,6 +599,7 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
   const postData = getNoteFormData({
     commit: state.commit,
     note,
+    showWhitespace: state.showWhitespace,
     ...formData,
   });
 
@@ -592,6 +615,11 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
     .then((discussion) => dispatch('assignDiscussionsToDiff', [discussion]))
     .then(() => dispatch('updateResolvableDiscussionsCounts', null, { root: true }))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
+    .then(() => {
+      if (formData.positionType === FILE_DIFF_POSITION_TYPE) {
+        dispatch('toggleFileCommentForm', formData.diffFile.file_path);
+      }
+    })
     .catch(() =>
       createAlert({
         message: s__('MergeRequests|Saving the comment failed'),
@@ -607,8 +635,8 @@ export const setCurrentFileHash = ({ commit }, hash) => {
   commit(types.SET_CURRENT_DIFF_FILE, hash);
 };
 
-export const goToFile = ({ state, commit, dispatch, getters }, { path, singleFile }) => {
-  if (!state.viewDiffsFileByFile || !singleFile) {
+export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
+  if (!state.viewDiffsFileByFile) {
     dispatch('scrollToFile', { path });
   } else {
     if (!state.treeEntries[path]) return;
@@ -809,7 +837,7 @@ export const toggleFullDiff = ({ dispatch, commit, getters, state }, filePath) =
   commit(types.REQUEST_FULL_DIFF, filePath);
 
   if (file.isShowingFullFile) {
-    dispatch('loadCollapsedDiff', file)
+    dispatch('loadCollapsedDiff', { file })
       .then(() => dispatch('assignDiscussionsToDiff', getters.getDiffFileDiscussions(file)))
       .catch(() => dispatch('receiveFullDiffError', filePath));
   } else {
@@ -942,16 +970,13 @@ export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, n
   }
 };
 
-export const navigateToDiffFileIndex = (
-  { state, getters, commit, dispatch },
-  { index, singleFile },
-) => {
+export const navigateToDiffFileIndex = ({ state, getters, commit, dispatch }, index) => {
   const { fileHash } = getters.flatBlobsList[index];
   document.location.hash = fileHash;
 
   commit(types.SET_CURRENT_DIFF_FILE, fileHash);
 
-  if (state.viewDiffsFileByFile && singleFile) {
+  if (state.viewDiffsFileByFile) {
     dispatch('fetchFileByFile');
   }
 };
@@ -993,3 +1018,9 @@ export function reviewFile({ commit, state }, { file, reviewed = true }) {
 }
 
 export const disableVirtualScroller = ({ commit }) => commit(types.DISABLE_VIRTUAL_SCROLLING);
+
+export const toggleFileCommentForm = ({ commit }, filePath) =>
+  commit(types.TOGGLE_FILE_COMMENT_FORM, filePath);
+
+export const addDraftToFile = ({ commit }, { filePath, draft }) =>
+  commit(types.ADD_DRAFT_TO_FILE, { filePath, draft });

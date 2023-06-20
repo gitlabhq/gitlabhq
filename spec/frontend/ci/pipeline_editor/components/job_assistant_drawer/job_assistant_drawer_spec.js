@@ -15,6 +15,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';
+import { EDITOR_APP_DRAWER_NONE } from '~/ci/pipeline_editor/constants';
 import { mockRunnersTagsQueryResponse, mockLintResponse, mockCiYml } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -96,20 +97,20 @@ describe('Job assistant drawer', () => {
     expect(findRulesItem().exists()).toBe(true);
   });
 
-  it('should emit close job assistant drawer event when closing the drawer', () => {
-    expect(wrapper.emitted('close-job-assistant-drawer')).toBeUndefined();
+  it('should emit switch drawer event when closing the drawer', () => {
+    expect(wrapper.emitted('switch-drawer')).toBeUndefined();
 
     findDrawer().vm.$emit('close');
 
-    expect(wrapper.emitted('close-job-assistant-drawer')).toHaveLength(1);
+    expect(wrapper.emitted('switch-drawer')).toEqual([[EDITOR_APP_DRAWER_NONE]]);
   });
 
-  it('should emit close job assistant drawer event when click cancel button', () => {
-    expect(wrapper.emitted('close-job-assistant-drawer')).toBeUndefined();
+  it('should emit switch drawer event when click cancel button', () => {
+    expect(wrapper.emitted('switch-drawer')).toBeUndefined();
 
     findCancelButton().trigger('click');
 
-    expect(wrapper.emitted('close-job-assistant-drawer')).toHaveLength(1);
+    expect(wrapper.emitted('switch-drawer')).toEqual([[EDITOR_APP_DRAWER_NONE]]);
   });
 
   it('should block submit if job name is empty', async () => {

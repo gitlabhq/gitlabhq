@@ -43,7 +43,6 @@ class DiffNotePosition < ApplicationRecord
   def self.position_to_attrs(position)
     position_attrs = position.to_h
     position_attrs[:diff_content_type] = position_attrs.delete(:position_type)
-    position_attrs.delete(:line_range)
-    position_attrs
+    position_attrs.except(:line_range, :ignore_whitespace_change)
   end
 end

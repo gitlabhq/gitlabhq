@@ -9,10 +9,9 @@ module Packages
       # used by ExclusiveLeaseGuard
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
-      def initialize(project, package_name, packages)
+      def initialize(project, package_name)
         @project = project
         @package_name = package_name
-        @packages = packages
       end
 
       def execute
@@ -28,12 +27,18 @@ module Packages
 
       private
 
-      attr_reader :package_name, :packages, :project
+      attr_reader :package_name, :project
 
       def metadata_content
         metadata.payload.to_json
       end
       strong_memoize_attr :metadata_content
+
+      def packages
+        ::Packages::Npm::PackageFinder
+          .new(package_name, project: project)
+          .execute
+      end
 
       def metadata
         Packages::Npm::GenerateMetadataService.new(package_name, packages).execute

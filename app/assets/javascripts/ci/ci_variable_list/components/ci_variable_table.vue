@@ -1,10 +1,12 @@
 <script>
 import {
   GlAlert,
+  GlBadge,
   GlButton,
   GlLoadingIcon,
   GlModalDirective,
   GlKeysetPagination,
+  GlLink,
   GlTable,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -15,18 +17,13 @@ import {
   DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT,
   EXCEEDS_VARIABLE_LIMIT_TEXT,
   MAXIMUM_VARIABLE_LIMIT_REACHED,
-  variableText,
+  variableTypes,
 } from '../constants';
 import { convertEnvironmentScope } from '../utils';
 
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
-  fields: [
-    {
-      key: 'variableType',
-      label: s__('CiVariables|Type'),
-      thClass: 'gl-w-10p',
-    },
+  defaultFields: [
     {
       key: 'key',
       label: s__('CiVariables|Key'),
@@ -36,12 +33,11 @@ export default {
     {
       key: 'value',
       label: s__('CiVariables|Value'),
-      thClass: 'gl-w-15p',
     },
     {
-      key: 'options',
-      label: s__('CiVariables|Options'),
-      thClass: 'gl-w-10p',
+      key: 'Attributes',
+      label: s__('CiVariables|Attributes'),
+      thClass: 'gl-w-40p',
     },
     {
       key: 'environmentScope',
@@ -54,10 +50,31 @@ export default {
       thClass: 'gl-w-5p',
     },
   ],
+  inheritedVarsFields: [
+    {
+      key: 'key',
+      label: s__('CiVariables|Key'),
+      tdClass: 'text-plain',
+    },
+    {
+      key: 'Attributes',
+      label: s__('CiVariables|Attributes'),
+    },
+    {
+      key: 'environmentScope',
+      label: s__('CiVariables|Environments'),
+    },
+    {
+      key: 'group',
+      label: s__('CiVariables|Group'),
+    },
+  ],
   components: {
     GlAlert,
+    GlBadge,
     GlButton,
     GlKeysetPagination,
+    GlLink,
     GlLoadingIcon,
     GlTable,
   },
@@ -66,6 +83,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: ['isInheritedGroupVars'],
   props: {
     entity: {
       type: String,
@@ -112,6 +130,9 @@ export default {
     showAlert() {
       return !this.isLoading && this.exceedsVariableLimit;
     },
+    showPagination() {
+      return this.glFeatures.ciVariablesPages;
+    },
     valuesButtonText() {
       return this.areValuesHidden ? __('Reveal values') : __('Hide values');
     },
@@ -119,12 +140,17 @@ export default {
       return !this.variables || this.variables.length === 0;
     },
     fields() {
-      return this.$options.fields;
+      return this.isInheritedGroupVars
+        ? this.$options.inheritedVarsFields
+        : this.$options.defaultFields;
     },
-    variablesWithOptions() {
+    tableDataTestId() {
+      return this.isInheritedGroupVars ? 'inherited-ci-variable-table' : 'ci-variable-table';
+    },
+    variablesWithAttributes() {
       return this.variables?.map((item, index) => ({
         ...item,
-        options: this.getOptions(item),
+        attributes: this.getAttributes(item),
         index,
       }));
     },
@@ -133,27 +159,27 @@ export default {
     convertEnvironmentScopeValue(env) {
       return convertEnvironmentScope(env);
     },
-    generateTypeText(item) {
-      return variableText[item.variableType];
-    },
     toggleHiddenState() {
       this.areValuesHidden = !this.areValuesHidden;
     },
     setSelectedVariable(index = -1) {
       this.$emit('set-selected-variable', this.variables[index] ?? null);
     },
-    getOptions(item) {
-      const options = [];
+    getAttributes(item) {
+      const attributes = [];
+      if (item.variableType === variableTypes.fileType) {
+        attributes.push(s__('CiVariables|File'));
+      }
       if (item.protected) {
-        options.push(s__('CiVariables|Protected'));
+        attributes.push(s__('CiVariables|Protected'));
       }
       if (item.masked) {
-        options.push(s__('CiVariables|Masked'));
+        attributes.push(s__('CiVariables|Masked'));
       }
       if (!item.raw) {
-        options.push(s__('CiVariables|Expanded'));
+        attributes.push(s__('CiVariables|Expanded'));
       }
-      return options.join(', ');
+      return attributes;
     },
   },
   maximumVariableLimitReached: MAXIMUM_VARIABLE_LIMIT_REACHED,
@@ -161,7 +187,7 @@ export default {
 </script>
 
 <template>
-  <div class="ci-variable-table" data-testid="ci-variable-table">
+  <div class="ci-variable-table" :data-testid="tableDataTestId">
     <gl-loading-icon v-if="isLoading" />
     <gl-alert
       v-if="showAlert"
@@ -172,7 +198,7 @@ export default {
       {{ exceedsVariableLimitText }}
     </gl-alert>
     <div
-      v-if="glFeatures.ciVariablesPages"
+      v-if="showPagination && !isInheritedGroupVars"
       class="ci-variable-actions gl-display-flex gl-justify-content-end gl-my-3"
     >
       <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{ valuesButtonText }}</gl-button>
@@ -191,13 +217,11 @@ export default {
     <gl-table
       v-if="!isLoading"
       :fields="fields"
-      :items="variablesWithOptions"
+      :items="variablesWithAttributes"
       tbody-tr-class="js-ci-variable-row"
-      data-qa-selector="ci_variable_table_content"
       sort-by="key"
       sort-direction="asc"
       stacked="lg"
-      table-class="gl-border-t"
       fixed
       show-empty
       sort-icon-left
@@ -207,9 +231,6 @@ export default {
     >
       <template #table-colgroup="scope">
         <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
-      </template>
-      <template #cell(variableType)="{ item }">
-        {{ generateTypeText(item) }}
       </template>
       <template #cell(key)="{ item }">
         <div
@@ -231,7 +252,7 @@ export default {
           />
         </div>
       </template>
-      <template #cell(value)="{ item }">
+      <template v-if="!isInheritedGroupVars" #cell(value)="{ item }">
         <div
           class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
         >
@@ -254,8 +275,18 @@ export default {
           />
         </div>
       </template>
-      <template #cell(options)="{ item }">
-        <span data-testid="ci-variable-table-row-options">{{ item.options }}</span>
+      <template #cell(attributes)="{ item }">
+        <span data-testid="ci-variable-table-row-attributes">
+          <gl-badge
+            v-for="attribute in item.attributes"
+            :key="`${item.key}-${attribute}`"
+            class="gl-mr-2"
+            variant="info"
+            size="sm"
+          >
+            {{ attribute }}
+          </gl-badge>
+        </span>
       </template>
       <template #cell(environmentScope)="{ item }">
         <div
@@ -277,7 +308,21 @@ export default {
           />
         </div>
       </template>
-      <template #cell(actions)="{ item }">
+      <template v-if="isInheritedGroupVars" #cell(group)="{ item }">
+        <div
+          class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+        >
+          <gl-link
+            :id="`ci-variable-group-${item.id}`"
+            data-testid="ci-variable-table-row-cicd-path"
+            class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+            :href="item.groupCiCdSettingsPath"
+          >
+            {{ item.groupName }}
+          </gl-link>
+        </div>
+      </template>
+      <template v-if="!isInheritedGroupVars" #cell(actions)="{ item }">
         <gl-button
           v-gl-modal-directive="$options.modalId"
           icon="pencil"
@@ -300,28 +345,32 @@ export default {
     >
       {{ exceedsVariableLimitText }}
     </gl-alert>
-    <div v-if="!glFeatures.ciVariablesPages" class="ci-variable-actions gl-display-flex gl-mt-5">
-      <gl-button
-        v-gl-modal-directive="$options.modalId"
-        class="gl-mr-3"
-        data-qa-selector="add_ci_variable_button"
-        variant="confirm"
-        category="primary"
-        :aria-label="__('Add')"
-        :disabled="exceedsVariableLimit"
-        @click="setSelectedVariable()"
-        >{{ __('Add variable') }}</gl-button
-      >
-      <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{ valuesButtonText }}</gl-button>
-    </div>
-    <div v-else class="gl-display-flex gl-justify-content-center gl-mt-6">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        :prev-text="__('Previous')"
-        :next-text="__('Next')"
-        @prev="$emit('handle-prev-page')"
-        @next="$emit('handle-next-page')"
-      />
+    <div v-if="!isInheritedGroupVars">
+      <div v-if="!showPagination" class="ci-variable-actions gl-display-flex gl-mt-5">
+        <gl-button
+          v-gl-modal-directive="$options.modalId"
+          class="gl-mr-3"
+          data-qa-selector="add_ci_variable_button"
+          variant="confirm"
+          category="primary"
+          :aria-label="__('Add')"
+          :disabled="exceedsVariableLimit"
+          @click="setSelectedVariable()"
+          >{{ __('Add variable') }}</gl-button
+        >
+        <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{
+          valuesButtonText
+        }}</gl-button>
+      </div>
+      <div v-else class="gl-display-flex gl-justify-content-center gl-mt-6">
+        <gl-keyset-pagination
+          v-bind="pageInfo"
+          :prev-text="__('Previous')"
+          :next-text="__('Next')"
+          @prev="$emit('handle-prev-page')"
+          @next="$emit('handle-next-page')"
+        />
+      </div>
     </div>
   </div>
 </template>

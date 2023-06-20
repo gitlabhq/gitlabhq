@@ -29,13 +29,11 @@ module Mutations
         work_item = authorized_find!(id: id)
         task = authorized_find_task!(task_data_hash[:id])
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-
         ::WorkItems::UpdateService.new(
           container: task.project,
           current_user: current_user,
           params: task_data_hash.except(:id),
-          spam_params: spam_params
+          perform_spam_check: true
         ).execute(task)
 
         check_spam_action_response!(task)

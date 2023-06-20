@@ -1,6 +1,5 @@
 import { __, s__ } from '~/locale';
-
-export const DRAWER_CONTAINER_CLASS = '.content-wrapper';
+import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
 export const JOB_RULES_WHEN = {
   onSuccess: {
@@ -115,4 +114,24 @@ export const i18n = {
   SERVICE_NAME: s__('JobAssistant|Service name (optional)'),
   SERVICE_ENTRYPOINT: s__('JobAssistant|Service entrypoint (optional)'),
   ENTRYPOINT_PLACEHOLDER_TEXT: s__('JobAssistant|Please enter the parameters.'),
+  IMAGE_DESCRIPTION: s__(
+    'JobAssistant|Specify a Docker image that the job runs in. %{linkStart}Learn more%{linkEnd}',
+  ),
+  SERVICES_DESCRIPTION: s__(
+    'JobAssistant|Specify any additional Docker images that your scripts require to run successfully. %{linkStart}Learn more%{linkEnd}',
+  ),
+  ARTIFACTS_AND_CACHE_DESCRIPTION: s__(
+    'JobAssistant|Specify the %{artifactsLinkStart}artifacts%{artifactsLinkEnd} and %{cacheLinkStart}cache%{cacheLinkEnd} of the job.',
+  ),
+  RULES_DESCRIPTION: s__(
+    'JobAssistant|Include or exclude jobs in pipelines. %{linkStart}Learn more%{linkEnd}',
+  ),
+};
+
+export const HELP_PATHS = {
+  artifactsHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#artifacts`,
+  cacheHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#cache`,
+  imageHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#image`,
+  rulesHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#rules`,
+  servicesHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#services`,
 };

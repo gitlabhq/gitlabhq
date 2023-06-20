@@ -70,11 +70,13 @@ RSpec.describe Gitlab::Database::EachDatabase do
 
         # Clear the memoization because the return of Gitlab::Database#schemas_to_base_models depends stubbed value
         clear_memoization(:@schemas_to_base_models)
-        clear_memoization(:@schemas_to_base_models_ee)
       end
 
       it 'only yields the unshared connections' do
-        expect(Gitlab::Database).to receive(:db_config_share_with).exactly(3).times.and_return(nil, 'main', 'main')
+        # if this is `non-main` connection make it shared with `main`
+        allow(Gitlab::Database).to receive(:db_config_share_with) do |db_config|
+          db_config.name != 'main' ? 'main' : nil
+        end
 
         expect { |b| described_class.each_database_connection(include_shared: false, &b) }
           .to yield_successive_args([ActiveRecord::Base.connection, 'main'])

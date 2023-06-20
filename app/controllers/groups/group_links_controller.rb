@@ -4,7 +4,7 @@ class Groups::GroupLinksController < Groups::ApplicationController
   before_action :authorize_admin_group!
   before_action :group_link, only: [:update, :destroy]
 
-  feature_category :subgroups
+  feature_category :groups_and_projects
 
   def update
     Groups::GroupLinks::UpdateService.new(@group_link, current_user).execute(group_link_params)

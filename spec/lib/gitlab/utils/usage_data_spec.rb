@@ -182,7 +182,7 @@ RSpec.describe Gitlab::Utils::UsageData do
         end
 
         it 'counts over joined relations' do
-          expect(described_class.estimate_batch_distinct_count(model.joins(:build), "ci_builds.name")).to eq(ci_builds_estimated_cardinality)
+          expect(described_class.estimate_batch_distinct_count(model.joins(:build), "#{Ci::Build.table_name}.name")).to eq(ci_builds_estimated_cardinality)
         end
 
         it 'counts with :column field with batch_size of 50K' do

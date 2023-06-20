@@ -129,11 +129,13 @@ If you are running a self-managed instance of GitLab,
 ### Configure GitLab Pages in a Helm Chart (Kubernetes) instance
 
 To configure GitLab Pages on instances deployed via Helm chart (Kubernetes), use either:
- 
-- [The `gitlab-pages` subchart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/). 
-- [An external GitLab Pages instance](https://docs.gitlab.com/charts/advanced/external-gitlab-pages/). 
+
+- [The `gitlab-pages` subchart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/).
+- [An external GitLab Pages instance](https://docs.gitlab.com/charts/advanced/external-gitlab-pages/).
 
 ## Security for GitLab Pages
+
+### Namespaces that contain `.`
 
 If your username is `example`, your GitLab Pages website is located at `example.gitlab.io`.
 GitLab allows usernames to contain a `.`, so a user named `bar.example` could create
@@ -153,3 +155,9 @@ document.cookie = "key=value;domain=example.gitlab.io";
 
 This issue doesn't affect users with a custom domain, or users who don't set any
 cookies manually with JavaScript.
+
+### Shared cookies
+
+By default, every project in a group shares the same domain, for example, `group.gitlab.io`. This means that cookies are also shared for all projects in a group.
+
+To ensure each project uses different cookies, enable the Pages [unique domains](introduction.md#enable-unique-domains) feature for your project.

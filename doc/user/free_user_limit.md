@@ -27,7 +27,7 @@ Prerequisite:
 
 - You must have the Owner role for the group.
 
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. To view all members, select the **Seats** tab.
 1. To remove a member, select **Remove user**.

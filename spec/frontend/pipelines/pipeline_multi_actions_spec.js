@@ -1,9 +1,11 @@
+import { nextTick } from 'vue';
 import { GlAlert, GlDropdown, GlSprintf, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PipelineMultiActions, {
@@ -14,6 +16,7 @@ import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 describe('Pipeline Multi Actions Dropdown', () => {
   let wrapper;
   let mockAxios;
+  const focusInputMock = jest.fn();
 
   const artifacts = [
     {
@@ -30,7 +33,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
   const artifactsEndpoint = `endpoint/${artifactsEndpointPlaceholder}/artifacts.json`;
   const pipelineId = 108;
 
-  const createComponent = ({ mockData = {} } = {}) => {
+  const createComponent = () => {
     wrapper = extendedWrapper(
       shallowMount(PipelineMultiActions, {
         provide: {
@@ -40,14 +43,12 @@ describe('Pipeline Multi Actions Dropdown', () => {
         propsData: {
           pipelineId,
         },
-        data() {
-          return {
-            ...mockData,
-          };
-        },
         stubs: {
           GlSprintf,
           GlDropdown,
+          GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+            methods: { focusInput: focusInputMock },
+          }),
         },
       }),
     );
@@ -76,70 +77,91 @@ describe('Pipeline Multi Actions Dropdown', () => {
   });
 
   describe('Artifacts', () => {
-    it('should fetch artifacts and show search box on dropdown click', async () => {
-      const endpoint = artifactsEndpoint.replace(artifactsEndpointPlaceholder, pipelineId);
-      mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_OK, { artifacts });
-      createComponent();
-      findDropdown().vm.$emit('show');
-      await waitForPromises();
-
-      expect(mockAxios.history.get).toHaveLength(1);
-      expect(wrapper.vm.artifacts).toEqual(artifacts);
-      expect(findSearchBox().exists()).toBe(true);
-    });
-
-    it('should focus the search box when opened with artifacts', () => {
-      createComponent({ mockData: { artifacts } });
-      wrapper.vm.$refs.searchInput.focusInput = jest.fn();
-
-      findDropdown().vm.$emit('shown');
-
-      expect(wrapper.vm.$refs.searchInput.focusInput).toHaveBeenCalled();
-    });
-
-    it('should render all the provided artifacts when search query is empty', () => {
-      const searchQuery = '';
-      createComponent({ mockData: { searchQuery, artifacts } });
-
-      expect(findAllArtifactItems()).toHaveLength(artifacts.length);
-      expect(findEmptyMessage().exists()).toBe(false);
-    });
-
-    it('should render filtered artifacts when search query is not empty', () => {
-      const searchQuery = 'job-2';
-      createComponent({ mockData: { searchQuery, artifacts } });
-
-      expect(findAllArtifactItems()).toHaveLength(1);
-      expect(findEmptyMessage().exists()).toBe(false);
-    });
-
-    it('should render the correct artifact name and path', () => {
-      createComponent({ mockData: { artifacts } });
-
-      expect(findFirstArtifactItem().attributes('href')).toBe(artifacts[0].path);
-      expect(findFirstArtifactItem().text()).toBe(artifacts[0].name);
-    });
-
-    it('should render empty message and no search box when no artifacts are found', () => {
-      createComponent({ mockData: { artifacts: [] } });
-
-      expect(findEmptyMessage().exists()).toBe(true);
-      expect(findSearchBox().exists()).toBe(false);
-    });
+    const endpoint = artifactsEndpoint.replace(artifactsEndpointPlaceholder, pipelineId);
 
     describe('while loading artifacts', () => {
-      it('should render a loading spinner and no empty message', () => {
-        createComponent({ mockData: { isLoading: true, artifacts: [] } });
+      beforeEach(() => {
+        mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_OK, { artifacts });
+      });
+
+      it('should render a loading spinner and no empty message', async () => {
+        createComponent();
+
+        findDropdown().vm.$emit('show');
+        await nextTick();
 
         expect(findLoadingIcon().exists()).toBe(true);
         expect(findEmptyMessage().exists()).toBe(false);
       });
     });
 
+    describe('artifacts loaded successfully', () => {
+      describe('artifacts exist', () => {
+        beforeEach(async () => {
+          mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_OK, { artifacts });
+
+          createComponent();
+
+          findDropdown().vm.$emit('show');
+          await waitForPromises();
+        });
+
+        it('should fetch artifacts and show search box on dropdown click', () => {
+          expect(mockAxios.history.get).toHaveLength(1);
+          expect(findSearchBox().exists()).toBe(true);
+        });
+
+        it('should focus the search box when opened with artifacts', () => {
+          findDropdown().vm.$emit('shown');
+
+          expect(focusInputMock).toHaveBeenCalled();
+        });
+
+        it('should render all the provided artifacts when search query is empty', () => {
+          findSearchBox().vm.$emit('input', '');
+
+          expect(findAllArtifactItems()).toHaveLength(artifacts.length);
+          expect(findEmptyMessage().exists()).toBe(false);
+        });
+
+        it('should render filtered artifacts when search query is not empty', async () => {
+          findSearchBox().vm.$emit('input', 'job-2');
+          await waitForPromises();
+
+          expect(findAllArtifactItems()).toHaveLength(1);
+          expect(findEmptyMessage().exists()).toBe(false);
+        });
+
+        it('should render the correct artifact name and path', () => {
+          expect(findFirstArtifactItem().attributes('href')).toBe(artifacts[0].path);
+          expect(findFirstArtifactItem().text()).toBe(artifacts[0].name);
+        });
+      });
+
+      describe('artifacts list is empty', () => {
+        beforeEach(() => {
+          mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_OK, { artifacts: [] });
+        });
+
+        it('should render empty message and no search box when no artifacts are found', async () => {
+          createComponent();
+
+          findDropdown().vm.$emit('show');
+          await waitForPromises();
+
+          expect(findEmptyMessage().exists()).toBe(true);
+          expect(findSearchBox().exists()).toBe(false);
+          expect(findLoadingIcon().exists()).toBe(false);
+        });
+      });
+    });
+
     describe('with a failing request', () => {
-      it('should render an error message', async () => {
-        const endpoint = artifactsEndpoint.replace(artifactsEndpointPlaceholder, pipelineId);
+      beforeEach(() => {
         mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      });
+
+      it('should render an error message', async () => {
         createComponent();
         findDropdown().vm.$emit('show');
         await waitForPromises();

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :registry, only: { pipeline: :main }, product_group: :container_registry do
+  RSpec.describe 'Package', :orchestrated, :registry, :skip_live_env, product_group: :container_registry do
     describe 'Dependency Proxy' do
       using RSpec::Parameterized::TableSyntax
       include Support::Helpers::MaskToken
@@ -53,65 +53,28 @@ module QA
       end
 
       after do
-        project.remove_via_api!
         runner.remove_via_api!
       end
 
       where do
         {
-          'using docker:18.09.9 and a personal access token' => {
-            docker_client_version: 'docker:18.09.9',
+          'using docker:24.0.1 and a personal access token' => {
+            docker_client_version: 'docker:24.0.1',
             authentication_token_type: :personal_access_token,
             token_name: 'Personal Access Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370195'
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412820'
           },
-          'using docker:18.09.9 and a group deploy token' => {
-            docker_client_version: 'docker:18.09.9',
+          'using docker:24.0.1 and a group deploy token' => {
+            docker_client_version: 'docker:24.0.1',
             authentication_token_type: :group_deploy_token,
             token_name: 'Deploy Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370196'
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412821'
           },
-          'using docker:18.09.9 and a ci job token' => {
-            docker_client_version: 'docker:18.09.9',
+          'using docker:24.0.1 and a ci job token' => {
+            docker_client_version: 'docker:24.0.1',
             authentication_token_type: :ci_job_token,
             token_name: 'Job Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370198'
-          },
-          'using docker:19.03.12 and a personal access token' => {
-            docker_client_version: 'docker:19.03.12',
-            authentication_token_type: :personal_access_token,
-            token_name: 'Personal Access Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370189'
-          },
-          'using docker:19.03.12 and a group deploy token' => {
-            docker_client_version: 'docker:19.03.12',
-            authentication_token_type: :group_deploy_token,
-            token_name: 'Deploy Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370190'
-          },
-          'using docker:19.03.12 and a ci job token' => {
-            docker_client_version: 'docker:19.03.12',
-            authentication_token_type: :ci_job_token,
-            token_name: 'Job Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370191'
-          },
-          'using docker:20.10 and a personal access token' => {
-            docker_client_version: 'docker:20.10',
-            authentication_token_type: :personal_access_token,
-            token_name: 'Personal Access Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370192'
-          },
-          'using docker:20.10 and a group deploy token' => {
-            docker_client_version: 'docker:20.10',
-            authentication_token_type: :group_deploy_token,
-            token_name: 'Deploy Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370193'
-          },
-          'using docker:20.10 and a ci job token' => {
-            docker_client_version: 'docker:20.10',
-            authentication_token_type: :ci_job_token,
-            token_name: 'Job Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370194'
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412822'
           }
         }
       end
@@ -186,7 +149,7 @@ module QA
 
           project.group.visit!
 
-          Page::Group::Menu.perform(&:go_to_dependency_proxy)
+          Page::Group::Menu.perform(&:go_to_group_dependency_proxy)
 
           Page::Group::DependencyProxy.perform do |index|
             expect(index).to have_blob_count("Contains 1 blobs of images")

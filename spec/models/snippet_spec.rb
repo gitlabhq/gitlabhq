@@ -42,7 +42,7 @@ RSpec.describe Snippet do
       is_expected
         .to validate_length_of(:content)
         .is_at_most(Gitlab::CurrentSettings.snippet_size_limit)
-        .with_message("is too long (2 Bytes). The maximum size is 1 Byte.")
+        .with_message("is too long (2 B). The maximum size is 1 B.")
     end
 
     context 'content validations' do
@@ -86,7 +86,7 @@ RSpec.describe Snippet do
 
           aggregate_failures do
             expect(snippet).not_to be_valid
-            expect(snippet.errors[:content]).to include("is too long (#{snippet.content.size} Bytes). The maximum size is #{limit} Bytes.")
+            expect(snippet.errors[:content]).to include("is too long (#{snippet.content.size} B). The maximum size is #{limit} B.")
           end
         end
       end
@@ -125,7 +125,7 @@ RSpec.describe Snippet do
 
           aggregate_failures do
             expect(snippet).not_to be_valid
-            expect(snippet.errors.messages_for(:description)).to include("is too long (2 MB). The maximum size is 1 MB.")
+            expect(snippet.errors.messages_for(:description)).to include("is too long (2 MiB). The maximum size is 1 MiB.")
           end
         end
       end
@@ -803,6 +803,34 @@ RSpec.describe Snippet do
     end
 
     include_examples 'size checker for snippet'
+  end
+
+  describe '#hook_attrs' do
+    let_it_be(:snippet) { create(:personal_snippet, secret_token: 'foo') }
+
+    subject(:attrs) { snippet.hook_attrs }
+
+    it 'includes the expected attributes' do
+      is_expected.to match(
+        'id' => snippet.id,
+        'title' => snippet.title,
+        'content' => snippet.content,
+        'description' => snippet.description,
+        'file_name' => snippet.file_name,
+        'author_id' => snippet.author_id,
+        'project_id' => snippet.project_id,
+        'visibility_level' => snippet.visibility_level,
+        'encrypted_secret_token' => snippet.encrypted_secret_token,
+        'encrypted_secret_token_iv' => snippet.encrypted_secret_token_iv,
+        'secret' => false,
+        'secret_token' => nil,
+        'repository_read_only' => snippet.repository_read_only?,
+        'url' => Gitlab::UrlBuilder.build(snippet),
+        'type' => 'PersonalSnippet',
+        'created_at' => be_like_time(snippet.created_at),
+        'updated_at' => be_like_time(snippet.updated_at)
+      )
+    end
   end
 
   describe '#can_cache_field?' do

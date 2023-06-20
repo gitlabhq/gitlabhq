@@ -26,6 +26,24 @@ export const mockJiraIssueTypes = [
   { id: '3', name: 'epic', description: 'epic' },
 ];
 
+export const mockJiraAuthFields = [
+  {
+    name: 'jira_auth_type',
+    type: 'select',
+    title: 'Authentication type',
+  },
+  {
+    name: 'username',
+    type: 'text',
+    help: 'Email for Jira Cloud or username for Jira Data Center and Jira Server',
+  },
+  {
+    name: 'password',
+    type: 'password',
+    help: 'API token for Jira Cloud or password for Jira Data Center and Jira Server',
+  },
+];
+
 export const mockField = {
   help: 'The URL of the project',
   name: 'project_url',

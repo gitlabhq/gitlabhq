@@ -389,7 +389,7 @@ to the right of the [pipeline graph](index.md#visualize-pipelines).
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
-## Fetch artifacts from an upstream pipeline
+## Fetch artifacts from an upstream pipeline **(PREMIUM)**
 
 Use [`needs:project`](../yaml/index.md#needsproject) to fetch artifacts from an
 upstream pipeline:
@@ -660,6 +660,12 @@ For example, in a [multi-project pipeline](#multi-project-pipelines):
          ref: master
          artifacts: true
    ```
+
+### Control what type of variables to forward to downstream pipelines
+
+Use the [`trigger:forward` keyword](../yaml/index.md#triggerforward) to specify
+what type of variables to forward to the downstream pipeline. Forwarded variables
+are considered trigger variables, which have the [highest precedence](../variables/index.md#cicd-variable-precedence).
 
 ## Troubleshooting
 

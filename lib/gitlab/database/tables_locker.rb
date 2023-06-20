@@ -5,10 +5,11 @@ module Gitlab
     class TablesLocker
       GITLAB_SCHEMAS_TO_IGNORE = %i[gitlab_embedding gitlab_geo].freeze
 
-      def initialize(logger: nil, dry_run: false)
+      def initialize(logger: nil, dry_run: false, include_partitions: true)
         @logger = logger
         @dry_run = dry_run
         @result = []
+        @include_partitions = include_partitions
       end
 
       def unlock_writes
@@ -50,6 +51,7 @@ module Gitlab
       # Unlocks the writes on the table and its partitions
       def unlock_writes_on_table(table_name, connection, database_name)
         @result << lock_writes_manager(table_name, connection, database_name).unlock_writes
+        return unless @include_partitions
 
         table_attached_partitions(table_name, connection) do |postgres_partition|
           @result << lock_writes_manager(postgres_partition.identifier, connection, database_name).unlock_writes
@@ -59,6 +61,7 @@ module Gitlab
       # It locks the writes on the table and its partitions
       def lock_writes_on_table(table_name, connection, database_name)
         @result << lock_writes_manager(table_name, connection, database_name).lock_writes
+        return unless @include_partitions
 
         table_attached_partitions(table_name, connection) do |postgres_partition|
           @result << lock_writes_manager(postgres_partition.identifier, connection, database_name).lock_writes
@@ -67,6 +70,7 @@ module Gitlab
 
       def tables_to_lock(connection, &block)
         Gitlab::Database::GitlabSchema.tables_to_schema.each(&block)
+        return unless @include_partitions
 
         Gitlab::Database::SharedModel.using_connection(connection) do
           Postgresql::DetachedPartition.find_each do |detached_partition|

@@ -12,13 +12,17 @@ class AbuseReport < ApplicationRecord
 
   cache_markdown_field :message, pipeline: :single_line
 
-  belongs_to :reporter, class_name: 'User'
-  belongs_to :user
+  belongs_to :reporter, class_name: 'User', inverse_of: :reported_abuse_reports
+  belongs_to :user, inverse_of: :abuse_reports
+  belongs_to :resolved_by, class_name: 'User', inverse_of: :resolved_abuse_reports
+  belongs_to :assignee, class_name: 'User', inverse_of: :assigned_abuse_reports
 
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
 
-  validates :reporter, presence: true
-  validates :user, presence: true
+  has_many :abuse_events, class_name: 'Abuse::Event', inverse_of: :abuse_report
+
+  validates :reporter, presence: true, on: :create
+  validates :user, presence: true, on: :create
   validates :message, presence: true
   validates :category, presence: true
   validates :user_id,
@@ -27,7 +31,7 @@ class AbuseReport < ApplicationRecord
       message: ->(object, data) do
         _('You have already reported this user')
       end
-    }
+    }, on: :create
 
   validates :reported_from_url,
     allow_blank: true,
@@ -44,6 +48,9 @@ class AbuseReport < ApplicationRecord
       maximum: 20,
       message: N_("exceeds the limit of %{count} links")
     }
+
+  validates :mitigation_steps, length: { maximum: 1000 }, allow_blank: true
+  validates :evidence, json_schema: { filename: 'abuse_report_evidence' }, allow_blank: true
 
   before_validation :filter_empty_strings_from_links_to_spam
   validate :links_to_spam_contains_valid_urls

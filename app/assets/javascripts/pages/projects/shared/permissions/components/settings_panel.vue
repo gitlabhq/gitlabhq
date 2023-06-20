@@ -2,7 +2,6 @@
 import { GlButton, GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
@@ -16,10 +15,12 @@ import {
   featureAccessLevel,
   CVE_ID_REQUEST_BUTTON_I18N,
   featureAccessLevelDescriptions,
+  modelExperimentsHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
 import ProjectSettingRow from './project_setting_row.vue';
+import CiCatalogSettings from './ci_catalog_settings.vue';
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = [30, s__('ProjectSettings|Everyone')];
 
@@ -34,6 +35,7 @@ export default {
     ...CVE_ID_REQUEST_BUTTON_I18N,
     analyticsLabel: s__('ProjectSettings|Analytics'),
     containerRegistryLabel: s__('ProjectSettings|Container registry'),
+    ciCdLabel: __('CI/CD'),
     forksLabel: s__('ProjectSettings|Forks'),
     issuesLabel: s__('ProjectSettings|Issues'),
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
@@ -57,8 +59,11 @@ export default {
     packageRegistryForEveryoneLabel: s__(
       'ProjectSettings|Allow anyone to pull from Package Registry',
     ),
+    modelExperimentsLabel: s__('ProjectSettings|Model experiments'),
+    modelExperimentsHelpText: s__(
+      'ProjectSettings|Track machine learning model experiments and artifacts.',
+    ),
     pagesLabel: s__('ProjectSettings|Pages'),
-    ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
     requirementsLabel: s__('ProjectSettings|Requirements'),
     releasesLabel: s__('ProjectSettings|Releases'),
@@ -77,8 +82,10 @@ export default {
   VISIBILITY_LEVEL_PRIVATE_INTEGER,
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
+  modelExperimentsHelpPath,
 
   components: {
+    CiCatalogSettings,
     ProjectFeatureSetting,
     ProjectSettingRow,
     GlButton,
@@ -93,10 +100,15 @@ export default {
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
       ),
   },
-  mixins: [settingsMixin, glFeatureFlagsMixin()],
+  mixins: [settingsMixin],
 
   props: {
     requestCveAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canAddCatalogResource: {
       type: Boolean,
       required: false,
       default: false,
@@ -246,11 +258,11 @@ export default {
       forkingAccessLevel: featureAccessLevel.EVERYONE,
       mergeRequestsAccessLevel: featureAccessLevel.EVERYONE,
       packageRegistryAccessLevel: featureAccessLevel.EVERYONE,
+      modelExperimentsAccessLevel: featureAccessLevel.EVERYONE,
       buildsAccessLevel: featureAccessLevel.EVERYONE,
       wikiAccessLevel: featureAccessLevel.EVERYONE,
       snippetsAccessLevel: featureAccessLevel.EVERYONE,
       pagesAccessLevel: featureAccessLevel.EVERYONE,
-      metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       analyticsAccessLevel: featureAccessLevel.EVERYONE,
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
@@ -392,14 +404,14 @@ export default {
         ) {
           this.packageRegistryAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
+        this.modelExperimentsAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.modelExperimentsAccessLevel,
+        );
         this.wikiAccessLevel = Math.min(featureAccessLevel.PROJECT_MEMBERS, this.wikiAccessLevel);
         this.snippetsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.snippetsAccessLevel,
-        );
-        this.metricsDashboardAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.metricsDashboardAccessLevel,
         );
         this.analyticsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -458,14 +470,14 @@ export default {
           this.buildsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.wikiAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.wikiAccessLevel = featureAccessLevel.EVERYONE;
+        if (this.modelExperimentsAccessLevel > featureAccessLevel.NOT_ENABLED)
+          this.modelExperimentsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.snippetsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.snippetsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.pagesAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.pagesAccessLevel = featureAccessLevel.EVERYONE;
         if (this.analyticsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.analyticsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.metricsDashboardAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.metricsDashboardAccessLevel = featureAccessLevel.EVERYONE;
         if (this.requirementsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.environmentsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
@@ -503,22 +515,9 @@ export default {
       else if (oldValue === featureAccessLevel.NOT_ENABLED)
         toggleHiddenClassBySelector('.merge-requests-feature', false);
     },
-
-    monitorAccessLevel(value, oldValue) {
-      this.updateSubFeatureAccessLevel(value, oldValue);
-    },
   },
 
   methods: {
-    updateSubFeatureAccessLevel(value, oldValue) {
-      if (value < oldValue) {
-        // sub-features cannot have more permissive access level
-        this.metricsDashboardAccessLevel = Math.min(this.metricsDashboardAccessLevel, value);
-      } else if (oldValue === 0) {
-        this.metricsDashboardAccessLevel = value;
-      }
-    },
-
     highlightChanges() {
       this.highlightChangesClass = true;
       this.$nextTick(() => {
@@ -552,7 +551,7 @@ export default {
 <template>
   <div>
     <div
-      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-py-3 gl-px-7 gl-sm-pr-5 gl-sm-pl-5"
+      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-py-3 gl-px-5"
     >
       <project-setting-row
         ref="project-visibility-settings"
@@ -647,7 +646,7 @@ export default {
     </div>
     <div
       :class="{ 'highlight-changes': highlightChangesClass }"
-      class="gl-border-1 gl-border-solid gl-border-t-none gl-border-gray-100 gl-mb-5 gl-py-3 gl-px-7 gl-sm-pr-5 gl-sm-pl-5 gl-bg-gray-10"
+      class="gl-border-1 gl-border-solid gl-border-t-none gl-border-gray-100 gl-mb-5 gl-py-3 gl-px-5 gl-bg-gray-10"
     >
       <project-setting-row
         ref="issues-settings"
@@ -693,7 +692,7 @@ export default {
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
+      <div class="project-feature-setting-group gl-pl-5 gl-md-pl-7">
         <project-setting-row
           ref="merge-request-settings"
           :label="$options.i18n.mergeRequestsLabel"
@@ -875,7 +874,7 @@ export default {
         />
         <div
           v-if="packageRegistryApiForEveryoneEnabledShown"
-          class="project-feature-setting-group gl-pl-7 gl-sm-pl-5 gl-my-3"
+          class="project-feature-setting-group gl-pl-5 gl-md-pl-7 gl-my-3"
         >
           <project-setting-row
             :label="$options.i18n.packageRegistryForEveryoneLabel"
@@ -896,6 +895,19 @@ export default {
           :value="packageRegistryAccessLevel"
           type="hidden"
           name="project[project_feature_attributes][package_registry_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        ref="model-experiments-settings"
+        :label="$options.i18n.modelExperimentsLabel"
+        :help-text="$options.i18n.modelExperimentsHelpText"
+        :help-path="$options.modelExperimentsHelpPath"
+      >
+        <project-feature-setting
+          v-model="modelExperimentsAccessLevel"
+          :label="$options.i18n.modelExperimentsLabel"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][model_experiments_access_level]"
         />
       </project-setting-row>
       <project-setting-row
@@ -930,23 +942,6 @@ export default {
           name="project[project_feature_attributes][monitor_access_level]"
         />
       </project-setting-row>
-      <div
-        v-if="!glFeatures.removeMonitorMetrics"
-        class="project-feature-setting-group gl-pl-7 gl-sm-pl-5"
-      >
-        <project-setting-row
-          ref="metrics-visibility-settings"
-          :label="__('Metrics Dashboard')"
-          :help-text="s__('ProjectSettings|Visualize the project\'s performance metrics.')"
-        >
-          <project-feature-setting
-            v-model="metricsDashboardAccessLevel"
-            :show-toggle="false"
-            :options="monitorOperationsFeatureAccessLevelOptions"
-            name="project[project_feature_attributes][metrics_dashboard_access_level]"
-          />
-        </project-setting-row>
-      </div>
       <project-setting-row
         ref="environments-settings"
         :label="$options.i18n.environmentsLabel"
@@ -1000,6 +995,11 @@ export default {
         />
       </project-setting-row>
     </div>
+    <ci-catalog-settings
+      v-if="canAddCatalogResource"
+      class="gl-mb-5"
+      :full-path="confirmationPhrase"
+    />
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-disabled">
         <input :value="emailsDisabled" type="hidden" name="project[emails_disabled]" />

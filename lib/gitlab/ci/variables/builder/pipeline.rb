@@ -40,7 +40,7 @@ module Gitlab
 
           attr_reader :pipeline
 
-          def predefined_commit_variables # rubocop:disable Metrics/AbcSize - Remove this rubocop:disable when FF `ci_remove_legacy_predefined_variables` is removed.
+          def predefined_commit_variables
             Gitlab::Ci::Variables::Collection.new.tap do |variables|
               next variables unless pipeline.sha.present?
 
@@ -56,23 +56,9 @@ module Gitlab
               variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s)
               variables.append(key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp.to_s)
               variables.append(key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text.to_s)
-
-              if Feature.disabled?(:ci_remove_legacy_predefined_variables, pipeline.project)
-                variables.concat(legacy_predefined_commit_variables)
-              end
             end
           end
           strong_memoize_attr :predefined_commit_variables
-
-          def legacy_predefined_commit_variables
-            Gitlab::Ci::Variables::Collection.new.tap do |variables|
-              variables.append(key: 'CI_BUILD_REF', value: pipeline.sha)
-              variables.append(key: 'CI_BUILD_BEFORE_SHA', value: pipeline.before_sha)
-              variables.append(key: 'CI_BUILD_REF_NAME', value: pipeline.source_ref)
-              variables.append(key: 'CI_BUILD_REF_SLUG', value: pipeline.source_ref_slug)
-            end
-          end
-          strong_memoize_attr :legacy_predefined_commit_variables
 
           def predefined_commit_tag_variables
             Gitlab::Ci::Variables::Collection.new.tap do |variables|
@@ -82,20 +68,9 @@ module Gitlab
 
               variables.append(key: 'CI_COMMIT_TAG', value: pipeline.ref)
               variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: git_tag.message)
-
-              if Feature.disabled?(:ci_remove_legacy_predefined_variables, pipeline.project)
-                variables.concat(legacy_predefined_commit_tag_variables)
-              end
             end
           end
           strong_memoize_attr :predefined_commit_tag_variables
-
-          def legacy_predefined_commit_tag_variables
-            Gitlab::Ci::Variables::Collection.new.tap do |variables|
-              variables.append(key: 'CI_BUILD_TAG', value: pipeline.ref)
-            end
-          end
-          strong_memoize_attr :legacy_predefined_commit_tag_variables
 
           def predefined_merge_request_variables
             Gitlab::Ci::Variables::Collection.new.tap do |variables|

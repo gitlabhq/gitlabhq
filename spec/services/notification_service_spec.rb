@@ -798,9 +798,24 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     context 'issue note mention', :deliver_mails_inline do
       let_it_be(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
+      let_it_be(:user_to_exclude) { create(:user) }
       let_it_be(:author) { create(:user) }
 
-      let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
+      let(:user_mentions) do
+        other_members = [
+          @unsubscribed_mentioned,
+          @u_guest_watcher,
+          @pg_watcher,
+          @u_mentioned,
+          @u_not_mentioned,
+          @u_disabled,
+          @pg_disabled
+        ]
+
+        (issue.project.team.members + other_members).map(&:to_reference).join(' ')
+      end
+
+      let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: note_content) }
 
       before_all do
         build_team(project)
@@ -815,33 +830,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe '#new_note' do
-        it 'notifies the team members' do
-          notification.new_note(note)
-
-          # Make sure @unsubscribed_mentioned is part of the team
-          expect(note.project.team.members).to include(@unsubscribed_mentioned)
-
-          # Notify all team members
-          note.project.team.members.each do |member|
-            # User with disabled notification should not be notified
-            next if member.id == @u_disabled.id
-            # Author should not be notified
-            next if member.id == note.author.id
-
-            should_email(member)
-          end
-
-          should_email(@u_guest_watcher)
-          should_email(note.noteable.author)
-          should_email(note.noteable.assignees.first)
-          should_email_nested_group_user(@pg_watcher)
-          should_email(@u_mentioned)
-          should_email(@u_not_mentioned)
-          should_not_email(note.author)
-          should_not_email(@u_disabled)
-          should_not_email_nested_group_user(@pg_disabled)
-        end
-
         it 'notifies parent group members with mention level' do
           note = create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: "@#{@pg_mention.username}")
 
@@ -850,73 +838,223 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           should_email_nested_group_user(@pg_mention)
         end
 
-        it 'filters out "mentioned in" notes' do
-          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
-
-          expect(Notify).not_to receive(:note_issue_email)
-          notification.new_note(mentioned_note)
-        end
-
-        it_behaves_like 'project emails are disabled' do
-          let(:notification_target)  { note }
-          let(:notification_trigger) { notification.new_note(note) }
-        end
-
-        context 'when note is confidential' do
-          let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: '@all mentioned', confidential: true) }
-          let(:guest) { create(:user) }
-
-          it 'does not notify users that cannot read note' do
-            project.add_guest(guest)
-            reset_delivered_emails!
-
+        shared_examples 'correct team members are notified' do
+          it 'notifies the team members' do
             notification.new_note(note)
 
-            should_not_email(guest)
+            # Make sure @unsubscribed_mentioned is part of the team
+            expect(note.project.team.members).to include(@unsubscribed_mentioned)
+
+            # Notify all team members
+            note.project.team.members.each do |member|
+              # User with disabled notification should not be notified
+              next if member.id == @u_disabled.id
+              # Author should not be notified
+              next if member.id == note.author.id
+
+              should_email(member)
+            end
+
+            should_email(@u_guest_watcher)
+            should_email(note.noteable.author)
+            should_email(note.noteable.assignees.first)
+            should_email_nested_group_user(@pg_watcher)
+            should_email(@u_mentioned)
+            should_email(@u_not_mentioned)
+            should_not_email(note.author)
+            should_not_email(@u_disabled)
+            should_not_email_nested_group_user(@pg_disabled)
+          end
+
+          it 'filters out "mentioned in" notes' do
+            mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
+
+            expect(Notify).not_to receive(:note_issue_email)
+            notification.new_note(mentioned_note)
+          end
+
+          it_behaves_like 'project emails are disabled' do
+            let(:notification_target)  { note }
+            let(:notification_trigger) { notification.new_note(note) }
+          end
+
+          context 'when note is confidential' do
+            let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: note_content, confidential: true) }
+            let(:guest) { create(:user) }
+
+            it 'does not notify users that cannot read note' do
+              project.add_guest(guest)
+              reset_delivered_emails!
+
+              notification.new_note(note)
+
+              should_not_email(guest)
+            end
+          end
+        end
+
+        context 'when `disable_all_mention` FF is disabled' do
+          before do
+            stub_feature_flags(disable_all_mention: false)
+          end
+
+          context 'when `@all` mention is used' do
+            let(:note_content) { "@all mentioned" }
+
+            it_behaves_like 'correct team members are notified'
+          end
+
+          context 'when users are individually mentioned' do
+            # `user_mentions` is concatenanting individual user mentions
+            # so that the end result is the same as `@all`.
+            let(:note_content) { "#{user_mentions} mentioned" }
+
+            it_behaves_like 'correct team members are notified'
+          end
+        end
+
+        context 'when `disable_all_mention` FF is enabled' do
+          before do
+            stub_feature_flags(disable_all_mention: true)
+          end
+
+          context 'when `@all` mention is used' do
+            before_all do
+              # user_to_exclude is in the note's project but is neither mentioned nor participating.
+              project.add_maintainer(user_to_exclude)
+            end
+
+            let(:note_content) { "@all mentioned" }
+
+            it "does not notify users who are not participating or mentioned" do
+              reset_delivered_emails!
+
+              notification.new_note(note)
+
+              should_email(note.noteable.author)
+              should_not_email(user_to_exclude)
+            end
+          end
+
+          context 'when users are individually mentioned' do
+            # `user_mentions` is concatenanting individual user mentions
+            # so that the end result is the same as `@all`.
+            let(:note_content) { "#{user_mentions} mentioned" }
+
+            it_behaves_like 'correct team members are notified'
           end
         end
       end
     end
 
     context 'project snippet note', :deliver_mails_inline do
-      let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
-      let(:author) { create(:user) }
-      let(:note) { create(:note_on_project_snippet, author: author, noteable: snippet, project_id: project.id, note: '@all mentioned') }
+      let(:user_mentions) do
+        other_members = [
+          @u_custom_global,
+          @u_guest_watcher,
+          snippet.author, # snippet = note.noteable's author
+          author, # note's author
+          @u_disabled,
+          @u_mentioned,
+          @u_not_mentioned
+        ]
 
-      before do
-        build_team(project)
-        build_group(project)
-        project.add_maintainer(author)
-
-        # make sure these users can read the project snippet!
-        project.add_guest(@u_guest_watcher)
-        project.add_guest(@u_guest_custom)
-        add_member_for_parent_group(@pg_watcher, project)
-        reset_delivered_emails!
+        (snippet.project.team.members + other_members).map(&:to_reference).join(' ')
       end
 
-      describe '#new_note' do
-        it 'notifies the team members' do
-          notification.new_note(note)
-          # Notify all team members
-          note.project.team.members.each do |member|
-            # User with disabled notification should not be notified
-            next if member.id == @u_disabled.id
-            # Author should not be notified
-            next if member.id == note.author.id
+      let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
+      let(:author) { create(:user) }
+      let(:note) { create(:note_on_project_snippet, author: author, noteable: snippet, project_id: project.id, note: note_content) }
 
-            should_email(member)
+      describe '#new_note' do
+        shared_examples 'correct team members are notified' do
+          before do
+            build_team(project)
+            build_group(project)
+            project.add_maintainer(author)
+
+            # make sure these users can read the project snippet!
+            project.add_guest(@u_guest_watcher)
+            project.add_guest(@u_guest_custom)
+            add_member_for_parent_group(@pg_watcher, project)
+            reset_delivered_emails!
           end
 
-          # it emails custom global users on mention
-          should_email(@u_custom_global)
+          it 'notifies the team members' do
+            notification.new_note(note)
+            # Notify all team members
+            note.project.team.members.each do |member|
+              # User with disabled notification should not be notified
+              next if member.id == @u_disabled.id
+              # Author should not be notified
+              next if member.id == note.author.id
 
-          should_email(@u_guest_watcher)
-          should_email(note.noteable.author)
-          should_not_email(note.author)
-          should_email(@u_mentioned)
-          should_not_email(@u_disabled)
-          should_email(@u_not_mentioned)
+              should_email(member)
+            end
+
+            # it emails custom global users on mention
+            should_email(@u_custom_global)
+
+            should_email(@u_guest_watcher)
+            should_email(note.noteable.author)
+            should_not_email(note.author)
+            should_email(@u_mentioned)
+            should_not_email(@u_disabled)
+            should_email(@u_not_mentioned)
+          end
+        end
+
+        context 'when `disable_all_mention` FF is disabled' do
+          before do
+            stub_feature_flags(disable_all_mention: false)
+          end
+
+          context 'when `@all` mention is used' do
+            let(:note_content) { "@all mentioned" }
+
+            it_behaves_like 'correct team members are notified'
+          end
+
+          context 'when users are individually mentioned' do
+            # `user_mentions` is concatenanting individual user mentions
+            # so that the end result is the same as `@all`.
+            let(:note_content) { "#{user_mentions} mentioned" }
+
+            it_behaves_like 'correct team members are notified'
+          end
+        end
+
+        context 'when `disable_all_mention` FF is enabled' do
+          before do
+            stub_feature_flags(disable_all_mention: true)
+          end
+
+          context 'when `@all` mention is used' do
+            let(:user_to_exclude) { create(:user) }
+            let(:note_content) { "@all mentioned" }
+
+            before do
+              project.add_maintainer(author)
+              project.add_maintainer(user_to_exclude)
+
+              reset_delivered_emails!
+            end
+
+            it "does not notify users who are not participating or mentioned" do
+              notification.new_note(note)
+
+              should_email(note.noteable.author)
+              should_not_email(user_to_exclude)
+            end
+          end
+
+          context 'when users are individually mentioned' do
+            # `user_mentions` is concatenanting individual user mentions
+            # so that the end result is the same as `@all`.
+            let(:note_content) { "#{user_mentions} mentioned" }
+
+            it_behaves_like 'correct team members are notified'
+          end
         end
       end
     end

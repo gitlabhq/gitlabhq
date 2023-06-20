@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';
@@ -11,10 +11,7 @@ const { fetchUserLists, setFilter } = mapActions(['fetchUserLists', 'setFilter']
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlLoadingIcon,
-    GlSearchBoxByType,
+    GlCollapsibleListbox,
     ParameterFormGroup,
   },
   props: {
@@ -38,23 +35,24 @@ export default {
     dropdownText() {
       return this.strategy?.userList?.name ?? this.$options.translations.defaultDropdownText;
     },
+    listboxItems() {
+      return this.userLists.map((list) => ({
+        value: list.id,
+        text: list.name,
+      }));
+    },
   },
   mounted() {
     fetchUserLists.apply(this);
   },
+
   methods: {
     setFilter: debounce(setFilter, 250),
-    fetchUserLists: debounce(fetchUserLists, 250),
-    onUserListChange(list) {
+    onUserListChange(listId) {
+      const list = this.userLists.find((userList) => userList.id === listId);
       this.$emit('change', {
         userList: list,
       });
-    },
-    isSelectedUserList({ id }) {
-      return id === this.userListId;
-    },
-    setFocus() {
-      this.$refs.searchBox.focusInput();
     },
   },
 };
@@ -67,26 +65,16 @@ export default {
     :description="hasUserLists ? $options.translations.rolloutUserListDescription : ''"
   >
     <template #default="{ inputId }">
-      <gl-dropdown :id="inputId" :text="dropdownText" @shown="setFocus">
-        <gl-search-box-by-type
-          ref="searchBox"
-          class="gl-m-3"
-          :value="filter"
-          @input="setFilter"
-          @focus="fetchUserLists"
-          @keyup="fetchUserLists"
-        />
-        <gl-loading-icon v-if="isLoading" size="sm" />
-        <gl-dropdown-item
-          v-for="list in userLists"
-          :key="list.id"
-          :is-checked="isSelectedUserList(list)"
-          is-check-item
-          @click="onUserListChange(list)"
-        >
-          {{ list.name }}
-        </gl-dropdown-item>
-      </gl-dropdown>
+      <gl-collapsible-listbox
+        :id="inputId"
+        :toggle-text="dropdownText"
+        :loading="isLoading"
+        :items="listboxItems"
+        searchable
+        :selected="userListId"
+        @select="onUserListChange"
+        @search="setFilter"
+      />
     </template>
   </parameter-form-group>
 </template>

@@ -180,6 +180,7 @@ options:
   - p_ci_templates_katalon
   - p_ci_templates_terraform_module_base
   - p_ci_templates_terraform_module
+  - p_ci_templates_pages_zola
 distribution:
 - ce
 - ee

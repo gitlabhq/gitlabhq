@@ -13,7 +13,6 @@ identifiers:
 product_section: ops
 product_stage: verify
 product_group: group::pipeline_authoring
-product_category: secrets_management
 milestone: "15.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90449
 distributions:

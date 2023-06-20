@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Bitbucket::Representation::PullRequest do
+RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :importers do
   describe '#iid' do
     it { expect(described_class.new('id' => 1).iid).to eq(1) }
   end
@@ -10,6 +10,7 @@ RSpec.describe Bitbucket::Representation::PullRequest do
   describe '#author' do
     it { expect(described_class.new({ 'author' => { 'nickname' => 'Ben' } }).author).to eq('Ben') }
     it { expect(described_class.new({}).author).to be_nil }
+    it { expect(described_class.new({ 'author' => nil }).author).to be_nil }
   end
 
   describe '#description' do
@@ -46,5 +47,13 @@ RSpec.describe Bitbucket::Representation::PullRequest do
   describe '#target_branch_sha' do
     it { expect(described_class.new({ destination: { commit: { hash: 'abcd123' } } }.with_indifferent_access).target_branch_sha).to eq('abcd123') }
     it { expect(described_class.new({ destination: {} }.with_indifferent_access).target_branch_sha).to be_nil }
+  end
+
+  describe '#created_at' do
+    it { expect(described_class.new('created_on' => '2023-01-01').created_at).to eq('2023-01-01') }
+  end
+
+  describe '#updated_at' do
+    it { expect(described_class.new('updated_on' => '2023-01-01').updated_at).to eq('2023-01-01') }
   end
 end

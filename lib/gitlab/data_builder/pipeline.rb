@@ -65,6 +65,7 @@ module Gitlab
         {
           id: pipeline.id,
           iid: pipeline.iid,
+          name: pipeline.name,
           ref: pipeline.source_ref,
           tag: pipeline.tag,
           sha: pipeline.sha,
@@ -77,7 +78,8 @@ module Gitlab
           finished_at: pipeline.finished_at,
           duration: pipeline.duration,
           queued_duration: pipeline.queued_duration,
-          variables: pipeline.variables.map(&:hook_attrs)
+          variables: pipeline.variables.map(&:hook_attrs),
+          url: Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline)
         }
       end
 

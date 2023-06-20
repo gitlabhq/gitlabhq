@@ -2,10 +2,11 @@
 import { GlCollapse, GlButton, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
-import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
+import KubernetesStatusBar from './kubernetes_status_bar.vue';
 
 export default {
   components: {
@@ -15,20 +16,13 @@ export default {
     KubernetesAgentInfo,
     KubernetesPods,
     KubernetesTabs,
+    KubernetesStatusBar,
   },
   inject: ['kasTunnelUrl'],
   props: {
-    agentName: {
+    clusterAgent: {
       required: true,
-      type: String,
-    },
-    agentId: {
-      required: true,
-      type: String,
-    },
-    agentProjectPath: {
-      required: true,
-      type: String,
+      type: Object,
     },
     namespace: {
       required: false,
@@ -40,6 +34,9 @@ export default {
     return {
       isVisible: false,
       error: '',
+      hasFailedState: false,
+      podsLoading: false,
+      workloadTypesLoading: false,
     };
   },
   computed: {
@@ -50,16 +47,24 @@ export default {
       return this.isVisible ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
     gitlabAgentId() {
-      const id = isGid(this.agentId) ? getIdFromGraphQLId(this.agentId) : this.agentId;
-      return id.toString();
+      return getIdFromGraphQLId(this.clusterAgent.id).toString();
     },
     k8sAccessConfiguration() {
       return {
         basePath: this.kasTunnelUrl,
         baseOptions: {
           headers: { 'GitLab-Agent-Id': this.gitlabAgentId, ...csrf.headers },
+          withCredentials: true,
         },
       };
+    },
+    clusterHealthStatus() {
+      const clusterDataLoading = this.podsLoading || this.workloadTypesLoading;
+      if (clusterDataLoading) {
+        return '';
+      }
+
+      return this.hasFailedState ? 'error' : 'success';
     },
   },
   methods: {
@@ -91,11 +96,8 @@ export default {
     </p>
     <gl-collapse :visible="isVisible" class="gl-md-pl-7 gl-md-pr-5 gl-mt-4">
       <template v-if="isVisible">
-        <kubernetes-agent-info
-          :agent-name="agentName"
-          :agent-id="agentId"
-          :agent-project-path="agentProjectPath"
-          class="gl-mb-5" />
+        <kubernetes-status-bar :cluster-health-status="clusterHealthStatus" class="gl-mb-4" />
+        <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-5" />
 
         <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-5">
           {{ error }}
@@ -105,12 +107,16 @@ export default {
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
           class="gl-mb-5"
-          @cluster-error="onClusterError" />
+          @cluster-error="onClusterError"
+          @loading="podsLoading = $event"
+          @failed="hasFailedState = true" />
         <kubernetes-tabs
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
           class="gl-mb-5"
           @cluster-error="onClusterError"
+          @loading="workloadTypesLoading = $event"
+          @failed="hasFailedState = true"
       /></template>
     </gl-collapse>
   </div>

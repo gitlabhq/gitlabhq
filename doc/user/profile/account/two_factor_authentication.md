@@ -108,7 +108,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 1. Open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
@@ -123,7 +123,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 1. Add the provider configuration:
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['forti_authenticator_enabled'] = true
@@ -145,8 +145,9 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
    ```
 
 1. Save the configuration file.
-1. [Reconfigure](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) (Omnibus GitLab) or
-   [restart](../../../administration/restart_gitlab.md#installations-from-source) (GitLab installed from source).
+1. [Reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
+   (Linux package installations) or [restart](../../../administration/restart_gitlab.md#installations-from-source)
+   (self-compiled installations).
 
 ### Enable one-time password using Duo
 
@@ -174,7 +175,7 @@ On your GitLab server:
 
 1. Open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
@@ -189,7 +190,7 @@ On your GitLab server:
 
 1. Add the provider configuration:
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
     gitlab_rails['duo_auth_enabled'] = false
@@ -209,7 +210,7 @@ On your GitLab server:
    ```
 
 1. Save the configuration file.
-1. For Omnibus GitLab, [reconfigure GitLab](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+1. For Linux package installations, [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
    For installations from source, [restart GitLab](../../../administration/restart_gitlab.md#installations-from-source).
 
 ### Enable one-time password using FortiToken Cloud
@@ -233,7 +234,7 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 1. Open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
@@ -248,7 +249,7 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 1. Add the provider configuration:
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['forti_token_cloud_enabled'] = true
@@ -266,8 +267,8 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
    ```
 
 1. Save the configuration file.
-1. [Reconfigure](../../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) (Omnibus GitLab) or
-   [restart](../../../administration/restart_gitlab.md#installations-from-source) (GitLab installed from source).
+1. [Reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) (Linux package installations) or
+   [restart](../../../administration/restart_gitlab.md#installations-from-source) (self-compiled installations).
 
 ### Set up a WebAuthn device
 

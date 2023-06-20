@@ -1,5 +1,5 @@
 import { s__, __ } from '~/locale';
-import { DEFAULT_FIELDS, RAW_TEXT_WARNING } from '~/jobs/components/table/constants';
+import { RAW_TEXT_WARNING } from '~/jobs/components/table/constants';
 
 export const JOBS_COUNT_ERROR_MESSAGE = __('There was an error fetching the number of jobs.');
 export const JOBS_FETCH_ERROR_MSG = __('There was an error fetching the jobs.');
@@ -19,11 +19,17 @@ export const RUNNER_EMPTY_TEXT = __('None');
 export const RUNNER_NO_DESCRIPTION = s__('Runners|No description');
 
 /* Admin Table constants */
+/* The field list is based on app/assets/javascripts/jobs/components/table/constants.js */
 export const DEFAULT_FIELDS_ADMIN = [
-  ...DEFAULT_FIELDS.slice(0, 2),
+  { key: 'status', label: __('Status'), columnClass: 'gl-w-15p' },
+  { key: 'job', label: __('Job'), columnClass: 'gl-w-20p' },
   { key: 'project', label: __('Project'), columnClass: 'gl-w-20p' },
   { key: 'runner', label: __('Runner'), columnClass: 'gl-w-15p' },
-  ...DEFAULT_FIELDS.slice(2),
+  { key: 'pipeline', label: __('Pipeline'), columnClass: 'gl-w-10p' },
+  { key: 'stage', label: __('Stage'), columnClass: 'gl-w-10p' },
+  { key: 'name', label: __('Name'), columnClass: 'gl-w-15p' },
+  { key: 'duration', label: __('Duration'), columnClass: 'gl-w-15p' },
+  { key: 'actions', label: '', columnClass: 'gl-w-10p' },
 ];
 
 export const RAW_TEXT_WARNING_ADMIN = RAW_TEXT_WARNING;

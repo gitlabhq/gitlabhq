@@ -30,6 +30,7 @@ export const createGQLSnippet = () => ({
     id: 'project-1',
     fullPath: 'group/project',
     webUrl: `${TEST_HOST}/group/project`,
+    visibility: 'public',
   },
   author: {
     __typename: 'User',

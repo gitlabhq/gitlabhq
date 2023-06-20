@@ -23,7 +23,7 @@ module Gitlab
 
         return identifier if identifier&.valid?
 
-        raise InvalidIdentifier, %Q(Invalid GL Repository "#{gl_repository}")
+        raise InvalidIdentifier, %(Invalid GL Repository "#{gl_repository}")
       end
 
       # The older 2-segment format, where the container is implied.

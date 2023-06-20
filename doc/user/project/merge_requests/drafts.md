@@ -12,7 +12,7 @@ or open threads, you can prevent it from being accepted before you
 [mark it as ready](#mark-merge-requests-as-ready). Flag it as a draft to disable
 the **Merge** button until you remove the **Draft** flag:
 
-![Blocked Merge Button](img/draft_blocked_merge_button_v13_10.png)
+![Blocked Merge Button](img/merge_request_draft_blocked_v16_0.png)
 
 ## Mark merge requests as drafts
 
@@ -42,10 +42,7 @@ When a merge request is ready to be merged, you can remove the `Draft` flag in s
 
 - **Viewing a merge request**: In the upper-right corner of the merge request, select **Mark as ready**.
   Users with at least the Developer role
-  can also scroll to the bottom of the merge request description and select **Mark as ready**:
-
-  ![Mark as ready](img/draft_blocked_merge_button_v13_10.png)
-
+  can also scroll to the bottom of the merge request description and select **Mark as ready**.
 - **Editing an existing merge request**: Remove `[Draft]`, `Draft:` or `(Draft)`
   from the beginning of the title, or clear **Mark as draft**
   below the **Title** field.
@@ -71,7 +68,7 @@ draft merge requests:
 1. Select **Yes** to include drafts, or **No** to exclude, and press **Return**
    to update the list of merge requests:
 
-   ![Filter draft merge requests](img/filter_draft_merge_requests_v13_10.png)
+   ![Filter draft merge requests](img/filter_draft_merge_requests_v16_0.png)
 
 ## Pipelines for drafts
 

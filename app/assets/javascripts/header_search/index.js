@@ -11,12 +11,12 @@ export const initHeaderSearchApp = (search = '') => {
   const el = document.getElementById('js-header-search');
   const headerEl = document.querySelector('.header-content');
 
-  if (!el && !headerEl) {
+  if (!el || !headerEl) {
     return false;
   }
 
   const searchContainer = headerEl.querySelector('.global-search-container');
-  const newHeader = headerEl.querySelector('.header-search-new');
+  const newHeader = headerEl.querySelector('.header-search');
 
   const { searchPath, issuesPath, mrPath, autocompletePath } = el.dataset;
   let { searchContext } = el.dataset;

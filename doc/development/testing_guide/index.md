@@ -79,4 +79,8 @@ Everything you should know about how to test migrations.
 
 Introduction to contract testing, how to run the tests, and how to write them.
 
+## [Test results tracking](test_results_tracking.md)
+
+How we track our test suite run results.
+
 [Return to Development documentation](../index.md)

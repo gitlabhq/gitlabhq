@@ -17,14 +17,9 @@ export default {
   methods: {
     convertToTask() {
       eventHub.$emit('convert-task-list-item', this.$el.closest('li').dataset.sourcepos);
-      this.closeDropdown();
     },
     deleteTaskListItem() {
       eventHub.$emit('delete-task-list-item', this.$el.closest('li').dataset.sourcepos);
-      this.closeDropdown();
-    },
-    closeDropdown() {
-      this.$refs.dropdown.close();
     },
   },
 };
@@ -33,7 +28,6 @@ export default {
 <template>
   <gl-disclosure-dropdown
     v-if="canUpdate"
-    ref="dropdown"
     class="task-list-item-actions-wrapper"
     category="tertiary"
     icon="ellipsis_v"

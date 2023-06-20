@@ -1,5 +1,7 @@
+import OrderedMap from 'orderedmap';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Schema, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
@@ -9,9 +11,18 @@ import Diagram from './diagram';
 import Frontmatter from './frontmatter';
 
 const TEXT_FORMAT = 'text/plain';
+const GFM_FORMAT = 'text/x-gfm';
 const HTML_FORMAT = 'text/html';
 const VS_CODE_FORMAT = 'vscode-editor-data';
 const CODE_BLOCK_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name];
+
+function parseHTML(schema, html) {
+  const parser = new DOMParser();
+  const startTag = '<body>';
+  const endTag = '</body>';
+  const { body } = parser.parseFromString(startTag + html + endTag, 'text/html');
+  return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
+}
 
 export default Extension.create({
   name: 'pasteMarkdown',
@@ -19,37 +30,36 @@ export default Extension.create({
   addOptions() {
     return {
       renderMarkdown: null,
+      serializer: null,
     };
   },
   addCommands() {
     return {
-      pasteMarkdown: (markdown) => () => {
+      pasteContent: (content = '', processMarkdown = true) => async () => {
         const { editor, options } = this;
         const { renderMarkdown, eventHub } = options;
         const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-        deserializer
-          .deserialize({ schema: editor.schema, markdown })
-          .then(({ document }) => {
-            if (!document) {
-              return;
-            }
+        const pasteSchemaSpec = { ...editor.schema.spec };
+        pasteSchemaSpec.marks = OrderedMap.from(pasteSchemaSpec.marks).remove('span');
+        pasteSchemaSpec.nodes = OrderedMap.from(pasteSchemaSpec.nodes).remove('div').remove('pre');
+        const schema = new Schema(pasteSchemaSpec);
 
-            const { state, view } = editor;
-            const { tr, selection } = state;
+        const promise = processMarkdown
+          ? deserializer.deserialize({ schema, markdown: content })
+          : Promise.resolve(parseHTML(schema, content));
+
+        promise
+          .then(({ document }) => {
+            if (!document) return;
+
             const { firstChild } = document.content;
-            const content =
+            const toPaste =
               document.content.childCount === 1 && firstChild.type.name === 'paragraph'
                 ? firstChild.content
                 : document.content;
 
-            if (selection.to - selection.from > 0) {
-              tr.replaceWith(selection.from, selection.to, content);
-            } else {
-              tr.insert(selection.from, content);
-            }
-
-            view.dispatch(tr);
+            editor.commands.insertContent(toPaste.toJSON());
           })
           .catch(() => {
             eventHub.$emit(ALERT_EVENT, {
@@ -65,24 +75,57 @@ export default Extension.create({
   addProseMirrorPlugins() {
     let pasteRaw = false;
 
+    const handleCutAndCopy = (view, event) => {
+      const slice = view.state.selection.content();
+      const gfmContent = this.options.serializer.serialize({ doc: slice.content });
+      const documentFragment = DOMSerializer.fromSchema(view.state.schema).serializeFragment(
+        slice.content,
+      );
+      const div = document.createElement('div');
+      div.appendChild(documentFragment);
+
+      event.clipboardData.setData(TEXT_FORMAT, div.innerText);
+      event.clipboardData.setData(HTML_FORMAT, div.innerHTML);
+      event.clipboardData.setData(GFM_FORMAT, gfmContent);
+
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
     return [
       new Plugin({
         key: new PluginKey('pasteMarkdown'),
         props: {
+          handleDOMEvents: {
+            copy: handleCutAndCopy,
+            cut: (view, event) => {
+              handleCutAndCopy(view, event);
+              this.editor.commands.deleteSelection();
+            },
+          },
           handleKeyDown: (_, event) => {
             pasteRaw = event.key === 'v' && (event.metaKey || event.ctrlKey) && event.shiftKey;
           },
 
           handlePaste: (view, event) => {
             const { clipboardData } = event;
-            const content = clipboardData.getData(TEXT_FORMAT);
-            const { state } = view;
-            const { tr, selection } = state;
-            const { from, to } = selection;
+
+            const gfmContent = clipboardData.getData(GFM_FORMAT);
+
+            if (gfmContent) {
+              return this.editor.commands.pasteContent(gfmContent, true);
+            }
+
+            const textContent = clipboardData.getData(TEXT_FORMAT);
+            const htmlContent = clipboardData.getData(HTML_FORMAT);
+
+            const { from, to } = view.state.selection;
 
             if (pasteRaw) {
-              tr.insertText(content.replace(/^\s+|\s+$/gm, ''), from, to);
-              view.dispatch(tr);
+              this.editor.commands.insertContentAt(
+                { from, to },
+                textContent.replace(/^\s+|\s+$/gm, ''),
+              );
               return true;
             }
 
@@ -91,18 +134,19 @@ export default Extension.create({
             const vsCodeMeta = hasVsCode ? JSON.parse(clipboardData.getData(VS_CODE_FORMAT)) : {};
             const language = vsCodeMeta.mode;
 
-            if (!content || (hasHTML && !hasVsCode) || (hasVsCode && language !== 'markdown')) {
-              return false;
-            }
-
             // if a code block is active, paste as plain text
-            if (CODE_BLOCK_NODE_TYPES.some((type) => this.editor.isActive(type))) {
+            if (!textContent || CODE_BLOCK_NODE_TYPES.some((type) => this.editor.isActive(type))) {
               return false;
             }
 
-            this.editor.commands.pasteMarkdown(content);
+            if (hasVsCode) {
+              return this.editor.commands.pasteContent(
+                language === 'markdown' ? textContent : `\`\`\`${language}\n${textContent}\n\`\`\``,
+                true,
+              );
+            }
 
-            return true;
+            return this.editor.commands.pasteContent(hasHTML ? htmlContent : textContent, !hasHTML);
           },
         },
       }),

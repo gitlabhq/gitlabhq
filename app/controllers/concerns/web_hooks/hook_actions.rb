@@ -9,6 +9,7 @@ module WebHooks
       attr_writer :hooks, :hook
 
       before_action :hook_logs, only: :edit
+      feature_category :webhooks
     end
 
     def index

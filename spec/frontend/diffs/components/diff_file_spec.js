@@ -553,4 +553,69 @@ describe('DiffFile', () => {
       expect(wrapper.find('[data-testid="conflictsAlert"]').exists()).toBe(true);
     });
   });
+
+  describe('file discussions', () => {
+    it.each`
+      extraProps                                                           | exists   | existsText
+      ${{}}                                                                | ${false} | ${'does not'}
+      ${{ hasCommentForm: false }}                                         | ${false} | ${'does not'}
+      ${{ hasCommentForm: true }}                                          | ${true}  | ${'does'}
+      ${{ discussions: [{ id: 1, position: { position_type: 'file' } }] }} | ${true}  | ${'does'}
+      ${{ drafts: [{ id: 1 }] }}                                           | ${true}  | ${'does'}
+    `(
+      'discussions wrapper $existsText exist for file with $extraProps',
+      ({ extraProps, exists }) => {
+        const file = {
+          ...getReadableFile(),
+          ...extraProps,
+        };
+
+        ({ wrapper, store } = createComponent({
+          file,
+          options: { provide: { glFeatures: { commentOnFiles: true } } },
+        }));
+
+        expect(wrapper.find('[data-testid="file-discussions"]').exists()).toEqual(exists);
+      },
+    );
+
+    it.each`
+      hasCommentForm | exists   | existsText
+      ${false}       | ${false} | ${'does not'}
+      ${true}        | ${true}  | ${'does'}
+    `(
+      'comment form $existsText exist for hasCommentForm with $hasCommentForm',
+      ({ hasCommentForm, exists }) => {
+        const file = {
+          ...getReadableFile(),
+          hasCommentForm,
+        };
+
+        ({ wrapper, store } = createComponent({
+          file,
+          options: { provide: { glFeatures: { commentOnFiles: true } } },
+        }));
+
+        expect(wrapper.find('[data-testid="file-note-form"]').exists()).toEqual(exists);
+      },
+    );
+
+    it.each`
+      discussions                                         | exists   | existsText
+      ${[]}                                               | ${false} | ${'does not'}
+      ${[{ id: 1, position: { position_type: 'file' } }]} | ${true}  | ${'does'}
+    `('discussions $existsText exist for $discussions', ({ discussions, exists }) => {
+      const file = {
+        ...getReadableFile(),
+        discussions,
+      };
+
+      ({ wrapper, store } = createComponent({
+        file,
+        options: { provide: { glFeatures: { commentOnFiles: true } } },
+      }));
+
+      expect(wrapper.find('[data-testid="diff-file-discussions"]').exists()).toEqual(exists);
+    });
+  });
 });

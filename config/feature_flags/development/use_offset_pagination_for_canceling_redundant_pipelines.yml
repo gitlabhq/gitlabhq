@@ -1,0 +1,8 @@
+---
+name: use_offset_pagination_for_canceling_redundant_pipelines
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122764
+rollout_issue_url: use_offset_pagination_for_canceling_redundant_pipelines
+milestone: '16.1'
+type: development
+group: group::optimize
+default_enabled: false

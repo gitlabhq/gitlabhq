@@ -365,11 +365,14 @@ Example response:
 
 ## Create an agent token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+> - Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030) in GitLab 16.1.
 
 Creates a new token for an agent.
 
 You must have at least the Maintainer role to use this endpoint.
+
+An agent can have only two active tokens at one time.
 
 ```plaintext
 POST /projects/:id/cluster_agents/:agent_id/tokens

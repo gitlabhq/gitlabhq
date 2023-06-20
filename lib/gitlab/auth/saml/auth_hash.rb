@@ -5,7 +5,7 @@ module Gitlab
     module Saml
       class AuthHash < Gitlab::Auth::OAuth::AuthHash
         def groups
-          Array.wrap(get_raw(Gitlab::Auth::Saml::Config.groups))
+          Array.wrap(get_raw(Gitlab::Auth::Saml::Config.new(auth_hash.provider).groups))
         end
 
         def authn_context

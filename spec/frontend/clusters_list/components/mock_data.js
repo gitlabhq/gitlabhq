@@ -205,4 +205,14 @@ export const clusterAgents = [
       ],
     },
   },
+  {
+    name: 'ci-agent-1',
+    id: '3',
+    webPath: 'shared-project/agent-1',
+    status: 'inactive',
+    lastContact: connectedTimeInactive.getTime(),
+    isShared: true,
+    connections: null,
+    tokens: null,
+  },
 ];

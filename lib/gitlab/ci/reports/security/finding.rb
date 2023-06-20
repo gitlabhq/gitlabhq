@@ -82,7 +82,6 @@ module Gitlab
               details
               signatures
               description
-              message
               cve
               solution
             ].index_with do |key|
@@ -172,10 +171,6 @@ module Gitlab
 
           def description
             original_data['description']
-          end
-
-          def message
-            original_data['message']
           end
 
           def solution

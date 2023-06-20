@@ -11,6 +11,7 @@ type: reference, howto
 > - [Became available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5 for paid groups only.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
+> - [Became available in trial subscriptions](https://gitlab.com/gitlab-org/gitlab/-/issues/386041) in GitLab 16.1. Default prefix added.
 
 Project access tokens are similar to passwords, except you can [limit access to resources](#scopes-for-a-project-access-token),
 select a limited role, and provide an expiry date.
@@ -32,12 +33,9 @@ The ability to create project access tokens without expiry was [deprecated](http
 
 You can use project access tokens:
 
-- On GitLab SaaS: If you have the Premium or Ultimate license tier. Project access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
-- On self-managed instances of GitLab: With any license tier. If you have the Free tier:
-  - Review your security and compliance policies around
-    [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
-  - Consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to
-    lower potential abuse.
+- On GitLab SaaS: If you have the Premium or Ultimate license tier, only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
+- On self-managed instances of GitLab: With any license tier. If you have the Free tier,
+  consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to lower potential abuse.
 
 You cannot use project access tokens to create other group, project, or personal access tokens.
 
@@ -57,8 +55,8 @@ all projects that have visibility level set to [Internal](../../public_access.md
 
 To create a project access token:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Access Tokens**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Enter an expiry date for the token.
    - The token expires on that date at midnight UTC.
@@ -75,8 +73,8 @@ A project access token is displayed. Save the project access token somewhere saf
 
 To revoke a project access token:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Access Tokens**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Access Tokens**.
 1. Next to the project access token to revoke, select **Revoke**.
 
 ## Scopes for a project access token
@@ -98,8 +96,8 @@ The scope determines the actions you can perform when you authenticate with a pr
 
 To enable or disable project access token creation for all projects in a top-level group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Allow project and group access token creation**.
 
@@ -112,7 +110,7 @@ Even when creation is disabled, you can still use and revoke existing project ac
 
 Bot users for projects are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
-These bot users do not count as licensed seats.
+This user is not a billable user, so it does not count toward the license limit.
 
 The bot users for projects have [permissions](../../permissions.md#project-members-permissions) that correspond with the
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
@@ -139,4 +137,4 @@ See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-
 
 ## Token availability
 
-Project access tokens are only available in paid subscriptions, and not available in trial subscriptions. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).
+More than one project access token is only available in paid subscriptions. In Premium and Ultimate trial subscriptions, only one project access token is included. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).

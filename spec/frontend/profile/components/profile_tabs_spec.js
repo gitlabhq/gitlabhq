@@ -10,7 +10,7 @@ import GroupsTab from '~/profile/components/groups_tab.vue';
 import ContributedProjectsTab from '~/profile/components/contributed_projects_tab.vue';
 import PersonalProjectsTab from '~/profile/components/personal_projects_tab.vue';
 import StarredProjectsTab from '~/profile/components/starred_projects_tab.vue';
-import SnippetsTab from '~/profile/components/snippets_tab.vue';
+import SnippetsTab from '~/profile/components/snippets/snippets_tab.vue';
 import FollowersTab from '~/profile/components/followers_tab.vue';
 import FollowingTab from '~/profile/components/following_tab.vue';
 import waitForPromises from 'helpers/wait_for_promises';

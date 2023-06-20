@@ -1,7 +1,7 @@
 ---
 status: ongoing
 creation-date: "2023-04-05"
-authors: [ "@lohrc" ]
+authors: [ "@lohrc", "alexpooley" ]
 coach: "@ayufan"
 approvers: [ "@lohrc" ]
 owning-stage: "~devops::data stores"
@@ -47,6 +47,7 @@ The Organization focuses on creating a better experience for Organizations to ma
 - Aggregation: Data from all groups and projects in an Organization can be aggregated.
 - An Organization includes settings, data, and features from all groups and projects under the same owner (including personal namespaces).
 - Cascading behavior: Organization cascades behavior to all the projects and groups that are owned by the same Organization. It can be decided at the Organization level whether a setting can be overridden or not on the levels beneath.
+- Minimal burden on customers: The addition of Organizations should not change existing group and project paths to minimize the impact of URL changes.
 
 ### Non-Goals
 
@@ -86,14 +87,14 @@ Self-managed instances would set a default Organization.
 
 The Organization MVC will contain the following functionality:
 
-- Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab. 
+- Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab.
 - Every instance will have a default organization. Initially, all users will be managed by this default Organization.
 - Organization Owner. The creation of an Organization appoints that user as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
-- Organization users. A user is managed by one Organization, but can be part of multiple Organizations.
+- Organization users. A user is managed by one Organization, but can be part of multiple Organizations. Users are able to navigate between the different Organizations they are part of.
 - Setup settings. Containing the Organization name, ID, description, README, and avatar. Settings are editable by the Organization Owner.
 - Setup flow. Users are able to build an Organization on top of an existing top-level group. New users are able to create an Organization from scratch and to start building top-level groups from there.
 - Visibility. Options will be `public` and `private`. A nonuser of a specific Organization will not see private Organizations in the explore section. Visibility is editable by the Organization Owner.
-- Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented. 
+- Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
 - Groups. This includes the ability to create, edit, and delete groups, as well as a Groups overview that can be accessed by the Organization Owner.
 - Projects. This includes the ability to create, edit, and delete projects, as well as a Projects overview that can be accessed by the Organization Owner.
 
@@ -107,10 +108,10 @@ Organization Users can get access to groups and projects as:
 - A project member: this grants access to the project, and limited access to parent groups, regardless of their visibility.
 - A non-member: this grants access to public and internal groups and projects of that Organization. To access a private group or project in an Organization, a user must become a member.
 
-Organization Users can be managed by the Organization as:
+Organization Users can be managed in the following ways:
 
-- Enterprise Users, managed by the Organization. This includes control over their user account and the ability to block the user.
-- Non-Enterprise Users, managed by the User. Non-Enterprise Users can be removed from an Organization, but their user account remains in their control.
+- As [Enterprise Users](../../../user/enterprise_user/index.md), managed by the Organization. This includes control over their user account and the ability to block the user.
+- As Non-Enterprise Users, managed by the Default Organization. Non-Enterprise Users can be removed from an Organization, but the user keeps ownership of their user account.
 
 Enterprise Users are only available to Organizations with a Premium or Ultimate subscription. Organizations on the free tier will only be able to host Non-Enterprise Users.
 
@@ -118,9 +119,13 @@ Enterprise Users are only available to Organizations with a Premium or Ultimate 
 
 Non-users are external to the Organization and can only access the public resources of an Organization, such as public projects.
 
+### Routing
+
+Today only users, projects, namespaces and container images are considered routable entities which require global uniqueness on `https://gitlab.com/<path>/-/`. Initially, Organization routes will be [unscoped](../../../development/routing.md). Organizations will follow the path `https://gitlab.com/-/organizations/org-name/` as one of the design goals is that the addition of Organizations should not change existing group and project paths.
+
 ## Iteration Plan
 
-The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/alpha-beta-support.md).
+The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
 
 ### Iteration 1: Organization Prototype (FY24Q2)
 
@@ -141,9 +146,9 @@ In iteration 2, an Organization MVC Experiment will be released. We will test th
 
 ### Iteration 3: Organization MVC Beta (FY24Q4)
 
-In iteration 3, the Organization MVC Beta will be released. 
+In iteration 3, the Organization MVC Beta will be released.
 
-- Multiple Organization Owners can be assigned. 
+- Multiple Organization Owners can be assigned.
 - Enterprise users can be added to an Organization.
 
 ### Iteration 4: Organization MVC GA (FY25Q1)
@@ -155,12 +160,13 @@ After the initial rollout of Organizations, the following functionality will be 
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
 1. Move billing from top-level group to Organization.
 1. Audit events at the Organization level.
-1. Set merge request approval rules at the Organization level and cascade to all groups and projects. 
+1. Set merge request approval rules at the Organization level and cascade to all groups and projects.
 1. Security policies at the Organization level.
 1. Vulnerability reports at the Organization level.
 1. Cascading Organization setting to enforce security scans.
 1. Scan result policies at the Organization level.
 1. Compliance frameworks.
+1. [Support the agent for Kubernetes sharing at the Organization level](https://gitlab.com/gitlab-org/gitlab/-/issues/382731).
 
 ## Alternative Solutions
 
@@ -169,7 +175,10 @@ An alternative approach to building Organizations is to convert top-level groups
 ## Decision Log
 
 - 2023-05-10: [Billing is not part of the Organization MVC](https://gitlab.com/gitlab-org/gitlab/-/issues/406614#note_1384055365)
+- 2023-05-15: [Organization route setup](https://gitlab.com/gitlab-org/gitlab/-/issues/409913#note_1388679761)
 
 ## Links
 
 - [Organization epic](https://gitlab.com/groups/gitlab-org/-/epics/9265)
+- [Enterprise Users](../../../user/enterprise_user/index.md)
+- [Cells blueprint](../cells/index.md)

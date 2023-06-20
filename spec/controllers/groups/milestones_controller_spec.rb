@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::MilestonesController do
+RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
   let(:group) { create(:group, :public) }
   let!(:project) { create(:project, :public, group: group) }
   let!(:project2) { create(:project, group: group) }
@@ -274,6 +274,57 @@ RSpec.describe Groups::MilestonesController do
 
       expect(response).not_to redirect_to(group_milestone_path(group, milestone.iid))
       expect(response).to render_template(:edit)
+    end
+
+    context 'with format :json' do
+      subject do
+        patch :update,
+          params: {
+            id: milestone.iid,
+            milestone: milestone_params,
+            group_id: group.to_param,
+            format: :json
+          }
+      end
+
+      it "responds :no_content (204) without content body and updates milestone sucessfully" do
+        subject
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response.body).to be_blank
+
+        milestone.reload
+
+        expect(milestone).to have_attributes(title: milestone_params[:title])
+      end
+
+      it 'responds unprocessable_entity (422) with error data' do
+        # Note: This assignment ensures and triggers a validation error when updating the milestone.
+        # Same approach used in spec/models/milestone_spec.rb .
+        milestone_params[:title] = '<img src=x onerror=prompt(1)>'
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+
+        expect(json_response).to include("errors" => be_an(Array))
+      end
+
+      it "handles ActiveRecord::StaleObjectError" do
+        milestone_params[:title] = "title changed"
+        # Purposely reduce the `lock_version` to trigger an ActiveRecord::StaleObjectError
+        milestone_params[:lock_version] = milestone.lock_version - 1
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:conflict)
+        expect(json_response).to include "errors" => [
+          format(
+            _("Someone edited this %{model_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."), # rubocop:disable Layout/LineLength
+            model_name: _('milestone')
+          )
+        ]
+      end
     end
   end
 

@@ -1,5 +1,5 @@
 <script>
-import ILLUSTRATION_URL from '@gitlab/svgs/dist/illustrations/multi-editor_all_changes_committed_empty.svg?url';
+import ILLUSTRATION_URL from '@gitlab/svgs/dist/illustrations/rocket-launch-md.svg?url';
 import { GlBanner } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';

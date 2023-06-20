@@ -115,6 +115,7 @@ export default {
   computed: {
     ...mapState('diffs', ['latestDiff']),
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
+    ...mapGetters(['getNoteableData']),
     diffContentIDSelector() {
       return `#diff-content-${this.diffFile.file_hash}`;
     },
@@ -210,6 +211,9 @@ export default {
     labelToggleFile() {
       return this.expanded ? __('Hide file contents') : __('Show file contents');
     },
+    showCommentButton() {
+      return this.getNoteableData.current_user.can_create_note && this.glFeatures.commentOnFiles;
+    },
   },
   watch: {
     'idState.moreActionsShown': {
@@ -233,6 +237,7 @@ export default {
       'reviewFile',
       'setFileCollapsedByUser',
       'setGenerateTestFilePath',
+      'toggleFileCommentForm',
     ]),
     handleToggleFile() {
       this.$emit('toggleFile');
@@ -389,6 +394,18 @@ export default {
       >
         {{ $options.i18n.fileReviewLabel }}
       </gl-form-checkbox>
+      <gl-button
+        v-if="showCommentButton"
+        v-gl-tooltip.hover
+        :title="__('Comment on this file')"
+        :aria-label="__('Comment on this file')"
+        icon="comment"
+        category="tertiary"
+        size="small"
+        class="gl-mr-3 btn-icon"
+        data-testid="comment-files-button"
+        @click="toggleFileCommentForm(diffFile.file_path)"
+      />
       <gl-button-group class="gl-pt-0!">
         <gl-button
           v-if="diffFile.external_url"
@@ -445,7 +462,10 @@ export default {
               v-if="showGenerateTestFileButton"
               @click="setGenerateTestFilePath(diffFile.new_path)"
             >
-              {{ __('Generate test with AI') }}
+              <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
+                {{ __('Suggest test cases') }}
+                <gl-icon name="tanuki-ai" class="gl-text-purple-600 gl-mr-n3" />
+              </span>
             </gl-dropdown-item>
             <gl-dropdown-item
               v-if="diffFile.replaced_view_path"

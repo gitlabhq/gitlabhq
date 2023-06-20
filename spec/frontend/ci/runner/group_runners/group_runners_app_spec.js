@@ -82,6 +82,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('GroupRunnersApp', () => {
   let wrapper;
+  const showToast = jest.fn();
 
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
@@ -122,6 +123,11 @@ describe('GroupRunnersApp', () => {
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
         ...provide,
+      },
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
       },
       ...options,
     });
@@ -250,8 +256,6 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('Single runner row', () => {
-    let showToast;
-
     const { webUrl, editUrl, node } = mockGroupRunnersEdges[0];
     const { id: graphqlId, shortSha, jobExecutionStatus } = node;
     const id = getIdFromGraphQLId(graphqlId);
@@ -260,7 +264,6 @@ describe('GroupRunnersApp', () => {
 
     beforeEach(async () => {
       await createComponent({ mountFn: mountExtended });
-      showToast = jest.spyOn(wrapper.vm.$root.$toast, 'show');
     });
 
     it('Shows job status and links to jobs', () => {

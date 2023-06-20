@@ -1,26 +1,28 @@
-#import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "../fragments/cluster_agent.fragment.graphql"
 
-query getAgents(
-  $defaultBranchName: String!
-  $projectPath: ID!
-  $first: Int
-  $last: Int
-  $afterAgent: String
-  $beforeAgent: String
-) {
+query getAgents($defaultBranchName: String!, $projectPath: ID!) {
   project(fullPath: $projectPath) {
     id
-    clusterAgents(first: $first, last: $last, before: $beforeAgent, after: $afterAgent) {
+    clusterAgents {
       nodes {
         ...ClusterAgentFragment
       }
+    }
 
-      pageInfo {
-        ...PageInfo
+    ciAccessAuthorizedAgents {
+      nodes {
+        agent {
+          ...ClusterAgentFragment
+        }
       }
+    }
 
-      count
+    userAccessAuthorizedAgents {
+      nodes {
+        agent {
+          ...ClusterAgentFragment
+        }
+      }
     }
 
     repository {

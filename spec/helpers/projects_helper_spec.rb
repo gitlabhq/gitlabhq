@@ -1038,19 +1038,25 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         containerRegistryEnabled: !!project.container_registry_enabled,
         lfsEnabled: !!project.lfs_enabled,
         emailsDisabled: project.emails_disabled?,
-        metricsDashboardAccessLevel: project.project_feature.metrics_dashboard_access_level,
         showDefaultAwardEmojis: project.show_default_award_emojis?,
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level,
         environmentsAccessLevel: project.project_feature.environments_access_level,
         featureFlagsAccessLevel: project.project_feature.feature_flags_access_level,
         releasesAccessLevel: project.project_feature.releases_access_level,
-        infrastructureAccessLevel: project.project_feature.infrastructure_access_level
+        infrastructureAccessLevel: project.project_feature.infrastructure_access_level,
+        modelExperimentsAccessLevel: project.project_feature.model_experiments_access_level
       )
     end
 
     it 'includes membersPagePath' do
       expect(subject).to include(membersPagePath: project_project_members_path(project))
+    end
+
+    it 'includes canAddCatalogResource' do
+      allow(helper).to receive(:can?) { false }
+
+      expect(subject).to include(canAddCatalogResource: false)
     end
   end
 

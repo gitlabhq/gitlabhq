@@ -37,6 +37,7 @@ module ApplicationSettingImplementation
       {
         admin_mode: false,
         after_sign_up_text: nil,
+        ai_access_token: nil,
         akismet_enabled: false,
         akismet_api_key: nil,
         allow_local_requests_from_system_hooks: true,
@@ -104,6 +105,7 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        instance_level_code_suggestions_enabled: false,
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_application_key: nil,
@@ -132,6 +134,8 @@ module ApplicationSettingImplementation
         personal_access_token_prefix: 'glpat-',
         plantuml_enabled: false,
         plantuml_url: nil,
+        diagramsnet_enabled: true,
+        diagramsnet_url: 'https://embed.diagrams.net',
         polling_interval_multiplier: 1,
         productivity_analytics_start_date: Time.current,
         project_download_export_limit: 1,
@@ -223,6 +227,7 @@ module ApplicationSettingImplementation
         user_show_add_ssh_key_message: true,
         valid_runner_registrars: VALID_RUNNER_REGISTRAR_TYPES,
         wiki_page_max_content_bytes: 50.megabytes,
+        wiki_asciidoc_allow_uri_includes: false,
         package_registry_cleanup_policies_worker_capacity: 2,
         container_registry_delete_tags_service_timeout: 250,
         container_registry_expiration_policies_worker_capacity: 4,
@@ -253,7 +258,9 @@ module ApplicationSettingImplementation
         user_defaults_to_private_profile: false,
         projects_api_rate_limit_unauthenticated: 400,
         gitlab_dedicated_instance: false,
-        ci_max_includes: 150
+        ci_max_includes: 150,
+        allow_account_deletion: true,
+        gitlab_shell_operation_limit: 600
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

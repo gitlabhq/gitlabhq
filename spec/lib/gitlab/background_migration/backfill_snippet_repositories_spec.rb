@@ -107,7 +107,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
           last_commit = raw_repository(snippet).commit
 
           aggregate_failures do
-            expect(blob).to be
+            expect(blob).to be_present
             expect(blob.data).to eq content
             expect(last_commit.author_name).to eq user.name
             expect(last_commit.author_email).to eq user.email
@@ -225,13 +225,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
         it 'converts invalid filenames' do
           subject
 
-          expect(blob_at(snippet_with_invalid_path, converted_file_name)).to be
+          expect(blob_at(snippet_with_invalid_path, converted_file_name)).to be_present
         end
 
         it 'does not convert valid filenames on subsequent migrations' do
           subject
 
-          expect(blob_at(snippet_with_valid_path, file_name)).to be
+          expect(blob_at(snippet_with_valid_path, file_name)).to be_present
         end
       end
     end
@@ -293,8 +293,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
       it 'updates the file_name only when it is invalid' do
         subject
 
-        expect(blob_at(invalid_snippet, 'snippetfile1.txt')).to be
-        expect(blob_at(snippet, file_name)).to be
+        expect(blob_at(invalid_snippet, 'snippetfile1.txt')).to be_present
+        expect(blob_at(snippet, file_name)).to be_present
       end
 
       it_behaves_like 'migration_bot user commits files' do

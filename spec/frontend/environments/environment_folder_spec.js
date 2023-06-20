@@ -35,7 +35,7 @@ describe('~/environments/components/environments_folder.vue', () => {
         ...propsData,
       },
       stubs: { transition: stubTransition() },
-      provide: { helpPagePath: '/help', projectId: '1' },
+      provide: { helpPagePath: '/help', projectId: '1', projectPath: 'path/to/project' },
     });
 
   beforeEach(() => {

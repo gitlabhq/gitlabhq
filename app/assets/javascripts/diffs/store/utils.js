@@ -140,6 +140,7 @@ export function getFormData(params) {
     linePosition,
     positionType,
     lineRange,
+    showWhitespace,
   } = params;
 
   const position = JSON.stringify({
@@ -156,6 +157,7 @@ export function getFormData(params) {
     width: params.width,
     height: params.height,
     line_range: lineRange,
+    ignore_whitespace_change: !showWhitespace,
   });
 
   const postData = {
@@ -486,9 +488,8 @@ export const getDiffMode = (diffFile) => {
   const diffModeKey = Object.keys(diffModes).find((key) => diffFile[`${key}_file`]);
   return (
     diffModes[diffModeKey] ||
-    (diffFile.viewer &&
-      diffFile.viewer.name === diffViewerModes.mode_changed &&
-      diffViewerModes.mode_changed) ||
+    (diffFile.viewer?.name === diffViewerModes.mode_changed && diffViewerModes.mode_changed) ||
+    (diffFile.viewer?.name === diffViewerModes.no_preview && diffViewerModes.no_preview) ||
     diffModes.replaced
   );
 };

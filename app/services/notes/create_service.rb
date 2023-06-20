@@ -21,6 +21,8 @@ module Notes
       # only, there is no need be create a note!
 
       execute_quick_actions(note) do |only_commands|
+        note.check_for_spam(action: :create, user: current_user) unless only_commands
+
         note.run_after_commit do
           # Finish the harder work in the background
           NewNoteWorker.perform_async(note.id)
@@ -105,16 +107,10 @@ module Notes
     def do_commands(note, update_params, message, command_names, only_commands)
       return if quick_actions_service.commands_executed_count.to_i == 0
 
-      if update_params.present?
-        invalid_message = validate_commands(note, update_params)
-
-        if invalid_message
-          note.errors.add(:validation, invalid_message)
-          message = invalid_message
-        else
-          quick_actions_service.apply_updates(update_params, note)
-          note.commands_changes = update_params
-        end
+      update_error = quick_actions_update_errors(note, update_params)
+      if update_error
+        note.errors.add(:validation, update_error)
+        message = update_error
       end
 
       # We must add the error after we call #save because errors are reset
@@ -125,6 +121,19 @@ module Notes
         # Allow consumers to detect problems applying commands
         note.errors.add(:commands, _('Failed to apply commands.')) unless message.present?
       end
+    end
+
+    def quick_actions_update_errors(note, params)
+      return unless params.present?
+
+      invalid_message = validate_commands(note, params)
+      return invalid_message if invalid_message
+
+      service_response = quick_actions_service.apply_updates(params, note)
+      note.commands_changes = params
+      return if service_response.success?
+
+      service_response.message.join(', ')
     end
 
     def quick_action_options

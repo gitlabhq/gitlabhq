@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Member leaves project', feature_category: :subgroups do
+RSpec.describe 'Projects > Members > Member leaves project', feature_category: :groups_and_projects do
   include Features::MembersHelpers
   include Spec::Support::Helpers::ModalHelpers
 

@@ -6,7 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
-import groupItemComponent from '~/groups/components/group_item.vue';
+import groupItemComponent from 'jh_else_ce/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
@@ -42,7 +42,7 @@ describe('AppComponent', () => {
   let mock;
   let getGroupsSpy;
 
-  const store = new GroupsStore({ hideProjects: false });
+  const store = new GroupsStore({});
   const service = new GroupsService(mockEndpoint);
 
   const createShallowComponent = ({ propsData = {} } = {}) => {
@@ -51,7 +51,6 @@ describe('AppComponent', () => {
       propsData: {
         store,
         service,
-        hideProjects: false,
         containerId: 'js-groups-tree',
         ...propsData,
       },

@@ -15,6 +15,7 @@ module Tasks
         yarn.lock
         babel.config.js
         config/webpack.config.js
+        .nvmrc
       ].freeze
       # Ruby gems might emit assets which have an impact on compilation
       # or have a direct impact on asset compilation (e.g. scss) and therefore

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Importing Jira Users', feature_category: :integrations do
+RSpec.describe 'Importing Jira Users', feature_category: :importers do
   include JiraIntegrationHelpers
   include GraphqlHelpers
 

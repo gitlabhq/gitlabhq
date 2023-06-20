@@ -25,7 +25,7 @@ RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :packag
       let(:valid_json) { { 'name' => 'foo', 'version' => 'v1.0', 'dist' => { 'tarball' => 'x', 'shasum' => 'x' } } }
 
       it { is_expected.to allow_value(valid_json).for(:package_json) }
-      it { is_expected.to allow_value(valid_json.merge('extra-field': { 'foo': 'bar' })).for(:package_json) }
+      it { is_expected.to allow_value(valid_json.merge('extra-field': { foo: 'bar' })).for(:package_json) }
       it { is_expected.to allow_value(with_dist { |dist| dist.merge('extra-field': 'x') }).for(:package_json) }
 
       %w[name version dist].each do |field|

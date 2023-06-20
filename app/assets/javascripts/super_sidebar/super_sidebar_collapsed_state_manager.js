@@ -24,7 +24,7 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
   findPage().classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
 
   sidebarState.isPeek = false;
-  sidebarState.isPeekable = Boolean(gon.features?.superSidebarPeek) && collapsed;
+  sidebarState.isPeekable = collapsed;
   sidebarState.isCollapsed = collapsed;
 
   if (saveCookie && isDesktopBreakpoint()) {

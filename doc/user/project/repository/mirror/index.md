@@ -34,14 +34,14 @@ Mirror a repository when:
 
 ## Create a repository mirror
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
   or you must have a local copy of the key.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a **Git repository URL**. For security reasons, the URL to the original
    repository is only displayed to users with the Maintainer role
@@ -59,12 +59,37 @@ Prerequisite:
 1. If you authenticate with SSH host keys, [verify the host key](#verify-a-host-key)
    to ensure it is correct.
 1. To prevent force-pushing over diverged refs, select [**Keep divergent refs**](push.md#keep-divergent-refs).
-1. Optional. Select [**Mirror only protected branches**](#mirror-only-protected-branches).
+1. Optional. To limit the number of branches mirrored, select
+   **Mirror only protected branches** or enter a regex in **Mirror specific branches**.
 1. Select **Mirror repository**.
 
 If you select `SSH public key` as your authentication method, GitLab generates a
 public key for your GitLab repository. You must provide this key to the non-GitLab server.
 For more information, see [Get your SSH public key](#get-your-ssh-public-key).
+
+### Mirror only protected branches
+
+You can choose to mirror only the
+[protected branches](../../protected_branches.md) in the mirroring project,
+either from or to your remote repository. For [pull mirroring](pull.md),
+non-protected branches in the mirroring project are not mirrored and can diverge.
+
+To use this option, select **Only mirror protected branches** when you create a repository mirror.
+
+### Mirror specific branches **(PREMIUM)**
+
+> - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
+
+FLAG:
+On self-managed GitLab, by default the field `mirror_branch_regex` is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
+named `mirror_only_branches_match_regex`.
+On GitLab.com, this feature is available.
+
+To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
+enter a regular expression into the **Mirror specific branches** field. Branches with names that
+do not match the regular expression are not mirrored.
 
 ## Update a mirror
 
@@ -88,36 +113,12 @@ Prerequisite:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
 1. Select **Update now** (**{retry}**):
    ![Repository mirroring force update user interface](img/repository_mirroring_force_update.png)
-
-## Mirror only protected branches
-
-You can choose to mirror only the
-[protected branches](../../protected_branches.md) in the mirroring project,
-either from or to your remote repository. For [pull mirroring](pull.md),
-non-protected branches in the mirroring project are not mirrored and can diverge.
-
-To use this option, select **Only mirror protected branches** when you create a repository mirror.
-
-## Mirror specific branches
-
-> - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default the field `mirror_branch_regex` is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
-named `mirror_only_branches_match_regex`.
-On GitLab.com, this feature is available.
-
-To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
-enter a regular expression into the **Mirror specific branches** field. Branches with names that
-do not match the regular expression are not mirrored.
 
 ## Authentication methods for mirrors
 
@@ -155,8 +156,8 @@ When you mirror a repository and select the **SSH public key** as your
 authentication method, GitLab generates a public key for you. The non-GitLab server
 needs this key to establish trust with your GitLab repository. To copy your SSH public key:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories**.
 1. Identify the correct repository, and select **Copy SSH public key** (**{copy-to-clipboard}**).
@@ -183,6 +184,7 @@ for you to check:
 
 - [AWS CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
 - [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/configure-ssh-and-two-step-verification/)
+- [Codeberg](https://docs.codeberg.org/security/ssh-fingerprint/)
 - [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints)
 - [GitLab.com](../../../gitlab_com/index.md#ssh-host-keys-fingerprints)
 - [Launchpad](https://help.launchpad.net/SSHFingerprints)
@@ -263,8 +265,8 @@ If you receive this error after creating a new project using
 
 Check if the repository owner is specified in the URL of your mirrored repository:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. If no repository owner is specified, delete and add the URL again in this format,
    replacing `OWNER`, `ACCOUNTNAME`, `PATH_TO_REPO`, and `REPONAME` with your values:
@@ -344,8 +346,8 @@ Prerequisites:
 To resolve the issue:
 
 1. [Verify the host key](#verify-a-host-key).
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. To refresh the keys, either:
 

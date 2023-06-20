@@ -6,6 +6,7 @@ Redis.raise_deprecations = true unless Rails.env.production?
 
 Redis::Client.prepend(Gitlab::Instrumentation::RedisInterceptor)
 Redis::Cluster::NodeLoader.prepend(Gitlab::Patch::NodeLoader)
+Redis::Cluster.prepend(Gitlab::Patch::RedisCluster)
 
 # Make sure we initialize a Redis connection pool before multi-threaded
 # execution starts by

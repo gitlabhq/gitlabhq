@@ -4,7 +4,7 @@ module API
   class ProjectTemplates < ::API::Base
     include PaginationParams
 
-    TEMPLATE_TYPES = %w[dockerfiles gitignores gitlab_ci_ymls licenses metrics_dashboard_ymls issues merge_requests].freeze
+    TEMPLATE_TYPES = %w[dockerfiles gitignores gitlab_ci_ymls licenses issues merge_requests].freeze
     # The regex is needed to ensure a period (e.g. agpl-3.0)
     # isn't confused with a format type. We also need to allow encoded
     # values (e.g. C%2B%2B for C++), so allow % and + as well.
@@ -16,7 +16,7 @@ module API
 
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-      requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|metrics_dashboard_ymls|issues|merge_requests) of the template'
+      requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests) of the template'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of templates available to this project' do
@@ -32,8 +32,6 @@ module API
         use :pagination
       end
       get ':id/templates/:type' do
-        bad_request! if params[:type] == 'metrics_dashboard_ymls' && Feature.enabled?(:remove_monitor_metrics)
-
         templates = TemplateFinder.all_template_names(user_project, params[:type]).values.flatten
 
         present paginate(::Kaminari.paginate_array(templates)), with: Entities::TemplatesList
@@ -62,8 +60,6 @@ module API
       end
 
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
-        bad_request! if params[:type] == 'metrics_dashboard_ymls' && Feature.enabled?(:remove_monitor_metrics)
-
         begin
           template = TemplateFinder.build(
             params[:type],

@@ -1,4 +1,4 @@
-import { GlIcon, GlToggle } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlIcon, GlToggle } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -28,6 +28,7 @@ describe('Sidebar Subscriptions Widget', () => {
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findIcon = () => wrapper.findComponent(GlIcon);
+  const findDropdownToggleItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   const createComponent = ({
     subscriptionsQueryHandler = jest.fn().mockResolvedValue(issueSubscriptionsResponse()),
@@ -155,7 +156,7 @@ describe('Sidebar Subscriptions Widget', () => {
       });
       await waitForPromises();
 
-      await wrapper.find('[data-testid="notifications-toggle"]').vm.$emit('change');
+      await findDropdownToggleItem().vm.$emit('action');
 
       await waitForPromises();
 

@@ -1,6 +1,7 @@
 <script>
 import * as Sentry from '@sentry/browser';
 import axios from '~/lib/utils/axios_utils';
+import { s__ } from '~/locale';
 import { PANELS_WITH_PINS } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
@@ -40,6 +41,10 @@ export default {
       type: String,
       required: true,
     },
+  },
+
+  i18n: {
+    mainNavigation: s__('Navigation|Main navigation'),
   },
 
   data() {
@@ -137,8 +142,8 @@ export default {
 </script>
 
 <template>
-  <nav class="gl-p-2 gl-relative">
-    <ul v-if="hasStaticItems" class="gl-p-0 gl-m-0">
+  <nav :aria-label="$options.i18n.mainNavigation" class="gl-p-2 gl-relative">
+    <ul v-if="hasStaticItems" class="gl-p-0 gl-m-0" data-testid="static-items-section">
       <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
     </ul>
     <pinned-section
@@ -154,7 +159,7 @@ export default {
       class="gl-my-2 gl-mx-4"
       data-testid="main-menu-separator"
     />
-    <ul class="gl-p-0 gl-list-style-none">
+    <ul class="gl-p-0 gl-list-style-none" data-testid="non-static-items-section">
       <template v-for="item in nonStaticItems">
         <menu-section
           v-if="isSection(item)"

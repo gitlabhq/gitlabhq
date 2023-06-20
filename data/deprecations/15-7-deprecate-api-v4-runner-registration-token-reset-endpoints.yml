@@ -8,7 +8,7 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383341  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
-    be removed in GitLab 17.0.
+    return the HTTP `410 Gone` status code in GitLab 17.0.
     The deprecated endpoints are:
 
     - `POST /runners/reset_registration_token`

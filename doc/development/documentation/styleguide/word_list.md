@@ -128,6 +128,10 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
+## AI, artificial intelligence
+
+Use **AI**. Do not spell out **artificial intelligence**.
+
 ## air gap, air-gapped
 
 Use **offline environment** to describe installations that have physical barriers or security policies that prevent or limit internet access. Do not use **air gap**, **air gapped**, or **air-gapped**. For example:
@@ -208,7 +212,7 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
 
-You might also want to link to [this section](../../../policy/alpha-beta-support.md#beta)
+You might also want to link to [this section](../../../policy/experiment-beta-support.md#beta)
 in the handbook when writing about Beta features.
 
 ## blacklist
@@ -294,6 +298,10 @@ This version is different than the larger, more monolithic **Linux package** tha
 
 You can also use **cloud-native GitLab** for short. It should be hyphenated and lowercase.
 
+## Code Suggestions
+
+Use title case for **Code Suggestions**.
+
 ## collapse
 
 Use **collapse** instead of **close** when you are talking about expanding or collapsing a section in the UI.
@@ -303,6 +311,16 @@ Use **collapse** instead of **close** when you are talking about expanding or co
 Use **From the command line** to introduce commands.
 
 Hyphenate when using as an adjective. For example, **a command-line tool**.
+
+## compute
+
+Use **compute** for the resources used by runners to run CI/CD jobs.
+
+Related terms:
+
+- [**units of compute**](#units-of-compute): How compute usage is calculated. For example, `400 units of compute`.
+- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of units of compute that a namespace can use each month.
+- **compute usage**: The number of units of compute that the namespace has used from the monthly quota.
 
 ## confirmation dialog
 
@@ -484,7 +502,7 @@ Use **expand** instead of **open** when you are talking about expanding or colla
 
 Use uppercase for **Experiment**. For example: **The XYZ feature is an Experiment.** or **This Experiment is ready to test.**
 
-You might also want to link to [this section](../../../policy/alpha-beta-support.md#experiment)
+You might also want to link to [this section](../../../policy/experiment-beta-support.md#experiment)
 in the handbook when writing about Experiment features.
 
 ## FAQ
@@ -507,8 +525,8 @@ Instead of:
 However, you can make an exception when you are writing a task and you need to refer to all
 of the fields at once. For example:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
 
@@ -671,6 +689,12 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 ## in order to
 
 Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
+
+## indexes, indices
+
+For the plural of **index**, use **indexes**.
+
+However, for ElasticSearch, use [**indices**](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
 
 ## Installation from source
 
@@ -1225,7 +1249,7 @@ to the GitLab [reference architectures](../../../administration/reference_archit
 
 ## search
 
-When you search, you type a string in the search box on the top bar.
+When you search, you type a string in the search box on the left sidebar.
 The search results are displayed on a search page.
 
 Searching is different from [filtering](#filter).
@@ -1454,9 +1478,8 @@ Use **units of compute** instead of these (or similar) terms:
 - **CI minutes**
 - **pipeline minutes**
 - **CI pipeline minutes**
-- **pipeline minutes quota**
+- **pipeline minutes**
 
-This language is still being standardized in the documentation and UI beginning in March, 2023.
 For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
 
 ## units of measurement

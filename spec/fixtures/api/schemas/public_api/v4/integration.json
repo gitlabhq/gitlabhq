@@ -33,6 +33,9 @@
     "incident_events": {
       "type": "boolean"
     },
+    "alert_events": {
+      "type": "boolean"
+    },
     "confidential_issues_events": {
       "type": "boolean"
     },
@@ -40,6 +43,9 @@
       "type": "boolean"
     },
     "tag_push_events": {
+      "type": "boolean"
+    },
+    "deployment_events": {
       "type": "boolean"
     },
     "note_events": {

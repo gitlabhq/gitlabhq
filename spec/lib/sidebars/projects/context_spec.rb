@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Sidebars::Projects::Context do
+RSpec.describe Sidebars::Projects::Context, feature_category: :navigation do
   let(:project) { build(:project) }
 
   subject { described_class.new(current_user: nil, container: project) }

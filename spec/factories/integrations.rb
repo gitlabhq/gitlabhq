@@ -197,6 +197,12 @@ FactoryBot.define do
     issue_tracker
   end
 
+  factory :clickup_integration, class: 'Integrations::Clickup' do
+    project
+    active { true }
+    issue_tracker
+  end
+
   trait :issue_tracker do
     transient do
       create_data { true }
@@ -291,6 +297,7 @@ FactoryBot.define do
     app_store_key_id { 'ABC1' }
     app_store_private_key_file_name { 'auth_key.p8' }
     app_store_private_key { File.read('spec/fixtures/auth_key.p8') }
+    app_store_protected_refs { true }
   end
 
   factory :google_play_integration, class: 'Integrations::GooglePlay' do
@@ -310,6 +317,15 @@ FactoryBot.define do
 
     url { 'https://url-to-squash.com' }
     token { 'squash_tm_token' }
+  end
+
+  factory :telegram_integration, class: 'Integrations::Telegram' do
+    project
+    type { 'Integrations::Telegram' }
+    active { true }
+
+    token { '123456:ABC-DEF1234' }
+    room { '@channel' }
   end
 
   # this is for testing storing values inside properties, which is deprecated and will be removed in

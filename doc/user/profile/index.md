@@ -15,14 +15,14 @@ Your profile also includes settings, which you use to customize your GitLab expe
 
 To access your profile:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select your name or username.
 
 ## Access your user settings
 
 To access your user settings:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 
 ## Change your username
@@ -44,7 +44,7 @@ Prerequisites:
 
 To change your username:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
@@ -54,7 +54,7 @@ To change your username:
 
 To add new email to your account:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
 1. In the **Email** text box, enter the new email.
@@ -67,7 +67,7 @@ You can make your user profile visible to only you and GitLab administrators.
 
 To make your profile private:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select the **Private profile** checkbox.
 1. Select **Update profile settings**.
@@ -104,8 +104,7 @@ the README file with information, it's included on your profile page.
 
 To create a new project and add its README to your profile:
 
-1. On the top bar, select **Main menu > Projects > View all projects**.
-1. On the right of the page, select **New project**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name for your new project.
@@ -133,7 +132,7 @@ They can help other users connect with you on other platforms.
 
 To add links to other accounts:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your:
    - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
@@ -150,7 +149,7 @@ In the user contribution calendar graph and recent activity list, you can see yo
 
 To show private contributions:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, select the **Include private contributions on my profile** checkbox.
 1. Select **Update profile settings**.
@@ -164,7 +163,7 @@ your name in your profile.
 
 To specify your pronouns:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Pronouns** text box, enter your pronouns. The text must be 50 characters or less.
 1. Select **Update profile settings**.
@@ -178,7 +177,7 @@ your name.
 
 To add your name pronunciation:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Pronunciation** text box, enter how your name is pronounced. The pronunciation must be plain text and 255 characters or less.
 1. Select **Update profile settings**.
@@ -194,7 +193,7 @@ Your status is publicly visible even if your [profile is private](#make-your-use
 
 To set your current status:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Set status** or, if you have already set a status, **Edit status**.
 1. Set the desired emoji and status message. Status messages must be plain text and 100 characters or less.
    They can also contain emoji codes like, `I'm on vacation :palm_tree:`.
@@ -217,12 +216,12 @@ To indicate to others that you are busy, you can set an indicator.
 To set the busy status indicator, either:
 
 - Set it directly:
-  1. On the top bar, in the upper-right corner, select your avatar.
+  1. On the left sidebar, select your avatar.
   1. Select **Set status** or, if you have already set a status, **Edit status**.
   1. Select the **Set yourself as busy** checkbox.
 
 - Set it on your profile:
-  1. On the top bar, in the upper-right corner, select your avatar.
+  1. On the left sidebar, select your avatar.
   1. Select **Edit profile**.
   1. In the **Current status** section, select the **Set yourself as busy** checkbox.
 
@@ -238,7 +237,7 @@ You can set your local time zone to:
 
 To set your time zone:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Time settings** section, select your time zone from the dropdown list.
 
@@ -284,7 +283,7 @@ so you can keep your email information private.
 
 To use a private commit email:
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select **Use a private email**.
 1. Select **Update profile settings**.
@@ -315,7 +314,7 @@ the maximum number of users you can follow is 300.
 
 You can disable following and being followed by other users.
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select **Preferences**.
 1. Clear the **Enable follow users** checkbox.
@@ -323,6 +322,20 @@ You can disable following and being followed by other users.
 
 NOTE:
 When this feature is being disabled, all current followed/following connections are deleted.
+
+## Advanced code search with zoekt
+
+### Disable searching code with zoekt
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
+
+You can disable searching with Zoekt and use Elasticsearch instead.
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. Select **Preferences**.
+1. Clear the **Enable advanced code search** checkbox.
+1. Select **Save changes**.
 
 ## View your activity
 
@@ -363,7 +376,7 @@ When you sign in, three cookies are set:
 
 - A session cookie called `_gitlab_session`.
   This cookie has no set expiration date. However, it expires based on its `session_expire_delay`.
-- A session cookied called `about_gitlab_active_user`.
+- A session cookie called `about_gitlab_active_user`.
   This cookie is used by the [marketing site](https://about.gitlab.com/) to determine if a user has an active GitLab session. No user information is passed to the cookie and it expires with the session.
 - A persistent cookie called `remember_user_token`, which is set only if you selected **Remember me** on the sign-in page.
 

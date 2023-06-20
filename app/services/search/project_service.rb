@@ -2,9 +2,11 @@
 
 module Search
   class ProjectService
+    include Search::Filter
     include Gitlab::Utils::StrongMemoize
+    include ProjectsHelper
 
-    ALLOWED_SCOPES = %w(notes issues merge_requests milestones wiki_blobs commits users).freeze
+    ALLOWED_SCOPES = %w(blobs issues merge_requests wiki_blobs commits notes milestones users).freeze
 
     attr_accessor :project, :current_user, :params
 
@@ -21,7 +23,7 @@ module Search
                                        repository_ref: params[:repository_ref],
                                        order_by: params[:order_by],
                                        sort: params[:sort],
-                                       filters: { confidential: params[:confidential], state: params[:state] }
+                                       filters: filters
                                       )
     end
 
@@ -31,7 +33,11 @@ module Search
 
     def scope
       strong_memoize(:scope) do
-        allowed_scopes.include?(params[:scope]) ? params[:scope] : 'blobs'
+        next params[:scope] if allowed_scopes.include?(params[:scope]) && project_search_tabs?(params[:scope].to_sym)
+
+        allowed_scopes.find do |scope|
+          project_search_tabs?(scope.to_sym)
+        end
       end
     end
   end

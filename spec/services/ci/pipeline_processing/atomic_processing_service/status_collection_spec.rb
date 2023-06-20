@@ -106,4 +106,11 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService::StatusCollection
         .to contain_exactly(build_a.id, build_b.id, test_a.id, test_b.id, deploy.id)
     end
   end
+
+  describe '#stopped_job_names' do
+    it 'returns names of jobs that have a stopped status' do
+      expect(collection.stopped_job_names)
+        .to contain_exactly(build_a.name, build_b.name)
+    end
+  end
 end

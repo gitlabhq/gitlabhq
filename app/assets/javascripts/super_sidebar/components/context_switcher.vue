@@ -5,7 +5,6 @@ import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import searchUserProjectsAndGroups from '../graphql/queries/search_user_groups_and_projects.query.graphql';
 import { trackContextAccess, formatContextSwitcherItems } from '../utils';
-import { maxSize, applyMaxSize } from '../popper_max_size_modifier';
 import NavItem from './nav_item.vue';
 import ProjectsList from './projects_list.vue';
 import GroupsList from './groups_list.vue';
@@ -142,9 +141,6 @@ export default {
     },
   },
   DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-  popperOptions: {
-    modifiers: [maxSize, applyMaxSize],
-  },
 };
 </script>
 
@@ -153,7 +149,6 @@ export default {
     ref="disclosure-dropdown"
     class="context-switcher gl-w-full"
     placement="center"
-    :popper-options="$options.popperOptions"
     @shown="onDisclosureDropdownShown"
     @hidden="onDisclosureDropdownHidden"
   >
@@ -194,6 +189,7 @@ export default {
               :key="item.link"
               :item="item"
               :link-classes="{ [item.link_classes]: item.link_classes }"
+              is-subitem
             />
           </ul>
         </li>

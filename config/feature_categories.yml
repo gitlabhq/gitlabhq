@@ -50,6 +50,7 @@
 - disaster_recovery
 - dora_metrics
 - dynamic_application_security_testing
+- editor_extensions
 - environment_management
 - error_budgets
 - error_tracking
@@ -67,6 +68,7 @@
 - gitlab_cli
 - gitlab_docs
 - global_search
+- groups_and_projects
 - helm_chart_registry
 - importers
 - incident_management
@@ -79,6 +81,7 @@
 - interactive_application_security_testing
 - internationalization
 - logging
+- measurement_and_locking
 - merge_trains
 - metrics
 - mlops
@@ -88,12 +91,12 @@
 - omnibus_package
 - on_call_schedule_management
 - onboarding
+- organization
 - package_registry
 - pages
 - pipeline_composition
 - portfolio_management
 - product_analytics
-- projects
 - pubsec_services
 - purchase
 - quality_management
@@ -122,8 +125,8 @@
 - software_composition_analysis
 - source_code_management
 - static_application_security_testing
-- subgroups
 - subscription_management
+- switchboard
 - system_access
 - team_planning
 - tracing

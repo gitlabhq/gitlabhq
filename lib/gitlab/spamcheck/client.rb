@@ -58,6 +58,7 @@ module Gitlab
         pb.title = spammable.spam_title || '' if pb.respond_to?(:title)
         pb.description = spammable.spam_description || '' if pb.respond_to?(:description)
         pb.text = spammable.spammable_text || '' if pb.respond_to?(:text)
+        pb.type = spammable.spammable_entity_type if pb.respond_to?(:type)
         pb.created_at = convert_to_pb_timestamp(spammable.created_at) if spammable.created_at
         pb.updated_at = convert_to_pb_timestamp(spammable.updated_at) if spammable.updated_at
         pb.action = ACTION_MAPPING.fetch(context.fetch(:action)) if context.has_key?(:action)

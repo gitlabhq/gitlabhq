@@ -107,7 +107,8 @@ Secret Detection can detect if a secret was added in one commit and removed in a
 
   In a merge request, Secret Detection scans every commit made on the source branch. To use this
   feature, you must use the [`latest` Secret Detection template](#templates), as it supports
-  [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md).
+  [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md). Secret Detection's
+  results are only available after the pipeline is completed.
 
 ## Templates
 
@@ -116,7 +117,7 @@ provided with GitLab upgrades, allowing you to benefit from any improvements and
 
 Available templates:
 
-- [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml): Stable version of the Secret Detection CI/CD template.
+- [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml): Stable, default version of the Secret Detection CI/CD template.
 - [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml): Latest version of the Secret Detection template.
 
 WARNING:
@@ -154,13 +155,13 @@ To enable Secret Detection, either:
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Editor**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
    ```yaml
    include:
-     - template: Jobs/Secret-Detection.gitlab-ci.yml
+     - template: Security/Secret-Detection.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -187,8 +188,8 @@ error may occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manu
 
 To enable Secret Detection:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Secret Detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
 1. Select **Create merge request**.
@@ -495,6 +496,36 @@ path = "/gitleaks.toml"
   ]
 ```
 
+## Specify a remote configuration file
+
+Projects can be configured with a [CI/CD variable](../../../ci/variables/index.md) in order
+to specify a ruleset configuration outside of the current repository.
+
+The `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable uses an SCP-style syntax for specifying a URI,
+optional authentication, and optional Git SHA. The variable uses the following format:
+
+```plaintext
+<AUTH_USER>:<AUTH_PASSWORD>@<PROJECT_PATH>@<GIT_SHA>
+```
+
+NOTE:
+Loading local project configuration takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` values.
+
+The following example includes the Secret Detection template in a project to be scanned and specifies
+the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable for referencing a separate project configuration.
+
+```yaml
+include:
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECRET_DETECTION_RULESET_GIT_REFERENCE: "gitlab.com/example-group/example-ruleset-project"
+```
+
+For more information on the syntax of remote configurations, see the
+[specify a private remote configuration example](../sast/customize_rulesets.md#specify-a-private-remote-configuration)
+on the SAST customize rulesets page.
+
 ## Running Secret Detection in an offline environment **(PREMIUM SELF)**
 
 An offline environment has limited, restricted, or intermittent access to external resources through
@@ -575,7 +606,9 @@ variable, or as a CI/CD variable.
 
 ## Warnings for potential leaks in text content
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
+> - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146)
+in GitLab 16.1. GitLab self-managed only.
 
 When you create an issue, propose a merge request, or write a comment, you might accidentally post a sensitive value.
 For example, you might paste in the details of an API request or an environment variable that contains an authentication token.
@@ -588,6 +621,7 @@ The check is always on; you don't have to set it up.
 Your text is checked for the following secret types:
 
 - GitLab [personal access tokens](../../../security/token_overview.md#personal-access-tokens)
+  - If a [personal access token prefix](../../../user/admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
 - GitLab [feed tokens](../../../security/token_overview.md#feed-token)
 
 This feature is separate from Secret Detection scanning, which checks your Git repository for leaked secrets.

@@ -26,10 +26,9 @@ module Packages
       private
 
       def metadata
-        strong_memoize(:metadata) do
-          ::Packages::Debian::ExtractMetadataService.new(@package_file).execute
-        end
+        ::Packages::Debian::ExtractMetadataService.new(@package_file).execute
       end
+      strong_memoize_attr :metadata
 
       def file_type
         metadata[:file_type]
@@ -40,20 +39,19 @@ module Packages
       end
 
       def files
-        strong_memoize(:files) do
-          raise ExtractionError, "is not a changes file" unless file_type == :changes
-          raise ExtractionError, "Files field is missing" if fields['Files'].blank?
-          raise ExtractionError, "Checksums-Sha1 field is missing" if fields['Checksums-Sha1'].blank?
-          raise ExtractionError, "Checksums-Sha256 field is missing" if fields['Checksums-Sha256'].blank?
+        raise ExtractionError, "is not a changes file" unless file_type == :changes
+        raise ExtractionError, "Files field is missing" if fields['Files'].blank?
+        raise ExtractionError, "Checksums-Sha1 field is missing" if fields['Checksums-Sha1'].blank?
+        raise ExtractionError, "Checksums-Sha256 field is missing" if fields['Checksums-Sha256'].blank?
 
-          init_entries_from_files
-          entries_from_checksums_sha1
-          entries_from_checksums_sha256
-          entries_from_package_files
+        init_entries_from_files
+        entries_from_checksums_sha1
+        entries_from_checksums_sha256
+        entries_from_package_files
 
-          @entries
-        end
+        @entries
       end
+      strong_memoize_attr :files
 
       def init_entries_from_files
         each_lines_for('Files') do |line|
@@ -101,12 +99,17 @@ module Packages
 
       def entries_from_package_files
         @entries.each do |filename, entry|
-          entry.package_file = ::Packages::PackageFileFinder.new(@package_file.package, filename).execute!
+          entry.package_file = ::Packages::PackageFileFinder.new(incoming, filename).execute!
           entry.validate!
         rescue ActiveRecord::RecordNotFound
           raise ExtractionError, "#{filename} is listed in Files but was not uploaded"
         end
       end
+
+      def incoming
+        @package_file.package.project.packages.debian_incoming_package!
+      end
+      strong_memoize_attr(:incoming)
     end
   end
 end

@@ -19,7 +19,8 @@ module Gitlab
           gitlab_internal: nil,
 
           # Pods specific changes
-          gitlab_main_clusterwide: :gitlab_main
+          gitlab_main_clusterwide: :gitlab_main,
+          gitlab_main_cell: :gitlab_main
         }.freeze
 
         class << self
@@ -61,6 +62,7 @@ module Gitlab
           def restrict_to_ddl_only(parsed)
             tables = self.dml_tables(parsed)
             schemas = self.dml_schemas(tables)
+            schemas = self.map_schemas(schemas)
 
             if schemas.any?
               self.raise_dml_not_allowed_error("Modifying of '#{tables}' (#{schemas.to_a}) with '#{parsed.sql}'")
@@ -78,8 +80,10 @@ module Gitlab
 
             tables = self.dml_tables(parsed)
             schemas = self.dml_schemas(tables)
+            schemas = self.map_schemas(schemas)
+            allowed_schemas = self.map_schemas(self.allowed_gitlab_schemas)
 
-            if (schemas - self.allowed_gitlab_schemas).any?
+            if (schemas - allowed_schemas).any?
               raise DMLAccessDeniedError, \
                 "Select/DML queries (SELECT/UPDATE/DELETE) do access '#{tables}' (#{schemas.to_a}) " \
                 "which is outside of list of allowed schemas: '#{self.allowed_gitlab_schemas}'. " \
@@ -100,15 +104,19 @@ module Gitlab
           end
 
           def dml_schemas(tables)
-            extra_schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
+            ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
+          end
 
-            SCHEMA_MAPPING.each do |schema, mapped_schema|
-              next unless extra_schemas.delete?(schema)
+          def map_schemas(schemas)
+            schemas = schemas.to_set
 
-              extra_schemas.add(mapped_schema) if mapped_schema
+            SCHEMA_MAPPING.each do |in_schema, mapped_schema|
+              next unless schemas.delete?(in_schema)
+
+              schemas.add(mapped_schema) if mapped_schema
             end
 
-            extra_schemas
+            schemas
           end
 
           def raise_dml_not_allowed_error(message)

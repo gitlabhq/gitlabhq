@@ -46,9 +46,8 @@ module JavaScriptFixturesHelpers
   #
   # query_path - file path to the GraphQL query, relative to `app/assets/javascripts`.
   # ee - boolean, when true `query_path` will be looked up in `/ee`.
-  def get_graphql_query_as_string(query_path, ee: false)
-    base = (ee ? 'ee/' : '') + 'app/assets/javascripts'
-
+  def get_graphql_query_as_string(query_path, ee: false, with_base_path: true)
+    base = (ee ? 'ee/' : '') + (with_base_path ? 'app/assets/javascripts' : '')
     path = Rails.root / base / query_path
     queries = Gitlab::Graphql::Queries.find(path)
     if queries.length == 1

@@ -12,14 +12,13 @@ GitLab database to a secondary site's database. You may have to change some
 values, based on attributes including your database's setup and size.
 
 NOTE:
-If your GitLab installation uses external (not managed by Omnibus GitLab)
-PostgreSQL instances, the Omnibus roles cannot perform all necessary
-configuration steps. In this case, use the [Geo with external PostgreSQL instances](external_database.md)
-process instead.
+If your GitLab installation uses external PostgreSQL instances (not managed by a Linux package installation),
+the roles cannot perform all necessary configuration steps. In this case, use the
+[Geo with external PostgreSQL instances](external_database.md) process instead.
 
 NOTE:
 The stages of the setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before proceeding.
+If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
 
 Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
 
@@ -51,10 +50,10 @@ recover. See below for more details.
 
 The following guide assumes that:
 
-- You are using Omnibus and therefore you are using PostgreSQL 12 or later,
+- You are using the Linux package (so are using PostgreSQL 12 or later),
   which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/12/app-pgbasebackup.html).
 - You have a **primary** site already set up (the GitLab server you are
-  replicating from), running Omnibus' PostgreSQL (or equivalent version), and
+  replicating from), running PostgreSQL (or equivalent version) managed by your Linux package installation, and
   you have a new **secondary** site set up with the same
   [versions of PostgreSQL](../index.md#requirements-for-running-geo),
   OS, and GitLab on all sites.
@@ -140,7 +139,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    postgresql['sql_replication_password'] = '<md5_hash_of_your_password>'
    ```
 
-   If you are using an external database not managed by Omnibus GitLab, you need
+   If you are using an external database not managed by your Linux package installation, you need
    to create the `gitlab_replicator` user and define a password for that user manually:
 
    ```sql
@@ -205,7 +204,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    NOTE:
    If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
    `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
-   `127.0.0.1`. For more information, see [omnibus-5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
+   `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
    Depending on your network configuration, the suggested addresses may
    be incorrect. If your **primary** site and **secondary** sites connect over a local
@@ -374,7 +373,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    to the private key, which is **only** present on the **primary** site.
 
 1. Test that the `gitlab-psql` user can connect to the **primary** site's database
-   (the default Omnibus database name is `gitlabhq_production`):
+   (the default database name is `gitlabhq_production` on a Linux package installation):
 
    ```shell
    sudo \
@@ -456,8 +455,8 @@ Below is a script that connects the database on the **secondary** site to
 the database on the **primary** site. This script replicates the database and creates the
 needed files for streaming replication.
 
-The directories used are the defaults that are set up in Omnibus. If you have
-changed any defaults, configure the script accordingly, replacing any directories and paths.
+The directories used are the defaults that are set up in a Linux package installation. If you have
+changed any defaults, configure the script accordingly (replacing any directories and paths).
 
 WARNING:
 Make sure to run this on the **secondary** site as it removes all PostgreSQL's
@@ -537,12 +536,12 @@ You should use PgBouncer if you use GitLab in a highly available
 configuration with a cluster of nodes supporting a Geo **primary** site and
 two other clusters of nodes supporting a Geo **secondary** site. You need two PgBouncer nodes: one for the
 main database and the other for the tracking database. For more information,
-see [High Availability with Omnibus GitLab](../../postgresql/replication_and_failover.md).
+see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 ### Changing the replication password
 
 To change the password for the [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication)
-when using Omnibus-managed PostgreSQL instances:
+when using PostgreSQL instances managed by a Linux package installation:
 
 On the GitLab Geo **primary** site:
 
@@ -628,7 +627,7 @@ to `gitlab.rb` where `<slot_name>` is the name of the replication slot for your 
 
 ### Migrating a single PostgreSQL node to Patroni
 
-Before the introduction of Patroni, Geo had no Omnibus support for HA setups on the **secondary** site.
+Before the introduction of Patroni, Geo had no support for Linux package installations for HA setups on the **secondary** site.
 
 With Patroni, this support is now possible. To migrate the existing PostgreSQL to Patroni:
 
@@ -639,7 +638,7 @@ With Patroni, this support is now possible. To migrate the existing PostgreSQL t
 1. [Configure a Standby Cluster](#step-4-configure-a-standby-cluster-on-the-secondary-site)
    on that single node machine.
 
-You end up with a “Standby Cluster” with a single node. That allows you to add additional Patroni nodes by following the same instructions above.
+You end up with a _Standby Cluster_ with a single node. That allows you to add additional Patroni nodes by following the same instructions above.
 
 ### Patroni support
 
@@ -649,7 +648,7 @@ Using Patroni on a **secondary** site is optional and you don't have to use the 
 nodes on each Geo site.
 
 For instructions on how to set up Patroni on the primary site, see the
-[PostgreSQL replication and failover with Omnibus GitLab](../../postgresql/replication_and_failover.md#patroni) page.
+[relevant documentation](../../postgresql/replication_and_failover.md#patroni).
 
 #### Configuring Patroni cluster for a Geo secondary site
 
@@ -743,8 +742,8 @@ Leader is elected on the primary site, you should set up a TCP internal load
 balancer. This load balancer provides a single endpoint for connecting to the Patroni
 cluster's Leader.
 
-The Omnibus GitLab packages do not include a Load Balancer. Here's how you
-could do it with [HAProxy](https://www.haproxy.org/).
+Linux packages do not include a Load Balancer. Here's how you could do it with
+[HAProxy](https://www.haproxy.org/).
 
 The following IPs and names are used as an example:
 
@@ -787,7 +786,7 @@ three Consul nodes and a minimum of one PgBouncer node. However, it is recommend
 one PgBouncer node per database node. An internal load balancer (TCP) is required when there is
 more than one PgBouncer service node. The internal load balancer provides a single
 endpoint for connecting to the PgBouncer cluster. For more information,
-see [High Availability with Omnibus GitLab](../../postgresql/replication_and_failover.md).
+see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 On each node running a PgBouncer instance on the **secondary** site:
 
@@ -921,7 +920,7 @@ For each node running a Patroni instance on the secondary site:
 
 ### Migrating a single tracking database node to Patroni
 
-Before the introduction of Patroni, Geo provided no Omnibus support for HA setups on
+Before the introduction of Patroni, Geo provided no support for Linux package installations for HA setups on
 the secondary site.
 
 With Patroni, it's now possible to support HA setups. However, some restrictions in Patroni
@@ -935,7 +934,7 @@ synchronization is required.
 
 **Secondary** sites use a separate PostgreSQL installation as a tracking database to
 keep track of replication status and automatically recover from potential replication issues.
-Omnibus automatically configures a tracking database when `roles(['geo_secondary_role'])` is set.
+The Linux package automatically configures a tracking database when `roles(['geo_secondary_role'])` is set.
 
 If you want to run this database in a highly available configuration, don't use the `geo_secondary_role` above.
 Instead, follow the instructions below.
@@ -945,7 +944,7 @@ If you want to run the Geo tracking database on a single node, see [Configure th
 A production-ready and secure setup for the tracking PostgreSQL DB requires at least three Consul nodes: two
 Patroni nodes, and one PgBouncer node on the secondary site.
 
-Because of [omnibus-6587](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6587), Consul can't track multiple
+Because of [issue 6587](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6587), Consul can't track multiple
 services, so these must be different than the nodes used for the Standby Cluster database.
 
 Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)

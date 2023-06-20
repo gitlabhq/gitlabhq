@@ -16,7 +16,10 @@ describe('Batch comments diff file drafts component', () => {
         batchComments: {
           namespaced: true,
           getters: {
-            draftsForFile: () => () => [{ id: 1 }, { id: 2 }],
+            draftsForFile: () => () => [
+              { id: 1, position: { position_type: 'file' } },
+              { id: 2, position: { position_type: 'file' } },
+            ],
           },
         },
       },
@@ -24,7 +27,7 @@ describe('Batch comments diff file drafts component', () => {
 
     vm = shallowMount(DiffFileDrafts, {
       store,
-      propsData: { fileHash: 'filehash' },
+      propsData: { fileHash: 'filehash', positionType: 'file' },
     });
   }
 

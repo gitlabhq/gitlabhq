@@ -423,14 +423,98 @@ RSpec.describe Issue, feature_category: :team_planning do
     let_it_be(:issue) { create(:issue, project: reusable_project) }
     let_it_be(:incident) { create(:incident, project: reusable_project) }
 
-    it 'gives issues with the given issue type' do
+    it 'returns issues with the given issue type' do
       expect(described_class.with_issue_type('issue'))
         .to contain_exactly(issue)
     end
 
-    it 'gives issues with the given issue type' do
+    it 'returns issues with the given issue types' do
       expect(described_class.with_issue_type(%w(issue incident)))
         .to contain_exactly(issue, incident)
+    end
+
+    context 'when multiple issue_types are provided' do
+      it 'joins the work_item_types table for filtering' do
+        expect do
+          described_class.with_issue_type([:issue, :incident]).to_a
+        end.to make_queries_matching(
+          %r{
+            INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
+            \sWHERE\s"work_item_types"\."base_type"\sIN\s\(0,\s1\)
+          }x
+        )
+      end
+    end
+
+    context 'when a single issue_type is provided' do
+      it 'uses an optimized query for a single work item type' do
+        expect do
+          described_class.with_issue_type([:incident]).to_a
+        end.to make_queries_matching(
+          %r{
+            WHERE\s\("issues"\."work_item_type_id"\s=
+            \s\(SELECT\s"work_item_types"\."id"\sFROM\s"work_item_types"\sWHERE\s"work_item_types"\."base_type"\s=\s1
+            \sLIMIT\s1\)\)
+          }x
+        )
+      end
+    end
+
+    context 'when no types are provided' do
+      it 'activerecord handles the false condition' do
+        expect(described_class.with_issue_type([]).to_sql).to include('WHERE 1=0')
+      end
+    end
+
+    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
+      before do
+        stub_feature_flags(issue_type_uses_work_item_types_table: false)
+      end
+
+      it 'uses the issue_type column for filtering' do
+        expect do
+          described_class.with_issue_type(:issue).to_a
+        end.to make_queries_matching(/"issues"\."issue_type" = 0/)
+      end
+    end
+  end
+
+  describe '.without_issue_type' do
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:incident) { create(:incident, project: reusable_project) }
+    let_it_be(:task) { create(:issue, :task, project: reusable_project) }
+
+    it 'returns issues without the given issue type' do
+      expect(described_class.without_issue_type('issue'))
+        .to contain_exactly(incident, task)
+    end
+
+    it 'returns issues without the given issue types' do
+      expect(described_class.without_issue_type(%w(issue incident)))
+        .to contain_exactly(task)
+    end
+
+    it 'uses the work_item_types table for filtering' do
+      expect do
+        described_class.without_issue_type(:issue).to_a
+      end.to make_queries_matching(
+        %r{
+          INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
+          \sWHERE\s"work_item_types"\."base_type"\s!=\s0
+        }x
+      )
+    end
+
+    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
+      before do
+        stub_feature_flags(issue_type_uses_work_item_types_table: false)
+      end
+
+      it 'uses the issue_type column for filtering' do
+        expect do
+          described_class.without_issue_type(:issue).to_a
+        end.to make_queries_matching(/"issues"\."issue_type" != 0/)
+      end
     end
   end
 
@@ -1083,10 +1167,12 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue = create(:issue, project: project)
         user = create(:user)
 
-        create(:note_on_issue,
-               noteable: issue,
-               project: project,
-               note: user.to_reference)
+        create(
+          :note_on_issue,
+          noteable: issue,
+          project: project,
+          note: user.to_reference
+        )
 
         expect(issue.participants).not_to include(user)
       end
@@ -1339,8 +1425,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
 
         it 'checks the external service to determine if an issue is readable by a user' do
-          project = build(:project, :public,
-                          external_authorization_classification_label: 'a-label')
+          project = build(:project, :public, external_authorization_classification_label: 'a-label')
           issue = build(:issue, project: project)
           user = build(:user)
 
@@ -1350,8 +1435,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
 
         it 'does not check the external service if a user does not have access to the project' do
-          project = build(:project, :private,
-                          external_authorization_classification_label: 'a-label')
+          project = build(:project, :private, external_authorization_classification_label: 'a-label')
           issue = build(:issue, project: project)
           user = build(:user)
 
@@ -1373,8 +1457,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
           context 'when admin mode is disabled' do
             it 'checks the external service to determine if an issue is readable by the admin' do
-              project = build(:project, :public,
-                              external_authorization_classification_label: 'a-label')
+              project = build(:project, :public, external_authorization_classification_label: 'a-label')
               issue = build(:issue, project: project)
               user = build(:admin)
 
@@ -2002,16 +2085,73 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
   end
 
+  describe '#unsubscribe_email_participant' do
+    let_it_be(:email) { 'email@example.com' }
+
+    let_it_be(:issue1) do
+      create(:issue, project: reusable_project, external_author: email) do |issue|
+        issue.issue_email_participants.create!(email: email)
+      end
+    end
+
+    let_it_be(:issue2) do
+      create(:issue, project: reusable_project, external_author: email) do |issue|
+        issue.issue_email_participants.create!(email: email)
+      end
+    end
+
+    it 'deletes email for issue1' do
+      expect { issue1.unsubscribe_email_participant(email) }.to change { issue1.issue_email_participants.count }.by(-1)
+    end
+
+    it 'does not delete email for issue2 when issue1 is used' do
+      expect { issue1.unsubscribe_email_participant(email) }.not_to change { issue2.issue_email_participants.count }
+    end
+  end
+
   describe 'issue_type enum generated methods' do
-    using RSpec::Parameterized::TableSyntax
+    describe '#<issue_type>?' do
+      let_it_be(:issue) { create(:issue, project: reusable_project) }
 
-    let_it_be(:issue) { create(:issue, project: reusable_project) }
+      where(issue_type: WorkItems::Type.base_types.keys)
 
-    where(issue_type: WorkItems::Type.base_types.keys)
+      with_them do
+        it 'raises an error if called' do
+          expect { issue.public_send("#{issue_type}?".to_sym) }.to raise_error(
+            Issue::ForbiddenColumnUsed,
+            a_string_matching(/`issue\.#{issue_type}\?` uses the `issue_type` column underneath/)
+          )
+        end
+      end
+    end
 
-    with_them do
-      it 'raises an error if called' do
-        expect { issue.public_send("#{issue_type}?".to_sym) }.to raise_error(Issue::ForbiddenColumnUsed)
+    describe '.<issue_type> scopes' do
+      where(issue_type: WorkItems::Type.base_types.keys)
+
+      with_them do
+        it 'raises an error if called' do
+          expect { Issue.public_send(issue_type.to_sym) }.to raise_error(
+            Issue::ForbiddenColumnUsed,
+            a_string_matching(/`Issue\.#{issue_type}` uses the `issue_type` column underneath/)
+          )
+        end
+
+        context 'when called in a production environment' do
+          before do
+            stub_rails_env('production')
+          end
+
+          it 'returns issues scoped by type instead of raising an error' do
+            issue = create(
+              :issue,
+              issue_type: issue_type,
+              work_item_type: WorkItems::Type.default_by_type(issue_type),
+              project: reusable_project
+            )
+
+            expect(Issue.public_send(issue_type.to_sym)).to contain_exactly(issue)
+          end
+        end
       end
     end
   end

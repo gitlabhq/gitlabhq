@@ -11,10 +11,13 @@ fragment WorkItem on WorkItem {
   createdAt
   updatedAt
   closedAt
+  reference(full: true)
+  createNoteEmail
   project {
     id
     fullPath
     archived
+    name
   }
   author {
     ...Author
@@ -27,8 +30,9 @@ fragment WorkItem on WorkItem {
   userPermissions {
     deleteWorkItem
     updateWorkItem
-    setWorkItemMetadata @client
     adminParentLink
+    setWorkItemMetadata
+    createNote
   }
   widgets {
     ...WorkItemWidgets

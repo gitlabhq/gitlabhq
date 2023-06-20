@@ -56,7 +56,7 @@ class Admin::UsersController < Admin::ApplicationController
 
       log_impersonation_event
 
-      flash[:alert] = format(_("You are now impersonating %{username}"), username: user.username)
+      flash[:notice] = format(_("You are now impersonating %{username}"), username: user.username)
 
       redirect_to root_path
     else
@@ -87,12 +87,14 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def activate
-    if user.blocked?
-      return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user must be unblocked to be activated"))
-    end
+    activate_service = Users::ActivateService.new(current_user)
+    result = activate_service.execute(user)
 
-    user.activate
-    redirect_back_or_admin_user(notice: _("Successfully activated"))
+    if result.success?
+      redirect_back_or_admin_user(notice: _("Successfully activated"))
+    else
+      redirect_back_or_admin_user(alert: result.message)
+    end
   end
 
   def deactivate

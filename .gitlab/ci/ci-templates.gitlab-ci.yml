@@ -4,7 +4,7 @@ templates-shellcheck:
     - .default-before_script
     - .default-retry
     - .ruby-cache
-    - .use-pg14
+    - .use-pg15
   stage: test
   needs:
     - setup-test-env

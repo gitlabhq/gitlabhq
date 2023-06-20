@@ -334,5 +334,6 @@ export const getDiffFileMock = () => ({
     },
   ],
   discussions: [],
+  drafts: [],
   renderingLines: false,
 });

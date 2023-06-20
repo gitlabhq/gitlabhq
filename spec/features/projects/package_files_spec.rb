@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'PackageFiles', feature_category: :projects do
+RSpec.describe 'PackageFiles', feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let!(:package) { create(:maven_package, project: project) }

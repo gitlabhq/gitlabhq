@@ -34,7 +34,7 @@ describe('Work items root component', () => {
         issuesListPath,
       },
       propsData: {
-        id: '1',
+        iid: '1',
       },
       mocks: {
         $toast: {
@@ -49,7 +49,6 @@ describe('Work items root component', () => {
 
     expect(findWorkItemDetail().props()).toEqual({
       isModal: false,
-      workItemId: 'gid://gitlab/WorkItem/1',
       workItemParentId: null,
       workItemIid: '1',
     });

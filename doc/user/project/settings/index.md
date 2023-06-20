@@ -13,8 +13,8 @@ Use the **Settings** page to manage the configuration options in your [project](
 
 You must have at least the Maintainer role to view project settings.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. To display all settings in a section, select **Expand**.
 1. Optional. Use the search box to find a setting.
 
@@ -23,8 +23,8 @@ You must have at least the Maintainer role to view project settings.
 Use the project general settings to edit your project details.
 
 1. Sign in to GitLab with at least the Maintainer role.
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. In the **Project name** text box, enter your project name.
 1. In the **Project description** text box, enter your project description.
 1. Under **Project avatar**, to change your project avatar, select **Choose file**.
@@ -35,8 +35,8 @@ Use topics to categorize projects and find similar new projects.
 
 To assign topics to a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings** > **General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings** > **General**.
 1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
 1. Select **Save changes**.
 
@@ -49,9 +49,9 @@ If you're an instance administrator, you can administer all project topics from 
 compliance framework using either:
 
 - The GitLab UI:
-  1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
-  1. On the left sidebar, select **Settings** > **General**.
-  1. Expand the **Compliance frameworks** section.
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. Select **Settings** > **General**.
+  1. Expand **Compliance frameworks**.
   1. Select a compliance framework.
   1. Select **Save changes**.
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
@@ -59,13 +59,16 @@ compliance framework using either:
   compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user has the
   correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
 
+NOTE:
+Frameworks can not be added to projects in personal namespaces.
+
 ## Configure project visibility, features, and permissions
 
 To configure visibility, features, and permissions for a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Visibility, project features, permissions** section.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
 1. To change the project visibility, select the dropdown list. If you select to **Public**, you limit access to some features to **Only Project Members**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
 1. Use the [toggles](#project-feature-settings) to enable or disable features in the project.
@@ -130,9 +133,9 @@ In some environments, users can submit a [CVE identifier request](../../applicat
 
 To disable the CVE identifier request option in issues in your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Visibility, project features, permissions** section.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
 1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
 1. Select **Save changes**.
 
@@ -142,9 +145,9 @@ Prerequisites:
 
 - You must be an Owner of the project to disable email notifications related to the project.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Visibility, project features, permissions** section.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
 1. Clear the **Disable email notifications** checkbox.
 
 ## Configure merge request settings for a project
@@ -156,7 +159,7 @@ Configure your project's merge request settings:
 - Enable [merge request approvals](../merge_requests/approvals/index.md).
 - Enable [status checks](../merge_requests/status_checks.md).
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
-- Enable [merge only when all threads are resolved](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved).
+- Enable [merge only when all threads are resolved](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
 - Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
 - Enable [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
 - Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
@@ -184,8 +187,8 @@ other features are read-only. Archived projects are also hidden from project lis
 
 To archive a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive project**.
 1. To confirm, select **OK**.
@@ -200,7 +203,8 @@ Prerequisites:
 - To unarchive a project, you must be an administrator or a project Owner.
 
 1. Find the archived project.
-   1. On the top bar, select **Main menu > Projects > View all projects**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **View all your projects**.
    1. Select **Explore projects**.
    1. In the **Sort projects** dropdown list, select **Show archived projects**.
    1. In the **Filter by name** field, enter the project name.
@@ -225,9 +229,9 @@ When you change the repository path, users may experience issues if they push to
 
 To rename a repository:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Advanced** section.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
 
@@ -238,8 +242,8 @@ In merge requests, you can change the default behavior so that the
 
 To set this default:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
 
@@ -249,7 +253,7 @@ When you transfer a project to another namespace, you move the project to a diff
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../../group/manage.md#create-a-group) to which you are transferring.
+- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) to which you are transferring.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
@@ -258,8 +262,8 @@ Prerequisites:
 
 To transfer a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
 1. Select **Transfer project**.
@@ -281,6 +285,11 @@ When you transfer a project from a namespace licensed for GitLab SaaS Premium or
 
 ## Delete a project
 
+> - Default deletion behavior for projects changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
+> - Default deletion behavior for projects changed to [immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - Default deletion behavior for projects on the Premium and Ultimate tier changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0.
+> - Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
 You can mark a project to be deleted.
 
 Prerequisite:
@@ -289,37 +298,34 @@ Prerequisite:
 
 To delete a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
-1. In the "Delete project" section, select **Delete project**.
-1. Confirm the action when asked to.
+1. In the **Delete this project** section, select **Delete project**.
+1. In the confirmation message text field, enter the name of the project as instructed, and select **Yes, delete project**.
 
-This action deletes a project including all associated resources (such as issues and merge requests).
-
-WARNING:
-The default deletion behavior for projects was changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)
-in GitLab 12.6, and then to [immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+This action deletes the project and all associated resources (such as issues and merge requests).
 
 ### Delayed project deletion **(PREMIUM)**
 
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-Projects in a group (not a personal namespace) can be deleted after a delay period. Multiple settings can affect whether
-delayed project deletion is enabled for a particular project:
+Projects in a group (not a personal namespace) can be deleted after a delay period.
 
-- Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#delayed-project-deletion).
-  You can enable delayed project deletion as the default setting for new groups, and configure the number of days for the
-  delay. For GitLab.com, see the [GitLab.com settings](../../gitlab_com/index.md#delayed-project-deletion).
-- Group [settings](../../group/manage.md#enable-delayed-project-deletion) to enabled delayed project deletion for all
-  projects in the group.
+On self-managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
+On SaaS, there is a non-adjustable default retention period of seven days.
 
 ### Delete a project immediately
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
+> - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-If you don't want to wait, you can delete a project immediately.
+If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
+
+In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
+If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
 
 Prerequisites:
 
@@ -328,16 +334,11 @@ Prerequisites:
 
 To immediately delete a project marked for deletion:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
-1. In the "Permanently delete project" section, select **Delete project**.
-1. Confirm the action when asked to.
-
-The following are deleted:
-
-- Your project and its repository.
-- All related resources including issues and merge requests.
+1. In the **Delete this project** section, select **Delete project**.
+1. In the confirmation message text field, enter the name of the project as instructed, as select **Yes, delete project**.
 
 ## Restore a project **(PREMIUM)**
 
@@ -345,7 +346,9 @@ The following are deleted:
 
 To restore a project marked for deletion:
 
-1. Navigate to your project, and select **Settings > General > Advanced**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
 1. In the Restore project section, select **Restore project**.
 
 ## Monitor settings

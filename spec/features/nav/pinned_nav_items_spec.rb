@@ -89,7 +89,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       before do
         within '#super-sidebar' do
           click_on 'Operate'
-          add_pin('Package Registry')
+          add_pin('Terraform states')
           add_pin('Terraform modules')
           wait_for_requests
         end
@@ -97,8 +97,8 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
       it 'can be unpinned from within the pinned section' do
         within '[data-testid="pinned-nav-items"]' do
-          remove_pin('Package Registry')
-          expect(page).not_to have_content 'Package Registry'
+          remove_pin('Terraform states')
+          expect(page).not_to have_content 'Terraform states'
         end
       end
 
@@ -117,7 +117,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       it 'can be reordered' do
         within '[data-testid="pinned-nav-items"]' do
           pinned_items = page.find_all('a').map(&:text)
-          item2 = page.find('a', text: 'Package Registry')
+          item2 = page.find('a', text: 'Terraform states')
           item3 = page.find('a', text: 'Terraform modules')
           expect(pinned_items[1..2]).to eq [item2.text, item3.text]
           drag_item(item3, to: item2)

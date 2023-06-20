@@ -40,6 +40,9 @@ export default {
           iconName: 'lock',
           visible: this.isLocked,
           dataTestId: 'locked',
+          tooltip: sprintf(__('This %{issuable} is locked. Only project members can comment.'), {
+            issuable: noteableTypeText[this.getNoteableData.targetType],
+          }),
         },
         {
           iconName: 'spam',
@@ -67,7 +70,7 @@ export default {
       <div
         v-if="meta.visible"
         :key="meta.iconName"
-        v-gl-tooltip
+        v-gl-tooltip.bottom
         :data-testid="meta.dataTestId"
         :title="meta.tooltip || null"
         :class="{

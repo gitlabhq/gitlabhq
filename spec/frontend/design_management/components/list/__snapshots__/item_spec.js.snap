@@ -11,13 +11,13 @@ exports[`Design management list item component when item appears in view after i
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
 <router-link-stub
   ariacurrentvalue="page"
-  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new gl-mb-0"
+  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0"
   event="click"
   tag="a"
   to="[object Object]"
 >
   <div
-    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative"
+    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"
   >
     <!---->
      
@@ -91,13 +91,13 @@ exports[`Design management list item component with notes renders item with mult
 exports[`Design management list item component with notes renders item with single comment 1`] = `
 <router-link-stub
   ariacurrentvalue="page"
-  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item design-list-item-new gl-mb-0"
+  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0"
   event="click"
   tag="a"
   to="[object Object]"
 >
   <div
-    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative"
+    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"
   >
     <!---->
      

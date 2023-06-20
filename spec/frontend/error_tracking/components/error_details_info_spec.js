@@ -40,43 +40,45 @@ describe('ErrorDetails', () => {
   });
 
   it('should render a card with error counts', () => {
-    expect(wrapper.findByTestId('error-count-card').text()).toContain('Events 12');
+    expect(wrapper.findByTestId('error-count-card').text()).toMatchInterpolatedText('Events 12');
   });
 
   it('should render a card with user counts', () => {
-    expect(wrapper.findByTestId('user-count-card').text()).toContain('Users 2');
+    expect(wrapper.findByTestId('user-count-card').text()).toMatchInterpolatedText('Users 2');
   });
 
-  describe('release links', () => {
-    it('if firstReleaseVersion is missing, does not render a card', () => {
+  describe('first seen card', () => {
+    it('if firstSeen is missing, does not render a card', () => {
+      mountComponent({
+        firstSeen: undefined,
+      });
       expect(wrapper.findByTestId('first-release-card').exists()).toBe(false);
     });
 
-    describe('if firstReleaseVersion link exists', () => {
-      it('renders the first release card', () => {
-        mountComponent({
-          firstReleaseVersion: 'first-release-version',
-        });
-        const card = wrapper.findByTestId('first-release-card');
-        expect(card.exists()).toBe(true);
-        expect(card.text()).toContain('First seen');
-        expect(card.findComponent(GlLink).exists()).toBe(true);
-        expect(card.findComponent(TimeAgoTooltip).exists()).toBe(true);
+    it('if firstSeen exists renders a card', () => {
+      mountComponent({
+        firstSeen: '2017-05-26T13:32:48Z',
       });
+      const card = wrapper.findByTestId('first-release-card');
+      expect(card.exists()).toBe(true);
+      expect(card.text()).toContain('First seen');
+      expect(card.findComponent(TimeAgoTooltip).exists()).toBe(true);
+      expect(card.findComponent(TimeAgoTooltip).props('time')).toBe('2017-05-26T13:32:48Z');
+    });
 
-      it('renders a link to the commit if error is integrated', () => {
+    describe('if firstReleaseVersion link exists', () => {
+      it('shows the shortened release tag as text, if error is integrated', () => {
         mountComponent({
-          externalBaseUrl: 'external-base-url',
           firstReleaseVersion: 'first-release-version',
           firstSeen: '2023-04-20T17:02:06+00:00',
           integrated: true,
         });
-        expect(
-          wrapper.findByTestId('first-release-card').findComponent(GlLink).attributes('href'),
-        ).toBe('external-base-url/-/commit/first-release-version');
+        const card = wrapper.findByTestId('first-release-card');
+        expect(card.text()).toMatchInterpolatedText('First seen first-rele');
+        expect(card.findComponent(GlLink).exists()).toBe(false);
       });
 
-      it('renders a link to the release if error is not integrated', () => {
+      it('renders a link to the release, if error is not integrated', () => {
         mountComponent({
           externalBaseUrl: 'external-base-url',
           firstReleaseVersion: 'first-release-version',
@@ -88,36 +90,40 @@ describe('ErrorDetails', () => {
         ).toBe('external-base-url/releases/first-release-version');
       });
     });
+  });
 
-    it('if lastReleaseVersion is missing, does not render a card', () => {
+  describe('last seen card', () => {
+    it('if lastSeen is missing, does not render a card', () => {
+      mountComponent({
+        lastSeen: undefined,
+      });
       expect(wrapper.findByTestId('last-release-card').exists()).toBe(false);
     });
 
-    describe('if lastReleaseVersion link exists', () => {
-      it('renders the last release card', () => {
-        mountComponent({
-          lastReleaseVersion: 'last-release-version',
-        });
-        const card = wrapper.findByTestId('last-release-card');
-        expect(card.exists()).toBe(true);
-        expect(card.text()).toContain('Last seen');
-        expect(card.findComponent(GlLink).exists()).toBe(true);
-        expect(card.findComponent(TimeAgoTooltip).exists()).toBe(true);
+    it('if lastSeen exists renders a card', () => {
+      mountComponent({
+        lastSeen: '2017-05-26T13:32:48Z',
       });
+      const card = wrapper.findByTestId('last-release-card');
+      expect(card.exists()).toBe(true);
+      expect(card.text()).toContain('Last seen');
+      expect(card.findComponent(TimeAgoTooltip).exists()).toBe(true);
+      expect(card.findComponent(TimeAgoTooltip).props('time')).toBe('2017-05-26T13:32:48Z');
+    });
 
-      it('renders a link to the commit if error is integrated', () => {
+    describe('if lastReleaseVersion link exists', () => {
+      it('shows the shortened release tag as text, if error is integrated', () => {
         mountComponent({
-          externalBaseUrl: 'external-base-url',
           lastReleaseVersion: 'last-release-version',
           lastSeen: '2023-04-20T17:02:06+00:00',
           integrated: true,
         });
-        expect(
-          wrapper.findByTestId('last-release-card').findComponent(GlLink).attributes('href'),
-        ).toBe('external-base-url/-/commit/last-release-version');
+        const card = wrapper.findByTestId('last-release-card');
+        expect(card.text()).toMatchInterpolatedText('Last seen last-relea');
+        expect(card.findComponent(GlLink).exists()).toBe(false);
       });
 
-      it('renders a link to the release if error is integrated', () => {
+      it('renders a link to the release, if error is not integrated', () => {
         mountComponent({
           externalBaseUrl: 'external-base-url',
           lastReleaseVersion: 'last-release-version',

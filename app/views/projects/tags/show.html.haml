@@ -1,6 +1,6 @@
 - user = user_email = nil
-- if @tag.tagger
-  - user_email = @tag.tagger.email
+- if @tag.user_email
+  - user_email = @tag.user_email
   - user = User.find_by_any_email(user_email)
 - add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
 - breadcrumb_title @tag.name

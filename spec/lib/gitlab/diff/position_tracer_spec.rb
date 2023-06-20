@@ -18,8 +18,13 @@ RSpec.describe Gitlab::Diff::PositionTracer do
     let(:project) { double }
     let(:old_diff_refs) { diff_refs }
     let(:new_diff_refs) { diff_refs }
-    let(:position) { double(on_text?: on_text?, diff_refs: diff_refs) }
+    let(:on_file?) { false }
+    let(:on_text?) { false }
     let(:tracer) { double }
+    let(:position) do
+      double(on_text?: on_text?, on_image?: false, on_file?: on_file?, diff_refs: diff_refs,
+        ignore_whitespace_change: false)
+    end
 
     context 'position is on text' do
       let(:on_text?) { true }
@@ -40,6 +45,20 @@ RSpec.describe Gitlab::Diff::PositionTracer do
 
       it 'calls ImageStrategy#trace' do
         expect(Gitlab::Diff::PositionTracer::ImageStrategy)
+          .to receive(:new)
+          .with(subject)
+          .and_return(tracer)
+        expect(tracer).to receive(:trace).with(position)
+
+        subject.trace(position)
+      end
+    end
+
+    context 'position on file' do
+      let(:on_file?) { true }
+
+      it 'calls ImageStrategy#trace' do
+        expect(Gitlab::Diff::PositionTracer::FileStrategy)
           .to receive(:new)
           .with(subject)
           .and_return(tracer)

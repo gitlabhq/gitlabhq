@@ -26,6 +26,7 @@ import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
+import PreparingState from './components/states/mr_widget_preparing.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
 import ConflictsState from './components/states/mr_widget_conflicts.vue';
 import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
@@ -88,6 +89,7 @@ export default {
     MrWidgetReadyToMerge,
     ShaMismatch,
     MrWidgetChecking: CheckingState,
+    MrWidgetPreparing: PreparingState,
     MrWidgetUnresolvedDiscussions: UnresolvedDiscussionsState,
     MrWidgetPipelineBlocked: PipelineBlockedState,
     MrWidgetPipelineFailed: PipelineFailedState,
@@ -96,7 +98,6 @@ export default {
     MrWidgetRebase: RebaseState,
     SourceBranchRemovalStatus,
     MrWidgetApprovals,
-    SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
     ReadyToMerge: ReadyToMergeState,
     ReportWidgetContainer,
@@ -132,7 +133,7 @@ export default {
           return getStateSubscription;
         },
         skip() {
-          return !this.mr?.id || this.loading || !window.gon?.features?.realtimeMrStatusChange;
+          return !this.mr?.id || this.loading;
         },
         variables() {
           return {
@@ -199,7 +200,7 @@ export default {
       );
     },
     shouldRenderApprovals() {
-      return this.mr.state !== 'nothingToMerge';
+      return !['preparing', 'nothingToMerge'].includes(this.mr.state);
     },
     componentName() {
       return stateToComponentMap[this.machineState] || classState[this.mr.state];
@@ -237,9 +238,6 @@ export default {
         this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
       );
     },
-    shouldRenderSecurityReport() {
-      return Boolean(this.mr?.pipeline?.id);
-    },
     shouldRenderTerraformPlans() {
       return Boolean(this.mr?.terraformReportsPath);
     },
@@ -272,9 +270,6 @@ export default {
     },
     hasAlerts() {
       return this.hasMergeError || this.showMergePipelineForkWarning;
-    },
-    shouldShowSecurityExtension() {
-      return window.gon?.features?.refactorSecurityExtension;
     },
     shouldShowMergeDetails() {
       if (this.mr.state === 'readyToMerge') return true;
@@ -599,15 +594,7 @@ export default {
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
       <extensions-container v-if="hasExtensions" :mr="mr" />
-      <widget-container v-if="mr && shouldShowSecurityExtension" :mr="mr" />
-      <security-reports-app
-        v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
-        :pipeline-id="mr.pipeline.id"
-        :project-id="mr.sourceProjectId"
-        :security-reports-docs-path="mr.securityReportsDocsPath"
-        :target-project-full-path="mr.targetProjectFullPath"
-        :mr-iid="mr.iid"
-      />
+      <widget-container :mr="mr" />
     </report-widget-container>
     <div class="mr-section-container mr-widget-workflow">
       <div v-if="hasAlerts" class="gl-overflow-hidden mr-widget-alert-container">

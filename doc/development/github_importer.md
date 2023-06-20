@@ -149,10 +149,10 @@ comments.
 This worker imports note attachments that are linked inside Markdown.
 For each entity with Markdown text in the project, we schedule a job of:
 
-- `Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every release.
-- `Gitlab::GithubImport::ImportNoteAttachmentsWorker` for every note.
-- `Gitlab::GithubImport::ImportIssueAttachmentsWorker` for every issue.
-- `Gitlab::GithubImport::ImportMergeRequestAttachmentsWorker` for every merge request.
+- `Gitlab::GithubImport::Importer::Attachments::ReleasesImporter` for every release.
+- `Gitlab::GithubImport::Importer::Attachments::NotesImporter` for every note.
+- `Gitlab::GithubImport::Importer::Attachments::IssuesImporter` for every issue.
+- `Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporter` for every merge request.
 
 Each job:
 
@@ -205,7 +205,7 @@ also reduces pressure on the system as a whole.
 
 GitLab includes a worker called `Gitlab::Import::StuckProjectImportJobsWorker`
 that periodically runs and marks project imports as failed if they have been
-running for more than 15 hours. For GitHub projects, this poses a bit of a
+running for more than 24 hours. For GitHub projects, this poses a bit of a
 problem: importing large projects could take several hours depending on how
 often we hit the GitHub rate limit (more on this below), but we don't want
 `Gitlab::Import::StuckProjectImportJobsWorker` to mark our import as failed because of this.

@@ -46,18 +46,20 @@ You can use the following fuzzing engines to test the specified languages.
 | Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
 | Swift                                       | [libFuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md)                 | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example)           |
 | Rust                                        | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz)                            | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example)             |
-| Java                                        | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example)     |
+| Java (Maven only)<sup>1</sup>               | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example)     |
 | Java                                        | [JQF](https://github.com/rohanpadhye/JQF) (not preferred)                                            | [jqf-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example)              |
 | JavaScript                                  | [`jsfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/jsfuzz)                 | [jsfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/jsfuzz-fuzzing-example)         |
 | Python                                      | [`pythonfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/pythonfuzz)         | [pythonfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/pythonfuzz-fuzzing-example) |
 | AFL (any language that works on top of AFL) | [AFL](https://lcamtuf.coredump.cx/afl/)                                                              | [afl-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/afl-fuzzing-example)               |
 
+1. Support for Gradle is planned in [issue 409764](https://gitlab.com/gitlab-org/gitlab/-/issues/409764).
+
 ## Confirm status of coverage-guided fuzz testing
 
 To confirm the status of coverage-guided fuzz testing:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Coverage Fuzzing** section the status is:
    - **Not configured**
    - **Enabled**
@@ -170,8 +172,8 @@ artifacts files you can download from the CI/CD pipeline. Also, a project member
 
 To view details of the corpus registry:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 
 ### Create a corpus in the corpus registry
@@ -198,8 +200,8 @@ provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every p
 
 To upload an existing corpus file:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security configuration**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 1. Select **New corpus**.
 1. Complete the fields.
@@ -225,7 +227,7 @@ Prerequisites:
 
 ## Coverage-guided fuzz testing report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Experiment](../../../policy/alpha-beta-support.md#experiment).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 For detailed information about the `gl-coverage-fuzzing-report.json` file's format, read the
 [schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).

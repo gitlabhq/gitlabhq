@@ -74,6 +74,6 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def validate_suffix_path
-    Gitlab::Utils.check_path_traversal!(params[:suffix_path]) if params[:suffix_path]
+    Gitlab::PathTraversal.check_path_traversal!(params[:suffix_path]) if params[:suffix_path]
   end
 end

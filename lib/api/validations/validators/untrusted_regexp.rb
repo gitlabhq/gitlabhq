@@ -3,7 +3,7 @@
 module API
   module Validations
     module Validators
-      class UntrustedRegexp < Grape::Validations::Base
+      class UntrustedRegexp < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
           value = params[attr_name]
           return unless value

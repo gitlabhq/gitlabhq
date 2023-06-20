@@ -24,6 +24,17 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
     stub_default_url_options(host: 'localhost')
   end
 
+  shared_examples 'when the project does not have releases' do
+    before do
+      project.releases.delete_all
+      visit project_releases_path(project)
+    end
+
+    it 'sees an empty state' do
+      expect(page).to have_selector('[data-testid="gl-empty-state-content"]')
+    end
+  end
+
   context('when the user is a maintainer') do
     before do
       sign_in(maintainer)
@@ -110,6 +121,8 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
         it_behaves_like 'releases sort order'
       end
     end
+
+    it_behaves_like 'when the project does not have releases'
   end
 
   context('when the user is a guest') do
@@ -130,5 +143,7 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
         expect(page).not_to have_content(release_v3.commit.short_id)
       end
     end
+
+    it_behaves_like 'when the project does not have releases'
   end
 end

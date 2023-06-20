@@ -72,7 +72,7 @@ values obtained during the LDAP client configuration earlier:
 - `cert`: The `.crt` file text from the downloaded certificate bundle
 - `key`: The `.key` file text from the downloaded certificate bundle
 
-**For Omnibus installations**
+For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -140,11 +140,9 @@ values obtained during the LDAP client configuration earlier:
    EOS
    ```
 
-1. Save the file and [reconfigure](../../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
+1. Save the file and [reconfigure](../../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 
----
-
-**For installations from source**
+For self-compiled installations:
 
 1. Edit `config/gitlab.yml`:
 

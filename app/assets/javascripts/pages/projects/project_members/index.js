@@ -1,9 +1,7 @@
 import initImportProjectMembersTrigger from '~/invite_members/init_import_project_members_trigger';
 import initImportProjectMembersModal from '~/invite_members/init_import_project_members_modal';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
-import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
-import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { s__ } from '~/locale';
 import { initMembersApp } from '~/members';
 import { MEMBER_TYPES } from '~/members/constants';
@@ -11,9 +9,7 @@ import { groupLinkRequestFormatter } from '~/members/utils';
 import { projectMemberRequestFormatter } from '~/projects/members/utils';
 
 initImportProjectMembersModal();
-initInviteMembersModal();
 initInviteGroupsModal();
-initInviteMembersTrigger();
 initInviteGroupTrigger();
 initImportProjectMembersTrigger();
 

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :code_review_workflow do
+  include ListboxHelpers
+
   let(:project) { create(:project, :repository) }
   let(:user)    { project.creator }
   let(:user2) { create(:user) }
@@ -110,8 +112,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   def change_status(text)
     click_button 'Bulk edit'
     check 'Select all'
-    click_button 'Select status'
-    click_button text
+    select_from_listbox(text, from: 'Select status')
     click_update_merge_requests_button
   end
 

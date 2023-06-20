@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Environment', feature_category: :projects do
+RSpec.describe 'Environment', feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:role) { :developer }
@@ -479,7 +479,10 @@ RSpec.describe 'Environment', feature_category: :projects do
       visit project_branches_filtered_path(project, state: 'all', search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
-        page.within('.js-branch-feature') { find('.js-delete-branch-button').click }
+        page.within('.js-branch-feature') do
+          find('[data-testid="branch-more-actions"] .gl-new-dropdown-toggle').click
+          find('[data-testid="delete-branch-button"]').click
+        end
       end
 
       visit_environment(environment)

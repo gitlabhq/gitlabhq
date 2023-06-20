@@ -13,7 +13,7 @@ module PersonalAccessTokens
     def execute
       return ServiceResponse.error(message: 'Not permitted to create') unless creation_permitted?
 
-      token = target_user.personal_access_tokens.create(params.slice(*allowed_params))
+      token = target_user.personal_access_tokens.create(personal_access_token_params)
 
       if token.persisted?
         log_event(token)
@@ -31,13 +31,17 @@ module PersonalAccessTokens
 
     attr_reader :target_user, :ip_address
 
-    def allowed_params
-      [
-        :name,
-        :impersonation,
-        :scopes,
-        :expires_at
-      ]
+    def personal_access_token_params
+      {
+        name: params[:name],
+        impersonation: params[:impersonation] || false,
+        scopes: params[:scopes],
+        expires_at: pat_expiration
+      }
+    end
+
+    def pat_expiration
+      params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
     end
 
     def creation_permitted?

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AlertManagement::HttpIntegration do
+RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_management do
   include ::Gitlab::Routing.url_helpers
 
   let_it_be(:project) { create(:project) }
@@ -21,6 +21,7 @@ RSpec.describe AlertManagement::HttpIntegration do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:type_identifier) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     context 'when active' do
@@ -83,6 +84,66 @@ RSpec.describe AlertManagement::HttpIntegration do
           it_behaves_like 'is invalid record'
         end
       end
+    end
+  end
+
+  describe 'scopes' do
+    let_it_be(:integration_1) { create(:alert_management_http_integration) }
+    let_it_be(:integration_2) { create(:alert_management_http_integration, :inactive, project: project) }
+    let_it_be(:integration_3) { create(:alert_management_http_integration, :prometheus, project: project) }
+    let_it_be(:integration_4) { create(:alert_management_http_integration, :legacy, :inactive) }
+
+    describe '.for_endpoint_identifier' do
+      let(:identifier) { integration_1.endpoint_identifier }
+
+      subject { described_class.for_endpoint_identifier(identifier) }
+
+      it { is_expected.to contain_exactly(integration_1) }
+    end
+
+    describe '.for_type' do
+      let(:type) { :prometheus }
+
+      subject { described_class.for_type(type) }
+
+      it { is_expected.to contain_exactly(integration_3) }
+    end
+
+    describe '.for_project' do
+      let(:project) { integration_2.project }
+
+      subject { described_class.for_project(project) }
+
+      it { is_expected.to contain_exactly(integration_2, integration_3) }
+
+      context 'with project_ids array' do
+        let(:project) { [integration_1.project_id] }
+
+        it { is_expected.to contain_exactly(integration_1) }
+      end
+    end
+
+    describe '.active' do
+      subject { described_class.active }
+
+      it { is_expected.to contain_exactly(integration_1, integration_3) }
+    end
+
+    describe '.legacy' do
+      subject { described_class.legacy }
+
+      it { is_expected.to contain_exactly(integration_4) }
+    end
+
+    describe '.ordered_by_type_and_id' do
+      before do
+        # Rearrange cache by saving to avoid false-positives
+        integration_2.touch
+      end
+
+      subject { described_class.ordered_by_type_and_id }
+
+      it { is_expected.to eq([integration_1, integration_2, integration_4, integration_3]) }
     end
   end
 
@@ -228,6 +289,34 @@ RSpec.describe AlertManagement::HttpIntegration do
             format: :json
           )
         )
+      end
+    end
+
+    context 'for a prometheus integration' do
+      let(:integration) { build(:alert_management_http_integration, :prometheus) }
+
+      it do
+        is_expected.to eq(
+          project_alert_http_integration_url(
+            integration.project,
+            'datadog',
+            integration.endpoint_identifier,
+            format: :json
+          )
+        )
+      end
+
+      context 'for a legacy integration' do
+        let(:integration) { build(:alert_management_http_integration, :prometheus, :legacy) }
+
+        it do
+          is_expected.to eq(
+            notify_project_prometheus_alerts_url(
+              integration.project,
+              format: :json
+            )
+          )
+        end
       end
     end
   end

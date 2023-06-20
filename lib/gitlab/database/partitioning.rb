@@ -40,7 +40,7 @@ module Gitlab
               next if model < ::Gitlab::Database::SharedModel && !(model < TableWithoutModel)
 
               model_connection_name = model.connection_db_config.name
-              Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
+              Gitlab::Database::EachDatabase.each_db_connection(include_shared: false) do |connection, connection_name|
                 if connection_name != model_connection_name
                   PartitionManager.new(model, connection: connection).sync_partitions
                 end
@@ -60,6 +60,8 @@ module Gitlab
         end
 
         def drop_detached_partitions
+          return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
+
           Gitlab::AppLogger.info(message: 'Dropping detached postgres partitions')
 
           Gitlab::Database::EachDatabase.each_database_connection do

@@ -14,7 +14,7 @@ RSpec.describe Docs::DeprecationHandling do
       ['14-10-c.yml', '14-2-b.yml', '14-2-a.yml']
     )
     # Create dummy YAML data based on file name
-    allow(YAML).to receive(:load_file) do |file_name|
+    allow(YAML).to receive(:safe_load_file) do |file_name|
       {
         'title' => file_name[/[a-z]*\.yml/],
         'removal_milestone' => file_name[/\d+-\d+/].tr('-', '.')

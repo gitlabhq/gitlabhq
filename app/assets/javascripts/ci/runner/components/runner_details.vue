@@ -1,20 +1,28 @@
 <script>
-import { GlIntersperse, GlLink } from '@gitlab/ui';
+import { GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import { ACCESS_LEVEL_REF_PROTECTED, GROUP_TYPE, PROJECT_TYPE } from '../constants';
+import {
+  ACCESS_LEVEL_REF_PROTECTED,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  RUNNER_MANAGERS_HELP_URL,
+  I18N_STATUS_NEVER_CONTACTED,
+} from '../constants';
 import RunnerDetail from './runner_detail.vue';
 import RunnerGroups from './runner_groups.vue';
 import RunnerProjects from './runner_projects.vue';
 import RunnerTags from './runner_tags.vue';
+import RunnerManagersDetail from './runner_managers_detail.vue';
 
 export default {
   components: {
     GlIntersperse,
     GlLink,
+    GlSprintf,
     HelpPopover,
     RunnerDetail,
     RunnerMaintenanceNoteDetail: () =>
@@ -26,6 +34,7 @@ export default {
     RunnerUpgradeStatusAlert: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_alert.vue'),
     RunnerTags,
+    RunnerManagersDetail,
     TimeAgo,
   },
   props: {
@@ -76,6 +85,8 @@ export default {
     },
   },
   ACCESS_LEVEL_REF_PROTECTED,
+  RUNNER_MANAGERS_HELP_URL,
+  I18N_STATUS_NEVER_CONTACTED,
 };
 </script>
 
@@ -90,7 +101,7 @@ export default {
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
           :label="s__('Runners|Last contact')"
-          :empty-value="s__('Runners|Never contacted')"
+          :empty-value="$options.I18N_STATUS_NEVER_CONTACTED"
         >
           <template v-if="runner.contactedAt" #value>
             <time-ago :time="runner.contactedAt" />
@@ -150,6 +161,33 @@ export default {
           class="gl-pt-4 gl-border-t-gray-100 gl-border-t-1 gl-border-t-solid"
           :value="runner.maintenanceNoteHtml"
         />
+
+        <runner-detail>
+          <template #label>
+            {{ s__('Runners|Runners') }}
+            <help-popover>
+              <gl-sprintf
+                :message="
+                  s__(
+                    'Runners|Runners are grouped when they have the same authentication token. This happens when you re-use a runner configuration in more than one runner manager. %{linkStart}How does this work?%{linkEnd}',
+                  )
+                "
+              >
+                <template #link="{ content }"
+                  ><gl-link
+                    :href="$options.RUNNER_MANAGERS_HELP_URL"
+                    target="_blank"
+                    class="gl-reset-font-size"
+                    >{{ content }}</gl-link
+                  ></template
+                >
+              </gl-sprintf>
+            </help-popover>
+          </template>
+          <template #value>
+            <runner-managers-detail :runner="runner" />
+          </template>
+        </runner-detail>
       </dl>
     </div>
 

@@ -1,17 +1,11 @@
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlFormInput,
-  GlSearchBoxByType,
-  GlLoadingIcon,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import defaultState from '~/boards/stores/state';
 
-import { mockList, mockActiveGroupProjects } from './mock_data';
+import { mockActiveGroupProjects, mockList } from './mock_data';
 
 const mockProjectsList1 = mockActiveGroupProjects.slice(0, 1);
 
@@ -20,14 +14,17 @@ describe('ProjectSelect component', () => {
   let store;
 
   const findLabel = () => wrapper.find("[data-testid='header-label']");
-  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
+  const findGlCollapsibleListBox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findGlDropdownLoadingIcon = () =>
-    findGlDropdown().find('button:first-child').findComponent(GlLoadingIcon);
-  const findGlSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
-  const findGlDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findFirstGlDropdownItem = () => findGlDropdownItems().at(0);
-  const findInMenuLoadingIcon = () => wrapper.find("[data-testid='dropdown-text-loading-icon']");
-  const findEmptySearchMessage = () => wrapper.find("[data-testid='empty-result-message']");
+    findGlCollapsibleListBox()
+      .find("[data-testid='base-dropdown-toggle'")
+      .findComponent(GlLoadingIcon);
+  const findGlListboxSearchInput = () =>
+    wrapper.find("[data-testid='listbox-search-input'] > .gl-listbox-search-input");
+  const findGlListboxItem = () => wrapper.findAllComponents(GlListboxItem);
+  const findFirstGlDropdownItem = () => findGlListboxItem().at(0);
+  const findInMenuLoadingIcon = () => wrapper.find("[data-testid='listbox-search-loader']");
+  const findEmptySearchMessage = () => wrapper.find("[data-testid='listbox-no-results-text']");
 
   const createStore = ({ state, activeGroupProjects }) => {
     Vue.use(Vuex);
@@ -80,8 +77,8 @@ describe('ProjectSelect component', () => {
   it('renders a default dropdown text', () => {
     createWrapper();
 
-    expect(findGlDropdown().exists()).toBe(true);
-    expect(findGlDropdown().text()).toContain('Select a project');
+    expect(findGlCollapsibleListBox().exists()).toBe(true);
+    expect(findGlCollapsibleListBox().text()).toContain('Select a project');
   });
 
   describe('when mounted', () => {
@@ -102,12 +99,9 @@ describe('ProjectSelect component', () => {
         createWrapper({ activeGroupProjects: mockActiveGroupProjects });
       });
 
-      it('shows GlSearchBoxByType with default attributes', () => {
-        expect(findGlSearchBoxByType().exists()).toBe(true);
-        expect(findGlSearchBoxByType().vm.$attrs).toMatchObject({
-          placeholder: 'Search projects',
-          debounce: '250',
-        });
+      it('shows GlListboxSearchInput with placeholder text', () => {
+        expect(findGlListboxSearchInput().exists()).toBe(true);
+        expect(findGlListboxSearchInput().attributes('placeholder')).toBe('Search projects');
       });
 
       it("displays the fetched project's name", () => {
@@ -116,22 +110,11 @@ describe('ProjectSelect component', () => {
       });
 
       it("doesn't render loading icon in the menu", () => {
-        expect(findInMenuLoadingIcon().isVisible()).toBe(false);
+        expect(findInMenuLoadingIcon().exists()).toBe(false);
       });
 
       it('does not render empty search result message', () => {
         expect(findEmptySearchMessage().exists()).toBe(false);
-      });
-
-      it('focuses on the search input', async () => {
-        const dropdownToggle = findGlDropdown().find('.dropdown-toggle');
-
-        await dropdownToggle.trigger('click');
-        jest.runOnlyPendingTimers();
-        await nextTick();
-
-        const searchInput = findGlDropdown().findComponent(GlFormInput).element;
-        expect(document.activeElement).toBe(searchInput);
       });
     });
 
@@ -147,11 +130,11 @@ describe('ProjectSelect component', () => {
       beforeEach(() => {
         createWrapper({ activeGroupProjects: mockProjectsList1 });
 
-        findFirstGlDropdownItem().find('button').trigger('click');
+        findFirstGlDropdownItem().find('li').trigger('click');
       });
 
       it('renders the name of the selected project', () => {
-        expect(findGlDropdown().find('.gl-dropdown-button-text').text()).toBe(
+        expect(findGlCollapsibleListBox().find('.gl-new-dropdown-button-text').text()).toBe(
           mockProjectsList1[0].name,
         );
       });

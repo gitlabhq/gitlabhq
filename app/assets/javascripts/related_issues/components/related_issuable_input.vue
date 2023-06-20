@@ -217,7 +217,7 @@ export default {
           :aria-label="inputPlaceholder"
           type="text"
           class="gl-w-full gl-border-none gl-outline-0"
-          data-qa-selector="add_issue_field"
+          data-testid="add_issue_field"
           autocomplete="off"
           @input="onInput"
           @focus="onFocus"

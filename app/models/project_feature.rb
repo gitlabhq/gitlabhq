@@ -26,6 +26,7 @@ class ProjectFeature < ApplicationRecord
     feature_flags
     releases
     infrastructure
+    model_experiments
   ].freeze
 
   EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance, :pages]).freeze
@@ -79,6 +80,7 @@ class ProjectFeature < ApplicationRecord
   attribute :infrastructure_access_level, default: ENABLED
   attribute :feature_flags_access_level, default: ENABLED
   attribute :environments_access_level, default: ENABLED
+  attribute :model_experiments_access_level, default: ENABLED
 
   attribute :package_registry_access_level, default: -> do
     if ::Gitlab.config.packages.enabled
@@ -132,12 +134,14 @@ class ProjectFeature < ApplicationRecord
       min_access_level = required_minimum_access_level(feature)
       column = quoted_access_level_column(feature)
 
-      where("#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
-           {
-             public_visible: visible,
-             private_visible: PRIVATE,
-             authorizations: user.authorizations_for_projects(min_access_level: min_access_level, related_project_column: 'project_features.project_id')
-           })
+      where(
+        "#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
+        {
+          public_visible: visible,
+          private_visible: PRIVATE,
+          authorizations: user.authorizations_for_projects(min_access_level: min_access_level, related_project_column: 'project_features.project_id')
+        }
+      )
     else
       # This has to be added to include features whose value is nil in the db
       visible << nil

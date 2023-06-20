@@ -20,6 +20,27 @@ module BranchesHelper
       end
     end
   end
+
+  def merge_request_status(merge_request)
+    return unless merge_request.present?
+    return if merge_request.closed?
+
+    if merge_request.open? || merge_request.locked?
+      variant = :success
+      variant = :warning if merge_request.draft?
+
+      mr_icon = 'merge-request-open'
+      mr_status = _('Open')
+    elsif merge_request.merged?
+      variant = :info
+      mr_icon = 'merge'
+      mr_status = _('Merged')
+    else
+      return
+    end
+
+    { icon: mr_icon, title: "#{mr_status} - #{merge_request.title}", variant: variant }
+  end
 end
 
 BranchesHelper.prepend_mod_with('BranchesHelper')

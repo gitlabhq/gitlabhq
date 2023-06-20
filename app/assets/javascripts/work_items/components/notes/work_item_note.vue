@@ -106,6 +106,7 @@ export default {
         'note note-wrapper note-comment': true,
         target: this.isTarget,
         'inner-target': this.isTarget && !this.isFirstNote,
+        'internal-note': this.note.internal,
       };
     },
     showReply() {
@@ -147,8 +148,14 @@ export default {
     currentUserId() {
       return window.gon.current_user_id;
     },
-    canReportAbuse() {
-      return getIdFromGraphQLId(this.author.id) !== this.currentUserId;
+    isCurrentUserAuthorOfNote() {
+      return getIdFromGraphQLId(this.author.id) === this.currentUserId;
+    },
+    isWorkItemAuthor() {
+      return getIdFromGraphQLId(this.workItem?.author?.id) === getIdFromGraphQLId(this.author.id);
+    },
+    projectName() {
+      return this.workItem?.project?.name;
     },
   },
   apollo: {
@@ -179,7 +186,7 @@ export default {
       this.isEditing = true;
       updateDraft(this.autosaveKey, this.note.body);
     },
-    async updateNote(newText) {
+    async updateNote({ commentText }) {
       try {
         this.isEditing = false;
         await this.$apollo.mutate({
@@ -187,7 +194,7 @@ export default {
           variables: {
             input: {
               id: this.note.id,
-              body: newText,
+              body: commentText,
             },
           },
           optimisticResponse: {
@@ -195,14 +202,14 @@ export default {
               errors: [],
               note: {
                 ...this.note,
-                bodyHtml: renderMarkdown(newText),
+                bodyHtml: renderMarkdown(commentText),
               },
             },
           },
         });
         clearDraft(this.autosaveKey);
       } catch (error) {
-        updateDraft(this.autosaveKey, newText);
+        updateDraft(this.autosaveKey, commentText);
         this.isEditing = true;
         this.$emit('error', __('Something went wrong when updating a comment. Please try again'));
         Sentry.captureException(error);
@@ -309,6 +316,7 @@ export default {
             :created-at="note.createdAt"
             :note-id="note.id"
             :note-url="note.url"
+            :is-internal-note="note.internal"
           >
             <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
           </note-header>
@@ -321,7 +329,12 @@ export default {
               :note-id="note.id"
               :is-author-an-assignee="isAuthorAnAssignee"
               :show-assign-unassign="canSetWorkItemMetadata"
-              :can-report-abuse="canReportAbuse"
+              :can-report-abuse="!isCurrentUserAuthorOfNote"
+              :is-work-item-author="isWorkItemAuthor"
+              :work-item-type="workItemType"
+              :is-author-contributor="note.authorIsContributor"
+              :max-access-level-of-author="note.maxAccessLevelOfAuthor"
+              :project-name="projectName"
               @startReplying="showReplyForm"
               @startEditing="startEditing"
               @error="($event) => $emit('error', $event)"

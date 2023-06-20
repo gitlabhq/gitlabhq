@@ -179,9 +179,9 @@ Example response:
 }
 ```
 
-## Edit a primary Geo site
+## Edit a Geo site
 
-Updates settings of an existing primary Geo site.
+Updates settings of an existing Geo site.
 
 ```plaintext
 PUT /geo_sites/:id

@@ -19,6 +19,7 @@ module ErrorTracking
           'lineNo' => entry['lineno'],
           'context' => build_stacktrace_context(entry),
           'filename' => entry['filename'],
+          'abs_path' => entry['abs_path'],
           'function' => entry['function'],
           'colNo' => 0 # we don't support colNo yet.
         }

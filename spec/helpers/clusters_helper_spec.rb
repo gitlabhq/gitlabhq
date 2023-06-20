@@ -230,15 +230,6 @@ RSpec.describe ClustersHelper do
         stub_feature_flags(remove_monitor_metrics: false)
       end
 
-      context 'health' do
-        let(:tab) { 'health' }
-
-        it 'renders health tab' do
-          expect(helper).to receive(:render_if_exists).with('clusters/clusters/health')
-          subject
-        end
-      end
-
       context 'integrations ' do
         let(:tab) { 'integrations' }
 

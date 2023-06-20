@@ -7,7 +7,7 @@ module Gitlab
 
       SEARCH_CHAR_LIMIT = 4096
       SEARCH_TERM_LIMIT = 64
-      MIN_TERM_LENGTH = 3
+      MIN_TERM_LENGTH = 2
 
       # Generic validation
       validates :query_string, length: { maximum: SEARCH_CHAR_LIMIT }

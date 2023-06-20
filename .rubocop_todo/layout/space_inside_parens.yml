@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/SpaceInsideParens:
-  Details: grace period
   Exclude:
     - 'ee/app/models/ee/dependency_proxy/blob.rb'
     - 'ee/app/models/ee/dependency_proxy/manifest.rb'
@@ -101,7 +100,7 @@ Layout/SpaceInsideParens:
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
     - 'spec/helpers/gitlab_script_tag_helper_spec.rb'
     - 'spec/helpers/tab_helper_spec.rb'
-    - 'spec/initializers/carrierwave_patch_spec.rb'
+    - 'spec/initializers/carrierwave_s3_encryption_headers_patch_spec.rb'
     - 'spec/initializers/rdoc_segfault_patch_spec.rb'
     - 'spec/lib/api/entities/snippet_spec.rb'
     - 'spec/lib/banzai/filter/references/alert_reference_filter_spec.rb'

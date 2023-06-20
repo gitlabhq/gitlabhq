@@ -18,6 +18,7 @@ describe('ServiceDeskRoot', () => {
     endpoint: '/gitlab-org/gitlab-test/service_desk',
     initialIncomingEmail: 'servicedeskaddress@example.com',
     initialIsEnabled: true,
+    isIssueTrackerEnabled: true,
     outgoingName: 'GitLab Support Bot',
     projectKey: 'key',
     selectedTemplate: 'Bug',
@@ -59,6 +60,7 @@ describe('ServiceDeskRoot', () => {
         initialSelectedTemplate: provideData.selectedTemplate,
         initialSelectedFileTemplateProjectId: provideData.selectedFileTemplateProjectId,
         isEnabled: provideData.initialIsEnabled,
+        isIssueTrackerEnabled: provideData.isIssueTrackerEnabled,
         isTemplateSaving: false,
         templates: provideData.templates,
       });

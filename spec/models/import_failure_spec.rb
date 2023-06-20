@@ -36,23 +36,39 @@ RSpec.describe ImportFailure do
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:user) }
   end
 
   describe 'Validations' do
-    context 'has no group' do
+    let_it_be(:group) { build(:group) }
+    let_it_be(:project) { build(:project) }
+    let_it_be(:user) { build(:user) }
+
+    context 'has project' do
       before do
-        allow(subject).to receive(:group).and_return(nil)
+        allow(subject).to receive(:project).and_return(project)
       end
 
-      it { is_expected.to validate_presence_of(:project) }
+      it { is_expected.to validate_absence_of(:group) }
+      it { is_expected.to validate_absence_of(:user) }
     end
 
-    context 'has no project' do
+    context 'has group' do
       before do
-        allow(subject).to receive(:project).and_return(nil)
+        allow(subject).to receive(:group).and_return(group)
       end
 
-      it { is_expected.to validate_presence_of(:group) }
+      it { is_expected.to validate_absence_of(:project) }
+      it { is_expected.to validate_absence_of(:user) }
+    end
+
+    context 'has user' do
+      before do
+        allow(subject).to receive(:user).and_return(user)
+      end
+
+      it { is_expected.to validate_absence_of(:project) }
+      it { is_expected.to validate_absence_of(:group) }
     end
 
     describe '#external_identifiers' do

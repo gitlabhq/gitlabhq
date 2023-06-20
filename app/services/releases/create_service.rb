@@ -81,9 +81,15 @@ module Releases
         tag: tag.name,
         sha: tag.dereferenced_target.sha,
         released_at: released_at,
-        links_attributes: params.dig(:assets, 'links') || [],
+        links_attributes: links_attributes,
         milestones: milestones
       )
+    end
+
+    def links_attributes
+      (params.dig(:assets, 'links') || []).map do |link_params|
+        Releases::Links::Params.new(link_params).allowed_params
+      end
     end
 
     def create_evidence!(release, pipeline)

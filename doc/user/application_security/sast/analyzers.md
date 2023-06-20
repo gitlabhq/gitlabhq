@@ -77,7 +77,7 @@ Work to remove language-specific analyzers and replace them with the Semgrep-bas
 
 You can choose to disable the other analyzers early and use Semgrep-based scanning for supported languages before the default behavior changes. If you do so:
 
-- You enjoy significantly faster scanning, reduced CI minutes usage, and more customizable scanning rules.
+- You enjoy significantly faster scanning, reduced compute quota usage, and more customizable scanning rules.
 - However, vulnerabilities previously reported by language-specific analyzers are reported again under certain conditions, including if you've dismissed the vulnerabilities before. The system behavior depends on:
   - whether you've excluded the Semgrep-based analyzer from running in the past.
   - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/index.md).

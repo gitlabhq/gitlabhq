@@ -18,8 +18,9 @@ link to the **Add license** page should be displayed.
 Otherwise, to add your license:
 
 1. Sign in to GitLab as an administrator.
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
 1. Select **Add license**.
@@ -42,7 +43,7 @@ export GITLAB_ACTIVATION_CODE=your_activation_code
 
 If you have a license, you can also import it when you install GitLab.
 
-- **For installations from source**
+- For self-compiled installations:
   - Place the `Gitlab.gitlab-license` file in the `config/` directory.
   - To specify a custom location and filename for the license, set the
     `GITLAB_LICENSE_FILE` environment variable with the path to the file:
@@ -51,7 +52,7 @@ If you have a license, you can also import it when you install GitLab.
     export GITLAB_LICENSE_FILE="/path/to/license/file"
     ```
 
-- **For Omnibus package**
+- For Linux package installations:
   - Place the `Gitlab.gitlab-license` file in the `/etc/gitlab/` directory.
   - To specify a custom location and filename for the license, add this entry to `gitlab.rb`:
 
@@ -95,8 +96,9 @@ To go back to Free features, [delete all expired licenses](#remove-a-license).
 
 To remove a license from a self-managed instance:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Subscription**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Subscription**.
 1. Select **Remove license**.
 
 Repeat these steps to remove all licenses, including those applied in the past.
@@ -105,8 +107,9 @@ Repeat these steps to remove all licenses, including those applied in the past.
 
 To view your license details:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Subscription**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Subscription**.
 
 You can add and view more than one license, but only the latest license in
 the current date range is the active license.

@@ -10,6 +10,12 @@ module API
       render_api_error!(e.message, 400)
     end
 
+    helpers do
+      def endpoint_scope
+        :project
+      end
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end

@@ -15,6 +15,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
     before do
       project.add_maintainer(user)
       login_as user
+      stub_feature_flags(moved_mr_sidebar: false)
     end
 
     context 'when user has permission to update', :js do
@@ -24,15 +25,16 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
 
       context 'close/reopen/report toggle' do
         it 'opens a dropdown when toggle is clicked' do
-          find('[data-testid="merge-request-actions"]').click
+          find('#new-actions-header-dropdown button').click
 
-          expect(container).to have_link("Close merge request")
-          expect(container).to have_button('Report abuse to administrator')
+          expect(container).to have_button("Close merge request")
+          expect(container).to have_button('Report abuse')
         end
 
         it 'links to Report Abuse' do
-          find('[data-testid="merge-request-actions"]').click
-          click_button 'Report abuse to administrator'
+          find('#new-actions-header-dropdown button').click
+
+          click_button 'Report abuse'
 
           expect(page).to have_content('Report abuse to administrator')
         end
@@ -42,13 +44,13 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
         let(:issuable) { create(:merge_request, :opened, source_project: project) }
 
         it 'shows the `Edit` and `Mark as draft` buttons' do
-          find('[data-testid="merge-request-actions"]').click
+          find('#new-actions-header-dropdown button').click
 
           expect(container).to have_link('Edit')
-          expect(container).to have_link('Mark as draft')
-          expect(container).to have_link('Close merge request')
-          expect(container).to have_button('Report abuse to administrator')
-          expect(container).not_to have_link('Reopen merge request')
+          expect(container).to have_button('Mark as draft')
+          expect(container).to have_button('Close merge request')
+          expect(container).to have_button('Report abuse')
+          expect(container).not_to have_button('Reopen merge request')
         end
       end
 
@@ -56,24 +58,24 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
         let(:issuable) { create(:merge_request, :closed, source_project: project) }
 
         it 'shows both the `Edit` and `Reopen` button' do
-          find('[data-testid="merge-request-actions"]').click
+          find('#new-actions-header-dropdown button').click
 
           expect(container).to have_link('Edit')
-          expect(container).to have_button('Report abuse to administrator')
-          expect(container).to have_link('Reopen merge request')
-          expect(container).not_to have_link('Close merge request')
+          expect(container).to have_button('Report abuse')
+          expect(container).to have_button('Reopen merge request')
+          expect(container).not_to have_button('Close merge request')
         end
 
         context 'when the merge request author is the current user' do
           let(:issuable) { create(:merge_request, :closed, source_project: project, author: user) }
 
           it 'shows both the `Edit` and `Reopen` button' do
-            find('[data-testid="merge-request-actions"]').click
+            find('#new-actions-header-dropdown button').click
 
             expect(container).to have_link('Edit')
-            expect(container).to have_link('Reopen merge request')
-            expect(container).not_to have_link('Close merge request')
-            expect(container).not_to have_button('Report abuse to administrator')
+            expect(container).to have_button('Reopen merge request')
+            expect(container).not_to have_button('Close merge request')
+            expect(container).not_to have_button('Report abuse')
           end
         end
       end
@@ -83,7 +85,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
 
         it 'shows only the `Edit` button' do
           expect(container).to have_link(exact_text: 'Edit')
-          expect(container).not_to have_button('Report abuse to administrator')
+          expect(container).not_to have_button('Report abuse')
           expect(container).not_to have_button('Close merge request')
           expect(container).not_to have_button('Reopen merge request')
         end
@@ -93,7 +95,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
 
           it 'shows only the `Edit` button' do
             expect(container).to have_link(exact_text: 'Edit')
-            expect(container).not_to have_button('Report abuse to administrator')
+            expect(container).not_to have_button('Report abuse')
             expect(container).not_to have_button('Close merge request')
             expect(container).not_to have_button('Reopen merge request')
           end
@@ -112,9 +114,9 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
       end
 
       it 'only shows a `Report abuse` button' do
-        find('[data-testid="merge-request-actions"]').click
+        find('#new-actions-header-dropdown button').click
 
-        expect(container).to have_button('Report abuse to administrator')
+        expect(container).to have_button('Report abuse')
         expect(container).not_to have_button('Close merge request')
         expect(container).not_to have_button('Reopen merge request')
         expect(container).not_to have_link(exact_text: 'Edit')

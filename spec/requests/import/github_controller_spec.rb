@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Import::GithubController, feature_category: :importers do
   describe 'GET details' do
-    subject { get details_import_github_path }
+    subject(:request) { get details_import_github_path }
 
     let_it_be(:user) { create(:user) }
 
@@ -18,10 +18,10 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       before do
         stub_feature_flags(import_details_page: true)
 
-        subject
+        request
       end
 
-      it 'responds with a 200 and shows the template' do
+      it 'responds with a 200 and shows the template', :aggregate_failures do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:details)
       end
@@ -31,7 +31,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       before do
         stub_feature_flags(import_details_page: false)
 
-        subject
+        request
       end
 
       it 'responds with a 404' do

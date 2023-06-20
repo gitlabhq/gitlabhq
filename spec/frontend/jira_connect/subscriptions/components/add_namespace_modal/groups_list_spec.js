@@ -77,7 +77,7 @@ describe('GroupsList', () => {
 
       expect(findGlLoadingIcon().exists()).toBe(false);
       expect(findGlAlert().exists()).toBe(true);
-      expect(findGlAlert().text()).toBe('Failed to load namespaces. Please try again.');
+      expect(findGlAlert().text()).toBe('Failed to load groups. Please try again.');
     });
   });
 
@@ -89,7 +89,7 @@ describe('GroupsList', () => {
       await waitForPromises();
 
       expect(findGlLoadingIcon().exists()).toBe(false);
-      expect(wrapper.text()).toContain('No available namespaces');
+      expect(wrapper.text()).toContain('No groups found');
     });
   });
 

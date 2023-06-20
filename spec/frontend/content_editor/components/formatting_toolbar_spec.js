@@ -12,13 +12,14 @@ describe('content_editor/components/formatting_toolbar', () => {
   let wrapper;
   let trackingSpy;
 
-  const buildWrapper = () => {
+  const buildWrapper = (props) => {
     wrapper = shallowMountExtended(FormattingToolbar, {
       stubs: {
         GlTabs,
         GlTab,
         EditorModeSwitcher,
       },
+      propsData: props,
     });
   };
 
@@ -72,5 +73,13 @@ describe('content_editor/components/formatting_toolbar', () => {
     buildWrapper();
 
     expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
+  });
+
+  describe('when attachment button is hidden', () => {
+    it('does not show the attachment button', () => {
+      buildWrapper({ hideAttachmentButton: true });
+
+      expect(wrapper.findByTestId('attachment').exists()).toBe(false);
+    });
   });
 });

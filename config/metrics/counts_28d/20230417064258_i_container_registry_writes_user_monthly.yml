@@ -3,7 +3,7 @@ key_path: redis_hll_counters.user_container_registry.i_container_registry_writes
 description: A monthly count of unique users that have executed write operations to the registry
 product_section: ops
 product_stage: package
-product_group: package
+product_group: container_registry
 value_type: number
 status: active
 milestone: "16.0"
@@ -22,7 +22,8 @@ options:
   - i_container_registry_delete_repository_user
   - i_container_registry_create_repository_user
   - i_container_registry_push_repository_user
-performance_indicator_type: []
+performance_indicator_type:
+- gmau
 distribution:
 - ce
 - ee

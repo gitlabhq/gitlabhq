@@ -53,8 +53,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     context 'when noteable and note project differ' do
       subject do
-        build(:note, noteable: build_stubbed(:issue),
-                     project: build_stubbed(:project))
+        build(:note, noteable: build_stubbed(:issue), project: build_stubbed(:project))
       end
 
       it { is_expected.to be_invalid }
@@ -933,6 +932,107 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
+  describe '#check_for_spam' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:group)   { create(:group, :public) }
+    let(:issue)     { create(:issue, project: project) }
+    let(:note)      { create(:note, note: "test", noteable: issue, project: project) }
+    let(:note_text) { 'content changed' }
+
+    subject do
+      note.assign_attributes(note: note_text)
+      note.check_for_spam?(user: note.author)
+    end
+
+    before do
+      allow(issue).to receive(:group).and_return(group)
+    end
+
+    context 'when note is public' do
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when note is public and spammable attributes are not changed' do
+      let(:note_text) { 'test' }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when project does not exist' do
+      before do
+        allow(note).to receive(:project).and_return(nil)
+      end
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when project is not public' do
+      before do
+        allow(project).to receive(:public?).and_return(false)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when group is not public' do
+      before do
+        allow(group).to receive(:public?).and_return(false)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when note is confidential' do
+      before do
+        allow(note).to receive(:confidential?).and_return(true)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when noteable is confidential' do
+      before do
+        allow(issue).to receive(:confidential?).and_return(true)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when noteable is not public' do
+      before do
+        allow(issue).to receive(:public?).and_return(false)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when note is a system note' do
+      before do
+        allow(note).to receive(:system?).and_return(true)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+  end
+
   describe ".grouped_diff_discussions" do
     let!(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.project }
@@ -1692,6 +1792,30 @@ RSpec.describe Note, feature_category: :team_planning do
 
           it { is_expected.not_to include(banned_note) }
           it { is_expected.to include(note1) }
+        end
+      end
+    end
+
+    describe '.authored_by' do
+      subject(:notes_by_author) { described_class.authored_by(author) }
+
+      let(:author) { create(:user) }
+
+      it 'returns the notes with the matching author' do
+        note = create(:note, author: author)
+        create(:note)
+
+        expect(notes_by_author).to contain_exactly(note)
+      end
+
+      context 'With ID integer' do
+        subject(:notes_by_author) { described_class.authored_by(author.id) }
+
+        it 'returns the notes with the matching author' do
+          note = create(:note, author: author)
+          create(:note)
+
+          expect(notes_by_author).to contain_exactly(note)
         end
       end
     end

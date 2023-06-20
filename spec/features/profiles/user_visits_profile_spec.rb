@@ -7,6 +7,7 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
 
   before do
     stub_feature_flags(profile_tabs_vue: false)
+    stub_feature_flags(edit_user_profile_vue: false)
     sign_in(user)
   end
 

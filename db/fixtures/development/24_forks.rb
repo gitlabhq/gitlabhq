@@ -2,13 +2,13 @@ require './spec/support/sidekiq_middleware'
 
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
-    User.humans.not_mass_generated.sample(10).each do |user|
+    User.human.not_mass_generated.sample(10).each do |user|
       source_project = Project.not_mass_generated.public_only.sample
 
       ##
       # 03_project.rb might not have created a public project because
       # we use randomized approach (e.g. `Array#sample`).
-      return unless source_project
+      next unless source_project
 
       Sidekiq::Worker.skipping_transaction_check do
         fork_project = Projects::ForkService.new(

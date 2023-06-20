@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_category: :projects do
+RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
   let_it_be(:project) { create(:project, :empty_repo, :with_namespace_settings).present(current_user: user) } # rubocop:todo RSpec/FactoryBot/AvoidCreate
 

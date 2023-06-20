@@ -94,6 +94,7 @@ notes:
 - diff_note_positions
 - review
 - note_metadata
+- user_agent_detail
 note_metadata:
   - note
   - email_participant
@@ -112,6 +113,7 @@ commit_notes:
 - diff_note_positions
 - review
 - note_metadata
+- user_agent_detail
 label_links:
 - target
 - label
@@ -239,6 +241,7 @@ merge_requests:
 - compliance_violations
 - created_environments
 - predictions
+- user_agent_detail
 external_pull_requests:
 - project
 merge_request_diff:
@@ -421,6 +424,7 @@ builds:
 - dast_site_profile
 - dast_scanner_profiles_build
 - dast_scanner_profile
+- job_annotations
 bridges:
 - user
 - pipeline
@@ -581,6 +585,7 @@ project:
 - custom_issue_tracker_integration
 - bugzilla_integration
 - ewm_integration
+- clickup_integration
 - external_wiki_integration
 - mock_ci_integration
 - mock_monitoring_integration
@@ -724,6 +729,7 @@ project:
 - rpm_repository_files
 - npm_metadata_caches
 - packages_cleanup_policy
+- dependency_proxy_packages_setting
 - alerting_setting
 - project_setting
 - webide_pipelines
@@ -760,6 +766,7 @@ project:
 - freeze_periods
 - pumble_integration
 - webex_teams_integration
+- telegram_integration
 - build_report_results
 - vulnerability_statistic
 - vulnerability_historical_statistics
@@ -798,6 +805,8 @@ project:
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
 - design_management_repository
+- design_management_repository_state
+- compliance_standards_adherence
 award_emoji:
 - awardable
 - user

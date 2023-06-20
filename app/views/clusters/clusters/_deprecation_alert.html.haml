@@ -1,5 +1,5 @@
 = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mt-6 gl-mb-3' }) do |c|
-  = c.body do
+  - c.with_body do
     - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
     - issue_link_start = link_start % { url: 'https://gitlab.com/gitlab-org/configure/general/-/issues/199' }
     - docs_link_start = link_start % { url: help_page_path('user/clusters/agent/index.md') }

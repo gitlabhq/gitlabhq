@@ -51,19 +51,24 @@ RSpec.describe 'Updating the dependency proxy image ttl policy', feature_categor
     end
 
     context 'with permission' do
-      before do
-        group.add_maintainer(user)
-      end
+      %i[owner maintainer].each do |role|
+        context "for #{role}" do
+          before do
+            group.send("add_#{role}", user)
+            stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+          end
 
-      it 'returns the updated dependency proxy image ttl policy', :aggregate_failures do
-        subject
+          it 'returns the updated dependency proxy image ttl policy', :aggregate_failures do
+            subject
 
-        expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response['errors']).to be_empty
-        expect(ttl_policy_response).to include(
-          'enabled' => params[:enabled],
-          'ttl' => params[:ttl]
-        )
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['errors']).to be_empty
+            expect(ttl_policy_response).to include(
+              'enabled' => params[:enabled],
+              'ttl' => params[:ttl]
+            )
+          end
+        end
       end
     end
   end

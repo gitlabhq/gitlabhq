@@ -279,6 +279,9 @@ func configureRoutes(u *upstream) {
 		// Generic Packages Repository
 		u.route("PUT", apiProjectPattern+`/packages/generic/`, requestBodyUploader),
 
+		// Ml Model Packages Repository
+		u.route("PUT", apiProjectPattern+`/packages/ml_models/`, requestBodyUploader),
+
 		// NuGet Artifact Repository
 		u.route("PUT", apiProjectPattern+`/packages/nuget/`, mimeMultipartUploader),
 

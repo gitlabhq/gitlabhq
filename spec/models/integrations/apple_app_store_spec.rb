@@ -13,6 +13,9 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
       it { is_expected.to validate_presence_of :app_store_key_id }
       it { is_expected.to validate_presence_of :app_store_private_key }
       it { is_expected.to validate_presence_of :app_store_private_key_file_name }
+      it { is_expected.to allow_value(true).for(:app_store_protected_refs) }
+      it { is_expected.to allow_value(false).for(:app_store_protected_refs) }
+      it { is_expected.not_to allow_value(nil).for(:app_store_protected_refs) }
       it { is_expected.to allow_value('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee').for(:app_store_issuer_id) }
       it { is_expected.not_to allow_value('abcde').for(:app_store_issuer_id) }
       it { is_expected.to allow_value(File.read('spec/fixtures/ssl_key.pem')).for(:app_store_private_key) }
@@ -30,7 +33,7 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
     describe '#fields' do
       it 'returns custom fields' do
         expect(apple_app_store_integration.fields.pluck(:name)).to match_array(%w[app_store_issuer_id app_store_key_id
-          app_store_private_key app_store_private_key_file_name])
+          app_store_private_key app_store_private_key_file_name app_store_protected_refs])
       end
     end
 
@@ -62,8 +65,8 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
     describe '#ci_variables' do
       let(:apple_app_store_integration) { build_stubbed(:apple_app_store_integration) }
 
-      it 'returns vars when the integration is activated' do
-        ci_vars = [
+      let(:ci_vars) do
+        [
           {
             key: 'APP_STORE_CONNECT_API_KEY_ISSUER_ID',
             value: apple_app_store_integration.app_store_issuer_id,
@@ -89,13 +92,32 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
             public: false
           }
         ]
-
-        expect(apple_app_store_integration.ci_variables).to match_array(ci_vars)
       end
 
-      it 'returns an empty array when the integration is disabled' do
-        apple_app_store_integration = build_stubbed(:apple_app_store_integration, active: false)
-        expect(apple_app_store_integration.ci_variables).to match_array([])
+      it 'returns the vars for protected branch' do
+        expect(apple_app_store_integration.ci_variables(protected_ref: true)).to match_array(ci_vars)
+      end
+
+      it 'doesn\'t return the vars for unprotected branch' do
+        expect(apple_app_store_integration.ci_variables(protected_ref: false)).to be_empty
+      end
+    end
+
+    describe '#initialize_properties' do
+      context 'when app_store_protected_refs is nil' do
+        let(:apple_app_store_integration) { described_class.new(app_store_protected_refs: nil) }
+
+        it 'sets app_store_protected_refs to true' do
+          expect(apple_app_store_integration.app_store_protected_refs).to be(true)
+        end
+      end
+
+      context 'when app_store_protected_refs is false' do
+        let(:apple_app_store_integration) { build(:apple_app_store_integration, app_store_protected_refs: false) }
+
+        it 'sets app_store_protected_refs to false' do
+          expect(apple_app_store_integration.app_store_protected_refs).to be(false)
+        end
       end
     end
   end
@@ -105,7 +127,7 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
 
     describe '#ci_variables' do
       it 'returns an empty array' do
-        expect(apple_app_store_integration.ci_variables).to match_array([])
+        expect(apple_app_store_integration.ci_variables(protected_ref: true)).to be_empty
       end
     end
   end

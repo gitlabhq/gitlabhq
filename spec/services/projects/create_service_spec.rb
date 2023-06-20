@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CreateService, '#execute', feature_category: :projects do
+RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create :user }
@@ -1115,6 +1115,47 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
           expect(project.project_namespace).to be_in_sync_with_project(project)
         end
       end
+    end
+  end
+
+  context 'when using access_level params' do
+    def expect_not_disabled_features(project, exclude: [])
+      ProjectFeature::FEATURES.excluding(exclude)
+        .excluding(project.project_feature.send(:feature_validation_exclusion))
+        .each do |feature|
+          expect(project.project_feature.public_send(ProjectFeature.access_level_attribute(feature))).not_to eq(Featurable::DISABLED)
+        end
+    end
+
+    # repository is tested on its own below because it requires other features to be set as well
+    # package_registry has different behaviour and is modified from the model based on other attributes
+    ProjectFeature::FEATURES.excluding(:repository, :package_registry).each do |feature|
+      it "when using #{feature}", :aggregate_failures do
+        feature_attribute = ProjectFeature.access_level_attribute(feature)
+        opts[feature_attribute] = ProjectFeature.str_from_access_level(Featurable::DISABLED)
+        project = create_project(user, opts)
+
+        expect(project).to be_valid
+        expect(project.project_feature.public_send(feature_attribute)).to eq(Featurable::DISABLED)
+
+        expect_not_disabled_features(project, exclude: [feature])
+      end
+    end
+
+    it 'when using repository', :aggregate_failures do
+      # model validation will fail if builds or merge_requests have higher visibility than repository
+      disabled = ProjectFeature.str_from_access_level(Featurable::DISABLED)
+      opts[:repository_access_level] = disabled
+      opts[:builds_access_level] = disabled
+      opts[:merge_requests_access_level] = disabled
+      project = create_project(user, opts)
+
+      expect(project).to be_valid
+      expect(project.project_feature.repository_access_level).to eq(Featurable::DISABLED)
+      expect(project.project_feature.builds_access_level).to eq(Featurable::DISABLED)
+      expect(project.project_feature.merge_requests_access_level).to eq(Featurable::DISABLED)
+
+      expect_not_disabled_features(project, exclude: [:repository, :builds, :merge_requests])
     end
   end
 end

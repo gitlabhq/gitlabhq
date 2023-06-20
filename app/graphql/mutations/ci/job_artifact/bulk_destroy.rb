@@ -38,11 +38,6 @@ module Mutations
 
           project = authorized_find!(id: project_id)
 
-          if Feature.disabled?(:ci_job_artifact_bulk_destroy, project)
-            raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-              '`ci_job_artifact_bulk_destroy` feature flag is disabled.'
-          end
-
           raise Gitlab::Graphql::Errors::ArgumentError, 'IDs array of job artifacts can not be empty' if ids.empty?
 
           result = ::Ci::JobArtifacts::BulkDeleteByProjectService.new(

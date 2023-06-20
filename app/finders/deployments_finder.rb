@@ -57,22 +57,8 @@ class DeploymentsFinder
       raise InefficientQueryError, 'Both `updated_at` filter and `finished_at` filter can not be specified'
     end
 
-    # Currently, the inefficient parameters are allowed in order to avoid breaking changes in Deployment API.
-    # We'll switch to a hard error in https://gitlab.com/gitlab-org/gitlab/-/issues/328500.
     if filter_by_updated_at? && !order_by_updated_at?
-      error = InefficientQueryError.new('`updated_at` filter requires `updated_at` sort')
-
-      Gitlab::ErrorTracking.log_exception(error)
-
-      # We are adding a Feature Flag to introduce the breaking change indicated in
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/328500
-      # We are also adding a way to override this flag for special case users that
-      # are running into large volume of errors when the flag is enabled.
-      # These Feature Flags must be removed by 16.1
-      if Feature.enabled?(:deployments_raise_updated_at_inefficient_error) &&
-          Feature.disabled?(:deployments_raise_updated_at_inefficient_error_override, params[:project])
-        raise error
-      end
+      raise InefficientQueryError, '`updated_at` filter requires `updated_at` sort'
     end
 
     if filter_by_finished_at? && !order_by_finished_at?

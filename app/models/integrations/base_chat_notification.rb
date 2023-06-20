@@ -35,9 +35,9 @@ module Integrations
     boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
     validates :webhook,
-              presence: true,
-              public_url: true,
-              if: -> (integration) { integration.activated? && integration.requires_webhook? }
+      presence: true,
+      public_url: true,
+      if: -> (integration) { integration.activated? && integration.requires_webhook? }
     validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true, if: :activated?
     validate :validate_channel_limit, if: :activated?
 

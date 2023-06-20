@@ -129,7 +129,7 @@ workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_REF_PROTECTED
+    - if: $CI_COMMIT_REF_PROTECTED == "true"
 ```
 
 This example assumes that your long-lived branches are [protected](../../user/project/protected_branches.md).

@@ -8,9 +8,9 @@ class Packages::Conan::Metadatum < ApplicationRecord
   validates :package, presence: true
 
   validates :package_username,
-            :package_channel,
-            presence: true,
-            format: { with: Gitlab::Regex.conan_recipe_user_channel_regex }
+    :package_channel,
+    presence: true,
+    format: { with: Gitlab::Regex.conan_recipe_user_channel_regex }
 
   validate :conan_package_type
   validate :username_channel_none_values

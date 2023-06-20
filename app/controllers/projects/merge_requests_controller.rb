@@ -41,19 +41,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
-    push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:deprecate_vulnerabilities_feedback, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
-    push_frontend_feature_flag(:single_file_file_by_file, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_frontend_feature_flag(:realtime_mr_status_change, project)
-    push_frontend_feature_flag(:realtime_approvals, project)
     push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:code_quality_inline_drawer, project)
-    push_frontend_feature_flag(:hide_create_issue_resolve_all, project)
     push_frontend_feature_flag(:auto_merge_labels_mr_widget, project)
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:mr_activity_filters, current_user)
+    push_frontend_feature_flag(:review_apps_redeploy_mr_widget, project)
+    push_frontend_feature_flag(:comment_on_files, current_user)
+    push_frontend_feature_flag(:ci_job_failures_in_mr, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -196,10 +194,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  # documented in doc/development/rails_endpoints/index.md
   def codequality_mr_diff_reports
     reports_response(@merge_request.find_codequality_mr_diff_reports, head_pipeline)
   end
 
+  # documented in doc/development/rails_endpoints/index.md
   def codequality_reports
     reports_response(@merge_request.compare_codequality_reports)
   end
@@ -613,8 +613,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     Feature.enabled?(:summarize_my_code_review, current_user) &&
       namespace.group_namespace? &&
       namespace.licensed_feature_available?(:summarize_my_mr_code_review) &&
-      Gitlab::Llm::StageCheck.available?(namespace, :summarize_my_mr_code_review) &&
-      merge_request.send_to_ai?
+      Gitlab::Llm::StageCheck.available?(namespace, :summarize_my_mr_code_review)
   end
 end
 

@@ -218,7 +218,6 @@ it('exists', () => {
   wrapper.find('.js-foo');
   wrapper.find('.btn-primary');
   wrapper.find('.qa-foo-component');
-  wrapper.find('[data-qa-selector="foo"]');
 });
 ```
 
@@ -226,7 +225,7 @@ It is recommended to use `kebab-case` for `data-testid` attribute.
 
 It is not recommended that you add `.js-*` classes just for testing purposes. Only do this if there are no other feasible options available.
 
-Do not use a `.qa-*` class or `data-qa-selector` attribute for any tests other than QA end-to-end testing.
+Do not use `.qa-*` class attributes for any tests other than QA end-to-end testing.
 
 ### Querying for child components
 

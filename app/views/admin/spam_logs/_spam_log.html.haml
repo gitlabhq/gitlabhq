@@ -22,6 +22,8 @@
   %td
     = truncate(spam_log.description, length: 100)
   %td
+    = moderation_status(user)
+  %td
     - if user
       = render Pajamas::ButtonComponent.new(size: :small,
         variant: :danger,

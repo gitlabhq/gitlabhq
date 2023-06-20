@@ -202,6 +202,21 @@ RSpec.shared_examples 'batched background migrations execution worker' do
 
             worker.perform_work(database_name, migration.id)
           end
+
+          it 'assigns proper feature category to the context and the worker' do
+            # max_value is set to create and execute a batched_job, where we fetch feature_category from the job_class
+            migration.update!(max_value: create(:event).id)
+            expect(migration.job_class).to receive(:feature_category).and_return(:code_review_workflow)
+
+            allow_next_instance_of(migration.job_class) do |job_class|
+              allow(job_class).to receive(:perform)
+            end
+
+            expect { worker.perform_work(database_name, migration.id) }.to change {
+              Gitlab::ApplicationContext.current["meta.feature_category"]
+            }.to('code_review_workflow')
+              .and change { described_class.get_feature_category }.from(:database).to('code_review_workflow')
+          end
         end
       end
     end

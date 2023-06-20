@@ -3,17 +3,25 @@
 class Tree
   include Gitlab::Utils::StrongMemoize
 
-  attr_accessor :repository, :sha, :path, :entries, :cursor
+  attr_accessor :repository, :sha, :path, :entries, :cursor, :ref_type
 
-  def initialize(repository, sha, path = '/', recursive: false, skip_flat_paths: true, pagination_params: nil)
+  def initialize(
+    repository, sha, path = '/', recursive: false, skip_flat_paths: true, pagination_params: nil,
+    ref_type: nil)
     path = '/' if path.blank?
 
     @repository = repository
     @sha = sha
     @path = path
-
+    @ref_type = ExtractsRef.ref_type(ref_type)
     git_repo = @repository.raw_repository
-    @entries, @cursor = Gitlab::Git::Tree.where(git_repo, @sha, @path, recursive, skip_flat_paths, pagination_params)
+
+    ref = ExtractsRef.qualify_ref(@sha, ref_type)
+
+    @entries, @cursor = Gitlab::Git::Tree.where(git_repo, ref, @path, recursive, skip_flat_paths, pagination_params)
+    @entries.each do |entry|
+      entry.ref_type = self.ref_type
+    end
   end
 
   def readme_path

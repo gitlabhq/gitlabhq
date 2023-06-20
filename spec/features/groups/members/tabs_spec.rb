@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > Tabs', :js, feature_category: :subgroups do
+RSpec.describe 'Groups > Members > Tabs', :js, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   shared_examples 'active "Members" tab' do

@@ -20,6 +20,10 @@ We have two kinds of changes related to JH:
     codes under `jh/`.
   - We will generalize this so both EE and JH can share the same mechanism,
     then we wouldn't have to treat them differently.
+  - Database migrations and database schema changes which are required to
+    support running JH edition. See
+    [JiHu guidelines for database changes](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process.html)
+    for details.
 
 If needed, review the corresponding JH merge request located at [JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
@@ -33,9 +37,12 @@ the reference from being misidentified as a missing partial and subsequently del
 
 ## Process overview
 
-See the [merge request process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/#merge-request-process)
-on the JiHu Support handbook.
-This page is the single source of truth for JiHu-related processes.
+Read the following process guides:
+
+- [Contribution review process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-review-process.html)
+- [Database change process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process.html)
+- [Security review process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-security-review-process.html)
+- [Merge request process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/#merge-request-process)
 
 ## Act as EE when `jh/` does not exist or when `EE_ONLY=1`
 

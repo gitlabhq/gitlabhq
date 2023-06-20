@@ -23,18 +23,29 @@ authorization provider, you do not need to choose a password. GitLab
 
 ## Change your password
 
+> Password reset emails sent to any verified email address [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16311) in GitLab 16.1.
+
 You can change your password. GitLab enforces [password requirements](#password-requirements) when you choose your new
 password.
 
-1. On the top bar, in the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Password**.
 1. In the **Current password** text box, enter your current password.
 1. In the **New password** and **Password confirmation** text box, enter your new password.
 1. Select **Save password**.
 
-If you don't know your current password, select the **I forgot my password** link. A password reset email is sent to the
-account's **primary** email address.
+If you do not know your current password, select **I forgot my password**
+and complete the form. A password reset email is sent to the email address you
+enter into this form, provided that the email address is verified. If you enter an
+unverified email address into this form, no email is sent, and you see the following
+message:
+
+> "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
+
+NOTE:
+Your account can have more than one verified email address, and any email address
+associated with your account can be verified.
 
 ## Password requirements
 

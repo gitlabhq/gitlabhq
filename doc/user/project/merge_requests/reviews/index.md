@@ -7,9 +7,6 @@ type: index, reference
 
 # Merge request reviews **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216054) in GitLab 13.5.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245190) in GitLab 13.9.
-
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
 to propose changes. Your team leaves [comments](../../../discussions/index.md) on
@@ -26,7 +23,7 @@ For an overview, see [Merge request review](https://www.youtube.com/watch?v=2May
 
 ## Suggested reviewers **(ULTIMATE SAAS)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/alpha-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
 > - Beta designation [removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113058) in GitLab 15.10.
 
@@ -52,9 +49,6 @@ of a merge request with new commits.
 
 ## Review a merge request
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab 11.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/28154) from GitLab Premium to GitLab Free in 13.1.
-
 When you review a merge request, you can create comments that are visible only
 to you. When you're ready, you can publish them together in a single action.
 To start your review:
@@ -62,7 +56,7 @@ To start your review:
 1. Go to the merge request you want to review, and select the **Changes** tab.
    For more information about navigating the diffs displayed in this tab, see
    [Changes in merge requests](../changes.md).
-1. Select the **{comment}** **comment** icon in the gutter to expand the diff lines
+1. Select **Add a comment to this line** (**{comment}**) in the gutter to expand the diff lines
    and display a comment box. In GitLab version 13.2 and later, you can
    [select multiple lines](#comment-on-multiple-lines).
 1. In the text area, write your first comment, then select **Start a review** below your comment.
@@ -75,8 +69,7 @@ To start your review:
    are now visible, and any [quick actions](../../quick_actions.md) included in
    your comments are performed.
 
-[In GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/292936),
-if you [approve a merge request](../approvals/index.md#approve-a-merge-request) and
+If you [approve a merge request](../approvals/index.md#approve-a-merge-request) and
 are shown in the reviewer list, a green check mark **{check-circle-filled}**
 displays next to your name.
 
@@ -84,8 +77,8 @@ displays next to your name.
 
 To download the changes included in a merge request as a diff:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Select your merge request.
 1. In the upper-right corner, select **Code > Plain diff**.
 
@@ -107,8 +100,8 @@ curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git a
 
 To download the changes included in a merge request as a patch file:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Merge requests**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Merge requests**.
 1. Select your merge request.
 1. In the upper-right corner, select **Code > Patches**.
 
@@ -147,7 +140,7 @@ When you submit your review, GitLab:
 
 ### Resolve or unresolve thread with a comment
 
-Review comments can also resolve or unresolve [resolvable threads](../../../discussions/index.md#resolve-a-thread).
+Review comments can also resolve or unresolve [resolvable threads](../index.md#resolve-a-thread).
 To resolve or unresolve a thread when replying to a comment:
 
 1. In the comment text area, write your comment.
@@ -161,17 +154,12 @@ Pending comments display information about the action to be taken when the comme
 
 ### Add a new comment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
-
 If you have a review in progress, you can also add a comment from the **Overview** tab by selecting
  **Add to review**:
 
 ![New thread](img/mr_review_new_comment_v15_3.png)
 
 ### Approval Rule information for Reviewers **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233736) in GitLab 13.8.
-> - [Feature flag `reviewer_approval_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293742) in GitLab 13.9.
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)
@@ -187,8 +175,6 @@ This example shows reviewers and approval rules in a merge request sidebar:
 
 ### Request a new review
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293933) in GitLab 13.9.
-
 After a reviewer completes their [merge request reviews](../../../discussions/index.md),
 the author of the merge request can request a new review from the reviewer:
 
@@ -202,18 +188,14 @@ them a notification email.
 
 ## Comment on multiple lines
 
-> - [Introduced](https://gitlab.com/gitlab-org/ux-research/-/issues/870) in GitLab 13.2.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49875) select-and-drag features in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299121) in GitLab 13.9.
-
 When commenting on a diff, you can select which lines of code your comment refers
 to by either:
 
 ![Comment on any diff file line](img/comment-on-any-diff-line_v13_10.png)
 
-- Dragging the **{comment}** **comment** icon in the gutter to highlight
+- Dragging **Add a comment to this line** (**{comment}**) in the gutter to highlight
   lines in the diff. GitLab expands the diff lines and displays a comment box.
-- After starting a comment by selecting the **{comment}** **comment** icon in the
+- After starting a comment by selecting **Add a comment to this line** (**{comment}**) in the
   gutter, select the first line number your comment refers to in the **Commenting on lines**
   select box. New comments default to single-line comments, unless you select
   a different starting line.
@@ -244,8 +226,6 @@ To update multiple project merge requests at the same time:
 1. Select **Update all**.
 
 ## Bulk edit merge requests at the group level **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12719) in GitLab 12.2.
 
 Users with at least the Developer role can manage merge requests.
 
@@ -314,8 +294,6 @@ Here are some tips to help you be more efficient with merge requests in
 the command line.
 
 ### Copy the branch name for local checkout
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23767) in GitLab 13.4.
 
 The merge request sidebar contains the branch reference for the source branch
 used to contribute changes for this merge request.
@@ -417,9 +395,6 @@ git checkout origin/merge-requests/1
 All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
 
 ## Cached merge request count
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299542) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327319) in GitLab 14.0.
 
 In a group, the sidebar displays the total count of open merge requests. This value is cached if it's greater than
 than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.

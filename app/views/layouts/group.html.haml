@@ -9,6 +9,7 @@
 - content_for :flash_message do
   = dispensable_render_if_exists "groups/storage_enforcement_alert", context: @group
   = dispensable_render_if_exists "shared/namespace_storage_limit_alert", context: @group
+  = dispensable_render_if_exists "shared/namespace_combined_storage_users_alert", context: @group
 
 - content_for :page_specific_javascripts do
   - if current_user
@@ -20,6 +21,8 @@
   = render 'groups/invite_members_modal', group: @group
 
 = dispensable_render_if_exists "shared/web_hooks/group_web_hook_disabled_alert"
+= dispensable_render_if_exists "shared/code_suggestions_alert"
+= dispensable_render_if_exists "shared/code_suggestions_third_party_alert", source: @group
 = dispensable_render_if_exists "shared/free_user_cap_alert", source: @group
 = dispensable_render_if_exists "shared/unlimited_members_during_trial_alert", resource: @group
 

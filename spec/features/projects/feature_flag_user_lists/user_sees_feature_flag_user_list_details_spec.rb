@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User sees feature flag user list details', :js, feature_category: :projects do
+RSpec.describe 'User sees feature flag user list details', :js, feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
 

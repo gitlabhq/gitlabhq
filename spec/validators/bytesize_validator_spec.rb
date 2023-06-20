@@ -19,9 +19,9 @@ RSpec.describe BytesizeValidator do
 
   where(:content, :validity, :errors) do
     'short'     | true  | {}
-    'very long' | false | { content: ['is too long (9 Bytes). The maximum size is 7 Bytes.'] }
-    'short😁' | false | { content: ['is too long (9 Bytes). The maximum size is 7 Bytes.'] }
-    'short⇏' | false | { content: ['is too long (8 Bytes). The maximum size is 7 Bytes.'] }
+    'very long' | false | { content: ['is too long (9 B). The maximum size is 7 B.'] }
+    'short😁' | false | { content: ['is too long (9 B). The maximum size is 7 B.'] }
+    'short⇏' | false | { content: ['is too long (8 B). The maximum size is 7 B.'] }
   end
 
   with_them do

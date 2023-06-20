@@ -7,12 +7,12 @@
 
 .col-lg-9
   = render Pajamas::CardComponent.new(header_options: { class: 'gl-display-flex gl-align-items-center' }, body_options: { class: 'gl-p-0' }, card_options: { class: 'gl-mb-5 custom-monitored-metrics js-panel-custom-monitored-metrics', data: { active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{integration.active}" } }) do |c|
-    - c.header do
+    - c.with_header do
       %strong
         = s_('PrometheusService|Custom metrics')
       = gl_badge_tag 0, nil, class: 'gl-ml-2 js-custom-monitored-count'
       = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn gl-button btn-confirm gl-ml-auto js-new-metric-button hidden'
-    - c.body do
+    - c.with_body do
       .flash-container.hidden
         .flash-warning
           .flash-text

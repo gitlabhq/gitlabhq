@@ -36,13 +36,8 @@ open a [new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue%5Bmil
 Select the appropriate template, and add all the necessary information about the work you are planning on doing.
 That way you can get more guidance and support from GitLab team members.
 
-If you're not sure what to work on, you can:
-
-- View issues with the
-  [`~Seeking community contributions` label](../labels/index.md#label-for-community-contributors).
-- Optimize tests. Use [RSpec profiling statistics](https://gitlab-org.gitlab.io/rspec_profiling_stats/)
-  to identify the slowest tests. These tests are good candidates for improving and checking if any
-  [best practices](../testing_guide/best_practices.md) can speed them up.
+If you're not sure what to work on, you can [view issues](https://gitlab.com/groups/gitlab-org/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=quick%20win&label_name%5B%5D=Seeking%20community%20contributions&first_page_size=100) with the
+  `~Seeking community contributions` and `~quick win` label.
 
 When you find an issue, leave a comment on the issue you want to work on.
 This helps the GitLab team and members of the wider GitLab community know that you will be working on that issue.
@@ -65,8 +60,9 @@ To write and test your code, you will use the GitLab Development Kit.
      consider doing so with an empty rails app and port it to GDK after.
 
    - To run a pre-configured GDK instance in the cloud, use [GDK with Gitpod](../../integration/gitpod.md).
-     From a project's repository, select the caret (angle-down) next to **Web IDE**,
-     and select **Gitpod** from the list.
+     From a project repository:
+       1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+       1. In the upper right, select **Edit > Gitpod**.
 1. If you want to contribute to the [website](https://about.gitlab.com/) or the [handbook](https://about.gitlab.com/handbook/),
    go to the footer of any page and select **Edit in Web IDE** to open the [Web IDE](../../user/project/web_ide/index.md).
 
@@ -89,7 +85,7 @@ For details, see the [merge request workflow](merge_request_workflow.md).
 1. When you create a merge request, the [`@gitlab-bot`](https://gitlab.com/gitlab-bot) automatically applies
    the ["~Community contribution"](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#ensure-quick-feedback-for-community-contributions) label.
 1. In the 24-48 hours after you create the merge request, a
-   [Merge Request Coach](https://about.gitlab.com/handbook/marketing/community-relations/contributor-success/merge-request-coach-lifecycle.html)
+   [Merge Request Coach](https://about.gitlab.com/handbook/marketing/developer-relations/contributor-success/merge-request-coach-lifecycle.html)
    will review your merge request and apply stage, group, and type labels.
 1. If a merge request was not automatically assigned, ask for a review by typing `@gitlab-bot ready` in a comment.
    If your code has not been assigned a reviewer within two working days of its initial submission, you can ask
@@ -144,15 +140,10 @@ Lastly, keep the following in mind when submitting merge requests:
 - For the criteria for closing issues, see [the Issue Triage handbook page](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#outdated-issues).
 - For the criteria for closing merge requests, see [the Merge Request Workflow](merge_request_workflow.md).
 
-## Getting an Enterprise Edition license
+## Contributing to Premium/Ultimate features with an Enterprise Edition license
 
-GitLab has two development platforms:
-
-- GitLab Community Edition (CE), our free and open source edition.
-- GitLab Enterprise Edition (EE), which is our commercial edition.
-
-If you need a license for contributing to an EE-feature, see
-[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/contributor-success/community-contributors-workflows.html#contributing-to-the-gitlab-enterprise-edition-ee).
+If you would like to work on GitLab features that are within a paid tier, also known as the code that lives in the [EE folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee), it requires a GitLab Enterprise Edition license.
+Please request an Enterprise Edition Developers License according to the [documented process](https://about.gitlab.com/handbook/marketing/developer-relations/contributor-success/community-contributors-workflows.html#contributing-to-the-gitlab-enterprise-edition-ee).
 
 ## Get help
 

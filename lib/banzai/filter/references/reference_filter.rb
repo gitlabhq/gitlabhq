@@ -143,7 +143,7 @@ module Banzai
           attributes.delete(:original) if context[:no_original_data]
 
           attributes.map do |key, value|
-            %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}")
+            %(data-#{key.to_s.dasherize}="#{escape_once(value)}")
           end
             .join(' ')
             .prepend(reference_type_attribute)
@@ -251,7 +251,7 @@ module Banzai
         end
 
         def query
-          @query ||= %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
+          @query ||= %{descendant-or-self::text()[not(#{ignore_ancestor_query})]
           | descendant-or-self::a[
             not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
           ]}

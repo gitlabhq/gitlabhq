@@ -231,7 +231,7 @@ RSpec.describe ProjectPresenter do
       it 'returns storage data' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label: a_string_including('0 Bytes'),
+          label: a_string_including('0 B'),
           link: nil
         )
       end
@@ -285,7 +285,7 @@ RSpec.describe ProjectPresenter do
       it 'returns storage data without usage quotas link for non-admin users' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label: a_string_including('0 Bytes'),
+          label: a_string_including('0 B'),
           link: nil
         )
       end
@@ -295,7 +295,7 @@ RSpec.describe ProjectPresenter do
 
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
-          label: a_string_including('0 Bytes'),
+          label: a_string_including('0 B'),
           link: presenter.project_usage_quotas_path(project)
         )
       end

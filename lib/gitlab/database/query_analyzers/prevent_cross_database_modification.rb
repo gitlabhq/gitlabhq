@@ -5,6 +5,7 @@ module Gitlab
     module QueryAnalyzers
       class PreventCrossDatabaseModification < Database::QueryAnalyzers::Base
         CrossDatabaseModificationAcrossUnsupportedTablesError = Class.new(QueryAnalyzerError)
+        QUERY_LIMIT = 10
 
         # This method will allow cross database modifications within the block
         # Example:
@@ -42,7 +43,8 @@ module Gitlab
           context.merge!({
             transaction_depth_by_db: Hash.new { |h, k| h[k] = 0 },
             modified_tables_by_db: Hash.new { |h, k| h[k] = Set.new },
-            ignored_tables: []
+            ignored_tables: [],
+            queries: []
           })
         end
 
@@ -71,6 +73,7 @@ module Gitlab
             context[:transaction_depth_by_db][database] -= 1
             if context[:transaction_depth_by_db][database] == 0
               context[:modified_tables_by_db][database].clear
+              clear_queries
 
               # Attempt to troubleshoot https://gitlab.com/gitlab-org/gitlab/-/issues/351531
               ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :end_of_transaction)
@@ -104,22 +107,25 @@ module Gitlab
           # databases
           return if tables == ['schema_migrations']
 
+          add_to_queries(sql)
           context[:modified_tables_by_db][database].merge(tables)
           all_tables = context[:modified_tables_by_db].values.flat_map(&:to_a)
           schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(all_tables)
-
           schemas += ApplicationRecord.gitlab_transactions_stack
 
-          if schemas.many?
-            message = "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
-                      "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. " \
-                      "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions for details on how to resolve this exception."
+          unless ::Gitlab::Database::GitlabSchema.cross_transactions_allowed?(schemas)
+            messages = []
+            messages << "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
+                        "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. "
+            messages << "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions " \
+                        "for details on how to resolve this exception."
+            messages += cleaned_queries
 
-            raise CrossDatabaseModificationAcrossUnsupportedTablesError, message
+            raise CrossDatabaseModificationAcrossUnsupportedTablesError, messages.join("\n\n")
           end
         rescue CrossDatabaseModificationAcrossUnsupportedTablesError => e
           ::Gitlab::ErrorTracking.track_exception(e, { gitlab_schemas: schemas, tables: all_tables, query: parsed.sql })
-          raise if raise_exception?
+          raise if dev_or_test_env?
         end
         # rubocop:enable Metrics/AbcSize
 
@@ -159,12 +165,28 @@ module Gitlab
           end
         end
 
-        # We only raise in tests for now otherwise some features will be broken
-        # in development. For now we've mostly only added allowlist based on
-        # spec names. Until we have allowed all the violations inline we don't
-        # want to raise in development.
-        def self.raise_exception?
-          Rails.env.test?
+        def self.dev_or_test_env?
+          Gitlab.dev_or_test_env?
+        end
+
+        def self.clear_queries
+          return unless dev_or_test_env?
+
+          context[:queries].clear
+        end
+
+        def self.add_to_queries(sql)
+          return unless dev_or_test_env?
+
+          context[:queries].push(sql)
+        end
+
+        def self.cleaned_queries
+          return [] unless dev_or_test_env?
+
+          context[:queries].last(QUERY_LIMIT).each_with_index.map do |sql, i|
+            "#{i}: #{sql}"
+          end
         end
 
         def self.in_transaction?

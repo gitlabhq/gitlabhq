@@ -1,10 +1,15 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import ServicesItem from '~/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/services_item.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { JOB_TEMPLATE } from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
+import {
+  HELP_PATHS,
+  JOB_TEMPLATE,
+} from '~/ci/pipeline_editor/components/job_assistant_drawer/constants';
 
 describe('Services item', () => {
   let wrapper;
 
+  const findLink = () => wrapper.findComponent(GlLink);
   const findServiceNameInputByIndex = (index) =>
     wrapper.findByTestId(`service-name-input-${index}`);
   const findServiceEntrypointInputByIndex = (index) =>
@@ -21,8 +26,17 @@ describe('Services item', () => {
       propsData: {
         job,
       },
+      stubs: {
+        GlSprintf,
+      },
     });
   };
+
+  it('should render help links with correct hrefs', () => {
+    createComponent();
+
+    expect(findLink().attributes('href')).toEqual(HELP_PATHS.servicesHelpPath);
+  });
 
   it('should emit update job event when filling inputs', () => {
     createComponent();

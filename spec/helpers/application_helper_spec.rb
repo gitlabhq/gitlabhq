@@ -172,6 +172,29 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe 'edited_time_ago_with_tooltip' do
+    around do |example|
+      Time.use_zone('UTC') { example.run }
+    end
+
+    let(:project) { build_stubbed(:project) }
+
+    context 'when editable object was not edited' do
+      let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
+
+      it { expect(helper.edited_time_ago_with_tooltip(merge_request)).to eq(nil) }
+    end
+
+    context 'when editable object was edited' do
+      let(:user) { build_stubbed(:user) }
+      let(:now) { Time.zone.parse('2015-07-02 08:23') }
+      let(:merge_request) { build_stubbed(:merge_request, source_project: project, last_edited_at: now, last_edited_by: user) }
+
+      it { expect(helper.edited_time_ago_with_tooltip(merge_request)).to have_text("Edited #{now.strftime('%b %d, %Y')} by #{user.name}") }
+      it { expect(helper.edited_time_ago_with_tooltip(merge_request, exclude_author: true)).to have_text("Edited #{now.strftime('%b %d, %Y')}") }
+    end
+  end
+
   describe '#active_when' do
     it { expect(helper.active_when(true)).to eq('active') }
     it { expect(helper.active_when(false)).to eq(nil) }

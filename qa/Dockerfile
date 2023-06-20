@@ -9,8 +9,6 @@ LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 ENV DEBIAN_FRONTEND="noninteractive"
 # Override config path to make sure local config doesn't override it when building image locally
 ENV BUNDLE_APP_CONFIG=/home/gitlab/.bundle
-# Use webdriver preinstalled in the base image
-ENV WD_INSTALL_DIR=/usr/local/bin
 
 ##
 # Install system libs

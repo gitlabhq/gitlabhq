@@ -9,7 +9,7 @@ type: howto
 
 Geo can be used in combination with Object Storage (AWS S3, or other compatible object storage).
 
-Currently, **secondary** sites can use either:
+**Secondary** sites can use one of the following:
 
 - The same storage bucket as the **primary** site.
 - A replicated storage bucket.
@@ -41,7 +41,8 @@ whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Select **Edit** on the **secondary** site.
 1. In the **Synchronization Settings** section, find the **Allow this secondary node to replicate content on Object Storage**

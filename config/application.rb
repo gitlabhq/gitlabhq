@@ -70,6 +70,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
+    require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
     config.exceptions_app = Gitlab::ExceptionsApp.new(Gitlab.jh? ? Rails.root.join('jh/public') : Rails.public_path)
@@ -335,6 +336,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/tree.css"
     config.assets.precompile << "page_bundles/users.css"
+    config.assets.precompile << "page_bundles/web_ide_loader.css"
     config.assets.precompile << "page_bundles/wiki.css"
     config.assets.precompile << "page_bundles/work_items.css"
     config.assets.precompile << "page_bundles/xterm.css"
@@ -360,6 +362,7 @@ module Gitlab
     config.assets.paths << "#{config.root}/node_modules/@gitlab/fonts/"
     config.assets.precompile << "gitlab-sans/*.woff2"
     config.assets.precompile << "jetbrains-mono/*.woff2"
+    config.assets.precompile << "gitlab-mono/*.woff2"
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
@@ -484,6 +487,7 @@ module Gitlab
     end
 
     # Use caching across all environments
+    ActiveSupport::Cache::RedisCacheStore.prepend(Gitlab::Patch::RedisCacheStore)
     config.cache_store = :redis_cache_store, Gitlab::Redis::Cache.active_support_config
 
     config.active_job.queue_adapter = :sidekiq

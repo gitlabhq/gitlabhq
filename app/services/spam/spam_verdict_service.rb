@@ -68,7 +68,7 @@ module Spam
       begin
         result = spamcheck_client.spam?(spammable: target, user: user, context: context, extra_features: extra_features)
 
-        if result.evaluated? && Feature.enabled?(:user_spam_scores)
+        if result.evaluated?
           Abuse::TrustScore.create!(user: user, score: result.score, source: :spamcheck)
         end
 

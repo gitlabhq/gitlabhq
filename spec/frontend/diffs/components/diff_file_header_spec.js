@@ -18,7 +18,10 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import testAction from '../../__helpers__/vuex_action_helper';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 
-jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/common_utils', () => ({
+  scrollToElement: jest.fn(),
+  isLoggedIn: () => true,
+}));
 
 const diffFile = Object.freeze(
   Object.assign(diffDiscussionsMockData.diff_file, {
@@ -47,6 +50,9 @@ describe('DiffFileHeader component', () => {
   const diffHasDiscussionsResultMock = jest.fn();
   const defaultMockStoreConfig = {
     state: {},
+    getters: {
+      getNoteableData: () => ({ current_user: { can_create_note: true } }),
+    },
     modules: {
       diffs: {
         namespaced: true,
@@ -637,4 +643,23 @@ describe('DiffFileHeader component', () => {
       },
     );
   });
+
+  it.each`
+    commentOnFiles | exists   | existsText
+    ${false}       | ${false} | ${'does not'}
+    ${true}        | ${true}  | ${'does'}
+  `(
+    '$existsText render comment on files button when commentOnFiles is $commentOnFiles',
+    ({ commentOnFiles, exists }) => {
+      window.gon = { current_user_id: 1 };
+      createComponent({
+        props: {
+          addMergeRequestButtons: true,
+        },
+        options: { provide: { glFeatures: { commentOnFiles } } },
+      });
+
+      expect(wrapper.find('[data-testid="comment-files-button"]').exists()).toEqual(exists);
+    },
+  );
 });

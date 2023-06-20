@@ -82,8 +82,6 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [ChatOps](chatops/index.md)                                                                  | Trigger CI jobs from chat, with results sent back to the channel. |
 | [Connect to cloud services](cloud_services/index.md)                                         | Connect to cloud providers using OpenID Connect (OIDC) to retrieve temporary credentials to access services or secrets. |
 | **Verify**                                                                                   |             |
-| [Browser Performance Testing](testing/browser_performance_testing.md)                        | Quickly determine the browser performance impact of pending code changes. |
-| [Load Performance Testing](testing/load_performance_testing.md)                              | Quickly determine the server performance impact of pending code changes. |
 | [CI services](services/index.md)                                                             | Link Docker containers with your base image. |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md)                  | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md)                               | Open an interactive web terminal to debug the running jobs. |

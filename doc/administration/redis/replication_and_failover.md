@@ -275,7 +275,7 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 NOTE:
 You can specify multiple roles like sentinel and Redis as:
@@ -332,7 +332,7 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Go through the steps again for all the other replica nodes.
 
 NOTE:
@@ -348,11 +348,7 @@ the same Sentinels.
 ### Step 3. Configuring the Redis Sentinel instances
 
 NOTE:
-If you are using an external Redis Sentinel instance, be sure
-to exclude the `requirepass` parameter from the Sentinel
-configuration. This parameter causes clients to report `NOAUTH
-Authentication required.`.
-[Redis Sentinel 3.2.x does not support password authentication](https://github.com/antirez/redis/issues/3279).
+[Support for Sentinel password authentication](https://gitlab.com/gitlab-org/gitlab/-/issues/235938) was introduced in GitLab 16.1.
 
 Now that the Redis servers are all set up, let's configure the Sentinel
 servers.
@@ -408,6 +404,9 @@ multiple machines with the Sentinel daemon.
    ## Configure Sentinel
    sentinel['bind'] = '10.0.0.1'
 
+   ## Optional password for Sentinel authentication. Defaults to no password required.
+   # sentinel['password'] = 'sentinel-password-goes here'
+
    # Port that Sentinel listens on, uncomment to change to non default. Defaults
    # to `26379`.
    # sentinel['port'] = 26379
@@ -458,7 +457,7 @@ multiple machines with the Sentinel daemon.
 
    Only the primary GitLab application server should handle migrations.
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Go through the steps again for all the other Sentinel nodes.
 
 ### Step 4. Configuring the GitLab application
@@ -493,9 +492,10 @@ which ideally should not have Redis or Sentinels on it for a HA setup.
      {'host' => '10.0.0.2', 'port' => 26379},
      {'host' => '10.0.0.3', 'port' => 26379}
    ]
+   # gitlab_rails['redis_sentinels_password'] = 'sentinel-password-goes-here' # uncomment and set it to the same value as in sentinel['password']
    ```
 
-1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Step 5. Enable Monitoring
 
@@ -570,13 +570,14 @@ redis['master_password'] = 'redis-password-goes-here' # the same value defined i
 redis['master_ip'] = '10.0.0.1' # ip of the initial primary redis instance
 #redis['master_port'] = 6379 # port of the initial primary redis instance, uncomment to change to non default
 sentinel['bind'] = '10.0.0.1'
+# sentinel['password'] = 'sentinel-password-goes-here' # must be the same in every sentinel node, uncomment to set a password
 # sentinel['port'] = 26379 # uncomment to change default port
 sentinel['quorum'] = 2
 # sentinel['down_after_milliseconds'] = 10000
 # sentinel['failover_timeout'] = 60000
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Example configuration for Redis replica 1 and Sentinel 2
 
@@ -592,13 +593,14 @@ redis['master_ip'] = '10.0.0.1' # IP of primary Redis server
 #redis['master_port'] = 6379 # Port of primary Redis server, uncomment to change to non default
 redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
 sentinel['bind'] = '10.0.0.2'
+# sentinel['password'] = 'sentinel-password-goes-here' # must be the same in every sentinel node, uncomment to set a password
 # sentinel['port'] = 26379 # uncomment to change default port
 sentinel['quorum'] = 2
 # sentinel['down_after_milliseconds'] = 10000
 # sentinel['failover_timeout'] = 60000
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Example configuration for Redis replica 2 and Sentinel 3
 
@@ -614,13 +616,14 @@ redis['master_ip'] = '10.0.0.1' # IP of primary Redis server
 #redis['master_port'] = 6379 # Port of primary Redis server, uncomment to change to non default
 redis['master_name'] = 'gitlab-redis' # must be the same in every sentinel node
 sentinel['bind'] = '10.0.0.3'
+# sentinel['password'] = 'sentinel-password-goes-here' # must be the same in every sentinel node, uncomment to set a password
 # sentinel['port'] = 26379 # uncomment to change default port
 sentinel['quorum'] = 2
 # sentinel['down_after_milliseconds'] = 10000
 # sentinel['failover_timeout'] = 60000
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### Example configuration for the GitLab application
 
@@ -634,9 +637,10 @@ gitlab_rails['redis_sentinels'] = [
   {'host' => '10.0.0.2', 'port' => 26379},
   {'host' => '10.0.0.3', 'port' => 26379}
 ]
+# gitlab_rails['redis_sentinels_password'] = 'sentinel-password-goes-here' # uncomment and set it to the same value as in sentinel['password']
 ```
 
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+[Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ## Advanced configuration
 
@@ -657,6 +661,7 @@ persistence classes.
 | `trace_chunks` | Store [CI trace chunks](../job_logs.md#enable-or-disable-incremental-logging) data. |
 | `rate_limiting` | Store [rate limiting](../../user/admin_area/settings/user_and_ip_rate_limits.md) state. |
 | `sessions` | Store [sessions](../../../ee/development/session.md#gitlabsession). |
+| `repository_cache` | Store cache data specific to repositories.   |
 
 To make this work with Sentinel:
 
@@ -671,6 +676,7 @@ To make this work with Sentinel:
    gitlab_rails['redis_trace_chunks_instance'] = REDIS_TRACE_CHUNKS_URL
    gitlab_rails['redis_rate_limiting_instance'] = REDIS_RATE_LIMITING_URL
    gitlab_rails['redis_sessions_instance'] = REDIS_SESSIONS_URL
+   gitlab_rails['redis_repository_cache_instance'] = REDIS_REPOSITORY_CACHE_URL
 
    # Configure the Sentinels
    gitlab_rails['redis_cache_sentinels'] = [
@@ -701,6 +707,19 @@ To make this work with Sentinel:
      { host: SESSIONS_SENTINEL_HOST, port: 26379 },
      { host: SESSIONS_SENTINEL_HOST2, port: 26379 }
    ]
+   gitlab_rails['redis_repository_cache_sentinels'] = [
+     { host: REPOSITORY_CACHE_SENTINEL_HOST, port: 26379 },
+     { host: REPOSITORY_CACHE_SENTINEL_HOST2, port: 26379 }
+   ]
+
+   # gitlab_rails['redis_cache_sentinels_password'] = 'sentinel-password-goes-here'
+   # gitlab_rails['redis_queues_sentinels_password'] = 'sentinel-password-goes-here'
+   # gitlab_rails['redis_shared_state_sentinels_password'] = 'sentinel-password-goes-here'
+   # gitlab_rails['redis_actioncable_sentinels_password'] = 'sentinel-password-goes-here'
+   # gitlab_rails['redis_trace_chunks_sentinels_password'] = 'sentinel-password-goes-here'
+   # gitlab_rails['redis_rate_limiting_sentinels_password'] = 'sentinel-password-goes-here'
+   # gitlab_rails['redis_sessions_sentinels_password'] = 'sentinel-password-goes-here'
+   # gitlab_rails['redis_repository_cache_sentinels_password'] = 'sentinel-password-goes-here'
    ```
 
    - Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_PRIMARY_NAME`, where:

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Integrations::HangoutsChat do
+RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
   it_behaves_like "chat integration", "Hangouts Chat" do
     let(:client) { HangoutsChat::Sender }
     let(:client_arguments) { webhook_url }
@@ -46,25 +46,27 @@ RSpec.describe Integrations::HangoutsChat do
     end
 
     context 'with issue events' do
-      let(:issues_sample_data) { create(:issue, project: project).to_hook_data(user) }
+      let_it_be(:issue) { create(:issue, project: project) }
+      let(:issues_sample_data) { issue.to_hook_data(user) }
 
       it "adds thread key for issue events" do
         expect(chat_integration.execute(issues_sample_data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /issue .*?/ }))
+          .with(query: hash_including({ "threadKey" => /issue #{project.full_name}##{issue.iid}/ }))
           .once
       end
     end
 
     context 'with merge events' do
-      let(:merge_sample_data) { create(:merge_request, source_project: project).to_hook_data(user) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let(:merge_sample_data) { merge_request.to_hook_data(user) }
 
       it "adds thread key for merge events" do
         expect(chat_integration.execute(merge_sample_data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /merge request .*?/ }))
+          .with(query: hash_including({ "threadKey" => /merge request #{project.full_name}!#{merge_request.iid}/ }))
           .once
       end
     end

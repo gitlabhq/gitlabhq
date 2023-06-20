@@ -118,7 +118,7 @@ API or the UI.
 #### Do not allow duplicate Generic packages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293755) in GitLab 13.12.
-> - [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
 
 To prevent users from publishing duplicate generic packages, you can use the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings)
 or the UI.
@@ -225,12 +225,12 @@ If you are receiving `HTTP 500: Internal Server Error` responses when publishing
 # Consolidated Object Storage settings
 gitlab_rails['object_store']['connection'] = {
   # Other connection settings
-  `aws_signature_version` => '4'
+  'aws_signature_version' => '4'
 }
 # OR 
 # Storage-specific form settings
 gitlab_rails['packages_object_store_connection'] = {
   # Other connection settings
-  `aws_signature_version` => '4'
+  'aws_signature_version' => '4'
 }
 ```

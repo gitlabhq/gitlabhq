@@ -3,7 +3,7 @@ table_name: group_deletion_schedules
 classes:
 - GroupDeletionSchedule
 feature_categories:
-- subgroups
+- groups_and_projects
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20276
 milestone: '12.6'

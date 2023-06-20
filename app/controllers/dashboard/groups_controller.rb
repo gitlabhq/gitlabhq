@@ -5,7 +5,7 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
 
   skip_cross_project_access_check :index
 
-  feature_category :subgroups
+  feature_category :groups_and_projects
 
   urgency :low, [:index]
 

@@ -13,7 +13,6 @@ identifiers:
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution
-product_category: Continuous Integration
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109549
 distributions:

@@ -10,6 +10,7 @@ stages:
   - dast
 
 include:
+  - local: .gitlab/ci/cng/main.gitlab-ci.yml
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
@@ -31,63 +32,10 @@ review-build-cng-env:
   extends:
     - .default-retry
     - .review:rules:review-build-cng
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
-  stage: prepare
-  needs:
-    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
-    - pipeline: $PARENT_PIPELINE_ID
-      job: build-assets-image
-  variables:
-    BUILD_ENV: build.env
-  before_script:
-    - source ./scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > $BUILD_ENV'
-    - echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
-    - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> build.env
-    - cat $BUILD_ENV
-  artifacts:
-    reports:
-      dotenv: $BUILD_ENV
-    paths:
-      - $BUILD_ENV
-    expire_in: 7 days
-    when: always
 
 review-build-cng:
   extends: .review:rules:review-build-cng
-  stage: prepare
   needs: ["review-build-cng-env"]
-  inherit:
-    variables: false
-  variables:
-    TOP_UPSTREAM_SOURCE_PROJECT: "${TOP_UPSTREAM_SOURCE_PROJECT}"
-    TOP_UPSTREAM_SOURCE_REF: "${TOP_UPSTREAM_SOURCE_REF}"
-    TOP_UPSTREAM_SOURCE_JOB: "${TOP_UPSTREAM_SOURCE_JOB}"
-    TOP_UPSTREAM_SOURCE_SHA: "${TOP_UPSTREAM_SOURCE_SHA}"
-    TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID: "${TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID}"
-    TOP_UPSTREAM_MERGE_REQUEST_IID: "${TOP_UPSTREAM_MERGE_REQUEST_IID}"
-    GITLAB_REF_SLUG: "${GITLAB_REF_SLUG}"
-    # CNG pipeline specific variables
-    GITLAB_VERSION: "${GITLAB_VERSION}"
-    GITLAB_TAG: "${GITLAB_TAG}"
-    GITLAB_ASSETS_TAG: "${GITLAB_ASSETS_TAG}"
-    FORCE_RAILS_IMAGE_BUILDS: "${FORCE_RAILS_IMAGE_BUILDS}"
-    CE_PIPELINE: "${CE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$CE_PIPELINE'` will evaluate to `false` when this variable is empty
-    EE_PIPELINE: "${EE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$EE_PIPELINE'` will evaluate to `false` when this variable is empty
-    GITLAB_ELASTICSEARCH_INDEXER_VERSION: "${GITLAB_ELASTICSEARCH_INDEXER_VERSION}"
-    GITLAB_KAS_VERSION: "${GITLAB_KAS_VERSION}"
-    GITLAB_METRICS_EXPORTER_VERSION: "${GITLAB_METRICS_EXPORTER_VERSION}"
-    GITLAB_PAGES_VERSION: "${GITLAB_PAGES_VERSION}"
-    GITLAB_SHELL_VERSION: "${GITLAB_SHELL_VERSION}"
-    GITLAB_WORKHORSE_VERSION: "${GITLAB_WORKHORSE_VERSION}"
-    GITALY_SERVER_VERSION: "${GITALY_SERVER_VERSION}"
-    RUBY_VERSION: "${FULL_RUBY_VERSION}"
-  trigger:
-    project: gitlab-org/build/CNG-mirror
-    branch: $TRIGGER_BRANCH
-    strategy: depend
 
 .review-workflow-base:
   image: ${REVIEW_APPS_IMAGE}
@@ -96,7 +44,7 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "febc4ad69acb7bba0eeb4a62daa577d0b7c3ee71"  # 6.9.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/febc4ad69acb7bba0eeb4a62daa577d0b7c3ee71
+    GITLAB_HELM_CHART_REF: "75b1486a9aec212d0f49ef1251526d8e51004bbc"  # 7.0.1: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/75b1486a9aec212d0f49ef1251526d8e51004bbc
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}

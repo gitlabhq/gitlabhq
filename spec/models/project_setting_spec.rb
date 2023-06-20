@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectSetting, type: :model, feature_category: :projects do
+RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
   it { is_expected.to belong_to(:project) }
 

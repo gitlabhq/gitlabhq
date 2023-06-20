@@ -8,7 +8,7 @@ module QA
           module Main
             extend QA::Page::PageConcern
 
-            def self.included(base)
+            def self.prepended(base)
               super
 
               base.class_eval do

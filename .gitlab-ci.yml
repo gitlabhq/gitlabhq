@@ -23,7 +23,7 @@ default:
     - gitlab-org
   # All jobs are interruptible by default
   interruptible: true
-  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  # Default job timeout doesn't work: https://gitlab.com/gitlab-org/gitlab/-/issues/387528
   timeout: 90m
 
 .default-ruby-variables: &default-ruby-variables
@@ -37,7 +37,7 @@ default:
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY2"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
-  CREATE_ISSUES_FOR_FAILING_TESTS: "true"
+  CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
 
 workflow:
   name: '$PIPELINE_NAME'
@@ -121,8 +121,8 @@ workflow:
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
 
 variables:
-  PG_VERSION: "13"
-  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}.patched-golang-${GO_VERSION}-rust-${RUST_VERSION}-node-16.14-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
+  PG_VERSION: "14"
+  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}.patched-golang-${GO_VERSION}-rust-${RUST_VERSION}-node-18.16-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
   # We set $GITLAB_DEPENDENCY_PROXY to another variable (since it's set at the group level and has higher precedence than .gitlab-ci.yml)
   # so that we can override $GITLAB_DEPENDENCY_PROXY_ADDRESS in workflow rules.
   GITLAB_DEPENDENCY_PROXY_ADDRESS: "${GITLAB_DEPENDENCY_PROXY}"
@@ -140,18 +140,16 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   DEBIAN_VERSION: "bullseye"
   UBI_VERSION: "8.6"
-  CHROME_VERSION: "109"
+  CHROME_VERSION: "113"
   DOCKER_VERSION: "23.0.1"
   RUBY_VERSION: "2.7"
   RUBYGEMS_VERSION: "3.4"
-  GO_VERSION: "1.19"
+  GO_VERSION: "1.20"
   RUST_VERSION: "1.65"
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
   GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
-  JUNIT_RESULT_FILE: rspec/junit_rspec.xml
-  JUNIT_RETRY_FILE: rspec/junit_rspec-retry.xml
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-foss-impact.gitlab-ci.yml.erb
@@ -200,6 +198,10 @@ variables:
 
   # This is set at the gitlab-org level, but we set it here for forks
   DANGER_DO_NOT_POST_INVALID_DANGERFILE_ERROR: "1"
+
+  # Workaround for https://gitlab.com/gitlab-org/gitlab/-/issues/390313. This can be dropped whenever
+  # https://github.com/ruby/ruby/pull/7663 lands in the Ruby interpreter.
+  NOKOGIRI_LIBXML_MEMORY_MANAGEMENT: default
 
 include:
   - local: .gitlab/ci/*.gitlab-ci.yml

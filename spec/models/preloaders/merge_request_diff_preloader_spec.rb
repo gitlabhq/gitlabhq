@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Preloaders::MergeRequestDiffPreloader do
   let_it_be(:merge_request_1) { create(:merge_request) }
   let_it_be(:merge_request_2) { create(:merge_request) }
-  let_it_be(:merge_request_3) { create(:merge_request_without_merge_request_diff) }
+  let_it_be(:merge_request_3) { create(:merge_request, :skip_diff_creation) }
 
   let(:merge_requests) { [merge_request_1, merge_request_2, merge_request_3] }
 

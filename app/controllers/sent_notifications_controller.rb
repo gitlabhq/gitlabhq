@@ -29,6 +29,10 @@ class SentNotificationsController < ApplicationController
   def unsubscribe_and_redirect
     noteable.unsubscribe(@sent_notification.recipient, @sent_notification.project)
 
+    if noteable.is_a?(Issue) && @sent_notification.recipient_id == User.support_bot.id
+      noteable.unsubscribe_email_participant(noteable.external_author)
+    end
+
     flash[:notice] = _("You have been unsubscribed from this thread.")
 
     if current_user

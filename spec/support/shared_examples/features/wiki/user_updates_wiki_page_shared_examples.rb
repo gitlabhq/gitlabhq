@@ -6,9 +6,12 @@
 
 RSpec.shared_examples 'User updates wiki page' do
   include WikiHelpers
+  let(:diagramsnet_url) { 'https://embed.diagrams.net' }
 
   before do
     sign_in(user)
+    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_enabled).and_return(true)
+    allow(Gitlab::CurrentSettings).to receive(:diagramsnet_url).and_return(diagramsnet_url)
   end
 
   context 'when wiki is empty', :js do
@@ -149,7 +152,7 @@ RSpec.shared_examples 'User updates wiki page' do
       end
     end
 
-    it_behaves_like 'edits content using the content editor'
+    it_behaves_like 'edits content using the content editor', { with_expanded_references: false }
     it_behaves_like 'inserts diagrams.net diagram using the content editor'
     it_behaves_like 'autocompletes items'
   end
@@ -245,7 +248,7 @@ RSpec.shared_examples 'User updates wiki page' do
       click_on 'Save changes'
 
       expect(page).to have_content('The form contains the following error:')
-      expect(page).to have_content('Content is too long (11 Bytes). The maximum size is 10 Bytes.')
+      expect(page).to have_content('Content is too long (11 B). The maximum size is 10 B.')
     end
   end
 end

@@ -9,6 +9,7 @@ module Projects
 
     validates :name, presence: true, length: { maximum: 255 }
     validates :name, uniqueness: { case_sensitive: false }, if: :name_changed?
+    validate :validate_name_format, if: :name_changed?
     validates :title, presence: true, length: { maximum: 255 }, on: :create
     validates :description, length: { maximum: 1024 }
 
@@ -61,6 +62,18 @@ module Projects
         where(id: topics_to_increment).update_counters(non_private_projects_count: 1) unless topics_to_increment.empty?
         where(id: topics_to_decrement).where('non_private_projects_count > 0').update_counters(non_private_projects_count: -1) unless topics_to_decrement.empty?
       end
+    end
+
+    private
+
+    def validate_name_format
+      return if name.blank?
+
+      # /\R/ - A linebreak: \n, \v, \f, \r \u0085 (NEXT LINE),
+      # \u2028 (LINE SEPARATOR), \u2029 (PARAGRAPH SEPARATOR) or \r\n.
+      return unless name =~ /\R/
+
+      errors.add(:name, 'has characters that are not allowed')
     end
   end
 end

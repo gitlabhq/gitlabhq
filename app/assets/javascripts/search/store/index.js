@@ -7,11 +7,11 @@ import createState from './state';
 
 Vue.use(Vuex);
 
-export const getStoreConfig = ({ query, navigation, useNewNavigation }) => ({
+export const getStoreConfig = (storeInitValues) => ({
   actions,
   getters,
   mutations,
-  state: createState({ query, navigation, useNewNavigation }),
+  state: createState(storeInitValues),
 });
 
 const createStore = (config) => new Vuex.Store(getStoreConfig(config));

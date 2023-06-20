@@ -4,7 +4,7 @@ class WorkItem < Issue
   include Gitlab::Utils::StrongMemoize
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
-    :title, :reopen, :close, :cc, :tableflip, :shrug, :type
+    :title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to
   ].freeze
 
   self.table_name = 'issues'
@@ -168,8 +168,9 @@ class WorkItem < Issue
       errors.add(
         :work_item_type_id,
         format(
-          _('cannot be changed to %{new_type} with %{parent_type} as parent type.'),
-          new_type: work_item_type.name, parent_type: parent_link.work_item_parent.work_item_type.name
+          _('cannot be changed to %{new_type} when linked to a parent %{parent_type}.'),
+          new_type: work_item_type.name.downcase,
+          parent_type: parent_link.work_item_parent.work_item_type.name.downcase
         )
       )
     end

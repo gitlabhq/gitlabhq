@@ -1,0 +1,9 @@
+mutation updateEnvironment($input: EnvironmentUpdateInput!) {
+  environmentUpdate(input: $input) {
+    environment {
+      id
+      path
+    }
+    errors
+  }
+}

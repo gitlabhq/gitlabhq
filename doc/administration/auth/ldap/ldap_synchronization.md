@@ -15,7 +15,7 @@ You can change when synchronization occurs.
 
 ## User sync
 
-> Preventing LDAP username synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
+> Preventing LDAP user's profile name synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
 
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
@@ -45,9 +45,9 @@ The process also updates the following user information:
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
 
-### Synchronize LDAP username
+### Synchronize LDAP user's profile name
 
-By default, GitLab synchronizes the LDAP username field.
+By default, GitLab synchronizes the LDAP user's profile name field.
 
 To prevent this synchronization, you can set `sync_name` to `false`.
 
@@ -501,7 +501,8 @@ When global group memberships lock is enabled:
 To enable global group memberships lock:
 
 1. [Configure LDAP](index.md#configure-ldap).
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
@@ -513,7 +514,8 @@ By default, group members with the Owner role can manage [LDAP group synchroniza
 GitLab administrators can remove this permission from group Owners:
 
 1. [Configure LDAP](index.md#configure-ldap).
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Allow group owners to manage LDAP-related settings** checkbox is not checked.

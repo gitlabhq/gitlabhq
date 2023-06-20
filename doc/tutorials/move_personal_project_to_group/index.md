@@ -40,8 +40,7 @@ Maintainer role for the group.
 
 If you don't have a group, create one:
 
-1. On the top bar, select **Main menu > Groups > View all groups**.
-1. On the right of the page, select **New group**.
+1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.
 1. Choose the [visibility level](../../user/public_access.md).
@@ -58,8 +57,8 @@ Before you move your project to a group:
 
 Now you're ready to move your project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the group to transfer the project to.
 1. Select **Transfer project**.
@@ -79,7 +78,7 @@ your related resources and tools, such as websites and package managers.
 
 You can now view your project in your group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Look for your project under **Subgroups and projects**.
 
 Start enjoying the benefits of a group! For example, as the group Owner, you can

@@ -48,8 +48,8 @@ For example:
 
 To view the Code Owners of a file or directory:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Files**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Repository**.
 1. Go to the file or directory you want to see the Code Owners for.
 1. Optional. Select a branch or tag.
 

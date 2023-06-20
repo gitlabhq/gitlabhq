@@ -42,6 +42,7 @@ export const initGitlabWebIDE = async (el) => {
     editorFontSrcUrl,
     editorFontFormat,
     editorFontFamily,
+    codeSuggestionsEnabled,
   } = el.dataset;
 
   const rootEl = setupRootElement(el);
@@ -74,6 +75,7 @@ export const initGitlabWebIDE = async (el) => {
       fontFamily: editorFontFamily,
       format: editorFontFormat,
     },
+    codeSuggestionsEnabled,
     handleTracking,
     async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
       const confirmed = await confirmAction(

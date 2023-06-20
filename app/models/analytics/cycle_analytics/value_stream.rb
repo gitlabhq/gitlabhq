@@ -21,6 +21,7 @@ module Analytics
       scope :preload_associated_models, -> {
         includes(:namespace, stages: [:namespace, :end_event_label, :start_event_label])
       }
+      scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
 
       after_save :ensure_aggregation_record_presence
 

@@ -176,7 +176,7 @@ export default {
       :title="title"
       :lazy="lazy"
     >
-      <groups-app :action="key" :service="service" :store="store" :hide-projects="false">
+      <groups-app :action="key" :service="service" :store="store">
         <template v-if="emptyStateComponent" #empty-state>
           <component :is="emptyStateComponent" />
         </template>

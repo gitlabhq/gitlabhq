@@ -5,6 +5,8 @@ import CiEditorHeader from '~/ci/pipeline_editor/components/editor/ci_editor_hea
 import {
   pipelineEditorTrackingOptions,
   TEMPLATE_REPOSITORY_URL,
+  EDITOR_APP_DRAWER_HELP,
+  EDITOR_APP_DRAWER_NONE,
 } from '~/ci/pipeline_editor/constants';
 
 describe('CI Editor Header', () => {
@@ -12,7 +14,7 @@ describe('CI Editor Header', () => {
   let trackingSpy = null;
 
   const createComponent = ({
-    showDrawer = false,
+    showHelpDrawer = false,
     showJobAssistantDrawer = false,
     showAiAssistantDrawer = false,
     aiChatAvailable = false,
@@ -27,7 +29,7 @@ describe('CI Editor Header', () => {
           },
         },
         propsData: {
-          showDrawer,
+          showHelpDrawer,
           showJobAssistantDrawer,
           showAiAssistantDrawer,
         },
@@ -116,15 +118,15 @@ describe('CI Editor Header', () => {
 
     describe('when pipeline editor drawer is closed', () => {
       beforeEach(() => {
-        createComponent({ showDrawer: false });
+        createComponent({ showHelpDrawer: false });
       });
 
-      it('emits open drawer event when clicked', () => {
-        expect(wrapper.emitted('open-drawer')).toBeUndefined();
+      it('emits switch drawer event when clicked', () => {
+        expect(wrapper.emitted('switch-drawer')).toBeUndefined();
 
         findHelpBtn().vm.$emit('click');
 
-        expect(wrapper.emitted('open-drawer')).toHaveLength(1);
+        expect(wrapper.emitted('switch-drawer')).toEqual([[EDITOR_APP_DRAWER_HELP]]);
       });
 
       it('tracks open help drawer action', () => {
@@ -136,15 +138,15 @@ describe('CI Editor Header', () => {
 
     describe('when pipeline editor drawer is open', () => {
       beforeEach(() => {
-        createComponent({ showDrawer: true });
+        createComponent({ showHelpDrawer: true });
       });
 
       it('emits close drawer event when clicked', () => {
-        expect(wrapper.emitted('close-drawer')).toBeUndefined();
+        expect(wrapper.emitted('switch-drawer')).toBeUndefined();
 
         findHelpBtn().vm.$emit('click');
 
-        expect(wrapper.emitted('close-drawer')).toHaveLength(1);
+        expect(wrapper.emitted('switch-drawer')).toEqual([[EDITOR_APP_DRAWER_NONE]]);
       });
     });
   });

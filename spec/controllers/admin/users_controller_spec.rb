@@ -356,7 +356,7 @@ RSpec.describe Admin::UsersController do
         put :activate, params: { id: user.username }
         user.reload
         expect(user.active?).to be_falsey
-        expect(flash[:notice]).to eq('Error occurred. A blocked user must be unblocked to be activated')
+        expect(flash[:alert]).to eq('Error occurred. A blocked user must be unblocked to be activated')
       end
     end
   end
@@ -904,7 +904,7 @@ RSpec.describe Admin::UsersController do
       it "shows a notice" do
         post :impersonate, params: { id: user.username }
 
-        expect(flash[:alert]).to eq("You are now impersonating #{user.username}")
+        expect(flash[:notice]).to eq("You are now impersonating #{user.username}")
       end
 
       it 'clears token session keys' do

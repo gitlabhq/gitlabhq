@@ -1,4 +1,4 @@
-import { GlSprintf, GlIcon } from '@gitlab/ui';
+import { GlSprintf, GlIcon, GlTruncate } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import StackTraceEntry from '~/error_tracking/components/stacktrace_entry.vue';
@@ -42,6 +42,21 @@ describe('Stacktrace Entry', () => {
     expect(wrapper.find('table').exists()).toBe(true);
     expect(wrapper.findAll('tr.line_holder').length).toBe(4);
     expect(wrapper.findAll('.line_content.old').length).toBe(1);
+  });
+
+  it('should render file information if filePath exists', () => {
+    mountComponent({ lines });
+    expect(wrapper.findComponent(FileIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(ClipboardButton).exists()).toBe(true);
+    expect(wrapper.findComponent(GlTruncate).exists()).toBe(true);
+    expect(wrapper.findComponent(GlTruncate).props('text')).toBe('sidekiq/util.rb');
+  });
+
+  it('should not render file information if filePath does not exists', () => {
+    mountComponent({ lines, filePath: undefined });
+    expect(wrapper.findComponent(FileIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(ClipboardButton).exists()).toBe(false);
+    expect(wrapper.findComponent(GlTruncate).exists()).toBe(false);
   });
 
   describe('entry caption', () => {

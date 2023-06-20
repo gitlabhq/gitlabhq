@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Gitaly
+stage: Create
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -74,7 +74,7 @@ To purge files from a GitLab repository:
 1. Clone a fresh copy of the repository from the bundle using  `--bare` and `--mirror` options:
 
    ```shell
-   git clone --bare /path/to/project.bundle
+   git clone --bare --mirror /path/to/project.bundle
    ```
 
 1. Go to the `project.git` directory:
@@ -134,6 +134,12 @@ To purge files from a GitLab repository:
    Repeat this step and all following steps (including the [repository cleanup](#repository-cleanup) step)
    every time you run any `git filter-repo` command.
 
+1. To allow you to force push the changes you need to unset the mirror flag:
+
+   ```shell
+    git config --unset remote.origin.mirror
+   ```
+
 1. Force push your changes to overwrite all branches on GitLab:
 
    ```shell
@@ -160,12 +166,12 @@ To purge files from a GitLab repository:
 
    Refer to the Git [`replace`](https://git-scm.com/book/en/v2/Git-Tools-Replace) documentation for information on how this works.
 
-1. Wait at least 30 minutes, because the repository cleanup process only processes object older than 30 minutes.
-1. Run [repository cleanup](#repository-cleanup).
+1. Wait at least 30 minutes before attempting the next step.
+1. Run [repository cleanup](#repository-cleanup). This process only cleans up objects
+   that are more than 30 minutes old. See [Space not being freed](#space-not-being-freed)
+   for more information.
 
 ## Repository cleanup
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19376) in GitLab 11.6.
 
 Repository cleanup allows you to upload a text file of objects and GitLab removes internal Git
 references to these objects. You can use
@@ -177,6 +183,10 @@ safely cleaning the repository requires it to be made read-only for the duration
 of the operation. This happens automatically, but submitting the cleanup request
 fails if any writes are ongoing, so cancel any outstanding `git push`
 operations before continuing.
+
+WARNING:
+Removing internal Git references results in associated merge request commits, pipelines, and changes details
+no longer being available.
 
 To clean up a repository:
 
@@ -300,3 +310,17 @@ end
 
 puts "#{artifact_storage} bytes"
 ```
+
+### Space not being freed
+
+The process defined on this page can decrease the size of repository exports
+decreasing, but the usage in the file system appearing unchanged in both the Web UI and terminal.
+
+The process leaves many unreachable objects remaining in the repository.
+Because they are unreachable, they are not included in the export, but they are
+still stored in the file system. These files are pruned after a grace period of
+two weeks. Pruning deletes these files and ensures your storage usage statistics
+are accurate.
+
+To expedite this process, see the
+['Prune Unreachable Objects' housekeeping task](../../../administration/housekeeping.md).

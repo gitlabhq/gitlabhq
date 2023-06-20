@@ -136,7 +136,7 @@ RSpec.describe Gitlab::GlRepository::RepoType do
   describe Gitlab::GlRepository::DESIGN do
     it_behaves_like 'a repo type' do
       let(:expected_repository) { project.design_repository }
-      let(:expected_container) { project.design_management_repository }
+      let(:expected_container) { expected_repository.container }
       let(:expected_id) { expected_container.id }
       let(:expected_identifier) { "design-#{expected_id}" }
       let(:expected_suffix) { '.design' }

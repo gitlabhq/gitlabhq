@@ -99,7 +99,7 @@ To change the worker timeout to 600 seconds:
 ## Disable Puma clustered mode in memory-constrained environments
 
 WARNING:
-This feature is an [Experiment](../../policy/alpha-beta-support.md#experiment) and subject to change without notice. The feature
+This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment) and subject to change without notice. The feature
 is not ready for production use. If you want to use this feature, you should test
 outside of production first. See the [known issues](#puma-single-mode-known-issues)
 for additional details.
@@ -210,6 +210,71 @@ make Prometheus scrape them over HTTPS, and support for it is being discussed
 [in this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6811).
 Hence, it is not technically possible to turn off this HTTP listener without
 losing Prometheus metrics.
+
+### Using an encrypted SSL key
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7799) in GitLab 16.1.
+
+Puma supports the use of an encrypted private SSL key, which can be
+decrypted at runtime. The following instructions illustrate how to
+configure this:
+
+1. Encrypt the key with a password if it is not already:
+
+   ```shell
+   openssl rsa -aes256 -in /path/to/ssl-key.pem -out /path/to/encrypted-ssl-key.pem
+   ```
+
+   Enter in a password twice to write the encrypted file. In this
+   example, we use `some-password-here`.
+
+1. Create a script or executable that prints the password. For
+   example, create a basic script in
+   `/var/opt/gitlab/gitlab-rails/etc/puma-ssl-key-password` that echoes
+   the password:
+
+   ```shell
+   #!/bin/sh
+   echo some-password-here
+   ```
+
+   Note that in production, you should avoid storing the password on
+   disk and use a secure mechanism for retrieving a password, such as
+   Vault. For example, the script might look like:
+
+   ```shell
+   #!/bin/sh
+   export VAULT_ADDR=http://vault-password-distribution-point:8200
+   export VAULT_TOKEN=<some token>
+
+   echo "$(vault kv get -mount=secret puma-ssl-password)"
+   ```
+
+1. Ensure the Puma process has sufficient permissions to execute the
+   script and to read the encrypted key:
+
+   ```shell
+   chown git:git /var/opt/gitlab/gitlab-rails/etc/puma-ssl-key-password
+   chmod 770 /var/opt/gitlab/gitlab-rails/etc/puma-ssl-key-password
+   chmod 660 /path/to/encrypted-ssl-key.pem
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb`, and replace `puma['ssl_certificate_key']` with the encrypted key and specify
+   `puma['ssl_key_password_command]`:
+
+   ```ruby
+   puma['ssl_certificate_key'] = '/path/to/encrypted-ssl-key.pem'
+   puma['ssl_key_password_command'] = '/var/opt/gitlab/gitlab-rails/etc/puma-ssl-key-password'
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. If GitLab comes up successfully, you should be able to remove the
+   unencrypted SSL key that was stored on the GitLab instance.
 
 ## Switch from Unicorn to Puma
 
@@ -333,7 +398,7 @@ gitlab_rails['env'] = {
 For source installations, set the environment variable.
 Refer to [Puma Worker timeout](../operations/puma.md#change-the-worker-timeout).
 
-[Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
+[Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 
 #### Troubleshooting without affecting other users
 

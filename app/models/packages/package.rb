@@ -6,6 +6,7 @@ class Packages::Package < ApplicationRecord
   include UsageStatistics
   include Gitlab::Utils::StrongMemoize
   include Packages::Installable
+  include Packages::Downloadable
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default, :hidden].freeze
@@ -23,7 +24,8 @@ class Packages::Package < ApplicationRecord
     rubygems: 10,
     helm: 11,
     terraform_module: 12,
-    rpm: 13
+    rpm: 13,
+    ml_model: 14
   }
 
   enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4 }
@@ -68,11 +70,11 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? || debian? }
 
   validates :name,
-            uniqueness: {
-              scope: %i[project_id version package_type],
-              conditions: -> { not_pending_destruction }
-            },
-            unless: -> { pending_destruction? || conan? }
+    uniqueness: {
+      scope: %i[project_id version package_type],
+      conditions: -> { not_pending_destruction }
+    },
+    unless: -> { pending_destruction? || conan? }
 
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?
@@ -225,6 +227,10 @@ class Packages::Package < ApplicationRecord
     find_by!(name: name, version: version)
   end
 
+  def self.debian_incoming_package!
+    find_by!(name: Packages::Debian::INCOMING_PACKAGE_NAME, version: nil, package_type: :debian, status: :default)
+  end
+
   def self.existing_debian_packages_with(name:, version:)
     debian.with_name(name)
           .with_version(version)
@@ -297,20 +303,14 @@ class Packages::Package < ApplicationRecord
   end
 
   # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937
-  # TODO: rename the method https://gitlab.com/gitlab-org/gitlab/-/issues/410352
-  def original_build_info
-    strong_memoize(:original_build_info) do
-      if Feature.enabled?(:packages_display_last_pipeline, project)
-        build_infos.last
-      else
-        build_infos.first
-      end
-    end
+  def last_build_info
+    build_infos.last
   end
+  strong_memoize_attr :last_build_info
 
   # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937
   def pipeline
-    original_build_info&.pipeline
+    last_build_info&.pipeline
   end
 
   def tag_names
@@ -330,10 +330,9 @@ class Packages::Package < ApplicationRecord
   end
 
   def package_settings
-    strong_memoize(:package_settings) do
-      project.namespace.package_settings
-    end
+    project.namespace.package_settings
   end
+  strong_memoize_attr :package_settings
 
   def sync_maven_metadata(user)
     return unless maven? && version? && user
@@ -359,12 +358,6 @@ class Packages::Package < ApplicationRecord
     return name unless pypi?
 
     name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
-  end
-
-  def touch_last_downloaded_at
-    ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
-      update_column(:last_downloaded_at, Time.zone.now)
-    end
   end
 
   def publish_creation_event
@@ -439,5 +432,3 @@ class Packages::Package < ApplicationRecord
     end
   end
 end
-
-Packages::Package.prepend_mod

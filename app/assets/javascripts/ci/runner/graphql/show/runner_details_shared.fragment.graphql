@@ -2,7 +2,7 @@ fragment RunnerDetailsShared on CiRunner {
   id
   shortSha
   runnerType
-  active
+  paused
   accessLevel
   runUntagged
   locked
@@ -20,6 +20,9 @@ fragment RunnerDetailsShared on CiRunner {
   tokenExpiresAt
   version
   editAdminUrl
+  managers {
+    count
+  }
   userPermissions {
     updateRunner
     deleteRunner

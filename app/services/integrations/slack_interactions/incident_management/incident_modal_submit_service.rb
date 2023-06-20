@@ -22,7 +22,7 @@ module Integrations
             container: project,
             current_user: find_user.user,
             params: incident_params,
-            spam_params: nil
+            perform_spam_check: false
           ).execute
 
           raise IssueCreateError, create_response.errors.to_sentence if create_response.error?

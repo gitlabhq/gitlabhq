@@ -1,16 +1,24 @@
 <script>
 import { GlTab, GlLoadingIcon, GlLink } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import ActivityCalendar from './activity_calendar.vue';
 
 export default {
   i18n: {
     title: s__('UserProfile|Overview'),
     personalProjects: s__('UserProfile|Personal projects'),
+    activity: s__('UserProfile|Activity'),
     viewAll: s__('UserProfile|View all'),
+    eventsErrorMessage: s__(
+      'UserProfile|An error occurred loading the activity. Please refresh the page to try again.',
+    ),
   },
-  components: { GlTab, GlLoadingIcon, GlLink, ActivityCalendar, ProjectsList },
+  components: { GlTab, GlLoadingIcon, GlLink, ActivityCalendar, ProjectsList, ContributionEvents },
+  inject: ['userActivityPath'],
   props: {
     personalProjects: {
       type: Array,
@@ -21,15 +29,44 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      events: [],
+      eventsLoading: false,
+    };
+  },
+  async mounted() {
+    this.eventsLoading = true;
+
+    try {
+      const { data: events } = await axios.get(this.userActivityPath, {
+        params: { limit: 10 },
+      });
+      this.events = events;
+    } catch (error) {
+      createAlert({ message: this.$options.i18n.eventsErrorMessage, error, captureError: true });
+    } finally {
+      this.eventsLoading = false;
+    }
+  },
 };
 </script>
 
 <template>
   <gl-tab :title="$options.i18n.title">
     <activity-calendar />
-    <div class="gl-mx-n3 gl-display-flex gl-flex-wrap">
-      <div class="gl-px-3 gl-w-full gl-lg-w-half"></div>
-      <div class="gl-px-3 gl-w-full gl-lg-w-half" data-testid="personal-projects-section">
+    <div class="gl-mx-n5 gl-display-flex gl-flex-wrap">
+      <div class="gl-px-5 gl-w-full gl-lg-w-half" data-testid="activity-section">
+        <div
+          class="gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
+        >
+          <h4 class="gl-flex-grow-1">{{ $options.i18n.activity }}</h4>
+          <gl-link href="">{{ $options.i18n.viewAll }}</gl-link>
+        </div>
+        <gl-loading-icon v-if="eventsLoading" class="gl-mt-5" size="md" />
+        <contribution-events v-else :events="events" />
+      </div>
+      <div class="gl-px-5 gl-w-full gl-lg-w-half" data-testid="personal-projects-section">
         <div
           class="gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
         >

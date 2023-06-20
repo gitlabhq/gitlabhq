@@ -1,39 +1,35 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { statusDropdownOptions } from '../../constants';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   data() {
     return {
       status: null,
+      selectedValue: undefined,
     };
   },
   computed: {
     dropdownText() {
-      return this.status?.text ?? this.$options.i18n.defaultDropdownText;
-    },
-    selectedValue() {
-      return this.status?.value;
+      const selected = this.$options.statusDropdownOptions.find(
+        (option) => option.value === this.selectedValue,
+      );
+      return selected?.text || this.$options.i18n.defaultDropdownText;
     },
   },
   methods: {
-    onDropdownItemClick(statusOption) {
-      // clear status if the currently checked status is clicked again
-      if (this.status?.value === statusOption.value) {
-        this.status = null;
-      } else {
-        this.status = statusOption;
-      }
+    handleReset() {
+      this.selectedValue = undefined;
     },
   },
   i18n: {
     dropdownTitle: __('Change status'),
     defaultDropdownText: __('Select status'),
+    resetText: __('Reset'),
   },
   statusDropdownOptions,
 };
@@ -41,17 +37,14 @@ export default {
 <template>
   <div>
     <input type="hidden" name="update[state_event]" :value="selectedValue" />
-    <gl-dropdown :text="dropdownText" :title="$options.i18n.dropdownTitle" class="gl-w-full">
-      <gl-dropdown-item
-        v-for="statusOption in $options.statusDropdownOptions"
-        :key="statusOption.value"
-        :is-checked="selectedValue === statusOption.value"
-        is-check-item
-        :title="statusOption.text"
-        @click="onDropdownItemClick(statusOption)"
-      >
-        {{ statusOption.text }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+    <gl-collapsible-listbox
+      v-model="selectedValue"
+      block
+      :header-text="$options.i18n.dropdownTitle"
+      :reset-button-label="$options.i18n.resetText"
+      :toggle-text="dropdownText"
+      :items="$options.statusDropdownOptions"
+      @reset="handleReset"
+    />
   </div>
 </template>

@@ -33,6 +33,8 @@ GitLab provides several analytics features at the group level. Some of these fea
 
 You can use GitLab to review analytics at the project level. Some of these features require you to use a higher tier than GitLab Free.
 
+- [Analytics dashboards](analytics_dashboards.md), enabled with the `combined_analytics_dashboards_editor`
+  [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
 - [Application Security](../application_security/security_dashboard/index.md)
 - [CI/CD & DORA](ci_cd_analytics.md)
 - [Code Review](code_review_analytics.md)
@@ -42,6 +44,16 @@ You can use GitLab to review analytics at the project level. Some of these featu
   [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
 - [Repository](repository_analytics.md)
 - [Value Stream](value_stream_analytics.md)
+
+### Remove project analytics from the left sidebar
+
+By default, analytics for a project are displayed under the **Analyze** item in the left sidebar. To remove this item:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Turn off the **Analytics** toggle.
+1. Select **Save changes**.
 
 ## User-configurable analytics
 

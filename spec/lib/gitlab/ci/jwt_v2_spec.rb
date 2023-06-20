@@ -111,6 +111,80 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
           expect(payload[:sha]).to eq(pipeline.sha)
         end
       end
+
+      describe 'ci_config_ref_uri' do
+        let(:project_config) do
+          instance_double(
+            Gitlab::Ci::ProjectConfig,
+            url: 'gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml',
+            source: :repository_source
+          )
+        end
+
+        before do
+          allow(Gitlab::Ci::ProjectConfig).to receive(:new).with(
+            project: project,
+            sha: pipeline.sha,
+            pipeline_source: pipeline.source.to_sym,
+            pipeline_source_bridge: pipeline.source_bridge
+          ).and_return(project_config)
+        end
+
+        it 'joins project_config.url and pipeline.source_ref_path with @' do
+          expect(payload[:ci_config_ref_uri]).to eq('gitlab.com/gitlab-org/gitlab//.gitlab-ci.yml' \
+                                                    '@refs/heads/auto-deploy-2020-03-19')
+        end
+
+        context 'when project config is nil' do
+          before do
+            allow(Gitlab::Ci::ProjectConfig).to receive(:new).and_return(nil)
+          end
+
+          it 'is nil' do
+            expect(payload[:ci_config_ref_uri]).to be_nil
+          end
+        end
+
+        context 'when ProjectConfig#url raises an error' do
+          before do
+            allow(project_config).to receive(:url).and_raise(RuntimeError)
+          end
+
+          it 'raises the same error' do
+            expect { payload }.to raise_error(RuntimeError)
+          end
+
+          context 'in production' do
+            before do
+              stub_rails_env('production')
+            end
+
+            it 'is nil' do
+              expect(payload[:ci_config_ref_uri]).to be_nil
+            end
+          end
+        end
+
+        context 'when ci_jwt_v2_ci_config_ref_uri_claim flag is disabled' do
+          before do
+            stub_feature_flags(ci_jwt_v2_ref_uri_claim: false)
+          end
+
+          it 'is nil' do
+            expect(payload[:ci_config_ref_uri]).to be_nil
+          end
+        end
+
+        context 'when config source is not repository' do
+          before do
+            allow(project_config).to receive(:source).and_return(:auto_devops_source)
+          end
+
+          it 'is nil' do
+            expect(payload[:ci_config_ref_uri]).to be_nil
+          end
+        end
+      end
     end
   end
 end

@@ -7,7 +7,7 @@ type: reference
 
 # CI/CD Components (Experimental)
 
-> Introduced in GitLab 16.0 as an [experimental feature](../../policy/alpha-beta-support.md).
+> Introduced in GitLab 16.0 as an [experimental feature](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -173,6 +173,7 @@ For example, for a component repository located at `gitlab-org/dast` on `gitlab.
 
 **Additional notes:**
 
+- You can only reference components in the same GitLab instance as your project.
 - If a tag and branch exist with the same name, the tag takes precedence over the branch.
 - If a tag is named the same as a commit SHA that exists, like `e3262fdd0914fa823210cdb79a8c421e2cef79d8`,
   the commit SHA takes precedence over the tag.
@@ -189,13 +190,12 @@ After components are added to a components repository, they can immediately be [
 However, this repository is not discoverable. You must mark this project as a catalog resource to allow it to be visible in the CI Catalog
 so other users can discover it.
 
-To mark a project as a catalog resource, run the following [graphQL](../../api/graphql/index.md)
-mutation:
+To mark a project as a catalog resource:
 
-```graphql
-mutation {
-    catalogResourcesCreate(input: { projectPath: "path-to-project"}) {
-      errors
-  }
-}
-```
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Scroll down to **CI/CD Catalog resource** and select the toggle to mark the project as a catalog resource.
+
+NOTE:
+This action is not reversible.

@@ -9,6 +9,7 @@ import EditorStateObserver from '~/content_editor/components/editor_state_observ
 import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
+import ReferenceBubbleMenu from '~/content_editor/components/bubble_menus/reference_bubble_menu.vue';
 import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -94,7 +95,7 @@ describe('ContentEditor', () => {
   it('renders footer containing quick actions help text if quick actions docs path is defined', () => {
     createWrapper({ quickActionsDocsPath: '/foo/bar' });
 
-    expect(findEditorElement().text()).toContain('For quick actions, type /');
+    expect(wrapper.text()).toContain('For quick actions, type /');
     expect(wrapper.findComponent(GlLink).attributes('href')).toBe('/foo/bar');
   });
 
@@ -102,6 +103,18 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(findEditorElement().text()).not.toContain('For quick actions, type /');
+  });
+
+  it('displays an attachment button', () => {
+    createWrapper();
+
+    expect(wrapper.findComponent(FormattingToolbar).props().hideAttachmentButton).toBe(false);
+  });
+
+  it('hides the attachment button if attachments are disabled', () => {
+    createWrapper({ disableAttachments: true });
+
+    expect(wrapper.findComponent(FormattingToolbar).props().hideAttachmentButton).toBe(true);
   });
 
   describe('when setting initial content', () => {
@@ -267,7 +280,8 @@ describe('ContentEditor', () => {
     ${'link'}      | ${LinkBubbleMenu}
     ${'media'}     | ${MediaBubbleMenu}
     ${'codeBlock'} | ${CodeBlockBubbleMenu}
-  `('renders formatting bubble menu', ({ component }) => {
+    ${'reference'} | ${ReferenceBubbleMenu}
+  `('renders $name bubble menu', ({ component }) => {
     createWrapper();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);

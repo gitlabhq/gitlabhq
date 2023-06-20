@@ -69,6 +69,10 @@ module Enums
         ci_sources.merge(sources.slice(:parent_pipeline))
       end
 
+      def self.ci_and_security_orchestration_sources
+        ci_sources.merge(sources.slice(:security_orchestration_policy))
+      end
+
       # Returns the `Hash` to use for creating the `config_sources` enum for
       # `Ci::Pipeline`.
       def self.config_sources

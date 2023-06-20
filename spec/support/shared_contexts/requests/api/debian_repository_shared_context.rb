@@ -50,8 +50,8 @@ RSpec.shared_context 'Debian repository shared context' do |container_type, can_
     let_it_be(:public_project_distribution) { public_distribution }
   end
 
-  let_it_be(:private_package) { create(:debian_package, project: private_project, published_in: private_project_distribution) }
-  let_it_be(:public_package) { create(:debian_package, project: public_project, published_in: public_project_distribution) }
+  let_it_be(:private_package) { create(:debian_package, project: private_project, published_in: private_project_distribution, with_changes_file: true) }
+  let_it_be(:public_package) { create(:debian_package, project: public_project, published_in: public_project_distribution, with_changes_file: true) }
 
   let(:visibility_level) { :public }
 

@@ -1,0 +1,19 @@
+query CommitReferences($fullPath: ID!, $commitSha: String!) {
+  project(fullPath: $fullPath) {
+    id
+    commitReferences(commitSha: $commitSha) {
+      containingBranches(excludeTipped: true, limit: 1) {
+        names
+      }
+      containingTags(excludeTipped: true, limit: 1) {
+        names
+      }
+      tippingBranches {
+        names
+      }
+      tippingTags {
+        names
+      }
+    }
+  }
+}

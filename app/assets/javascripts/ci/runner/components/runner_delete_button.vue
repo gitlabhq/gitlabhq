@@ -45,6 +45,9 @@ export default {
     runnerName() {
       return `#${this.runnerId} (${this.runner.shortSha})`;
     },
+    runnerManagersCount() {
+      return this.runner.managers?.count || 0;
+    },
     runnerDeleteModalId() {
       return `delete-runner-modal-${this.runnerId}`;
     },
@@ -150,6 +153,7 @@ export default {
     <runner-delete-modal
       :modal-id="runnerDeleteModalId"
       :runner-name="runnerName"
+      :managers-count="runnerManagersCount"
       @primary="onDelete"
     />
   </div>

@@ -14,6 +14,7 @@ export default {
     GlDisclosureDropdown,
   },
   mixins: [Tracking.mixin()],
+  inject: ['isApolloBoard'],
   props: {
     item: {
       type: Object,
@@ -83,16 +84,20 @@ export default {
       });
     },
     moveToPosition({ positionInList }) {
-      this.moveItem({
-        itemId: this.item.id,
-        itemIid: this.item.iid,
-        itemPath: this.item.referencePath,
-        fromListId: this.list.id,
-        toListId: this.list.id,
-        positionInList,
-        atIndex: this.index,
-        allItemsLoadedInList: !this.listHasNextPage,
-      });
+      if (this.isApolloBoard) {
+        this.$emit('moveToPosition', positionInList);
+      } else {
+        this.moveItem({
+          itemId: this.item.id,
+          itemIid: this.item.iid,
+          itemPath: this.item.referencePath,
+          fromListId: this.list.id,
+          toListId: this.list.id,
+          positionInList,
+          atIndex: this.index,
+          allItemsLoadedInList: !this.listHasNextPage,
+        });
+      }
     },
     selectMoveAction({ text }) {
       if (text === BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION) {

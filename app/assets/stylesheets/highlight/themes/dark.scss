@@ -134,10 +134,6 @@ $dark-il: #de935f;
 
 
   // Line numbers
-  .file-line-num {
-    @include line-link($white, 'link');
-  }
-
   .file-line-blame {
     @include line-link($white, 'git');
   }

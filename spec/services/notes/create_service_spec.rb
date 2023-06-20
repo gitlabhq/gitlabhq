@@ -30,6 +30,24 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         expect(note).to be_persisted
       end
 
+      it 'checks for spam' do
+        expect_next_instance_of(Note) do |instance|
+          expect(instance).to receive(:check_for_spam).with(action: :create, user: user)
+        end
+
+        note
+      end
+
+      it 'does not persist when spam' do
+        expect_next_instance_of(Note) do |instance|
+          expect(instance).to receive(:check_for_spam).with(action: :create, user: user) do
+            instance.spam!
+          end
+        end
+
+        expect(note).not_to be_persisted
+      end
+
       context 'with internal parameter' do
         context 'when confidential' do
           let(:opts) { base_opts.merge(internal: true) }
@@ -482,7 +500,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
                   expect(noteable.target_branch == "fix").to eq(can_use_quick_action)
                 }
               ),
-              # Set WIP status
+              # Set Draft status
               QuickAction.new(
                 action_text: "/draft",
                 before_action: -> {
@@ -511,7 +529,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
       end
 
-      context 'when note only have commands' do
+      context 'when note only has commands' do
         it 'adds commands applied message to note errors' do
           note_text = %(/close)
           service = double(:service)
@@ -539,6 +557,28 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           note = described_class.new(project, user, opts.merge(note: note_text)).execute
 
           expect(note.errors[:commands_only]).to contain_exactly('Closed this issue. Could not apply reopen command.')
+        end
+
+        it 'does not check for spam' do
+          expect_next_instance_of(Note) do |instance|
+            expect(instance).not_to receive(:check_for_spam).with(action: :create, user: user)
+          end
+
+          note_text = %(/close)
+          described_class.new(project, user, opts.merge(note: note_text)).execute
+        end
+
+        it 'generates failed update error messages' do
+          note_text = %(/confidential)
+          service = double(:service)
+          issue.errors.add(:confidential, 'an error occurred')
+          allow(Issues::UpdateService).to receive(:new).and_return(service)
+          allow_next_instance_of(Issues::UpdateService) do |service_instance|
+            allow(service_instance).to receive(:execute).and_return(issue)
+          end
+
+          note = described_class.new(project, user, opts.merge(note: note_text)).execute
+          expect(note.errors[:commands_only]).to contain_exactly('Confidential an error occurred')
         end
       end
     end

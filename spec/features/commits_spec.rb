@@ -8,6 +8,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
   describe 'CI' do
     before do
+      stub_feature_flags(pipeline_details_header_vue: false)
       sign_in(user)
       stub_ci_pipeline_to_return_yaml_file
     end
@@ -184,6 +185,13 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
       sign_in(user)
       project.repository.create_branch(ref_with_hash, branch_name)
       visit project_commits_path(project, branch_name)
+    end
+
+    it 'includes a date on which the commits were authored' do
+      commits = project.repository.commits(branch_name, limit: 40)
+      commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, _daily_commits|
+        expect(page).to have_content(day.strftime("%b %d, %Y"))
+      end
     end
 
     it 'includes the committed_date for each commit' do

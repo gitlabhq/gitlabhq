@@ -6,7 +6,11 @@ class Admin::TopicsController < Admin::ApplicationController
 
   before_action :topic, only: [:edit, :update, :destroy]
 
-  feature_category :projects
+  feature_category :groups_and_projects
+
+  before_action do
+    push_frontend_feature_flag(:content_editor_on_issues, current_user)
+  end
 
   def index
     @topics = Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(params[:page]).without_count
@@ -23,7 +27,7 @@ class Admin::TopicsController < Admin::ApplicationController
     @topic = Projects::Topic.new(topic_params)
 
     if @topic.save
-      redirect_to edit_admin_topic_path(@topic), notice: format(_('Topic %{topic_name} was successfully created.'), topic_name: @topic.name)
+      redirect_to admin_topics_path, notice: format(_('Topic %{topic_name} was successfully created.'), topic_name: @topic.name)
     else
       render "new"
     end

@@ -1,0 +1,8 @@
+---
+name: update_personal_access_token_usage_information_every_10_minutes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123154
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414945
+milestone: '16.1'
+type: development
+group: group::authentication and authorization
+default_enabled: true

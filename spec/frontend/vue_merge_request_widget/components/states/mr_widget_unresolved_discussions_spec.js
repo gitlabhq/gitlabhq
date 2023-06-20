@@ -4,19 +4,12 @@ import { removeBreakLine } from 'helpers/text_helper';
 import notesEventHub from '~/notes/event_hub';
 import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
 
-function createComponent({ path = '', propsData = {}, provide = {} } = {}) {
+function createComponent({ path = '' } = {}) {
   return mount(UnresolvedDiscussions, {
     propsData: {
       mr: {
         createIssueToResolveDiscussionsPath: path,
       },
-      ...propsData,
-    },
-    provide: {
-      glFeatures: {
-        hideCreateIssueResolveAll: false,
-      },
-      ...provide,
     },
   });
 }
@@ -46,11 +39,7 @@ describe('UnresolvedDiscussions', () => {
       expect(text).toContain('Merge blocked:');
       expect(text).toContain('all threads must be resolved.');
 
-      expect(wrapper.element.innerText).toContain('Resolve all with new issue');
       expect(wrapper.element.innerText).toContain('Go to first unresolved thread');
-      expect(wrapper.element.querySelector('.js-create-issue').getAttribute('href')).toEqual(
-        TEST_HOST,
-      );
     });
   });
 
@@ -60,26 +49,7 @@ describe('UnresolvedDiscussions', () => {
       expect(text).toContain('Merge blocked:');
       expect(text).toContain('all threads must be resolved.');
 
-      expect(wrapper.element.innerText).not.toContain('Resolve all with new issue');
       expect(wrapper.element.innerText).toContain('Go to first unresolved thread');
-      expect(wrapper.element.querySelector('.js-create-issue')).toEqual(null);
-    });
-  });
-
-  describe('when `hideCreateIssueResolveAll` is enabled', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        path: TEST_HOST,
-        provide: {
-          glFeatures: {
-            hideCreateIssueResolveAll: true,
-          },
-        },
-      });
-    });
-
-    it('do not show jump to first button', () => {
-      expect(wrapper.text()).not.toContain('Create issue to resolve all threads');
     });
   });
 });

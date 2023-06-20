@@ -3,7 +3,7 @@ table_name: users_star_projects
 classes:
 - UsersStarProject
 feature_categories:
-- projects
+- groups_and_projects
 description: Stores conection between users and project through staring action
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/714f7201d3362793d11f33793e5ef6dc83bdd2f0
 milestone: '7.1'

@@ -30,12 +30,10 @@ module AdminChangedPasswordNotifier
   extend ActiveSupport::Concern
 
   included do
-    after_update :send_admin_changed_your_password_notification, if: :send_admin_changed_your_password_notification?
-  end
+    # default value of this attribute is `nil`, so these emails are off by default
+    attr_accessor :allow_admin_changed_your_password_notification
 
-  def initialize(*args, &block)
-    @allow_admin_changed_your_password_notification = false # These emails are off by default
-    super
+    after_update :send_admin_changed_your_password_notification, if: :send_admin_changed_your_password_notification?
   end
 
   def send_only_admin_changed_your_password_notification!
@@ -50,11 +48,11 @@ module AdminChangedPasswordNotifier
   end
 
   def allow_admin_changed_your_password_notification!
-    @allow_admin_changed_your_password_notification = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    self.allow_admin_changed_your_password_notification = true
   end
 
   def send_admin_changed_your_password_notification?
     self.class.send_password_change_notification && saved_change_to_encrypted_password? &&
-    @allow_admin_changed_your_password_notification # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    allow_admin_changed_your_password_notification
   end
 end

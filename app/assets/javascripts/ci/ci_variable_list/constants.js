@@ -20,28 +20,14 @@ export const variableTypes = {
   fileType: 'FILE',
 };
 
-// Once REST is removed, we won't need `types`
-export const types = {
-  variableType: 'env_var',
-  fileType: 'file',
-};
-
 export const allEnvironments = {
   type: '*',
   text: __('All (default)'),
 };
 
-// Once REST is removed, we won't need `types` key
-export const variableText = {
-  [types.variableType]: __('Variable'),
-  [types.fileType]: __('File'),
-  [variableTypes.envType]: __('Variable'),
-  [variableTypes.fileType]: __('File'),
-};
-
 export const variableOptions = [
-  { value: variableTypes.envType, text: variableText[variableTypes.envType] },
-  { value: variableTypes.fileType, text: variableText[variableTypes.fileType] },
+  { value: variableTypes.envType, text: variableTypes.envType },
+  { value: variableTypes.fileType, text: variableTypes.fileType },
 ];
 
 export const defaultVariableState = {

@@ -14,8 +14,8 @@ This IBM product was [formerly named Rational Team Concert (RTC)](https://jazz.n
 
 To enable the EWM integration, in a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Integrations**.
 1. Select **EWM**.
 1. Select the checkbox under **Enable integration**.
 1. Fill in the required fields:
@@ -35,7 +35,8 @@ To enable the EWM integration, in a project:
      Append the following fragment to your project area URL: `#action=com.ibm.team.workitem.newWorkItem`.
      For example, `https://example.com/ccm/web/projects/JKE%20Banking#action=com.ibm.team.workitem.newWorkItem`.
 
-1. Select **Save changes** or optionally select **Test settings**.
+1. Optional. Select **Test settings**.
+1. Select **Save changes**.
 
 ## Reference EWM work items in commit messages
 

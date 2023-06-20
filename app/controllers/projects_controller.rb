@@ -38,9 +38,9 @@ class ProjectsController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:highlight_js, @project)
-    push_frontend_feature_flag(:synchronize_fork, @project&.fork_source)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
+    push_frontend_feature_flag(:ci_namespace_catalog_experimental, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
@@ -50,7 +50,7 @@ class ProjectsController < Projects::ApplicationController
 
   layout :determine_layout
 
-  feature_category :projects, [
+  feature_category :groups_and_projects, [
     :index, :show, :new, :create, :edit, :update, :transfer,
     :destroy, :archive, :unarchive, :toggle_star, :activity
   ]
@@ -263,12 +263,12 @@ class ProjectsController < Projects::ApplicationController
     @project.add_export_job(current_user: current_user)
 
     redirect_to(
-      edit_project_path(@project, anchor: 'js-export-project'),
+      edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
   rescue Project::ExportLimitExceeded => e
     redirect_to(
-      edit_project_path(@project, anchor: 'js-export-project'),
+      edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       alert: e.to_s
     )
   end
@@ -279,13 +279,13 @@ class ProjectsController < Projects::ApplicationController
         send_upload(@project.export_file, attachment: @project.export_file.filename)
       else
         redirect_to(
-          edit_project_path(@project, anchor: 'js-export-project'),
+          edit_project_path(@project, anchor: 'js-project-advanced-settings'),
           alert: _("The file containing the export is not available yet; it may still be transferring. Please try again later.")
         )
       end
     else
       redirect_to(
-        edit_project_path(@project, anchor: 'js-export-project'),
+        edit_project_path(@project, anchor: 'js-project-advanced-settings'),
         alert: _("Project export link has expired. Please generate a new export from your project settings.")
       )
     end
@@ -298,7 +298,7 @@ class ProjectsController < Projects::ApplicationController
       flash[:alert] = _("Project export could not be deleted.")
     end
 
-    redirect_to(edit_project_path(@project, anchor: 'js-export-project'))
+    redirect_to(edit_project_path(@project, anchor: 'js-project-advanced-settings'))
   end
 
   def generate_new_export
@@ -306,7 +306,7 @@ class ProjectsController < Projects::ApplicationController
       export
     else
       redirect_to(
-        edit_project_path(@project, anchor: 'js-export-project'),
+        edit_project_path(@project, anchor: 'js-project-advanced-settings'),
         alert: _("Project export could not be deleted.")
       )
     end
@@ -456,6 +456,7 @@ class ProjectsController < Projects::ApplicationController
       feature_flags_access_level
       monitor_access_level
       infrastructure_access_level
+      model_experiments_access_level
     ]
   end
 

@@ -1,0 +1,12 @@
+query getWritableForks($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    visibleForks(minimumAccessLevel: DEVELOPER) {
+      nodes {
+        id
+        fullPath
+        webUrl
+      }
+    }
+  }
+}

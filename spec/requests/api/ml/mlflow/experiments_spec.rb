@@ -20,7 +20,6 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   end
 
   let(:current_user) { developer }
-  let(:ff_value) { true }
   let(:access_token) { tokens[:write] }
   let(:headers) { { 'Authorization' => "Bearer #{access_token.token}" } }
   let(:project_id) { project.id }
@@ -50,10 +49,6 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
   subject(:api_response) do
     request
     response
-  end
-
-  before do
-    stub_feature_flags(ml_experiment_tracking: ff_value)
   end
 
   describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get' do

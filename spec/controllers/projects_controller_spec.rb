@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-RSpec.describe ProjectsController, feature_category: :projects do
+RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
@@ -1026,6 +1026,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
           releases_access_level
           monitor_access_level
           infrastructure_access_level
+          model_experiments_access_level
         ]
       end
 
@@ -1582,7 +1583,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
         it 'returns 302' do
           post action, params: { namespace_id: project.namespace, id: project }
 
-          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
         end
 
         context 'when the project storage_size exceeds the application setting max_export_size' do
@@ -1592,7 +1593,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
 
             post action, params: { namespace_id: project.namespace, id: project }
 
-            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
             expect(flash[:alert]).to include('The project size exceeds the export limit.')
           end
         end
@@ -1604,7 +1605,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
 
             post action, params: { namespace_id: project.namespace, id: project }
 
-            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
             expect(flash[:alert]).to be_nil
           end
         end
@@ -1615,7 +1616,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
 
             post action, params: { namespace_id: project.namespace, id: project }
 
-            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
             expect(flash[:alert]).to be_nil
           end
         end
@@ -1658,7 +1659,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
             get action, params: { namespace_id: project.namespace, id: project }
 
             expect(flash[:alert]).to include('file containing the export is not available yet')
-            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
           end
         end
 
@@ -1737,7 +1738,7 @@ RSpec.describe ProjectsController, feature_category: :projects do
         it 'returns 302' do
           post action, params: { namespace_id: project.namespace, id: project }
 
-          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
         end
       end
 

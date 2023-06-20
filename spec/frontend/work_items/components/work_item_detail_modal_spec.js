@@ -33,7 +33,6 @@ describe('WorkItemDetailModal component', () => {
   const findWorkItemDetail = () => wrapper.findComponent(WorkItemDetail);
 
   const createComponent = ({
-    error = false,
     deleteWorkItemMutationHandler = jest.fn().mockResolvedValue(deleteWorkItemResponse),
   } = {}) => {
     const apolloProvider = createMockApollo([
@@ -46,19 +45,12 @@ describe('WorkItemDetailModal component', () => {
         workItemId,
         workItemIid: '1',
       },
-      data() {
-        return {
-          error,
-        };
-      },
       provide: {
         fullPath: 'group/project',
       },
       stubs: {
         GlModal,
-        WorkItemDetail: stubComponent(WorkItemDetail, {
-          apollo: {},
-        }),
+        WorkItemDetail: stubComponent(WorkItemDetail),
       },
     });
   };
@@ -68,14 +60,18 @@ describe('WorkItemDetailModal component', () => {
 
     expect(findWorkItemDetail().props()).toEqual({
       isModal: true,
-      workItemId,
       workItemIid: '1',
       workItemParentId: null,
     });
   });
 
-  it('renders alert if there is an error', () => {
-    createComponent({ error: true });
+  it('renders alert if there is an error', async () => {
+    createComponent({
+      deleteWorkItemMutationHandler: jest.fn().mockRejectedValue({ message: 'message' }),
+    });
+
+    findWorkItemDetail().vm.$emit('deleteWorkItem');
+    await waitForPromises();
 
     expect(findAlert().exists()).toBe(true);
   });
@@ -87,7 +83,13 @@ describe('WorkItemDetailModal component', () => {
   });
 
   it('dismisses the alert on `dismiss` emitted event', async () => {
-    createComponent({ error: true });
+    createComponent({
+      deleteWorkItemMutationHandler: jest.fn().mockRejectedValue({ message: 'message' }),
+    });
+
+    findWorkItemDetail().vm.$emit('deleteWorkItem');
+    await waitForPromises();
+
     findAlert().vm.$emit('dismiss');
     await nextTick();
 
@@ -103,24 +105,19 @@ describe('WorkItemDetailModal component', () => {
 
   it('hides the modal when WorkItemDetail emits `close` event', () => {
     createComponent();
-    const closeSpy = jest.spyOn(wrapper.vm.$refs.modal, 'hide');
 
     findWorkItemDetail().vm.$emit('close');
 
-    expect(closeSpy).toHaveBeenCalled();
+    expect(hideModal).toHaveBeenCalled();
   });
 
   it('updates the work item when WorkItemDetail emits `update-modal` event', async () => {
     createComponent();
 
-    findWorkItemDetail().vm.$emit('update-modal', undefined, {
-      id: 'updatedId',
-      iid: 'updatedIid',
-    });
-    await waitForPromises();
+    findWorkItemDetail().vm.$emit('update-modal', undefined, { iid: 'updatedIid' });
+    await nextTick();
 
-    expect(findWorkItemDetail().props().workItemId).toEqual('updatedId');
-    expect(findWorkItemDetail().props().workItemIid).toEqual('updatedIid');
+    expect(findWorkItemDetail().props('workItemIid')).toBe('updatedIid');
   });
 
   describe('delete work item', () => {

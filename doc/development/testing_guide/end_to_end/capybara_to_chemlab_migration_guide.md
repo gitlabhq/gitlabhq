@@ -13,21 +13,21 @@ Given the view:
 ```html
 <form id="my-form">
     <label for="first-name">First name</label>
-    <input type="text" name="first-name" data-qa-selector="first_name" />
+    <input type="text" name="first-name" data-testid="first_name" />
 
     <label for="last-name">Last name</label>
-    <input type="text" name="last-name" data-qa-selector="last_name" />
+    <input type="text" name="last-name" data-testid="last_name" />
 
     <label for="company-name">Company name</label>
-    <input type="text" name="company-name" data-qa-selector="company_name" />
+    <input type="text" name="company-name" data-testid="company_name" />
 
     <label for="user-name">User name</label>
-    <input type="text" name="user-name" data-qa-selector="user_name" />
+    <input type="text" name="user-name" data-testid="user_name" />
 
     <label for="password">Password</label>
-    <input type="password" name="password" data-qa-selector="password" />
+    <input type="password" name="password" data-testid="password" />
 
-    <input type="submit" value="Continue" data-qa-selector="continue"/>
+    <input type="submit" value="Continue" data-testid="continue"/>
 </form>
 ```
 
@@ -137,12 +137,12 @@ Since the element type is preserved within the Page Library, there is no need to
 
 ```html
 <!-- Before -->
-<input type="text" name="first-name" data-qa-selector="first_name_field" />
-<input type="submit" name="continue" value="Continue" data-qa-selector="continue_button" />
+<input type="text" name="first-name" data-testid="first_name_field" />
+<input type="submit" name="continue" value="Continue" data-testid="continue_button" />
 
 <!-- After -->
-<input type="text" name="first-name" data-qa-selector="first_name" />
-<input type="submit" name="continue" value="Continue" data-qa-selector="continue" />
+<input type="text" name="first-name" data-testid="first_name" />
+<input type="submit" name="continue" value="Continue" data-testid="continue" />
 ```
 
 This makes it much easier for Developers to write tests and contributes to testability since we can write the Page Library while we look at the UI.

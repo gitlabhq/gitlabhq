@@ -127,8 +127,8 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
         form_builder.gitlab_ui_checkbox_component(
           :view_diffs_file_by_file
         ) do |c|
-          c.label { "Show one file at a time on merge request's Changes tab" }
-          c.help_text { 'Instead of all the files changed, show only one file at a time.' }
+          c.with_label { "Show one file at a time on merge request's Changes tab" }
+          c.with_help_text { 'Instead of all the files changed, show only one file at a time.' }
         end
       end
 
@@ -208,8 +208,8 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
           :access_level,
           :admin
         ) do |c|
-          c.label { "Admin" }
-          c.help_text { 'Administrators have access to all groups, projects, and users and can manage all features in this installation' }
+          c.with_label { "Admin" }
+          c.with_help_text { 'Administrators have access to all groups, projects, and users and can manage all features in this installation' }
         end
       end
 

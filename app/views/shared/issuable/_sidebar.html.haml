@@ -46,7 +46,7 @@
           .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
       - if in_group_context_with_iterations
-        .block.gl-collapse-empty{ data: { qa_selector: 'iteration_container', testid: 'iteration_container' } }<
+        .block.gl-collapse-empty{ data: { testid: 'iteration_container' } }<
           = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
       - if issuable_sidebar[:show_crm_contacts]

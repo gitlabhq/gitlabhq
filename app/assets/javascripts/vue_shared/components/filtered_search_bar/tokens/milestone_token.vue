@@ -4,8 +4,8 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { stripQuotes } from '~/lib/utils/text_utility';
 import { DEFAULT_MILESTONES } from '../constants';
-import { stripQuotes } from '../filtered_search_utils';
 
 export default {
   components: {

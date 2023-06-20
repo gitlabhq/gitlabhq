@@ -1,7 +1,6 @@
-import { GlDropdown, GlDropdownItem, GlTruncate, GlSearchBoxByType } from '@gitlab/ui';
+import { GlButton, GlTruncate, GlCollapsibleListbox, GlListboxItem, GlAvatar } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import ProjectsDropdownFilter from '~/analytics/shared/components/projects_dropdown_filter.vue';
@@ -28,18 +27,6 @@ const projects = [
   },
 ];
 
-const MockGlDropdown = stubComponent(GlDropdown, {
-  template: `
-  <div>
-    <slot name="header"></slot>
-    <div data-testid="vsa-highlighted-items">
-      <slot name="highlighted-items"></slot>
-    </div>
-    <div data-testid="vsa-default-items"><slot></slot></div>
-  </div>
-  `,
-});
-
 const defaultMocks = {
   $apollo: {
     query: jest.fn().mockResolvedValue({
@@ -53,42 +40,36 @@ let spyQuery;
 describe('ProjectsDropdownFilter component', () => {
   let wrapper;
 
-  const createComponent = (props = {}, stubs = {}) => {
+  const createComponent = ({ mountFn = shallowMountExtended, props = {}, stubs = {} } = {}) => {
     spyQuery = defaultMocks.$apollo.query;
-    wrapper = mountExtended(ProjectsDropdownFilter, {
+    wrapper = mountFn(ProjectsDropdownFilter, {
       mocks: { ...defaultMocks },
       propsData: {
         groupId: 1,
         groupNamespace: 'gitlab-org',
         ...props,
       },
-      stubs,
+      stubs: {
+        GlButton,
+        GlCollapsibleListbox,
+        ...stubs,
+      },
     });
   };
 
-  const createWithMockDropdown = (props) => {
-    createComponent(props, { GlDropdown: MockGlDropdown });
-    return waitForPromises();
-  };
-
-  const findHighlightedItems = () => wrapper.findByTestId('vsa-highlighted-items');
-  const findUnhighlightedItems = () => wrapper.findByTestId('vsa-default-items');
-  const findClearAllButton = () => wrapper.findByText('Clear all');
+  const findClearAllButton = () => wrapper.findByTestId('listbox-reset-button');
   const findSelectedProjectsLabel = () => wrapper.findComponent(GlTruncate);
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 
-  const findDropdownItems = () =>
-    findDropdown()
-      .findAllComponents(GlDropdownItem)
-      .filter((w) => w.text() !== 'No matching results');
+  const findDropdownItems = () => findDropdown().findAllComponents(GlListboxItem);
 
   const findDropdownAtIndex = (index) => findDropdownItems().at(index);
 
-  const findDropdownButton = () => findDropdown().find('.dropdown-toggle');
+  const findDropdownButton = () => findDropdown().findComponent(GlButton);
   const findDropdownButtonAvatar = () => findDropdown().find('.gl-avatar');
   const findDropdownButtonAvatarAtIndex = (index) =>
-    findDropdownAtIndex(index).find('img.gl-avatar');
+    findDropdownAtIndex(index).findComponent(GlAvatar);
   const findDropdownButtonIdentIconAtIndex = (index) =>
     findDropdownAtIndex(index).find('div.gl-avatar-identicon');
 
@@ -97,13 +78,15 @@ describe('ProjectsDropdownFilter component', () => {
   const findDropdownFullPathAtIndex = (index) =>
     findDropdownAtIndex(index).find('[data-testid="project-full-path"]');
 
-  const selectDropdownItemAtIndex = async (index) => {
-    findDropdownAtIndex(index).find('button').trigger('click');
+  const selectDropdownItemAtIndex = async (indexes, multi = true) => {
+    const payload = indexes.map((index) => projects[index]?.id).filter(Boolean);
+    findDropdown().vm.$emit('select', multi ? payload : payload[0]);
     await nextTick();
   };
 
   // NOTE: Selected items are now visually separated from unselected items
-  const findSelectedDropdownItems = () => findHighlightedItems().findAllComponents(GlDropdownItem);
+  const findSelectedDropdownItems = () =>
+    findDropdownItems().filter((component) => component.props('isSelected') === true);
 
   const findSelectedDropdownAtIndex = (index) => findSelectedDropdownItems().at(index);
   const findSelectedButtonIdentIconAtIndex = (index) =>
@@ -111,22 +94,20 @@ describe('ProjectsDropdownFilter component', () => {
   const findSelectedButtonAvatarItemAtIndex = (index) =>
     findSelectedDropdownAtIndex(index).find('img.gl-avatar');
 
-  const selectedIds = () => wrapper.vm.selectedProjects.map(({ id }) => id);
-
-  const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
-
   describe('queryParams are applied when fetching data', () => {
     beforeEach(() => {
       createComponent({
-        queryParams: {
-          first: 50,
-          includeSubgroups: true,
+        props: {
+          queryParams: {
+            first: 50,
+            includeSubgroups: true,
+          },
         },
       });
     });
 
     it('applies the correct queryParams when making an api call', async () => {
-      findSearchBoxByType().vm.$emit('input', 'gitlab');
+      findDropdown().vm.$emit('search', 'gitlab');
 
       expect(spyQuery).toHaveBeenCalledTimes(1);
 
@@ -147,17 +128,19 @@ describe('ProjectsDropdownFilter component', () => {
     const blockDefaultProps = { multiSelect: true };
 
     beforeEach(() => {
-      createComponent(blockDefaultProps);
+      createComponent({
+        props: blockDefaultProps,
+      });
     });
 
     describe('with no project selected', () => {
-      it('does not render the highlighted items', async () => {
-        await createWithMockDropdown(blockDefaultProps);
-
-        expect(findSelectedDropdownItems().length).toBe(0);
+      it('does not render the highlighted items', () => {
+        expect(findSelectedDropdownItems()).toHaveLength(0);
       });
 
       it('renders the default project label text', () => {
+        createComponent({ mountFn: mountExtended, props: blockDefaultProps });
+
         expect(findSelectedProjectsLabel().text()).toBe('Select projects');
       });
 
@@ -167,31 +150,43 @@ describe('ProjectsDropdownFilter component', () => {
     });
 
     describe('with a selected project', () => {
-      beforeEach(async () => {
-        await selectDropdownItemAtIndex(0);
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          props: blockDefaultProps,
+        });
       });
 
       it('renders the highlighted items', async () => {
-        await createWithMockDropdown(blockDefaultProps);
-        await selectDropdownItemAtIndex(0);
+        await selectDropdownItemAtIndex([0], false);
 
-        expect(findSelectedDropdownItems().length).toBe(1);
+        expect(findSelectedDropdownItems()).toHaveLength(1);
       });
 
-      it('renders the highlighted items title', () => {
+      it('renders the highlighted items title', async () => {
+        await selectDropdownItemAtIndex([0], false);
+
         expect(findSelectedProjectsLabel().text()).toBe(projects[0].name);
       });
 
-      it('renders the clear all button', () => {
+      it('renders the clear all button', async () => {
+        await selectDropdownItemAtIndex([0], false);
+
         expect(findClearAllButton().exists()).toBe(true);
       });
 
       it('clears all selected items when the clear all button is clicked', async () => {
-        await selectDropdownItemAtIndex(1);
+        createComponent({
+          mountFn: mountExtended,
+          props: blockDefaultProps,
+        });
+        await waitForPromises();
+
+        await selectDropdownItemAtIndex([0, 1]);
 
         expect(findSelectedProjectsLabel().text()).toBe('2 projects selected');
 
-        await findClearAllButton().trigger('click');
+        await findClearAllButton().vm.$emit('click');
 
         expect(findSelectedProjectsLabel().text()).toBe('Select projects');
       });
@@ -200,27 +195,35 @@ describe('ProjectsDropdownFilter component', () => {
 
   describe('with a selected project and search term', () => {
     beforeEach(async () => {
-      await createWithMockDropdown({ multiSelect: true });
+      createComponent({
+        props: { multiSelect: true },
+      });
+      await waitForPromises();
 
-      selectDropdownItemAtIndex(0);
-      findSearchBoxByType().vm.$emit('input', 'this is a very long search string');
+      await selectDropdownItemAtIndex([0]);
+
+      findDropdown().vm.$emit('search', 'this is a very long search string');
     });
 
     it('renders the highlighted items', () => {
-      expect(findUnhighlightedItems().findAll('li').length).toBe(1);
+      expect(findSelectedDropdownItems()).toHaveLength(1);
     });
 
     it('hides the unhighlighted items that do not match the string', () => {
-      expect(findUnhighlightedItems().findAll('li').length).toBe(1);
-      expect(findUnhighlightedItems().text()).toContain('No matching results');
+      expect(wrapper.find(`[name="Selected"]`).findAllComponents(GlListboxItem).length).toBe(1);
+      expect(wrapper.find(`[name="Unselected"]`).findAllComponents(GlListboxItem).length).toBe(0);
     });
   });
 
   describe('when passed an array of defaultProject as prop', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({
-        defaultProjects: [projects[0]],
+        mountFn: mountExtended,
+        props: {
+          defaultProjects: [projects[0]],
+        },
       });
+      await waitForPromises();
     });
 
     it("displays the defaultProject's name", () => {
@@ -232,14 +235,18 @@ describe('ProjectsDropdownFilter component', () => {
     });
 
     it('marks the defaultProject as selected', () => {
-      expect(findDropdownAtIndex(0).props('isChecked')).toBe(true);
+      expect(
+        wrapper.findAll('[role="group"]').at(0).findAllComponents(GlListboxItem).at(0).text(),
+      ).toContain(projects[0].name);
     });
   });
 
   describe('when multiSelect is false', () => {
     const blockDefaultProps = { multiSelect: false };
     beforeEach(() => {
-      createComponent(blockDefaultProps);
+      createComponent({
+        props: blockDefaultProps,
+      });
     });
 
     describe('displays the correct information', () => {
@@ -248,13 +255,12 @@ describe('ProjectsDropdownFilter component', () => {
       });
 
       it('renders an avatar when the project has an avatarUrl', () => {
-        expect(findDropdownButtonAvatarAtIndex(0).exists()).toBe(true);
+        expect(findDropdownButtonAvatarAtIndex(0).props('src')).toBe(projects[0].avatarUrl);
         expect(findDropdownButtonIdentIconAtIndex(0).exists()).toBe(false);
       });
 
-      it("renders an identicon when the project doesn't have an avatarUrl", () => {
-        expect(findDropdownButtonAvatarAtIndex(1).exists()).toBe(false);
-        expect(findDropdownButtonIdentIconAtIndex(1).exists()).toBe(true);
+      it("does not render an avatar when the project doesn't have an avatarUrl", () => {
+        expect(findDropdownButtonAvatarAtIndex(1).props('src')).toEqual(null);
       });
 
       it('renders the project name', () => {
@@ -271,37 +277,46 @@ describe('ProjectsDropdownFilter component', () => {
     });
 
     describe('on project click', () => {
-      it('should emit the "selected" event with the selected project', () => {
-        selectDropdownItemAtIndex(0);
+      it('should emit the "selected" event with the selected project', async () => {
+        await selectDropdownItemAtIndex([0], false);
 
-        expect(wrapper.emitted().selected).toEqual([[[projects[0]]]]);
+        expect(wrapper.emitted('selected')).toEqual([[[projects[0]]]]);
       });
 
       it('should change selection when new project is clicked', () => {
-        selectDropdownItemAtIndex(1);
+        selectDropdownItemAtIndex([1], false);
 
-        expect(wrapper.emitted().selected).toEqual([[[projects[1]]]]);
+        expect(wrapper.emitted('selected')).toEqual([[[projects[1]]]]);
       });
 
-      it('selection should be emptied when a project is deselected', () => {
-        selectDropdownItemAtIndex(0); // Select the item
-        selectDropdownItemAtIndex(0); // deselect it
+      it('selection should be emptied when a project is deselected', async () => {
+        await selectDropdownItemAtIndex([0], false); // Select the item
+        await selectDropdownItemAtIndex([0], false);
 
-        expect(wrapper.emitted().selected).toEqual([[[projects[0]]], [[]]]);
+        expect(wrapper.emitted('selected')).toEqual([[[projects[0]]], [[]]]);
       });
 
       it('renders an avatar in the dropdown button when the project has an avatarUrl', async () => {
-        await createWithMockDropdown(blockDefaultProps);
-        await selectDropdownItemAtIndex(0);
+        createComponent({
+          mountFn: mountExtended,
+          props: blockDefaultProps,
+        });
+        await waitForPromises();
+
+        await selectDropdownItemAtIndex([0], false);
 
         expect(findSelectedButtonAvatarItemAtIndex(0).exists()).toBe(true);
         expect(findSelectedButtonIdentIconAtIndex(0).exists()).toBe(false);
       });
 
       it("renders an identicon in the dropdown button when the project doesn't have an avatarUrl", async () => {
-        await createWithMockDropdown(blockDefaultProps);
-        await selectDropdownItemAtIndex(1);
+        createComponent({
+          mountFn: mountExtended,
+          props: blockDefaultProps,
+        });
+        await waitForPromises();
 
+        await selectDropdownItemAtIndex([1], false);
         expect(findSelectedButtonAvatarItemAtIndex(0).exists()).toBe(false);
         expect(findSelectedButtonIdentIconAtIndex(0).exists()).toBe(true);
       });
@@ -310,7 +325,9 @@ describe('ProjectsDropdownFilter component', () => {
 
   describe('when multiSelect is true', () => {
     beforeEach(() => {
-      createComponent({ multiSelect: true });
+      createComponent({
+        props: { multiSelect: true },
+      });
     });
 
     describe('displays the correct information', () => {
@@ -319,13 +336,12 @@ describe('ProjectsDropdownFilter component', () => {
       });
 
       it('renders an avatar when the project has an avatarUrl', () => {
-        expect(findDropdownButtonAvatarAtIndex(0).exists()).toBe(true);
+        expect(findDropdownButtonAvatarAtIndex(0).props('src')).toBe(projects[0].avatarUrl);
         expect(findDropdownButtonIdentIconAtIndex(0).exists()).toBe(false);
       });
 
       it("renders an identicon when the project doesn't have an avatarUrl", () => {
-        expect(findDropdownButtonAvatarAtIndex(1).exists()).toBe(false);
-        expect(findDropdownButtonIdentIconAtIndex(1).exists()).toBe(true);
+        expect(findDropdownButtonAvatarAtIndex(1).props('src')).toEqual(null);
       });
 
       it('renders the project name', () => {
@@ -342,27 +358,31 @@ describe('ProjectsDropdownFilter component', () => {
     });
 
     describe('on project click', () => {
-      it('should add to selection when new project is clicked', () => {
-        selectDropdownItemAtIndex(0);
-        selectDropdownItemAtIndex(1);
+      it('should add to selection when new project is clicked', async () => {
+        await selectDropdownItemAtIndex([0, 1]);
 
-        expect(selectedIds()).toEqual([projects[0].id, projects[1].id]);
+        expect(findSelectedDropdownItems().at(0).text()).toContain(projects[1].name);
+        expect(findSelectedDropdownItems().at(1).text()).toContain(projects[0].name);
       });
 
-      it('should remove from selection when clicked again', () => {
-        selectDropdownItemAtIndex(0);
+      it('should remove from selection when clicked again', async () => {
+        await selectDropdownItemAtIndex([0]);
 
-        expect(selectedIds()).toEqual([projects[0].id]);
+        expect(findSelectedDropdownItems().at(0).text()).toContain(projects[0].name);
 
-        selectDropdownItemAtIndex(0);
+        await selectDropdownItemAtIndex([]);
 
-        expect(selectedIds()).toEqual([]);
+        expect(findSelectedDropdownItems()).toHaveLength(0);
       });
 
       it('renders the correct placeholder text when multiple projects are selected', async () => {
-        selectDropdownItemAtIndex(0);
-        selectDropdownItemAtIndex(1);
-        await nextTick();
+        createComponent({
+          props: { multiSelect: true },
+          mountFn: mountExtended,
+        });
+        await waitForPromises();
+
+        await selectDropdownItemAtIndex([0, 1]);
 
         expect(findDropdownButton().text()).toBe('2 projects selected');
       });

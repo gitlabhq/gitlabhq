@@ -66,7 +66,7 @@ RSpec.describe BulkImports::FileDecompressionService, feature_category: :importe
       subject { described_class.new(tmpdir: File.join(Dir.mktmpdir, 'test', '..'), filename: 'filename') }
 
       it 'raises an error' do
-        expect { subject.execute }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+        expect { subject.execute }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
       end
     end
 

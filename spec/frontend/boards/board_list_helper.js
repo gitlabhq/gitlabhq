@@ -39,7 +39,7 @@ export default function createComponent({
   Vue.use(Vuex);
 
   const fakeApollo = createMockApollo([
-    [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse(issuesCount))],
+    [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse({ issuesCount }))],
     ...apolloQueryHandlers,
   ]);
 

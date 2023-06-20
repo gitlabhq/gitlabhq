@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mentionable do
+RSpec.describe Mentionable, feature_category: :shared do
   before do
     stub_const('Example', Class.new)
     Example.class_eval do
@@ -32,7 +32,7 @@ RSpec.describe Mentionable do
   end
 end
 
-RSpec.describe Issue, "Mentionable" do
+RSpec.describe Issue, "Mentionable", feature_category: :team_planning do
   describe '#mentioned_users' do
     let!(:user) { create(:user, username: 'stranger') }
     let!(:user2) { create(:user, username: 'john') }
@@ -187,7 +187,7 @@ RSpec.describe Issue, "Mentionable" do
   end
 end
 
-RSpec.describe Commit, 'Mentionable' do
+RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management do
   let(:project) { create(:project, :public, :repository) }
   let(:commit)  { project.commit }
 
@@ -256,7 +256,7 @@ RSpec.describe Commit, 'Mentionable' do
   end
 end
 
-RSpec.describe MergeRequest, 'Mentionable' do
+RSpec.describe MergeRequest, 'Mentionable', feature_category: :code_review_workflow do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in description', :merge_request
     it_behaves_like 'mentions in notes', :merge_request do
@@ -277,7 +277,7 @@ RSpec.describe MergeRequest, 'Mentionable' do
   end
 end
 
-RSpec.describe Snippet, 'Mentionable' do
+RSpec.describe Snippet, 'Mentionable', feature_category: :source_code_management do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in description', :project_snippet
     it_behaves_like 'mentions in notes', :project_snippet do
@@ -294,7 +294,7 @@ RSpec.describe Snippet, 'Mentionable' do
   end
 end
 
-RSpec.describe PersonalSnippet, 'Mentionable' do
+RSpec.describe PersonalSnippet, 'Mentionable', feature_category: :source_code_management do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in description', :personal_snippet
     it_behaves_like 'mentions in notes', :personal_snippet do
@@ -311,7 +311,7 @@ RSpec.describe PersonalSnippet, 'Mentionable' do
   end
 end
 
-RSpec.describe DesignManagement::Design do
+RSpec.describe DesignManagement::Design, feature_category: :team_planning do
   describe '#store_mentions!' do
     it_behaves_like 'mentions in notes', :design do
       let(:note) { create(:diff_note_on_design) }

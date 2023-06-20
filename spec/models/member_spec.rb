@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Member, feature_category: :subgroups do
+RSpec.describe Member, feature_category: :groups_and_projects do
   include ExclusiveLeaseHelpers
 
   using RSpec::Parameterized::TableSyntax
@@ -185,6 +185,12 @@ RSpec.describe Member, feature_category: :subgroups do
     before_all do
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
+      @blocked_owner_user = create(:user).tap do |u|
+        group.add_owner(u)
+
+        u.block!
+      end
+      @blocked_owner = group.members.find_by(user_id: @blocked_owner_user.id)
 
       @maintainer_user = create(:user).tap { |u| project.add_maintainer(u) }
       @maintainer = project.members.find_by(user_id: @maintainer_user.id)
@@ -473,12 +479,35 @@ RSpec.describe Member, feature_category: :subgroups do
 
     describe '.owners_and_maintainers' do
       it { expect(described_class.owners_and_maintainers).to include @owner }
+      it { expect(described_class.owners_and_maintainers).not_to include @blocked_owner }
       it { expect(described_class.owners_and_maintainers).to include @maintainer }
       it { expect(described_class.owners_and_maintainers).not_to include @invited_member }
       it { expect(described_class.owners_and_maintainers).not_to include @accepted_invite_member }
       it { expect(described_class.owners_and_maintainers).not_to include @requested_member }
       it { expect(described_class.owners_and_maintainers).not_to include @accepted_request_member }
       it { expect(described_class.owners_and_maintainers).not_to include @blocked_maintainer }
+    end
+
+    describe '.owners' do
+      it { expect(described_class.owners).to include @owner }
+      it { expect(described_class.owners).not_to include @blocked_owner }
+      it { expect(described_class.owners).not_to include @maintainer }
+      it { expect(described_class.owners).not_to include @invited_member }
+      it { expect(described_class.owners).not_to include @accepted_invite_member }
+      it { expect(described_class.owners).not_to include @requested_member }
+      it { expect(described_class.owners).not_to include @accepted_request_member }
+      it { expect(described_class.owners).not_to include @blocked_maintainer }
+    end
+
+    describe '.all_owners' do
+      it { expect(described_class.all_owners).to include @owner }
+      it { expect(described_class.all_owners).to include @blocked_owner }
+      it { expect(described_class.all_owners).not_to include @maintainer }
+      it { expect(described_class.all_owners).not_to include @invited_member }
+      it { expect(described_class.all_owners).not_to include @accepted_invite_member }
+      it { expect(described_class.all_owners).not_to include @requested_member }
+      it { expect(described_class.all_owners).not_to include @accepted_request_member }
+      it { expect(described_class.all_owners).not_to include @blocked_maintainer }
     end
 
     describe '.has_access' do
@@ -569,15 +598,11 @@ RSpec.describe Member, feature_category: :subgroups do
     describe '.authorizable' do
       subject { described_class.authorizable.to_a }
 
-      it 'includes the member who has an associated user record,'\
-        'but also having an invite_token' do
-          member = create(:project_member,
-                          :developer,
-                          :invited,
-                          user: create(:user))
+      it 'includes the member who has an associated user record, but also having an invite_token' do
+        member = create(:project_member, :developer, :invited, user: create(:user))
 
-          expect(subject).to include(member)
-        end
+        expect(subject).to include(member)
+      end
 
       it { is_expected.to include @owner }
       it { is_expected.to include @maintainer }

@@ -2,7 +2,7 @@
 
 module SearchHelpers
   def fill_in_search(text)
-    page.within('.header-search-new') do
+    page.within('.header-search') do
       find('#search').click
       fill_in 'search', with: text
     end
@@ -11,7 +11,7 @@ module SearchHelpers
   end
 
   def submit_search(query)
-    page.within('.header-search, .search-page-form') do
+    page.within('.header-search-form, .search-page-form') do
       field = find_field('search')
       field.click
       field.fill_in(with: query)
@@ -35,6 +35,8 @@ module SearchHelpers
   end
 
   def has_search_scope?(scope)
+    return false unless page.has_selector?('[data-testid="search-filter"]')
+
     page.within '[data-testid="search-filter"]' do
       has_link?(scope)
     end

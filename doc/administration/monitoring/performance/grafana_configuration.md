@@ -14,7 +14,7 @@ For more information, see [deprecation notes](#deprecation-of-bundled-grafana).
 
 [Grafana](https://grafana.com/) is a tool that enables you to visualize time
 series metrics through graphs and dashboards. GitLab writes performance data to Prometheus,
-and Grafana allows you to query the data to display useful graphs.
+and Grafana allows you to query the data to display graphs.
 
 ## Deprecation of bundled Grafana
 
@@ -30,29 +30,22 @@ To switch away from bundled Grafana to a newer version of Grafana from Grafana L
 1. Set up a version of Grafana from Grafana Labs.
 1. [Export the existing dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#export-a-dashboard) from bundled Grafana.
 1. [Import the existing dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) in the new Grafana instance.
-1. [Configure GitLab](#integration-with-gitlab-ui) to use the new Grafana instance.
+1. [Configure GitLab](#integrate-with-gitlab-ui) to use the new Grafana instance.
 
 ### Temporary workaround
 
 In GitLab versions 16.0 to 16.2, you can still force Omnibus GitLab to enable and configure Grafana by setting the following:
 
 - `grafana['enable'] = true`.
-- `grafana['enable_deprecated_service'] = true`. 
- 
+- `grafana['enable_deprecated_service'] = true`.
+
 You see a deprecation message when reconfiguring GitLab.
 
-## Installation
+## Configure Grafana
 
-Omnibus GitLab can [help you install Grafana (recommended)](https://docs.gitlab.com/omnibus/settings/grafana.html)
-or Grafana supplies package repositories (Yum/Apt) for easy installation.
-See [Grafana installation documentation](https://grafana.com/docs/grafana/latest/setup-grafana/installation/)
-for detailed steps.
+Prerequisites:
 
-Before starting Grafana for the first time, set the administration user
-and password in `/etc/grafana/grafana.ini`. If you don't, the default password
-is `admin`.
-
-## Configuration
+- Grafana installed.
 
 1. Log in to Grafana as the administration user.
 1. Select **Data Sources** from the **Configuration** menu.
@@ -62,9 +55,9 @@ is `admin`.
 
 Grafana should indicate the data source is working.
 
-## Import Dashboards
+## Import dashboards
 
-You can now import a set of default dashboards to start displaying useful information.
+You can now import a set of default dashboards to start displaying information.
 GitLab has published a set of default
 [Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards) to get you started. To use
 them:
@@ -86,14 +79,15 @@ instance. For more information about this process, see the
 [README of the Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashboards)
 repository.
 
-## Integration with GitLab UI
+## Integrate with GitLab UI
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61005) in GitLab 12.1.
 
-After setting up Grafana, you can enable a link to access it easily from the
+After setting up Grafana, you can enable a link to access it from the
 GitLab sidebar:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Metrics and profiling**
    and expand **Metrics - Grafana**.
 1. Select the **Add a link to Grafana** checkbox.
@@ -129,7 +123,7 @@ configuration screen:
 > prior to 13.10, the API scope:
 >
 > - Is required to access Grafana through the GitLab OAuth provider.
-> - Is set by enabling the Grafana application as shown in [Integration with GitLab UI](#integration-with-gitlab-ui).
+> - Is set by enabling the Grafana application as shown in [Integration with GitLab UI](#integrate-with-gitlab-ui).
 
 ## Security Update
 

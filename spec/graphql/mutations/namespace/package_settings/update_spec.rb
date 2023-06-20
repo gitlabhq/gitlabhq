@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Namespace::PackageSettings::Update do
+RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:namespace) { create(:group) }
@@ -77,6 +77,15 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
       end
     end
 
+    # To be removed when raise_group_admin_package_permission_to_owner FF is removed
+    RSpec.shared_examples 'disabling admin_package feature flag' do |action:|
+      before do
+        stub_feature_flags(raise_group_admin_package_permission_to_owner: false)
+      end
+
+      it_behaves_like "#{action} the namespace package setting"
+    end
+
     context 'with existing namespace package setting' do
       let_it_be(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
       let_it_be(:params) do
@@ -96,7 +105,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
       end
 
       where(:user_role, :shared_examples_name) do
-        :maintainer | 'updating the namespace package setting'
+        :owner      | 'updating the namespace package setting'
+        :maintainer | 'denying access to namespace package setting'
         :developer  | 'denying access to namespace package setting'
         :reporter   | 'denying access to namespace package setting'
         :guest      | 'denying access to namespace package setting'
@@ -109,6 +119,7 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
         end
 
         it_behaves_like params[:shared_examples_name]
+        it_behaves_like 'disabling admin_package feature flag', action: :updating if params[:user_role] == :maintainer
       end
     end
 
@@ -116,7 +127,8 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
       let_it_be(:package_settings) { namespace.package_settings }
 
       where(:user_role, :shared_examples_name) do
-        :maintainer | 'creating the namespace package setting'
+        :owner      | 'creating the namespace package setting'
+        :maintainer | 'denying access to namespace package setting'
         :developer  | 'denying access to namespace package setting'
         :reporter   | 'denying access to namespace package setting'
         :guest      | 'denying access to namespace package setting'
@@ -129,6 +141,7 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
         end
 
         it_behaves_like params[:shared_examples_name]
+        it_behaves_like 'disabling admin_package feature flag', action: :creating if params[:user_role] == :maintainer
       end
     end
   end

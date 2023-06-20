@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Members::BulkUpdateBase, feature_category: :subgroups do
+RSpec.describe Mutations::Members::BulkUpdateBase, feature_category: :groups_and_projects do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

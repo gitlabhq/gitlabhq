@@ -5,7 +5,6 @@ import { createAlert } from '~/alert';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
-import eventHub from '~/vue_merge_request_widget/event_hub';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
@@ -145,17 +144,7 @@ MergeRequest.decreaseCounter = function (by = 1) {
   $el.text(addDelimiter(count));
 };
 
-MergeRequest.hideCloseButton = function () {
-  const el = document.querySelector('.merge-request .js-issuable-actions');
-  // Dropdown for mobile screen
-  el.querySelector('li.js-close-item').classList.add('hidden');
-};
-
 MergeRequest.toggleDraftStatus = function (title, isReady) {
-  if (!window.gon?.features?.realtimeMrStatusChange) {
-    eventHub.$emit('MRWidgetUpdateRequested');
-  }
-
   if (isReady) {
     toast(__('Marked as ready. Merging is now allowed.'));
   } else {

@@ -19,7 +19,7 @@ module Packages
         @distribution_name = distribution_name
         @component_name = component_name
 
-        return unless package_file && distribution_name && component_name
+        return unless package_file
         # return if file has already been processed
         return unless package_file.debian_file_metadatum&.unknown?
 

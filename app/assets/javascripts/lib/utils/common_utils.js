@@ -82,6 +82,7 @@ export const handleLocationHash = () => {
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed');
   const fixedNav = document.querySelector('.navbar-gitlab');
+  const fixedTopBar = document.querySelector('.top-bar-fixed');
   const performanceBar = document.querySelector('#js-peek');
   const topPadding = 8;
   const diffFileHeader = document.querySelector('.js-file-title');
@@ -93,6 +94,7 @@ export const handleLocationHash = () => {
   adjustment -= getElementOffsetHeight(fixedNav);
   adjustment -= getElementOffsetHeight(fixedTabs);
   adjustment -= getElementOffsetHeight(fixedDiffStats);
+  adjustment -= getElementOffsetHeight(fixedTopBar);
   adjustment -= getElementOffsetHeight(performanceBar);
   adjustment -= getElementOffsetHeight(diffFileHeader);
   adjustment -= getElementOffsetHeight(versionMenusContainer);
@@ -153,6 +155,7 @@ export const contentTop = () => {
   const heightCalculators = [
     () => getOuterHeight('#js-peek'),
     () => getOuterHeight('.navbar-gitlab'),
+    () => getOuterHeight('.top-bar-fixed'),
     ({ desktop }) => {
       const mrStickyHeader = document.querySelector('.merge-request-sticky-header');
       if (mrStickyHeader) {
@@ -687,21 +690,6 @@ export const setCookie = (name, value, attributes) => {
 export const getCookie = (name) => Cookies.get(name);
 
 export const removeCookie = (name) => Cookies.remove(name);
-
-/**
- * Returns the status of a feature flag.
- * Currently, there is no way to access feature
- * flags in Vuex other than directly tapping into
- * window.gon.
- *
- * This should only be used on Vuex. If feature flags
- * need to be accessed in Vue components consider
- * using the Vue feature flag mixin.
- *
- * @param {String} flag Feature flag
- * @returns {Boolean} on/off
- */
-export const isFeatureFlagEnabled = (flag) => window.gon.features?.[flag];
 
 /**
  * This method takes in array with snake_case strings

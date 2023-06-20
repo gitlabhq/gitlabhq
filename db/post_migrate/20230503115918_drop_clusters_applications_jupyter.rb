@@ -10,7 +10,6 @@ class DropClustersApplicationsJupyter < Gitlab::Database::Migration[2.1]
 
   # Based on init schema:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/b237f836df215a4ada92b9406733e6cd2483ca2d/db/migrate/20181228175414_init_schema.rb#L717-L728
-  # rubocop:disable Migration/SchemaAdditionMethodsNoPost
   def down
     create_table "clusters_applications_jupyter", id: :serial, force: :cascade do |t|
       t.integer "cluster_id", null: false
@@ -25,5 +24,4 @@ class DropClustersApplicationsJupyter < Gitlab::Database::Migration[2.1]
       t.index ["oauth_application_id"], name: "index_clusters_applications_jupyter_on_oauth_application_id"
     end
   end
-  # rubocop:enable Migration/SchemaAdditionMethodsNoPost
 end

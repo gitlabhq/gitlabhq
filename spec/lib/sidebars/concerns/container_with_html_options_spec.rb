@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Sidebars::Concerns::ContainerWithHtmlOptions do
+RSpec.describe Sidebars::Concerns::ContainerWithHtmlOptions, feature_category: :navigation do
   subject do
     Class.new do
       include Sidebars::Concerns::ContainerWithHtmlOptions

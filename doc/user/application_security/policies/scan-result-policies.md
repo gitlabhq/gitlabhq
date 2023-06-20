@@ -15,6 +15,9 @@ findings of one or more security scan jobs. Scan result policies are evaluated a
 NOTE:
 Scan result policies are applicable only to [protected](../../project/protected_branches.md) target branches.
 
+NOTE:
+When a protected branch is created or deleted, the policy approval rules synchronize, with a delay of 1 minute.
+
 The following video gives you an overview of GitLab scan result policies:
 
 <div class="video-fallback">

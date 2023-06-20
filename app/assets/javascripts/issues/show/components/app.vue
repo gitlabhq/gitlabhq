@@ -188,6 +188,11 @@ export default {
       required: false,
       default: null,
     },
+    issueIid: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const store = new Store({
@@ -446,7 +451,10 @@ export default {
     },
 
     showStickyHeader() {
-      this.isStickyHeaderShowing = true;
+      // only if scrolled under the issue's title
+      if (this.$refs.title.$el.offsetTop < window.pageYOffset) {
+        this.isStickyHeaderShowing = true;
+      }
     },
 
     handleSaveDescription(description) {
@@ -496,6 +504,7 @@ export default {
     </div>
     <div v-else>
       <title-component
+        ref="title"
         :issuable-ref="issuableRef"
         :can-update="canUpdate"
         :title-html="state.titleHtml"
@@ -522,7 +531,13 @@ export default {
                   statusText
                 }}</span></gl-badge
               >
-              <span v-if="isLocked" data-testid="locked" class="issuable-warning-icon">
+              <span
+                v-if="isLocked"
+                v-gl-tooltip.bottom
+                data-testid="locked"
+                class="issuable-warning-icon"
+                :title="__('This issue is locked. Only project members can comment.')"
+              >
                 <gl-icon name="lock" :aria-label="__('Locked')" />
               </span>
               <confidentiality-badge
@@ -533,19 +548,20 @@ export default {
               />
               <span
                 v-if="isHidden"
-                v-gl-tooltip
+                v-gl-tooltip.bottom
                 :title="__('This issue is hidden because its author has been banned')"
                 data-testid="hidden"
                 class="issuable-warning-icon"
               >
                 <gl-icon name="spam" />
               </span>
-              <p
-                class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
+              <a
+                href="#top"
+                class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-text-black-normal"
                 :title="state.titleText"
               >
                 {{ state.titleText }}
-              </p>
+              </a>
             </div>
           </div>
         </transition>
@@ -560,6 +576,7 @@ export default {
       <component
         :is="descriptionComponent"
         :issue-id="issueId"
+        :issue-iid="issueIid"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"

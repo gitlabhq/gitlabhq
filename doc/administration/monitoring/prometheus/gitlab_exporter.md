@@ -24,7 +24,7 @@ To enable the GitLab exporter in an Omnibus GitLab instance:
    gitlab_exporter['enable'] = true
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 Prometheus automatically begins collecting performance data from
@@ -49,7 +49,7 @@ To change the Rack server to Puma:
    gitlab_exporter['server_name'] = 'puma'
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure)
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
 The supported Rack servers are `webrick` and `puma`.

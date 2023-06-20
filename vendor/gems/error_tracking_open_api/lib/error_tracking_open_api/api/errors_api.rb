@@ -1,5 +1,5 @@
 =begin
-#Error Trackig REST API
+#Error Tracking REST API
 
 #This schema describes the API endpoints for the error tracking feature
 
@@ -94,6 +94,8 @@ module ErrorTrackingOpenAPI
     # @option opts [String] :query 
     # @option opts [String] :cursor Base64 encoded information for pagination
     # @option opts [Integer] :limit Number of entries to return (default to 20)
+    # @option opts [String] :stats_period  (default to '24h')
+    # @option opts [String] :query_period  (default to '30d')
     # @return [Array<Error>]
     def list_errors(project_id, opts = {})
       data, _status_code, _headers = list_errors_with_http_info(project_id, opts)
@@ -108,6 +110,8 @@ module ErrorTrackingOpenAPI
     # @option opts [String] :query 
     # @option opts [String] :cursor Base64 encoded information for pagination
     # @option opts [Integer] :limit Number of entries to return (default to 20)
+    # @option opts [String] :stats_period  (default to '24h')
+    # @option opts [String] :query_period  (default to '30d')
     # @return [Array<(Array<Error>, Integer, Hash)>] Array<Error> data, response status code and response headers
     def list_errors_with_http_info(project_id, opts = {})
       if @api_client.config.debugging
@@ -133,6 +137,14 @@ module ErrorTrackingOpenAPI
         fail ArgumentError, 'invalid value for "opts[:"limit"]" when calling ErrorsApi.list_errors, must be greater than or equal to 1.'
       end
 
+      allowable_values = ["15m", "30m", "1h", "24h", "7d", "14d", "30d"]
+      if @api_client.config.client_side_validation && opts[:'stats_period'] && !allowable_values.include?(opts[:'stats_period'])
+        fail ArgumentError, "invalid value for \"stats_period\", must be one of #{allowable_values}"
+      end
+      allowable_values = ["15m", "30m", "1h", "1d", "7d", "14d", "30d"]
+      if @api_client.config.client_side_validation && opts[:'query_period'] && !allowable_values.include?(opts[:'query_period'])
+        fail ArgumentError, "invalid value for \"query_period\", must be one of #{allowable_values}"
+      end
       # resource path
       local_var_path = '/projects/{projectId}/errors'.sub('{' + 'projectId' + '}', CGI.escape(project_id.to_s))
 
@@ -143,6 +155,8 @@ module ErrorTrackingOpenAPI
       query_params[:'query'] = opts[:'query'] if !opts[:'query'].nil?
       query_params[:'cursor'] = opts[:'cursor'] if !opts[:'cursor'].nil?
       query_params[:'limit'] = opts[:'limit'] if !opts[:'limit'].nil?
+      query_params[:'statsPeriod'] = opts[:'stats_period'] if !opts[:'stats_period'].nil?
+      query_params[:'queryPeriod'] = opts[:'query_period'] if !opts[:'query_period'].nil?
 
       # header parameters
       header_params = opts[:header_params] || {}

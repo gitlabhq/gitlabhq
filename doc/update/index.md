@@ -140,6 +140,11 @@ To clean up the migration, upgrade to 15.1 or later.
 
 For other advanced search migrations stuck in pending, see [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
+If you upgrade GitLab before all pending advanced search migrations are completed, any pending migrations
+that have been removed in the new version cannot be executed or retried.
+In this case, you must
+[re-create your index from scratch](../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+
 ### What do you do for the error `Elasticsearch version not compatible`
 
 Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/advanced_search/elasticsearch.md#version-requirements).
@@ -265,11 +270,30 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 16.1.0
+
+- A `MigrateHumanUserType` background migration will be finalized with
+    the `FinalizeUserTypeMigration` migration.
+    GitLab 16.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
+    [migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
+    migration may take multiple days to complete on larger GitLab instances. Make sure the migration
+    has completed successfully before upgrading to 16.1.0.
+- A `BackfillPreparedAtMergeRequests` background migration will be finalized with
+  the `FinalizeBackFillPreparedAtMergeRequests` post-deploy migration.
+  GitLab 15.10.0 introduced a [batched background migration](background_migrations.md#batched-background-migrations) to
+  [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
+  migration may take multiple days to complete on larger GitLab instances. Make sure the migration
+  has completed successfully before upgrading to 16.1.0.
+
 ### 16.0.0
 
+- Sidekiq crashes if there are non-ASCII characters in the GitLab.rb file. You can fix this
+  by following the workaround in [issue 412767](https://gitlab.com/gitlab-org/gitlab/-/issues/412767#note_1404507549).
 - Sidekiq jobs are only routed to `default` and `mailers` queues by default, and as a result,
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
   all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
+- Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
+  [throw errors on startup](../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 
 ### 15.11.1
 
@@ -1174,6 +1198,8 @@ for how to proceed.
       sudo gitlab-rake "gitlab:password:reset[user_handle]"
       ```
 
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [122978](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122978) as the `mr_iid`.
+
 ### 14.2.0
 
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases).
@@ -1213,6 +1239,8 @@ for how to proceed.
   end
   ```
 
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123476](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123476) as the `mr_iid`.
+
 ### 14.1.0
 
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases)
@@ -1229,6 +1257,8 @@ for how to proceed.
   run the migration in the foreground and therefore take a lot longer to complete.
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123475](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123475) as the `mr_iid`.
 
 ### 14.0.0
 

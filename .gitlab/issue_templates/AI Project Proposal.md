@@ -14,7 +14,7 @@ The title should be something that is easily understood that quickly communicate
 
 This section should be completed prior to work on the Experiment beginning.
 
-# [Experiment](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#experiment)
+# [Experiment](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#experiment)
 
 ##  Problem to be solved
 

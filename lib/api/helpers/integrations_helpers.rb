@@ -69,6 +69,12 @@ module API
           },
           {
             required: false,
+            name: :alert_channel,
+            type: String,
+            desc: 'The name of the channel to receive alert_events notifications'
+          },
+          {
+            required: false,
             name: :confidential_issue_channel,
             type: String,
             desc: 'The name of the channel to receive confidential_issues_events notifications'
@@ -87,9 +93,21 @@ module API
           },
           {
             required: false,
+            name: :confidential_note_channel,
+            type: String,
+            desc: 'The name of the channel to receive confidential_note_events notifications'
+          },
+          {
+            required: false,
             name: :tag_push_channel,
             type: String,
             desc: 'The name of the channel to receive tag_push_events notifications'
+          },
+          {
+            required: false,
+            name: :deployment_channel,
+            type: String,
+            desc: 'The name of the channel to receive deployment_events notifications'
           },
           {
             required: false,
@@ -110,6 +128,12 @@ module API
         [
           {
             required: false,
+            name: :commit_events,
+            type: Boolean,
+            desc: 'Enable notifications for commit_events'
+          },
+          {
+            required: false,
             name: :push_events,
             type: Boolean,
             desc: 'Enable notifications for push_events'
@@ -125,6 +149,12 @@ module API
             name: :incident_events,
             type: Boolean,
             desc: 'Enable notifications for incident_events'
+          },
+          {
+            required: false,
+            name: :alert_events,
+            type: Boolean,
+            desc: 'Enable notifications for alert_events'
           },
           {
             required: false,
@@ -155,6 +185,18 @@ module API
             name: :tag_push_events,
             type: Boolean,
             desc: 'Enable notifications for tag_push_events'
+          },
+          {
+            required: false,
+            name: :deployment_events,
+            type: Boolean,
+            desc: 'Enable notifications for deployment_events'
+          },
+          {
+            required: false,
+            name: :job_events,
+            type: Boolean,
+            desc: 'Enable notifications for job_events'
           },
           {
             required: false,
@@ -197,6 +239,12 @@ module API
               name: :app_store_private_key_file_name,
               type: String,
               desc: 'The Apple App Store Connect Private Key File Name'
+            },
+            {
+              required: false,
+              name: :app_store_protected_refs,
+              type: Boolean,
+              desc: 'Only enable for protected refs'
             }
           ],
           'asana' => [
@@ -397,8 +445,16 @@ module API
               name: :webhook,
               type: String,
               desc: 'Discord webhook. For example, https://discord.com/api/webhooks/…'
-            }
-          ],
+            },
+            {
+              required: false,
+              name: :branches_to_be_notified,
+              type: String,
+              desc: 'Branches for which notifications are to be sent'
+            },
+            chat_notification_flags,
+            chat_notification_events
+          ].flatten,
           'drone-ci' => [
             {
               required: true,
@@ -839,6 +895,20 @@ module API
               desc: 'The issues URL'
             }
           ],
+          'clickup' => [
+            {
+              required: true,
+              name: :project_url,
+              type: String,
+              desc: 'The project URL'
+            },
+            {
+              required: true,
+              name: :issues_url,
+              type: String,
+              desc: 'The issues URL'
+            }
+          ],
           'slack' => [
             chat_notification_settings,
             chat_notification_flags,
@@ -898,6 +968,21 @@ module API
               desc: 'The password of the user'
             }
           ],
+          'telegram' => [
+            {
+              required: true,
+              name: :token,
+              type: String,
+              desc: 'The Telegram chat token. For example, 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+            },
+            {
+              required: true,
+              name: :room,
+              type: String,
+              desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
+            },
+            chat_notification_events
+          ].flatten,
           'unify-circuit' => [
             {
               required: true,
@@ -968,6 +1053,7 @@ module API
           ::Integrations::Bugzilla,
           ::Integrations::Buildkite,
           ::Integrations::Campfire,
+          ::Integrations::Clickup,
           ::Integrations::Confluence,
           ::Integrations::CustomIssueTracker,
           ::Integrations::Datadog,

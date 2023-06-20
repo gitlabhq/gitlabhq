@@ -6,10 +6,10 @@ info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering pr
 
 # MLflow client integration **(FREE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../policy/alpha-beta-support.md#experiment) release [with a flag](../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
 
 NOTE:
-Model experiment tracking is an [experimental feature](../../../policy/alpha-beta-support.md).
+Model experiment tracking is an [experimental feature](../../../policy/experiment-beta-support.md).
 Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
 
 [MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning Experiment Tracking.
@@ -23,7 +23,9 @@ GitLab plays the role of a MLflow server. Running `mlflow server` is not necessa
 Prerequisites:
 
 - A [personal access token](../../../user/profile/personal_access_tokens.md) for the project, with minimum access level of `api`.
-- The project ID. To find the project ID, on the top bar, select **Main menu > Projects** and find your project. On the left sidebar, select **Settings > General**.
+- The project ID. To find the project ID:
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. Select **Settings > General**.
 
 To enable MLflow client integration:
 

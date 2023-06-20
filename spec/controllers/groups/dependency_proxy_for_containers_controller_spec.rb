@@ -28,7 +28,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       let(:image) { '../path_traversal' }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+        expect { subject }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       let(:tag) { 'latest%2f..%2f..%2fpath_traversal' }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Utils::PathTraversalAttackError, 'Invalid path')
+        expect { subject }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError, 'Invalid path')
       end
     end
   end

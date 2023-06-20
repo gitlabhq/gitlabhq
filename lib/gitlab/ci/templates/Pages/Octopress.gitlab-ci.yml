@@ -3,8 +3,9 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Octopress.gitlab-ci.yml
 
-# Full project: https://gitlab.com/pages/octopress
-image: ruby:2.6
+default:
+  # Full project: https://gitlab.com/pages/octopress
+  image: ruby:2.6
 
 pages:
   script:

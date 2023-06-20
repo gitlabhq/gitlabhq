@@ -9,7 +9,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
   let_it_be(:parent) { create(:work_item, project: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
-  let(:spam_params) { double }
   let(:widget_params) { {} }
   let(:opts) { {} }
   let(:current_user) { developer }
@@ -25,16 +24,11 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         container: project,
         current_user: current_user,
         params: opts,
-        spam_params: spam_params,
         widget_params: widget_params
       )
     end
 
     subject(:update_work_item) { service.execute(work_item) }
-
-    before do
-      stub_spam_services
-    end
 
     shared_examples 'update service that triggers graphql dates updated subscription' do
       it 'triggers graphql subscription issueableDatesUpdated' do
@@ -87,6 +81,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         let(:user) { current_user }
         subject(:service_action) { update_work_item[:status] }
       end
+
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        subject(:execute_service) { update_work_item }
+      end
     end
 
     context 'when title is not changed' do
@@ -113,6 +111,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
         update_work_item
       end
+
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        subject(:execute_service) { update_work_item }
+      end
     end
 
     context 'when decription is changed' do
@@ -122,6 +124,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         expect(GraphqlTriggers).to receive(:issuable_description_updated).with(work_item).and_call_original
 
         update_work_item
+      end
+
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        subject(:execute_service) { update_work_item }
       end
     end
 
@@ -176,7 +182,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           container: project,
           current_user: current_user,
           params: opts,
-          spam_params: spam_params,
           widget_params: widget_params
         )
       end
@@ -224,6 +229,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           update_work_item
 
           expect(work_item.description).to eq('changed')
+        end
+
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
         end
 
         context 'with mentions', :mailer, :sidekiq_might_not_need_inline do
@@ -305,6 +314,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           expect(work_item.work_item_children).to include(child_work_item)
         end
 
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
+        end
+
         context 'when child type is invalid' do
           let_it_be(:child_work_item) { create(:work_item, project: project) }
 
@@ -351,6 +364,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
             update_work_item
           end
+
+          it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+            subject(:execute_service) { update_work_item }
+          end
         end
 
         context 'when milestone remains unchanged' do
@@ -382,6 +399,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           update_work_item
         end
 
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
+        end
+
         it_behaves_like 'broadcasting issuable labels updates' do
           let(:issuable) { work_item }
           let(:label_a) { label1 }
@@ -392,7 +413,6 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
               container: project,
               current_user: current_user,
               params: update_params,
-              spam_params: spam_params,
               widget_params: widget_params
             ).execute(work_item)
           end

@@ -13,6 +13,11 @@ export default {
       type: Object,
       required: true,
     },
+    selected: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     text() {
@@ -31,13 +36,18 @@ export default {
 };
 </script>
 <template>
-  <node-view-wrapper class="gl-display-inline-block">
+  <node-view-wrapper as="span">
     <span v-if="isCommand">{{ text }}</span>
     <gl-link
       v-else
       href="#"
-      class="gfm"
-      :class="{ 'gfm-project_member': isMember, 'current-user': isMember && isCurrentUser }"
+      tabindex="-1"
+      class="gfm gl-cursor-text"
+      :class="{
+        'gfm-project_member': isMember,
+        'current-user': isMember && isCurrentUser,
+        'ProseMirror-selectednode': selected,
+      }"
       @click.prevent.stop
       >{{ text }}</gl-link
     >

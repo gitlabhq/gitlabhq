@@ -15,8 +15,9 @@ state file version, and is checked whenever a new version is created.
 
 To add a storage limit:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Preferences**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > Preferences**.
 1. Expand **Terraform limits**.
 1. Adjust the size limit.
 

@@ -45,7 +45,7 @@ static-verification-with-database:
     - .static-analysis-base
     - .rubocop-job-cache
     - .static-analysis:rules:static-verification-with-database
-    - .use-pg13
+    - .use-pg14
   script:
     - bundle exec rake lint:static_verification_with_database
   variables:
@@ -211,7 +211,7 @@ ping-appsec-for-sast-findings:
     - .ping-appsec-for-sast-findings:rules
   variables:
     # Project Access Token bot ID for /gitlab-com/gl-security/appsec/sast-custom-rules
-    BOT_USER_ID: 13559989
+    BOT_USER_ID: 14406065
   needs:
     - semgrep-appsec-custom-rules
   script:

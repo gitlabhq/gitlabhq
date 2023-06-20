@@ -30,6 +30,15 @@ export default {
     showButton() {
       return Object.entries(this.button).length > 0;
     },
+    showLabel() {
+      if (this.button.category === 'tertiary' && this.button.icon) {
+        return false;
+      }
+      return true;
+    },
+    isSelected() {
+      return this.button.category === 'tertiary' && this.button.selected;
+    },
   },
   mounted() {
     if (this.button.data) {
@@ -55,11 +64,12 @@ export default {
     :category="button.category"
     :variant="button.variant"
     type="button"
-    :selected="button.selected"
+    :selected="isSelected"
     :icon="icon"
     :title="label"
     :aria-label="label"
     :class="button.class"
     @click="clickHandler($event)"
-  />
+    ><template v-if="showLabel">{{ label }}</template></gl-button
+  >
 </template>

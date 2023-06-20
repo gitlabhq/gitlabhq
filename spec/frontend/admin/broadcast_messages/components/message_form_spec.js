@@ -34,7 +34,9 @@ describe('MessageForm', () => {
   const findDismissable = () => wrapper.findComponent('[data-testid=dismissable-checkbox]');
   const findTargetRoles = () => wrapper.findComponent('[data-testid=target-roles-checkboxes]');
   const findSubmitButton = () => wrapper.findComponent('[data-testid=submit-button]');
+  const findCancelButton = () => wrapper.findComponent('[data-testid=cancel-button]');
   const findForm = () => wrapper.findComponent(GlForm);
+  const findShowInCli = () => wrapper.findComponent('[data-testid=show-in-cli-checkbox]');
 
   function createComponent({ broadcastMessage = {} } = {}) {
     wrapper = mount(MessageForm, {
@@ -98,6 +100,18 @@ describe('MessageForm', () => {
     });
   });
 
+  describe('showInCli checkbox', () => {
+    it('renders for Banners', () => {
+      createComponent({ broadcastMessage: { broadcastType: TYPE_BANNER } });
+      expect(findShowInCli().exists()).toBe(true);
+    });
+
+    it('does not render for Notifications', () => {
+      createComponent({ broadcastMessage: { broadcastType: TYPE_NOTIFICATION } });
+      expect(findShowInCli().exists()).toBe(false);
+    });
+  });
+
   describe('target roles checkboxes', () => {
     it('renders target roles', () => {
       createComponent();
@@ -124,6 +138,14 @@ describe('MessageForm', () => {
     it('is not disabled when the user message is present', () => {
       createComponent({ broadcastMessage: { message: 'alsdjfkldsj' } });
       expect(findSubmitButton().props().disabled).toBe(false);
+    });
+  });
+
+  describe('form cancel button', () => {
+    it('renders when the editing a message and has href back to message index page', () => {
+      createComponent({ broadcastMessage: { id: 100 } });
+      expect(wrapper.text()).toContain('Cancel');
+      expect(findCancelButton().attributes('href')).toBe(wrapper.vm.messagesPath);
     });
   });
 

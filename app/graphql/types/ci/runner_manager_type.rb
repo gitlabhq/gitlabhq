@@ -47,3 +47,5 @@ module Types
     end
   end
 end
+
+Types::Ci::RunnerManagerType.prepend_mod_with('Types::Ci::RunnerManagerType')

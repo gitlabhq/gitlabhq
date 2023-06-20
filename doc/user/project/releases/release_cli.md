@@ -23,7 +23,7 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
   "Created using the release-cli $EXTRA_DESCRIPTION" \
   --tag-name "v${MAJOR}.${MINOR}.${REVISION}" --ref "$CI_COMMIT_SHA" \
   --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3" \
-  --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}
+  --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}"
 ```
 
 ## Install the `release-cli` for the Shell executor **(FREE)**
@@ -37,13 +37,8 @@ Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is av
 
 ### Install on Unix/Linux
 
-1. Download the binary for your system from S3, in the following example for amd64 systems:
-
-   ```shell
-   curl --location --output /usr/local/bin/release-cli "https://release-cli-downloads.s3.amazonaws.com/latest/release-cli-linux-amd64"
-   ```
-
-   Or from the GitLab Package Registry:
+1. Download the binary for your system from the GitLab Package Registry.
+   For example, if you use an amd64 system:
 
    ```shell
    curl --location --output /usr/local/bin/release-cli "https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli/packages/generic/release-cli/latest/release-cli-linux-amd64"
@@ -60,7 +55,7 @@ Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is av
    ```shell
    $ release-cli -v
 
-   release-cli version 0.6.0
+   release-cli version 0.15.0
    ```
 
 ### Install on Windows PowerShell
@@ -74,7 +69,7 @@ Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is av
 1. Download the executable file:
 
    ```shell
-   PS C:\> Invoke-WebRequest -Uri "https://release-cli-downloads.s3.amazonaws.com/latest/release-cli-windows-amd64.exe" -OutFile "C:\GitLab\Release-CLI\bin\release-cli.exe"
+   PS C:\> Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli/packages/generic/release-cli/latest/release-cli-windows-amd64.exe" -OutFile "C:\GitLab\Release-CLI\bin\release-cli.exe"
 
        Directory: C:\GitLab\Release-CLI
    Mode                LastWriteTime         Length Name
@@ -93,5 +88,5 @@ Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is av
    ```shell
    PS C:\> release-cli -v
 
-   release-cli version 0.6.0
+   release-cli version 0.15.0
    ```

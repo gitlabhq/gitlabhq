@@ -1,0 +1,7 @@
+name: gitlab_ci
+description: Schema for all Cell-local CI tables, ex. ci_builds, etc.
+allow_cross_joins:
+  - gitlab_shared
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared

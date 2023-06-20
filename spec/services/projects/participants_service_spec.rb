@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ParticipantsService, feature_category: :projects do
+RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_projects do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public) }
@@ -176,6 +176,18 @@ RSpec.describe Projects::ParticipantsService, feature_category: :projects do
 
             it 'does not return ancestors of the private group' do
               expect(usernames).not_to include(group_ancestor_owner.username)
+            end
+          end
+
+          context 'when public project maintainer is signed in' do
+            let(:service) { described_class.new(public_project, public_project_maintainer) }
+
+            it 'returns private group members' do
+              expect(usernames).to include(private_group_member.username)
+            end
+
+            it 'returns members of the ancestral groups of the private group' do
+              expect(usernames).to include(group_ancestor_owner.username)
             end
           end
 

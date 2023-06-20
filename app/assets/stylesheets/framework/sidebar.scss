@@ -489,14 +489,12 @@
           padding: 0;
 
           .issuable-context-form {
-            $issue-sticky-header-height: 76px;
-
-            top: calc(#{$calc-application-header-height} + #{$issue-sticky-header-height});
-            height: calc(#{$calc-application-viewport-height} - #{$issue-sticky-header-height} - var(--mr-review-bar-height));
+            top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
+            height: calc(#{$calc-application-viewport-height} - #{$mr-sticky-header-height} - var(--mr-review-bar-height));
             position: sticky;
             overflow: auto;
             padding: 0 15px;
-            margin-bottom: calc((#{$header-height} + $issue-sticky-header-height) * -1);
+            margin-bottom: calc((#{$content-wrapper-padding} * -1) + var(--mr-review-bar-height));
           }
         }
       }

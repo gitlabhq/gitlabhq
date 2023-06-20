@@ -15,10 +15,10 @@ By default, GitLab uses a single application database, referred to as the `main`
 
 To scale GitLab, you can configure GitLab to use multiple application databases.
 
-Due to [known issues](#known-issues), configuring GitLab with multiple databases is an [Experiment](../../policy/alpha-beta-support.md#experiment).
+Due to [known issues](#known-issues), configuring GitLab with multiple databases is an [Experiment](../../policy/experiment-beta-support.md#experiment).
 
 After you have set up multiple databases, GitLab uses a second application database for
-[CI/CD features](../../ci/index.md), referred to as the `ci` database.
+[CI/CD features](../../ci/index.md), referred to as the `ci` database. We do not exclude hosting both databases on a single PostgreSQL instance.
 
 All tables have exactly the same structure in both the `main`, and `ci`
 databases. Some examples:

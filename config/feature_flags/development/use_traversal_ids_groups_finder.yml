@@ -1,8 +1,0 @@
----
-name: use_traversal_ids_groups_finder
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67650
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345666
-milestone: '14.6'
-type: development
-group: group::tenant scale
-default_enabled: true

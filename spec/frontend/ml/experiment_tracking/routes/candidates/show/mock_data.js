@@ -19,5 +19,20 @@ export const newCandidate = () => ({
     path_to_experiment: 'path/to/experiment',
     status: 'SUCCESS',
     path: 'path_to_candidate',
+    ci_job: {
+      name: 'test',
+      path: 'path/to/job',
+      merge_request: {
+        path: 'path/to/mr',
+        iid: 1,
+        title: 'Some MR',
+      },
+      user: {
+        path: 'path/to/ci/user',
+        name: 'CI User',
+        username: 'ciuser',
+        avatar: '/img.png',
+      },
+    },
   },
 });

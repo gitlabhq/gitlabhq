@@ -6,13 +6,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Product analytics (Experiment) **(ULTIMATE)**
 
-> - Introduced in GitLab 15.4 as an [Experiment](../../policy/alpha-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
+> - Snowplow integration introduced in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+FLAG:
+On self-managed GitLab, by default the Snowplow integration is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -23,9 +29,9 @@ For more information, see the [group direction page](https://about.gitlab.com/di
 
 Product analytics uses several tools:
 
-- [**Jitsu**](https://jitsu.com/docs) - A web and app event collection platform that provides a consistent API to collect user data and pass it through to ClickHouse.
+- [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
-- [**Cube.js**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
+- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
 
 The following diagram illustrates the product analytics flow:
 
@@ -34,19 +40,21 @@ The following diagram illustrates the product analytics flow:
 title: Product Analytics flow
 ---
 flowchart TB
-    subgraph Adding data
-        A([SDK]) --Send user data--> B[Analytics Proxy]
-        B --Transform data and pass it through--> C[Snowplow]
-        C --Pass the data to the associated database--> D([Clickhouse])
+    subgraph Event collection
+        A([SDK]) --Send user data--> B[Snowplow Collector]
+        B --Pass data through--> C[Snowplow Enricher]
     end
-    subgraph Showing dashboards
-        E([Dashboards]) --Generated from the YAML definition--> F[Dashboard]
+    subgraph Data warehouse
+        C --Transform and enrich data--> D([Clickhouse])
+    end
+    subgraph Data visualization with dashboards
+        E([Dashboards]) --Generated from the YAML definition--> F[Panels/Visualizations]
         F --Request data--> G[Product Analytics API]
-        G --Run Cube queries with pre-aggregations--> H[Cube.js]
+        G --Run Cube queries with pre-aggregations--> H[Cube]
         H --Get data from database--> D
         D --Return results--> H
-        H --> G
-        G --Transform data to be rendered--> F
+        H --Transform data to be rendered--> G
+        G --Return data--> F
     end
 ```
 
@@ -69,25 +77,36 @@ Prerequisite:
 
 - You must be an administrator of a self-managed GitLab instance.
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand the **Analytics** tab and find the **Product analytics** section.
 1. Select **Enable product analytics** and enter the configuration values.
-   The following table shows the required configuration parameters and example values:
-
-    | Name                           | Value                                                      |
-    |--------------------------------|------------------------------------------------------------|
-    | Configurator connection string | `https://test:test@configurator.gitlab.com`                |
-    | Jitsu host                     | `https://jitsu.gitlab.com`                                 |
-    | Jitsu project ID               | `g0maofw84gx5sjxgse2k`                                     |
-    | Jitsu administrator email      | `jitsu.admin@gitlab.com`                                   |
-    | Jitsu administrator password   | `<your_password>`                                          |
-    | Collector host                 | `https://collector.gitlab.com`                             |
-    | ClickHouse URL                 | `https://<username>:<password>@clickhouse.gitlab.com:8123` |
-    | Cube API URL                   | `https://cube.gitlab.com`                                  |
-    | Cube API key                   | `25718201b3e9...ae6bbdc62dbb`                              |
-
 1. Select **Save changes**.
+
+### Project-level settings
+
+You can override the instance-level settings defined by the administrator on a per-project basis. This allows you to
+have a different configured product analytics instance for your project.
+
+Prerequisites:
+
+- Product analytics must be enabled at the instance-level.
+- You must have at least the Maintainer role for the project or group the project belongs to.
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**
+1. Expand **Product Analytics**.
+1. In the **Connect to your instance** section, enter the configuration values.
+1. Select **Save changes**.
+
+## Instrument a GitLab project
+
+To instrument code to collect data, use one or more of the existing SDKs:
+
+- [Browser SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-browser)
+- [Ruby SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-rb)
 
 ## Product analytics dashboards
 
@@ -99,83 +118,12 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-Each project can have an unlimited number of dashboards.
-These dashboards are defined using the GitLab YAML schema, and stored in the `.gitlab/analytics/dashboards/` directory of a project repository.
-The name of the file is the name of the dashboard.
-Each dashboard can contain one or more visualizations (charts), which are shared across dashboards.
+Product analytics dashboards are a subset of dashboards under [Analytics dashboards](../analytics/analytics_dashboards.md).
 
-Project maintainers can enforce approval rules on dashboard changes using features such as code owners and approval rules.
-Dashboards are versioned in source control with the rest of a project's code.
-
-### View project dashboards
-
-> Introduced in GitLab 15.9 behind the [feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-To view a list of product analytics dashboards for a project:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Analytics > Dashboards**.
-1. From the list of available dashboards, select the dashboard you want to view.
-
-### Define a dashboard
-
-To define a dashboard:
-
-1. In `.gitlab/analytics/dashboards/`, create a directory named like the dashboard.
-
-    Each dashboard should have its own directory.
-1. In the new directory, create a `.yaml` file with the same name as the directory.
-
-    This file contains the dashboard definition. It must conform to the JSON schema defined in `ee/app/validators/json_schemas/product_analytics_dashboard.json`.
-1. In the `.gitlab/analytics/dashboards/visualizations/` directory, create a `.yaml` file.
-
-    This file defines the visualization type for the dashboard. It must conform to the schema in
- `ee/app/validators/json_schemas/product_analytics_visualization.json`.
-
-For example, if you want to create three dashboards (Conversion funnels, Demographic breakdown, and North star metrics)
-and one visualization (line chart) that applies to all dashboards, the file structure would be:
-
-```plaintext
-.gitlab/analytics/dashboards
-├── conversion_funnels
-│  └── conversion_funnels.yaml
-├── demographic_breakdown
-│  └── demographic_breakdown.yaml
-├── north_star_metrics
-|  └── north_star_metrics.yaml
-├── visualizations
-│  └── example_line_chart.yaml
-```
-
-### Define a chart visualization
-
-You can define different charts, and add visualization options to some of them:
-
-- Line chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Data table, with the only option to render `links` (array of objects, each with `text` and `href` properties to specify the dimensions to be used in links). See [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json?ref_type=heads#L112)).
-- Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
-
-To define a chart for your dashboards:
-
-1. In the `.gitlab/product_analytics/dashboards/visualizations/` directory, create a `.yaml` file.
-The filename should be descriptive of the visualization it defines.
-1. In the `.yaml` file, define the visualization options, according to the schema in
-`ee/app/validators/json_schemas/analytics_visualization.json`.
-
-For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/gl_dashboards/product_analytics/visualizations/events_over_time.json), to create a line chart that illustrates event count over time, in the `visualizations` folder
-create a `line_chart.yaml` file with the following required fields:
-
-- version
-- title
-- type
-- data
-- options
+Specifically product analytics dashboards and visualizations make use of the `cube_analytics` data type.
+The `cube_analytics` data type connects to the Cube instance defined when [product analytics was enabled](#enable-product-analytics).
+All filters and queries are sent to the Cube instance and the returned data is processed by the
+product analytics data source to be rendered by the appropriate visualizations.
 
 ## Funnel analysis
 

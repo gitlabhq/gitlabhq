@@ -3,8 +3,8 @@ data_category: optional
 key_path: counts.auto_devops_disabled
 description: Projects with Auto DevOps template disabled
 product_section: ops
-product_stage: configure
-product_group: configure
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 time_frame: all

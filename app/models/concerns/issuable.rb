@@ -659,6 +659,7 @@ module Issuable
 
   def read_ability_for(participable_source)
     return super if participable_source == self
+    return super if participable_source.is_a?(Note) && participable_source.system?
 
     name =  participable_source.try(:issuable_ability_name) || :read_issuable_participables
 

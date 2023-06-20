@@ -31,7 +31,9 @@ RSpec.describe ErrorTracking::StacktraceBuilder do
           'context' => expected_context,
           'filename' => 'puma/thread_pool.rb',
           'function' => 'block in spawn_thread',
-          'colNo' => 0
+          'colNo' => 0,
+          'abs_path' =>
+            "/Users/developer/.asdf/installs/ruby/2.5.1/lib/ruby/gems/2.5.0/gems/puma-3.12.6/lib/puma/thread_pool.rb"
         }
 
         expect(stacktrace).to be_kind_of(Array)
@@ -48,7 +50,8 @@ RSpec.describe ErrorTracking::StacktraceBuilder do
           'context' => [],
           'filename' => 'webpack-internal:///./node_modules/vue/dist/vue.runtime.esm.js',
           'function' => 'hydrate',
-          'colNo' => 0
+          'colNo' => 0,
+          'abs_path' => nil
         }
 
         expect(stacktrace).to be_kind_of(Array)
@@ -77,7 +80,9 @@ RSpec.describe ErrorTracking::StacktraceBuilder do
           ],
           'filename' => nil,
           'function' => 'main',
-          'colNo' => 0
+          'colNo' => 0,
+          'abs_path' =>
+            "/Users/stanhu/github/sentry-go/example/basic/main.go"
         }
 
         expect(stacktrace).to be_kind_of(Array)

@@ -38,6 +38,11 @@ import {
 } from '../utils/error_messages';
 import { trackDesignCreate, trackDesignUpdate } from '../utils/tracking';
 
+export const i18n = {
+  dropzoneDescriptionText: __('Drag your designs here or %{linkStart}click to upload%{linkEnd}.'),
+  designLoadingError: __('An error occurred while loading designs. Please try again.'),
+};
+
 export default {
   components: {
     GlLoadingIcon,
@@ -346,9 +351,7 @@ export default {
     animation: 200,
     ghostClass: 'gl-visibility-hidden',
   },
-  i18n: {
-    dropzoneDescriptionText: __('Drag your designs here or %{linkStart}click to upload%{linkEnd}.'),
-  },
+  i18n,
 };
 </script>
 
@@ -370,7 +373,7 @@ export default {
     </gl-alert>
     <header
       v-if="showToolbar"
-      class="gl-border gl-px-5 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-base gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!"
+      class="gl-border gl-px-5 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-top-base"
       data-testid="design-toolbar-wrapper"
     >
       <div
@@ -427,7 +430,7 @@ export default {
     <div :class="designContentWrapperClass">
       <gl-loading-icon v-if="isLoading" size="lg" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
-        {{ __('An error occurred while loading designs. Please try again.') }}
+        {{ $options.i18n.designLoadingError }}
       </gl-alert>
       <header
         v-else-if="isDesignCollectionCopying"
@@ -503,7 +506,7 @@ export default {
           >
             <design-dropzone
               :enable-drag-behavior="isDraggingDesign"
-              :class="{ 'design-list-item design-list-item-new': !isDesignListEmpty }"
+              :class="{ 'design-list-item': !isDesignListEmpty }"
               :display-as-card="hasDesigns"
               v-bind="$options.dropzoneProps"
               data-qa-selector="design_dropzone_content"

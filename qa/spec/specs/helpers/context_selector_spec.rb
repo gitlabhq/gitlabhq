@@ -535,6 +535,47 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
         end
       end
     end
+
+    context 'with CI_PROJECT_NAME set to gitlab and SCHEDULE_TYPE set to nightly' do
+      before do
+        stub_env('CI_PROJECT_NAME', 'gitlab')
+        stub_env('SCHEDULE_TYPE', 'nightly')
+      end
+
+      it 'runs on designated pipeline' do
+        group = describe_successfully do
+          it('runs on nightly', only: { pipeline: :nightly }) {}
+          it('does not run in not_nightly', only: { pipeline: :not_nightly }) {}
+          it('runs on nightly given an array', only: { pipeline: [:canary, :nightly] }) {}
+          it('does not run in not_nightly given an array', only: { pipeline: [:not_nightly, :canary] }) {}
+        end
+
+        aggregate_failures do
+          expect(group.examples[0].execution_result.status).to eq(:passed)
+          expect(group.examples[1].execution_result.status).to eq(:pending)
+          expect(group.examples[2].execution_result.status).to eq(:passed)
+          expect(group.examples[3].execution_result.status).to eq(:pending)
+        end
+      end
+
+      context 'when excluding contexts' do
+        it 'skips designated pipeline' do
+          group = describe_successfully do
+            it('skips nightly', except: { pipeline: :nightly }) {}
+            it('runs in not_nightly', except: { pipeline: :not_nightly }) {}
+            it('skips on nightly given an array', except: { pipeline: [:canary, :nightly] }) {}
+            it('runs in not_nightly given an array', except: { pipeline: [:not_nightly, :canary] }) {}
+          end
+
+          aggregate_failures do
+            expect(group.examples[0].execution_result.status).to eq(:pending)
+            expect(group.examples[1].execution_result.status).to eq(:passed)
+            expect(group.examples[2].execution_result.status).to eq(:pending)
+            expect(group.examples[3].execution_result.status).to eq(:passed)
+          end
+        end
+      end
+    end
   end
 
   context 'with job constraints' do

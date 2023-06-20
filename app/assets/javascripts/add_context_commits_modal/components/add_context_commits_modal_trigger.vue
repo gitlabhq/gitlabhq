@@ -38,7 +38,7 @@ export default {
     :class="[
       {
         'gl-ml-5': !contextCommitsEmpty,
-        'gl-mt-5': !commitsEmpty && contextCommitsEmpty,
+        'gl-mt-1': !commitsEmpty && contextCommitsEmpty,
       },
     ]"
     :variant="commitsEmpty ? 'confirm' : 'default'"

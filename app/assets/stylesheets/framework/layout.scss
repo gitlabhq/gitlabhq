@@ -36,12 +36,13 @@ body {
 }
 
 .layout-page {
-  padding-top: $calc-application-header-height;
+  padding-top: calc(#{$header-height} + #{$calc-application-bars-height});
   padding-bottom: $calc-application-footer-height;
 }
 
 .content-wrapper {
-  padding-bottom: 100px;
+  padding-top: var(--top-bar-height);
+  padding-bottom: $content-wrapper-padding;
 }
 
 .container {

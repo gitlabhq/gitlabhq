@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AuthorizedProjectUpdate::ProjectRecalculatePerUserService, '#execute', feature_category: :projects do
+RSpec.describe AuthorizedProjectUpdate::ProjectRecalculatePerUserService, '#execute', feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:another_user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::SecureFilesHelper do
+RSpec.describe Ci::SecureFilesHelper, feature_category: :mobile_devops do
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
@@ -19,6 +19,16 @@ RSpec.describe Ci::SecureFilesHelper do
   subject { helper.show_secure_files_setting(project, user) }
 
   describe '#show_secure_files_setting' do
+    context 'when disabled at the instance level' do
+      before do
+        stub_config(ci_secure_files: { enabled: false })
+      end
+
+      let(:user) { maintainer }
+
+      it { is_expected.to be false }
+    end
+
     context 'authenticated user with admin permissions' do
       let(:user) { maintainer }
 

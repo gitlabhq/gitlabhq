@@ -23,7 +23,7 @@ All users can see the feature list, but the entries might differ depending on th
 
 To access the **What's new** feature:
 
-1. On the top bar, select the **{question}** icon.
+1. On the left sidebar, at the bottom, select **Help** (**{question}**).
 1. Select **What's new** from the menu.
 
 ## Configure What's new
@@ -31,7 +31,8 @@ To access the **What's new** feature:
 You can configure **What's new** to display features based on the tier,
 or you can hide it. To configure it:
 
-1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **What's new**, and choose one of the following options:
 

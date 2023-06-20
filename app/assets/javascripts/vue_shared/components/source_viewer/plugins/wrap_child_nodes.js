@@ -11,25 +11,25 @@ import { escape } from 'lodash';
 const newlineRegex = /\r?\n/;
 const generateClassName = (suffix) => (suffix ? `hljs-${escape(suffix)}` : '');
 const generateCloseTag = (includeClose) => (includeClose ? '</span>' : '');
-const generateHLJSTag = (kind, content = '', includeClose) =>
-  `<span class="${generateClassName(kind)}">${escape(content)}${generateCloseTag(includeClose)}`;
+const generateHLJSTag = (scope, content = '', includeClose) =>
+  `<span class="${generateClassName(scope)}">${escape(content)}${generateCloseTag(includeClose)}`;
 
-const format = (node, kind = '') => {
+const format = (node, scope = '') => {
   let buffer = '';
 
   if (typeof node === 'string') {
     buffer += node
       .split(newlineRegex)
-      .map((newline) => generateHLJSTag(kind, newline, true))
+      .map((newline) => generateHLJSTag(scope, newline, true))
       .join('\n');
-  } else if (node.kind || node.sublanguage) {
+  } else if (node.scope || node.sublanguage) {
     const { children } = node;
     if (children.length && children.length === 1) {
-      buffer += format(children[0], node.kind);
+      buffer += format(children[0], node.scope);
     } else {
-      buffer += generateHLJSTag(node.kind);
+      buffer += generateHLJSTag(node.scope);
       children.forEach((subChild) => {
-        buffer += format(subChild, node.kind);
+        buffer += format(subChild, node.scope);
       });
       buffer += `</span>`;
     }

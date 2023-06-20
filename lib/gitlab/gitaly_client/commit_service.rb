@@ -12,6 +12,11 @@ module Gitlab
         'unspecified' => Gitaly::CommitDiffRequest::WhitespaceChanges::WHITESPACE_CHANGES_UNSPECIFIED
       }.freeze
 
+      MERGE_COMMIT_DIFF_MODES = {
+        all_parents: Gitaly::FindChangedPathsRequest::MergeCommitDiffMode::MERGE_COMMIT_DIFF_MODE_ALL_PARENTS,
+        include_merges: Gitaly::FindChangedPathsRequest::MergeCommitDiffMode::MERGE_COMMIT_DIFF_MODE_INCLUDE_MERGES
+      }.freeze
+
       TREE_ENTRIES_DEFAULT_LIMIT = 100_000
 
       def initialize(repository)
@@ -123,8 +128,10 @@ module Gitlab
       end
 
       def tree_entries(repository, revision, path, recursive, skip_flat_paths, pagination_params)
-        pagination_params ||= {}
-        pagination_params[:limit] ||= TREE_ENTRIES_DEFAULT_LIMIT
+        unless pagination_params.nil? && recursive
+          pagination_params ||= {}
+          pagination_params[:limit] ||= TREE_ENTRIES_DEFAULT_LIMIT
+        end
 
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
@@ -157,6 +164,17 @@ module Gitlab
         end
 
         [entries, cursor]
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :path
+          raise Gitlab::Git::Index::IndexError, path_error_message(detailed_error.path)
+        when :resolve_tree
+          raise Gitlab::Git::Index::IndexError, e.details
+        else
+          raise e
+        end
       end
 
       def commit_count(ref, options = {})
@@ -229,11 +247,35 @@ module Gitlab
         response.flat_map { |rsp| rsp.stats.to_a }
       end
 
-      def find_changed_paths(commits)
-        request = Gitaly::FindChangedPathsRequest.new(
-          repository: @gitaly_repo,
-          commits: commits
-        )
+      # When finding changed paths and passing a sha for a merge commit we can
+      # specify how to diff the commit.
+      #
+      # When diffing a merge commit and merge_commit_diff_mode is :all_parents
+      # file paths are only returned if changed in both parents (or all parents
+      # if diffing an octopus merge)
+      #
+      # This means if we create a merge request that includes a merge commit
+      # of changes already existing in the target branch, we can omit those
+      # changes when looking up the changed paths.
+      #
+      # e.g.
+      #   1. User branches from master to new branch named feature/foo_bar
+      #   2. User changes ./foo_bar.rb and commits change to feature/foo_bar
+      #   3. Another user merges a change to ./bar_baz.rb to master
+      #   4. User merges master into feature/foo_bar
+      #   5. User pushes to GitLab
+      #   6. GitLab checks which files have changed
+      #
+      # case merge_commit_diff_mode
+      # when :all_parents
+      #   ['foo_bar.rb']
+      # when :include_merges
+      #   ['foo_bar.rb', 'bar_baz.rb'],
+      # else # defaults to :include_merges behavior
+      #   ['foo_bar.rb', 'bar_baz.rb'],
+      #
+      def find_changed_paths(commits, merge_commit_diff_mode: nil)
+        request = find_changed_paths_request(commits, merge_commit_diff_mode)
 
         response = gitaly_client_call(@repository.storage, :diff_service, :find_changed_paths, request, timeout: GitalyClient.medium_timeout)
         response.flat_map do |msg|
@@ -594,6 +636,37 @@ module Gitlab
         response = gitaly_client_call(@repository.storage, :commit_service, :find_commit, request, timeout: GitalyClient.medium_timeout)
 
         response.commit
+      end
+
+      def find_changed_paths_request(commits, merge_commit_diff_mode)
+        diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode] if Feature.enabled?(:merge_commit_diff_modes)
+
+        if Feature.disabled?(:find_changed_paths_new_format)
+          return Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, commits: commits, merge_commit_diff_mode: diff_mode)
+        end
+
+        commit_requests = commits.map do |commit|
+          Gitaly::FindChangedPathsRequest::Request.new(
+            commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: commit)
+          )
+        end
+
+        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: commit_requests, merge_commit_diff_mode: diff_mode)
+      end
+
+      def path_error_message(path_error)
+        case path_error.error_type
+        when :ERROR_TYPE_EMPTY_PATH
+          "You must provide a file path"
+        when :ERROR_TYPE_RELATIVE_PATH_ESCAPES_REPOSITORY
+          "Path cannot include traversal syntax"
+        when :ERROR_TYPE_ABSOLUTE_PATH
+          "Only relative path is accepted"
+        when :ERROR_TYPE_LONG_PATH
+          "Path is too long"
+        else
+          "Unknown path error"
+        end
       end
     end
   end

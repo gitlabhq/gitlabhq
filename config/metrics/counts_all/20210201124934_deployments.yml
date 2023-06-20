@@ -3,14 +3,17 @@ data_category: optional
 key_path: counts.deployments
 description: Total deployments count
 product_section: ops
-product_stage: release
-product_group: release
+product_stage: deploy
+product_group: environments
 value_type: number
 status: active
 milestone: "8.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/735
 time_frame: all
 data_source: database
+instrumentation_class: CountDeploymentsMetric
+options:
+  type: all
 distribution:
 - ee
 - ce

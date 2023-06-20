@@ -1,0 +1,10 @@
+name: main_clusterwide
+description: Cluster-wide GitLab database holding only data shared globally across Cells.
+gitlab_schemas:
+  - gitlab_internal
+  - gitlab_shared
+  - gitlab_main_clusterwide
+klass: MainClusterwide::ApplicationRecord
+# if Cluster-wide database is not configured, fallback to using main
+fallback_database: main
+uses_load_balancing: true

@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -16,8 +16,8 @@ describe('Stages Dropdown', () => {
   let wrapper;
 
   const findStatus = () => wrapper.findComponent(CiIcon);
-  const findSelectedStageText = () => wrapper.findComponent(GlDropdown).props('text');
-  const findStageItem = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findSelectedStageText = () => findDropdown().props('toggleText');
 
   const findPipelineInfoText = () => wrapper.findByTestId('pipeline-info').text();
 
@@ -50,10 +50,13 @@ describe('Stages Dropdown', () => {
     });
 
     it('renders dropdown with stages', () => {
-      expect(findStageItem(0).text()).toBe('build');
+      expect(findDropdown().props('items')).toEqual([
+        expect.objectContaining({ text: 'build' }),
+        expect.objectContaining({ text: 'test' }),
+      ]);
     });
 
-    it('rendes selected stage', () => {
+    it('renders selected stage', () => {
       expect(findSelectedStageText()).toBe('deploy');
     });
   });

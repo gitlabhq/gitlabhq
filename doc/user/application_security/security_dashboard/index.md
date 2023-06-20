@@ -66,8 +66,8 @@ Project Security Dashboards show statistics for all vulnerabilities with a curre
 
 To view total number of vulnerabilities over time:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security Dashboard**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
    - To view a specific time frame, use the time range handles (**{scroll-handle}**).
@@ -79,8 +79,8 @@ To view total number of vulnerabilities over time:
 
 To download an SVG image of the vulnerabilities chart:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Security and Compliance > Security dashboard**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security dashboard**.
 1. Select **Save chart as an image** (**{download}**).
 
 ## View vulnerabilities over time for a group
@@ -90,8 +90,8 @@ branches of projects in a group and its subgroups.
 
 To view vulnerabilities over time for a group:
 
-1. On the top bar, select **Main menu > Groups** and select a group.
-1. Select **Security > Security Dashboard**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Security > Security dashboard**.
 1. Hover over the chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
    - To view aggregated data beyond a 90-day time frame, use the
@@ -104,8 +104,8 @@ Use the group Security Dashboard to view the security status of projects.
 
 To view project security status for a group:
 
-1. On the top bar, select **Main menu > Groups** and select a group.
-1. Select **Security > Security Dashboard**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Security dashboard**.
 
 Each project is assigned a letter [grade](#project-vulnerability-grades) according to the highest-severity open vulnerability.
 Dismissed or resolved vulnerabilities are excluded. Each project can receive only one letter grade and appears only once
@@ -140,14 +140,20 @@ The Security Center includes:
 
 ### View the Security Center
 
-To view the Security Center, on the top bar, select **Main menu > Security**.
+To view the Security Center:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+1. Select **Security > Security dashboard**.
 
 ### Add projects to the Security Center
 
 To add projects to the Security Center:
 
-1. On the top bar, select **Main menu > Security**.
-1. On the left sidebar, select **Settings**, or select **Add projects**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+1. Expand **Security**.
+1. Select **Settings**.
 1. Use the **Search your projects** text box to search for and select projects.
 1. Select **Add projects**.
 

@@ -22,8 +22,8 @@ Prerequisite:
 
 To create an escalation policy:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Escalation Policies**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Escalation Policies**.
 1. Select **Add an escalation policy**.
 1. Enter the policy's name and description, and
    escalation rules to follow when a primary responder misses an alert.
@@ -46,8 +46,8 @@ the paged users is created on the alert.
 
 To update an escalation policy:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Escalation Policies**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Escalation Policies**.
 1. Select **Edit escalation policy** (**{pencil}**).
 1. Edit the information.
 1. Select **Save changes**.
@@ -56,7 +56,7 @@ To update an escalation policy:
 
 To delete an escalation policy:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Escalation Policies**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Monitor > Escalation Policies**.
 1. Select **Delete escalation policy** (**{remove}**).
 1. On the confirmation dialog, select **Delete escalation policy**.

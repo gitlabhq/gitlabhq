@@ -114,12 +114,32 @@ describe('Notes Store mutations', () => {
   });
 
   describe('REMOVE_PLACEHOLDER_NOTES', () => {
-    it('should remove all placeholder notes in indivudal notes and discussion', () => {
+    it('should remove all placeholder individual notes', () => {
       const placeholderNote = { ...individualNote, isPlaceholderNote: true };
       const state = { discussions: [placeholderNote] };
+
       mutations.REMOVE_PLACEHOLDER_NOTES(state);
 
       expect(state.discussions).toEqual([]);
+    });
+
+    it.each`
+      discussionType | discussion
+      ${'initial'}   | ${individualNote}
+      ${'continued'} | ${discussionMock}
+    `('should remove all placeholder notes from $discussionType discussions', ({ discussion }) => {
+      const lengthBefore = discussion.notes.length;
+
+      const placeholderNote = { ...individualNote, isPlaceholderNote: true };
+      discussion.notes.push(placeholderNote);
+
+      const state = {
+        discussions: [discussion],
+      };
+
+      mutations.REMOVE_PLACEHOLDER_NOTES(state);
+
+      expect(state.discussions[0].notes.length).toEqual(lengthBefore);
     });
   });
 

@@ -41,8 +41,7 @@ module Mutations
 
         args = parse_arguments(args)
 
-        spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
-        ::Issues::UpdateService.new(container: project, current_user: current_user, params: args, spam_params: spam_params).execute(issue)
+        ::Issues::UpdateService.new(container: project, current_user: current_user, params: args, perform_spam_check: true).execute(issue)
 
         {
           issue: issue,

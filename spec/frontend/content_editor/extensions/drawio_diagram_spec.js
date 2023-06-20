@@ -1,6 +1,5 @@
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';
-import createAssetResolver from '~/content_editor/services/asset_resolver';
 import { create } from '~/drawio/content_editor_facade';
 import { launchDrawioEditor } from '~/drawio/drawio_editor';
 import { createTestEditor, createDocBuilder } from '../test_utils';
@@ -19,12 +18,15 @@ describe('content_editor/extensions/drawio_diagram', () => {
   let paragraph;
   let image;
   let drawioDiagram;
+  let assetResolver;
+
   const uploadsPath = '/uploads';
-  const renderMarkdown = () => {};
 
   beforeEach(() => {
+    assetResolver = new (class {})();
+
     tiptapEditor = createTestEditor({
-      extensions: [Image, DrawioDiagram.configure({ uploadsPath, renderMarkdown })],
+      extensions: [Image, DrawioDiagram.configure({ uploadsPath, assetResolver })],
     });
     const { builders } = createDocBuilder({
       tiptapEditor,
@@ -72,19 +74,12 @@ describe('content_editor/extensions/drawio_diagram', () => {
 
   describe('createOrEditDiagram command', () => {
     let editorFacade;
-    let assetResolver;
 
     beforeEach(() => {
       editorFacade = {};
-      assetResolver = {};
       tiptapEditor.commands.createOrEditDiagram();
 
       create.mockReturnValueOnce(editorFacade);
-      createAssetResolver.mockReturnValueOnce(assetResolver);
-    });
-
-    it('creates a new instance of asset resolver', () => {
-      expect(createAssetResolver).toHaveBeenCalledWith({ renderMarkdown });
     });
 
     it('creates a new instance of the content_editor_facade', () => {

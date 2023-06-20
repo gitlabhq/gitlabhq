@@ -94,7 +94,6 @@ Style/EmptyMethod:
     - 'ee/app/controllers/projects/security/dast_scanner_profiles_controller.rb'
     - 'ee/app/controllers/projects/security/dast_site_profiles_controller.rb'
     - 'ee/app/controllers/projects/security/sast_configuration_controller.rb'
-    - 'ee/app/controllers/projects/settings/slacks_controller.rb'
     - 'ee/app/controllers/subscriptions/groups_controller.rb'
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/services/feature_flag_issues/destroy_service.rb'

@@ -18,10 +18,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::BuildMenu, feature_categor
       :pipelines,
       :jobs,
       :pipelines_editor,
-      :releases,
-      :environments,
       :pipeline_schedules,
-      :feature_flags,
       :test_cases,
       :artifacts
     ])

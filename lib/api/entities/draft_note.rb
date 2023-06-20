@@ -38,7 +38,7 @@ module API
           }
         }
       } do |note|
-        note.position.to_h
+        note.position.to_h.except(:ignore_whitespace_change)
       end
     end
   end

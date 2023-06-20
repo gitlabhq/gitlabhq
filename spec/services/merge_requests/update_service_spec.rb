@@ -425,6 +425,22 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           expect(update_merge_request(opts).reviewers).to eq []
         end
       end
+
+      describe 'checking for spam' do
+        it 'checks for spam' do
+          expect(merge_request).to receive(:check_for_spam).with(user: user, action: :update)
+
+          update_merge_request(opts)
+        end
+
+        it 'marks the merge request invalid' do
+          merge_request.spam!
+
+          update_merge_request(title: 'New title')
+
+          expect(merge_request).to be_invalid
+        end
+      end
     end
 
     context 'after_save callback to store_mentions' do
@@ -496,13 +512,11 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         before do
           merge_request.merge_error = 'Error'
 
-          perform_enqueued_jobs do
-            service.execute(merge_request)
-            @merge_request = MergeRequest.find(merge_request.id)
-          end
+          service.execute(merge_request)
+          @merge_request = MergeRequest.find(merge_request.id)
         end
 
-        it 'merges the MR', :sidekiq_might_not_need_inline do
+        it 'merges the MR', :sidekiq_inline do
           expect(@merge_request).to be_valid
           expect(@merge_request.state).to eq('merged')
           expect(@merge_request.merge_error).to be_nil
@@ -517,13 +531,11 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             sha: merge_request.diff_head_sha,
             status: :success)
 
-          perform_enqueued_jobs do
-            @merge_request = service.execute(merge_request)
-            @merge_request = MergeRequest.find(merge_request.id)
-          end
+          @merge_request = service.execute(merge_request)
+          @merge_request = MergeRequest.find(merge_request.id)
         end
 
-        it 'merges the MR', :sidekiq_might_not_need_inline do
+        it 'merges the MR', :sidekiq_inline do
           expect(@merge_request).to be_valid
           expect(@merge_request.state).to eq('merged')
         end
@@ -674,7 +686,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           expect(Todo.where(attributes).count).to eq 1
         end
 
-        it 'sends email reviewer change notifications to old and new reviewers', :sidekiq_might_not_need_inline do
+        it 'sends email reviewer change notifications to old and new reviewers', :sidekiq_inline do
           merge_request.reviewers = [user2]
 
           perform_enqueued_jobs do
@@ -719,7 +731,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           end
         end
 
-        it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
+        it 'sends notifications for subscribers of changed milestone', :sidekiq_inline do
           merge_request.milestone = create(:milestone, project: project)
 
           merge_request.save!
@@ -751,7 +763,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           update_merge_request(milestone_id: create(:milestone, project: project).id)
         end
 
-        it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
+        it 'sends notifications for subscribers of changed milestone', :sidekiq_inline do
           perform_enqueued_jobs do
             update_merge_request(milestone_id: create(:milestone, project: project).id)
           end
@@ -867,7 +879,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           merge_request.update_attribute(:title, draft_title)
         end
 
-        it 'sends notifications for subscribers', :sidekiq_might_not_need_inline do
+        it 'sends notifications for subscribers', :sidekiq_inline do
           opts = { title: 'New title' }
 
           perform_enqueued_jobs do
@@ -899,7 +911,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           merge_request.update_attribute(:title, title)
         end
 
-        it 'does not send notifications', :sidekiq_might_not_need_inline do
+        it 'does not send notifications', :sidekiq_inline do
           opts = { title: 'Draft: New title' }
 
           perform_enqueued_jobs do
@@ -936,7 +948,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         project.add_developer(subscriber)
       end
 
-      it 'sends notifications for subscribers of newly added labels', :sidekiq_might_not_need_inline do
+      it 'sends notifications for subscribers of newly added labels', :sidekiq_inline do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do

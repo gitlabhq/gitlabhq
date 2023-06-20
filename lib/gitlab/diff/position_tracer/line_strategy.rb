@@ -62,6 +62,8 @@ module Gitlab
           # The line number as of D can be found by using the LineMapper on diff C->D
           # and providing the line number as of C.
 
+          @ignore_whitespace_change = position.ignore_whitespace_change
+
           if position.added?
             trace_added_line(position)
           elsif position.removed?
@@ -189,7 +191,8 @@ module Gitlab
             diff_file: diff_file,
             old_line: old_line,
             new_line: new_line,
-            line_range: line_range
+            line_range: line_range,
+            ignore_whitespace_change: @ignore_whitespace_change
           }.compact
 
           Position.new(**params)

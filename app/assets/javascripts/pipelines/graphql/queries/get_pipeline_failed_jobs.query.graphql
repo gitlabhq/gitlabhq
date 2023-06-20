@@ -1,0 +1,34 @@
+query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $pipelineIid) {
+      id
+      jobs(statuses: [FAILED], retried: false, jobKind: BUILD) {
+        nodes {
+          id
+          allowFailure
+          detailedStatus {
+            id
+            group
+            icon
+            action {
+              id
+              path
+              icon
+            }
+          }
+          name
+          retried
+          stage {
+            id
+            name
+          }
+          trace {
+            htmlSummary
+          }
+          webPath
+        }
+      }
+    }
+  }
+}

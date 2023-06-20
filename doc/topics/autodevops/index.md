@@ -40,7 +40,6 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 | Test | [Auto License Compliance](stages.md#auto-license-compliance) |
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
-| Monitor | [Auto Monitoring](stages.md#auto-monitoring) |
 | Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |
 | Secure | [Auto Static Application Security Testing (SAST)](stages.md#auto-sast) |
 | Secure | [Auto Secret Detection](stages.md#auto-secret-detection) |
@@ -102,8 +101,8 @@ Prerequisites:
 
 To enable Auto DevOps for a project:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Optional but recommended. Add the [base domain](requirements.md#auto-devops-base-domain).
@@ -133,8 +132,8 @@ Prerequisites:
 
 To enable Auto DevOps for a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Select **Save changes**.
@@ -145,9 +144,9 @@ clear the **Default to Auto DevOps pipeline** checkbox.
 After enabling Auto DevOps at the group level, you can trigger the
 Auto DevOps pipeline for any project that belongs to that group:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Make sure the project doesn't contain a `.gitlab-ci.yml` file.
-1. On the left sidebar, select **CI/CD > Pipelines**.
+1. Select **Build > Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **Run pipeline**.
 
 #### At the instance level **(FREE SELF)**
@@ -165,8 +164,9 @@ Prerequisites:
 
 To enable Auto DevOps for your instance:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Optional. Add the Auto DevOps [base domain](requirements.md#auto-devops-base-domain).

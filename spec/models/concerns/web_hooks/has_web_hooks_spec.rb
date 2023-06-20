@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHooks::HasWebHooks, feature_category: :integrations do
+RSpec.describe WebHooks::HasWebHooks, feature_category: :webhooks do
   let(:minimal_test_class) do
     Class.new do
       include WebHooks::HasWebHooks

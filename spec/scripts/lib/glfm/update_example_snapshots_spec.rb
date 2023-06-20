@@ -815,10 +815,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
                         {
                           "type": "link",
                           "attrs": {
-                            "href": "/uploads/groups-test-file",
-                            "target": "_blank",
-                            "class": null,
                             "uploading": false,
+                            "href": "/uploads/groups-test-file",
                             "title": null,
                             "canonicalSrc": "/uploads/groups-test-file",
                             "isReference": false
@@ -844,10 +842,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
                         {
                           "type": "link",
                           "attrs": {
-                            "href": "projects-test-file",
-                            "target": "_blank",
-                            "class": null,
                             "uploading": false,
+                            "href": "projects-test-file",
                             "title": null,
                             "canonicalSrc": "projects-test-file",
                             "isReference": false
@@ -903,10 +899,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
                         {
                           "type": "link",
                           "attrs": {
-                            "href": "project-wikis-test-file",
-                            "target": "_blank",
-                            "class": null,
                             "uploading": false,
+                            "href": "project-wikis-test-file",
                             "title": null,
                             "canonicalSrc": "project-wikis-test-file",
                             "isReference": false

@@ -41,8 +41,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'gets the branch name from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:default_branch_name)
-      repository.root_ref
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:default_branch_name).with(head_only: true)
+      repository.root_ref(head_only: true)
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :default_branch_name do
@@ -1454,7 +1454,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         it "returns the number of commits in the whole repository" do
           options = { all: true }
 
-          expect(repository.count_commits(options)).to eq(315)
+          expect(repository.count_commits(options)).to eq(322)
         end
       end
 
@@ -1674,6 +1674,41 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       expect(collection).to be_a(Enumerable)
       expect(collection.to_a).to be_empty
+    end
+
+    describe 'merge_commit_diff_mode argument' do
+      let(:gitaly_commit_client) { double('Gitlab::GitalyClient::CommitService') }
+
+      before do
+        allow(repository).to receive(:gitaly_commit_client).and_return(gitaly_commit_client)
+        allow(gitaly_commit_client).to receive(:find_changed_paths)
+      end
+
+      context 'when omitted' do
+        before do
+          repository.find_changed_paths(['sha'])
+        end
+
+        it 'defaults to nil' do
+          expect(gitaly_commit_client)
+            .to have_received(:find_changed_paths)
+            .with(['sha'], merge_commit_diff_mode: nil)
+        end
+      end
+
+      context 'when included' do
+        let(:passed_value) { 'foobar' }
+
+        before do
+          repository.find_changed_paths(['sha'], merge_commit_diff_mode: passed_value)
+        end
+
+        it 'passes the value on to the commit client' do
+          expect(gitaly_commit_client)
+            .to have_received(:find_changed_paths)
+            .with(['sha'], merge_commit_diff_mode: passed_value)
+        end
+      end
     end
   end
 

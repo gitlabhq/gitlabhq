@@ -91,14 +91,16 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def target_projects
-    projects = MergeRequestTargetProjectFinder
-                .new(current_user: current_user, source_project: @project, project_feature: :repository)
-                .execute(include_routes: false, search: params[:search]).limit(20)
-
-    render json: ProjectSerializer.new.represent(projects)
+    render json: ProjectSerializer.new.represent(get_target_projects)
   end
 
   private
+
+  def get_target_projects
+    MergeRequestTargetProjectFinder
+      .new(current_user: current_user, source_project: @project, project_feature: :repository)
+      .execute(include_routes: false, search: params[:search]).limit(20)
+  end
 
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)

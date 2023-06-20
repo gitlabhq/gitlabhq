@@ -3,33 +3,7 @@
 module Gitlab
   module Utils
     extend self
-    PathTraversalAttackError ||= Class.new(StandardError)
     DoubleEncodingError ||= Class.new(StandardError)
-
-    private_class_method def logger
-      @logger ||= Gitlab::AppLogger
-    end
-
-    # Ensure that the relative path will not traverse outside the base directory
-    # We url decode the path to avoid passing invalid paths forward in url encoded format.
-    # Also see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24223#note_284122580
-    # It also checks for ALT_SEPARATOR aka '\' (forward slash)
-    def check_path_traversal!(path)
-      return unless path
-
-      path = path.to_s if path.is_a?(Gitlab::HashedPath)
-      raise PathTraversalAttackError, 'Invalid path' unless path.is_a?(String)
-
-      path = decode_path(path)
-      path_regex = %r{(\A(\.{1,2})\z|\A\.\.[/\\]|[/\\]\.\.\z|[/\\]\.\.[/\\]|\n)}
-
-      if path.match?(path_regex)
-        logger.warn(message: "Potential path traversal attempt detected", path: "#{path}")
-        raise PathTraversalAttackError, 'Invalid path'
-      end
-
-      path
-    end
 
     def allowlisted?(absolute_path, allowlist)
       path = absolute_path.downcase
@@ -37,20 +11,6 @@ module Gitlab
       allowlist.map(&:downcase).any? do |allowed_path|
         path.start_with?(allowed_path)
       end
-    end
-
-    def check_allowed_absolute_path!(path, allowlist)
-      return unless Pathname.new(path).absolute?
-      return if allowlisted?(path, allowlist)
-
-      raise StandardError, "path #{path} is not allowed"
-    end
-
-    def check_allowed_absolute_path_and_path_traversal!(path, path_allowlist)
-      traversal_path = check_path_traversal!(path)
-      raise StandardError, "path is not a string!" unless traversal_path.is_a?(String)
-
-      check_allowed_absolute_path!(traversal_path, path_allowlist)
     end
 
     def decode_path(encoded_path)
@@ -101,12 +61,6 @@ module Gitlab
       str.downcase
         .gsub(/[^a-z0-9]/, '-')[0..62]
         .gsub(/(\A-+|-+\z)/, '')
-    end
-
-    # Wraps ActiveSupport's Array#to_sentence to convert the given array to a
-    # comma-separated sentence joined with localized 'or' Strings instead of 'and'.
-    def to_exclusive_sentence(array)
-      array.to_sentence(two_words_connector: _(' or '), last_word_connector: _(', or '))
     end
 
     # Converts newlines into HTML line break elements

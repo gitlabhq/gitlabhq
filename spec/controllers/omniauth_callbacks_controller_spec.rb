@@ -18,6 +18,39 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
+    context 'authentication succeeds' do
+      let(:extern_uid) { 'my-uid' }
+      let(:provider) { :github }
+
+      context 'without signed-in user' do
+        it 'increments Prometheus counter' do
+          expect { post(provider) }.to(
+            change do
+              Gitlab::Metrics.registry
+                             .get(:gitlab_omniauth_login_total)
+                             .get(omniauth_provider: 'github', status: 'succeeded')
+            end.by(1)
+          )
+        end
+      end
+
+      context 'with signed-in user' do
+        before do
+          sign_in user
+        end
+
+        it 'increments Prometheus counter' do
+          expect { post(provider) }.to(
+            change do
+              Gitlab::Metrics.registry
+                             .get(:gitlab_omniauth_login_total)
+                             .get(omniauth_provider: 'github', status: 'succeeded')
+            end.by(1)
+          )
+        end
+      end
+    end
+
     context 'a deactivated user' do
       let(:provider) { :github }
       let(:extern_uid) { 'my-uid' }
@@ -96,20 +129,30 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       let(:extern_uid) { 'my-uid' }
       let(:provider) { :saml }
 
-      def stub_route_as(path)
-        allow(@routes).to receive(:generate_extras) { [path, []] }
+      before do
+        request.env['omniauth.error'] = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
+        request.env['omniauth.error.strategy'] = OmniAuth::Strategies::SAML.new(nil)
+        allow(@routes).to receive(:generate_extras).and_return(['/users/auth/saml/callback', []])
       end
 
       it 'calls through to the failure handler' do
-        request.env['omniauth.error'] = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
-        request.env['omniauth.error.strategy'] = OmniAuth::Strategies::SAML.new(nil)
-        stub_route_as('/users/auth/saml/callback')
-
         ForgeryProtection.with_forgery_protection do
           post :failure
         end
 
         expect(flash[:alert]).to match(/Fingerprint mismatch/)
+      end
+
+      it 'increments Prometheus counter' do
+        ForgeryProtection.with_forgery_protection do
+          expect { post :failure }.to(
+            change do
+              Gitlab::Metrics.registry
+                             .get(:gitlab_omniauth_login_total)
+                             .get(omniauth_provider: 'saml', status: 'failed')
+            end.by(1)
+          )
+        end
       end
     end
 
@@ -229,39 +272,19 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           end
         end
 
-        context 'sign up' do
+        context 'for sign up' do
           include_context 'sign_up'
 
-          context 'when intent to register is added to omniauth params' do
-            before do
-              request.env['omniauth.params'] = { 'intent' => 'register' }
-            end
+          it 'is allowed' do
+            post provider
 
-            it 'is allowed' do
-              post provider
-
-              expect(request.env['warden']).to be_authenticated
-            end
-
-            it 'redirects to welcome path' do
-              post provider
-
-              expect(response).to redirect_to(users_sign_up_welcome_path)
-            end
+            expect(request.env['warden']).to be_authenticated
           end
 
-          context 'when intent to register is not added to omniauth params' do
-            it 'is allowed' do
-              post provider
+          it 'redirects to welcome path' do
+            post provider
 
-              expect(request.env['warden']).to be_authenticated
-            end
-
-            it 'redirects to root path' do
-              post provider
-
-              expect(response).to redirect_to(root_path)
-            end
+            expect(response).to redirect_to(users_sign_up_welcome_path)
           end
         end
 
@@ -490,7 +513,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       it 'denies login if sign up is enabled, but block_auto_created_users is set' do
         post :saml, params: { SAMLResponse: mock_saml_response }
-
         expect(flash[:alert]).to start_with 'Your account is pending approval'
       end
 
@@ -584,6 +606,25 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
 
       it { expect { post_action }.not_to raise_error }
+    end
+
+    context 'with a non default SAML provider' do
+      let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+
+      controller(described_class) do
+        alias_method :saml_okta, :handle_omniauth
+      end
+
+      before do
+        allow(AuthHelper).to receive(:saml_providers).and_return([:saml, :saml_okta])
+        allow(@routes).to receive(:generate_extras).and_return(['/users/auth/saml_okta/callback', []])
+      end
+
+      it 'authenticate with SAML module' do
+        expect(@controller).to receive(:omniauth_flow).with(Gitlab::Auth::Saml).and_call_original
+        post :saml_okta, params: { SAMLResponse: mock_saml_response }
+        expect(request.env['warden']).to be_authenticated
+      end
     end
   end
 

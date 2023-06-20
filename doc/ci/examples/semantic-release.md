@@ -90,14 +90,14 @@ As part of publishing a package, semantic-release increases the version number i
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the top bar, in the upper-right corner, select your avatar.
-1. On the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select your avatar.
+1. Select **Preferences > Access Tokens**.
 1. In the **Token name** box, enter a token name.
 1. Under **select scopes**, select the **api** checkbox.
 1. Select **Create project access token**.
 1. Copy the value.
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable**.
 1. In the **Key** box, enter `GITLAB_TOKEN`.

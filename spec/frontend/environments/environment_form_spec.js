@@ -1,6 +1,11 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EnvironmentForm from '~/environments/components/environment_form.vue';
+import getUserAuthorizedAgents from '~/environments/graphql/queries/user_authorized_agents.query.graphql';
+import createMockApollo from '../__helpers__/mock_apollo_helper';
 
 jest.mock('~/lib/utils/csrf');
 
@@ -11,6 +16,10 @@ const DEFAULT_PROPS = {
 };
 
 const PROVIDE = { protectedEnvironmentSettingsPath: '/projects/not_real/settings/ci_cd' };
+const userAccessAuthorizedAgents = [
+  { agent: { id: '1', name: 'agent-1' } },
+  { agent: { id: '2', name: 'agent-2' } },
+];
 
 describe('~/environments/components/form.vue', () => {
   let wrapper;
@@ -24,6 +33,38 @@ describe('~/environments/components/form.vue', () => {
         ...propsData,
       },
     });
+
+  const createWrapperWithApollo = ({ propsData = {} } = {}) => {
+    Vue.use(VueApollo);
+
+    return mountExtended(EnvironmentForm, {
+      provide: {
+        ...PROVIDE,
+        glFeatures: {
+          environmentSettingsToGraphql: true,
+        },
+      },
+      propsData: {
+        ...DEFAULT_PROPS,
+        ...propsData,
+      },
+      apolloProvider: createMockApollo([
+        [
+          getUserAuthorizedAgents,
+          jest.fn().mockResolvedValue({
+            data: {
+              project: {
+                id: '1',
+                userAccessAuthorizedAgents: { nodes: userAccessAuthorizedAgents },
+              },
+            },
+          }),
+        ],
+      ]),
+    });
+  };
+
+  const findAgentSelector = () => wrapper.findComponent(GlCollapsibleListbox);
 
   describe('default', () => {
     beforeEach(() => {
@@ -165,6 +206,85 @@ describe('~/environments/components/form.vue', () => {
       const urlInput = wrapper.findByLabelText('External URL');
 
       expect(urlInput.element.value).toBe('https://example.com');
+    });
+  });
+
+  describe('when `environmentSettingsToGraphql feature flag is enabled', () => {
+    beforeEach(() => {
+      wrapper = createWrapperWithApollo();
+    });
+
+    it('renders an agent selector listbox', () => {
+      expect(findAgentSelector().props()).toMatchObject({
+        searchable: true,
+        toggleText: EnvironmentForm.i18n.agentHelpText,
+        headerText: EnvironmentForm.i18n.agentHelpText,
+        resetButtonLabel: EnvironmentForm.i18n.reset,
+        loading: false,
+        items: [],
+      });
+    });
+
+    it('sets the items prop of the agent selector after fetching the list', async () => {
+      findAgentSelector().vm.$emit('shown');
+      await waitForPromises();
+
+      expect(findAgentSelector().props('items')).toEqual([
+        { value: '1', text: 'agent-1' },
+        { value: '2', text: 'agent-2' },
+      ]);
+    });
+
+    it('sets the loading prop of the agent selector while fetching the list', async () => {
+      await findAgentSelector().vm.$emit('shown');
+      expect(findAgentSelector().props('loading')).toBe(true);
+
+      await waitForPromises();
+
+      expect(findAgentSelector().props('loading')).toBe(false);
+    });
+
+    it('filters the agent list on user search', async () => {
+      findAgentSelector().vm.$emit('shown');
+      await waitForPromises();
+      await findAgentSelector().vm.$emit('search', 'agent-2');
+
+      expect(findAgentSelector().props('items')).toEqual([{ value: '2', text: 'agent-2' }]);
+    });
+
+    it('updates agent selector field with the name of selected agent', async () => {
+      findAgentSelector().vm.$emit('shown');
+      await waitForPromises();
+      await findAgentSelector().vm.$emit('select', '2');
+
+      expect(findAgentSelector().props('toggleText')).toBe('agent-2');
+    });
+
+    it('emits changes to the clusterAgentId', async () => {
+      findAgentSelector().vm.$emit('shown');
+      await waitForPromises();
+      await findAgentSelector().vm.$emit('select', '2');
+
+      expect(wrapper.emitted('change')).toEqual([
+        [{ name: '', externalUrl: '', clusterAgentId: '2' }],
+      ]);
+    });
+  });
+
+  describe('when environment has an associated agent', () => {
+    const environmentWithAgent = {
+      ...DEFAULT_PROPS.environment,
+      clusterAgent: { id: '1', name: 'agent-1' },
+      clusterAgentId: '1',
+    };
+    beforeEach(() => {
+      wrapper = createWrapperWithApollo({
+        propsData: { environment: environmentWithAgent },
+      });
+    });
+
+    it('updates agent selector field with the name of the associated agent', () => {
+      expect(findAgentSelector().props('toggleText')).toBe('agent-1');
     });
   });
 });

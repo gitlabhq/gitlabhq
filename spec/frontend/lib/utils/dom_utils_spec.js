@@ -256,8 +256,12 @@ describe('DOM Utils', () => {
       resetHTMLFixture();
     });
 
+    it('returns the height of default element that exists', () => {
+      expect(getContentWrapperHeight()).toBe('0px');
+    });
+
     it('returns the height of an element that exists', () => {
-      expect(getContentWrapperHeight('.content-wrapper')).toBe('0px');
+      expect(getContentWrapperHeight('.content')).toBe('0px');
     });
 
     it('returns an empty string for a class that does not exist', () => {

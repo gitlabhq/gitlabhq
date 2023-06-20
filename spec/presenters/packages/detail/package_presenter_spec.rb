@@ -26,7 +26,7 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
   end
 
   let(:pipeline_info) do
-    pipeline = package.original_build_info.pipeline
+    pipeline = package.last_build_info.pipeline
     {
       created_at: pipeline.created_at,
       id: pipeline.id,

@@ -739,7 +739,7 @@ attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
 The artifacts are sent to GitLab after the job finishes. They are
 available for download in the GitLab UI if the size is smaller than the
-the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
+[maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
 
 By default, jobs in later stages automatically download all the artifacts created
 by jobs in earlier stages. You can control artifact download behavior in jobs with
@@ -837,7 +837,6 @@ subdirectories of `binaries/`.
 > - [Made default behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/229936) in GitLab 13.4.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241026) in GitLab 13.8, keeping latest job artifacts can be disabled at the project level.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276583) in GitLab 13.9, keeping latest job artifacts can be disabled instance-wide.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest pipeline artifacts are kept regardless of expiry time.
 
 Use `expire_in` to specify how long [job artifacts](../jobs/job_artifacts.md) are stored before
 they expire and are deleted. The `expire_in` setting does not affect:
@@ -845,9 +844,6 @@ they expire and are deleted. The `expire_in` setting does not affect:
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
   [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
   or [instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
-- [Pipeline artifacts](../pipelines/pipeline_artifacts.md). You can't specify an expiration date for
-  pipeline artifacts. See [When pipeline artifacts are deleted](../pipelines/pipeline_artifacts.md#when-pipeline-artifacts-are-deleted)
-  for more information.
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
 accessible anymore.
@@ -965,10 +961,13 @@ job:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
 
-FLAG:
+WARNING:
 On self-managed GitLab, by default this feature is not available. To make it available,
 ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `non_public_artifacts`. On
-GitLab.com, this feature is not available.
+GitLab.com, this feature is not available. Due to [issue 413822](https://gitlab.com/gitlab-org/gitlab/-/issues/413822),
+the keyword can be used when the feature flag is disabled, but the feature does not work.
+Do not attempt to use this feature when the feature flag is disabled, and always test
+with non-production data first.
 
 Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.
@@ -1453,6 +1452,7 @@ Must be used with `cache: paths`, or nothing is cached.
 - `pull`
 - `push`
 - `pull-push` (default)
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `cache:policy`**:
 
@@ -1479,6 +1479,10 @@ faster-test-job:
     - echo "This job script uses the cache, but does not update it."
     - echo "Running tests..."
 ```
+
+**Related topics**:
+
+- You can [use a variable to control a job's cache policy](../caching/index.md#use-a-variable-to-control-a-jobs-cache-policy).
 
 #### `cache:fallback_keys`
 
@@ -1846,7 +1850,7 @@ environment, using the `production`
 
 **Related topics**:
 
-- [Available settings for `kubernetes`](../environments/index.md#configure-kubernetes-deployments-deprecated).
+- [Available settings for `kubernetes`](../environments/configure_kubernetes_deployments.md).
 
 #### `environment:deployment_tier`
 
@@ -2019,7 +2023,10 @@ JWTs created this way support OIDC authentication. The required `aud` sub-keywor
 
 **Possible inputs**:
 
-- Token names with their `aud` claims. `aud` can be a single string or as an array of strings.
+- Token names with their `aud` claims. `aud` supports:
+  - A single string.
+  - An array of strings.
+  - [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `id_tokens`**:
 
@@ -4265,7 +4272,7 @@ The keywords available for use in trigger jobs are:
 
 - For multi-project pipelines, the path to the downstream project. CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
   in GitLab 15.3 and later, but not [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables).
-  Alternatively, use [`trigger:project](#triggerproject).
+  Alternatively, use [`trigger:project`](#triggerproject).
 - For child pipelines, use [`trigger:include`](#triggerinclude).
 
 **Example of `trigger`**:

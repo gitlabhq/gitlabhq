@@ -244,43 +244,6 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(project_statistics_bulk_increment: false)
-      end
-
-      context 'when the counter is not undergoing refresh' do
-        it 'sets a new key by the given value' do
-          counter.increment(increment)
-
-          expect(counter.get).to eq(increment.amount)
-        end
-
-        it 'increments an existing key by the given value' do
-          counter.increment(other_increment)
-          counter.increment(increment)
-
-          expect(counter.get).to eq(other_increment.amount + increment.amount)
-        end
-      end
-
-      context 'when the counter is undergoing refresh' do
-        before do
-          counter.initiate_refresh!
-        end
-
-        context 'when it is a decrement (negative amount)' do
-          let(:decrement) { Gitlab::Counters::Increment.new(amount: -123, ref: 3) }
-
-          it 'immediately decrements the counter key to negative' do
-            counter.increment(decrement)
-
-            expect(counter.get).to eq(decrement.amount)
-          end
-        end
-      end
-    end
   end
 
   describe '#bulk_increment' do
@@ -413,44 +376,6 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
           let(:expected_counter_value) { increment_1.amount }
 
           it_behaves_like 'changing the counter refresh key by the expected amount'
-        end
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(project_statistics_bulk_increment: false)
-      end
-
-      context 'when the counter is not undergoing refresh' do
-        it 'sets a new key by the given value' do
-          counter.bulk_increment(increments)
-
-          expect(counter.get).to eq(increments.sum(&:amount))
-        end
-
-        it 'increments an existing key by the given value' do
-          counter.increment(other_increment)
-
-          result = counter.bulk_increment(increments)
-
-          expect(result).to eq(other_increment.amount + increments.sum(&:amount))
-        end
-      end
-
-      context 'when the counter is undergoing refresh' do
-        before do
-          counter.initiate_refresh!
-        end
-
-        context 'when it is a decrement (negative amount)' do
-          let(:decrement) { Gitlab::Counters::Increment.new(amount: -123, ref: 3) }
-
-          it 'immediately decrements the counter key to negative' do
-            counter.bulk_increment([decrement])
-
-            expect(counter.get).to eq(decrement.amount)
-          end
         end
       end
     end

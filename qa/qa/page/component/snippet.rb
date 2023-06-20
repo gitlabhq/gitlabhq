@@ -43,7 +43,7 @@ module QA
             element :snippet_embed_dropdown
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/clone_dropdown.vue' do
+          base.view 'app/assets/javascripts/vue_shared/components/clone_dropdown/clone_dropdown.vue' do
             element :copy_http_url_button
             element :copy_ssh_url_button
           end
@@ -68,6 +68,10 @@ module QA
           base.view 'app/views/shared/notes/_note.html.haml' do
             element :note_content
             element :note_author_content
+          end
+
+          base.view 'app/views/shared/notes/_notes_with_form.html.haml' do
+            element :notes_list
           end
 
           base.view 'app/views/projects/notes/_more_actions_dropdown.html.haml' do
@@ -214,6 +218,10 @@ module QA
           within_element(:note_content) do
             has_text?(comment_content)
           end
+        end
+
+        def within_notes_list(&block)
+          within_element :notes_list, &block
         end
 
         def has_syntax_highlighting?(language)

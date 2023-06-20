@@ -12,8 +12,9 @@ from planning to monitoring.
 
 To see DevOps Reports:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Analytics > DevOps Reports**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Analytics > DevOps Reports**.
 
 ## DevOps Score
 
@@ -39,7 +40,7 @@ feature is available.
 
 ## DevOps Adoption **(ULTIMATE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](../../../policy/alpha-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](../../../policy/experiment-beta-support.md#beta).
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
 > - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.

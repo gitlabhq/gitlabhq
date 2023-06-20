@@ -19,7 +19,6 @@ RSpec.describe API::Internal::ErrorTracking, feature_category: :error_tracking d
 
     before do
       # Because the feature flag is disabled in specs we have to enable it explicitly.
-      stub_feature_flags(use_click_house_database_for_error_tracking: true)
       stub_feature_flags(gitlab_error_tracking: true)
     end
 
@@ -90,9 +89,8 @@ RSpec.describe API::Internal::ErrorTracking, feature_category: :error_tracking d
         expect(json_response).to eq('enabled' => true)
       end
 
-      context 'when feature flags use_click_house_database_for_error_tracking or gitlab_error_tracking are disabled' do
+      context 'when feature flags gitlab_error_tracking are disabled' do
         before do
-          stub_feature_flags(use_click_house_database_for_error_tracking: false)
           stub_feature_flags(gitlab_error_tracking: false)
         end
 

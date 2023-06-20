@@ -7,7 +7,6 @@ module Ci
     def execute(processables)
       @processables = Array.wrap(processables)
       @pipeline = @processables.first.pipeline
-      @processable = @processables.first # Remove with FF `ci_support_reset_skipped_jobs_for_multiple_jobs`
 
       process_subsequent_jobs
       reset_source_bridge
@@ -43,27 +42,17 @@ module Ci
     end
 
     def stage_dependent_jobs
-      if ::Feature.enabled?(:ci_support_reset_skipped_jobs_for_multiple_jobs, project)
-        # Get all jobs after the earliest stage of the inputted jobs
-        min_stage_idx = @processables.map(&:stage_idx).min
-        @pipeline.processables.after_stage(min_stage_idx)
-      else
-        @pipeline.processables.after_stage(@processable.stage_idx)
-      end
+      # Get all jobs after the earliest stage of the inputted jobs
+      min_stage_idx = @processables.map(&:stage_idx).min
+      @pipeline.processables.after_stage(min_stage_idx)
     end
 
     def needs_dependent_jobs
-      if ::Feature.enabled?(:ci_support_reset_skipped_jobs_for_multiple_jobs, project)
-        # We must include the hierarchy base here because @processables may include both a parent job
-        # and its dependents, and we do not want to exclude those dependents from being processed.
-        ::Gitlab::Ci::ProcessableObjectHierarchy.new(
-          ::Ci::Processable.where(id: @processables.map(&:id))
-        ).base_and_descendants
-      else
-        ::Gitlab::Ci::ProcessableObjectHierarchy.new(
-          ::Ci::Processable.where(id: @processable.id)
-        ).descendants
-      end
+      # We must include the hierarchy base here because @processables may include both a parent job
+      # and its dependents, and we do not want to exclude those dependents from being processed.
+      ::Gitlab::Ci::ProcessableObjectHierarchy.new(
+        ::Ci::Processable.where(id: @processables.map(&:id))
+      ).base_and_descendants
     end
 
     def ordered_by_dag(jobs)

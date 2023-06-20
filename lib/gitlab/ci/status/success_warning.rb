@@ -9,7 +9,7 @@ module Gitlab
       #
       class SuccessWarning < Status::Extended
         def text
-          s_('CiStatusText|passed')
+          s_('CiStatusText|warning')
         end
 
         def label

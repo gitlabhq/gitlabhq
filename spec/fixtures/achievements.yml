@@ -1,0 +1,10 @@
+---
+table_name: achievements
+classes:
+- Achievements::Achievement
+feature_categories:
+- feature_category_example
+description: Achievements which can be created by namespaces to award them to users
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105871
+milestone: '15.7'
+gitlab_schema: gitlab_main

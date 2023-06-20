@@ -6,6 +6,10 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
   let!(:appearance) { create(:appearance) }
   let(:admin) { create(:admin) }
 
+  before do
+    stub_feature_flags(edit_user_profile_vue: false)
+  end
+
   flag_values = [true, false]
   flag_values.each do |val|
     context "with #{val}" do

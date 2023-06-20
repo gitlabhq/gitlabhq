@@ -3,7 +3,7 @@
     variant: :warning,
     dismissible: false,
     alert_options: { class: 'gl-mt-5', data: { testid: "slack-notifications-deprecation" } }) do |c|
-    = c.body do
+    - c.with_body do
       - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application')
       - learn_more_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_link }
 
@@ -13,7 +13,7 @@
     variant: :warning,
     dismissible: false,
     alert_options: { class: 'gl-mt-5', data: { testid: "slack-notifications-deprecation" } }) do |c|
-    = c.body do
+    - c.with_body do
       - help_page_link = help_page_url('user/project/integrations/gitlab_slack_application')
       - learn_more_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_link }
 

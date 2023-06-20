@@ -49,13 +49,16 @@ version of the product:
 1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
    only if the project namespace's plan includes the feature.
 
-   1. Visit **Admin > Settings > General**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
+   1. On the left sidebar, select **Settings > General**.
    1. Expand **Account and limit**.
    1. Select the **Allow use of licensed EE features** checkbox.
    1. Select **Save changes**.
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
-   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **Admin Area**.
    1. On the left sidebar, select **Overview > Groups**.
    1. Identify the group you want to modify, and select **Edit**.
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
@@ -547,6 +550,9 @@ EE-specific models should `extend EE::Model`.
 
 For example, if EE has a specific `Tanuki` model, you would
 place it in `ee/app/models/ee/tanuki.rb`.
+
+ActiveRecord `enums` should be entirely
+[defined in FOSS](database/creating_enums.md#all-of-the-keyvalue-pairs-should-be-defined-in-foss).
 
 ### Code in `app/views/`
 

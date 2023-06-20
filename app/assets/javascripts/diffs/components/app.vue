@@ -90,22 +90,6 @@ export default {
     ALERT_COLLAPSED_FILES,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
-    endpointMetadata: {
-      type: String,
-      required: true,
-    },
-    endpointBatch: {
-      type: String,
-      required: true,
-    },
-    endpointDiffForPath: {
-      type: String,
-      required: true,
-    },
     endpointCoverage: {
       type: String,
       required: false,
@@ -115,15 +99,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    endpointUpdateUser: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    projectPath: {
-      type: String,
-      required: true,
     },
     shouldShow: {
       type: Boolean,
@@ -143,51 +118,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    isFluidLayout: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    dismissEndpoint: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    showSuggestPopover: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    fileByFileUserPreference: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    defaultSuggestionCommitMessage: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    rehydratedMrReviews: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    sourceProjectDefaultUrl: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    sourceProjectFullPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    isForked: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -325,7 +255,7 @@ export default {
       this.adjustView();
     },
     viewDiffsFileByFile(newViewFileByFile) {
-      if (!newViewFileByFile && this.diffsIncomplete && this.glFeatures.singleFileFileByFile) {
+      if (!newViewFileByFile && this.diffsIncomplete) {
         this.refetchDiffData({ refetchMeta: false });
       }
     },
@@ -343,21 +273,6 @@ export default {
     renderFileTree: 'adjustView',
   },
   mounted() {
-    this.setBaseConfig({
-      endpoint: this.endpoint,
-      endpointMetadata: this.endpointMetadata,
-      endpointBatch: this.endpointBatch,
-      endpointDiffForPath: this.endpointDiffForPath,
-      endpointCoverage: this.endpointCoverage,
-      endpointUpdateUser: this.endpointUpdateUser,
-      projectPath: this.projectPath,
-      dismissEndpoint: this.dismissEndpoint,
-      showSuggestPopover: this.showSuggestPopover,
-      viewDiffsFileByFile: this.fileByFileUserPreference || false,
-      defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
-      mrReviews: this.rehydratedMrReviews,
-    });
-
     if (this.endpointCodequality) {
       this.setCodequalityEndpoint(this.endpointCodequality);
     }
@@ -467,26 +382,19 @@ export default {
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
-      if (this.glFeatures.singleFileFileByFile) {
-        diffsEventHub.$on('diffFilesModified', this.setDiscussions);
-        notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
-      }
+      notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
+      diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
     },
     unsubscribeFromEvents() {
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
-      if (this.glFeatures.singleFileFileByFile) {
-        notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
-        diffsEventHub.$off('diffFilesModified', this.setDiscussions);
-      }
+      diffsEventHub.$off('diffFilesModified', this.setDiscussions);
+      notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
     },
     navigateToDiffFileNumber(number) {
-      this.navigateToDiffFileIndex({
-        index: number - 1,
-        singleFile: this.glFeatures.singleFileFileByFile,
-      });
+      this.navigateToDiffFileIndex(number - 1);
     },
     refetchDiffData({ refetchMeta = true } = {}) {
       this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
@@ -506,7 +414,7 @@ export default {
             if (data) {
               realSize = data.real_size;
 
-              if (this.viewDiffsFileByFile && this.glFeatures.singleFileFileByFile) {
+              if (this.viewDiffsFileByFile) {
                 this.fetchFileByFile();
               }
             }
@@ -527,7 +435,7 @@ export default {
           });
       }
 
-      if (!this.viewDiffsFileByFile || !this.glFeatures.singleFileFileByFile) {
+      if (!this.viewDiffsFileByFile) {
         this.fetchDiffFilesBatch()
           .then(() => {
             if (toggleTree) this.setTreeDisplay();
@@ -618,10 +526,7 @@ export default {
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
       if (targetIndex >= 0 && targetIndex < this.flatBlobsList.length) {
-        this.goToFile({
-          path: this.flatBlobsList[targetIndex].path,
-          singleFile: this.glFeatures.singleFileFileByFile,
-        });
+        this.goToFile({ path: this.flatBlobsList[targetIndex].path });
       }
     },
     setTreeDisplay() {

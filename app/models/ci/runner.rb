@@ -100,7 +100,10 @@ module Ci
 
     scope :with_recent_runner_queue, -> { where('contacted_at > ?', recent_queue_deadline) }
     scope :with_running_builds, -> do
-      where('EXISTS(?)', ::Ci::Build.running.select(1).where('ci_builds.runner_id = ci_runners.id'))
+      where('EXISTS(?)',
+        ::Ci::Build.running.select(1)
+          .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.id")
+      )
     end
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`

@@ -11,7 +11,7 @@ module UploadsActions
     prepend_before_action :set_request_format_from_path_extension
     rescue_from FileUploader::InvalidSecret, with: :render_404
 
-    rescue_from ::Gitlab::Utils::PathTraversalAttackError do
+    rescue_from ::Gitlab::PathTraversal::PathTraversalAttackError do
       head :bad_request
     end
   end
@@ -37,7 +37,7 @@ module UploadsActions
   #   - or redirect to its URL
   #
   def show
-    Gitlab::Utils.check_path_traversal!(params[:filename])
+    Gitlab::PathTraversal.check_path_traversal!(params[:filename])
 
     return render_404 unless uploader&.exists?
 
@@ -129,6 +129,14 @@ module UploadsActions
     return unless uploader = build_uploader
 
     uploader.retrieve_from_store!(params[:filename])
+
+    Gitlab::AppJsonLogger.info(
+      message: 'Deprecated usage of build_uploader_from_params',
+      uploader_class: uploader.class.name,
+      path: params[:filename],
+      exists: uploader.exists?
+    )
+
     uploader
   end
 

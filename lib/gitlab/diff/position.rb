@@ -19,7 +19,8 @@ module Gitlab
                :x,
                :y,
                :line_range,
-               :position_type, to: :formatter
+               :position_type,
+               :ignore_whitespace_change, to: :formatter
 
       # A position can belong to a text line or to an image coordinate
       # it depends of the position_type argument.
@@ -69,11 +70,11 @@ module Gitlab
       end
 
       def to_json(opts = nil)
-        Gitlab::Json.generate(formatter.to_h, opts)
+        Gitlab::Json.generate(to_h.except(:ignore_whitespace_change), opts)
       end
 
       def as_json(opts = nil)
-        to_h.as_json(opts)
+        to_h.except(:ignore_whitespace_change).as_json(opts)
       end
 
       def type
@@ -134,7 +135,7 @@ module Gitlab
       end
 
       def diff_options
-        { paths: paths, expanded: true, include_stats: false }
+        { paths: paths, expanded: true, include_stats: false, ignore_whitespace_change: ignore_whitespace_change }
       end
 
       def diff_line(repository)
@@ -147,6 +148,10 @@ module Gitlab
 
       def file_hash
         @file_hash ||= Digest::SHA1.hexdigest(file_path)
+      end
+
+      def on_file?
+        position_type == 'file'
       end
 
       def on_image?
@@ -184,6 +189,8 @@ module Gitlab
         case type
         when 'image'
           Gitlab::Diff::Formatters::ImageFormatter
+        when 'file'
+          Gitlab::Diff::Formatters::FileFormatter
         else
           Gitlab::Diff::Formatters::TextFormatter
         end

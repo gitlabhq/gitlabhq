@@ -1,5 +1,4 @@
 .whats-new-drawer {
-  margin-top: calc(#{$header-height} + #{$calc-application-bars-height});
   @include gl-shadow-none;
   overflow-y: hidden;
   width: 500px;

@@ -68,22 +68,22 @@ RSpec.describe Gitlab::DependencyLinker::RequirementsTxtLinker do
     end
 
     it 'links dependencies' do
-      expect(subject).to include(link('nose', 'https://pypi.python.org/pypi/nose'))
-      expect(subject).to include(link('nose-cov', 'https://pypi.python.org/pypi/nose-cov'))
-      expect(subject).to include(link('beautifulsoup4', 'https://pypi.python.org/pypi/beautifulsoup4'))
-      expect(subject).to include(link('docopt', 'https://pypi.python.org/pypi/docopt'))
-      expect(subject).to include(link('keyring', 'https://pypi.python.org/pypi/keyring'))
-      expect(subject).to include(link('coverage', 'https://pypi.python.org/pypi/coverage'))
-      expect(subject).to include(link('Mopidy-Dirble', 'https://pypi.python.org/pypi/Mopidy-Dirble'))
-      expect(subject).to include(link('rejected', 'https://pypi.python.org/pypi/rejected'))
-      expect(subject).to include(link('green', 'https://pypi.python.org/pypi/green'))
-      expect(subject).to include(link('Jinja2', 'https://pypi.python.org/pypi/Jinja2'))
-      expect(subject).to include(link('Pygments', 'https://pypi.python.org/pypi/Pygments'))
-      expect(subject).to include(link('Sphinx', 'https://pypi.python.org/pypi/Sphinx'))
-      expect(subject).to include(link('docutils', 'https://pypi.python.org/pypi/docutils'))
-      expect(subject).to include(link('markupsafe', 'https://pypi.python.org/pypi/markupsafe'))
-      expect(subject).to include(link('pytest', 'https://pypi.python.org/pypi/pytest'))
-      expect(subject).to include(link('foop', 'https://pypi.python.org/pypi/foop'))
+      expect(subject).to include(link('nose', 'https://pypi.org/project/nose/'))
+      expect(subject).to include(link('nose-cov', 'https://pypi.org/project/nose-cov/'))
+      expect(subject).to include(link('beautifulsoup4', 'https://pypi.org/project/beautifulsoup4/'))
+      expect(subject).to include(link('docopt', 'https://pypi.org/project/docopt/'))
+      expect(subject).to include(link('keyring', 'https://pypi.org/project/keyring/'))
+      expect(subject).to include(link('coverage', 'https://pypi.org/project/coverage/'))
+      expect(subject).to include(link('Mopidy-Dirble', 'https://pypi.org/project/Mopidy-Dirble/'))
+      expect(subject).to include(link('rejected', 'https://pypi.org/project/rejected/'))
+      expect(subject).to include(link('green', 'https://pypi.org/project/green/'))
+      expect(subject).to include(link('Jinja2', 'https://pypi.org/project/Jinja2/'))
+      expect(subject).to include(link('Pygments', 'https://pypi.org/project/Pygments/'))
+      expect(subject).to include(link('Sphinx', 'https://pypi.org/project/Sphinx/'))
+      expect(subject).to include(link('docutils', 'https://pypi.org/project/docutils/'))
+      expect(subject).to include(link('markupsafe', 'https://pypi.org/project/markupsafe/'))
+      expect(subject).to include(link('pytest', 'https://pypi.org/project/pytest/'))
+      expect(subject).to include(link('foop', 'https://pypi.org/project/foop/'))
     end
 
     it 'links URLs' do
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::DependencyLinker::RequirementsTxtLinker do
     end
 
     it 'does not contain link with a newline as package name' do
-      expect(subject).not_to include(link("\n", "https://pypi.python.org/pypi/\n"))
+      expect(subject).not_to include(link("\n", "https://pypi.org/project/\n"))
     end
   end
 end

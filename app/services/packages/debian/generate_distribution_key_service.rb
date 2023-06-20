@@ -43,10 +43,9 @@ module Packages
       attr_reader :params
 
       def passphrase
-        strong_memoize(:passphrase) do
-          params[:passphrase] || ::User.random_password
-        end
+        params[:passphrase] || ::User.random_password
       end
+      strong_memoize_attr :passphrase
 
       def pinentry_script_content
         escaped_passphrase = Shellwords.escape(passphrase)
@@ -90,7 +89,7 @@ module Packages
             'Name-Email': params[:name_email] || Gitlab.config.gitlab.email_reply_to,
             'Name-Comment': params[:name_comment] || 'GitLab Debian repository automatic signing key',
             'Expire-Date': params[:expire_date] || 0,
-            'Passphrase': passphrase
+            Passphrase: passphrase
           }.map { |k, v| "#{k}: #{v}\n" }.join +
           '</GnupgKeyParms>'
       end

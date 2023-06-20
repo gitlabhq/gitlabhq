@@ -49,7 +49,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
    prometheus_monitoring['enable'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
    take effect.
 
 ### Changing the port and address Prometheus listens on
@@ -80,7 +80,7 @@ listens on:
    prometheus['listen_address'] = '0.0.0.0:9090'
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
    take effect
 
 ### Adding custom scrape configurations
@@ -158,7 +158,7 @@ The next step is to tell all the other nodes where the monitoring node is:
 
    Where `10.0.0.1:9090` is the IP address and port of the Prometheus node.
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
    take effect.
 
 After monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,
@@ -190,6 +190,7 @@ To use an external Prometheus server:
    # Rails nodes
    gitlab_exporter['listen_address'] = '0.0.0.0'
    gitlab_exporter['listen_port'] = '9168'
+   registry['debug_addr'] = '0.0.0.0:5001'
 
    # Sidekiq nodes
    sidekiq['listen_address'] = '0.0.0.0'
@@ -205,14 +206,12 @@ To use an external Prometheus server:
       # ...
       prometheus_listen_addr: '0.0.0.0:9236',
    }
+
+   # Pgbouncer nodes
+   pgbouncer_exporter['listen_address'] = '0.0.0.0:9188'
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
-1. Add the Prometheus server IP address to the [monitoring IP allowlist](../ip_allowlist.md). For example:
-
-   ```ruby
-   gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
-   ```
 
 1. On **all** GitLab Rails(Puma, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
 
@@ -232,7 +231,27 @@ To use an external Prometheus server:
    }
    ```
 
-1. [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) to apply the changes.
+   You can also specify more than one IP address if you have multiple Prometheus servers:
+
+   ```ruby
+   nginx['status']['options'] = {
+         "server_tokens" => "off",
+         "access_log" => "off",
+         "allow" => ["192.168.0.1", "192.168.0.2"]
+         "deny" => "all",
+   }
+   ```
+
+1. To allow the Prometheus server to fetch from the [GitLab metrics](#gitlab-metrics) endpoint, add the Prometheus
+server IP address to the [monitoring IP allowlist](../ip_allowlist.md):
+
+   ```ruby
+   gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
+   ```
+
+1. As we are setting each bundled service's [exporter](#bundled-software-metrics) to listen on a network address,
+update the firewall on the instance to only allow traffic from your Prometheus IP for the exporters enabled. A full reference list of exporter services and their respective ports can be found [here](../../package_information/defaults.md#ports).
+1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) to apply the changes.
 1. Edit the Prometheus server's configuration file.
 1. Add each node's exporters to the Prometheus server's
    [scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E).
@@ -429,7 +448,7 @@ To disable the monitoring of Kubernetes:
    prometheus['monitor_kubernetes'] = false
    ```
 
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
    take effect.
 
 ## Troubleshooting

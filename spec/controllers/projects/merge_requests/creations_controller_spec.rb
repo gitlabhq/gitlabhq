@@ -63,7 +63,6 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
           expect(total).to be > 0
           expect(assigns(:hidden_commit_count)).to be > 0
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to match %r(<span class="commits-count">2 commits</span>)
         end
       end
 
@@ -77,7 +76,6 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
         expect(total).to be > 0
         expect(assigns(:hidden_commit_count)).to eq(0)
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to match %r(<span class="commits-count">#{total} commits</span>)
       end
     end
   end

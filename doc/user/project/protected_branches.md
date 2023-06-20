@@ -30,19 +30,23 @@ When a branch is protected, the default behavior enforces these restrictions on 
 |:-------------------------|:------------------------------------------------------------------|
 | Protect a branch         | At least the Maintainer role.                                     |
 | Push to the branch       | Anyone with **Allowed** permission. (1) |
-| Force push to the branch | No one.                                                           |
+| Force push to the branch | No one. (3)                                                       |
 | Delete the branch        | No one. (2)                                                       |
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](repository/branches/default.md).
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch from the UI or API](#delete-a-protected-branch).
+1. If the `group_protected_branches` feature flag is enabled _and_ the same branch is
+   protected at both the group and project levels, force push settings configured
+   for that branch at the project level are ignored. All other protections continue
+   to use project level settings.
 
 ### When a branch matches multiple rules
 
 When a branch matches multiple rules, the **most permissive rule** determines the
 level of protection for the branch. For example, consider these rules, which include
-[wildcards](#configure-multiple-protected-branches-by-using-a-wildcard):
+[wildcards](#protect-multiple-branches-with-wildcard-rules):
 
 | Branch name pattern | Allowed to merge       | Allowed to push and merge |
 |---------------------|------------------------|-----------------|
@@ -77,20 +81,50 @@ that matches `v1.x` must set `Allowed to push and merge` to `No one`, like this:
 Administrators can set a default branch protection level in the
 [Admin Area](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
-## Configure a protected branch
+## Add protection to existing branches
 
 Configure protected branches for all projects in a group, or just for a project.
 
+### For one project
+
+Prerequisites:
+
+- You must have at least the Maintainer role.
+- When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
+  on a protected branch, the group must be added to the project.
+
+To protect a branch:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
+1. Expand **Protected branches**.
+1. From the **Branch** dropdown list, select the branch you want to protect.
+1. From the **Allowed to merge** list, select a role that can merge into this branch.
+1. From the **Allowed to push and merge** list, select a role that can push to this branch.
+
+   NOTE:
+   In GitLab Premium and Ultimate, you can also add groups or individual users
+   to **Allowed to merge** and **Allowed to push and merge**.
+
+1. Select **Protect**.
+
+The protected branch displays in the list of protected branches.
+
 ### For all projects in a group **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 behind a feature flag, disabled by default.
-
-Group owners can create protected branches for a group. These settings are inherited by all projects in the group and can't be overridden by project settings.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
+To make it available, ask an administrator to
+[enable the feature flag](../../administration/feature_flags.md)
 named `group_protected_branches`. On GitLab.com, this feature is not available.
+
+Group owners can create protected branches for a group. These settings are inherited
+by all projects in the group and can't be overridden by project settings. If a
+specific branch is configured with **Allowed to force push** settings at both the
+group and project levels, the **Allowed to force push** setting at the _project_ level
+is ignored in favor of the group level setting.
 
 Prerequisite:
 
@@ -98,8 +132,8 @@ Prerequisite:
 
 To protect a branch for all the projects in a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. In the **Branch** text box, type the branch name or a wildcard.
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
@@ -108,31 +142,12 @@ To protect a branch for all the projects in a group:
 
 The protected branch is added to the list of protected branches.
 
-### For a project
+## Protect multiple branches with wildcard rules
 
-Prerequisite:
-
-- You must have at least the Maintainer role.
-- When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
-  on a protected branch, the group must be added to the project.
-
-To protect a branch:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Protected branches**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to merge** list, select a role, or group that can merge into this branch. In GitLab Premium, you can also add users.
-1. From the **Allowed to push and merge** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
-1. Select **Protect**.
-
-The protected branch displays in the list of protected branches.
-
-## Configure multiple protected branches by using a wildcard
-
-If both a specific rule and a wildcard rule apply to the same branch, the most
-permissive rule controls how the branch behaves. For merge controls to work properly,
-set **Allowed to push and merge** to a broader set of users than **Allowed to merge**.
+When using wildcards, multiple rules can apply to a single branch.
+If more than one rule applies to a branch, the _most permissive_ rule controls
+how the branch behaves. For merge controls to work properly, set
+**Allowed to push and merge** to a broader set of users than **Allowed to merge**.
 
 Prerequisite:
 
@@ -140,8 +155,8 @@ Prerequisite:
 
 To protect multiple branches at the same time:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, type the branch name and a wildcard.
    For example:
@@ -152,19 +167,21 @@ To protect multiple branches at the same time:
    | `production/*`            | `production/app-server`, `production/load-balancer`    |
    | `*gitlab*`                | `gitlab`, `gitlab/staging`, `master/gitlab/production` |
 
-1. From the **Allowed to merge** list, select a role, or group that can merge into this branch. In GitLab Premium, you can also add users.
-1. From the **Allowed to push and merge** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
+1. From the **Allowed to merge** list, select a role that can merge into
+   this branch.
+1. From the **Allowed to push and merge** list, select a role that can
+   push to this branch. In GitLab Premium or Ultimate, you can also add groups or individual users.
 1. Select **Protect**.
 
 The protected branch displays in the list of protected branches.
 
-## Create a protected branch
+## Create a new branch with protections
 
-Users with at least the Developer role can create a protected branch.
+Users with at least the Developer role can create new protected branches.
 
 Prerequisites:
 
-- **Allowed to push and merge** is set to **No one**
+- **Allowed to push and merge** is set to **No one**.
 - **Allowed to merge** is set to **Developers**.
 
 You can create a protected branch by using the UI or API only.
@@ -173,8 +190,8 @@ from the command line or from a Git client application.
 
 To create a new branch through the user interface:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Branches**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Branches**.
 1. Select **New branch**.
 1. Fill in the branch name and select an existing branch, tag, or commit to
    base the new branch on. Only existing protected branches and commits
@@ -186,8 +203,8 @@ You can force everyone to submit a merge request, rather than allowing them to
 check in directly to a protected branch. This setting is compatible with workflows
 like the [GitLab workflow](../../topics/gitlab_flow.md).
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to merge** list, select **Developers + Maintainers**.
@@ -198,8 +215,8 @@ like the [GitLab workflow](../../topics/gitlab_flow.md).
 
 You can allow everyone with write access to push to the protected branch.
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** list, select **Developers + Maintainers**.
@@ -226,8 +243,8 @@ Prerequisites:
 
 To allow a deploy key to push to a protected branch:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** list, select the deploy key.
@@ -245,8 +262,8 @@ protected branches.
 
 To protect a new branch and enable force push:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
@@ -257,23 +274,49 @@ To protect a new branch and enable force push:
 
 To enable force pushes on branches that are already protected:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
 Members who can push to this branch can now also force push.
+
+### When a branch matches multiple rules
+
+When a branch matches multiple rules, the **most permissive rule** determines the
+level of protection for the branch. For example, consider these rules, which include
+[wildcards](#protect-multiple-branches-with-wildcard-rules):
+
+| Branch name pattern | Allow force push |
+|---------------------|------------------|
+| `v1.x`              | Yes              |
+| `v1.*`              | No               |
+| `v*`                | No               |
+
+A branch named `v1.x` matches all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
+As the most permissive option determines the behavior, the resulting permissions for branch `v1.x` are:
+
+- **Allow force push:** Of the three settings, `Yes` is most permissive,
+  and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
+  (which each have stricter permissions), any user that can push to this branch can also force push.
+
+NOTE:
+Force push settings for a branch at the project level are overridden by group level settings
+if the `group_protected_branches` feature flag is enabled and a group owner has set
+[group level protection for the same branch](#for-all-projects-in-a-group).
 
 ## Require Code Owner approval on a protected branch **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 
 For a protected branch, you can require at least one approval by a [Code Owner](codeowners/index.md).
+If a branch is protected by multiple rules, code owner approval is required if _any_ of
+the applicable rules have **Required approval from code owners** enabled.
 
 To protect a new branch and enable Code Owner's approval:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
@@ -282,8 +325,8 @@ To protect a new branch and enable Code Owner's approval:
 
 To enable Code Owner's approval on branches that are already protected:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. In the list of protected branches, next to the branch, turn on the **Code owner approval** toggle.
 
@@ -314,8 +357,8 @@ for details about the pipelines security model.
 Users with at least the Maintainer role can manually delete protected
 branches by using the GitLab web interface:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Branches**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Code > Branches**.
 1. Next to the branch you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, type the branch name.
 1. Select **Yes, delete protected branch**.

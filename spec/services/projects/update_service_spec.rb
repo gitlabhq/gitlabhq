@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Projects::UpdateService, feature_category: :projects do
+RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 

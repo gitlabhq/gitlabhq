@@ -3,6 +3,7 @@
 module Clusters
   class Agent < ApplicationRecord
     include FromUnion
+    include Gitlab::Utils::StrongMemoize
 
     self.table_name = 'cluster_agents'
 
@@ -28,6 +29,8 @@ module Clusters
     has_many :user_access_authorized_projects, class_name: '::Project', through: :user_access_project_authorizations, source: :project
 
     has_many :activity_events, -> { in_timeline_order }, class_name: 'Clusters::Agents::ActivityEvent', inverse_of: :agent
+
+    has_many :environments, class_name: '::Environment', inverse_of: :cluster_agent, foreign_key: :cluster_agent_id
 
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, -> (name) { where(name: name) }
@@ -65,10 +68,8 @@ module Clusters
       return false unless user
       return false unless ::Feature.enabled?(:expose_authorized_cluster_agents, project)
 
-      ::Project.from_union(
-        all_ci_access_authorized_projects_for(user).limit(1),
-        all_ci_access_authorized_namespaces_for(user).limit(1)
-      ).exists?
+      all_ci_access_authorized_projects_for(user).exists? ||
+        all_ci_access_authorized_namespaces_for(user).exists?
     end
 
     def user_access_authorized_for?(user)
@@ -93,20 +94,17 @@ module Clusters
     def all_ci_access_authorized_projects_for(user)
       ::Project.joins(:ci_access_project_authorizations)
                .joins(:project_authorizations)
+               .joins(:namespace)
                .where(agent_project_authorizations: { agent_id: id })
                .where(project_authorizations: { user_id: user.id, access_level: Gitlab::Access::DEVELOPER.. })
+               .where('namespaces.traversal_ids @> ARRAY[?]', root_namespace.id)
     end
 
     def all_ci_access_authorized_namespaces_for(user)
-      ::Project.with(root_namespace_cte.to_arel)
-               .with(all_ci_access_authorized_namespaces_cte.to_arel)
+      ::Project.with(all_ci_access_authorized_namespaces_cte.to_arel)
                .joins('INNER JOIN all_authorized_namespaces ON all_authorized_namespaces.id = projects.namespace_id')
                .joins(:project_authorizations)
                .where(project_authorizations: { user_id: user.id, access_level: Gitlab::Access::DEVELOPER.. })
-    end
-
-    def root_namespace_cte
-      Gitlab::SQL::CTE.new(:root_namespace, root_namespace.to_sql)
     end
 
     def all_ci_access_authorized_namespaces_cte
@@ -115,25 +113,16 @@ module Clusters
 
     def all_ci_access_authorized_namespaces
       Namespace.select("traversal_ids[array_length(traversal_ids, 1)] AS id")
-               .joins("INNER JOIN root_namespace ON " \
-                      "namespaces.traversal_ids @> ARRAY[root_namespace.root_id]")
                .joins("INNER JOIN agent_group_authorizations ON " \
                       "namespaces.traversal_ids @> ARRAY[agent_group_authorizations.group_id::integer]")
                .where(agent_group_authorizations: { agent_id: id })
+               .where('namespaces.traversal_ids @> ARRAY[?]', root_namespace.id)
     end
 
     def root_namespace
-      Namespace.select("traversal_ids[1] AS root_id")
-               .where("traversal_ids @> ARRAY(?)", project_namespace)
-               .limit(1)
+      project.root_namespace
     end
-
-    def project_namespace
-      ::Project.select('namespace_id')
-               .joins(:cluster_agents)
-               .where(cluster_agents: { id: id })
-               .limit(1)
-    end
+    strong_memoize_attr :root_namespace
   end
 end
 

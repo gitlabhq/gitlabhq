@@ -28,13 +28,13 @@ module RuboCop
 
         HELP_LINK = 'https://docs.gitlab.com/ee/development/sidekiq/worker_attributes.html#job-data-consistency-strategies'
 
-        MISSING_DATA_CONSISTENCY_MSG = <<~MSG
+        MISSING_DATA_CONSISTENCY_MSG = <<~MSG.freeze
           Should define data_consistency expectation.
           See #{HELP_LINK} for a more detailed explanation of these settings.
         MSG
 
         DISCOURAGE_ALWAYS_MSG = "Refrain from using `:always` if possible." \
-                                "See #{HELP_LINK} for a more detailed explanation of these settings."
+                                "See #{HELP_LINK} for a more detailed explanation of these settings.".freeze
 
         def_node_search :application_worker?, <<~PATTERN
         `(send nil? :include (const nil? :ApplicationWorker))

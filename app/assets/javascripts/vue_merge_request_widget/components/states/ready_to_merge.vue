@@ -97,7 +97,7 @@ export default {
           return readyToMergeSubscription;
         },
         skip() {
-          return !this.mr?.id || this.loading || !window.gon?.features?.realtimeMrStatusChange;
+          return !this.mr?.id || this.loading;
         },
         variables() {
           return {
@@ -146,6 +146,8 @@ export default {
     AddedCommitMessage,
     RelatedLinks,
     HelpPopover,
+    AiCommitMessage: () =>
+      import('ee_component/vue_merge_request_widget/components/ai_commit_message.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -502,6 +504,10 @@ export default {
       this.squashCommitMessage = val;
       this.squashCommitMessageIsTouched = true;
     },
+    appendCommitMessage(val) {
+      this.commitMessage = `${this.commitMessage}\n\n${val}`;
+      this.commitMessageIsTouched = true;
+    },
   },
   i18n: {
     mergeCommitTemplateHintText: s__(
@@ -596,7 +602,15 @@ export default {
                     input-id="merge-message-edit"
                     class="gl-m-0! gl-p-0!"
                     @input="setCommitMessage"
-                  />
+                  >
+                    <template #header>
+                      <ai-commit-message
+                        v-if="mr.aiCommitMessageEnabled"
+                        :id="mr.id"
+                        @update="appendCommitMessage"
+                      />
+                    </template>
+                  </commit-edit>
                   <li class="gl-m-0! gl-p-0!">
                     <p class="form-text text-muted">
                       <gl-sprintf :message="commitTemplateHintText">

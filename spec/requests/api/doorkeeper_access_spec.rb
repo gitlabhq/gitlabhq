@@ -14,7 +14,7 @@ RSpec.describe 'doorkeeper access', feature_category: :system_access do
     end
 
     include_examples 'user login request with unique ip limit' do
-      def request
+      def gitlab_request
         get api('/user'), params: { access_token: token.plaintext_token }
       end
     end
@@ -34,7 +34,7 @@ RSpec.describe 'doorkeeper access', feature_category: :system_access do
     end
 
     include_examples 'user login request with unique ip limit' do
-      def request
+      def gitlab_request
         get api('/user', user)
       end
     end

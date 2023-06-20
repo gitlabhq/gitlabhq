@@ -152,26 +152,66 @@ RSpec.describe Timelog, feature_category: :team_planning do
 
   describe 'sorting' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:timelog_a) { create(:issue_timelog, time_spent: 7200, spent_at: 1.hour.ago, user: user) }
-    let_it_be(:timelog_b) { create(:issue_timelog, time_spent: 5400, spent_at: 2.hours.ago, user: user) }
-    let_it_be(:timelog_c) { create(:issue_timelog, time_spent: 1800, spent_at: 30.minutes.ago, user: user) }
-    let_it_be(:timelog_d) { create(:issue_timelog, time_spent: 3600, spent_at: 1.day.ago, user: user) }
+
+    let_it_be(:timelog_a) do
+      create(
+        :issue_timelog, time_spent: 7200, spent_at: 1.hour.ago,
+        created_at: 1.hour.ago, updated_at: 1.hour.ago, user: user
+      )
+    end
+
+    let_it_be(:timelog_b) do
+      create(
+        :issue_timelog, time_spent: 5400, spent_at: 2.hours.ago,
+        created_at: 2.hours.ago, updated_at: 2.hours.ago, user: user
+      )
+    end
+
+    let_it_be(:timelog_c) do
+      create(
+        :issue_timelog, time_spent: 1800, spent_at: 30.minutes.ago,
+        created_at: 30.minutes.ago, updated_at: 30.minutes.ago, user: user
+      )
+    end
+
+    let_it_be(:timelog_d) do
+      create(
+        :issue_timelog, time_spent: 3600, spent_at: 1.day.ago,
+        created_at: 1.day.ago, updated_at: 1.day.ago, user: user
+      )
+    end
 
     describe '.sort_by_field' do
       it 'sorts timelogs by time spent in ascending order' do
-        expect(user.timelogs.sort_by_field('time_spent', :asc)).to eq([timelog_c, timelog_d, timelog_b, timelog_a])
+        expect(user.timelogs.sort_by_field(:time_spent_asc)).to eq([timelog_c, timelog_d, timelog_b, timelog_a])
       end
 
       it 'sorts timelogs by time spent in descending order' do
-        expect(user.timelogs.sort_by_field('time_spent', :desc)).to eq([timelog_a, timelog_b, timelog_d, timelog_c])
+        expect(user.timelogs.sort_by_field(:time_spent_desc)).to eq([timelog_a, timelog_b, timelog_d, timelog_c])
       end
 
       it 'sorts timelogs by spent at in ascending order' do
-        expect(user.timelogs.sort_by_field('spent_at', :asc)).to eq([timelog_d, timelog_b, timelog_a, timelog_c])
+        expect(user.timelogs.sort_by_field(:spent_at_asc)).to eq([timelog_d, timelog_b, timelog_a, timelog_c])
       end
 
       it 'sorts timelogs by spent at in descending order' do
-        expect(user.timelogs.sort_by_field('spent_at', :desc)).to eq([timelog_c, timelog_a, timelog_b, timelog_d])
+        expect(user.timelogs.sort_by_field(:spent_at_desc)).to eq([timelog_c, timelog_a, timelog_b, timelog_d])
+      end
+
+      it 'sorts timelogs by created at in ascending order' do
+        expect(user.timelogs.sort_by_field(:created_at_asc)).to eq([timelog_d, timelog_b, timelog_a, timelog_c])
+      end
+
+      it 'sorts timelogs by created at in descending order' do
+        expect(user.timelogs.sort_by_field(:created_at_desc)).to eq([timelog_c, timelog_a, timelog_b, timelog_d])
+      end
+
+      it 'sorts timelogs by updated at in ascending order' do
+        expect(user.timelogs.sort_by_field(:updated_at_asc)).to eq([timelog_d, timelog_b, timelog_a, timelog_c])
+      end
+
+      it 'sorts timelogs by updated at in descending order' do
+        expect(user.timelogs.sort_by_field(:updated_at_desc)).to eq([timelog_c, timelog_a, timelog_b, timelog_d])
       end
     end
   end

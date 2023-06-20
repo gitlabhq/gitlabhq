@@ -44,11 +44,17 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     end
 
     where(:integration) do
-      # The API supports all integrations except the GitLab Slack Application
-      # integration; this integration must be installed via the UI.
+      # The Project Integrations API supports all integrations except:
+      # - The GitLab Slack Application integration, as it must be installed via the UI.
+      # - Shimo and ZenTao integrations, as new integrations are blocked from being created.
+      unavailable_integration_names = [
+        Integrations::GitlabSlackApplication.to_param,
+        Integrations::Shimo.to_param,
+        Integrations::Zentao.to_param
+      ]
+
       names = Integration.available_integration_names
-      names.delete(Integrations::GitlabSlackApplication.to_param) if Gitlab.ee?
-      names - %w[shimo zentao]
+      names.reject { |name| name.in?(unavailable_integration_names) }
     end
 
     with_them do
@@ -62,14 +68,13 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         let(:missing_attributes) do
           {
             datadog: %i[archive_trace_events],
-            discord: %i[branches_to_be_notified notify_only_broken_pipelines],
             hangouts_chat: %i[notify_only_broken_pipelines],
             jira: %i[issues_enabled project_key jira_issue_regex jira_issue_prefix vulnerabilities_enabled vulnerabilities_issuetype],
-            mattermost: %i[deployment_channel labels_to_be_notified],
+            mattermost: %i[labels_to_be_notified],
             mock_ci: %i[enable_ssl_verification],
             prometheus: %i[manual_configuration],
             pumble: %i[branches_to_be_notified notify_only_broken_pipelines],
-            slack: %i[alert_events alert_channel deployment_channel labels_to_be_notified],
+            slack: %i[labels_to_be_notified],
             unify_circuit: %i[branches_to_be_notified notify_only_broken_pipelines],
             webex_teams: %i[branches_to_be_notified notify_only_broken_pipelines]
           }

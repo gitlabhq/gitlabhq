@@ -8,11 +8,14 @@ import {
   GlModalDirective,
   GlToggle,
 } from '@gitlab/ui';
+
 import * as Sentry from '@sentry/browser';
-import { s__ } from '~/locale';
+
+import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_DELETE,
@@ -22,10 +25,15 @@ import {
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
   TEST_ID_PROMOTE_ACTION,
+  TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
+  TEST_ID_COPY_REFERENCE_ACTION,
   WIDGET_TYPE_NOTIFICATIONS,
   I18N_WORK_ITEM_ERROR_CONVERTING,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
+  I18N_WORK_ITEM_ERROR_COPY_REFERENCE,
+  I18N_WORK_ITEM_ERROR_COPY_EMAIL,
 } from '../constants';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
@@ -38,6 +46,9 @@ export default {
     notifications: s__('WorkItem|Notifications'),
     notificationOn: s__('WorkItem|Notifications turned on.'),
     notificationOff: s__('WorkItem|Notifications turned off.'),
+    copyReference: __('Copy reference'),
+    referenceCopied: __('Reference copied'),
+    emailAddressCopied: __('Email address copied'),
   },
   components: {
     GlDropdown,
@@ -55,6 +66,8 @@ export default {
   notificationsToggleTestId: TEST_ID_NOTIFICATIONS_TOGGLE_ACTION,
   notificationsToggleFormTestId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   confidentialityTestId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
+  copyReferenceTestId: TEST_ID_COPY_REFERENCE_ACTION,
+  copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
   inject: ['fullPath'],
@@ -99,6 +112,21 @@ export default {
       required: false,
       default: false,
     },
+    workItemReference: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    workItemCreateNoteEmail: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     workItemTypes: {
@@ -122,6 +150,15 @@ export default {
         deleteWorkItem: sprintfWorkItem(I18N_WORK_ITEM_DELETE, this.workItemType),
         areYouSureDelete: sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType),
         convertError: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CONVERTING, this.workItemType),
+        copyCreateNoteEmail: sprintfWorkItem(
+          I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
+          this.workItemType,
+        ),
+        copyReferenceError: sprintfWorkItem(I18N_WORK_ITEM_ERROR_COPY_REFERENCE, this.workItemType),
+        copyCreateNoteEmailError: sprintfWorkItem(
+          I18N_WORK_ITEM_ERROR_COPY_EMAIL,
+          this.workItemType,
+        ),
       };
     },
     canPromoteToObjective() {
@@ -142,9 +179,18 @@ export default {
     },
   },
   methods: {
+    copyToClipboard(text, message) {
+      if (this.isModal) {
+        navigator.clipboard.writeText(text);
+      }
+      toast(message);
+    },
     handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
+    },
+    handleDelete() {
+      this.$refs.modal.show();
     },
     handleDeleteWorkItem() {
       this.track('click_delete_work_item');
@@ -284,17 +330,35 @@ export default {
               : $options.i18n.enableTaskConfidentiality
           }}</gl-dropdown-item
         >
+      </template>
+      <gl-dropdown-item
+        ref="workItemReference"
+        :data-testid="$options.copyReferenceTestId"
+        :data-clipboard-text="workItemReference"
+        @click="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
+        >{{ $options.i18n.copyReference }}</gl-dropdown-item
+      >
+      <template v-if="$options.isLoggedIn && workItemCreateNoteEmail">
+        <gl-dropdown-item
+          ref="workItemCreateNoteEmail"
+          :data-testid="$options.copyCreateNoteEmailTestId"
+          :data-clipboard-text="workItemCreateNoteEmail"
+          @click="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
+          >{{ i18n.copyCreateNoteEmail }}</gl-dropdown-item
+        >
         <gl-dropdown-divider v-if="canDelete" />
       </template>
       <gl-dropdown-item
         v-if="canDelete"
-        v-gl-modal="'work-item-confirm-delete'"
         :data-testid="$options.deleteActionTestId"
         variant="danger"
-        >{{ i18n.deleteWorkItem }}</gl-dropdown-item
+        @click="handleDelete"
       >
+        {{ i18n.deleteWorkItem }}
+      </gl-dropdown-item>
     </gl-dropdown>
     <gl-modal
+      ref="modal"
       modal-id="work-item-confirm-delete"
       :title="i18n.deleteWorkItem"
       :ok-title="i18n.deleteWorkItem"

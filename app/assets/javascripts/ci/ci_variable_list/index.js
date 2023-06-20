@@ -67,6 +67,7 @@ const mountCiVariableListApp = (containerEl) => {
       groupId,
       groupPath,
       isGroup: parsedIsGroup,
+      isInheritedGroupVars: false,
       isProject: parsedIsProject,
       isProtectedByDefault,
       maskedEnvironmentVariablesLink,

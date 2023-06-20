@@ -7,6 +7,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
   it_behaves_like 'having unique enum values'
 
+  it { is_expected.to be_a Packages::Downloadable }
+
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:creator) }
@@ -760,6 +762,23 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '.debian_incoming_package!' do
+    let!(:debian_package) { create(:debian_package) }
+    let!(:debian_processing_incoming) { create(:debian_incoming, :processing) }
+
+    subject { described_class.debian_incoming_package! }
+
+    context 'when incoming exists' do
+      let!(:debian_incoming) { create(:debian_incoming) }
+
+      it { is_expected.to eq(debian_incoming) }
+    end
+
+    context 'when incoming not found' do
+      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
+    end
+  end
+
   describe '.with_package_type' do
     let!(:package1) { create(:terraform_module_package) }
     let!(:package2) { create(:npm_package) }
@@ -1235,12 +1254,12 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
-  describe '#original_build_info' do
+  describe '#last_build_info' do
     let_it_be_with_refind(:package) { create(:npm_package) }
 
     context 'without build_infos' do
       it 'returns nil' do
-        expect(package.original_build_info).to be_nil
+        expect(package.last_build_info).to be_nil
       end
     end
 
@@ -1249,17 +1268,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let_it_be(:second_build_info) { create(:package_build_info, :with_pipeline, package: package) }
 
       it 'returns the last build info' do
-        expect(package.original_build_info).to eq(second_build_info)
-      end
-
-      context 'with packages_display_last_pipeline disabled' do
-        before do
-          stub_feature_flags(packages_display_last_pipeline: false)
-        end
-
-        it 'returns the first build info' do
-          expect(package.original_build_info).to eq(first_build_info)
-        end
+        expect(package.last_build_info).to eq(second_build_info)
       end
     end
   end
@@ -1411,18 +1420,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       it { is_expected.to eq(normalized_name) }
-    end
-  end
-
-  describe '#touch_last_downloaded_at' do
-    let_it_be(:package) { create(:package) }
-
-    subject { package.touch_last_downloaded_at }
-
-    it 'updates the downloaded_at' do
-      expect(::Gitlab::Database::LoadBalancing::Session).to receive(:without_sticky_writes).and_call_original
-      expect { subject }
-        .to change(package, :last_downloaded_at).from(nil).to(instance_of(ActiveSupport::TimeWithZone))
     end
   end
 

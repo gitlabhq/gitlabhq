@@ -14,7 +14,7 @@ module IncidentManagement
     worker_has_external_dependencies!
 
     def perform(issue_id)
-      incident = Issue.incident.opened.find_by_id(issue_id)
+      incident = Issue.with_issue_type(:incident).opened.find_by_id(issue_id)
 
       return unless incident
 

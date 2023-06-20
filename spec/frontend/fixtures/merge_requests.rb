@@ -114,6 +114,10 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
     let(:group) { create(:group) }
     let(:description) { "@#{group.full_path} @all @#{user.username}" }
 
+    before do
+      stub_feature_flags(disable_all_mention: false)
+    end
+
     it 'merge_requests/merge_request_with_mentions.html' do
       render_merge_request(merge_request)
     end

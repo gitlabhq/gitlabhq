@@ -8,6 +8,12 @@ class ReleaseHighlight
   ULTIMATE_PACKAGE = 'Ultimate'
 
   def self.paginated(page: 1)
+    result = self.paginated_query(page: page)
+    result = self.paginated_query(page: result.next_page) while next_page?(result)
+    result
+  end
+
+  def self.paginated_query(page:)
     key = self.cache_key("items:page-#{page}")
 
     Rails.cache.fetch(key, expires_in: CACHE_DURATION) do
@@ -44,7 +50,7 @@ class ReleaseHighlight
   rescue Psych::Exception => e
     Gitlab::ErrorTracking.track_exception(e, file_path: file_path)
 
-    nil
+    []
   end
 
   def self.whats_new_path
@@ -120,6 +126,14 @@ class ReleaseHighlight
     return true unless Gitlab::CurrentSettings.current_application_settings.whats_new_variant_current_tier?
 
     item['available_in']&.include?(current_package)
+  end
+
+  def self.next_page?(result)
+    return false unless result
+
+    # if all items for the current page doesn't belong to the current tier
+    # or failed to parse current YAML, loading next page
+    result.items == [] && result.next_page.present?
   end
 end
 

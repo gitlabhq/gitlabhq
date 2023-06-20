@@ -42,22 +42,19 @@ describe('Super Sidebar Collapsed State Manager', () => {
 
   describe('toggleSuperSidebarCollapsed', () => {
     it.each`
-      collapsed | saveCookie | windowWidth | hasClass | superSidebarPeek | isPeekable
-      ${true}   | ${true}    | ${xl}       | ${true}  | ${false}         | ${false}
-      ${true}   | ${true}    | ${xl}       | ${true}  | ${true}          | ${true}
-      ${true}   | ${false}   | ${xl}       | ${true}  | ${false}         | ${false}
-      ${true}   | ${true}    | ${sm}       | ${true}  | ${false}         | ${false}
-      ${true}   | ${false}   | ${sm}       | ${true}  | ${false}         | ${false}
-      ${false}  | ${true}    | ${xl}       | ${false} | ${false}         | ${false}
-      ${false}  | ${true}    | ${xl}       | ${false} | ${true}          | ${false}
-      ${false}  | ${false}   | ${xl}       | ${false} | ${false}         | ${false}
-      ${false}  | ${true}    | ${sm}       | ${false} | ${false}         | ${false}
-      ${false}  | ${false}   | ${sm}       | ${false} | ${false}         | ${false}
+      collapsed | saveCookie | windowWidth | hasClass | isPeekable
+      ${true}   | ${true}    | ${xl}       | ${true}  | ${true}
+      ${true}   | ${false}   | ${xl}       | ${true}  | ${true}
+      ${true}   | ${true}    | ${sm}       | ${true}  | ${true}
+      ${true}   | ${false}   | ${sm}       | ${true}  | ${true}
+      ${false}  | ${true}    | ${xl}       | ${false} | ${false}
+      ${false}  | ${false}   | ${xl}       | ${false} | ${false}
+      ${false}  | ${true}    | ${sm}       | ${false} | ${false}
+      ${false}  | ${false}   | ${sm}       | ${false} | ${false}
     `(
       'when collapsed is $collapsed, saveCookie is $saveCookie, and windowWidth is $windowWidth then page class contains `page-with-super-sidebar-collapsed` is $hasClass',
-      ({ collapsed, saveCookie, windowWidth, hasClass, superSidebarPeek, isPeekable }) => {
+      ({ collapsed, saveCookie, windowWidth, hasClass, isPeekable }) => {
         jest.spyOn(bp, 'windowWidth').mockReturnValue(windowWidth);
-        gon.features = { superSidebarPeek };
 
         toggleSuperSidebarCollapsed(collapsed, saveCookie);
 

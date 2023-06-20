@@ -46,7 +46,6 @@ describe('PackageTitle', () => {
 
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findPackageType = () => wrapper.findByTestId('package-type');
-  const findPackageSize = () => wrapper.findByTestId('package-size');
   const findPipelineProject = () => wrapper.findByTestId('pipeline-project');
   const findPackageRef = () => wrapper.findByTestId('package-ref');
   const findPackageLastDownloadedAt = () => wrapper.findByTestId('package-last-downloaded-at');
@@ -144,20 +143,6 @@ describe('PackageTitle', () => {
 
     it(`${packageType} should render ${text}`, () => {
       expect(findPackageType().props()).toEqual(expect.objectContaining({ text, icon: 'package' }));
-    });
-  });
-
-  describe('calculates the package size', () => {
-    it('correctly calculates when there is only 1 file', async () => {
-      await createComponent({ ...packageData(), packageFiles: { nodes: [packageFiles()[0]] } });
-
-      expect(findPackageSize().props()).toMatchObject({ text: '400.00 KiB', icon: 'disk' });
-    });
-
-    it('correctly calculates when there are multiple files', async () => {
-      await createComponent();
-
-      expect(findPackageSize().props('text')).toBe('800.00 KiB');
     });
   });
 

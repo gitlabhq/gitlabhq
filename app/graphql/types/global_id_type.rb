@@ -7,7 +7,11 @@ module Types
       A global identifier.
 
       A global identifier represents an object uniquely across the application.
-      An example of such an identifier is `"gid://gitlab/User/1"`.
+      An example of a global identifier is `"gid://gitlab/User/1"`.
+
+      `gid://gitlab` stands for the root name.
+      `User` is the name of the ActiveRecord class of the record.
+      `1` is the record id as per the id in the db table.
 
       Global identifiers are encoded as strings.
     DESC

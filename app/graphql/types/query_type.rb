@@ -165,6 +165,12 @@ module Types
           alpha: { milestone: '15.1' },
           description: 'Find a work item.'
 
+    field :audit_event_definitions,
+          Types::AuditEvents::DefinitionType.connection_type,
+          null: false,
+          description: 'Definitions for all audit events available on the instance.',
+          resolver: Resolvers::AuditEvents::AuditEventDefinitionsResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

@@ -1,5 +1,5 @@
 - type = blob ? 'blob' : 'tree'
 - button_data = web_ide_button_data({ blob: blob })
-- fork_options = fork_modal_options(@project, @ref, @path, blob)
+- fork_options = fork_modal_options(@project, blob)
 
 .gl-display-inline-block{ data: { options: button_data.merge(fork_options).to_json, web_ide_promo_popover_img: image_path('web-ide-promo-popover.svg') }, id: "js-#{type}-web-ide-link" }

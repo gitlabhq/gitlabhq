@@ -1,0 +1,12 @@
+# Mutation executed for the pause/resume button in the
+# runner list and details views.
+
+mutation runnerTogglePaused($input: RunnerUpdateInput!) {
+  runnerUpdate(input: $input) {
+    runner {
+      id
+      paused
+    }
+    errors
+  }
+}

@@ -1,4 +1,4 @@
-import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/pipelines_empty.svg?url';
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 
 import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState } from '@gitlab/ui';

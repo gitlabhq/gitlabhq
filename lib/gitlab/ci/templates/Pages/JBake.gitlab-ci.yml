@@ -13,19 +13,20 @@
 #
 # HowTo at: https://jorge.aguilera.gitlab.io/howtojbake/
 
-image: java:8
+default:
+  image: java:8
+
+  # We use SDKMan as tool for managing versions
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq unzip zip
+    - curl -sSL https://get.sdkman.io | bash
+    - echo sdkman_auto_answer=true > /root/.sdkman/etc/config
+    - source /root/.sdkman/bin/sdkman-init.sh
+    - sdk install jbake $JBAKE_VERSION < /dev/null
+    - sdk use jbake $JBAKE_VERSION
 
 variables:
   JBAKE_VERSION: 2.5.1
-
-# We use SDKMan as tool for managing versions
-before_script:
-  - apt-get update -qq && apt-get install -y -qq unzip zip
-  - curl -sSL https://get.sdkman.io | bash
-  - echo sdkman_auto_answer=true > /root/.sdkman/etc/config
-  - source /root/.sdkman/bin/sdkman-init.sh
-  - sdk install jbake $JBAKE_VERSION < /dev/null
-  - sdk use jbake $JBAKE_VERSION
 
 # This build job produced the output directory of your site
 pages:

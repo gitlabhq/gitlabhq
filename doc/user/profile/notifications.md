@@ -107,7 +107,7 @@ To select a notification level for a group, use either of these methods:
 
 Or:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
@@ -138,7 +138,7 @@ To select a notification level for a project, use either of these methods:
 
 Or:
 
-1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
@@ -263,7 +263,7 @@ epics:
 | Issue | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
 | Issue | Reopened | Subscribers and participants. |
 | Merge Request | Closed | Subscribers and participants. |
-| Merge Request | Conflict | Author and any user that has set the merge request to automatically merge when pipeline succeeds. |
+| Merge Request | Conflict | Author and any user that has set the merge request to auto-merge. |
 | Merge Request | [Marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15332) in GitLab 13.10._ |
 | Merge Request | Merged | Subscribers and participants. |
 | Merge Request | Merged when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4._ |

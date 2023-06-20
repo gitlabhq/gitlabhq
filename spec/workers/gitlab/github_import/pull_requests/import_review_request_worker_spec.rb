@@ -26,6 +26,8 @@ RSpec.describe Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker, fe
     end
 
     it 'imports an pull request review requests' do
+      allow(import_state).to receive(:in_progress?).and_return(true)
+
       expect(Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImporter)
         .to receive(:new)
         .with(

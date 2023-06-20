@@ -146,18 +146,24 @@ You can update widgets using custom fine-grained mutations (for example, `WorkIt
 ### Widget callbacks
 
 When updating the widget together with the work item's mutation, backend code should be implemented using
-callback classes that inherit from `Issuable::Callbacks::Base`. These classes have callback methods
+callback classes that inherit from `WorkItems::Callbacks::Base`. These classes have callback methods
 that are named similar to ActiveRecord callbacks and behave similarly.
 
-Callback classes with the same name as the widget are automatically used. For example, `Issuable::Callbacks::Milestone`
-is called when the work item has the milestone widget. To use a different class, you can override the `callback_class`
+Callback classes with the same name as the widget are automatically used. For example, `WorkItems::Callbacks::AwardEmoji`
+is called when the work item has the `AwardEmoji` widget. To use a different class, you can override the `callback_class`
 class method.
+
+When a callback class is also used for other issuables like merge requests or epics, define the class under `Issuable::Callbacks`
+and add the class to the list in `IssuableBaseService#available_callbacks`. These are executed for both work item updates and
+legacy issue, merge request, or epic updates.
 
 #### Available callbacks
 
 - `after_initialize` is called after the work item is initialized by the `BuildService` and before
   the work item is saved by the `CreateService` and `UpdateService`. This callback runs outside the
   creation or update database transaction.
+- `before_update` is called before the work item is saved by the `UpdateService`. This callback runs
+  within the update database transaction.
 - `after_update_commit` is called after the DB update transaction is committed by the `UpdateService`.
 - `after_save_commit` is called after the creation or DB update transaction is committed by the
   `CreateService` or `UpdateService`.

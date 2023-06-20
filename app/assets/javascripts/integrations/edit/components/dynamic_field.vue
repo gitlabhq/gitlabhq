@@ -97,7 +97,7 @@ export default {
       return isEmpty(this.value) && this.required;
     },
     options() {
-      return this.choices.map((choice) => {
+      return this.choices?.map((choice) => {
         return {
           value: choice[1],
           text: choice[0],

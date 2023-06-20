@@ -8,12 +8,21 @@ RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures, feature_category: 
   describe '#perform' do
     subject(:perform) { described_class.new.perform(pipeline.id, pipeline.id) }
 
-    it 'calls cancel_running' do
+    let(:cancel_service) { instance_double(::Ci::CancelPipelineService) }
+
+    it 'cancels the pipeline' do
       allow(::Ci::Pipeline).to receive(:find_by_id).and_return(pipeline)
-      expect(pipeline).to receive(:cancel_running).with(
-        auto_canceled_by_pipeline_id: pipeline.id,
-        cascade_to_children: false
-      )
+      expect(::Ci::CancelPipelineService)
+        .to receive(:new)
+        .with(
+          pipeline: pipeline,
+          current_user: nil,
+          auto_canceled_by_pipeline_id:
+          pipeline.id,
+          cascade_to_children: false)
+        .and_return(cancel_service)
+
+      expect(cancel_service).to receive(:force_execute)
 
       perform
     end
@@ -22,7 +31,7 @@ RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures, feature_category: 
       subject(:perform) { described_class.new.perform(non_existing_record_id, non_existing_record_id) }
 
       it 'does not error' do
-        expect(pipeline).not_to receive(:cancel_running)
+        expect(::Ci::CancelPipelineService).not_to receive(:new)
 
         perform
       end
