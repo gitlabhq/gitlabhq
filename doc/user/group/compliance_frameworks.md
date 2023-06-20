@@ -104,6 +104,10 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 - Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
   `.gitlab-ci.yml` file.
 
+NOTE:
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414004), project pipelines must be included first at the top of compliance pipeline configuration
+to prevent projects overriding settings downstream.
+
 For more information, see:
 
 - [Example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
@@ -151,6 +155,13 @@ The following example `.compliance-gitlab-ci.yml` includes the `include` keyword
 configuration is also executed.
 
 ```yaml
+include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
+  - project: '$CI_PROJECT_PATH'
+    file: '$CI_CONFIG_PATH'
+    ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
+    rules:
+      - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
+
 # Allows compliance team to control the ordering and interweaving of stages/jobs.
 # Stages without jobs defined will remain hidden.
 stages:
@@ -210,13 +221,6 @@ audit trail:
     - echo "running $FOO"
   after_script:
     - "# No after scripts."
-
-include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
-  - project: '$CI_PROJECT_PATH'
-    file: '$CI_CONFIG_PATH'
-    ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
-    rules:
-      - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
 ```
 
 The `rules` configuration in the `include` definition avoids circular inclusion in case the compliance pipeline must be able to run in the host project itself.

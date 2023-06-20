@@ -55,7 +55,7 @@ Due to urgency of delivering Organizations as a prerequisite for Cells, it is cu
 
 ## Proposal
 
-We create Organizations as a new lightweight entity, with just the features and workflows which it requires. We already have much of the functionality present in groups and projects, and groups themselves are essentially already the top-level entity. It is unlikely that we need to add significant features to Organizations outside of some key settings, as top-level groups can continue to serve this purpose at least on SaaS.
+We create Organizations as a new lightweight entity, with just the features and workflows which it requires. We already have much of the functionality present in groups and projects, and groups themselves are essentially already the top-level entity. It is unlikely that we need to add significant features to Organizations outside of some key settings, as top-level groups can continue to serve this purpose at least on SaaS. From an infrastructure perspective, cluster-wide shared data must be both minimal (small in volume) and infrequently written.
 
 ```mermaid
 graph TD
@@ -91,7 +91,7 @@ The Organization MVC will contain the following functionality:
 - Every instance will have a default organization. Initially, all users will be managed by this default Organization.
 - Organization Owner. The creation of an Organization appoints that user as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
 - Organization users. A user is managed by one Organization, but can be part of multiple Organizations. Users are able to navigate between the different Organizations they are part of.
-- Setup settings. Containing the Organization name, ID, description, README, and avatar. Settings are editable by the Organization Owner.
+- Setup settings. Containing the Organization name, ID, description, and avatar. Settings are editable by the Organization Owner.
 - Setup flow. Users are able to build an Organization on top of an existing top-level group. New users are able to create an Organization from scratch and to start building top-level groups from there.
 - Visibility. Options will be `public` and `private`. A nonuser of a specific Organization will not see private Organizations in the explore section. Visibility is editable by the Organization Owner.
 - Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
@@ -123,6 +123,10 @@ Non-users are external to the Organization and can only access the public resour
 
 Today only users, projects, namespaces and container images are considered routable entities which require global uniqueness on `https://gitlab.com/<path>/-/`. Initially, Organization routes will be [unscoped](../../../development/routing.md). Organizations will follow the path `https://gitlab.com/-/organizations/org-name/` as one of the design goals is that the addition of Organizations should not change existing group and project paths.
 
+### Impact of the Organization on Other Features
+
+We want a minimal amount of infrequently written tables in the shared database. If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells.
+
 ## Iteration Plan
 
 The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
@@ -142,7 +146,9 @@ In iteration 1, we introduce the concept of an Organization as a way to group to
 
 In iteration 2, an Organization MVC Experiment will be released. We will test the functionality with a select set of customers and improve the MVC based on these learnings. Users will be able to build an Organization on top of their existing top-level group.
 
-- The Organization has a description and a README.
+- The Organization has a description.
+- Organizations can be deleted.
+- Users can navigate between the different Organizations they are part of.
 
 ### Iteration 3: Organization MVC Beta (FY24Q4)
 
@@ -150,19 +156,24 @@ In iteration 3, the Organization MVC Beta will be released.
 
 - Multiple Organization Owners can be assigned.
 - Enterprise users can be added to an Organization.
+- Organization Owners can change the visibility of an organization between `public` and `private`. A nonuser of a specific Organization will not see private Organizations in the explore section.
 
 ### Iteration 4: Organization MVC GA (FY25Q1)
+
+In iteration 4, the Organization MVC will be rolled out.
 
 ### Post-MVC Iterations
 
 After the initial rollout of Organizations, the following functionality will be added to address customer needs relating to their implementation of GitLab:
 
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
+1. Projects can be created from the Organization-level Projects overview.
+1. Groups can be created from the Organization-level Groups overview.
 1. Move billing from top-level group to Organization.
 1. Audit events at the Organization level.
 1. Set merge request approval rules at the Organization level and cascade to all groups and projects.
 1. Security policies at the Organization level.
-1. Vulnerability reports at the Organization level.
+1. Vulnerability Report and Dependency List at the Organization level.
 1. Cascading Organization setting to enforce security scans.
 1. Scan result policies at the Organization level.
 1. Compliance frameworks.

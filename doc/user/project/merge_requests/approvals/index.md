@@ -121,11 +121,10 @@ Whenever an approval rule cannot be satisfied, the rule is displayed as **(!) Au
 - No eligible approvers (either groups or users) have been assigned to the approval rule.
 - The number of required approvals is more than the number of eligible approvers.
 
-These rules are automatically approved to unblock their respective merge requests,
-unless they were created through a security policy.
-
-Invalid approval rules created through a security policy are presented with **(!) Action Required**
-and are not automatically approved, blocking their respective merge requests.
+These rules are automatically approved to unblock their respective merge requests, unless they were
+created through a [scan result policy](../../../application_security/policies/scan-result-policies.md).
+Invalid approval rules created through a scan result policy are presented with
+**(!) Action Required** and are not automatically approved, blocking their respective merge requests.
 
 ## Related topics
 

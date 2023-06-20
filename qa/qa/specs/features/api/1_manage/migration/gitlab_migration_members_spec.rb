@@ -33,7 +33,11 @@ module QA
 
         it(
           'member retains indirect membership in imported project',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354416'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354416',
+          quarantine: {
+            type: :investigating,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415271"
+          }
         ) do
           expect_project_import_finished_successfully
 
@@ -51,7 +55,11 @@ module QA
 
         it(
           'member retains direct membership in imported project',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417',
+          quarantine: {
+            type: :investigating,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415271"
+          }
         ) do
           expect_project_import_finished_successfully
 

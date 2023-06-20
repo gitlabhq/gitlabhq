@@ -46,7 +46,11 @@ module QA
       context 'with uninitialized project' do
         it(
           'successfully imports project',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347610'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347610',
+          quarantine: {
+            type: :investigating,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415246"
+          }
         ) do
           expect_project_import_finished_successfully
 
@@ -95,7 +99,11 @@ module QA
 
         it(
           'successfully imports repository',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570',
+          quarantine: {
+            type: :investigating,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415246"
+          }
         ) do
           expect_project_import_finished_successfully
 
@@ -114,7 +122,11 @@ module QA
 
         it(
           'successfully imports project wiki',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567',
+          quarantine: {
+            type: :investigating,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415246"
+          }
         ) do
           expect_project_import_finished_successfully
 

@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlSprintf, GlBadge } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlIcon, GlSprintf, GlBadge } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { timelineItemI18n } from './constants';
@@ -9,8 +9,7 @@ export default {
   name: 'IncidentTimelineEventListItem',
   i18n: timelineItemI18n,
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
     GlIcon,
     GlSprintf,
     GlBadge,
@@ -45,6 +44,25 @@ export default {
     canEditEvent() {
       return this.action === 'comment';
     },
+    items() {
+      const items = [];
+
+      if (this.canEditEvent) {
+        items.push({
+          text: this.$options.i18n.edit,
+          action: () => {
+            this.$emit('edit');
+          },
+        });
+      }
+      items.push({
+        text: this.$options.i18n.delete,
+        action: () => {
+          this.$emit('delete');
+        },
+      });
+      return items;
+    },
   },
   methods: {
     getEventIcon,
@@ -76,22 +94,16 @@ export default {
       </div>
       <div v-safe-html="noteHtml" class="md"></div>
     </div>
-    <gl-dropdown
+    <gl-disclosure-dropdown
       v-if="canUpdateTimelineEvent"
-      right
-      class="event-note-actions gl-ml-auto gl-align-self-start"
+      placement="right"
+      class="event-note-actions gl-align-self-start"
       icon="ellipsis_v"
       text-sr-only
-      :text="$options.i18n.moreActions"
+      :toggle-text="$options.i18n.moreActions"
       category="tertiary"
       no-caret
-    >
-      <gl-dropdown-item v-if="canEditEvent" @click="$emit('edit')">
-        {{ $options.i18n.edit }}
-      </gl-dropdown-item>
-      <gl-dropdown-item @click="$emit('delete')">
-        {{ $options.i18n.delete }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      :items="items"
+    />
   </div>
 </template>

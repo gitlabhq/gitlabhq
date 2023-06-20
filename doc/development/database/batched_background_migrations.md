@@ -260,6 +260,9 @@ Background migration classes for EE-only features that use job arguments should 
 in the GitLab FOSS class. This is required to prevent job arguments validation from failing when
 migration is scheduled in GitLab FOSS context.
 
+You can use the [generator](#generator) to generate an EE-only migration scaffold by passing
+`--ee-only` flag when generating a new batched background migration.
+
 ## Queueing
 
 Queueing a batched background migration should be done in a post-deployment
