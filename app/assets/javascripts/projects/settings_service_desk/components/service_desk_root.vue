@@ -7,7 +7,7 @@ import { __, sprintf } from '~/locale';
 import ServiceDeskSetting from './service_desk_setting.vue';
 
 export default {
-  customEmailHelpPath: helpPagePath('/user/project/service_desk.html', {
+  serviceDeskEmailHelpPath: helpPagePath('/user/project/service_desk.html', {
     anchor: 'use-a-custom-email-address',
   }),
   components: {
@@ -32,10 +32,10 @@ export default {
     initialIncomingEmail: {
       default: '',
     },
-    customEmail: {
+    serviceDeskEmail: {
       default: '',
     },
-    customEmailEnabled: {
+    serviceDeskEmailEnabled: {
       default: false,
     },
     selectedTemplate: {
@@ -65,7 +65,7 @@ export default {
       alertVariant: 'danger',
       alertMessage: '',
       incomingEmail: this.initialIncomingEmail,
-      updatedCustomEmail: this.customEmail,
+      updatedServiceDeskEmail: this.serviceDeskEmail,
     };
   },
   methods: {
@@ -110,7 +110,7 @@ export default {
       return axios
         .put(this.endpoint, body)
         .then(({ data }) => {
-          this.updatedCustomEmail = data?.service_desk_address;
+          this.updatedServiceDeskEmail = data?.service_desk_address;
           this.showAlert(__('Changes saved.'), 'success');
         })
         .catch((err) => {
@@ -155,7 +155,7 @@ export default {
         "
       >
         <template #link="{ content }">
-          <gl-link :href="$options.customEmailHelpPath" target="_blank">
+          <gl-link :href="$options.serviceDeskEmailHelpPath" target="_blank">
             {{ content }}
           </gl-link>
         </template>
@@ -168,8 +168,8 @@ export default {
       :is-enabled="isEnabled"
       :is-issue-tracker-enabled="isIssueTrackerEnabled"
       :incoming-email="incomingEmail"
-      :custom-email="updatedCustomEmail"
-      :custom-email-enabled="customEmailEnabled"
+      :service-desk-email="updatedServiceDeskEmail"
+      :service-desk-email-enabled="serviceDeskEmailEnabled"
       :initial-selected-template="selectedTemplate"
       :initial-selected-file-template-project-id="selectedFileTemplateProjectId"
       :initial-outgoing-name="outgoingName"

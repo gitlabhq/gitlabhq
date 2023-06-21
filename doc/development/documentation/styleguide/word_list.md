@@ -862,7 +862,23 @@ Do not use `master`. Use `main` when you need a sample [default branch name](#de
 
 ## may, might
 
-**Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**.
+**Might** means something has the probability of occurring. Might is often used in troubleshooting documentation.
+
+**May** gives permission to do something. Consider **can** instead of **may**.
+
+Consider rewording phrases that use these terms. These terms often indicate possibility and doubt, and technical writing strives to be precise.
+
+See also [you can](#you-can).
+
+Use:
+
+- The `committed_date` and `authored_date` fields are generated from different sources, and might not be identical.
+- A typical pipeline consists of four stages, executed in the following order:
+
+Instead of:
+
+- The `committed_date` and `authored_date` fields are generated from different sources, and may not be identical.
+- A typical pipeline might consist of four stages, executed in the following order:
 
 ## MB, megabytes
 
@@ -1616,6 +1632,7 @@ For example:
 - Use code review analytics to view merge request data.
 - Create a board to organize your team tasks.
 - Configure variables to restrict pushes to a repository.
+- Add links to external accounts you have, like Skype and Twitter.
 
 Use **you can** for optional actions. For example:
 

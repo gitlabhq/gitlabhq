@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlIcon } from '@gitlab/ui';
+import { GlDropdownItem, GlIcon, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
@@ -38,9 +38,8 @@ describe('DashboardsDropdown', () => {
   const findSearchInput = () => wrapper.findComponent({ ref: 'monitorDashboardsDropdownSearch' });
   const findNoItemsMsg = () => wrapper.findComponent({ ref: 'monitorDashboardsDropdownMsg' });
   const findStarredListDivider = () => wrapper.findComponent({ ref: 'starredListDivider' });
-  // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-  // eslint-disable-next-line no-restricted-syntax
-  const setSearchTerm = (searchTerm) => wrapper.setData({ searchTerm });
+  const setSearchTerm = (searchTerm) =>
+    wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', searchTerm);
 
   beforeEach(() => {
     mockDashboards = dashboardGitResponse;

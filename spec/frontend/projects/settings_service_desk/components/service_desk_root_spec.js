@@ -13,8 +13,8 @@ describe('ServiceDeskRoot', () => {
   let spy;
 
   const provideData = {
-    customEmail: 'custom.email@example.com',
-    customEmailEnabled: true,
+    serviceDeskEmail: 'custom.email@example.com',
+    serviceDeskEmailEnabled: true,
     endpoint: '/gitlab-org/gitlab-test/service_desk',
     initialIncomingEmail: 'servicedeskaddress@example.com',
     initialIsEnabled: true,
@@ -52,8 +52,8 @@ describe('ServiceDeskRoot', () => {
       wrapper = createComponent();
 
       expect(wrapper.findComponent(ServiceDeskSetting).props()).toEqual({
-        customEmail: provideData.customEmail,
-        customEmailEnabled: provideData.customEmailEnabled,
+        serviceDeskEmail: provideData.serviceDeskEmail,
+        serviceDeskEmailEnabled: provideData.serviceDeskEmailEnabled,
         incomingEmail: provideData.initialIncomingEmail,
         initialOutgoingName: provideData.outgoingName,
         initialProjectKey: provideData.projectKey,

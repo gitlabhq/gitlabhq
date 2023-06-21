@@ -49,12 +49,12 @@ export default {
       required: false,
       default: '',
     },
-    customEmail: {
+    serviceDeskEmail: {
       type: String,
       required: false,
       default: '',
     },
-    customEmailEnabled: {
+    serviceDeskEmailEnabled: {
       type: Boolean,
       required: false,
     },
@@ -101,20 +101,20 @@ export default {
   },
   computed: {
     hasProjectKeySupport() {
-      return Boolean(this.customEmailEnabled);
+      return Boolean(this.serviceDeskEmailEnabled);
     },
     email() {
-      return this.customEmail || this.incomingEmail;
+      return this.serviceDeskEmail || this.incomingEmail;
     },
-    hasCustomEmail() {
-      return this.customEmail && this.customEmail !== this.incomingEmail;
+    hasServiceDeskEmail() {
+      return this.serviceDeskEmail && this.serviceDeskEmail !== this.incomingEmail;
     },
     emailSuffixHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
         anchor: 'configure-a-custom-email-address-suffix',
       });
     },
-    customEmailAddressHelpUrl() {
+    serviceDeskEmailAddressHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
         anchor: 'use-a-custom-email-address',
       });
@@ -204,7 +204,7 @@ export default {
               <clipboard-button :title="__('Copy')" :text="email" css-class="input-group-text" />
             </template>
           </gl-form-input-group>
-          <template v-if="email && hasCustomEmail" #description>
+          <template v-if="email && hasServiceDeskEmail" #description>
             <span class="gl-mt-2 gl-display-inline-block">
               <gl-sprintf :message="__('Emails sent to %{email} are also supported.')">
                 <template #email>
@@ -260,7 +260,7 @@ export default {
               >
                 <template #link="{ content }">
                   <gl-link
-                    :href="customEmailAddressHelpUrl"
+                    :href="serviceDeskEmailAddressHelpUrl"
                     target="_blank"
                     class="gl-text-blue-600 font-size-inherit"
                     >{{ content }}

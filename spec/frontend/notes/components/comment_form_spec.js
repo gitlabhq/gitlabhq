@@ -327,9 +327,8 @@ describe('issue_comment_form component', () => {
           jest.spyOn(wrapper.vm, 'stopPolling');
           jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
 
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          await wrapper.setData({ note: 'hello world' });
+          findMarkdownEditor().vm.$emit('input', 'hello world');
+          await nextTick();
 
           await findCommentButton().trigger('click');
 
@@ -459,9 +458,8 @@ describe('issue_comment_form component', () => {
       it('should enable comment button if it has note', async () => {
         mountComponent();
 
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        await wrapper.setData({ note: 'Foo' });
+        findMarkdownEditor().vm.$emit('input', 'Foo');
+        await nextTick();
 
         expect(findCommentTypeDropdown().props('disabled')).toBe(false);
       });

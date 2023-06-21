@@ -170,14 +170,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     }
 
     .reply-wrapper {
-      padding: $gl-padding-8 $gl-padding-8 $gl-padding-4;
+      padding: $gl-padding-8;
       background: $gray-10;
       border-radius: 0 0 $border-radius-default $border-radius-default;
     }
-  }
-
-  .reply-wrapper {
-    border-top: 1px solid var(--border-color, $border-color);
   }
 
   .new-discussion-disclaimer {

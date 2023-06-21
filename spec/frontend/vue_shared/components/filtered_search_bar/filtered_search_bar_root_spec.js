@@ -125,46 +125,23 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     describe('sortDirectionIcon', () => {
-      it('returns string "sort-lowest" when `selectedSortDirection` is "ascending"', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          selectedSortDirection: SORT_DIRECTION.ascending,
+      it('renders `sort-highest` descending icon by default', () => {
+        expect(findGlButton().props('icon')).toBe('sort-highest');
+        expect(findGlButton().attributes()).toMatchObject({
+          'aria-label': 'Sort direction: Descending',
+          title: 'Sort direction: Descending',
         });
-
-        expect(wrapper.vm.sortDirectionIcon).toBe('sort-lowest');
       });
 
-      it('returns string "sort-highest" when `selectedSortDirection` is "descending"', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          selectedSortDirection: SORT_DIRECTION.descending,
+      it('renders `sort-lowest` ascending icon when the sort button is clicked', async () => {
+        findGlButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findGlButton().props('icon')).toBe('sort-lowest');
+        expect(findGlButton().attributes()).toMatchObject({
+          'aria-label': 'Sort direction: Ascending',
+          title: 'Sort direction: Ascending',
         });
-
-        expect(wrapper.vm.sortDirectionIcon).toBe('sort-highest');
-      });
-    });
-
-    describe('sortDirectionTooltip', () => {
-      it('returns string "Sort direction: Ascending" when `selectedSortDirection` is "ascending"', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          selectedSortDirection: SORT_DIRECTION.ascending,
-        });
-
-        expect(wrapper.vm.sortDirectionTooltip).toBe('Sort direction: Ascending');
-      });
-
-      it('returns string "Sort direction: Descending" when `selectedSortDirection` is "descending"', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          selectedSortDirection: SORT_DIRECTION.descending,
-        });
-
-        expect(wrapper.vm.sortDirectionTooltip).toBe('Sort direction: Descending');
       });
     });
 

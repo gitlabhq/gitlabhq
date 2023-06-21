@@ -10,8 +10,8 @@ export default () => {
   }
 
   const {
-    customEmail,
-    customEmailEnabled,
+    serviceDeskEmail,
+    serviceDeskEmailEnabled,
     enabled,
     issueTrackerEnabled,
     endpoint,
@@ -27,8 +27,8 @@ export default () => {
   return new Vue({
     el,
     provide: {
-      customEmail,
-      customEmailEnabled: parseBoolean(customEmailEnabled),
+      serviceDeskEmail,
+      serviceDeskEmailEnabled: parseBoolean(serviceDeskEmailEnabled),
       endpoint,
       initialIncomingEmail: incomingEmail,
       initialIsEnabled: parseBoolean(enabled),
