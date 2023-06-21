@@ -1421,6 +1421,7 @@ body {
       };
     };
 
+    // NOTE: unicode \u001 and \u003 cannot be used in test names because they cause test report XML parsing errors
     it.each`
       desc                                                                     | urlInput                                                                                                                                                                                                             | urlOutput
       ${'protocol-based JS injection: simple, no spaces'}                      | ${protocolBasedInjectionSimpleNoSpaces}                                                                                                                                                                              | ${null}
@@ -1439,7 +1440,7 @@ body {
       ${'protocol-based JS injection: preceding colon'}                        | ${":javascript:alert('XSS');"}                                                                                                                                                                                       | ${":javascript:alert('XSS');"}
       ${'protocol-based JS injection: null char'}                              | ${"java\0script:alert('XSS')"}                                                                                                                                                                                       | ${"java�script:alert('XSS')"}
       ${'protocol-based JS injection: invalid URL char'}                       | ${"java\\script:alert('XSS')"}                                                                                                                                                                                       | ${"java\\script:alert('XSS')"}
-    `('sanitize $desc:\n\tURL "$urlInput" becomes "$urlOutput"', ({ urlInput, urlOutput }) => {
+    `('sanitize $desc becomes "$urlOutput"', ({ urlInput, urlOutput }) => {
       const exampleFactories = [docWithImageFactory, docWithLinkFactory];
 
       exampleFactories.forEach(async (exampleFactory) => {

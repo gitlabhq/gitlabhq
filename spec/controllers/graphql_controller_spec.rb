@@ -431,6 +431,13 @@ RSpec.describe GraphqlController, feature_category: :integrations do
     context 'when querying an IntrospectionQuery', :use_clean_rails_memory_store_caching do
       let_it_be(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
 
+      it 'caches IntrospectionQuery even when operationName is not given' do
+        expect(GitlabSchema).to receive(:execute).exactly(:once)
+
+        post :execute, params: { query: query }
+        post :execute, params: { query: query }
+      end
+
       it 'caches the IntrospectionQuery' do
         expect(GitlabSchema).to receive(:execute).exactly(:once)
 

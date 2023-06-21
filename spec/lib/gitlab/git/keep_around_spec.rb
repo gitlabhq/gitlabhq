@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Git::KeepAround do
 
   let(:repository) { create(:project, :repository).repository }
   let(:service) { described_class.new(repository) }
+  let(:keep_around_ref_name) { "refs/#{::Repository::REF_KEEP_AROUND}/#{sample_commit.id}" }
 
   it "does not fail if we attempt to reference bad commit" do
     expect(service.kept_around?('abc1234')).to be_falsey
@@ -16,6 +17,7 @@ RSpec.describe Gitlab::Git::KeepAround do
     service.execute([sample_commit.id])
 
     expect(service.kept_around?(sample_commit.id)).to be_truthy
+    expect(repository.list_refs([keep_around_ref_name])).not_to be_empty
   end
 
   it "does not fail if writting the ref fails" do
@@ -43,6 +45,19 @@ RSpec.describe Gitlab::Git::KeepAround do
       service.execute([sample_commit.id, another_sample_commit.id])
 
       expect(service.kept_around?(another_sample_commit.id)).to be_truthy
+    end
+  end
+
+  context 'when disable_keep_around_refs feature flag is enabled' do
+    before do
+      stub_feature_flags(disable_keep_around_refs: true)
+    end
+
+    it 'does not create keep-around refs' do
+      service.execute([sample_commit.id])
+
+      expect(service.kept_around?(sample_commit.id)).to be_truthy
+      expect(repository.list_refs([keep_around_ref_name])).to be_empty
     end
   end
 end

@@ -19,6 +19,8 @@ module Gitlab
       end
 
       def execute(shas)
+        return if disabled?
+
         shas.uniq.each do |sha|
           next unless sha.present? && commit_by(oid: sha)
 
@@ -32,6 +34,8 @@ module Gitlab
       end
 
       def kept_around?(sha)
+        return true if disabled?
+
         ref_exists?(keep_around_ref_name(sha))
       end
 
@@ -39,6 +43,11 @@ module Gitlab
       private :commit_by, :raw_repository, :ref_exists?, :disk_path
 
       private
+
+      def disabled?
+        Feature.enabled?(:disable_keep_around_refs, @repository, type: :ops) ||
+          (@repository.project && Feature.enabled?(:disable_keep_around_refs, @repository.project, type: :ops))
+      end
 
       def keep_around_ref_name(sha)
         "refs/#{::Repository::REF_KEEP_AROUND}/#{sha}"

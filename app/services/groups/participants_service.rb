@@ -17,7 +17,11 @@ module Groups
       render_participants_as_hash(participants.uniq)
     end
 
+    private
+
     def all_members
+      return [] if Feature.enabled?(:disable_all_mention)
+
       count = group_members.count
       [{ username: "all", name: "All Group Members", count: count }]
     end

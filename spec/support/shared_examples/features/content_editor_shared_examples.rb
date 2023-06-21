@@ -506,6 +506,8 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
       switch_to_content_editor
 
       type_in_content_editor :enter
+
+      stub_feature_flags(disable_all_mention: false)
     end
 
     if params[:with_expanded_references]
@@ -543,6 +545,26 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
 
       expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('@abc123')
+    end
+
+    context 'when `disable_all_mention` is enabled' do
+      before do
+        stub_feature_flags(disable_all_mention: true)
+      end
+
+      it 'shows suggestions for members with descriptions' do
+        type_in_content_editor '@a'
+
+        expect(find(suggestions_dropdown)).to have_text('abc123')
+        expect(find(suggestions_dropdown)).not_to have_text('All Group Members')
+
+        type_in_content_editor 'bc'
+
+        send_keys [:arrow_down, :enter]
+
+        expect(page).not_to have_css(suggestions_dropdown)
+        expect(page).to have_text('@abc123')
+      end
     end
 
     it 'shows suggestions for merge requests' do

@@ -14,6 +14,7 @@ class GraphqlController < ApplicationController
 
   # The query string of a standard IntrospectionQuery, used to compare incoming requests for caching
   CACHED_INTROSPECTION_QUERY_STRING = CachedIntrospectionQuery.query_string
+  INTROSPECTION_QUERY_OPERATION_NAME = 'IntrospectionQuery'
 
   # If a user is using their session to access GraphQL, we need to have session
   # storage, since the admin-mode check is session wide.
@@ -58,7 +59,7 @@ class GraphqlController < ApplicationController
   urgency :low, [:execute]
 
   def execute
-    result = if Feature.enabled?(:cache_introspection_query) && params[:operationName] == 'IntrospectionQuery'
+    result = if Feature.enabled?(:cache_introspection_query) && introspection_query?
                execute_introspection_query
              else
                multiplex? ? execute_multiplex : execute_query
@@ -294,9 +295,7 @@ class GraphqlController < ApplicationController
   end
 
   def introspection_query_can_use_cache?
-    graphql_query = GraphQL::Query.new(GitlabSchema, query: query, variables: build_variables(params[:variables]))
-
-    CACHED_INTROSPECTION_QUERY_STRING == graphql_query.query_string.squish
+    CACHED_INTROSPECTION_QUERY_STRING == graphql_query_object.query_string.squish
   end
 
   def introspection_query_cache_key
@@ -304,6 +303,15 @@ class GraphqlController < ApplicationController
     # visibility of schema items. Visibility can be affected by the remove_deprecated param. For more context, see:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/409448#note_1377558096
     ['introspection-query-cache', Gitlab.revision, context[:remove_deprecated]]
+  end
+
+  def introspection_query?
+    if params.key?(:operationName)
+      params[:operationName] == INTROSPECTION_QUERY_OPERATION_NAME
+    else
+      # If we don't provide operationName param, we infer it from the query
+      graphql_query_object.selected_operation_name == INTROSPECTION_QUERY_OPERATION_NAME
+    end
   end
 
   def log_introspection_query_cache_details(can_use_introspection_query_cache)
@@ -314,5 +322,10 @@ class GraphqlController < ApplicationController
       variables: build_variables(params[:variables]).to_s,
       introspection_query_cache_key: introspection_query_cache_key.to_s
     )
+  end
+
+  def graphql_query_object
+    @graphql_query_object ||= GraphQL::Query.new(GitlabSchema, query: query,
+      variables: build_variables(params[:variables]))
   end
 end

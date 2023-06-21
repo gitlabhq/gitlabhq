@@ -110,3 +110,10 @@ A runner's status will only relate to runner contact status, such as:
 
 When checking if a runner is `paused`, API users are advised to check the boolean attribute
 `paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
+
+## Runner will not return `ip_address`
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415159).
+
+In GitLab 17.0, the [Runners API](../runners.md) will return `""` in place of `ip_address` for runners.
+In v5 of the REST API, the field will be removed.

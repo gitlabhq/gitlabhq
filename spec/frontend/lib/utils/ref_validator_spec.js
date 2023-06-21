@@ -65,10 +65,27 @@ describe('~/lib/utils/ref_validator', () => {
       ['foo.123.', validationMessages.DisallowedSequencePostfixesValidationMessage],
 
       ['foo/', validationMessages.DisallowedPostfixesValidationMessage],
-
-      ['control-character\x7f', validationMessages.ControlCharactersValidationMessage],
-      ['control-character\x15', validationMessages.ControlCharactersValidationMessage],
     ])('tag with name "%s"', (tagName, validationMessage) => {
+      it(`should be invalid with validation message "${validationMessage}"`, () => {
+        const result = validateTag(tagName);
+        expect(result.isValid).toBe(false);
+        expect(result.validationErrors).toContain(validationMessage);
+      });
+    });
+
+    // NOTE: control characters cannot be used in test names because they cause test report XML parsing errors
+    describe.each([
+      [
+        'control-character x7f',
+        'control-character\x7f',
+        validationMessages.ControlCharactersValidationMessage,
+      ],
+      [
+        'control-character x15',
+        'control-character\x15',
+        validationMessages.ControlCharactersValidationMessage,
+      ],
+    ])('tag with name "%s"', (_, tagName, validationMessage) => {
       it(`should be invalid with validation message "${validationMessage}"`, () => {
         const result = validateTag(tagName);
         expect(result.isValid).toBe(false);

@@ -312,6 +312,9 @@ RSpec.configure do |config|
       # most cases. We do test the email verification flow in the appropriate specs.
       stub_feature_flags(require_email_verification: false)
 
+      # Keep-around refs should only be turned off for specific projects/repositories.
+      stub_feature_flags(disable_keep_around_refs: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

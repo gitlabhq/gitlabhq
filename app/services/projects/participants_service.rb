@@ -30,6 +30,8 @@ module Projects
     end
 
     def all_members
+      return [] if Feature.enabled?(:disable_all_mention)
+
       [{ username: "all", name: "All Project and Group Members", count: project_members.count }]
     end
 
