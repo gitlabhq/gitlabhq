@@ -11564,10 +11564,13 @@ msgstr ""
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr ""
 
-msgid "Compliance Report|Export as CSV"
+msgid "Compliance Report|Export frameworks as CSV. You will be emailed after the export is processed."
 msgstr ""
 
-msgid "Compliance Report|Export frameworks as CSV. You will be emailed after export is processed."
+msgid "Compliance Report|Export full report as CSV"
+msgstr ""
+
+msgid "Compliance Report|Export merge request violations as CSV. You will be emailed after the export is processed."
 msgstr ""
 
 msgid "Compliance Report|Frameworks"

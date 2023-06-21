@@ -158,6 +158,31 @@ describe('AccessDropdown', () => {
 
       expect(template).not.toContain(user.name);
     });
+
+    it('show user avatar correctly', () => {
+      const user = {
+        id: 613,
+        avatar_url: 'some_valid_avatar.png',
+        name: 'test',
+        username: 'test',
+      };
+      const template = dropdown.userRowHtml(user);
+
+      expect(template).toContain(user.avatar_url);
+      expect(template).not.toContain('identicon');
+    });
+
+    it('show identicon when user do not have avatar', () => {
+      const user = {
+        id: 613,
+        avatar_url: '',
+        name: 'test',
+        username: 'test',
+      };
+      const template = dropdown.userRowHtml(user);
+
+      expect(template).toContain('identicon');
+    });
   });
 
   describe('deployKeyRowHtml', () => {

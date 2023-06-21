@@ -82,7 +82,7 @@ We make the following assumption with regards to automatically being considered 
 - Team members working in a specific stage/group (for example, create: source code) are considered domain experts for that area of the app they work on.
 - Team members working on a specific feature (for example, search) are considered domain experts for that feature.
 
-We default to assigning reviews to team members with domain expertise for code reviews. For UX reviews we default to the recommended designer from the Reviewer roulette.
+We default to assigning reviews to team members with domain expertise for code reviews. UX reviews default to the recommended reviewer from the Review Roulette. Due to designer capacity limits, areas not supported by a Product Designer will no longer require a UX review unless it is a community contribution.
 When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation (see above for UX reviews).
 
 To find a domain expert:
@@ -106,7 +106,9 @@ Reviewer roulette is an internal tool for use on GitLab.com, and not available f
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It makes
 **recommendations** for developer reviewers and you should override it if you think someone else is a better
-fit. User-facing changes are also required to have a UX review, even if it's behind a feature flag. Default to the recommended UX reviewer suggested.
+fit. 
+
+We only do UX reviews for MRs from teams that include a Product Designer. User-facing changes from these teams are required to have a UX review, even if it's behind a feature flag. Default to the recommended UX reviewer suggested.
 
 It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
