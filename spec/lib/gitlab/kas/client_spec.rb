@@ -77,8 +77,8 @@ RSpec.describe Gitlab::Kas::Client do
       let(:request) { instance_double(Gitlab::Agent::ConfigurationProject::Rpc::ListAgentConfigFilesRequest) }
       let(:response) { double(Gitlab::Agent::ConfigurationProject::Rpc::ListAgentConfigFilesResponse, config_files: agent_configurations) }
 
-      let(:repository) { instance_double(Gitlab::Agent::Modserver::Repository) }
-      let(:gitaly_address) { instance_double(Gitlab::Agent::Modserver::GitalyAddress) }
+      let(:repository) { instance_double(Gitlab::Agent::Entity::GitalyRepository) }
+      let(:gitaly_info) { instance_double(Gitlab::Agent::Entity::GitalyInfo) }
 
       let(:agent_configurations) { [double] }
 
@@ -89,16 +89,16 @@ RSpec.describe Gitlab::Kas::Client do
           .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
           .and_return(stub)
 
-        expect(Gitlab::Agent::Modserver::Repository).to receive(:new)
+        expect(Gitlab::Agent::Entity::GitalyRepository).to receive(:new)
           .with(project.repository.gitaly_repository.to_h)
           .and_return(repository)
 
-        expect(Gitlab::Agent::Modserver::GitalyAddress).to receive(:new)
+        expect(Gitlab::Agent::Entity::GitalyInfo).to receive(:new)
           .with(Gitlab::GitalyClient.connection_data(project.repository_storage))
-          .and_return(gitaly_address)
+          .and_return(gitaly_info)
 
         expect(Gitlab::Agent::ConfigurationProject::Rpc::ListAgentConfigFilesRequest).to receive(:new)
-          .with(repository: repository, gitaly_address: gitaly_address)
+          .with(repository: repository, gitaly_info: gitaly_info)
           .and_return(request)
 
         expect(stub).to receive(:list_agent_config_files)
@@ -112,7 +112,8 @@ RSpec.describe Gitlab::Kas::Client do
     describe '#send_git_push_event' do
       let(:stub) { instance_double(Gitlab::Agent::Notifications::Rpc::Notifications::Stub) }
       let(:request) { instance_double(Gitlab::Agent::Notifications::Rpc::GitPushEventRequest) }
-      let(:project_param) { instance_double(Gitlab::Agent::Notifications::Rpc::Project) }
+      let(:event_param) { instance_double(Gitlab::Agent::Event::GitPushEvent) }
+      let(:project_param) { instance_double(Gitlab::Agent::Event::Project) }
       let(:response) { double(Gitlab::Agent::Notifications::Rpc::GitPushEventResponse) }
 
       subject { described_class.new.send_git_push_event(project: project) }
@@ -122,12 +123,16 @@ RSpec.describe Gitlab::Kas::Client do
           .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
           .and_return(stub)
 
-        expect(Gitlab::Agent::Notifications::Rpc::Project).to receive(:new)
+        expect(Gitlab::Agent::Event::Project).to receive(:new)
           .with(id: project.id, full_path: project.full_path)
           .and_return(project_param)
 
-        expect(Gitlab::Agent::Notifications::Rpc::GitPushEventRequest).to receive(:new)
+        expect(Gitlab::Agent::Event::GitPushEvent).to receive(:new)
           .with(project: project_param)
+          .and_return(event_param)
+
+        expect(Gitlab::Agent::Notifications::Rpc::GitPushEventRequest).to receive(:new)
+          .with(event: event_param)
           .and_return(request)
 
         expect(stub).to receive(:git_push_event)

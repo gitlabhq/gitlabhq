@@ -7,7 +7,7 @@ export const RENDER_ERROR_MSG = __(
   'The map can not be displayed because there was an error loading the GeoJSON file.',
 );
 
-export const OPEN_STREET_TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+export const OPEN_STREET_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 export const ICON_CONFIG = { iconUrl, iconRetinaUrl, shadowUrl };
 export const MAP_ATTRIBUTION = __('Map data from');
 export const OPEN_STREET_COPYRIGHT_LINK =

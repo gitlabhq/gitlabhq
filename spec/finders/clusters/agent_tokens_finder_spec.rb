@@ -47,10 +47,7 @@ RSpec.describe Clusters::AgentTokensFinder do
     context 'when filtering by an unrecognised status' do
       subject(:execute) { described_class.new(agent, user, status: 'dummy').execute }
 
-      it 'raises an error' do
-        # 'dummy' is not a valid status as defined in the AgentToken status enum
-        expect { execute.count }.to raise_error(ActiveRecord::StatementInvalid)
-      end
+      it { is_expected.to be_empty }
     end
 
     context 'when user does not have permission' do

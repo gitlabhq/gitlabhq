@@ -285,7 +285,7 @@ module Gitlab
         def pool
           ActiveRecord::Base.connection_handler.retrieve_connection_pool(
             @configuration.connection_specification_name,
-            role: ActiveRecord::Base.writing_role,
+            role: ActiveRecord.writing_role,
             shard: ActiveRecord::Base.default_shard
           ) || raise(::ActiveRecord::ConnectionNotEstablished)
         end

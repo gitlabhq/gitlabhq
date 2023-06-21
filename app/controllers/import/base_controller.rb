@@ -82,7 +82,7 @@ class Import::BaseController < ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def find_already_added_projects(import_type)
-    current_user.created_projects.where(import_type: import_type).with_import_state
+    current_user.created_projects.inc_routes.where(import_type: import_type).with_import_state
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

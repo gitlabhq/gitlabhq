@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
   describe '#initialize_type_map' do
     it 'caches loading of types in memory' do
       recorder_without_cache = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) { initialize_connection.disconnect! }
-      expect(recorder_without_cache.log).to include(a_string_matching(/FROM pg_type/)).twice
+      expect(recorder_without_cache.log).to include(a_string_matching(/FROM pg_type/)).exactly(4).times
 
       recorder_with_cache = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) { initialize_connection.disconnect! }
 
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
 
       recorder = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) { initialize_connection(other_config).disconnect! }
 
-      expect(recorder.log).to include(a_string_matching(/FROM pg_type/)).twice
+      expect(recorder.log).to include(a_string_matching(/FROM pg_type/)).exactly(4).times
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
       connection = initialize_connection
       recorder = ActiveRecord::QueryRecorder.new(skip_schema_queries: false) { connection.reload_type_map }
 
-      expect(recorder.log).to include(a_string_matching(/FROM pg_type/)).once
+      expect(recorder.log).to include(a_string_matching(/FROM pg_type/)).exactly(3).times
     end
   end
 

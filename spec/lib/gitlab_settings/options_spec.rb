@@ -7,6 +7,32 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
 
   subject(:options) { described_class.build(config) }
 
+  shared_examples 'do not mutate' do |method|
+    context 'when in production env' do
+      it 'returns the unchanged internal hash' do
+        stub_rails_env('production')
+
+        expect(Gitlab::AppLogger)
+          .to receive(:warn)
+          .with('Warning: Do not mutate GitlabSettings::Options objects', method: method)
+
+        expect(options.send(method)).to be_truthy
+      end
+    end
+
+    context 'when not in production env' do
+      it 'raises an exception to avoid changing the internal keys' do
+        exception = "Warning: Do not mutate GitlabSettings::Options objects: `#{method}`"
+
+        stub_rails_env('development')
+        expect { options.send(method) }.to raise_error(exception)
+
+        stub_rails_env('test')
+        expect { options.send(method) }.to raise_error(exception)
+      end
+    end
+  end
+
   describe '.build' do
     context 'when argument is a hash' do
       it 'creates a new GitlabSettings::Options instance' do
@@ -16,6 +42,16 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
         expect(options.foo).to be_a described_class
         expect(options.foo.bar).to eq 'baz'
       end
+    end
+  end
+
+  describe '#default' do
+    it 'returns the option value' do
+      expect(options.default).to be_nil
+
+      options['default'] = 'The default value'
+
+      expect(options.default).to eq('The default value')
     end
   end
 
@@ -96,7 +132,7 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
   end
 
   describe '#merge' do
-    it 'merges a hash to the existing options' do
+    it 'returns a new object with the options merged' do
       expect(options.merge(more: 'configs').to_hash).to eq(
         'foo' => { 'bar' => 'baz' },
         'more' => 'configs'
@@ -104,14 +140,33 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
     end
 
     context 'when the merge hash replaces existing configs' do
-      it 'merges a hash to the existing options' do
+      it 'returns a new object with the duplicated options replaced' do
         expect(options.merge(foo: 'configs').to_hash).to eq('foo' => 'configs')
       end
     end
   end
 
+  describe '#merge!' do
+    it 'merges in place with the existing options' do
+      options.merge!(more: 'configs') # rubocop: disable Performance/RedundantMerge
+
+      expect(options.to_hash).to eq(
+        'foo' => { 'bar' => 'baz' },
+        'more' => 'configs'
+      )
+    end
+
+    context 'when the merge hash replaces existing configs' do
+      it 'merges in place with the duplicated options replaced' do
+        options.merge!(foo: 'configs') # rubocop: disable Performance/RedundantMerge
+
+        expect(options.to_hash).to eq('foo' => 'configs')
+      end
+    end
+  end
+
   describe '#deep_merge' do
-    it 'merges a hash to the existing options' do
+    it 'returns a new object with the options merged' do
       expect(options.deep_merge(foo: { more: 'configs' }).to_hash).to eq('foo' => {
         'bar' => 'baz',
         'more' => 'configs'
@@ -119,7 +174,24 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
     end
 
     context 'when the merge hash replaces existing configs' do
-      it 'merges a hash to the existing options' do
+      it 'returns a new object with the duplicated options replaced' do
+        expect(options.deep_merge(foo: { bar: 'configs' }).to_hash).to eq('foo' => {
+          'bar' => 'configs'
+        })
+      end
+    end
+  end
+
+  describe '#deep_merge!' do
+    it 'merges in place with the existing options' do
+      expect(options.deep_merge(foo: { more: 'configs' }).to_hash).to eq('foo' => {
+        'bar' => 'baz',
+        'more' => 'configs'
+      })
+    end
+
+    context 'when the merge hash replaces existing configs' do
+      it 'merges in place with the duplicated options replaced' do
         expect(options.deep_merge(foo: { bar: 'configs' }).to_hash).to eq('foo' => {
           'bar' => 'configs'
         })
@@ -133,6 +205,14 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
       expect(options.is_a?(Hash)).to be true
       expect(options.is_a?(String)).to be false
     end
+  end
+
+  describe '#symbolize_keys!' do
+    it_behaves_like 'do not mutate', :symbolize_keys!
+  end
+
+  describe '#stringify_keys!' do
+    it_behaves_like 'do not mutate', :stringify_keys!
   end
 
   describe '#method_missing' do
@@ -149,10 +229,30 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
     end
 
     context 'when method is not an option' do
-      it 'delegates the method to the internal options hash' do
-        expect { options.foo.delete('bar') }
-          .to change { options.to_hash }
-          .to({ 'foo' => {} })
+      context 'when in production env' do
+        it 'delegates the method to the internal options hash' do
+          stub_rails_env('production')
+
+          expect(Gitlab::AppLogger)
+            .to receive(:warn)
+            .with('Calling a hash method on GitlabSettings::Options', method: :delete)
+
+          expect { options.foo.delete('bar') }
+            .to change { options.to_hash }
+            .to({ 'foo' => {} })
+        end
+      end
+
+      context 'when not in production env' do
+        it 'delegates the method to the internal options hash' do
+          exception = 'Calling a hash method on GitlabSettings::Options: `delete`'
+
+          stub_rails_env('development')
+          expect { options.foo.delete('bar') }.to raise_error(exception)
+
+          stub_rails_env('test')
+          expect { options.foo.delete('bar') }.to raise_error(exception)
+        end
       end
     end
 

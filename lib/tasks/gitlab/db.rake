@@ -142,7 +142,7 @@ namespace :gitlab do
     desc 'This adjusts and cleans db/structure.sql - it runs after db:schema:dump'
     task :clean_structure_sql do |task_name|
       ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
-        structure_file = ActiveRecord::Tasks::DatabaseTasks.dump_filename(db_config.name)
+        structure_file = ActiveRecord::Tasks::DatabaseTasks.schema_dump_path(db_config)
 
         schema = File.read(structure_file)
 

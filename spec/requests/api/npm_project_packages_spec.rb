@@ -26,6 +26,48 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     it_behaves_like 'rejects invalid package names' do
       subject { get(url) }
     end
+
+    context 'when metadata cache exists', :aggregate_failures do
+      let!(:npm_metadata_cache) { create(:npm_metadata_cache, package_name: package.name, project_id: project.id) }
+      let(:metadata) { Gitlab::Json.parse(npm_metadata_cache.file.read.gsub('dist_tags', 'dist-tags')) }
+
+      subject { get(url) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns response from metadata cache' do
+        expect(Packages::Npm::GenerateMetadataService).not_to receive(:new)
+        expect(Packages::Npm::MetadataCache).to receive(:find_by_package_name_and_project_id)
+          .with(package.name, project.id).and_call_original
+
+        subject
+
+        expect(json_response).to eq(metadata)
+      end
+
+      it 'bumps last_downloaded_at of metadata cache' do
+        expect { subject }
+          .to change { npm_metadata_cache.reload.last_downloaded_at }.from(nil).to(instance_of(ActiveSupport::TimeWithZone))
+      end
+
+      context 'when npm_metadata_cache disabled' do
+        before do
+          stub_feature_flags(npm_metadata_cache: false)
+        end
+
+        it_behaves_like 'generates metadata response "on-the-fly"'
+      end
+
+      context 'when metadata cache file does not exist' do
+        before do
+          FileUtils.rm_rf(npm_metadata_cache.file.path)
+        end
+
+        it_behaves_like 'generates metadata response "on-the-fly"'
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags' do

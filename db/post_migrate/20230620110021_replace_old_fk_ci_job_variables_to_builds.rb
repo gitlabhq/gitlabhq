@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+class ReplaceOldFkCiJobVariablesToBuilds < Gitlab::Database::Migration[2.1]
+  include Gitlab::Database::MigrationHelpers::WraparoundAutovacuum
+
+  disable_ddl_transaction!
+
+  def up
+    return unless should_run?
+    return if new_foreign_key_exists?
+
+    with_lock_retries do
+      remove_foreign_key_if_exists :ci_job_variables, :ci_builds,
+        name: :fk_rails_fbf3b34792_p, reverse_lock_order: true
+
+      rename_constraint :ci_job_variables, :temp_fk_rails_fbf3b34792_p, :fk_rails_fbf3b34792_p
+    end
+  end
+
+  def down
+    return unless should_run?
+    return unless new_foreign_key_exists?
+
+    add_concurrent_foreign_key :ci_job_variables, :ci_builds,
+      name: :temp_fk_rails_fbf3b34792_p,
+      column: [:partition_id, :job_id],
+      target_column: [:partition_id, :id],
+      on_update: :cascade,
+      on_delete: :cascade,
+      validate: true,
+      reverse_lock_order: true
+
+    switch_constraint_names :ci_job_variables, :fk_rails_fbf3b34792_p, :temp_fk_rails_fbf3b34792_p
+  end
+
+  private
+
+  def should_run?
+    can_execute_on?(:ci_job_variables, :ci_builds)
+  end
+
+  def new_foreign_key_exists?
+    foreign_key_exists?(:ci_job_variables, :p_ci_builds, name: :fk_rails_fbf3b34792_p)
+  end
+end

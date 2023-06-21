@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
         before do
           # CI config might not be configured
           allow(ActiveRecord::Base.configurations).to receive(:configs_for)
-            .with(env_name: 'test', name: 'ci', include_replicas: true)
+            .with(env_name: 'test', name: 'ci', include_hidden: true)
             .and_return(ci_db_config)
         end
 

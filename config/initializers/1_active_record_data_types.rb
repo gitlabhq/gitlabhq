@@ -26,14 +26,16 @@ module RegisterDateTimeWithTimeZone
   #
   # When schema dumping, `timestamptz` columns will be output as
   # `t.datetime_with_timezone`.
-  def initialize_type_map(mapping = type_map)
-    super mapping
+  class << self
+    def initialize_type_map(mapping = type_map)
+      super mapping
 
-    register_class_with_precision(
-      mapping,
-      'timestamptz',
-      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::OID::DateTimeWithTimeZone
-    )
+      register_class_with_precision(
+        mapping,
+        'timestamptz',
+        ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::OID::DateTimeWithTimeZone
+      )
+    end
   end
 end
 

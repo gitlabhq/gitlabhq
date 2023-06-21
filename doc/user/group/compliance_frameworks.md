@@ -364,20 +364,6 @@ This alternative ensures the compliance pipeline does not re-start the parent pi
 
 ## Troubleshooting
 
-### Cannot remove compliance framework from a project
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390626), if you move a project, its compliance
-framework becomes orphaned and can't be removed. To manually remove a compliance framework from a project, run the
-following GraphQL mutation with your project's ID:
-
-```graphql
-mutation {
-  projectSetComplianceFramework(input: {projectId: "gid://gitlab/Project/1234567", complianceFrameworkId: null}) {
-    errors
-  }
-}
-```
-
 ### Compliance jobs are overwritten by target repository
 
 If you use the `extends` statement in a compliance pipeline configuration, compliance jobs are overwritten by the target repository job. For example,

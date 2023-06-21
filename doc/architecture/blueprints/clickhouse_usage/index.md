@@ -20,6 +20,12 @@ participating-stages: ["~section::ops", "~section::dev"]
 
 In FY23-Q2, the Monitor:Observability team developed and shipped a [ClickHouse data platform](https://gitlab.com/groups/gitlab-org/-/epics/7772) to store and query data for Error Tracking and other observability features. Other teams have also begun to incorporate ClickHouse into their current or planned architectures. Given the growing interest in ClickHouse across product development teams, it is important to have a cohesive strategy for developing features using ClickHouse. This will allow teams to more efficiently leverage ClickHouse and ensure that we can maintain and support this functionality effectively for SaaS and self-managed customers.
 
+### Use Cases
+
+Many product teams at GitLab are considering ClickHouse when developing new features and to improve performance of existing features.
+
+During the start of the ClickHouse working group, we [documented existing and potential use cases](https://gitlab.com/groups/gitlab-com/-/epics/2075#use-cases) and found that there was interest in ClickHouse from teams across all DevSecOps stage groups.
+
 ### Goals
 
 As ClickHouse has already been selected for use at GitLab, our main goal now is to ensure successful adoption of ClickHouse across GitLab. It is helpful to break down this goal according to the different phases of the product development workflow.
@@ -29,29 +35,18 @@ As ClickHouse has already been selected for use at GitLab, our main goal now is 
 1. Launch: Support ClickHouse-backed features for SaaS and self-managed.
 1. Improve: Successfully scale our usage of ClickHouse.
 
-### Non-Goals
-
 ## Proposals
 
 The following are links to proposals in the form of blueprints that address technical challenges to using ClickHouse across a wide variety of features.
 
-1. Scalable data ingestion pipeline.
+1. [Scalable data ingestion pipeline](../clickhouse_ingestion_pipeline/index.md).
     - How do we ingest large volumes of data from GitLab into ClickHouse either directly or by replicating existing data?
-1. Supporting ClickHouse for self-managed installations.
-    - For which use-cases and scales does it make sense to run ClickHouse for self-managed and what are the associated costs?
-    - How can we best support self-managed installation of ClickHouse for different types/sizes of environments?
-    - Consider using the [Opstrace ClickHouse operator](https://gitlab.com/gitlab-org/opstrace/opstrace/-/tree/main/clickhouse-operator) as the basis for a canonical distribution.
-    - Consider exposing Clickhouse backend as [GitLab Plus](https://gitlab.com/groups/gitlab-org/-/epics/308) to combine benefits of using self-managed instance and GitLab-managed database.
-    - Should we develop abstractions for querying and data ingestion to avoid requiring ClickHouse for small-scale installations?
-1. Abstraction layer for features to leverage both ClickHouse or PostreSQL.
+1. [Abstraction layer](../clickhouse_read_abstraction_layer/index.md) for features to leverage both ClickHouse and PostgreSQL.
     - What are the benefits and tradeoffs? For example, how would this impact our automated migration and query testing?
-1. Security recommendations and secure defaults for ClickHouse usage.
-
-Note that we are still formulating proposals and will update the blueprint accordingly.
 
 ## Best Practices
 
-Best practices and guidelines for developing performant and scalable features using ClickHouse are located in the [ClickHouse developer documentation](../../../development/database/clickhouse/index.md).
+Best practices and guidelines for developing performant, secure, and scalable features using ClickHouse are located in the [ClickHouse developer documentation](../../../development/database/clickhouse/index.md).
 
 ## Cost and maintenance analysis
 

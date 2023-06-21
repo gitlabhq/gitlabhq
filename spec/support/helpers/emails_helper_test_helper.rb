@@ -2,7 +2,7 @@
 
 module EmailsHelperTestHelper
   def default_header_logo
-    %r{<img alt="GitLab" src="/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
+    %r{<img alt="GitLab" src="http://test.host/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
   end
 end
 

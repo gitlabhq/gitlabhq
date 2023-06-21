@@ -59,7 +59,7 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController, feat
       end
 
       it 'sets appropriate caching headers' do
-        expect(response.header['Cache-Control']).to eq('private')
+        expect(response.header['Cache-Control']).to eq('max-age=0, private, must-revalidate')
         expect(response.header['ETag']).to be_present
       end
     end

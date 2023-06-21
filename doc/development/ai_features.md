@@ -97,7 +97,7 @@ For features that use the embedding database, additional setup is needed.
    Feature.enable(:ai_redis_cache)
    ```
 
-1. Ensure that your current branch is up-to-date with `master`. 
+1. Ensure that your current branch is up-to-date with `master`.
 1. To access the GitLab Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Chat**.
 
 #### Tips for local development
@@ -168,6 +168,22 @@ Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
 ```ruby
 Feature.enable(:anthropic_experimentation)
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
+```
+
+### Testing GitLab Chat with predefined questions
+
+Because success of answers to user questions in GitLab Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use following commands to validate answers to some predefined questions:
+
+1. Rake task which iterates through questions defined in CSV file and checks tools used for evaluating each question.
+
+```ruby
+rake gitlab:llm:zero_shot:test:questions[<issue_url>]
+```
+
+1. RSpec which iterates through resource-specific questions on predefined resources:
+
+```ruby
+ANTHROPIC_API_KEY='<key>' REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
 ```
 
 ## Experimental REST API

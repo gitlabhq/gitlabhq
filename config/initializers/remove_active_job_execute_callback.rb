@@ -16,8 +16,8 @@ Rails.application.configure do
       callbacks &&
         callbacks.send(:chain).size == 1 &&
         callbacks.first.kind == :around &&
-        callbacks.first.raw_filter.is_a?(Proc) &&
-        callbacks.first.raw_filter.source_location.first.ends_with?('lib/active_job/railtie.rb')
+        callbacks.first.filter.is_a?(Proc) &&
+        callbacks.first.filter.source_location.first.ends_with?('lib/active_job/railtie.rb')
     end
 
     if active_job_railtie_callback?

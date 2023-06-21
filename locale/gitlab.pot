@@ -9653,6 +9653,9 @@ msgstr ""
 msgid "CiCatalog|Mark project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
 msgstr ""
 
+msgid "CiCatalog|No release available"
+msgstr ""
+
 msgid "CiCatalog|Page %{currentPage} of %{totalPage}"
 msgstr ""
 

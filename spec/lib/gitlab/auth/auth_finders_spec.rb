@@ -181,7 +181,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         set_header('HTTP_ACCEPT', 'application/atom+xml')
       end
 
-      context 'when feed_token param is provided' do
+      context 'when old format feed_token param is provided' do
         it 'returns user if valid feed_token' do
           set_param(:feed_token, user.feed_token)
 
@@ -206,7 +206,44 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
       end
 
-      context 'when rss_token param is provided' do
+      context 'when path-dependent format feed_token param is provided' do
+        let_it_be(:feed_user, freeze: true) { create(:user, feed_token: 'KNOWN VALUE').tap(&:feed_token) }
+        # The middle part is the output of OpenSSL::HMAC.hexdigest("SHA256", 'KNOWN VALUE', 'url.atom')
+        let(:feed_token) { "glft-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693-#{feed_user.id}" }
+
+        it 'returns user if valid feed_token' do
+          set_param(:feed_token, feed_token)
+
+          expect(find_user_from_feed_token(:rss)).to eq feed_user
+        end
+
+        it 'returns nil if valid feed_token and disabled' do
+          allow(Gitlab::CurrentSettings).to receive_messages(disable_feed_token: true)
+          set_param(:feed_token, feed_token)
+
+          expect(find_user_from_feed_token(:rss)).to be_nil
+        end
+
+        it 'returns exception if token has same HMAC but different user ID' do
+          set_param(:feed_token, "glft-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693-#{user.id}")
+
+          expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+
+        it 'returns exception if token has wrong HMAC but same user ID' do
+          set_param(:feed_token, "glft-aaaaaaaaaade004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693-#{feed_user.id}")
+
+          expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+
+        it 'returns exception if user does not exist' do
+          set_param(:feed_token, "glft-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693-#{non_existing_record_id}")
+
+          expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+      end
+
+      context 'when old format rss_token param is provided' do
         it 'returns user if valid rss_token' do
           set_param(:rss_token, user.feed_token)
 

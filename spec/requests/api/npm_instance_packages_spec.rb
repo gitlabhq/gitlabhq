@@ -45,6 +45,14 @@ RSpec.describe API::NpmInstancePackages, feature_category: :package_registry do
         end
       end
     end
+
+    context 'when metadata cache exists' do
+      let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, package_name: package.name, project_id: project.id) }
+
+      subject { get(url) }
+
+      it_behaves_like 'generates metadata response "on-the-fly"'
+    end
   end
 
   describe 'GET /api/v4/packages/npm/-/package/*package_name/dist-tags' do

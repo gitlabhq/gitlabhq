@@ -12,7 +12,7 @@ the Google Cloud Platform. This solution uses an
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
 
 These SaaS runners are in [Beta](../../../policy/experiment-beta-support.md#beta)
-and aren't recomended for production workloads.
+and aren't recommended for production workloads.
 
 We want to keep iterating to get Windows runners in a stable state and
 [generally available](../../../policy/experiment-beta-support.md#generally-available-ga).

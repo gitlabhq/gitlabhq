@@ -237,6 +237,8 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
       end
 
       context 'if the endpoint is accessible' do
+        let(:user_scores) { Abuse::UserTrustScore.new(user) }
+
         before do
           allow(service).to receive(:spamcheck_client).and_return(spam_client)
           allow(spam_client).to receive(:spam?).and_return(spam_client_result)
@@ -248,7 +250,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
           it 'returns the verdict' do
             is_expected.to eq(NOOP)
-            expect(user.spam_score).to eq(0.0)
+            expect(user_scores.spam_score).to eq(0.0)
           end
         end
 
@@ -259,7 +261,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
           context 'the result was evaluated' do
             it 'returns the verdict and updates the spam score' do
               is_expected.to eq(ALLOW)
-              expect(user.spam_score).to be_within(0.000001).of(verdict_score)
+              expect(user_scores.spam_score).to be_within(0.000001).of(verdict_score)
             end
           end
 
@@ -268,7 +270,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
             it 'returns the verdict and does not update the spam score' do
               expect(subject).to eq(ALLOW)
-              expect(user.spam_score).to eq(0.0)
+              expect(user_scores.spam_score).to eq(0.0)
             end
           end
         end
@@ -290,7 +292,7 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
           with_them do
             it "returns expected spam constant and updates the spam score" do
               is_expected.to eq(expected)
-              expect(user.spam_score).to be_within(0.000001).of(verdict_score)
+              expect(user_scores.spam_score).to be_within(0.000001).of(verdict_score)
             end
           end
         end

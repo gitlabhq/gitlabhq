@@ -13,6 +13,11 @@ RSpec.describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
     }
   end
 
+  before do
+    allow(env['rack.session']).to receive(:enabled?).and_return(true)
+    allow(env['rack.session']).to receive(:loaded?).and_return(true)
+  end
+
   it 'logs to /dev/null' do
     expect(ActiveSupport::Logger).to receive(:new).with(File::NULL)
 

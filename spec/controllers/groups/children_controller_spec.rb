@@ -222,13 +222,13 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
           control = ActiveRecord::QueryRecorder.new { get_list }
           _new_project = create(:project, :public, namespace: group)
 
-          expect { get_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_project)
+          expect { get_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_project + 1)
         end
 
         context 'when rendering hierarchies' do
           # When loading hierarchies we load the all the ancestors for matched projects
-          # in 2 separate queries
-          let(:extra_queries_for_hierarchies) { 2 }
+          # in 3 separate queries
+          let(:extra_queries_for_hierarchies) { 3 }
 
           def get_filtered_list
             get :index, params: { group_id: group.to_param, filter: 'filter' }, format: :json

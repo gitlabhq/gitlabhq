@@ -2950,56 +2950,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#spammer?' do
-    let_it_be(:user) { create(:user) }
-
-    context 'when the user is a spammer' do
-      before do
-        allow(user).to receive(:spam_score).and_return(0.9)
-      end
-
-      it 'classifies the user as a spammer' do
-        expect(user).to be_spammer
-      end
-    end
-
-    context 'when the user is not a spammer' do
-      before do
-        allow(user).to receive(:spam_score).and_return(0.1)
-      end
-
-      it 'does not classify the user as a spammer' do
-        expect(user).not_to be_spammer
-      end
-    end
-  end
-
-  describe '#spam_score' do
-    let_it_be(:user) { create(:user) }
-
-    context 'when the user is a spammer' do
-      before do
-        create(:abuse_trust_score, user: user, score: 0.8)
-        create(:abuse_trust_score, user: user, score: 0.9)
-      end
-
-      it 'returns the expected score' do
-        expect(user.spam_score).to be_within(0.01).of(0.85)
-      end
-    end
-
-    context 'when the user is not a spammer' do
-      before do
-        create(:abuse_trust_score, user: user, score: 0.1)
-        create(:abuse_trust_score, user: user, score: 0.0)
-      end
-
-      it 'returns the expected score' do
-        expect(user.spam_score).to be_within(0.01).of(0.05)
-      end
-    end
-  end
-
   describe '.find_for_database_authentication' do
     it 'strips whitespace from login' do
       user = create(:user)
@@ -6145,7 +6095,9 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when the user is a spammer' do
         before do
-          allow(user).to receive(:spammer?).and_return(true)
+          user_scores = Abuse::UserTrustScore.new(user)
+          allow(Abuse::UserTrustScore).to receive(:new).and_return(user_scores)
+          allow(user_scores).to receive(:spammer?).and_return(true)
         end
 
         context 'when the user account is less than 7 days old' do
@@ -8107,72 +8059,6 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect(emails).to eq(project_commit_email)
         end
-      end
-    end
-  end
-
-  describe '#telesign_score' do
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-
-    context 'when the user has a telesign risk score' do
-      before do
-        create(:abuse_trust_score, user: user1, score: 12.0, source: :telesign)
-        create(:abuse_trust_score, user: user1, score: 24.0, source: :telesign)
-      end
-
-      it 'returns the latest score' do
-        expect(user1.telesign_score).to be(24.0)
-      end
-    end
-
-    context 'when the user does not have a telesign risk score' do
-      it 'defaults to zero' do
-        expect(user2.telesign_score).to be(0.0)
-      end
-    end
-  end
-
-  describe '#arkose_global_score' do
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-
-    context 'when the user has an arkose global risk score' do
-      before do
-        create(:abuse_trust_score, user: user1, score: 12.0, source: :arkose_global_score)
-        create(:abuse_trust_score, user: user1, score: 24.0, source: :arkose_global_score)
-      end
-
-      it 'returns the latest score' do
-        expect(user1.arkose_global_score).to be(24.0)
-      end
-    end
-
-    context 'when the user does not have an arkose global risk score' do
-      it 'defaults to zero' do
-        expect(user2.arkose_global_score).to be(0.0)
-      end
-    end
-  end
-
-  describe '#arkose_custom_score' do
-    let_it_be(:user1) { create(:user) }
-    let_it_be(:user2) { create(:user) }
-
-    context 'when the user has an arkose custom risk score' do
-      before do
-        create(:abuse_trust_score, user: user1, score: 12.0, source: :arkose_custom_score)
-        create(:abuse_trust_score, user: user1, score: 24.0, source: :arkose_custom_score)
-      end
-
-      it 'returns the latest score' do
-        expect(user1.arkose_custom_score).to be(24.0)
-      end
-    end
-
-    context 'when the user does not have an arkose custom risk score' do
-      it 'defaults to zero' do
-        expect(user2.arkose_custom_score).to be(0.0)
       end
     end
   end

@@ -46,7 +46,7 @@ RSpec.describe Packages::Npm::CreateMetadataCacheService, :clean_gitlab_redis_sh
         new_metadata = Gitlab::Json.parse(npm_metadata_cache.file.read)
 
         expect(new_metadata).not_to eq(metadata)
-        expect(new_metadata['dist_tags'].keys).to include(tag_name)
+        expect(new_metadata['dist-tags'].keys).to include(tag_name)
         expect(npm_metadata_cache.reload.size).not_to eq(metadata_size)
       end
     end

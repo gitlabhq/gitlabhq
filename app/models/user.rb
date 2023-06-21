@@ -2279,30 +2279,6 @@ class User < ApplicationRecord
       namespace_commit_emails.find_by(namespace: project.root_namespace)
   end
 
-  def spammer?
-    spam_score > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
-  end
-
-  def spam_score
-    abuse_trust_scores.spamcheck.average(:score) || 0.0
-  end
-
-  def telesign_score
-    abuse_trust_scores.telesign.order(created_at: :desc).first&.score || 0.0
-  end
-
-  def arkose_global_score
-    abuse_trust_scores.arkose_global_score.order(created_at: :desc).first&.score || 0.0
-  end
-
-  def arkose_custom_score
-    abuse_trust_scores.arkose_custom_score.order(created_at: :desc).first&.score || 0.0
-  end
-
-  def trust_scores_for_source(source)
-    abuse_trust_scores.where(source: source)
-  end
-
   def abuse_metadata
     {
       account_age: account_age_in_days,
@@ -2355,7 +2331,8 @@ class User < ApplicationRecord
   private
 
   def block_or_ban
-    if spammer? && account_age_in_days < 7
+    user_scores = Abuse::UserTrustScore.new(self)
+    if user_scores.spammer? && account_age_in_days < 7
       ban_and_report
     else
       block

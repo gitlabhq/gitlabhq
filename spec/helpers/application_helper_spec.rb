@@ -590,12 +590,13 @@ RSpec.describe ApplicationHelper do
 
     it 'adds custom form builder to options and calls `form_for`' do
       options = { html: { class: 'foo-bar' } }
-      expected_options = options.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder, url: '/root' })
+      expected_options = options.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder })
 
       expect do |b|
         helper.gitlab_ui_form_for(user, options, &b)
       end.to yield_with_args(::Gitlab::FormBuilders::GitlabUiFormBuilder)
-      expect(helper).to have_received(:form_for).with(user, expected_options)
+
+      expect(helper).to have_received(:form_for).with(user, a_hash_including(expected_options))
     end
   end
 
@@ -722,19 +723,19 @@ RSpec.describe ApplicationHelper do
     it 'uses print stylesheet when feature flag disabled' do
       stub_feature_flags(remove_startup_css: false)
 
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="print" href="/stylesheets/test.css" />')
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" href="/stylesheets/test.css" media="print" />')
     end
 
     it 'uses regular stylesheet when feature flag enabled' do
       stub_feature_flags(remove_startup_css: true)
 
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="all" href="/stylesheets/test.css" />')
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
     end
 
     it 'uses regular stylesheet when no_startup_css param present' do
       allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
 
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="all" href="/stylesheets/test.css" />')
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
     end
   end
 

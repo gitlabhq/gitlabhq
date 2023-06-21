@@ -13,7 +13,7 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # NOTE: When incrementing the major or minor version here, also increment activerecord_version
 # in vendor/gems/attr_encrypted/attr_encrypted.gemspec until we resolve
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
-gem 'rails', '~> 6.1.7.2'
+gem 'rails', '~> 7.0.4.3'
 
 gem 'bootsnap', '~> 1.16.0', require: false
 
@@ -363,7 +363,7 @@ gem 'snowplow-tracker', '~> 0.8.0'
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false
-gem 'prometheus-client-mmap', '~> 0.25', require: 'prometheus/client'
+gem 'prometheus-client-mmap', '~> 0.26', require: 'prometheus/client'
 
 gem 'warning', '~> 1.3.0'
 
@@ -517,7 +517,7 @@ gem 'spamcheck', '~> 1.3.0'
 gem 'gitaly', '~> 16.1.0-rc2'
 
 # KAS GRPC protocol definitions
-gem 'kas-grpc', '~> 0.1.0'
+gem 'kas-grpc', '~> 0.2.0'
 
 gem 'grpc', '~> 1.42.0'
 

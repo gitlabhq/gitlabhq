@@ -32,6 +32,9 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
   before do
     allow_any_instance_of(self.class).to receive(:options).and_return({})
+
+    allow(env['rack.session']).to receive(:enabled?).and_return(true)
+    allow(env['rack.session']).to receive(:loaded?).and_return(true)
   end
 
   def warden_authenticate_returns(value)
@@ -567,6 +570,9 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
     context 'using warden authentication' do
       before do
+        allow(session).to receive(:enabled?).and_return(true)
+        allow(session).to receive(:loaded?).and_return(true)
+
         warden_authenticate_returns admin
         env[API::Helpers::SUDO_HEADER] = user.username
       end

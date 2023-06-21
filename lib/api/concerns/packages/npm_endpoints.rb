@@ -27,6 +27,8 @@ module API
           end
 
           helpers do
+            include Gitlab::Utils::StrongMemoize
+
             params :package_name do
               requires :package_name, type: String, file_path: true, desc: 'Package name',
                 documentation: { example: 'mypackage' }
@@ -51,6 +53,12 @@ module API
             def generate_metadata_service(packages)
               ::Packages::Npm::GenerateMetadataService.new(params[:package_name], packages)
             end
+
+            def metadata_cache
+              ::Packages::Npm::MetadataCache
+                .find_by_package_name_and_project_id(params[:package_name], project.id)
+            end
+            strong_memoize_attr :metadata_cache
           end
 
           params do
@@ -202,8 +210,14 @@ module API
 
               not_found!('Packages') if packages.empty?
 
-              present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
-                with: ::API::Entities::NpmPackage
+              if endpoint_scope == :project && Feature.enabled?(:npm_metadata_cache, project) &&
+                  metadata_cache&.file&.exists?
+                metadata_cache.touch_last_downloaded_at
+                present_carrierwave_file!(metadata_cache.file)
+              else
+                present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
+                  with: ::API::Entities::NpmPackage
+              end
             end
           end
 

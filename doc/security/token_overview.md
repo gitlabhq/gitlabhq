@@ -139,7 +139,10 @@ Each user has a long-lived feed token that does not expire. This token allows au
 - RSS readers to load a personalized RSS feed.
 - Calendar applications to load a personalized calendar.
 
-This token is visible in those feed URLs. You cannot use this token to access any other data.
+You cannot use this token to access any other data.
+
+The user-scoped feed token can be used for all feeds, however feed and calendar URLs are generated
+with a different token that is only valid for one feed.
 
 Anyone who has your token can read activity and issue RSS feeds or your calendar feed as if they were you, including confidential issues. If that happens, [reset the token](../user/profile/contributions_calendar.md#reset-the-user-activity-feed-token).
 

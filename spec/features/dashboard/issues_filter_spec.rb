@@ -61,10 +61,15 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
-      expect(params).to include('feed_token' => [user.feed_token])
+      feed_token_param = params['feed_token']
+      expect(feed_token_param).to match([Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX])
+      expect(feed_token_param.first).to end_with(user.id.to_s)
       expect(params).to include('milestone_title' => [''])
       expect(params).to include('assignee_username' => [user.username.to_s])
-      expect(auto_discovery_params).to include('feed_token' => [user.feed_token])
+
+      feed_token_param = auto_discovery_params['feed_token']
+      expect(feed_token_param).to match([Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX])
+      expect(feed_token_param.first).to end_with(user.id.to_s)
       expect(auto_discovery_params).to include('milestone_title' => [''])
       expect(auto_discovery_params).to include('assignee_username' => [user.username.to_s])
     end

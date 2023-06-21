@@ -792,6 +792,14 @@ class Note < ApplicationRecord
     true
   end
 
+  # Use attributes.keys instead of attribute_names to filter out the fields that are skipped during export:
+  #
+  # - note_html
+  # - cached_markdown_version
+  def attribute_names_for_serialization
+    attributes.keys
+  end
+
   private
 
   def trigger_note_subscription?
