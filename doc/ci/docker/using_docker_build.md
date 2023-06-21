@@ -721,7 +721,7 @@ services:
     alias: docker
 ```
 
-### Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+### Error: `Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password`
 
 This error appears when you use the deprecated variable, `CI_BUILD_TOKEN`. To prevent users from receiving this error, you should:
 

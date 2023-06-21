@@ -149,3 +149,4 @@ proper-names:
     "YouTrack"
   ]
   code_blocks: false
+  html_elements: false

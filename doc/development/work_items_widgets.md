@@ -123,20 +123,20 @@ Because information about what widgets are assigned to each work item type is st
 
 ### Structure of widget definitions table
 
-Each record in the table defines mapping of a widget to a work item type. Currently only "global" definitions (definitions with NULL namespace_id) are used. In next iterations we plan to allow customization of these mappings. For example table below defines that:
+Each record in the table defines mapping of a widget to a work item type. Currently only "global" definitions (definitions with NULL `namespace_id`) are used. In next iterations we plan to allow customization of these mappings. For example table below defines that:
 
 - Weight widget is enabled for work item types 0 and 1
 - in namespace 1 Weight widget is renamed to MyWeight. When user renames widget's name, it makes sense to rename all widget mappings in the namespace - because `name` attribute is denormalized, we have to create namespaced mappings for all work item types for this widget type.
 - Weight widget can be disabled for specific work item types (in namespace 3 it's disabled for work item type 0, while still left enabled for work item type 1)
 
-| ID | Namespace_id | Work_item_type_id | Widget_type_enum | Position | Name      | Disabled |
-|----| ------------ | ----------------- |----------------- |--------- |---------- |-------|
-| 1  |              | 0                 | 1                | 1        | Weight    | false |
-| 2  |              | 1                 | 1                | 1        | Weight    | false |
-| 3  | 1            | 0                 | 1                | 0        | MyWeight  | false |
-| 4  | 1            | 1                 | 1                | 0        | MyWeight  | false |
-| 5  | 2            | 0                 | 1                | 1        | Other Weight | false |
-| 6  | 3            | 0                 | 1                | 1        | Weight | true |
+| ID | `namespace_id` | `work_item_type_id` | `widget_type_enum` | Position | Name         | Disabled |
+|:---|:---------------|:--------------------|:-------------------|:---------|:-------------|:---------|
+| 1  |                | 0                   | 1                  | 1        | Weight       | false    |
+| 2  |                | 1                   | 1                  | 1        | Weight       | false    |
+| 3  | 1              | 0                   | 1                  | 0        | MyWeight     | false    |
+| 4  | 1              | 1                   | 1                  | 0        | MyWeight     | false    |
+| 5  | 2              | 0                   | 1                  | 1        | Other Weight | false    |
+| 6  | 3              | 0                   | 1                  | 1        | Weight       | true     |
 
 ## Backend architecture
 

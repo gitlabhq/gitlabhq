@@ -2360,7 +2360,7 @@ See the following documentation sections for assistance:
 
 See [Performance Tuning and Testing Speed](#performance-tuning-and-testing-speed)
 
-### Error waiting for DAST API 'http://127.0.0.1:5000' to become available
+### Error: `Error waiting for DAST API 'http://127.0.0.1:5000' to become available`
 
 A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
 

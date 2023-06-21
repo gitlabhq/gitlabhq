@@ -185,7 +185,7 @@ to manually run `make` again.
 
 Note that CI tests do not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI, you must update
-GITALY_SERVER_VERSION as described at the beginning of this section.
+`GITALY_SERVER_VERSION` as described at the beginning of this section.
 
 To use a different Gitaly repository, such as if your changes are present
 on a fork, you can specify a `GITALY_REPO_URL` environment variable when

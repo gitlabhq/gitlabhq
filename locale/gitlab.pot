@@ -8297,7 +8297,16 @@ msgstr ""
 msgid "BroadcastMessages|Red"
 msgstr ""
 
+msgid "BroadcastMessages|Show only to users who have specific roles on groups/project pages"
+msgstr ""
+
 msgid "BroadcastMessages|Show the broadcast message in a command-line interface as a Git remote response"
+msgstr ""
+
+msgid "BroadcastMessages|Show to all users on all pages"
+msgstr ""
+
+msgid "BroadcastMessages|Show to all users on specific matching pages"
 msgstr ""
 
 msgid "BroadcastMessages|Starts at"
@@ -8306,10 +8315,10 @@ msgstr ""
 msgid "BroadcastMessages|Target Path"
 msgstr ""
 
-msgid "BroadcastMessages|Target roles"
+msgid "BroadcastMessages|Target broadcast message"
 msgstr ""
 
-msgid "BroadcastMessages|The broadcast message displays only to users in projects and groups who have these roles."
+msgid "BroadcastMessages|Target roles"
 msgstr ""
 
 msgid "BroadcastMessages|Theme"

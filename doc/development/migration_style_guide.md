@@ -953,10 +953,10 @@ Truncating a table is uncommon, but you can use the `truncate_tables!` method pr
 Under the hood, it works like this:
 
 - Finds the `gitlab_schema` for the tables to be truncated.
-- If the `gitlab_schema` for the tables is included in the connection's gitlab_schemas,
+- If the `gitlab_schema` for the tables is included in the connection's `gitlab_schema`s,
   it then executes the `TRUNCATE` statement.
 - If the `gitlab_schema` for the tables is not included in the connection's
-  gitlab_schemas, it does nothing.
+  `gitlab_schema`s, it does nothing.
 
 ## Swapping primary key
 

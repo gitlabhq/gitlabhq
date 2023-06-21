@@ -25,9 +25,9 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 ## PgBouncer as part of a non-fault-tolerant GitLab installation
 
-1. Generate PGBOUNCER_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 pgbouncer`
+1. Generate `PGBOUNCER_USER_PASSWORD_HASH` with the command `gitlab-ctl pg-password-md5 pgbouncer`
 
-1. Generate SQL_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 gitlab`. Enter the plaintext SQL_USER_PASSWORD later.
+1. Generate `SQL_USER_PASSWORD_HASH` with the command `gitlab-ctl pg-password-md5 gitlab`. Enter the plaintext SQL_USER_PASSWORD later.
 
 1. On your database node, ensure the following is set in your `/etc/gitlab/gitlab.rb`
 

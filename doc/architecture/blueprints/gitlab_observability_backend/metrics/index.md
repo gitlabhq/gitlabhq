@@ -245,11 +245,12 @@ Slightly non-trivial but we can potentially investigate the possibility of using
 ### Storage - multiple tables
 
 A major portion of our writes are made into the `samples` schema which contains a tuple containing three data points per metric point written:
-|column|data type|byte size|
-|---|---|---|
-|series_id|UUID|16 bytes|
-|timestamp|DateTime64|8 bytes|
-|value|Float64|8 bytes|
+
+| Column      | Data type  | Byte size |
+|:------------|:-----------|:----------|
+| `series_id` | UUID       | 16 bytes  |
+| `timestamp` | DateTime64 | 8 bytes   |
+| `value`     | Float64    | 8 bytes   |
 
 Therefore, we estimate to use 32 bytes per sample ingested.
 
@@ -329,11 +330,11 @@ Showing top 10 nodes out of 58
 
 As is evident above from our preliminary analysis, writing data into Clickhouse can be a potential bottleneck. Therefore, on the write path, it'd be prudent to batch our writes into Clickhouse so as to reduce the amount of work the application server ends up doing making the ingestion path more efficient.
 
-On the read path, it’s also possible to parallelize reads for the samples table either by series_id(s) OR by blocks of time between the queried start and end timestamps.
+On the read path, it’s also possible to parallelize reads for the samples table either by `series_id` OR by blocks of time between the queried start and end timestamps.
 
 ### Caveats
 
-- When dropping labels from already existing metrics, we treat their new counterparts as completely new series and hence attribute them to a new series_id. This avoids having to merge series data and/or values. The old series, if not actively written into, should eventually fall off their retention and get deleted.
+- When dropping labels from already existing metrics, we treat their new counterparts as completely new series and hence attribute them to a new `series_id`. This avoids having to merge series data and/or values. The old series, if not actively written into, should eventually fall off their retention and get deleted.
 
 - We have not yet accounted for any data aggregation. Our assumption is that the backing store (in Clickhouse) should allow us to keep a “sufficient” amount of data in its raw form and that we should be able to query against it within our query latency SLOs.
 
@@ -372,14 +373,14 @@ ORDER BY (group_id, name, timestamp);
 
 ### Storage - single table
 
-|column|data type|byte size|
-|---|---|---|
-|group_id|UUID|16 bytes|
-|name|String|-|
-|labels|Map(String, String)|-|
-|metadata|Map(String, String)|-|
-|value|Float64|8 bytes|
-|timestamp|DateTime64|8 bytes|
+| Column      | Data type           | Byte size |
+|:------------|:--------------------|:----------|
+| `group_id`  | UUID                | 16 bytes  |
+| `name`      | String              | -         |
+| `labels`    | Map(String, String) | -         |
+| `metadata`  | Map(String, String) | -         |
+| `value`     | Float64             | 8 bytes   |
+| `timestamp` | DateTime64          | 8 bytes   |
 
 NOTE:
 Strings are of an arbitrary length, the length is not limited. Their value can contain an arbitrary set of bytes, including null bytes. We will need to regulate what we write into these columns application side.

@@ -705,9 +705,9 @@ We recommend that you use the most recent version of all containers, and the mos
 
 ## Troubleshooting
 
-### ASDF_PYTHON_VERSION does not automatically install the version
+### `ASDF_PYTHON_VERSION` does not automatically install the version
 
-Defining a non-latest Python version in ASDF_PYTHON_VERSION [doesn't have it automatically installed](https://gitlab.com/gitlab-org/gitlab/-/issues/325604). If your project requires a non-latest version of Python:
+Defining a non-latest Python version in `ASDF_PYTHON_VERSION` [doesn't have it automatically installed](https://gitlab.com/gitlab-org/gitlab/-/issues/325604). If your project requires a non-latest version of Python:
 
 1. Define the required version by setting the `ASDF_PYTHON_VERSION` CI/CD variable.
 1. Pass a custom script to the `SETUP_CMD` CI/CD variable to install the required version and dependencies.

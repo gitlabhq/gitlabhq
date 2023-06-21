@@ -1082,6 +1082,8 @@ The following codeblock uses HTML to skip the Vale ReferenceLinks test.
 Do not change it back to a markdown codeblock.
 -->
 
+<!-- markdownlint-disable proper-names -->
+
 <pre class="highlight"><code>Inline-style (hover to see title text):
 
 ![alt text](img/markdown_logo.png "Title Text")
@@ -1092,6 +1094,8 @@ Reference-style (hover to see title text):
 
 &#91;logo]: img/markdown_logo.png "Title Text"
 </code></pre>
+
+<!-- markdownlint-enable proper-names -->
 
 <!--
 DO NOT change the name of markdown_logo.png. This file is used for a test in

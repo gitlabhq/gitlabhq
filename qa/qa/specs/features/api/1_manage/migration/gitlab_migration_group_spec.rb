@@ -39,7 +39,11 @@ module QA
 
         it(
           'successfully imports groups and labels',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674',
+          quarantine: {
+            type: :investigating,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415270"
+          }
         ) do
           expect_group_import_finished_successfully
 
