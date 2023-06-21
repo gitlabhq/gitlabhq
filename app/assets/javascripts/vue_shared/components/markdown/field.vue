@@ -397,30 +397,24 @@ export default {
         />
       </div>
     </div>
-    <template v-if="hasSuggestion">
-      <div
-        v-show="previewMarkdown"
-        ref="markdown-preview"
-        class="js-vue-md-preview md-preview-holder gl-px-5"
-      >
-        <suggestions
-          v-if="hasSuggestion"
-          :note-html="markdownPreview"
-          :line-type="lineType"
-          :disabled="true"
-          :suggestions="suggestions"
-          :help-page-path="helpPagePath"
-        />
-      </div>
-    </template>
-    <template v-else>
-      <div
-        v-show="previewMarkdown"
-        ref="markdown-preview"
-        v-safe-html:[$options.safeHtmlConfig]="markdownPreview"
-        class="js-vue-md-preview md md-preview-holder gl-px-5"
-      ></div>
-    </template>
+    <div
+      v-show="previewMarkdown"
+      ref="markdown-preview"
+      class="js-vue-md-preview md-preview-holder gl-px-5"
+      :class="{ md: !hasSuggestion }"
+    >
+      <suggestions
+        v-if="hasSuggestion"
+        :note-html="markdownPreview"
+        :line-type="lineType"
+        :disabled="true"
+        :suggestions="suggestions"
+        :help-page-path="helpPagePath"
+      />
+      <template v-else>
+        <div v-safe-html:[$options.safeHtmlConfig]="markdownPreview"></div>
+      </template>
+    </div>
     <div
       v-if="referencedCommands && previewMarkdown && !markdownPreviewLoading"
       v-safe-html:[$options.safeHtmlConfig]="referencedCommands"

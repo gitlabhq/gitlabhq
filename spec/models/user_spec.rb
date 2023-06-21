@@ -6182,6 +6182,29 @@ RSpec.describe User, feature_category: :user_profile do
           expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.note }
         end
       end
+
+      describe '#allow_possible_spam?' do
+        context 'when no custom attribute is set' do
+          it 'is false' do
+            expect(user.allow_possible_spam?).to be_falsey
+          end
+        end
+
+        context 'when the custom attribute is set' do
+          before do
+            user.custom_attributes.upsert_custom_attributes(
+              [{
+                user_id: user.id,
+                key: UserCustomAttribute::ALLOW_POSSIBLE_SPAM,
+                value: "test"
+              }])
+          end
+
+          it '#allow_possible_spam? is true' do
+            expect(user.allow_possible_spam?).to be_truthy
+          end
+        end
+      end
     end
   end
 

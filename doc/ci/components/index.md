@@ -185,6 +185,8 @@ each containing resources that you can add to your CI/CD pipelines.
 
 ### Mark the project as a catalog resource
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) in GitLab 16.1.
+
 After components are added to a components repository, they can immediately be [used](#use-a-component-in-a-cicd-configuration) to build pipelines in other projects.
 
 However, this repository is not discoverable. You must mark this project as a catalog resource to allow it to be visible in the CI Catalog

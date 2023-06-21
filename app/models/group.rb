@@ -663,13 +663,24 @@ class Group < Namespace
   # 2. They belong to a project that belongs to the group
   # 3. They belong to a sub-group or project in such sub-group
   # 4. They belong to an ancestor group
-  def direct_and_indirect_users
+  # 5. They belong to a group that is shared with this group, if share_with_groups is true
+  def direct_and_indirect_users(share_with_groups: false)
+    members = if share_with_groups
+                # We only need :user_id column, but
+                # `members_from_self_and_ancestor_group_shares` needs more
+                # columns to make the CTE query work.
+                GroupMember.from_union([
+                  direct_and_indirect_members.select(:user_id, :source_type, :type),
+                  members_from_self_and_ancestor_group_shares.reselect(:user_id, :source_type, :type)
+                ])
+              else
+                direct_and_indirect_members
+              end
+
     User.from_union([
-                      User
-                        .where(id: direct_and_indirect_members.select(:user_id))
-                        .reorder(nil),
-                      project_users_with_descendants
-                    ])
+      User.where(id: members.select(:user_id)).reorder(nil),
+      project_users_with_descendants
+    ])
   end
 
   # Returns all users (also inactive) that are members of the group because:

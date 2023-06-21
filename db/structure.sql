@@ -29770,14 +29770,6 @@ CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at_enabled ON con
 
 CREATE INDEX idx_container_repos_on_exp_cleanup_status_project_id_start_date ON container_repositories USING btree (expiration_policy_cleanup_status, project_id, expiration_policy_started_at);
 
-CREATE INDEX idx_container_repos_on_import_started_at_when_importing ON container_repositories USING btree (migration_import_started_at) WHERE (migration_state = 'importing'::text);
-
-CREATE INDEX idx_container_repos_on_migration_state_migration_plan_created ON container_repositories USING btree (migration_state, migration_plan, created_at);
-
-CREATE INDEX idx_container_repos_on_pre_import_done_at_when_pre_import_done ON container_repositories USING btree (migration_pre_import_done_at) WHERE (migration_state = 'pre_import_done'::text);
-
-CREATE INDEX idx_container_repos_on_pre_import_started_at_when_pre_importing ON container_repositories USING btree (migration_pre_import_started_at) WHERE (migration_state = 'pre_importing'::text);
-
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON deployment_clusters USING btree (cluster_id, kubernetes_namespace);
 
 CREATE INDEX idx_devops_adoption_segments_namespace_end_time ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time);
@@ -30733,10 +30725,6 @@ CREATE INDEX index_composer_cache_files_where_namespace_id_is_null ON packages_c
 CREATE INDEX index_container_expiration_policies_on_next_run_at_and_enabled ON container_expiration_policies USING btree (next_run_at, enabled);
 
 CREATE INDEX index_container_registry_data_repair_details_on_status ON container_registry_data_repair_details USING btree (status);
-
-CREATE INDEX index_container_repositories_on_greatest_completed_at ON container_repositories USING btree (GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at, migration_skipped_at)) WHERE (migration_state = ANY (ARRAY['import_done'::text, 'pre_import_done'::text, 'import_aborted'::text, 'import_skipped'::text]));
-
-CREATE INDEX index_container_repositories_on_migration_state_import_done_at ON container_repositories USING btree (migration_state, migration_import_done_at);
 
 CREATE INDEX index_container_repositories_on_project_id_and_id ON container_repositories USING btree (project_id, id);
 
@@ -33538,10 +33526,6 @@ CREATE INDEX tmp_index_ci_job_artifacts_on_id_expire_at_file_type_trace ON ci_jo
 
 CREATE INDEX tmp_index_cis_vulnerability_reads_on_id ON vulnerability_reads USING btree (id) WHERE (report_type = 7);
 
-CREATE INDEX tmp_index_container_repos_on_non_migrated ON container_repositories USING btree (project_id, id) WHERE (migration_state <> 'import_done'::text);
-
-CREATE INDEX tmp_index_container_repositories_on_id_migration_state ON container_repositories USING btree (id, migration_state);
-
 CREATE INDEX tmp_index_for_backfilling_resource_link_events ON system_note_metadata USING btree (id) WHERE (((action)::text = 'relate_to_parent'::text) OR ((action)::text = 'unrelate_from_parent'::text));
 
 CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (member_namespace_id) WHERE (member_namespace_id IS NULL);
@@ -33549,8 +33533,6 @@ CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (memb
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
 CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
-
-CREATE INDEX tmp_index_migrated_container_registries ON container_repositories USING btree (project_id) WHERE ((migration_state = 'import_done'::text) OR (created_at >= '2022-01-23 00:00:00'::timestamp without time zone));
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 

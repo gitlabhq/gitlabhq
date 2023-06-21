@@ -1,5 +1,5 @@
 <script>
-import { COMMON_HANDLES, SEARCH_SCOPE_PLACEHOLDER } from './constants';
+import { COMMON_HANDLES, PATH_HANDLE, SEARCH_SCOPE_PLACEHOLDER } from './constants';
 
 export default {
   name: 'FakeSearchInput',
@@ -11,7 +11,7 @@ export default {
     scope: {
       type: String,
       required: true,
-      validator: (value) => COMMON_HANDLES.includes(value),
+      validator: (value) => [...COMMON_HANDLES, PATH_HANDLE].includes(value),
     },
   },
   computed: {

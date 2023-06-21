@@ -67,7 +67,10 @@ module Git
       # Creating push_data invokes one CommitDelta RPC per commit. Only
       # build this data if we actually need it.
       project.execute_hooks(push_data, hook_name) if project.has_active_hooks?(hook_name)
-      project.execute_integrations(push_data, hook_name) if project.has_active_integrations?(hook_name)
+
+      return unless project.has_active_integrations?(hook_name)
+
+      project.execute_integrations(push_data, hook_name, skip_ci: integration_push_options&.fetch(:skip_ci).present?)
     end
 
     def enqueue_invalidate_cache
@@ -101,7 +104,19 @@ module Git
 
     def ci_variables_from_push_options
       strong_memoize(:ci_variables_from_push_options) do
-        params[:push_options]&.deep_symbolize_keys&.dig(:ci, :variable)
+        push_options&.dig(:ci, :variable)
+      end
+    end
+
+    def integration_push_options
+      strong_memoize(:integration_push_options) do
+        push_options&.dig(:integrations)
+      end
+    end
+
+    def push_options
+      strong_memoize(:push_options) do
+        params[:push_options]&.deep_symbolize_keys
       end
     end
 

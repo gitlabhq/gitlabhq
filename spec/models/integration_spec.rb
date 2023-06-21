@@ -246,6 +246,16 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '#ci?' do
+    it 'is true when integration is a CI integration' do
+      expect(build(:jenkins_integration).ci?).to eq(true)
+    end
+
+    it 'is false when integration is not a ci integration' do
+      expect(build(:integration).ci?).to eq(false)
+    end
+  end
+
   describe '.find_or_initialize_non_project_specific_integration' do
     let!(:integration_1) { create(:jira_integration, project_id: nil, group_id: group.id) }
     let!(:integration_2) { create(:jira_integration, project: project) }

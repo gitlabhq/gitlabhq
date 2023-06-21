@@ -36,11 +36,13 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
   context 'when a user created a merge request in the parent project' do
     let!(:merge_request) do
-      create(:merge_request,
-              source_project: project,
-              target_project: project,
-              source_branch: 'feature',
-              target_branch: 'master')
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project,
+        source_branch: 'feature',
+        target_branch: 'master'
+      )
     end
 
     let!(:push_pipeline) do
@@ -263,11 +265,13 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
   context 'when a user created a merge request from a forked project to the parent project', :sidekiq_might_not_need_inline do
     let(:merge_request) do
-      create(:merge_request,
-              source_project: forked_project,
-              target_project: project,
-              source_branch: 'feature',
-              target_branch: 'master')
+      create(
+        :merge_request,
+        source_project: forked_project,
+        target_project: project,
+        source_branch: 'feature',
+        target_branch: 'master'
+      )
     end
 
     let!(:push_pipeline) do

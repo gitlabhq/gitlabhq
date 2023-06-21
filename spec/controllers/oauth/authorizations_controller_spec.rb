@@ -298,4 +298,15 @@ RSpec.describe Oauth::AuthorizationsController do
   it 'includes Two-factor enforcement concern' do
     expect(described_class.included_modules.include?(EnforcesTwoFactorAuthentication)).to eq(true)
   end
+
+  describe 'Gon variables' do
+    it 'adds Gon variables' do
+      expect(controller).to receive(:add_gon_variables)
+      get :new, params: params
+    end
+
+    it 'includes GonHelper module' do
+      expect(controller).to be_a(Gitlab::GonHelper)
+    end
+  end
 end

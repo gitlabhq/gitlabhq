@@ -3,16 +3,18 @@
 
 .row.gl-mt-3
   .col-lg-12
-    .gl-display-flex.gl-flex-wrap
+    .gl-display-flex.gl-flex-wrap.gl-justify-content-space-between
       - if can_admin_group_member?(@group)
         %h4
           = _('Group members')
         %p.gl-w-full.order-md-1
           = group_member_header_subtext(@group)
-        .gl-display-flex.gl-flex-wrap.gl-align-items-flex-start.gl-ml-auto.gl-md-w-auto.gl-w-full.gl-mt-3
+        .gl-display-flex.gl-flex-wrap.gl-align-items-center.gl-gap-3.gl-md-w-auto.gl-w-full
           .js-invite-group-trigger{ data: { classes: 'gl-md-w-auto gl-w-full', display_text: _('Invite a group') } }
+          - if can_admin_service_accounts?(@group)
+            = render_if_exists 'groups/group_members/create_service_account'
           .js-invite-members-trigger{ data: { variant: 'confirm',
-            classes: 'gl-md-w-auto gl-w-full gl-md-ml-3 gl-md-mt-0 gl-mt-3',
+            classes: 'gl-md-w-auto gl-w-full',
             trigger_source: 'group-members-page',
             display_text: _('Invite members') } }
         = render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true

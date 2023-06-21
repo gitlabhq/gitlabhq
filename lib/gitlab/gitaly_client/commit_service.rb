@@ -585,9 +585,7 @@ module Gitlab
       end
 
       def call_commit_diff(request_params, options = {})
-        request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
-
-        if Feature.enabled?(:add_ignore_all_white_spaces) && (request_params[:ignore_whitespace_change])
+        if options.fetch(:ignore_whitespace_change, false)
           request_params[:whitespace_changes] = WHITESPACE_CHANGES['ignore_all_spaces']
         end
 

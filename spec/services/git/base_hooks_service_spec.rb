@@ -102,9 +102,24 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
 
         it 'executes the services' do
           expect(subject).to receive(:push_data).at_least(:once).and_call_original
-          expect(project).to receive(:execute_integrations)
+          expect(project).to receive(:execute_integrations).with(kind_of(Hash), subject.hook_name, skip_ci: false)
 
           subject.execute
+        end
+
+        context 'with integrations.skip_ci push option' do
+          before do
+            params[:push_options] = {
+              integrations: { skip_ci: true }
+            }
+          end
+
+          it 'executes the services' do
+            expect(subject).to receive(:push_data).at_least(:once).and_call_original
+            expect(project).to receive(:execute_integrations).with(kind_of(Hash), subject.hook_name, skip_ci: true)
+
+            subject.execute
+          end
         end
       end
 

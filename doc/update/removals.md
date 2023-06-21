@@ -36,6 +36,23 @@ For removal reviewers (Technical Writers only):
 
 {::options parse_block_html="true" /}
 
+## Removed in 16.1
+
+### GitLab Runner images based on Alpine 3.12, 3.13, 3.14
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.11</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29639).
+</div>
+
+In alignment with the [GitLab Runner container images support policy](https://docs.gitlab.com/runner/install/docker.html#gitlab-runner-container-images-support-lifecycle), as of GitLab 16.1, we have stopped publishing runner images based on the following end-of-life Alpine versions:
+
+- Alpine 3.12
+- Alpine 3.13
+- Alpine 3.14
+
+We recommend that customers use GitLab Runner versions published with Alpine 3.15 or 3.16.
+
 ## Removed in 16.0
 
 ### Auto DevOps no longer provisions a database by default

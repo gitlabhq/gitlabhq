@@ -12,6 +12,7 @@ import CommandPaletteItems from '~/super_sidebar/components/global_search/comman
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMON_HANDLES,
+  PATH_HANDLE,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
@@ -319,7 +320,7 @@ describe('GlobalSearchModal', () => {
         });
       });
 
-      describe.each(COMMON_HANDLES)(
+      describe.each([...COMMON_HANDLES, PATH_HANDLE])(
         'when FF `command_palette` is enabled and search handle is %s',
         (handle) => {
           beforeEach(() => {
@@ -415,7 +416,7 @@ describe('GlobalSearchModal', () => {
 
     describe('Modal events', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({ search: 'searchQuery' });
       });
 
       it('should emit `shown` event when modal shown`', () => {
@@ -423,9 +424,10 @@ describe('GlobalSearchModal', () => {
         expect(wrapper.emitted('shown')).toHaveLength(1);
       });
 
-      it('should emit `hidden` event when modal hidden`', () => {
-        findGlobalSearchModal().vm.$emit('hidden');
+      it('should emit `hidden` event when modal hidden and clear the search input', () => {
+        findGlobalSearchModal().vm.$emit('hide');
         expect(wrapper.emitted('hidden')).toHaveLength(1);
+        expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), '');
       });
     });
   });

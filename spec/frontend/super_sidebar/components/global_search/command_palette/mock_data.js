@@ -131,3 +131,15 @@ export const ISSUE = {
   project_name: 'Flight',
   url: '/flightjs/Flight/-/issues/37',
 };
+
+export const FILES = [
+  '.codeclimate.yml',
+  '.gitignore',
+  '.gitlab-ci.yml',
+  '.gitlab/CODEOWNERS',
+  '.ruby-version',
+  '.tool-versions',
+  'CHANGELOG',
+  'CONTRIBUTING.md',
+  'Dangerfile',
+];

@@ -6,9 +6,7 @@ import {
   GlBadge,
   GlAlert,
   GlSprintf,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownDivider,
+  GlDisclosureDropdown,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_WARNING } from '~/alert';
@@ -38,9 +36,7 @@ export default {
     GlBadge,
     GlAlert,
     GlSprintf,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
+    GlDisclosureDropdown,
     TimeAgoTooltip,
     ErrorDetailsInfo,
     TimelineChart,
@@ -166,6 +162,52 @@ export default {
     },
     showEmptyStacktraceAlert() {
       return !this.loadingStacktrace && !this.showStacktrace && this.isStacktraceEmptyAlertVisible;
+    },
+    updateDropdownItems() {
+      return [
+        {
+          text: this.ignoreBtnLabel,
+          action: this.onIgnoreStatusUpdate,
+          extraAttrs: {
+            'data-qa-selector': 'update_ignore_status_button',
+          },
+        },
+        {
+          text: this.resolveBtnLabel,
+          action: this.onResolveStatusUpdate,
+          extraAttrs: {
+            'data-qa-selector': 'update_resolve_status_button',
+          },
+        },
+      ];
+    },
+    viewIssueDropdownItem() {
+      return {
+        text: __('View issue'),
+        href: this.error.gitlabIssuePath,
+        extraAttrs: {
+          'data-qa-selector': 'view_issue_button',
+        },
+      };
+    },
+    createIssueDropdownItem() {
+      return {
+        text: __('Create issue'),
+        action: this.createIssue,
+        extraAttrs: {
+          'data-qa-selector': 'create_issue_button',
+        },
+      };
+    },
+    dropdownItems() {
+      return [
+        { items: this.updateDropdownItems },
+        {
+          items: [
+            this.error.gitlabIssuePath ? this.viewIssueDropdownItem : this.createIssueDropdownItem,
+          ],
+        },
+      ];
     },
   },
   watch: {
@@ -331,37 +373,14 @@ export default {
               </gl-button>
             </form>
           </div>
-          <gl-dropdown
-            text="Options"
-            class="gl-w-full gl-md-display-none"
-            right
+          <gl-disclosure-dropdown
+            block
+            :toggle-text="__('Options')"
+            toggle-class="gl-md-display-none"
+            placement="right"
             :disabled="issueUpdateInProgress"
-          >
-            <gl-dropdown-item
-              data-qa-selector="update_ignore_status_button"
-              @click="onIgnoreStatusUpdate"
-              >{{ ignoreBtnLabel }}</gl-dropdown-item
-            >
-            <gl-dropdown-item
-              data-qa-selector="update_resolve_status_button"
-              @click="onResolveStatusUpdate"
-              >{{ resolveBtnLabel }}</gl-dropdown-item
-            >
-            <gl-dropdown-divider />
-            <gl-dropdown-item
-              v-if="error.gitlabIssuePath"
-              data-qa-selector="view_issue_button"
-              :href="error.gitlabIssuePath"
-              >{{ __('View issue') }}</gl-dropdown-item
-            >
-            <gl-dropdown-item
-              v-if="!error.gitlabIssuePath"
-              :loading="issueCreationInProgress"
-              data-qa-selector="create_issue_button"
-              @click="createIssue"
-              >{{ __('Create issue') }}</gl-dropdown-item
-            >
-          </gl-dropdown>
+            :items="dropdownItems"
+          />
         </div>
       </div>
       <div>

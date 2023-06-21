@@ -38,7 +38,11 @@ import {
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
-import { COMMON_HANDLES, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
+import {
+  COMMON_HANDLES,
+  PATH_HANDLE,
+  SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+} from '../command_palette/constants';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from './global_search_default_items.vue';
 import GlobalSearchScopedItems from './global_search_scoped_items.vue';
@@ -135,7 +139,11 @@ export default {
       return this.searchText?.trim().charAt(0);
     },
     isCommandMode() {
-      return this.glFeatures?.commandPalette && COMMON_HANDLES.includes(this.searchTextFirstChar);
+      return (
+        this.glFeatures?.commandPalette &&
+        (COMMON_HANDLES.includes(this.searchTextFirstChar) ||
+          (this.searchContext.project && this.searchTextFirstChar === PATH_HANDLE))
+      );
     },
     commandPaletteQuery() {
       if (this.isCommandMode) {
@@ -206,7 +214,7 @@ export default {
       }
     },
     focusSearchInput() {
-      this.$refs.searchInputBox.$el.querySelector('input').focus();
+      this.$refs.searchInput.$el.querySelector('input').focus();
     },
     focusNextItem(event, elements, offset) {
       const { target } = event;
@@ -226,6 +234,13 @@ export default {
       }
       visitUrl(this.searchQuery);
     },
+    onSearchModalShown() {
+      this.$emit('shown');
+    },
+    onSearchModalHidden() {
+      this.searchText = '';
+      this.$emit('hidden');
+    },
   },
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
@@ -243,8 +258,8 @@ export default {
     body-class="gl-p-0!"
     modal-class="global-search-modal"
     :centered="false"
-    @hidden="$emit('hidden')"
-    @shown="$emit('shown')"
+    @shown="onSearchModalShown"
+    @hide="onSearchModalHidden"
   >
     <form
       role="search"
@@ -256,7 +271,7 @@ export default {
       <div class="gl-p-1 gl-relative">
         <gl-search-box-by-type
           id="search"
-          ref="searchInputBox"
+          ref="searchInput"
           v-model="searchText"
           role="searchbox"
           data-testid="global-search-input"

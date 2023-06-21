@@ -6311,6 +6311,36 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(recorder.count).to be_zero
     end
+
+    context 'with a CI integration' do
+      let!(:ci_integration) do
+        create(:jenkins_integration, push_events: true, active: true, project: integration.project)
+      end
+
+      it 'executes the integrations' do
+        [Integrations::Jenkins, Integrations::Slack].each do |integration_type|
+          expect_next_found_instance_of(integration_type) do |instance|
+            expect(instance).to receive(:async_execute).with('data').once
+          end
+        end
+
+        integration.project.execute_integrations('data', :push_hooks)
+      end
+
+      context 'and skipping ci' do
+        it 'does not execute ci integrations' do
+          expect_next_found_instance_of(Integrations::Jenkins) do |instance|
+            expect(instance).not_to receive(:async_execute)
+          end
+
+          expect_next_found_instance_of(Integrations::Slack) do |instance|
+            expect(instance).to receive(:async_execute).with('data').once
+          end
+
+          integration.project.execute_integrations('data', :push_hooks, skip_ci: true)
+        end
+      end
+    end
   end
 
   describe '#has_active_hooks?' do

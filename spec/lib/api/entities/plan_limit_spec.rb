@@ -20,6 +20,7 @@ RSpec.describe API::Entities::PlanLimit do
       :enforcement_limit,
       :generic_packages_max_file_size,
       :helm_max_file_size,
+      :limits_history,
       :maven_max_file_size,
       :notification_limit,
       :npm_max_file_size,

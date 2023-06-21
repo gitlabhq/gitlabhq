@@ -25,6 +25,10 @@ module GroupsHelper
     Ability.allowed?(current_user, :admin_group_member, group)
   end
 
+  def can_admin_service_accounts?(group)
+    false
+  end
+
   def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)

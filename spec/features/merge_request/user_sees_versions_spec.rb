@@ -57,9 +57,9 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
     end
 
     it_behaves_like 'allows commenting',
-                    file_name: '.gitmodules',
-                    line_text: '[submodule "six"]',
-                    comment: 'Typo, please fix.'
+      file_name: '.gitmodules',
+      line_text: '[submodule "six"]',
+      comment: 'Typo, please fix.'
   end
 
   describe 'switch between versions' do
@@ -105,9 +105,9 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
     end
 
     it_behaves_like 'allows commenting',
-                    file_name: '.gitmodules',
-                    line_text: 'path = six',
-                    comment: 'Typo, please fix.'
+      file_name: '.gitmodules',
+      line_text: 'path = six',
+      comment: 'Typo, please fix.'
   end
 
   describe 'compare with older version' do
@@ -172,9 +172,9 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
     end
 
     it_behaves_like 'allows commenting',
-                    file_name: '.gitmodules',
-                    line_text: '[submodule "gitlab-shell"]',
-                    comment: 'Typo, please fix.'
+      file_name: '.gitmodules',
+      line_text: '[submodule "gitlab-shell"]',
+      comment: 'Typo, please fix.'
   end
 
   describe 'compare with same version' do
@@ -239,8 +239,8 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
     end
 
     it_behaves_like 'allows commenting',
-                    file_name: 'files/ruby/popen.rb',
-                    line_text: 'RuntimeError',
-                    comment: 'Typo, please fix.'
+      file_name: 'files/ruby/popen.rb',
+      line_text: 'RuntimeError',
+      comment: 'Typo, please fix.'
   end
 end

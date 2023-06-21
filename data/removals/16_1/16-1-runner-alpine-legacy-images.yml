@@ -1,0 +1,15 @@
+- title: "GitLab Runner images based on Alpine 3.12, 3.13, 3.14" # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.11" # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.1" # (required) The milestone when this feature is being removed.
+  breaking_change: false # (required) Change to false if this is not a breaking change.
+  reporter: DarrenEastman # (required) GitLab username of the person reporting the removal
+  stage: Verify # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29639  # (required) Link to the deprecation issue in GitLab
+  body: | # (required) Do not modify this line, instead modify the lines below.
+    In alignment with the [GitLab Runner container images support policy](https://docs.gitlab.com/runner/install/docker.html#gitlab-runner-container-images-support-lifecycle), as of GitLab 16.1, we have stopped publishing runner images based on the following end-of-life Alpine versions:
+
+    - Alpine 3.12
+    - Alpine 3.13
+    - Alpine 3.14
+
+    We recommend that customers use GitLab Runner versions published with Alpine 3.15 or 3.16.

@@ -7,24 +7,32 @@ module Admin
         @current_user = current_user
         @params = params
         @plan = plan
+        @plan_limits = plan.actual_limits
       end
 
       def execute
         return error(_('Access denied'), :forbidden) unless can_update?
 
-        if plan.actual_limits.update(parsed_params)
+        add_history_to_params!
+
+        if plan_limits.update(parsed_params)
           success
         else
-          error(plan.actual_limits.errors.full_messages, :bad_request)
+          error(plan_limits.errors.full_messages, :bad_request)
         end
       end
 
       private
 
-      attr_accessor :current_user, :params, :plan
+      attr_accessor :current_user, :params, :plan, :plan_limits
 
       def can_update?
         current_user.can_admin_all_resources?
+      end
+
+      def add_history_to_params!
+        formatted_limits_history = plan_limits.format_limits_history(current_user, parsed_params)
+        parsed_params.merge!(limits_history: formatted_limits_history) unless formatted_limits_history.empty?
       end
 
       # Overridden in EE

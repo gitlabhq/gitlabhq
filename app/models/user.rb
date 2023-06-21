@@ -2286,6 +2286,10 @@ class User < ApplicationRecord
     }
   end
 
+  def allow_possible_spam?
+    custom_attributes.by_key(UserCustomAttribute::ALLOW_POSSIBLE_SPAM).exists?
+  end
+
   def namespace_commit_email_for_namespace(namespace)
     return if namespace.nil?
 

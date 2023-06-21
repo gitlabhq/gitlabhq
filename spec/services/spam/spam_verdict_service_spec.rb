@@ -136,6 +136,38 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
       end
     end
 
+    context 'if allow_possible_spam user custom attribute is set' do
+      before do
+        UserCustomAttribute.upsert_custom_attributes(
+          [{
+            user_id: user.id,
+            key: 'allow_possible_spam',
+            value: 'does not matter'
+          }]
+        )
+      end
+
+      context 'and a service returns a verdict that should be overridden' do
+        before do
+          allow(service).to receive(:get_spamcheck_verdict).and_return(BLOCK_USER)
+        end
+
+        it 'overrides and renders the override verdict' do
+          is_expected.to eq OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM
+        end
+      end
+
+      context 'and a service returns a verdict that does not need to be overridden' do
+        before do
+          allow(service).to receive(:get_spamcheck_verdict).and_return(ALLOW)
+        end
+
+        it 'does not override and renders the original verdict' do
+          is_expected.to eq ALLOW
+        end
+      end
+    end
+
     context 'records metrics' do
       let(:histogram) { instance_double(Prometheus::Client::Histogram) }
 

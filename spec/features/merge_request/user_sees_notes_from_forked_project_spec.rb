@@ -9,15 +9,21 @@ RSpec.describe 'Merge request > User sees notes from forked project', :js, featu
   let(:user) { project.creator }
   let(:forked_project) { fork_project(project, nil, repository: true) }
   let!(:merge_request) do
-    create(:merge_request_with_diffs, source_project: forked_project,
-                                      target_project: project,
-                                      description: 'Test merge request')
+    create(
+      :merge_request_with_diffs,
+      source_project: forked_project,
+      target_project: project,
+      description: 'Test merge request'
+    )
   end
 
   before do
-    create(:note_on_commit, note: 'A commit comment',
-                            project: forked_project,
-                            commit_id: merge_request.commit_shas.first)
+    create(
+      :note_on_commit,
+      note: 'A commit comment',
+      project: forked_project,
+      commit_id: merge_request.commit_shas.first
+    )
     sign_in(user)
   end
 

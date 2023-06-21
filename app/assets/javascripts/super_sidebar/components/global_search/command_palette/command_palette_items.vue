@@ -5,18 +5,20 @@ import { GlDisclosureDropdownGroup, GlLoadingIcon } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { getFormattedItem } from '../utils';
+
 import {
   COMMON_HANDLES,
   COMMAND_HANDLE,
   USER_HANDLE,
   PROJECT_HANDLE,
   ISSUE_HANDLE,
-  GLOBAL_COMMANDS_GROUP_TITLE,
+  PATH_HANDLE,
   PAGES_GROUP_TITLE,
+  PATH_GROUP_TITLE,
   GROUP_TITLES,
 } from './constants';
 import SearchItem from './search_item.vue';
-import { commandMapper, linksReducer, autocompleteQuery } from './utils';
+import { commandMapper, linksReducer, autocompleteQuery, fileMapper } from './utils';
 
 export default {
   name: 'CommandPaletteItems',
@@ -25,7 +27,14 @@ export default {
     GlLoadingIcon,
     SearchItem,
   },
-  inject: ['commandPaletteCommands', 'commandPaletteLinks', 'autocompletePath', 'searchContext'],
+  inject: [
+    'commandPaletteCommands',
+    'commandPaletteLinks',
+    'autocompletePath',
+    'searchContext',
+    'projectFilesPath',
+    'projectBlobPath',
+  ],
   props: {
     searchQuery: {
       type: String,
@@ -35,7 +44,7 @@ export default {
       type: String,
       required: true,
       validator: (value) => {
-        return COMMON_HANDLES.includes(value);
+        return [...COMMON_HANDLES, PATH_HANDLE].includes(value);
       },
     },
   },
@@ -43,13 +52,14 @@ export default {
     groups: [],
     error: null,
     loading: false,
+    projectFiles: [],
   }),
   computed: {
     isCommandMode() {
       return this.handle === COMMAND_HANDLE;
     },
-    isUserMode() {
-      return this.handle === USER_HANDLE;
+    isPathMode() {
+      return this.handle === PATH_HANDLE;
     },
     commands() {
       return this.commandPaletteCommands.map(commandMapper);
@@ -62,7 +72,7 @@ export default {
         ? this.commands
             .map(({ name, items }) => {
               return {
-                name: name || GLOBAL_COMMANDS_GROUP_TITLE,
+                name,
                 items: this.filterBySearchQuery(items, 'text'),
               };
             })
@@ -73,7 +83,7 @@ export default {
       return this.groups?.length && this.groups.some((group) => group.items?.length);
     },
     hasSearchQuery() {
-      if (this.isCommandMode) {
+      if (this.isCommandMode || this.isPathMode) {
         return this.searchQuery?.length > 0;
       }
       return this.searchQuery?.length > 2;
@@ -83,6 +93,12 @@ export default {
         return `${ISSUE_HANDLE}${this.searchQuery}`;
       }
       return this.searchQuery;
+    },
+    filteredProjectFiles() {
+      if (!this.searchQuery) {
+        return this.projectFiles;
+      }
+      return this.filterBySearchQuery(this.projectFiles, 'text');
     },
   },
   watch: {
@@ -96,6 +112,9 @@ export default {
           case PROJECT_HANDLE:
           case ISSUE_HANDLE:
             this.getScopedItems();
+            break;
+          case PATH_HANDLE:
+            this.getProjectFiles();
             break;
           default:
             break;
@@ -159,6 +178,26 @@ export default {
         {
           name: GROUP_TITLES[this.handle],
           items: data.map(getFormattedItem),
+        },
+      ];
+    },
+    async getProjectFiles() {
+      if (!this.projectFiles.length) {
+        this.loading = true;
+        try {
+          const response = await axios.get(this.projectFilesPath);
+          this.projectFiles = response?.data.map(fileMapper.bind(null, this.projectBlobPath));
+        } catch (error) {
+          this.error = error;
+        } finally {
+          this.loading = false;
+        }
+      }
+
+      this.groups = [
+        {
+          name: PATH_GROUP_TITLE,
+          items: this.filteredProjectFiles,
         },
       ];
     },

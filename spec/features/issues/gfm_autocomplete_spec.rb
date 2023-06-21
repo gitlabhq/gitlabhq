@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
   include CookieHelper
+  include Features::AutocompleteHelpers
 
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let_it_be(:user2) { create(:user, name: 'Marge Simpson', username: 'msimpson') }
@@ -452,13 +453,5 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
     end
 
     wait_for_requests
-  end
-
-  def find_autocomplete_menu
-    find('.atwho-view ul', visible: true)
-  end
-
-  def find_highlighted_autocomplete_item
-    find('.atwho-view li.cur', visible: true)
   end
 end

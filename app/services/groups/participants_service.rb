@@ -2,6 +2,7 @@
 
 module Groups
   class ParticipantsService < Groups::BaseService
+    include Gitlab::Utils::StrongMemoize
     include Users::ParticipableService
 
     def execute(noteable)
@@ -29,7 +30,10 @@ module Groups
     def group_members
       return [] unless group
 
-      @group_members ||= sorted(group.direct_and_indirect_users)
+      sorted(
+        group.direct_and_indirect_users(share_with_groups: group.member?(current_user))
+      )
     end
+    strong_memoize_attr :group_members
   end
 end

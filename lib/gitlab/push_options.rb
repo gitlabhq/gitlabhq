@@ -21,6 +21,9 @@ module Gitlab
       },
       ci: {
         keys: [:skip, :variable]
+      },
+      integrations: {
+        keys: [:skip_ci]
       }
     }).freeze
 

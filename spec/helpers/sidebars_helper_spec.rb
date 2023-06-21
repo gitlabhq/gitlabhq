@@ -528,4 +528,31 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
     end
   end
+
+  describe '#command_palette_data' do
+    it 'returns data for project files search' do
+      project = create(:project, :repository) # rubocop:disable RSpec/FactoryBot/AvoidCreate
+
+      expect(helper.command_palette_data(project: project)).to eq(
+        project_files_url: project_files_path(
+          project, project.default_branch, format: :json),
+        project_blob_url: project_blob_path(
+          project, project.default_branch)
+      )
+    end
+
+    it 'returns empty object when project is nil' do
+      expect(helper.command_palette_data(project: nil)).to eq({})
+    end
+
+    it 'returns empty object when project does not have repo' do
+      project = build(:project)
+      expect(helper.command_palette_data(project: project)).to eq({})
+    end
+
+    it 'returns empty object when project has repo but it is empty' do
+      project = build(:project, :empty_repo)
+      expect(helper.command_palette_data(project: project)).to eq({})
+    end
+  end
 end

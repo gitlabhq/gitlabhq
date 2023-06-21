@@ -33,17 +33,31 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
   subject(:update_plan_limits) { described_class.new(params, current_user: user, plan: plan).execute }
 
   context 'when current_user is an admin', :enable_admin_mode do
-    context 'when the update is successful' do
-      it 'updates all attributes' do
-        expect_next_instance_of(described_class) do |instance|
-          expect(instance).to receive(:parsed_params).and_call_original
-        end
+    context 'when the update is successful', :freeze_time do
+      let(:current_timestamp) { Time.current.utc.to_i }
 
+      it 'updates all attributes' do
         update_plan_limits
 
         params.each do |key, value|
           expect(limits.send(key)).to eq value
         end
+      end
+
+      it 'logs the allowed attributes only' do
+        update_plan_limits
+
+        expect(limits.limits_history).to eq(
+          { "enforcement_limit" =>
+                                [{ "user_id" => user.id, "username" => user.username,
+                                   "timestamp" => current_timestamp, "value" => 15 }],
+            "notification_limit" =>
+                                [{ "user_id" => user.id, "username" => user.username,
+                                   "timestamp" => current_timestamp, "value" => 30 }],
+            "storage_size_limit" =>
+                                [{ "user_id" => user.id, "username" => user.username,
+                                   "timestamp" => current_timestamp, "value" => 90 }] }
+        )
       end
 
       it 'returns success' do

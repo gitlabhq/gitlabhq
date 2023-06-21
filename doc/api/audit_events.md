@@ -138,16 +138,10 @@ Example response:
 
 ## Group Audit Events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
-> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
-> - Also returning project audit events for projects within the given group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/feat/337757) in GitLab 16.1 behind feature flag `audit_event_group_rollup`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default returning project audit events for projects within the given group is not available. To make it available, ask an administrator
-to [enable the feature flag](../administration/feature_flags.md) named `audit_event_group_rollup`. On GitLab.com, this feature is not available. The feature is not ready for
-production use.
+> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
+This API cannot retrieve project audit events.
 
 A user with:
 

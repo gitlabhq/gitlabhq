@@ -1840,10 +1840,12 @@ class Project < ApplicationRecord
     triggered.add_hooks(hooks)
   end
 
-  def execute_integrations(data, hooks_scope = :push_hooks)
+  def execute_integrations(data, hooks_scope = :push_hooks, skip_ci: false)
     # Call only service hooks that are active for this scope
     run_after_commit_or_now do
       association("#{hooks_scope}_integrations").reader.each do |integration|
+        next if skip_ci && integration.ci?
+
         integration.async_execute(data)
       end
     end

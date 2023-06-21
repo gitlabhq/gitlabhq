@@ -85,7 +85,7 @@ module Spam
       # than the override verdict's priority value), then we don't need to override it.
       return false if SUPPORTED_VERDICTS[verdict][:priority] > SUPPORTED_VERDICTS[OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM][:priority]
 
-      target.allow_possible_spam?
+      target.allow_possible_spam? || user.allow_possible_spam?
     end
 
     def spamcheck_client

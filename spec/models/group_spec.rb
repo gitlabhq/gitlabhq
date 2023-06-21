@@ -1848,22 +1848,29 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   context 'user-related methods' do
-    let(:user_a) { create(:user) }
-    let(:user_b) { create(:user) }
-    let(:user_c) { create(:user) }
-    let(:user_d) { create(:user) }
+    let_it_be(:user_a) { create(:user) }
+    let_it_be(:user_b) { create(:user) }
+    let_it_be(:user_c) { create(:user) }
+    let_it_be(:user_d) { create(:user) }
 
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-    let(:deep_nested_group) { create(:group, parent: nested_group) }
-    let(:project) { create(:project, namespace: group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:nested_group) { create(:group, parent: group) }
+    let_it_be(:deep_nested_group) { create(:group, parent: nested_group) }
+    let_it_be(:project) { create(:project, namespace: group) }
 
-    before do
+    let_it_be(:another_group) { create(:group) }
+    let_it_be(:another_user) { create(:user) }
+
+    before_all do
       group.add_developer(user_a)
       group.add_developer(user_c)
       nested_group.add_developer(user_b)
       deep_nested_group.add_developer(user_a)
       project.add_developer(user_d)
+
+      another_group.add_developer(another_user)
+
+      create(:group_group_link, shared_group: group, shared_with_group: another_group)
     end
 
     describe '#direct_and_indirect_users' do
@@ -1875,6 +1882,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'does not return members of projects belonging to ancestor groups' do
         expect(nested_group.direct_and_indirect_users).not_to include(user_d)
+      end
+
+      context 'when share_with_groups is true' do
+        it 'also returns members of groups invited to this group' do
+          expect(group.direct_and_indirect_users(share_with_groups: true))
+            .to contain_exactly(user_a, user_b, user_c, user_d, another_user)
+        end
       end
     end
 

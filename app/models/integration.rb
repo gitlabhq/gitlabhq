@@ -600,6 +600,10 @@ class Integration < ApplicationRecord
     category == :chat
   end
 
+  def ci?
+    category == :ci
+  end
+
   private
 
   # Ancestors sorted by hierarchy depth in bottom-top order.

@@ -60,6 +60,7 @@ They should not be published to RubyGems.
 You can see example adding new Gem: [!121676](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121676).
 
 1. Create a new Ruby Gem in `gems/gitlab-<name-of-gem>` with `bundle gem gems/gitlab-<name-of-gem> --no-exe --no-coc --no-ext --no-mit`.
+1. Remove the `.git` folder in `gems/gitlab-<name-of-gem>` with `rm -rf gems/gitlab-<name-of-gem>/.git`.
 1. Edit `gitlab-<name-of-gem>/README.md` to provide a simple description of the Gem.
 1. Edit `gitlab-<name-of-gem>/gitlab-<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
 

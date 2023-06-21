@@ -15,11 +15,13 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
     context 'with pipelines' do
       let!(:pipeline) do
-        create(:ci_pipeline,
-               :success,
-               project: merge_request.source_project,
-               ref: merge_request.source_branch,
-               sha: merge_request.diff_head_sha)
+        create(
+          :ci_pipeline,
+          :success,
+          project: merge_request.source_project,
+          ref: merge_request.source_branch,
+          sha: merge_request.diff_head_sha
+        )
       end
 
       let!(:manual_job) { create(:ci_build, :manual, name: 'job1', stage: 'deploy', pipeline: pipeline) }
@@ -116,9 +118,14 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
     let_it_be(:reporter_in_parent_and_developer_in_fork) { create(:user) }
 
     let(:merge_request) do
-      create(:merge_request, :with_detached_merge_request_pipeline,
-                             source_project: forked_project, source_branch: 'feature',
-                             target_project: parent_project, target_branch: 'master')
+      create(
+        :merge_request,
+        :with_detached_merge_request_pipeline,
+        source_project: forked_project,
+        source_branch: 'feature',
+        target_project: parent_project,
+        target_branch: 'master'
+      )
     end
 
     let(:config) do

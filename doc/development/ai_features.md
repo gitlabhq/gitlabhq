@@ -26,7 +26,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Configuration for Moderation check of inputs
 - Automatic Markdown Rendering of responses
 - Centralised Group Level settings for experiment and 3rd party
-- Experimental API endpoints for exploration of AI API’s by GitLab team members without the need for credentials
+- Experimental API endpoints for exploration of AI APIs by GitLab team members without the need for credentials
   - OpenAI
   - Google Vertex AI
 
@@ -103,7 +103,7 @@ For features that use the embedding database, additional setup is needed.
 #### Tips for local development
 
 1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
-1. Alternatively, bypass Sidekiq entirely and run the chat service syncronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
+1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
 
 ```diff
 diff --git a/ee/app/services/llm/chat_service.rb b/ee/app/services/llm/chat_service.rb

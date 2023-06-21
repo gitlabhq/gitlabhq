@@ -118,12 +118,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   context 'view merge request with failed GitLab CI pipelines' do
     before do
       commit_status = create(:commit_status, project: project, status: 'failed')
-      pipeline = create(:ci_pipeline, project: project,
-                                      sha: merge_request.diff_head_sha,
-                                      ref: merge_request.source_branch,
-                                      status: 'failed',
-                                      statuses: [commit_status],
-                                      head_pipeline_of: merge_request)
+      pipeline = create(
+        :ci_pipeline,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        ref: merge_request.source_branch,
+        status: 'failed',
+        statuses: [commit_status],
+        head_pipeline_of: merge_request
+      )
       create(:ci_build, :pending, pipeline: pipeline)
 
       visit project_merge_request_path(project, merge_request)
@@ -278,12 +281,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   context 'view merge request with MWBS button' do
     before do
       commit_status = create(:commit_status, project: project, status: 'pending')
-      pipeline = create(:ci_pipeline, project: project,
-                                      sha: merge_request.diff_head_sha,
-                                      ref: merge_request.source_branch,
-                                      status: 'pending',
-                                      statuses: [commit_status],
-                                      head_pipeline_of: merge_request)
+      pipeline = create(
+        :ci_pipeline,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        ref: merge_request.source_branch,
+        status: 'pending',
+        statuses: [commit_status],
+        head_pipeline_of: merge_request
+      )
       create(:ci_build, :pending, pipeline: pipeline)
 
       visit project_merge_request_path(project, merge_request)
@@ -298,9 +304,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
   context 'view merge request where there is no pipeline yet' do
     before do
-      pipeline = create(:ci_pipeline, project: project,
-                                      sha: merge_request.diff_head_sha,
-                                      ref: merge_request.source_branch)
+      pipeline = create(
+        :ci_pipeline,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        ref: merge_request.source_branch
+      )
       create(:ci_build, pipeline: pipeline)
 
       visit project_merge_request_path(project, merge_request)
@@ -510,11 +519,13 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
   context 'when merge request has test reports' do
     let!(:head_pipeline) do
-      create(:ci_pipeline,
-             :success,
-             project: project,
-             ref: merge_request.source_branch,
-             sha: merge_request.diff_head_sha)
+      create(
+        :ci_pipeline,
+        :success,
+        project: project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha
+      )
     end
 
     let!(:build) { create(:ci_build, :success, pipeline: head_pipeline, project: project) }
