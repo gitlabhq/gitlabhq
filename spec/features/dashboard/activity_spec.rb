@@ -59,12 +59,14 @@ RSpec.describe 'Dashboard > Activity', feature_category: :user_profile do
     let!(:push_event) do
       event = create(:push_event, project: project, author: user)
 
-      create(:push_event_payload,
-             event: event,
-             action: :created,
-             commit_to: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
-             ref: 'new_design',
-             commit_count: 1)
+      create(
+        :push_event_payload,
+        event: event,
+        action: :created,
+        commit_to: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
+        ref: 'new_design',
+        commit_count: 1
+      )
 
       event
     end

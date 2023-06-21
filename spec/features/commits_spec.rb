@@ -15,13 +15,15 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
     let(:creator) { create(:user, developer_projects: [project]) }
     let!(:pipeline) do
-      create(:ci_pipeline,
-             project: project,
-             user: creator,
-             ref: project.default_branch,
-             sha: project.commit.sha,
-             status: :success,
-             created_at: 5.months.ago)
+      create(
+        :ci_pipeline,
+        project: project,
+        user: creator,
+        ref: project.default_branch,
+        sha: project.commit.sha,
+        status: :success,
+        created_at: 5.months.ago
+      )
     end
 
     context 'commit status is Generic Commit Status' do
@@ -61,11 +63,13 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
         describe 'Project commits' do
           let!(:pipeline_from_other_branch) do
-            create(:ci_pipeline,
-                   project: project,
-                   ref: 'fix',
-                   sha: project.commit.sha,
-                   status: :failed)
+            create(
+              :ci_pipeline,
+              project: project,
+              ref: 'fix',
+              sha: project.commit.sha,
+              status: :failed
+            )
           end
 
           before do

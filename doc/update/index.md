@@ -186,6 +186,15 @@ If you don't want any downtime, read how to [upgrade with zero downtime](zero_do
 
 For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/) maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
 
+Required upgrade stops are versions of GitLab that you must upgrade to before upgrading to later versions. Required upgrade stops allow required background
+migrations to finish.
+
+During GitLab 16.x, we are scheduling two or three required upgrade stops. We will give at least two milestones of notice when we
+schedule a required upgrade stop.
+
+The first planned required upgrade stop is scheduled for GitLab 16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be treated as a
+regular upgrade.
+
 Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):

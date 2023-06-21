@@ -262,7 +262,7 @@ PKG_METADATA_MANIFEST_OUTPUT_FILE="/tmp/license_db_export_manifest.json"
 PKG_METADATA_DOWNLOADS_OUTPUT_FILE="/tmp/license_db_object_links.tsv"
 
 # Download the contents of the bucket
-curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
+curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/prod-export-license-bucket-1a6c642fc4de57d4/o?maxResults=7500" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
 
 # Parse the links and names for the bucket objects and output them into a tsv file
 jq -r '.items[] | [.name, .mediaLink] | @tsv' "$PKG_METADATA_MANIFEST_OUTPUT_FILE" > "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"

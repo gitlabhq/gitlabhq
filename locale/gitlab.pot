@@ -6540,6 +6540,9 @@ msgstr ""
 msgid "AuditStreams|An error occurred when updating external audit event stream destination. Please try it again."
 msgstr ""
 
+msgid "AuditStreams|Are you sure about deleting this destination?"
+msgstr ""
+
 msgid "AuditStreams|Cancel editing"
 msgstr ""
 
@@ -6547,6 +6550,12 @@ msgid "AuditStreams|Custom HTTP headers (optional)"
 msgstr ""
 
 msgid "AuditStreams|Delete %{link}"
+msgstr ""
+
+msgid "AuditStreams|Delete destination"
+msgstr ""
+
+msgid "AuditStreams|Deleting the streaming destination %{destination} will stop audit events being streamed"
 msgstr ""
 
 msgid "AuditStreams|Destination URL"

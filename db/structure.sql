@@ -33596,7 +33596,7 @@ CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_sett
 
 CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_events USING btree (system_note_metadata_id);
 
-CREATE UNIQUE INDEX unique_instance_audit_event_destination_namespace_id_and_name ON audit_events_instance_external_audit_event_destinations USING btree (name);
+CREATE UNIQUE INDEX unique_instance_audit_event_destination_name ON audit_events_instance_external_audit_event_destinations USING btree (name);
 
 CREATE UNIQUE INDEX unique_merge_request_diff_llm_summaries_on_mr_diff_id ON merge_request_diff_llm_summaries USING btree (merge_request_diff_id);
 

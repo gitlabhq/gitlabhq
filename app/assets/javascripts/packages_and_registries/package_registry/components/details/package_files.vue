@@ -3,8 +3,8 @@ import {
   GlAlert,
   GlLink,
   GlTable,
-  GlDropdownItem,
-  GlDropdown,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
   GlButton,
   GlFormCheckbox,
   GlLoadingIcon,
@@ -51,8 +51,8 @@ export default {
     GlAlert,
     GlLink,
     GlTable,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlFormCheckbox,
     GlButton,
     GlLoadingIcon,
@@ -426,6 +426,7 @@ export default {
             v-if="hasDetails(item)"
             :icon="detailsShowing ? 'chevron-up' : 'chevron-down'"
             :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
+            data-testid="toggle-details-button"
             category="tertiary"
             size="small"
             @click="
@@ -453,18 +454,23 @@ export default {
         </template>
 
         <template #cell(actions)="{ item }">
-          <gl-dropdown
+          <gl-disclosure-dropdown
             category="tertiary"
             icon="ellipsis_v"
-            :text-sr-only="true"
-            :text="$options.i18n.moreActionsText"
+            placement="right"
+            :toggle-text="$options.i18n.moreActionsText"
+            text-sr-only
             no-caret
-            right
           >
-            <gl-dropdown-item data-testid="delete-file" @click="handleFileDelete([item])">
-              {{ $options.i18n.deleteFile }}
-            </gl-dropdown-item>
-          </gl-dropdown>
+            <gl-disclosure-dropdown-item
+              data-testid="delete-file"
+              @action="handleFileDelete([item])"
+            >
+              <template #list-item>
+                {{ $options.i18n.deleteFile }}
+              </template>
+            </gl-disclosure-dropdown-item>
+          </gl-disclosure-dropdown>
         </template>
 
         <template #row-details="{ item }">

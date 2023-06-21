@@ -139,8 +139,10 @@ RSpec.describe 'Admin Mode Login', feature_category: :system_access do
             context 'when authn_context is worth two factors' do
               let(:mock_saml_response) do
                 File.read('spec/fixtures/authentication/saml_response.xml')
-                    .gsub('urn:oasis:names:tc:SAML:2.0:ac:classes:Password',
-                          'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
+                  .gsub(
+                    'urn:oasis:names:tc:SAML:2.0:ac:classes:Password',
+                    'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS'
+                  )
               end
 
               it 'signs user in without prompting for second factor' do

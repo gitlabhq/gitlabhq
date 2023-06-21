@@ -69,7 +69,7 @@ export default {
             this.openModal();
           },
           extraAttrs: {
-            'data-qa-selector': 'delete_merged_branches_button',
+            'data-testid': 'delete-merged-branches-button',
             class: 'gl-text-red-500!',
           },
         },
@@ -102,12 +102,11 @@ export default {
       category="tertiary"
       no-caret
       placement="right"
-      data-qa-selector="delete_merged_branches_dropdown_button"
       class="gl-display-none gl-md-display-block!"
       :items="dropdownItems"
     />
     <gl-button
-      data-qa-selector="delete_merged_branches_button"
+      data-testid="delete-merged-branches-button"
       category="secondary"
       variant="danger"
       class="gl-display-block gl-md-display-none!"
@@ -153,7 +152,6 @@ export default {
           </gl-sprintf>
           <gl-form-input
             v-model="enteredText"
-            data-qa-selector="delete_merged_branches_input"
             type="text"
             size="sm"
             class="gl-mt-2"
@@ -178,7 +176,6 @@ export default {
             ref="deleteMergedBrancesButton"
             :disabled="isDeleteButtonDisabled"
             variant="danger"
-            data-qa-selector="delete_merged_branches_confirmation_button"
             data-testid="delete-merged-branches-confirmation-button"
             @click="submitForm"
             >{{ $options.i18n.deleteButtonText }}</gl-button

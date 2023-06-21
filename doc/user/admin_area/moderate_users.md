@@ -200,6 +200,33 @@ When this feature is enabled, GitLab runs a job once a day to deactivate the dor
 
 A maximum of 100,000 users can be deactivated per day.
 
+### Automatically delete unconfirmed users **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `delete_unconfirmed_users_setting`. Disabled by default.
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can enable automatic deletion of users who both:
+
+- Never confirmed their email address.
+- Signed up for GitLab more than a specified number of days in the past.
+
+You can configure these settings using either the [Settings API](../../api/settings.md) or in a Rails console:
+
+```ruby
+ Gitlab::CurrentSettings.update(delete_unconfirmed_users: true)
+ Gitlab::CurrentSettings.update(unconfirmed_users_delete_after_days: 365)
+```
+
+When the `delete_unconfirmed_users` setting is enabled, GitLab runs a job once an hour to delete the unconfirmed users.
+The job only deletes users who signed up more than `unconfirmed_users_delete_after_days` days in the past.
+
+This job only runs when the `email_confirmation_setting` is set to `soft` or `hard`.
+
+A maximum of 240,000 users can be deleted per day.
+
 ### Activate a user
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.

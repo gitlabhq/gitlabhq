@@ -183,8 +183,8 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 1. Install and configure Tomcat 10:
 
    ```shell
-   cd /tmp & wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.9/bin/apache-tomcat-10.1.9.tar.gz
-   sudo tar xzvf apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
+   wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.9/bin/apache-tomcat-10.1.9.tar.gz -P /tmp
+   sudo tar xzvf /tmp/apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
    sudo chown -R tomcat:tomcat /opt/tomcat/
    sudo chmod -R u+x /opt/tomcat/bin
    ```
@@ -270,7 +270,8 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 1. Install PlantUML and copy the `.war` file:
 
    ```shell
-   cd / & git clone https://github.com/plantuml/plantuml-server.git
+   cd /
+   git clone https://github.com/plantuml/plantuml-server.git
    cd plantuml-server
    mvn package
    cp /plantuml-server/target/plantuml.war  /opt/tomcat/webapps/plantuml.war

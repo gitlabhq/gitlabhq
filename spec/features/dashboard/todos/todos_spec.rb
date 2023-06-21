@@ -443,12 +443,15 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
     let_it_be(:target) { create(:design, issue: issue, project: project) }
     let_it_be(:note) { create(:note, project: project, note: 'I am note, hear me roar') }
     let_it_be(:todo) do
-      create(:todo, :mentioned,
-             user: user,
-             project: project,
-             target: target,
-             author: author,
-             note: note)
+      create(
+        :todo,
+        :mentioned,
+        user: user,
+        project: project,
+        target: target,
+        author: author,
+        note: note
+      )
     end
 
     before do
@@ -467,10 +470,12 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
   context 'User requested access' do
     shared_examples 'has todo present with access request content' do
       specify do
-        create(:todo, :member_access_requested,
-               user: user,
-               target: target,
-               author: author
+        create(
+          :todo,
+          :member_access_requested,
+          user: user,
+          target: target,
+          author: author
         )
         target.add_owner(user)
 

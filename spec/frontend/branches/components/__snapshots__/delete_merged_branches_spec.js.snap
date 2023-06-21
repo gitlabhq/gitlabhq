@@ -5,7 +5,6 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
   <gl-base-dropdown-stub
     category="tertiary"
     class="gl-disclosure-dropdown gl-display-none gl-md-display-block!"
-    data-qa-selector="delete_merged_branches_dropdown_button"
     icon="ellipsis_v"
     nocaret="true"
     offset="[object Object]"
@@ -34,7 +33,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
    
   <b-button-stub
     class="gl-display-block gl-md-display-none! gl-button btn-danger-secondary"
-    data-qa-selector="delete_merged_branches_button"
+    data-testid="delete-merged-branches-button"
     size="md"
     tag="button"
     type="button"
@@ -100,7 +99,6 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
           aria-labelledby="input-label"
           autocomplete="off"
           class="gl-form-input gl-mt-2 gl-form-input-sm"
-          data-qa-selector="delete_merged_branches_input"
           debounce="0"
           formatter="[Function]"
           type="text"
@@ -146,7 +144,6 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
        
       <b-button-stub
         class="gl-button"
-        data-qa-selector="delete_merged_branches_confirmation_button"
         data-testid="delete-merged-branches-confirmation-button"
         disabled="true"
         size="md"

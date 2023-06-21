@@ -49,8 +49,11 @@ RSpec.describe 'Issues Feed', feature_category: :devops_reports do
       before do
         personal_access_token = create(:personal_access_token, user: user)
 
-        visit project_issues_path(project, :atom,
-                                  private_token: personal_access_token.token)
+        visit project_issues_path(
+          project,
+          :atom,
+          private_token: personal_access_token.token
+        )
       end
 
       it_behaves_like 'an authenticated issuable atom feed'
@@ -59,8 +62,11 @@ RSpec.describe 'Issues Feed', feature_category: :devops_reports do
 
     context 'when authenticated via feed token' do
       before do
-        visit project_issues_path(project, :atom,
-                                  feed_token: user.feed_token)
+        visit project_issues_path(
+          project,
+          :atom,
+          feed_token: user.feed_token
+        )
       end
 
       it_behaves_like 'an authenticated issuable atom feed'

@@ -37,7 +37,7 @@ const createComponent = (mountFn = shallowMountExtended, stubs = {}) => {
 };
 
 const findDeleteButton = () =>
-  wrapper.findComponent('[data-qa-selector="delete_merged_branches_button"]');
+  wrapper.findComponent('[data-testid="delete-merged-branches-button"]');
 const findModal = () => wrapper.findComponent(GlModal);
 const findConfirmationButton = () =>
   wrapper.findByTestId('delete-merged-branches-confirmation-button');

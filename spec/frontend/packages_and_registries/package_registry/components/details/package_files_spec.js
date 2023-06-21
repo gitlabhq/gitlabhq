@@ -1,7 +1,6 @@
 import {
   GlAlert,
-  GlDropdown,
-  GlButton,
+  GlDisclosureDropdown,
   GlFormCheckbox,
   GlLoadingIcon,
   GlModal,
@@ -64,9 +63,10 @@ describe('Package Files', () => {
   const findFirstRowDownloadLink = () => findFirstRow().findByTestId('download-link');
   const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().findComponent(TimeAgoTooltip);
-  const findFirstActionMenu = () => extendedWrapper(findFirstRow().findComponent(GlDropdown));
+  const findFirstActionMenu = () =>
+    extendedWrapper(findFirstRow().findComponent(GlDisclosureDropdown));
   const findActionMenuDelete = () => findFirstActionMenu().findByTestId('delete-file');
-  const findFirstToggleDetailsButton = () => findFirstRow().findComponent(GlButton);
+  const findFirstToggleDetailsButton = () => findFirstRow().findByTestId('toggle-details-button');
   const findFirstRowShaComponent = (id) => wrapper.findByTestId(id);
   const findCheckAllCheckbox = () => wrapper.findByTestId('package-files-checkbox-all');
   const findAllRowCheckboxes = () => wrapper.findAllByTestId('package-files-checkbox');
@@ -262,7 +262,7 @@ describe('Package Files', () => {
         expect(findFirstActionMenu().exists()).toBe(true);
         expect(findFirstActionMenu().props('icon')).toBe('ellipsis_v');
         expect(findFirstActionMenu().props('textSrOnly')).toBe(true);
-        expect(findFirstActionMenu().props('text')).toMatchInterpolatedText('More actions');
+        expect(findFirstActionMenu().props('toggleText')).toMatchInterpolatedText('More actions');
       });
 
       describe('menu items', () => {
@@ -272,7 +272,7 @@ describe('Package Files', () => {
           });
 
           it('shows delete file confirmation modal', async () => {
-            await findActionMenuDelete().trigger('click');
+            await findActionMenuDelete().vm.$emit('action');
 
             expect(showMock).toHaveBeenCalledTimes(1);
 

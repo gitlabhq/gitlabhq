@@ -872,20 +872,21 @@ If you want to reduce risk slightly, consider putting the migrations into a
 second merge request after the application changes are merged. This approach
 provides an opportunity to roll back.
 
-Removing the foreign key on the `projects` table:
+Removing the foreign key on the `projects` table using a non-transactional migration:
 
 ```ruby
 # first migration file
+class RemovingForeignKeyMigrationClass < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
 
-def up
-  with_lock_retries do
-    remove_foreign_key :my_table, :projects
+  def up
+    with_lock_retries do
+      remove_foreign_key :my_table, :projects
+    end
   end
-end
 
-def down
-  with_lock_retries do
-    add_foreign_key :my_table, :projects
+  def down
+    add_concurrent_foreign_key :my_table, :projects, column: COLUMN_NAME
   end
 end
 ```
@@ -894,17 +895,19 @@ Dropping the table:
 
 ```ruby
 # second migration file
+class DroppingTableMigrationClass < Gitlab::Database::Migration[2.1]
+  def up
+    drop_table :my_table
+  end
 
-def up
-  drop_table :my_table
-end
-
-def down
-  # create_table ...
+  def down
+    # create_table with the same schema but without the removed foreign key ...
+  end
 end
 ```
 
-After a table has been dropped, it should be added to the database dictionary, following the steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
+After a table has been dropped, it should be added to the database dictionary, following the
+steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
 
 ## Dropping a sequence
 

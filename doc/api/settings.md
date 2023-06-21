@@ -115,9 +115,20 @@ Example response:
 ```
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
-the `group_owners_can_manage_default_branch_protection`, `file_template_project_id`, `delayed_project_deletion`,
-`delayed_group_deletion`, `default_project_deletion_protection`, `deletion_adjourned_period`, `disable_personal_access_tokens`, `geo_node_allowed_ips`,
-or the `security_policy_global_group_approvers_enabled` parameters.
+these parameters:
+
+- `group_owners_can_manage_default_branch_protection`
+- `file_template_project_id`
+- `geo_node_allowed_ips`
+- `geo_status_timeout`
+- `delayed_project_deletion`
+- `delayed_group_deletion`
+- `default_project_deletion_protection`
+- `deletion_adjourned_period`
+- `disable_personal_access_tokens`
+- `security_policy_global_group_approvers_enabled`
+- `delete_unconfirmed_users`
+- `unconfirmed_users_delete_after_days`
 
 From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled,
 the `delayed_project_deletion` and `delayed_group_deletion` attributes will not be exposed. These attributes will be removed in GitLab 16.0.
@@ -257,6 +268,8 @@ these parameters:
 - `deletion_adjourned_period`
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
+- `delete_unconfirmed_users`
+- `unconfirmed_users_delete_after_days`
 
 From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled,
 the `delayed_project_deletion` and `delayed_group_deletion` attributes will not be exposed. These attributes will be removed in GitLab 16.0.
@@ -328,6 +341,7 @@ listed in the descriptions of the relevant settings.
 | `delayed_project_deletion` **(PREMIUM SELF)** | boolean     | no                                   | Enable delayed project deletion by default in new groups. Default is `false`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), can only be enabled when `delayed_group_deletion` is true. From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled, this attribute has been removed. This attribute will be completely removed in GitLab 16.0. |
 | `delayed_group_deletion` **(PREMIUM SELF)**   | boolean     | no                                   | Enable delayed group deletion. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), disables and locks the group-level setting for delayed protect deletion when set to `false`. From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled, this attribute has been removed. This attribute will be completely removed in GitLab 16.0. |
 | `default_project_deletion_protection` **(PREMIUM SELF)** | boolean | no                            | Enable default project deletion protection so only administrators can delete projects. Default is `false`. |
+| `delete_unconfirmed_users` **(PREMIUM SELF)**            | boolean | no                            | Specifies whether users who have not confirmed their email should be deleted. Default is `false`. When set to `true`, unconfirmed users are deleted after `unconfirmed_users_delete_after_days` days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1. |
 | `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), a hook on `deletion_adjourned_period` sets the period to `1` on every update, and sets both `delayed_project_deletion` and `delayed_group_deletion` to `false` if the period is `0`. |
 | `diagramsnet_enabled`                       | boolean          | no                                   | (If enabled, requires `diagramsnet_url`) Enable [Diagrams.net integration](../administration/integration/diagrams_net.md). Default is `true`. |
 | `diagramsnet_url`                           | string           | required by: `diagramsnet_enabled`      | The Diagrams.net instance URL for integration. |
@@ -534,6 +548,7 @@ listed in the descriptions of the relevant settings.
 | `throttle_unauthenticated_web_requests_per_period` | integer    | required by:<br>`throttle_unauthenticated_web_enabled` | Max requests per period per IP. |
 | `time_tracking_limit_to_hours`           | boolean          | no                                   | Limit display of time tracking units to hours. Default is `false`. |
 | `two_factor_grace_period`                | integer          | required by: `require_two_factor_authentication` | Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication. |
+| `unconfirmed_users_delete_after_days` **(PREMIUM SELF)** | integer           | no                  | Specifies how many days after sign-up to delete users who have not confirmed their email. Only applicable if `delete_unconfirmed_users` is set to `true`. Must be `1` or greater. Default is `7`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1. |
 | `unique_ips_limit_enabled`               | boolean          | no                                   | (**If enabled, requires:** `unique_ips_limit_per_user` and `unique_ips_limit_time_window`) Limit sign in from multiple IPs. |
 | `unique_ips_limit_per_user`              | integer          | required by: `unique_ips_limit_enabled` | Maximum number of IPs per user. |
 | `unique_ips_limit_time_window`           | integer          | required by: `unique_ips_limit_enabled` | How many seconds an IP is counted towards the limit. |

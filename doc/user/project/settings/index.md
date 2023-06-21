@@ -45,22 +45,9 @@ If you're an instance administrator, you can administer all project topics from 
 
 ## Add a compliance framework to a project **(PREMIUM)**
 
-[Compliance frameworks](../../group/compliance_frameworks.md) can be assigned to projects within group that has a
-compliance framework using either:
-
-- The GitLab UI:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-  1. Select **Settings** > **General**.
-  1. Expand **Compliance frameworks**.
-  1. Select a compliance framework.
-  1. Select **Save changes**.
-- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
-  [GraphQL API](../../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework). If you create
-  compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user has the
-  correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
-
-NOTE:
-Frameworks can not be added to projects in personal namespaces.
+You can
+[add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
+in a group that has a compliance framework.
 
 ## Configure project visibility, features, and permissions
 

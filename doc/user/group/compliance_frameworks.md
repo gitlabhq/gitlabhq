@@ -11,9 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can create a compliance framework that is a label to identify that your project has certain compliance
 requirements or needs additional oversight. The label can optionally enforce
-[compliance pipeline configuration](#compliance-pipelines) to the projects on which it is
-applied. Refer to our
-applied. For more information, see [Add a compliance framework to a project](../project/settings/index.md#add-a-compliance-framework-to-a-project).
+[compliance pipeline configuration](#compliance-pipelines) to the projects on which it is applied.
 
 Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
 
@@ -24,6 +22,33 @@ Compliance frameworks are created on top-level groups. Group owners can create, 
 
 Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
 or deleted at the subgroup or project level. Project owners can choose a framework to apply to their projects.
+
+## Add a compliance framework to a project
+
+Prerequisite:
+
+- The group to which the project belongs must have a compliance framework.
+
+To assign a compliance framework to a project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings** > **General**.
+1. Expand **Compliance frameworks**.
+1. Select a compliance framework.
+1. Select **Save changes**.
+
+NOTE:
+Frameworks cannot be added to projects in personal namespaces.
+
+### GraphQL API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) in GitLab 14.2.
+
+You can use the [GraphQL API](../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework) to add a
+compliance framework to a project.
+
+If you create compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user
+has the correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
 
 ## Default compliance frameworks
 
