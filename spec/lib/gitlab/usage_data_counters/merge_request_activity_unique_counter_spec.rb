@@ -54,11 +54,6 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
 
     let(:merge_request) { create(:merge_request) }
     let(:target_project) { merge_request.target_project }
-    let(:fake_tracker) { instance_spy(Gitlab::Tracking::Destinations::Snowplow) }
-
-    before do
-      allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_tracker)
-    end
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_USER_CREATE_ACTION }
@@ -68,36 +63,10 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_CREATE_ACTION }
     end
 
-    it 'logs to Snowplow', :aggregate_failures do
-      # This logic should be extracted to shared_examples
-      namespace = target_project.namespace
-
-      expect(Gitlab::Tracking::StandardContext)
-        .to receive(:new)
-          .with(
-            project_id: target_project.id,
-            user_id: user.id,
-            namespace_id: namespace.id,
-            plan_name: namespace.actual_plan_name
-          )
-          .and_call_original
-
-      expect(Gitlab::Tracking::ServicePingContext)
-        .to receive(:new)
-          .with(data_source: :redis_hll, event: described_class::MR_USER_CREATE_ACTION)
-          .and_call_original
-
-      expect(fake_tracker).to receive(:event)
-        .with(
-          'InternalEventTracking',
-          described_class::MR_USER_CREATE_ACTION,
-          context: [
-            an_instance_of(SnowplowTracker::SelfDescribingJson),
-            an_instance_of(SnowplowTracker::SelfDescribingJson)
-          ]
-        )
-        .exactly(:once)
-      subject
+    it_behaves_like 'internal event tracking' do
+      let(:action) { described_class::MR_USER_CREATE_ACTION }
+      let(:project) { target_project }
+      let(:namespace) { project.namespace }
     end
   end
 

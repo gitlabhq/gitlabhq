@@ -212,11 +212,13 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         create(:work_item)
       end
 
-      it_behaves_like 'issue_edit snowplow tracking' do
+      it_behaves_like 'internal event tracking' do
         let(:work_item) { create(:work_item) }
-        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
         let(:project) { work_item.project }
         let(:user) { work_item.author }
+        let(:namespace) { project.namespace }
+
         subject(:service_action) { work_item }
       end
     end

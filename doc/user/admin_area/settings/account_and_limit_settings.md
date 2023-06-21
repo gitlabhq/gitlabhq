@@ -276,10 +276,10 @@ When a user's SSH key becomes invalid they can delete and re-add the same key ag
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 
-Users can optionally specify a lifetime for
+Users can optionally specify a maximum lifetime in days for
 access tokens, this includes [personal](../../profile/personal_access_tokens.md),
 [group](../../group/settings/group_access_tokens.md), and [project](../../project/settings/project_access_tokens.md) access tokens.
-This lifetime is not a requirement, and can be set to any arbitrary number of days.
+This lifetime is not a requirement, and can be set to any value greater than 0 and less than or equal to 365. If this setting is left blank, the default allowable lifetime of access tokens is 365 days.
 
 Access tokens are the only tokens needed for programmatic access to GitLab.
 However, organizations with security requirements may want to enforce more protection by

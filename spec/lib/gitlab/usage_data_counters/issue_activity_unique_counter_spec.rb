@@ -66,7 +66,7 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
   end
 
   context 'for Issue created actions' do
-    it_behaves_like 'tracked issuable snowplow and service ping events with project' do
+    it_behaves_like 'tracked issuable internal event with project' do
       let(:action) { described_class::ISSUE_CREATED }
       let(:original_params) { { namespace: project.project_namespace.reload } }
 

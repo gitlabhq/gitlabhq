@@ -289,22 +289,27 @@ turn can be handled by defining foreign keys with cascading deletes.
 
 ### Requeuing batched background migrations
 
-If one of the batched background migrations contains a bug that is fixed in a patch
-release, you must requeue the batched background migration so the migration
-repeats on systems that already performed the initial migration.
+A batched background migration might need to be re-run for one of several
+reasons:
 
-When you requeue the batched background migration, turn the original
-queuing into a no-op by clearing up the `#up` and `#down` methods of the
-migration performing the requeuing. Otherwise, the batched background migration is
-queued multiple times on systems that are upgrading multiple patch releases at
-once.
+- The migration contains a bug ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93546)).
+- The migration cleaned up data but the data became de-normalized again due to a
+  bypass in application logic ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123002)).
+- The batch size of the original migration causes the migration to fail ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121404)).
 
-When you start the second post-deployment migration, delete the
-previously batched migration with the provided code:
+To requeue a batched background migration, you must:
 
-```ruby
-delete_batched_background_migration(MIGRATION_NAME, TABLE_NAME, COLUMN, JOB_ARGUMENTS)
-```
+- No-op the contents of the `#up` and `#down` methods of the
+  original migration file. Otherwise, the batched background migration is created,
+  deleted, then created again on systems that are upgrading multiple patch
+  releases at once.
+- Add a new post-deployment migration that re-runs the batched background
+  migration.
+- In the new post-deployment migration, delete the existing batched background
+  migration using the `delete_batched_background_migration` method at the start
+  of the `#up` method to ensure that any existing runs are cleaned up.
+- Update the `db/docs/batched_background_migration/*.yml` file from the original
+  migration to include information about the requeue.
 
 ## Cleaning up
 

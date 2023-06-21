@@ -77,7 +77,7 @@ export default {
         v-for="(user, index) in uncollapsedUsers"
         :key="user.id"
         :class="{
-          'gl-mb-3': index !== users.length - 1,
+          'gl-mb-3': index !== users.length - 1 || users.length > 5,
         }"
         class="assignee-grid gl-display-grid gl-align-items-center gl-w-full"
       >

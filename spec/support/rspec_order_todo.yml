@@ -4151,7 +4151,6 @@
 - './spec/features/projects/settings/registry_settings_spec.rb'
 - './spec/features/projects/settings/repository_settings_spec.rb'
 - './spec/features/projects/settings/secure_files_spec.rb'
-- './spec/features/projects/settings/service_desk_setting_spec.rb'
 - './spec/features/projects/settings/user_archives_project_spec.rb'
 - './spec/features/projects/settings/user_changes_avatar_spec.rb'
 - './spec/features/projects/settings/user_changes_default_branch_spec.rb'

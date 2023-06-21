@@ -11765,6 +11765,9 @@ msgstr ""
 msgid "ComplianceReport|No projects found"
 msgstr ""
 
+msgid "ComplianceReport|No projects found that match filters"
+msgstr ""
+
 msgid "ComplianceReport|No violations found"
 msgstr ""
 
@@ -34886,6 +34889,9 @@ msgid "ProductAnalytics|Events over time"
 msgstr ""
 
 msgid "ProductAnalytics|Feature Usages"
+msgstr ""
+
+msgid "ProductAnalytics|For more information, see the %{linkStart}docs%{linkEnd}."
 msgstr ""
 
 msgid "ProductAnalytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."

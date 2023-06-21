@@ -1404,6 +1404,27 @@ In this case, make sure to update the changed URL on all your sites:
 1. On the left sidebar, select **Geo > Sites**.
 1. Change the URL and save the change.
 
+### Message: `ERROR: canceling statement due to conflict with recovery` during backup
+
+Running a backup on a Geo **secondary** [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/211668).
+
+When running a backup on a **secondary** you might encounter the following error message:
+
+```plaintext
+Dumping PostgreSQL database gitlabhq_production ...
+pg_dump: error: Dumping the contents of table "notes" failed: PQgetResult() failed.
+pg_dump: error: Error message from server: ERROR:  canceling statement due to conflict with recovery
+DETAIL:  User query might have needed to see row versions that must be removed.
+pg_dump: error: The command was: COPY public.notes (id, note, [...], last_edited_at) TO stdout;
+```
+
+To prevent a database backup being made automatically during GitLab upgrades on your Geo **secondaries**,
+create the following empty file:
+
+```shell
+sudo touch /etc/gitlab/skip-auto-backup
+```
+
 ## Fixing non-PostgreSQL replication failures
 
 If you notice replication failures in `Admin > Geo > Sites` or the [Sync status Rake task](#sync-status-rake-task), you can try to resolve the failures with the following general steps:

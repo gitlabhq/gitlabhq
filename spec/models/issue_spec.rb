@@ -338,11 +338,13 @@ RSpec.describe Issue, feature_category: :team_planning do
         create(:issue)
       end
 
-      it_behaves_like 'issue_edit snowplow tracking' do
+      it_behaves_like 'internal event tracking' do
         let(:issue) { create(:issue) }
         let(:project) { issue.project }
-        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
         let(:user) { issue.author }
+        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:namespace) { project.namespace }
+
         subject(:service_action) { issue }
       end
     end

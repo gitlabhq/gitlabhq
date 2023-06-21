@@ -21,7 +21,7 @@ To authenticate with the Container Registry, you can use a:
 All of these authentication methods require the minimum scope:
 
 - For read (pull) access, to be `read_registry`.
-- For write (push) access, to be`write_registry` and `read_registry`.
+- For write (push) access, to be `write_registry` and `read_registry`.
 
 To authenticate, run the `docker login` command. For example:
 
