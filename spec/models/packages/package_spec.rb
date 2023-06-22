@@ -804,15 +804,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let!(:package2) { create(:npm_package, version: '1.0.1') }
     let!(:package3) { create(:npm_package, version: '1.0.1') }
 
-    describe '.last_of_each_version' do
-      subject { described_class.last_of_each_version }
-
-      it 'includes only latest package per version' do
-        is_expected.to include(package1, package3)
-        is_expected.not_to include(package2)
-      end
-    end
-
     describe '.has_version' do
       subject { described_class.has_version }
 

@@ -8,7 +8,6 @@ RSpec.shared_context 'npm api setup' do
   let_it_be(:group) { create(:group, name: 'test-group') }
   let_it_be(:namespace) { group }
   let_it_be(:project, reload: true) { create(:project, :public, namespace: namespace) }
-  let_it_be(:package1, reload: true) { create(:npm_package, project: project, name: "@#{group.path}/scoped_package", version: '1.2.4') }
   let_it_be(:package, reload: true) { create(:npm_package, project: project, name: "@#{group.path}/scoped_package", version: '1.2.3') }
   let_it_be(:token) { create(:oauth_access_token, scopes: 'api', resource_owner: user) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
@@ -18,11 +17,6 @@ RSpec.shared_context 'npm api setup' do
 
   let(:package_name) { package.name }
   let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_npm_user' } }
-
-  before do
-    # create a duplicated package without triggering model validation errors
-    package1.update_column(:version, '1.2.3')
-  end
 end
 
 RSpec.shared_context 'set package name from package name type' do

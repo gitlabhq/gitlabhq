@@ -103,7 +103,7 @@ You can share dashboards only between projects that are located in the same grou
 To change the location of project dashboards:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project,
-   or select **Create new...** (**{plus}**) and **New project/repository**
+   or select **Create new** (**{plus}**) and **New project/repository**
    to create the project to store your dashboard files.
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and find the project you want to use the dashboards for.
 1. Select **Settings > General**.

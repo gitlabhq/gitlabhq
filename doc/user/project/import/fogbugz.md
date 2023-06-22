@@ -29,7 +29,7 @@ users.
 To import your project from FogBugz:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project**.
 1. Select **FogBugz**.
 1. Enter your FogBugz URL, email address, and password.

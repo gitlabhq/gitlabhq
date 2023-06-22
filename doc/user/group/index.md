@@ -67,7 +67,7 @@ This page shows groups that you are a member of:
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. Enter a name for the group in **Group name**. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).

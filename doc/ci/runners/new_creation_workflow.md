@@ -61,7 +61,7 @@ workflow will break.
 
 To avoid a broken workflow, you must:
 
-1. [Create a shared runner](register_runner.md#for-a-shared-runner) and obtain the authentication token.
+1. [Create a shared runner](runners_scope.md#create-a-shared-runner-with-an-authentication-token) and obtain the authentication token.
 1. Replace the registration token in your runner registration workflow with the
 authentication token.
 

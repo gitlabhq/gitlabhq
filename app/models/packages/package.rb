@@ -166,8 +166,6 @@ class Packages::Package < ApplicationRecord
   scope :preload_files, -> { preload(:installable_package_files) }
   scope :preload_nuget_files, -> { preload(:installable_nuget_package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
-  scope :last_of_each_version, -> { where(id: all.last_of_each_version_ids) }
-  scope :last_of_each_version_ids, -> { select('MAX(id) AS id').unscope(where: :id).group(:version) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
 

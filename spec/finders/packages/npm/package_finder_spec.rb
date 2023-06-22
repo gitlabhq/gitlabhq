@@ -7,7 +7,6 @@ RSpec.describe ::Packages::Npm::PackageFinder do
 
   let(:project) { package.project }
   let(:package_name) { package.name }
-  let(:last_of_each_version) { true }
 
   shared_examples 'accepting a namespace for' do |example_name|
     before do
@@ -59,34 +58,10 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       end
     end
 
-    shared_examples 'handling last_of_each_version' do
-      include_context 'last_of_each_version setup context'
-
-      context 'disabled' do
-        let(:last_of_each_version) { false }
-
-        it { is_expected.to contain_exactly(package1, package2) }
-      end
-
-      context 'enabled' do
-        it { is_expected.to contain_exactly(package2) }
-      end
-
-      context 'with npm_allow_packages_in_multiple_projects disabled' do
-        before do
-          stub_feature_flags(npm_allow_packages_in_multiple_projects: false)
-        end
-
-        it { is_expected.to contain_exactly(package2) }
-      end
-    end
-
     context 'with a project' do
-      let(:finder) { described_class.new(package_name, project: project, last_of_each_version: last_of_each_version) }
+      let(:finder) { described_class.new(package_name, project: project) }
 
       it_behaves_like 'finding packages by name'
-
-      it_behaves_like 'handling last_of_each_version'
 
       context 'set to nil' do
         let(:project) { nil }
@@ -96,11 +71,9 @@ RSpec.describe ::Packages::Npm::PackageFinder do
     end
 
     context 'with a namespace' do
-      let(:finder) { described_class.new(package_name, namespace: namespace, last_of_each_version: last_of_each_version) }
+      let(:finder) { described_class.new(package_name, namespace: namespace) }
 
       it_behaves_like 'accepting a namespace for', 'finding packages by name'
-
-      it_behaves_like 'accepting a namespace for', 'handling last_of_each_version'
 
       context 'set to nil' do
         let_it_be(:namespace) { nil }
@@ -125,28 +98,16 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       end
     end
 
-    shared_examples 'handling last_of_each_version' do
-      include_context 'last_of_each_version setup context'
-
-      context 'enabled' do
-        it { is_expected.to eq(package2) }
-      end
-    end
-
     context 'with a project' do
-      let(:finder) { described_class.new(package_name, project: project, last_of_each_version: last_of_each_version) }
+      let(:finder) { described_class.new(package_name, project: project) }
 
       it_behaves_like 'finding packages by version'
-
-      it_behaves_like 'handling last_of_each_version'
     end
 
     context 'with a namespace' do
-      let(:finder) { described_class.new(package_name, namespace: namespace, last_of_each_version: last_of_each_version) }
+      let(:finder) { described_class.new(package_name, namespace: namespace) }
 
       it_behaves_like 'accepting a namespace for', 'finding packages by version'
-
-      it_behaves_like 'accepting a namespace for', 'handling last_of_each_version'
     end
   end
 
@@ -157,34 +118,16 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       it { is_expected.to eq(package) }
     end
 
-    shared_examples 'handling last_of_each_version' do
-      include_context 'last_of_each_version setup context'
-
-      context 'disabled' do
-        let(:last_of_each_version) { false }
-
-        it { is_expected.to eq(package2) }
-      end
-
-      context 'enabled' do
-        it { is_expected.to eq(package2) }
-      end
-    end
-
     context 'with a project' do
-      let(:finder) { described_class.new(package_name, project: project, last_of_each_version: last_of_each_version) }
+      let(:finder) { described_class.new(package_name, project: project) }
 
       it_behaves_like 'finding package by last'
-
-      it_behaves_like 'handling last_of_each_version'
     end
 
     context 'with a namespace' do
       let(:finder) { described_class.new(package_name, namespace: namespace) }
 
       it_behaves_like 'accepting a namespace for', 'finding package by last'
-
-      it_behaves_like 'accepting a namespace for', 'handling last_of_each_version'
 
       context 'with duplicate packages' do
         let_it_be(:namespace) { create(:group) }

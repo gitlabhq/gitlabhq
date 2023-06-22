@@ -29849,6 +29849,8 @@ CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_golang O
 
 CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_helm ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 11) AND (status <> 4));
 
+CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_npm ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 2) AND (status <> 4));
+
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
 
 CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packages_debian_group_distribution_keys USING btree (distribution_id);

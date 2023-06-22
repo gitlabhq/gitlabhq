@@ -98,7 +98,7 @@ module Packages
       end
 
       def package_tags
-        Packages::Tag.for_package_ids(packages.last_of_each_version_ids)
+        Packages::Tag.for_package_ids(packages)
                      .preload_package
       end
 

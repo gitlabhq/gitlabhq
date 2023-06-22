@@ -61,7 +61,11 @@ module API
         end
 
         def increment_unique_events
-          events = params[:unique_counters]&.slice(:agent_users_using_ci_tunnel)
+          events = params[:unique_counters]&.slice(
+            :agent_users_using_ci_tunnel,
+            :k8s_api_proxy_requests_unique_users_via_ci_access, :k8s_api_proxy_requests_unique_agents_via_ci_access,
+            :k8s_api_proxy_requests_unique_users_via_user_access, :k8s_api_proxy_requests_unique_agents_via_user_access
+          )
 
           events&.each do |event, entity_ids|
             increment_unique_values(event, entity_ids)
@@ -69,7 +73,10 @@ module API
         end
 
         def increment_count_events
-          events = params[:counters]&.slice(:gitops_sync, :k8s_api_proxy_request, :flux_git_push_notifications_total)
+          events = params[:counters]&.slice(
+            :gitops_sync, :k8s_api_proxy_request, :flux_git_push_notifications_total,
+            :k8s_api_proxy_requests_via_ci_access, :k8s_api_proxy_requests_via_user_access
+          )
 
           Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(events)
         end
@@ -203,10 +210,16 @@ module API
               optional :gitops_sync, type: Integer, desc: 'The count to increment the gitops_sync metric by'
               optional :k8s_api_proxy_request, type: Integer, desc: 'The count to increment the k8s_api_proxy_request metric by'
               optional :flux_git_push_notifications_total, type: Integer, desc: 'The count to increment the flux_git_push_notifications_total metrics by'
+              optional :k8s_api_proxy_requests_via_ci_access, type: Integer, desc: 'The count to increment the k8s_api_proxy_requests_via_ci_access metric by'
+              optional :k8s_api_proxy_requests_via_user_access, type: Integer, desc: 'The count to increment the k8s_api_proxy_requests_via_user_access metric by'
             end
 
             optional :unique_counters, type: Hash do
               optional :agent_users_using_ci_tunnel, type: Array[Integer], desc: 'An array of user ids that have interacted with CI Tunnel'
+              optional :k8s_api_proxy_requests_unique_users_via_ci_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via `ci_access`'
+              optional :k8s_api_proxy_requests_unique_agents_via_ci_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `ci_access`'
+              optional :k8s_api_proxy_requests_unique_users_via_user_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via `user_access`'
+              optional :k8s_api_proxy_requests_unique_agents_via_user_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `user_access`'
             end
           end
           post '/', feature_category: :deployment_management do

@@ -31,7 +31,7 @@ module Packages
 
       def packages
         ::Packages::Npm::PackageFinder
-          .new(params['package_name'], project: project, last_of_each_version: false)
+          .new(params['package_name'], project: project)
           .execute
       end
 

@@ -26,7 +26,7 @@ When you create a confidential issue in a project, the project becomes listed in
 To create a confidential issue:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**).
+1. On the left sidebar, at the top, select **Create new** (**{plus}**).
 1. From the dropdown list, select **New issue**.
 1. Complete the [fields](create_issues.md#fields-in-the-new-issue-form).
    - Select the **This issue is confidential...** checkbox.

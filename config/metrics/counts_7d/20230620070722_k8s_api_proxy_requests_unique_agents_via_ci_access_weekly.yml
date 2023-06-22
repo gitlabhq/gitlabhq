@@ -1,0 +1,25 @@
+---
+key_path: redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_ci_access_weekly
+description: WAU of the unique Agents using the CI/CD Tunnel via Ci Access
+product_section: ops
+product_stage: deploy
+product_group: environment
+value_type: number
+status: active
+milestone: "16.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124147
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - k8s_api_proxy_requests_unique_agents_via_ci_access
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

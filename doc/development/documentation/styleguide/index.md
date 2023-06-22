@@ -970,13 +970,13 @@ To open either project or group settings:
 To create a project:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 ```
 
 To create a group:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 ```
 
 To open the Admin Area:

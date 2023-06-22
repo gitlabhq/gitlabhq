@@ -55,8 +55,7 @@ module API
           when :group
             finder = ::Packages::Npm::PackageFinder.new(
               params[:package_name],
-              namespace: group,
-              last_of_each_version: false
+              namespace: group
             )
 
             finder.last&.project_id
@@ -77,8 +76,7 @@ module API
 
             finder = ::Packages::Npm::PackageFinder.new(
               package_name,
-              namespace: namespace,
-              last_of_each_version: false
+              namespace: namespace
             )
 
             finder.last&.project_id

@@ -439,6 +439,19 @@ Do not use **easily**. If the user doesn't find the process to be easy, we lose 
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
 
+## ellipsis
+
+When documenting UI text, if the UI includes an ellipsis, do not include the ellipsis in the documentation.
+For details, see [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
+
+Use:
+
+- **Create new**
+
+Instead of:
+
+- **Create new...**
+
 ## email
 
 Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))

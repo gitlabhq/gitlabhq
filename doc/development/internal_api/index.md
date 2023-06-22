@@ -492,14 +492,20 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
 Called from GitLab agent server (`kas`) to increase the usage
 metric counters.
 
-| Attribute                                        | Type          | Required | Description                                                                                                          |
-|:-------------------------------------------------|:--------------|:---------|:---------------------------------------------------------------------------------------------------------------------|
-| `counters`                                       | hash          | no       | Hash of counters                                                                                                     |
-| `counters["k8s_api_proxy_request"]`              | integer       | no       | The number to increase the `k8s_api_proxy_request` counter by                                                        |
-| `counters["gitops_sync"]`                        | integer       | no       | The number to increase the `gitops_sync` counter by                                                                  |
-| `counters["flux_git_push_notifications_total"]`  | integer       | no       | The number to increase the `flux_git_push_notifications_total` counter by                                            |
-| `unique_counters`                                | hash          | no       | Array of unique numbers                                                                                              |
-| `unique_counters["agent_users_using_ci_tunnel"]` | integer array | no       | The set of unique user ids that have interacted a CI Tunnel to track the `agent_users_using_ci_tunnel` metric event  |
+| Attribute                                                                 | Type          | Required | Description                                                                                                                                                    |
+|:--------------------------------------------------------------------------|:--------------|:---------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `counters`                                                                | hash          | no       | Hash of counters                                                                                                                                               |
+| `counters["k8s_api_proxy_request"]`                                       | integer       | no       | The number to increase the `k8s_api_proxy_request` counter by                                                                                                  |
+| `counters["gitops_sync"]`                                                 | integer       | no       | The number to increase the `gitops_sync` counter by                                                                                                            |
+| `counters["flux_git_push_notifications_total"]`                           | integer       | no       | The number to increase the `flux_git_push_notifications_total` counter by                                                                                      |
+| `counters["k8s_api_proxy_requests_via_ci_access"]`                        | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_ci_access` counter by                                                                                   |
+| `counters["k8s_api_proxy_requests_via_user_access"]`                      | integer       | no       | The number to increase the `k8s_api_proxy_requests_via_user_access` counter by                                                                                 |
+| `unique_counters`                                                         | hash          | no       | Array of unique numbers                                                                                                                                        |
+| `unique_counters["agent_users_using_ci_tunnel"]`                          | integer array | no       | The set of unique user ids that have interacted a CI Tunnel to track the `agent_users_using_ci_tunnel` metric event                                            |
+| `unique_counters["k8s_api_proxy_requests_unique_users_via_ci_access"]`    | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `ci_access` to track the `k8s_api_proxy_requests_unique_users_via_ci_access` metric event      |
+| `unique_counters["k8s_api_proxy_requests_unique_agents_via_ci_access"]`   | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `ci_access` to track the `k8s_api_proxy_requests_unique_agents_via_ci_access` metric event     |
+| `unique_counters["k8s_api_proxy_requests_unique_users_via_user_access"]`  | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `user_access` to track the `k8s_api_proxy_requests_unique_users_via_user_access` metric event  |
+| `unique_counters["k8s_api_proxy_requests_unique_agents_via_user_access"]` | integer array | no       | The set of unique user ids that have interacted a CI Tunnel via `user_access` to track the `k8s_api_proxy_requests_unique_agents_via_user_access` metric event |
 
 ```plaintext
 POST /internal/kubernetes/usage_metrics

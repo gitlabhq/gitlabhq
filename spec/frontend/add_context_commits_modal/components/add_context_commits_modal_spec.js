@@ -45,14 +45,13 @@ describe('AddContextCommitsModal', () => {
         ...props,
       },
     });
-    return wrapper;
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findSearch = () => wrapper.findComponent(GlFilteredSearch);
 
   beforeEach(() => {
-    wrapper = createWrapper();
+    createWrapper();
   });
 
   it('renders modal with 2 tabs', () => {
@@ -98,7 +97,7 @@ describe('AddContextCommitsModal', () => {
     });
 
     it('enabled ok button when atleast one row is selected', async () => {
-      wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
+      store.state.selectedCommits = [{ ...commit, isSelected: true }];
       await nextTick();
       expect(findModal().attributes('ok-disabled')).toBe(undefined);
     });
@@ -106,14 +105,14 @@ describe('AddContextCommitsModal', () => {
 
   describe('when in second tab, renders a modal with', () => {
     beforeEach(() => {
-      wrapper.vm.$store.state.tabIndex = 1;
+      store.state.tabIndex = 1;
     });
     it('a disabled ok button when no row is selected', () => {
       expect(findModal().attributes('ok-disabled')).toBe('true');
     });
 
     it('an enabled ok button when atleast one row is selected', async () => {
-      wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
+      store.state.selectedCommits = [{ ...commit, isSelected: true }];
       await nextTick();
       expect(findModal().attributes('ok-disabled')).toBe(undefined);
     });
@@ -126,7 +125,7 @@ describe('AddContextCommitsModal', () => {
 
   describe('has an ok button when clicked calls action', () => {
     it('"createContextCommits" when only new commits to be added', async () => {
-      wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
+      store.state.selectedCommits = [{ ...commit, isSelected: true }];
       findModal().vm.$emit('ok');
       await nextTick();
       expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {
@@ -135,14 +134,14 @@ describe('AddContextCommitsModal', () => {
       });
     });
     it('"removeContextCommits" when only added commits are to be removed', async () => {
-      wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
+      store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
       await nextTick();
       expect(removeContextCommits).toHaveBeenCalledWith(expect.anything(), true);
     });
     it('"createContextCommits" and "removeContextCommits" when new commits are to be added and old commits are to be removed', async () => {
-      wrapper.vm.$store.state.selectedCommits = [{ ...commit, isSelected: true }];
-      wrapper.vm.$store.state.toRemoveCommits = [commit.short_id];
+      store.state.selectedCommits = [{ ...commit, isSelected: true }];
+      store.state.toRemoveCommits = [commit.short_id];
       findModal().vm.$emit('ok');
       await nextTick();
       expect(createContextCommits).toHaveBeenCalledWith(expect.anything(), {

@@ -136,10 +136,10 @@ To ensure GitLab maps users and their contributions correctly:
 Create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
-   - A new group. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**. Then select **Import group**.
+   - A new group. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
-     - On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
+     - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the URL of a GitLab instance running GitLab 14.0 or later.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
@@ -176,7 +176,7 @@ You can view all groups migrated by you by direct transfer listed on the group i
 To view group import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, you can see them by selecting **Details**.
@@ -550,7 +550,7 @@ You can also export a group [using the API](../../../api/group_import_export.md)
 
 ### Import the group
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New subgroup**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**.
 1. Select the **import an existing group** link.
 1. Enter your group name.
 1. Accept or modify the associated group URL.

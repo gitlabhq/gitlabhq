@@ -76,7 +76,7 @@ must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later 
 
 Available documentation suggests ED25519 is more secure than RSA.
 
-If you use an RSA key, the US National Institute of Science and Technology in
+If you use an RSA key, the US National Institute of Standards and Technology in
 [Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf)
 recommends a key size of at least 2048 bits. The default key size depends on your version of `ssh-keygen`.
 Review the `man` page for your installed `ssh-keygen` command for details.
