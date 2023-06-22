@@ -48,6 +48,7 @@ RSpec.describe CleanupBigintConversionForMergeRequestMetricsForSelfHosts, featur
         # As we call `schema_migrate_down!` before each example, and for this migration
         # `#down` is same as `#up`, we need to ensure we start from the expected state.
         connection = described_class.new.connection
+        connection.execute('ALTER TABLE merge_request_metrics ALTER COLUMN id TYPE bigint')
         connection.execute('ALTER TABLE merge_request_metrics DROP COLUMN IF EXISTS id_convert_to_bigint')
       end
 
@@ -70,6 +71,7 @@ RSpec.describe CleanupBigintConversionForMergeRequestMetricsForSelfHosts, featur
         # As we call `schema_migrate_down!` before each example, and for this migration
         # `#down` is same as `#up`, we need to ensure we start from the expected state.
         connection = described_class.new.connection
+        connection.execute('ALTER TABLE merge_request_metrics ALTER COLUMN id TYPE bigint')
         connection.execute('ALTER TABLE merge_request_metrics ADD COLUMN IF NOT EXISTS id_convert_to_bigint integer')
       end
 

@@ -9,11 +9,13 @@ RSpec.describe 'Projects > Wiki > User views wiki in project page', feature_cate
 
   context 'when repository is disabled for project' do
     let(:project) do
-      create(:project,
-             :wiki_repo,
-             :repository_disabled,
-             :merge_requests_disabled,
-             :builds_disabled)
+      create(
+        :project,
+        :wiki_repo,
+        :repository_disabled,
+        :merge_requests_disabled,
+        :builds_disabled
+      )
     end
 
     context 'when wiki homepage contains a link' do
@@ -37,8 +39,13 @@ RSpec.describe 'Projects > Wiki > User views wiki in project page', feature_cate
 
       context 'when using asciidoc' do
         before do
-          create(:wiki_page, wiki: project.wiki, title: 'home', content: 'link:other-page[some link]',
-                             format: :asciidoc)
+          create(
+            :wiki_page,
+            wiki: project.wiki,
+            title: 'home',
+            content: 'link:other-page[some link]',
+            format: :asciidoc
+          )
         end
 
         it_behaves_like 'wiki homepage contains a link'

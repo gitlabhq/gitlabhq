@@ -1213,8 +1213,6 @@
 - './ee/spec/lib/elastic/latest/merge_request_config_spec.rb'
 - './ee/spec/lib/elastic/latest/note_config_spec.rb'
 - './ee/spec/lib/elastic/latest/project_instance_proxy_spec.rb'
-- './ee/spec/lib/elastic/latest/project_wiki_class_proxy_spec.rb'
-- './ee/spec/lib/elastic/latest/project_wiki_instance_proxy_spec.rb'
 - './ee/spec/lib/elastic/latest/routing_spec.rb'
 - './ee/spec/lib/elastic/latest/snippet_instance_proxy_spec.rb'
 - './ee/spec/lib/elastic/migration_spec.rb'

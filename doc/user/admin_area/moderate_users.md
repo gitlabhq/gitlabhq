@@ -91,7 +91,7 @@ A blocked user:
 - Cannot sign in.
 - Cannot access Git repositories or the API.
 - Does not receive any notifications from GitLab.
-- Cannot use [slash commands](../../integration/slash_commands.md).
+- Cannot use [slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 Personal projects, and group and user history of the blocked user are left intact.
@@ -149,7 +149,7 @@ A deactivated user:
 
 - Cannot access Git repositories or the API.
 - Does not receive any notifications from GitLab.
-- Cannot use [slash commands](../../integration/slash_commands.md).
+- Cannot use [slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
 
 Personal projects, and group and user history of the deactivated user are left intact.

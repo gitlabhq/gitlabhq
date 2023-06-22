@@ -257,7 +257,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
 
     context 'validates expires_at' do
-      let(:max_expiration_date) { described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now }
+      let(:max_expiration_date) { Date.current + described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS }
 
       it "can't be blank" do
         personal_access_token.expires_at = nil
@@ -274,12 +274,14 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         end
       end
 
-      context 'when expires_in is more than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
+      context 'when expires_in is more than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days', :freeze_time do
         it 'is invalid' do
           personal_access_token.expires_at = max_expiration_date + 1.day
 
           expect(personal_access_token).not_to be_valid
-          expect(personal_access_token.errors[:expires_at].first).to eq('must expire in 365 days')
+          expect(personal_access_token.errors.full_messages.to_sentence).to eq(
+            "Expiration date must be before #{max_expiration_date}"
+          )
         end
       end
     end

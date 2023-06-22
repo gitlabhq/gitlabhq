@@ -39,10 +39,7 @@ import {
   WIDGET_TYPE_NOTES,
 } from '../constants';
 
-import workItemDatesSubscription from '../../graphql_shared/subscriptions/work_item_dates.subscription.graphql';
-import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
-import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscription.graphql';
-import workItemMilestoneSubscription from '../graphql/work_item_milestone.subscription.graphql';
+import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -165,52 +162,17 @@ export default {
           document.title = `${this.workItem.title} · ${this.workItem?.workItemType?.name}${path}`;
         }
       },
-      subscribeToMore: [
-        {
-          document: workItemTitleSubscription,
-          variables() {
-            return {
-              issuableId: this.workItem.id,
-            };
-          },
-          skip() {
-            return !this.workItem?.id;
-          },
+      subscribeToMore: {
+        document: workItemUpdatedSubscription,
+        variables() {
+          return {
+            id: this.workItem.id,
+          };
         },
-        {
-          document: workItemDatesSubscription,
-          variables() {
-            return {
-              issuableId: this.workItem.id,
-            };
-          },
-          skip() {
-            return !this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE) || !this.workItem?.id;
-          },
+        skip() {
+          return !this.workItem?.id;
         },
-        {
-          document: workItemAssigneesSubscription,
-          variables() {
-            return {
-              issuableId: this.workItem.id,
-            };
-          },
-          skip() {
-            return !this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES) || !this.workItem?.id;
-          },
-        },
-        {
-          document: workItemMilestoneSubscription,
-          variables() {
-            return {
-              issuableId: this.workItem.id,
-            };
-          },
-          skip() {
-            return !this.isWidgetPresent(WIDGET_TYPE_MILESTONE) || !this.workItem?.id;
-          },
-        },
-      ],
+      },
     },
   },
   computed: {

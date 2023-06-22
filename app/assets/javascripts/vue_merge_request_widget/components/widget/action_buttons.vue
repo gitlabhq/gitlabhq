@@ -23,7 +23,7 @@ export default {
       default: () => [],
     },
   },
-  data: () => {
+  data() {
     return {
       timeout: null,
       updatingTooltip: false,

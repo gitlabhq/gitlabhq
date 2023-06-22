@@ -5,9 +5,7 @@ import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
-import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
-import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
-import terraformExtension from '~/vue_merge_request_widget/extensions/terraform';
+import terraformExtension from '~/vue_merge_request_widget/extensions/terraform/index.vue';
 import {
   plans,
   validPlanWithName,
@@ -25,22 +23,20 @@ describe('Terraform extension', () => {
   const endpoint = '/path/to/terraform/report.json';
 
   const findListItem = (at) => wrapper.findAllByTestId('extension-list-item').at(at);
-
-  registerExtension(terraformExtension);
+  const findActionButton = (at) => wrapper.findAllByTestId('extension-actions-button').at(at);
 
   const mockPollingApi = (response, body, header) => {
     mock.onGet(endpoint).reply(response, body, header);
   };
 
   const createComponent = () => {
-    wrapper = mountExtended(extensionsContainer, {
+    wrapper = mountExtended(terraformExtension, {
       propsData: {
         mr: {
           terraformReportsPath: endpoint,
         },
       },
     });
-    return axios.waitForAll();
   };
 
   beforeEach(() => {
@@ -54,24 +50,27 @@ describe('Terraform extension', () => {
   describe('summary', () => {
     describe('while loading', () => {
       const loadingText = 'Loading Terraform reports...';
+
       it('should render loading text', async () => {
         mockPollingApi(HTTP_STATUS_OK, plans, {});
         createComponent();
 
         expect(wrapper.text()).toContain(loadingText);
+
         await waitForPromises();
         expect(wrapper.text()).not.toContain(loadingText);
       });
     });
 
     describe('when the fetching fails', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mockPollingApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, null, {});
-        return createComponent();
+        createComponent();
+        await axios.waitForAll();
       });
 
-      it('should generate one invalid plan and render correct summary text', () => {
-        expect(wrapper.text()).toContain('1 Terraform report failed to generate');
+      it('should show the error text', () => {
+        expect(wrapper.text()).toContain('Failed to load Terraform reports');
       });
     });
 
@@ -82,9 +81,10 @@ describe('Terraform extension', () => {
         ${'2 valid reports'}               | ${{ 0: validPlanWithName, 1: validPlanWithName }}                           | ${'2 Terraform reports were generated in your pipelines'} | ${''}
         ${'1 valid and 2 invalid reports'} | ${{ 0: validPlanWithName, 1: invalidPlanWithName, 2: invalidPlanWithName }} | ${'Terraform report was generated in your pipelines'}     | ${'2 Terraform reports failed to generate'}
       `('and received $responseType', ({ response, summaryTitle, summarySubtitle }) => {
-        beforeEach(() => {
+        beforeEach(async () => {
           mockPollingApi(HTTP_STATUS_OK, response, {});
-          return createComponent();
+          createComponent();
+          await axios.waitForAll();
         });
 
         it(`should render correct summary text`, () => {
@@ -101,7 +101,8 @@ describe('Terraform extension', () => {
   describe('expanded data', () => {
     beforeEach(async () => {
       mockPollingApi(HTTP_STATUS_OK, plans, {});
-      await createComponent();
+      createComponent();
+      await axios.waitForAll();
 
       wrapper.findByTestId('toggle-button').trigger('click');
     });
@@ -136,7 +137,7 @@ describe('Terraform extension', () => {
       api.trackRedisHllUserEvent.mockClear();
       api.trackRedisCounterEvent.mockClear();
 
-      findListItem(0).find('[data-testid="extension-actions-button"]').trigger('click');
+      findActionButton(0).trigger('click');
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
@@ -161,10 +162,10 @@ describe('Terraform extension', () => {
     });
 
     describe('successful poll', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mockPollingApi(HTTP_STATUS_OK, plans, {});
-
-        return createComponent();
+        createComponent();
+        await axios.waitForAll();
       });
 
       it('does not make additional requests after poll is successful', () => {
@@ -173,13 +174,14 @@ describe('Terraform extension', () => {
     });
 
     describe('polling fails', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mockPollingApi(HTTP_STATUS_INTERNAL_SERVER_ERROR, null, {});
-        return createComponent();
+        createComponent();
+        await axios.waitForAll();
       });
 
-      it('generates one broken plan', () => {
-        expect(wrapper.text()).toContain('1 Terraform report failed to generate');
+      it('renders the error text', () => {
+        expect(wrapper.text()).toContain('Failed to load Terraform reports');
       });
 
       it('does not make additional requests after poll is unsuccessful', () => {

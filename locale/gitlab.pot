@@ -6288,6 +6288,9 @@ msgstr ""
 msgid "Artifacts|We want you to be able to use this page to easily manage your CI/CD job artifacts. We are working to improve this experience and would appreciate any feedback you have about the improvements we are making."
 msgstr ""
 
+msgid "As this is a newly created account, to get started, click the link below to confirm your account."
+msgstr ""
+
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
@@ -8565,6 +8568,9 @@ msgid "By month"
 msgstr ""
 
 msgid "By quarter"
+msgstr ""
+
+msgid "By using a primary email tied to an Enterprise e-mail address, it is understood that this account is an Enterprise User."
 msgstr ""
 
 msgid "By week"
@@ -14934,6 +14940,9 @@ msgstr ""
 msgid "Delete video"
 msgstr ""
 
+msgid "DeleteProject|Failed to remove design repository. Please try again or contact administrator."
+msgstr ""
+
 msgid "DeleteProject|Failed to remove events. Please try again or contact administrator."
 msgstr ""
 
@@ -17288,6 +17297,12 @@ msgstr ""
 msgid "Enterprise"
 msgstr ""
 
+msgid "Enterprise User"
+msgstr ""
+
+msgid "Enterprise User Account on GitLab"
+msgstr ""
+
 msgid "EnterpriseUsers|The user detail cannot be updated"
 msgstr ""
 
@@ -17295,9 +17310,6 @@ msgid "EnterpriseUsers|The user does not match the \"Enterprise User\" definitio
 msgstr ""
 
 msgid "EnterpriseUsers|The user is already an enterprise user of the group"
-msgstr ""
-
-msgid "EnterpriseUsers|The user is not a member of the group"
 msgstr ""
 
 msgid "Environment"
@@ -19475,6 +19487,9 @@ msgid "For general work"
 msgstr ""
 
 msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain or group."
+msgstr ""
+
+msgid "For individual use, create a separate account under your personal email address, not tied to the Enterprise email domain."
 msgstr ""
 
 msgid "For investigating IT service disruptions or outages"
@@ -45536,9 +45551,6 @@ msgstr ""
 msgid "Terraform|Terraform init command"
 msgstr ""
 
-msgid "Terraform|Terraform reports"
-msgstr ""
-
 msgid "Terraform|Terraform states"
 msgstr ""
 
@@ -53072,6 +53084,12 @@ msgstr ""
 msgid "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now."
 msgstr ""
 
+msgid "Your GitLab account is now an %{source_link}:"
+msgstr ""
+
+msgid "Your GitLab account is now an Enterprise User (%{source_link}):"
+msgstr ""
+
 msgid "Your GitLab account request has been approved!"
 msgstr ""
 
@@ -55035,6 +55053,9 @@ msgstr ""
 msgid "must be at least 1 day"
 msgstr ""
 
+msgid "must be before %{expiry_date}"
+msgstr ""
+
 msgid "must be greater than start date"
 msgstr ""
 
@@ -55066,9 +55087,6 @@ msgid "must belong to same project of the work item."
 msgstr ""
 
 msgid "must contain only a discord user ID."
-msgstr ""
-
-msgid "must expire in 365 days"
 msgstr ""
 
 msgid "must have a repository"

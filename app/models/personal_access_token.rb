@@ -99,9 +99,13 @@ class PersonalAccessToken < ApplicationRecord
   def expires_at_before_instance_max_expiry_date
     return unless expires_at
 
-    if expires_at > MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
-      errors.add(:expires_at, _('must expire in 365 days'))
-    end
+    max_expiry_date = Date.current.advance(days: MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS)
+    return unless expires_at > max_expiry_date
+
+    errors.add(
+      :expires_at,
+      format(_("must be before %{expiry_date}"), expiry_date: max_expiry_date)
+    )
   end
 end
 

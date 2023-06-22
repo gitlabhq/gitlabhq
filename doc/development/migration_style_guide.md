@@ -203,6 +203,11 @@ and explains how to perform them without requiring downtime.
 Your migration **must be** reversible. This is very important, as it should
 be possible to downgrade in case of a vulnerability or bugs.
 
+**Note**: On GitLab production environments, if a problem occurs, a roll-forward strategy is used instead of rolling back migrations using `db:rollback`.
+On self-managed instances we advise users to restore the backup which was created before the upgrade process started.
+The `down` method is used primarily in the development environment, for example, when a developer wants to ensure
+their local copy of `structure.sql` file and database are in a consistent state when switching between commits or branches.
+
 In your migration, add a comment describing how the reversibility of the
 migration was tested.
 

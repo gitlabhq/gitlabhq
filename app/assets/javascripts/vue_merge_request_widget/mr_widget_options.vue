@@ -55,7 +55,6 @@ import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
-import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
 import codeQualityExtension from './extensions/code_quality';
 import testReportExtension from './extensions/test_report';
@@ -238,9 +237,6 @@ export default {
         this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
       );
     },
-    shouldRenderTerraformPlans() {
-      return Boolean(this.mr?.terraformReportsPath);
-    },
     shouldRenderTestReport() {
       return Boolean(this.mr?.testResultsPath);
     },
@@ -290,11 +286,6 @@ export default {
       if (newVal !== oldVal && this.shouldRenderMergedPipeline) {
         // init polling
         this.initPostMergeDeploymentsPolling();
-      }
-    },
-    shouldRenderTerraformPlans(newVal) {
-      if (newVal) {
-        this.registerTerraformPlans();
       }
     },
     shouldRenderCodeQuality(newVal) {
@@ -545,11 +536,6 @@ export default {
     },
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;
-    },
-    registerTerraformPlans() {
-      if (this.shouldRenderTerraformPlans) {
-        registerExtension(terraformExtension);
-      }
     },
     registerAccessibilityExtension() {
       if (this.shouldShowAccessibilityReport) {

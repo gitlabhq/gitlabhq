@@ -1,9 +1,10 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
+import { stubComponent } from 'helpers/stub_component';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
@@ -15,18 +16,19 @@ Vue.use(VueApollo);
 describe('Work Item Note Actions', () => {
   let wrapper;
   const noteId = '1';
+  const showSpy = jest.fn();
 
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
-  const findEditButton = () => wrapper.find('[data-testid="edit-work-item-note"]');
-  const findEmojiButton = () => wrapper.find('[data-testid="note-emoji-button"]');
+  const findEditButton = () => wrapper.findByTestId('edit-work-item-note');
+  const findEmojiButton = () => wrapper.findByTestId('note-emoji-button');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-action"]');
-  const findCopyLinkButton = () => wrapper.find('[data-testid="copy-link-action"]');
-  const findAssignUnassignButton = () => wrapper.find('[data-testid="assign-note-action"]');
-  const findReportAbuseToAdminButton = () => wrapper.find('[data-testid="abuse-note-action"]');
-  const findAuthorBadge = () => wrapper.find('[data-testid="author-badge"]');
-  const findMaxAccessLevelBadge = () => wrapper.find('[data-testid="max-access-level-badge"]');
-  const findContributorBadge = () => wrapper.find('[data-testid="contributor-badge"]');
+  const findDeleteNoteButton = () => wrapper.findByTestId('delete-note-action');
+  const findCopyLinkButton = () => wrapper.findByTestId('copy-link-action');
+  const findAssignUnassignButton = () => wrapper.findByTestId('assign-note-action');
+  const findReportAbuseToAdminButton = () => wrapper.findByTestId('abuse-note-action');
+  const findAuthorBadge = () => wrapper.findByTestId('author-badge');
+  const findMaxAccessLevelBadge = () => wrapper.findByTestId('max-access-level-badge');
+  const findContributorBadge = () => wrapper.findByTestId('contributor-badge');
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -51,7 +53,7 @@ describe('Work Item Note Actions', () => {
     maxAccessLevelOfAuthor = '',
     projectName = 'Project name',
   } = {}) => {
-    wrapper = shallowMount(WorkItemNoteActions, {
+    wrapper = shallowMountExtended(WorkItemNoteActions, {
       propsData: {
         showReply,
         showEdit,
@@ -72,14 +74,20 @@ describe('Work Item Note Actions', () => {
       },
       stubs: {
         EmojiPicker: EmojiPickerStub,
+        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+          methods: { close: showSpy },
+        }),
       },
       apolloProvider: createMockApollo([[addAwardEmojiMutation, addEmojiMutationResolver]]),
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
-    wrapper.vm.$refs.dropdown.close = jest.fn();
   };
+
+  afterEach(() => {
+    showSpy.mockClear();
+  });
 
   describe('reply button', () => {
     it('is visible by default', () => {
@@ -173,6 +181,7 @@ describe('Work Item Note Actions', () => {
       findDeleteNoteButton().vm.$emit('action');
 
       expect(wrapper.emitted('deleteNote')).toEqual([[]]);
+      expect(showSpy).toHaveBeenCalled();
     });
   });
 
@@ -188,6 +197,7 @@ describe('Work Item Note Actions', () => {
       findCopyLinkButton().vm.$emit('action');
 
       expect(wrapper.emitted('notifyCopyDone')).toEqual([[]]);
+      expect(showSpy).toHaveBeenCalled();
     });
   });
 
@@ -214,6 +224,7 @@ describe('Work Item Note Actions', () => {
       findAssignUnassignButton().vm.$emit('action');
 
       expect(wrapper.emitted('assignUser')).toEqual([[]]);
+      expect(showSpy).toHaveBeenCalled();
     });
   });
 
@@ -240,6 +251,7 @@ describe('Work Item Note Actions', () => {
       findReportAbuseToAdminButton().vm.$emit('action');
 
       expect(wrapper.emitted('reportAbuse')).toEqual([[]]);
+      expect(showSpy).toHaveBeenCalled();
     });
   });
 

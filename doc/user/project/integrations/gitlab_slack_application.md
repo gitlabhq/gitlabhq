@@ -52,43 +52,43 @@ you can also select **Reinstall GitLab for Slack app**.
 
 ## Slash commands
 
-After installing the GitLab for Slack app, everyone in your Slack workspace can use slash commands.
+You can use slash commands to run common GitLab operations. Replace `<project>` with a project full path.
 
-Replace `<project>` with the project full path, or create a shorter [project alias](#create-a-project-alias-for-slash-commands) for the slash commands.
+**For the GitLab for Slack app**:
 
-| Command | Effect |
-| ------- | ------ |
+- You must authorize your Slack user on GitLab.com when you run your first slash command.
+- You can [create a shorter project alias](#create-a-project-alias-for-slash-commands) for slash commands.
+
+**For [Slack slash commands](slack_slash_commands.md) on self-managed GitLab, [Mattermost slash commands](mattermost_slash_commands.md), and [ChatOps](../../../ci/chatops/index.md)**, do not add `gitlab` at the beginning of the command.
+
+The following slash commands are available:
+
+| Command | Description |
+| ------- | ----------- |
 | `/gitlab help` | Shows all available slash commands. |
-| `/gitlab <project> issue new <title> <shift+return> <description>` | Creates a new issue with the title `<title>` and description `<description>`. |
+| `/gitlab <project> issue new <title>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<description>` | Creates a new issue with the title `<title>` and description `<description>`. |
 | `/gitlab <project> issue show <id>` | Shows the issue with the ID `<id>`. |
 | `/gitlab <project> issue close <id>` | Closes the issue with the ID `<id>`. |
-| `/gitlab <project> issue search <query>` | Shows up to 5 issues matching `<query>`. |
+| `/gitlab <project> issue search <query>` | Shows up to five issues matching `<query>`. |
 | `/gitlab <project> issue move <id> to <project>` | Moves the issue with the ID `<id>` to `<project>`. |
-| `/gitlab <project> issue comment <id> <shift+return> <comment>` | Adds a new comment with the comment body `<comment>` to the issue with the ID `<id>`. |
+| `/gitlab <project> issue comment <id>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<comment>` | Adds a new comment with the comment body `<comment>` to the issue with the ID `<id>`. |
 | `/gitlab <project> deploy <from> to <to>` | [Deploys](#the-deploy-slash-command) from the `<from>` environment to the `<to>` environment. |
 | `/gitlab <project> run <job name> <arguments>` | Executes the [ChatOps](../../../ci/chatops/index.md) job `<job name>` on the default branch. |
-| `/gitlab incident declare` | **Beta** Opens modal to [create a new incident](../../../operations/incident_management/slack.md). |
+| `/gitlab incident declare` | Opens a modal to [create a new incident from Slack](../../../operations/incident_management/slack.md) (Beta). |
 
-### The deploy slash command
+### The `deploy` slash command
 
-To deploy to an environment, GitLab tries to find a deployment
-manual action in the pipeline.
+To deploy to an environment, GitLab tries to find a deployment manual action in the pipeline.
 
-If there's only one action for a given environment, it is triggered.
-If more than one action is defined, GitLab finds an action
-name that matches the environment name to deploy to.
+If only one action is defined for a given environment, it is triggered.
+If more than one action is defined, GitLab tries to find an action name
+that matches the environment name to deploy to.
 
 The command returns an error if no matching action is found.
 
-### User authorization
-
-When you perform your first slash command, you must
-authorize your Slack user on GitLab.com.
-
 ### Create a project alias for slash commands
 
-By default, slash commands expect a project full path. To use a shorter alias
-instead:
+By default, slash commands expect a project full path. To create a shorter project alias in the GitLab for Slack app:
 
 1. Go to your project's home page.
 1. Go to **Settings > Integrations** (only visible on GitLab.com).

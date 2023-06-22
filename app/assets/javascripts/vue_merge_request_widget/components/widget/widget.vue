@@ -10,6 +10,7 @@ import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
 import { createTelemetryHub } from '../extensions/telemetry';
+import { generateText } from '../extensions/utils';
 import ContentRow from './widget_content_row.vue';
 import DynamicContent from './dynamic_content.vue';
 import StatusIcon from './status_icon.vue';
@@ -72,9 +73,12 @@ export default {
     },
     // If the summary slot is not used, this value will be used as a fallback.
     summary: {
-      type: String,
+      type: Object,
       required: false,
       default: undefined,
+      validator: (s) => {
+        return Boolean(s.title);
+      },
     },
     // If the content slot is not used, this value will be used as a fallback.
     content: {
@@ -154,7 +158,7 @@ export default {
     return {
       isExpandedForTheFirstTime: true,
       isCollapsed: true,
-      isLoading: false,
+      isLoading: true,
       isLoadingExpandedContent: false,
       summaryError: null,
       contentError: null,
@@ -162,6 +166,12 @@ export default {
     };
   },
   computed: {
+    generatedSummary() {
+      return generateText(this.summary?.title || '');
+    },
+    generatedSubSummary() {
+      return generateText(this.summary?.subtitle || '');
+    },
     collapseButtonLabel() {
       return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
     },
@@ -170,6 +180,9 @@ export default {
     },
     hasActionButtons() {
       return this.actionButtons.length > 0 || Boolean(this.$scopedSlots['action-buttons']);
+    },
+    contentWithKeyField() {
+      return this.content?.map((item, index) => ({ ...item, id: item.id || index }));
     },
   },
   watch: {
@@ -289,7 +302,7 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="gl-px-5 gl-pr-4 gl-py-4 gl-align-items-center gl-display-flex">
+    <div class="gl-px-5 gl-pr-4 gl-py-4 gl-display-flex">
       <status-icon
         :level="1"
         :name="widgetName"
@@ -302,7 +315,14 @@ export default {
       >
         <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
           <span v-if="summaryError">{{ summaryError }}</span>
-          <slot v-else name="summary">{{ isLoading ? loadingText : summary }}</slot>
+          <slot v-else name="summary"
+            ><div v-safe-html="isLoading ? loadingText : generatedSummary"></div>
+            <div
+              v-if="!isLoading && generatedSubSummary"
+              v-safe-html="generatedSubSummary"
+              class="gl-font-sm gl-text-gray-700"
+            ></div
+          ></slot>
         </div>
         <div class="gl-display-flex">
           <help-popover
@@ -336,7 +356,7 @@ export default {
           </slot>
         </div>
         <div
-          v-if="isCollapsible"
+          v-if="isCollapsible && !isLoading"
           class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
         >
           <gl-button
@@ -376,8 +396,8 @@ export default {
         <div v-else class="gl-w-full">
           <slot name="content">
             <dynamic-scroller
-              v-if="content"
-              :items="content"
+              v-if="contentWithKeyField"
+              :items="contentWithKeyField"
               :min-item-size="32"
               :style="{ maxHeight: '170px' }"
               data-testid="dynamic-content-scroller"
@@ -390,6 +410,9 @@ export default {
                     :data="item"
                     :widget-name="widgetName"
                     :level="2"
+                    :row-index="index"
+                    data-testid="extension-list-item"
+                    @clickedAction="onActionClick"
                   />
                 </dynamic-scroller-item>
               </template>

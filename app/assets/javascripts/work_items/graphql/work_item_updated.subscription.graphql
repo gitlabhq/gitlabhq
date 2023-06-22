@@ -1,0 +1,7 @@
+#import "./work_item.fragment.graphql"
+
+subscription workItemUpdated($id: WorkItemID!) {
+  workItemUpdated(workItemId: $id) {
+    ...WorkItem
+  }
+}

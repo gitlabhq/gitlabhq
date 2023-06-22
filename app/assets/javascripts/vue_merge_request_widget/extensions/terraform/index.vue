@@ -1,12 +1,29 @@
+<script>
 import { __, n__, s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { EXTENSION_ICONS } from '../../constants';
 
 export default {
   name: 'WidgetTerraform',
-  enablePolling: true,
+  components: {
+    MrWidget,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      terraformData: {
+        collapsed: null,
+        expanded: null,
+      },
+    };
+  },
   i18n: {
-    label: s__('Terraform|Terraform reports'),
     loading: s__('Terraform|Loading Terraform reports...'),
     error: s__('Terraform|Failed to load Terraform reports'),
     reportGenerated: s__('Terraform|A Terraform report was generated in your pipelines.'),
@@ -23,18 +40,13 @@ export default {
     reportErrored: s__('Terraform|Generating the report caused an error.'),
     fullLog: __('Full log'),
   },
-  props: ['terraformReportsPath'],
   computed: {
-    // Extension computed props
-    statusIcon() {
-      return EXTENSION_ICONS.warning;
+    terraformReportsPath() {
+      return this.mr.terraformReportsPath;
     },
-  },
-  methods: {
-    // Extension methods
-    summary({ valid = [], invalid = [] }) {
-      let title;
-      let subtitle = '';
+
+    summary() {
+      const { valid = [], invalid = [] } = this.terraformData.collapsed || {};
 
       const validText = sprintf(
         n__(
@@ -60,20 +72,13 @@ export default {
         false,
       );
 
-      if (valid.length) {
-        title = validText;
-        if (invalid.length) {
-          subtitle = invalidText;
-        }
-      } else {
-        title = invalidText;
-      }
-
       return {
-        subject: title,
-        meta: subtitle,
+        title: valid.length ? validText : invalidText,
+        subtitle: valid.length && invalid.length ? invalidText : undefined,
       };
     },
+  },
+  methods: {
     fetchCollapsedData() {
       return axios
         .get(this.terraformReportsPath)
@@ -84,6 +89,10 @@ export default {
 
           const formattedData = this.prepareReports(reports);
 
+          const { valid, invalid } = formattedData;
+          this.terraformData.collapsed = formattedData;
+          this.terraformData.expanded = [...valid, ...invalid];
+
           return {
             ...res,
             data: formattedData,
@@ -91,13 +100,9 @@ export default {
         })
         .catch(() => {
           const formattedData = this.prepareReports([{ tf_report_error: 'api_error' }]);
-
+          this.terraformData.collapsed = formattedData;
           return { data: formattedData };
         });
-    },
-    fetchFullData() {
-      const { valid, invalid } = this.collapsedData;
-      return Promise.resolve([...valid, ...invalid]);
     },
     createReportRow(report, iconName) {
       const addNum = Number(report.create);
@@ -176,4 +181,20 @@ export default {
       return { valid, invalid };
     },
   },
+
+  WARNING_ICON: EXTENSION_ICONS.warning,
 };
+</script>
+
+<template>
+  <mr-widget
+    :error-text="$options.i18n.error"
+    :status-icon-name="$options.WARNING_ICON"
+    :loading-text="$options.i18n.loading"
+    :widget-name="$options.name"
+    :is-collapsible="Boolean(terraformData.collapsed)"
+    :summary="summary"
+    :content="terraformData.expanded"
+    :fetch-collapsed-data="fetchCollapsedData"
+  />
+</template>

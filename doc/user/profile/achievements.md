@@ -109,6 +109,23 @@ mutation achievementsCreate($file: Upload!) {
 }
 ```
 
+To supply the avatar file, call the mutation using `curl`:
+
+```shell
+curl 'https://gitlab.com/api/graphql' \
+  -H "Authorization: Bearer <your-pat-token>" \
+  -H "Content-Type: multipart/form-data" \
+  -F operations='{ "query": "mutation ($file: Upload!) { achievementsCreate(input: { namespaceId: \"gid://gitlab/Namespace/<namespace-id>\", name: \"<name>\", description: \"<description>\", avatar: $file }) { achievement { id name description avatarUrl } } }", "variables": { "file": null } }' \ 
+  -F map='{ "0": ["variables.file"] }' \
+  -F 0='@/path/to/your/file.jpg'
+```
+
+When successful, the response returns the achievement ID:
+
+```shell
+{"data":{"achievementsCreate":{"achievement":{"id":"gid://gitlab/Achievements::Achievement/1","name":"<name>","description":"<description>","avatarUrl":"https://gitlab.com/uploads/-/system/achievements/achievement/avatar/1/file.jpg"}}}}
+```
+
 ## Update an achievement
 
 You can change the name, description, and avatar of an achievement at any time.

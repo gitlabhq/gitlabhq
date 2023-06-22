@@ -31,20 +31,13 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
-import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
-import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
-import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
+import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 
 import {
   mockParent,
-  workItemDatesSubscriptionResponse,
   workItemByIidResponseFactory,
-  workItemTitleSubscriptionResponse,
-  workItemAssigneesSubscriptionResponse,
-  workItemMilestoneSubscriptionResponse,
   objectiveType,
   mockWorkItemCommentNote,
 } from '../mock_data';
@@ -63,16 +56,11 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
-  const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
-  const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
-  const milestoneSubscriptionHandler = jest
-    .fn()
-    .mockResolvedValue(workItemMilestoneSubscriptionResponse);
-  const assigneesSubscriptionHandler = jest
-    .fn()
-    .mockResolvedValue(workItemAssigneesSubscriptionResponse);
   const showModalHandler = jest.fn();
   const { id } = workItemQueryResponse.data.workspace.workItems.nodes[0];
+  const workItemUpdatedSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue({ data: { workItemUpdated: null } });
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -102,17 +90,13 @@ describe('WorkItemDetail component', () => {
     updateInProgress = false,
     workItemIid = '1',
     handler = successHandler,
-    subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
     workItemsMvc2Enabled = false,
   } = {}) => {
     const handlers = [
       [workItemByIidQuery, handler],
-      [workItemTitleSubscription, subscriptionHandler],
-      [workItemDatesSubscription, datesSubscriptionHandler],
-      [workItemAssigneesSubscription, assigneesSubscriptionHandler],
-      [workItemMilestoneSubscription, milestoneSubscriptionHandler],
+      [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
       confidentialityMock,
     ];
 
@@ -163,12 +147,17 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('when there is no `workItemIid` prop', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({ workItemIid: null });
+      await waitForPromises();
     });
 
     it('skips the work item query', () => {
       expect(successHandler).not.toHaveBeenCalled();
+    });
+
+    it('skips the work item updated subscription', () => {
+      expect(workItemUpdatedSubscriptionHandler).not.toHaveBeenCalled();
     });
   });
 
@@ -202,6 +191,10 @@ describe('WorkItemDetail component', () => {
 
     it('renders todos widget if logged in', () => {
       expect(findWorkItemTodos().exists()).toBe(true);
+    });
+
+    it('calls the work item updated subscription', () => {
+      expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
     });
   });
 
@@ -487,60 +480,6 @@ describe('WorkItemDetail component', () => {
 
     expect(findAlert().text()).toBe(updateError);
   });
-
-  describe('subscriptions', () => {
-    it('calls the title subscription', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(titleSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-    });
-
-    describe('assignees subscription', () => {
-      describe('when the assignees widget exists', () => {
-        it('calls the assignees subscription', async () => {
-          createComponent();
-          await waitForPromises();
-
-          expect(assigneesSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-        });
-      });
-
-      describe('when the assignees widget does not exist', () => {
-        it('does not call the assignees subscription', async () => {
-          const response = workItemByIidResponseFactory({ assigneesWidgetPresent: false });
-          const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler });
-          await waitForPromises();
-
-          expect(assigneesSubscriptionHandler).not.toHaveBeenCalled();
-        });
-      });
-    });
-
-    describe('dates subscription', () => {
-      describe('when the due date widget exists', () => {
-        it('calls the dates subscription', async () => {
-          createComponent();
-          await waitForPromises();
-
-          expect(datesSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-        });
-      });
-
-      describe('when the due date widget does not exist', () => {
-        it('does not call the dates subscription', async () => {
-          const response = workItemByIidResponseFactory({ datesWidgetPresent: false });
-          const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler });
-          await waitForPromises();
-
-          expect(datesSubscriptionHandler).not.toHaveBeenCalled();
-        });
-      });
-    });
-  });
-
   describe('assignees widget', () => {
     it('renders assignees component when widget is returned from the API', async () => {
       createComponent();
@@ -616,28 +555,6 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemMilestone().exists()).toBe(exists);
-    });
-
-    describe('milestone subscription', () => {
-      describe('when the milestone widget exists', () => {
-        it('calls the milestone subscription', async () => {
-          createComponent();
-          await waitForPromises();
-
-          expect(milestoneSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
-        });
-      });
-
-      describe('when the assignees widget does not exist', () => {
-        it('does not call the milestone subscription', async () => {
-          const response = workItemByIidResponseFactory({ milestoneWidgetPresent: false });
-          const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler });
-          await waitForPromises();
-
-          expect(milestoneSubscriptionHandler).not.toHaveBeenCalled();
-        });
-      });
     });
   });
 
