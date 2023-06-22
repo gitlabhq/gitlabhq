@@ -1,8 +1,0 @@
----
-name: find_changed_paths_new_format
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122768
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414463
-milestone: '16.1'
-type: development
-group: group::source code
-default_enabled: false

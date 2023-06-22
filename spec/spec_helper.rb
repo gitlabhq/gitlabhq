@@ -100,6 +100,32 @@ RSpec.configure do |config|
     end
   end
 
+  config.after do |example|
+    # We fail early if we detect a PG::QueryCanceled error
+    #
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/402915
+    if example.exception && example.exception.message.include?('PG::QueryCanceled')
+      ENV['RSPEC_BYPASS_SYSTEM_EXIT_PROTECTION'] = 'true'
+
+      warn
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn "*                                                                                          *"
+      warn "* We have detected a PG::QueryCanceled error in the specs, so we're failing early.         *"
+      warn "* Please retry this job.                                                                   *"
+      warn "*                                                                                          *"
+      warn "* See https://gitlab.com/gitlab-org/gitlab/-/issues/402915 for more info.                  *"
+      warn "*                                                                                          *"
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn "********************************************************************************************"
+      warn
+
+      exit 1
+    end
+  end
+
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_spec\.rb\z}) do |metadata|
     location = metadata[:location]
 

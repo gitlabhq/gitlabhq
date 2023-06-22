@@ -42,6 +42,12 @@ RSpec.shared_examples 'no assignee filter' do
 
     expect(issuables).to contain_exactly(*expected_issuables)
   end
+
+  it 'returns issuables not assigned to any assignee' do
+    params[:assignee_wildcard_id] = 'none'
+
+    expect(issuables).to contain_exactly(*expected_issuables)
+  end
 end
 
 RSpec.shared_examples 'any assignee filter' do
@@ -54,6 +60,12 @@ RSpec.shared_examples 'any assignee filter' do
 
     it 'returns issuables assigned to any assignee' do
       params[:assignee_id] = 'any'
+
+      expect(issuables).to contain_exactly(*expected_issuables)
+    end
+
+    it 'returns issuables assigned to any assignee' do
+      params[:assignee_wildcard_id] = 'any'
 
       expect(issuables).to contain_exactly(*expected_issuables)
     end

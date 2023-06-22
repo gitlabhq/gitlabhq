@@ -1,9 +1,13 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   name: 'ListItem',
   components: { GlButton },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     first: {
       type: Boolean,
@@ -26,6 +30,9 @@ export default {
       isDetailsShown: false,
       detailsSlots: [],
     };
+  },
+  i18n: {
+    toggleDetailsLabel: __('Toggle details'),
   },
   computed: {
     optionalClasses() {
@@ -75,10 +82,14 @@ export default {
             <slot name="left-primary"></slot>
             <gl-button
               v-if="detailsSlots.length > 0"
+              v-gl-tooltip
               :selected="isDetailsShown"
               icon="ellipsis_h"
               size="small"
               class="gl-ml-2 gl-display-none gl-sm-display-block"
+              :title="$options.i18n.toggleDetailsLabel"
+              :aria-label="$options.i18n.toggleDetailsLabel"
+              :aria-expanded="isDetailsShown"
               @click="toggleDetails"
             />
           </div>

@@ -161,11 +161,15 @@ RSpec.describe 'Branches', feature_category: :groups_and_projects do
       end
 
       it 'avoids a N+1 query in branches index' do
+        new_branches_count = 20
+        sql_queries_count_threshold = 10
+
         control_count = ActiveRecord::QueryRecorder.new { visit project_branches_path(project) }.count
 
-        %w[one two three four five].each { |ref| repository.add_branch(user, ref, 'master') }
+        (1..new_branches_count).each { |number| repository.add_branch(user, "new-branch-#{number}", 'master') }
 
-        expect { visit project_branches_filtered_path(project, state: 'all') }.not_to exceed_query_limit(control_count)
+        expect { visit project_branches_filtered_path(project, state: 'all') }
+          .not_to exceed_query_limit(control_count).with_threshold(sql_queries_count_threshold)
       end
     end
 

@@ -639,10 +639,6 @@ module Gitlab
       def find_changed_paths_request(commits, merge_commit_diff_mode)
         diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode] if Feature.enabled?(:merge_commit_diff_modes)
 
-        if Feature.disabled?(:find_changed_paths_new_format)
-          return Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, commits: commits, merge_commit_diff_mode: diff_mode)
-        end
-
         commit_requests = commits.map do |commit|
           Gitaly::FindChangedPathsRequest::Request.new(
             commit_request: Gitaly::FindChangedPathsRequest::Request::CommitRequest.new(commit_revision: commit)

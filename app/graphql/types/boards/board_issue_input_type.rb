@@ -17,9 +17,9 @@ module Types
                required: false,
                description: 'Search query for issue title or description.'
 
-      argument :assignee_wildcard_id, ::Types::Boards::AssigneeWildcardIdEnum,
+      argument :assignee_wildcard_id, ::Types::AssigneeWildcardIdEnum,
                required: false,
-               description: 'Filter by assignee wildcard. Incompatible with assigneeUsername.'
+               description: 'Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames.'
 
       argument :confidential, GraphQL::Types::Boolean,
                required: false,

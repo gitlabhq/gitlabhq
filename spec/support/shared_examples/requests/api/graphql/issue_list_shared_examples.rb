@@ -17,6 +17,10 @@ RSpec.shared_examples 'graphql issue list request spec' do
   end
 
   describe 'filters' do
+    let(:mutually_exclusive_error) do
+      'only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.'
+    end
+
     before_all do
       issue_a.assignee_ids = current_user.id
       issue_b.assignee_ids = another_user.id
@@ -31,9 +35,45 @@ RSpec.shared_examples 'graphql issue list request spec' do
         it 'returns a mutually exclusive param error' do
           post_query
 
-          expect_graphql_errors_to_include(
-            'only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.'
-          )
+          expect_graphql_errors_to_include(mutually_exclusive_error)
+        end
+      end
+
+      context 'when both assignee_username and assignee_wildcard_id filters are provided' do
+        let(:issue_filter_params) do
+          { assignee_username: current_user.username, assignee_wildcard_id: :ANY }
+        end
+
+        it 'returns a mutually exclusive param error' do
+          post_query
+
+          expect_graphql_errors_to_include(mutually_exclusive_error)
+        end
+      end
+
+      context 'when filtering by assignee_wildcard_id' do
+        context 'when filtering for all issues with assignees' do
+          let(:issue_filter_params) do
+            { assignee_wildcard_id: :ANY }
+          end
+
+          it 'returns all issues with assignees' do
+            post_query
+
+            expect(issue_ids).to match_array([issue_a, issue_b].map { |i| i.to_gid.to_s })
+          end
+        end
+
+        context 'when filtering for issues without assignees' do
+          let(:issue_filter_params) do
+            { assignee_wildcard_id: :NONE }
+          end
+
+          it 'returns all issues without assignees' do
+            post_query
+
+            expect(issue_ids).to match_array([issue_c, issue_d, issue_e].map { |i| i.to_gid.to_s })
+          end
         end
       end
 

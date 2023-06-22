@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import component from '~/vue_shared/components/registry/list_item.vue';
 
 describe('list item', () => {
@@ -26,6 +27,9 @@ describe('list item', () => {
         'right-secondary': '<div data-testid="right-secondary" />',
         'right-action': '<div data-testid="right-action" />',
         ...slots,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -88,6 +92,48 @@ describe('list item', () => {
       mountComponent({}, { 'details-foo': '<span></span>' });
       await nextTick();
       expect(findToggleDetailsButton().exists()).toBe(true);
+    });
+
+    describe('when visible', () => {
+      beforeEach(async () => {
+        mountComponent({}, { 'details-foo': '<span></span>' });
+        await nextTick();
+      });
+
+      it('has tooltip', () => {
+        const tooltip = getBinding(findToggleDetailsButton().element, 'gl-tooltip');
+
+        expect(tooltip).toBeDefined();
+        expect(findToggleDetailsButton().attributes('title')).toBe(
+          component.i18n.toggleDetailsLabel,
+        );
+      });
+
+      it('has correct attributes and props', () => {
+        expect(findToggleDetailsButton().props()).toMatchObject({
+          selected: false,
+        });
+
+        expect(findToggleDetailsButton().attributes()).toMatchObject({
+          title: component.i18n.toggleDetailsLabel,
+          'aria-label': component.i18n.toggleDetailsLabel,
+        });
+      });
+
+      it('has correct attributes and props when clicked', async () => {
+        findToggleDetailsButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findToggleDetailsButton().props()).toMatchObject({
+          selected: true,
+        });
+
+        expect(findToggleDetailsButton().attributes()).toMatchObject({
+          title: component.i18n.toggleDetailsLabel,
+          'aria-label': component.i18n.toggleDetailsLabel,
+          'aria-expanded': 'true',
+        });
+      });
     });
 
     it('is hidden without details slot', () => {

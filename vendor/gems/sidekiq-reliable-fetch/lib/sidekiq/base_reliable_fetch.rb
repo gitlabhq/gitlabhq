@@ -57,6 +57,11 @@ module Sidekiq
 
       Sidekiq.logger.info('GitLab reliable fetch activated!')
 
+      # Set the heartbeat immediately to prevent a race condition where
+      # worker_dead? returns true in another thread. `start_heartbeat_thread`
+      # isn't guaranteed to have run before Sidekiq attempts to fetch jobs.
+      heartbeat
+
       start_heartbeat_thread
     end
 

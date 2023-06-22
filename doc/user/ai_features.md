@@ -77,9 +77,23 @@ Prerequisites:
 To explain your code:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select any file in your project that contains code.
+1. On the file, select the lines that you want to have explained.
+1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
+1. A drawer is displayed on the right side of the page. Wait a moment for the explanation to be generated.
+1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.
+
+You can also have code explained in the context of a merge request. To explain
+code in a merge request:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
-1. Go to the file, and select the lines that you want to have explained.
+1. On the file you would like explained, select the three dots (**{ellipsis_v}**) and select **View File @ $SHA**.
+  
+   A separate browser tab opens and shows the full file with the latest changes.
+
+1. On the new tab, select the lines that you want to have explained.
 1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
 1. A drawer is displayed on the right side of the page. Wait a moment for the explanation to be generated.
 1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.

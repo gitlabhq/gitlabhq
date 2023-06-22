@@ -1100,7 +1100,7 @@ rspec-ee system pg15 es8:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--tag ~quarantine --tag ~zoekt"
+    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt"
 
 rspec fail-fast:
   extends:

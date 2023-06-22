@@ -48114,6 +48114,9 @@ msgstr ""
 msgid "Toggle commit list"
 msgstr ""
 
+msgid "Toggle details"
+msgstr ""
+
 msgid "Toggle emoji award"
 msgstr ""
 
