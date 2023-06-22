@@ -37,6 +37,7 @@ You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 | ------------------------------ | ------------------------------------------------------------------------------------------- |---------------------- |
 | `ci.skip`                      | Do not create a CI pipeline for the latest push. Only skips branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI integrations, such as Jenkins. | [11.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15643) |
 | `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to be used in a CI pipeline, if one is created due to the push. Only passes variables to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
+| `integrations.skip_ci`         | Skip push events for CI integrations, such as Atlassian Bamboo, Buildkite, Drone, Jenkins, and JetBrains TeamCity. | [16.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123837) |
 
 An example of using `ci.skip`:
 
@@ -48,6 +49,12 @@ An example of passing some CI/CD variables for a pipeline:
 
 ```shell
 git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"
+```
+
+An example of using `integrations.skip_ci`:
+
+```shell
+git push -o integrations.skip_ci
 ```
 
 ## Push options for merge requests

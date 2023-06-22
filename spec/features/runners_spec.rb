@@ -14,17 +14,11 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
       stub_feature_flags(project_runners_vue_ui: false)
     end
 
-    context 'when user views runners page' do
-      let_it_be(:project) { create(:project) }
+    context 'with user as project maintainer' do
+      let_it_be(:project) { create(:project).tap { |project| project.add_maintainer(user) } }
 
-      before do
-        project.add_maintainer(user)
-      end
-
-      context 'when create_runner_workflow_for_namespace is enabled', :js do
+      context 'when user views runners page', :js do
         before do
-          stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
-
           visit project_runners_path(project)
         end
 
@@ -38,58 +32,18 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
         end
       end
 
-      context 'when user views new runner page' do
-        context 'when create_runner_workflow_for_namespace is enabled', :js do
-          before do
-            stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
-
-            visit new_project_runner_path(project)
-          end
-
-          it_behaves_like 'creates runner and shows register page' do
-            let(:register_path_pattern) { register_project_runner_path(project, '.*') }
-          end
-
-          it 'shows the locked field' do
-            expect(page).to have_selector('input[type="checkbox"][name="locked"]')
-            expect(page).to have_content(_('Lock to current projects'))
-          end
-        end
-      end
-
-      context 'when create_runner_workflow_for_namespace is disabled' do
+      context 'when user views new runner page', :js do
         before do
-          stub_feature_flags(create_runner_workflow_for_namespace: false)
+          visit new_project_runner_path(project)
         end
 
-        it 'user can see a link with instructions on how to install GitLab Runner' do
-          visit project_runners_path(project)
-
-          expect(page).to have_link('Install GitLab Runner and ensure it\'s running.', href: "https://docs.gitlab.com/runner/install/")
+        it_behaves_like 'creates runner and shows register page' do
+          let(:register_path_pattern) { register_project_runner_path(project, '.*') }
         end
 
-        describe 'runners registration token' do
-          let!(:token) { project.runners_token }
-
-          before do
-            visit project_runners_path(project)
-          end
-
-          it 'has a registration token' do
-            expect(page.find('#registration_token')).to have_content(token)
-          end
-
-          describe 'reload registration token' do
-            let(:page_token) { find('#registration_token').text }
-
-            before do
-              click_link 'Reset registration token'
-            end
-
-            it 'changes registration token' do
-              expect(page_token).not_to eq token
-            end
-          end
+        it 'shows the locked field' do
+          expect(page).to have_selector('input[type="checkbox"][name="locked"]')
+          expect(page).to have_content(_('Lock to current projects'))
         end
       end
     end

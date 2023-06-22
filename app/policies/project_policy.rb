@@ -253,10 +253,6 @@ class ProjectPolicy < BasePolicy
     !Gitlab.config.terraform_state.enabled
   end
 
-  condition(:create_runner_workflow_enabled) do
-    Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
-  end
-
   condition(:namespace_catalog_available) { namespace_catalog_available? }
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
@@ -884,10 +880,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:download_code) }.policy do
     enable :read_code
-  end
-
-  rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_runner
   end
 
   # Should be matched with GroupPolicy#read_internal_note

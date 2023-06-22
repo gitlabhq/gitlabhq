@@ -832,6 +832,30 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
           subject
         end
       end
+
+      context 'when with_readonly_pipeline is used' do
+        it 'calls the default store only' do
+          expect(primary_store).to receive(:send).and_call_original
+          expect(secondary_store).not_to receive(:send).and_call_original
+
+          multi_store.with_readonly_pipeline { subject }
+        end
+
+        context 'when used in a nested manner' do
+          subject(:nested_subject) do
+            multi_store.with_readonly_pipeline do
+              multi_store.with_readonly_pipeline { subject }
+            end
+          end
+
+          it 'raises error' do
+            expect { nested_subject }.to raise_error(Gitlab::Redis::MultiStore::NestedReadonlyPipelineError)
+            expect { nested_subject }.to raise_error { |e|
+                                           expect(e.message).to eq('Nested use of with_readonly_pipeline is detected.')
+                                         }
+          end
+        end
+      end
     end
   end
 

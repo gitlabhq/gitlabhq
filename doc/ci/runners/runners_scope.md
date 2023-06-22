@@ -38,10 +38,7 @@ If you are using GitLab.com:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_admin` [flag](../../administration/feature_flags.md)
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `create_runner_workflow_for_admin`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
 Prerequisites:
 
@@ -195,10 +192,7 @@ Group runners process jobs by using a first in, first out ([FIFO](https://en.wik
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `create_runner_workflow_for_namespace`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
 Prerequisites:
 
@@ -328,10 +322,7 @@ A fork *does* copy the CI/CD settings of the cloned repository.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `create_runner_workflow_for_namespace`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
 Prerequisites:
 

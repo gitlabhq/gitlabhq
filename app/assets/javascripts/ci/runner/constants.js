@@ -117,9 +117,6 @@ export const I18N_STILL_USING_REGISTRATION_TOKENS = s__('Runners|Still using reg
 export const I18N_CONTACT_ADMIN_TO_REGISTER = s__(
   'Runners|To register new runners, contact your administrator.',
 );
-export const I18N_FOLLOW_REGISTRATION_INSTRUCTIONS = s__(
-  'Runners|Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner.',
-);
 
 // No runners found
 export const I18N_NO_RESULTS = s__('Runners|No results found');

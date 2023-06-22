@@ -65,9 +65,7 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
       Gitlab::Redis::Cache.with do |redis|
         expect(redis).to receive(:pipelined).and_call_original
 
-        times = Gitlab::Redis::ClusterUtil.cluster?(redis) ? 2 : 1
-
-        expect_next_instances_of(Redis::PipelinedConnection, times) do |pipeline|
+        expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
           expect(pipeline).to receive(:mapped_hmget).once.and_call_original
         end
       end

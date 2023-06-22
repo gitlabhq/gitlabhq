@@ -694,59 +694,5 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
       it { is_expected.to be_disallowed(:create_instance_runner) }
     end
-
-    context 'create_runner_workflow_for_admin flag disabled' do
-      before do
-        stub_feature_flags(create_runner_workflow_for_admin: false)
-      end
-
-      context 'admin' do
-        let(:current_user) { admin_user }
-
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it { is_expected.to be_disallowed(:create_instance_runner) }
-        end
-
-        context 'when admin mode is disabled' do
-          it { is_expected.to be_disallowed(:create_instance_runner) }
-        end
-      end
-
-      context 'with project_bot' do
-        let(:current_user) { project_bot }
-
-        it { is_expected.to be_disallowed(:create_instance_runner) }
-      end
-
-      context 'with migration_bot' do
-        let(:current_user) { migration_bot }
-
-        it { is_expected.to be_disallowed(:create_instance_runner) }
-      end
-
-      context 'with security_bot' do
-        let(:current_user) { security_bot }
-
-        it { is_expected.to be_disallowed(:create_instance_runner) }
-      end
-
-      context 'with llm_bot' do
-        let(:current_user) { llm_bot }
-
-        it { is_expected.to be_disallowed(:create_instance_runners) }
-      end
-
-      context 'with regular user' do
-        let(:current_user) { user }
-
-        it { is_expected.to be_disallowed(:create_instance_runner) }
-      end
-
-      context 'with anonymous' do
-        let(:current_user) { nil }
-
-        it { is_expected.to be_disallowed(:create_instance_runner) }
-      end
-    end
   end
 end

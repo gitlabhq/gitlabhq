@@ -11,7 +11,6 @@ import {
   I18N_CREATE_RUNNER_LINK,
   I18N_STILL_USING_REGISTRATION_TOKENS,
   I18N_CONTACT_ADMIN_TO_REGISTER,
-  I18N_FOLLOW_REGISTRATION_INSTRUCTIONS,
   I18N_NO_RESULTS,
   I18N_EDIT_YOUR_SEARCH,
 } from '~/ci/runner/constants';
@@ -44,15 +43,6 @@ export default {
       default: null,
     },
   },
-  computed: {
-    shouldShowCreateRunnerWorkflow() {
-      // create_runner_workflow_for_admin or create_runner_workflow_for_namespace
-      return (
-        this.glFeatures?.createRunnerWorkflowForAdmin ||
-        this.glFeatures?.createRunnerWorkflowForNamespace
-      );
-    },
-  },
   modalId: 'runners-empty-state-instructions-modal',
   svgHeight: 145,
   EMPTY_STATE_SVG_URL,
@@ -63,7 +53,6 @@ export default {
   I18N_CREATE_RUNNER_LINK,
   I18N_STILL_USING_REGISTRATION_TOKENS,
   I18N_CONTACT_ADMIN_TO_REGISTER,
-  I18N_FOLLOW_REGISTRATION_INSTRUCTIONS,
   I18N_NO_RESULTS,
   I18N_EDIT_YOUR_SEARCH,
 };
@@ -85,39 +74,22 @@ export default {
   >
     <template #description>
       {{ $options.I18N_RUNNERS_ARE_AGENTS }}
-      <template v-if="shouldShowCreateRunnerWorkflow">
-        <gl-sprintf v-if="newRunnerPath" :message="$options.I18N_CREATE_RUNNER_LINK">
-          <template #link="{ content }">
-            <gl-link :href="newRunnerPath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-        <template v-if="registrationToken">
-          <br />
-          <gl-link v-gl-modal="$options.modalId">{{
-            $options.I18N_STILL_USING_REGISTRATION_TOKENS
-          }}</gl-link>
-          <runner-instructions-modal
-            :modal-id="$options.modalId"
-            :registration-token="registrationToken"
-          />
-        </template>
-        <template v-if="!newRunnerPath && !registrationToken">
-          {{ $options.I18N_CONTACT_ADMIN_TO_REGISTER }}
-        </template>
-      </template>
-      <gl-sprintf
-        v-else-if="registrationToken"
-        :message="$options.I18N_FOLLOW_REGISTRATION_INSTRUCTIONS"
-      >
+      <gl-sprintf v-if="newRunnerPath" :message="$options.I18N_CREATE_RUNNER_LINK">
         <template #link="{ content }">
-          <gl-link v-gl-modal="$options.modalId">{{ content }}</gl-link>
-          <runner-instructions-modal
-            :modal-id="$options.modalId"
-            :registration-token="registrationToken"
-          />
+          <gl-link :href="newRunnerPath">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
-      <template v-else>
+      <template v-if="registrationToken">
+        <br />
+        <gl-link v-gl-modal="$options.modalId">{{
+          $options.I18N_STILL_USING_REGISTRATION_TOKENS
+        }}</gl-link>
+        <runner-instructions-modal
+          :modal-id="$options.modalId"
+          :registration-token="registrationToken"
+        />
+      </template>
+      <template v-if="!newRunnerPath && !registrationToken">
         {{ $options.I18N_CONTACT_ADMIN_TO_REGISTER }}
       </template>
     </template>

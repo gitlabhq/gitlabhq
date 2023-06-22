@@ -1,38 +1,37 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
+import GfmAutoComplete from '~/gfm_auto_complete';
 import { TYPE_ISSUE } from '~/issues/constants';
 import RelatedIssuableInput from '~/related_issues/components/related_issuable_input.vue';
 import { PathIdSeparator } from '~/related_issues/constants';
 
-jest.mock('ee_else_ce/gfm_auto_complete', () => {
-  return function gfmAutoComplete() {
-    return {
-      constructor() {},
-      setup() {},
-    };
-  };
-});
+jest.mock('~/gfm_auto_complete');
 
 describe('RelatedIssuableInput', () => {
-  let propsData;
+  let wrapper;
 
-  beforeEach(() => {
-    propsData = {
-      inputValue: '',
-      references: [],
-      pathIdSeparator: PathIdSeparator.Issue,
-      issuableType: TYPE_ISSUE,
-      autoCompleteSources: {
-        issues: `${TEST_HOST}/h5bp/html5-boilerplate/-/autocomplete_sources/issues`,
+  const autoCompleteSources = {
+    issues: `${TEST_HOST}/h5bp/html5-boilerplate/-/autocomplete_sources/issues`,
+  };
+
+  const mountComponent = (props = {}) => {
+    wrapper = shallowMount(RelatedIssuableInput, {
+      propsData: {
+        inputValue: '',
+        references: [],
+        pathIdSeparator: PathIdSeparator.Issue,
+        issuableType: TYPE_ISSUE,
+        autoCompleteSources,
+        ...props,
       },
-    };
-  });
+      attachTo: document.body,
+    });
+  };
 
   describe('autocomplete', () => {
     describe('with autoCompleteSources', () => {
       it('shows placeholder text', () => {
-        const wrapper = shallowMount(RelatedIssuableInput, { propsData });
+        mountComponent();
 
         expect(wrapper.findComponent({ ref: 'input' }).element.placeholder).toBe(
           'Paste issue link or <#issue id>',
@@ -40,51 +39,32 @@ describe('RelatedIssuableInput', () => {
       });
 
       it('has GfmAutoComplete', () => {
-        const wrapper = shallowMount(RelatedIssuableInput, { propsData });
+        mountComponent();
 
-        expect(wrapper.vm.gfmAutoComplete).toBeDefined();
+        expect(GfmAutoComplete).toHaveBeenCalledWith(autoCompleteSources);
       });
     });
 
     describe('with no autoCompleteSources', () => {
       it('shows placeholder text', () => {
-        const wrapper = shallowMount(RelatedIssuableInput, {
-          propsData: {
-            ...propsData,
-            references: ['!1', '!2'],
-          },
-        });
+        mountComponent({ references: ['!1', '!2'] });
 
         expect(wrapper.findComponent({ ref: 'input' }).element.value).toBe('');
       });
 
       it('does not have GfmAutoComplete', () => {
-        const wrapper = shallowMount(RelatedIssuableInput, {
-          propsData: {
-            ...propsData,
-            autoCompleteSources: {},
-          },
-        });
+        mountComponent({ autoCompleteSources: {} });
 
-        expect(wrapper.vm.gfmAutoComplete).not.toBeDefined();
+        expect(GfmAutoComplete).not.toHaveBeenCalled();
       });
     });
   });
 
   describe('focus', () => {
     it('when clicking anywhere on the input wrapper it should focus the input', async () => {
-      const wrapper = shallowMount(RelatedIssuableInput, {
-        propsData: {
-          ...propsData,
-          references: ['foo', 'bar'],
-        },
-        // We need to attach to document, so that `document.activeElement` is properly set in jsdom
-        attachTo: document.body,
-      });
+      mountComponent({ references: ['foo', 'bar'] });
 
-      wrapper.find('li').trigger('click');
-
-      await nextTick();
+      await wrapper.find('li').trigger('click');
 
       expect(document.activeElement).toBe(wrapper.findComponent({ ref: 'input' }).element);
     });
@@ -92,11 +72,7 @@ describe('RelatedIssuableInput', () => {
 
   describe('when filling in the input', () => {
     it('emits addIssuableFormInput with data', () => {
-      const wrapper = shallowMount(RelatedIssuableInput, {
-        propsData,
-      });
-
-      wrapper.vm.$emit = jest.fn();
+      mountComponent();
 
       const newInputValue = 'filling in things';
       const untouchedRawReferences = newInputValue.trim().split(/\s/);
@@ -108,12 +84,16 @@ describe('RelatedIssuableInput', () => {
       input.element.selectionEnd = newInputValue.length;
       input.trigger('input');
 
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('addIssuableFormInput', {
-        newValue: newInputValue,
-        caretPos: newInputValue.length,
-        untouchedRawReferences,
-        touchedReference,
-      });
+      expect(wrapper.emitted('addIssuableFormInput')).toEqual([
+        [
+          {
+            newValue: newInputValue,
+            caretPos: newInputValue.length,
+            untouchedRawReferences,
+            touchedReference,
+          },
+        ],
+      ]);
     });
   });
 });

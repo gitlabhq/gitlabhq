@@ -3,6 +3,8 @@ import { shallowMount } from '@vue/test-utils';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
 
+jest.mock('~/issues/show/event_hub');
+
 describe('TaskListItemActions component', () => {
   let wrapper;
 
@@ -37,16 +39,12 @@ describe('TaskListItemActions component', () => {
   });
 
   it('emits event when `Convert to task` dropdown item is clicked', () => {
-    jest.spyOn(eventHub, '$emit');
-
     findConvertToTaskItem().vm.$emit('action');
 
     expect(eventHub.$emit).toHaveBeenCalledWith('convert-task-list-item', '3:1-3:10');
   });
 
   it('emits event when `Delete` dropdown item is clicked', () => {
-    jest.spyOn(eventHub, '$emit');
-
     findDeleteItem().vm.$emit('action');
 
     expect(eventHub.$emit).toHaveBeenCalledWith('delete-task-list-item', '3:1-3:10');

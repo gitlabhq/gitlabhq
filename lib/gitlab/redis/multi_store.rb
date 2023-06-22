@@ -24,6 +24,12 @@ module Gitlab
         end
       end
 
+      class NestedReadonlyPipelineError < StandardError
+        def message
+          'Nested use of with_readonly_pipeline is detected.'
+        end
+      end
+
       attr_reader :primary_store, :secondary_store, :instance_name
 
       FAILED_TO_READ_ERROR_MESSAGE = 'Failed to read from the redis default_store.'
@@ -100,6 +106,25 @@ module Gitlab
         validate_stores!
       end
 
+      # Pipelines are sent to both instances by default since
+      # they could execute both read and write commands.
+      #
+      # But for pipelines that only consists of read commands, this method
+      # can be used to scope the pipeline and send it only to the default store.
+      def with_readonly_pipeline
+        raise NestedReadonlyPipelineError if readonly_pipeline?
+
+        Thread.current[:readonly_pipeline] = true
+
+        yield
+      ensure
+        Thread.current[:readonly_pipeline] = false
+      end
+
+      def readonly_pipeline?
+        Thread.current[:readonly_pipeline].present?
+      end
+
       # rubocop:disable GitlabSecurity/PublicSend
       READ_COMMANDS.each do |name|
         define_method(name) do |*args, **kwargs, &block|
@@ -123,7 +148,7 @@ module Gitlab
 
       PIPELINED_COMMANDS.each do |name|
         define_method(name) do |*args, **kwargs, &block|
-          if use_primary_and_secondary_stores?
+          if use_primary_and_secondary_stores? && !readonly_pipeline?
             pipelined_both(name, *args, **kwargs, &block)
           else
             send_command(default_store, name, *args, **kwargs, &block)

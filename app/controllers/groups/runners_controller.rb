@@ -6,10 +6,6 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :authorize_update_runner!, only: [:edit, :update, :destroy, :pause, :resume]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
 
-  before_action only: [:index] do
-    push_frontend_feature_flag(:create_runner_workflow_for_namespace, group)
-  end
-
   feature_category :runner
   urgency :low
 
@@ -35,11 +31,10 @@ class Groups::RunnersController < Groups::ApplicationController
   end
 
   def new
-    render_404 unless create_runner_workflow_for_namespace_enabled?
   end
 
   def register
-    render_404 unless create_runner_workflow_for_namespace_enabled? && runner.registration_available?
+    render_404 unless runner.registration_available?
   end
 
   private
@@ -66,10 +61,6 @@ class Groups::RunnersController < Groups::ApplicationController
     return if can?(current_user, :create_runner, group)
 
     render_404
-  end
-
-  def create_runner_workflow_for_namespace_enabled?
-    Feature.enabled?(:create_runner_workflow_for_namespace, group)
   end
 end
 

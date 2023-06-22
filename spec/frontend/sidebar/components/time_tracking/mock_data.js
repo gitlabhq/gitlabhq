@@ -148,3 +148,16 @@ export const getMrTimelogsQueryResponse = {
     },
   },
 };
+
+export const deleteTimelogMutationResponse = {
+  data: {
+    timelogDelete: {
+      errors: [],
+      timelog: {
+        id: 'gid://gitlab/Issue/148',
+        issue: {},
+        mergeRequest: {},
+      },
+    },
+  },
+};

@@ -483,34 +483,14 @@ describe('GroupRunnersApp', () => {
       expect(findRegistrationDropdown().exists()).toBe(true);
     });
 
-    it('when create_runner_workflow_for_namespace is enabled', () => {
+    it('shows the create runner button', () => {
       createComponent({
         props: {
           newRunnerPath,
-        },
-        provide: {
-          glFeatures: {
-            createRunnerWorkflowForNamespace: true,
-          },
         },
       });
 
       expect(findNewRunnerBtn().attributes('href')).toBe(newRunnerPath);
-    });
-
-    it('when create_runner_workflow_for_namespace is disabled', () => {
-      createComponent({
-        props: {
-          newRunnerPath,
-        },
-        provide: {
-          glFeatures: {
-            createRunnerWorkflowForNamespace: false,
-          },
-        },
-      });
-
-      expect(findNewRunnerBtn().exists()).toBe(false);
     });
   });
 
@@ -524,15 +504,10 @@ describe('GroupRunnersApp', () => {
       expect(findRegistrationDropdown().exists()).toBe(false);
     });
 
-    it('when create_runner_workflow_for_namespace is enabled', () => {
+    it('shows the create runner button', () => {
       createComponent({
         props: {
           newRunnerPath: null,
-        },
-        provide: {
-          glFeatures: {
-            createRunnerWorkflowForNamespace: true,
-          },
         },
       });
 

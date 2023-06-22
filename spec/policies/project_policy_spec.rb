@@ -2879,42 +2879,10 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'create_runner' do
-    context 'create_runner_workflow_for_namespace flag enabled' do
-      before do
-        stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
-      end
+    context 'admin' do
+      let(:current_user) { admin }
 
-      context 'admin' do
-        let(:current_user) { admin }
-
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it { is_expected.to be_allowed(:create_runner) }
-
-          context 'with project runner registration disabled' do
-            before do
-              stub_application_setting(valid_runner_registrars: ['group'])
-            end
-
-            it { is_expected.to be_allowed(:create_runner) }
-          end
-
-          context 'with specific project runner registration disabled' do
-            before do
-              project.update!(runner_registration_enabled: false)
-            end
-
-            it { is_expected.to be_allowed(:create_runner) }
-          end
-        end
-
-        context 'when admin mode is disabled' do
-          it { is_expected.to be_disallowed(:create_runner) }
-        end
-      end
-
-      context 'with owner' do
-        let(:current_user) { owner }
-
+      context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:create_runner) }
 
         context 'with project runner registration disabled' do
@@ -2922,7 +2890,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
             stub_application_setting(valid_runner_registrars: ['group'])
           end
 
-          it { is_expected.to be_disallowed(:create_runner) }
+          it { is_expected.to be_allowed(:create_runner) }
         end
 
         context 'with specific project runner registration disabled' do
@@ -2930,125 +2898,65 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
             project.update!(runner_registration_enabled: false)
           end
 
-          it { is_expected.to be_disallowed(:create_runner) }
+          it { is_expected.to be_allowed(:create_runner) }
         end
       end
 
-      context 'with maintainer' do
-        let(:current_user) { maintainer }
-
-        it { is_expected.to be_allowed(:create_runner) }
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:create_runner) }
       end
+    end
 
-      context 'with reporter' do
-        let(:current_user) { reporter }
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:create_runner) }
+
+      context 'with project runner registration disabled' do
+        before do
+          stub_application_setting(valid_runner_registrars: ['group'])
+        end
 
         it { is_expected.to be_disallowed(:create_runner) }
       end
 
-      context 'with guest' do
-        let(:current_user) { guest }
-
-        it { is_expected.to be_disallowed(:create_runner) }
-      end
-
-      context 'with developer' do
-        let(:current_user) { developer }
-
-        it { is_expected.to be_disallowed(:create_runner) }
-      end
-
-      context 'with anonymous' do
-        let(:current_user) { nil }
+      context 'with specific project runner registration disabled' do
+        before do
+          project.update!(runner_registration_enabled: false)
+        end
 
         it { is_expected.to be_disallowed(:create_runner) }
       end
     end
 
-    context 'create_runner_workflow_for_namespace flag disabled' do
-      before do
-        stub_feature_flags(create_runner_workflow_for_namespace: [group])
-      end
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
 
-      context 'admin' do
-        let(:current_user) { admin }
+      it { is_expected.to be_allowed(:create_runner) }
+    end
 
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it { is_expected.to be_disallowed(:create_runner) }
+    context 'with reporter' do
+      let(:current_user) { reporter }
 
-          context 'with project runner registration disabled' do
-            before do
-              stub_application_setting(valid_runner_registrars: ['group'])
-            end
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
 
-            it { is_expected.to be_disallowed(:create_runner) }
-          end
+    context 'with guest' do
+      let(:current_user) { guest }
 
-          context 'with specific project runner registration disabled' do
-            before do
-              project.update!(runner_registration_enabled: false)
-            end
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
 
-            it { is_expected.to be_disallowed(:create_runner) }
-          end
-        end
+    context 'with developer' do
+      let(:current_user) { developer }
 
-        context 'when admin mode is disabled' do
-          it { is_expected.to be_disallowed(:create_runner) }
-        end
-      end
+      it { is_expected.to be_disallowed(:create_runner) }
+    end
 
-      context 'with owner' do
-        let(:current_user) { owner }
+    context 'with anonymous' do
+      let(:current_user) { nil }
 
-        it { is_expected.to be_disallowed(:create_runner) }
-
-        context 'with project runner registration disabled' do
-          before do
-            stub_application_setting(valid_runner_registrars: ['group'])
-          end
-
-          it { is_expected.to be_disallowed(:create_runner) }
-        end
-
-        context 'with specific project runner registration disabled' do
-          before do
-            project.update!(runner_registration_enabled: false)
-          end
-
-          it { is_expected.to be_disallowed(:create_runner) }
-        end
-      end
-
-      context 'with maintainer' do
-        let(:current_user) { maintainer }
-
-        it { is_expected.to be_disallowed(:create_runner) }
-      end
-
-      context 'with reporter' do
-        let(:current_user) { reporter }
-
-        it { is_expected.to be_disallowed(:create_runner) }
-      end
-
-      context 'with guest' do
-        let(:current_user) { guest }
-
-        it { is_expected.to be_disallowed(:create_runner) }
-      end
-
-      context 'with developer' do
-        let(:current_user) { developer }
-
-        it { is_expected.to be_disallowed(:create_runner) }
-      end
-
-      context 'with anonymous' do
-        let(:current_user) { nil }
-
-        it { is_expected.to be_disallowed(:create_runner) }
-      end
+      it { is_expected.to be_disallowed(:create_runner) }
     end
   end
 

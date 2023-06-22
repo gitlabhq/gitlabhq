@@ -126,10 +126,6 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
-    shouldShowCreateRunnerWorkflow() {
-      // create_runner_workflow_for_admin feature flag
-      return this.glFeatures.createRunnerWorkflowForAdmin;
-    },
   },
   watch: {
     search: {
@@ -193,7 +189,7 @@ export default {
       />
 
       <div class="gl-w-full gl-md-w-auto gl-display-flex">
-        <gl-button v-if="shouldShowCreateRunnerWorkflow" :href="newRunnerPath" variant="confirm">
+        <gl-button :href="newRunnerPath" variant="confirm">
           {{ s__('Runners|New instance runner') }}
         </gl-button>
         <registration-dropdown

@@ -122,14 +122,6 @@ export default {
           return null;
       }
     },
-    showDeprecationAlert() {
-      return (
-        // create_runner_workflow_for_admin
-        this.glFeatures.createRunnerWorkflowForAdmin ||
-        // create_runner_workflow_for_namespace
-        this.glFeatures.createRunnerWorkflowForNamespace
-      );
-    },
   },
   updated() {
     // Refocus on dom changes, after loading data
@@ -200,12 +192,7 @@ export default {
     v-on="$listeners"
     @shown="onShown"
   >
-    <gl-alert
-      v-if="showDeprecationAlert"
-      :title="$options.i18n.deprecationAlertTitle"
-      variant="warning"
-      :dismissible="false"
-    >
+    <gl-alert :title="$options.i18n.deprecationAlertTitle" variant="warning" :dismissible="false">
       <gl-sprintf :message="$options.i18n.deprecationAlertContent">
         <template #link="{ content }">
           <gl-link target="_blank" :href="$options.LEGACY_REGISTER_HELP_URL"

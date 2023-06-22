@@ -79,7 +79,6 @@ Naming/InclusiveLanguage:
     - 'spec/rubocop/cop/graphql/id_type_spec.rb'
     - 'spec/services/application_settings/update_service_spec.rb'
     - 'spec/services/design_management/generate_image_versions_service_spec.rb'
-    - 'spec/services/error_tracking/list_issues_service_spec.rb'
     - 'spec/services/projects/download_service_spec.rb'
     - 'spec/support/import_export/export_file_helper.rb'
     - 'spec/support/shared_contexts/upload_type_check_shared_context.rb'

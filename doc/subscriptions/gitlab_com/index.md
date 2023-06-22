@@ -347,12 +347,13 @@ If you have difficulty during the renewal process, contact the
 
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
-To change the contacts:
+For information about how to transfer ownership of the Customers Portal account to another person, see
+[Change account owner information](../customers_portal.md#change-account-owner-information).
+
+To add a secondary contact for your subscription:
 
 1. Ensure an account exists in the
    [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
-1. Verify you have access to at least one of
-   [these requirements](https://about.gitlab.com/handbook/support/license-and-renewals/workflows/customersdot/associating_purchases.html).
 1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
 
 ## Compute

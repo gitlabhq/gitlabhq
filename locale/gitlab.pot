@@ -34249,9 +34249,6 @@ msgstr ""
 msgid "Please contact an admin to create runners."
 msgstr ""
 
-msgid "Please contact an admin to register runners."
-msgstr ""
-
 msgid "Please contact your GitLab administrator if you think this is an error."
 msgstr ""
 
@@ -39676,9 +39673,6 @@ msgid "Runners|Fetch GitLab Runner release version data from GitLab.com"
 msgstr ""
 
 msgid "Runners|Filter projects"
-msgstr ""
-
-msgid "Runners|Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."
 msgstr ""
 
 msgid "Runners|Get started with runners"

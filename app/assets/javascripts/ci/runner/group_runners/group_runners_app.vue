@@ -155,10 +155,6 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
-    shouldShowCreateRunnerWorkflow() {
-      // create_runner_workflow_for_namespace feature flag
-      return this.glFeatures.createRunnerWorkflowForNamespace;
-    },
   },
   watch: {
     search: {
@@ -231,11 +227,7 @@ export default {
       />
 
       <div class="gl-w-full gl-md-w-auto gl-display-flex">
-        <gl-button
-          v-if="shouldShowCreateRunnerWorkflow && newRunnerPath"
-          :href="newRunnerPath"
-          variant="confirm"
-        >
+        <gl-button v-if="newRunnerPath" :href="newRunnerPath" variant="confirm">
           {{ s__('Runners|New group runner') }}
         </gl-button>
         <registration-dropdown

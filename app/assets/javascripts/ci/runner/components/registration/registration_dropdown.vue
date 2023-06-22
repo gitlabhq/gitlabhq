@@ -20,6 +20,9 @@ export default {
     showInstallationInstructions: s__(
       'Runners|Show runner installation and registration instructions',
     ),
+    supportForRegistrationTokensDeprecated: s__(
+      'Runners|Support for registration tokens is deprecated',
+    ),
   },
   components: {
     GlDropdown,
@@ -51,14 +54,6 @@ export default {
     };
   },
   computed: {
-    isDeprecated() {
-      // Show a compact version when used as secondary option
-      // create_runner_workflow_for_admin or create_runner_workflow_for_namespace
-      return (
-        this.glFeatures?.createRunnerWorkflowForAdmin ||
-        this.glFeatures?.createRunnerWorkflowForNamespace
-      );
-    },
     actionText() {
       switch (this.type) {
         case INSTANCE_TYPE:
@@ -70,30 +65,6 @@ export default {
         default:
           return I18N_REGISTER_RUNNER;
       }
-    },
-    dropdownText() {
-      if (this.isDeprecated) {
-        return '';
-      }
-      return this.actionText;
-    },
-    dropdownToggleClass() {
-      if (this.isDeprecated) {
-        return ['gl-px-3!'];
-      }
-      return [];
-    },
-    dropdownCategory() {
-      if (this.isDeprecated) {
-        return 'tertiary';
-      }
-      return 'primary';
-    },
-    dropdownVariant() {
-      if (this.isDeprecated) {
-        return 'default';
-      }
-      return 'confirm';
     },
   },
   methods: {
@@ -113,22 +84,21 @@ export default {
   <gl-dropdown
     ref="runnerRegistrationDropdown"
     menu-class="gl-w-auto!"
-    :text="dropdownText"
-    :toggle-class="dropdownToggleClass"
-    :variant="dropdownVariant"
-    :category="dropdownCategory"
+    toggle-class="gl-px-3!"
+    variant="default"
+    category="tertiary"
     v-bind="$attrs"
   >
-    <template v-if="isDeprecated" #button-content>
+    <template #button-content>
       <span class="gl-sr-only">{{ actionText }}</span>
       <gl-icon name="ellipsis_v" />
     </template>
     <gl-dropdown-form class="gl-p-4!">
       <registration-token input-id="token-value" :value="currentRegistrationToken">
-        <template v-if="isDeprecated" #label-description>
+        <template #label-description>
           <gl-icon name="warning" class="gl-text-orange-500" />
           <span class="gl-text-secondary">
-            {{ s__('Runners|Support for registration tokens is deprecated') }}
+            {{ $options.i18n.supportForRegistrationTokensDeprecated }}
           </span>
         </template>
       </registration-token>

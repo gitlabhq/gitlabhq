@@ -6,6 +6,9 @@ development:
   cluster_cache:
     cluster:
       - redis://localhost:7001
+  feature_flag:
+    cluster:
+      - redis://localhost:7001
   rate_limiting:
     cluster:
       - redis://localhost:7001
@@ -15,6 +18,9 @@ test:
     cluster:
       - redis://localhost:7001
   cluster_cache:
+    cluster:
+      - redis://localhost:7001
+  feature_flag:
     cluster:
       - redis://localhost:7001
   rate_limiting:

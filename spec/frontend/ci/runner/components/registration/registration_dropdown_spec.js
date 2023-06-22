@@ -41,7 +41,9 @@ describe('RegistrationDropdown', () => {
   const findTokenDropdownItem = () => wrapper.findComponent(GlDropdownForm);
   const findRegistrationToken = () => wrapper.findComponent(RegistrationToken);
   const findRegistrationTokenInput = () =>
-    wrapper.findByLabelText(RegistrationToken.i18n.registrationToken);
+    wrapper.findByLabelText(
+      `${RegistrationToken.i18n.registrationToken} ${RegistrationDropdown.i18n.supportForRegistrationTokensDeprecated}`,
+    );
   const findTokenResetDropdownItem = () =>
     wrapper.findComponent(RegistrationTokenResetDropdownItem);
   const findModal = () => wrapper.findComponent(GlModal);
@@ -107,12 +109,12 @@ describe('RegistrationDropdown', () => {
     createComponent();
 
     expect(findDropdown().props()).toMatchObject({
-      category: 'primary',
-      variant: 'confirm',
+      category: 'tertiary',
+      variant: 'default',
     });
 
     expect(findDropdown().attributes()).toMatchObject({
-      toggleclass: '',
+      toggleclass: 'gl-px-3!',
     });
   });
 
@@ -217,14 +219,9 @@ describe('RegistrationDropdown', () => {
     });
   });
 
-  describe.each([
-    { createRunnerWorkflowForAdmin: true },
-    { createRunnerWorkflowForNamespace: true },
-  ])('When showing a "deprecated" warning', (glFeatures) => {
+  describe('When showing a "deprecated" warning', () => {
     it('passes deprecated variant props and attributes to dropdown', () => {
-      createComponent({
-        provide: { glFeatures },
-      });
+      createComponent();
 
       expect(findDropdown().props()).toMatchObject({
         category: 'tertiary',
@@ -249,12 +246,7 @@ describe('RegistrationDropdown', () => {
     });
 
     it('shows warning text', () => {
-      createComponent(
-        {
-          provide: { glFeatures },
-        },
-        mountExtended,
-      );
+      createComponent({}, mountExtended);
 
       const text = wrapper.findByText(s__('Runners|Support for registration tokens is deprecated'));
 
@@ -262,12 +254,7 @@ describe('RegistrationDropdown', () => {
     });
 
     it('button shows ellipsis icon', () => {
-      createComponent(
-        {
-          provide: { glFeatures },
-        },
-        mountExtended,
-      );
+      createComponent({}, mountExtended);
 
       expect(findDropdownBtn().findComponent(GlIcon).props('name')).toBe('ellipsis_v');
       expect(findDropdownBtn().findAllComponents(GlIcon)).toHaveLength(1);

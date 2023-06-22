@@ -95,18 +95,6 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
     end
   end
 
-  shared_context 'when :create_runner_workflow_for_namespace feature flag is disabled' do
-    before do
-      stub_feature_flags(create_runner_workflow_for_namespace: [other_group])
-    end
-
-    it 'returns an error' do
-      post_graphql_mutation(mutation, current_user: current_user)
-
-      expect_graphql_errors_to_include('`create_runner_workflow_for_namespace` feature flag is disabled.')
-    end
-  end
-
   shared_examples 'when runner is created successfully' do
     it do
       expected_args = { user: current_user, params: anything }
@@ -139,18 +127,6 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
     context 'when user has permissions', :enable_admin_mode do
       let(:current_user) { admin }
 
-      context 'when :create_runner_workflow_for_admin feature flag is disabled' do
-        before do
-          stub_feature_flags(create_runner_workflow_for_admin: false)
-        end
-
-        it 'returns an error' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect_graphql_errors_to_include('`create_runner_workflow_for_admin` feature flag is disabled.')
-        end
-      end
-
       it_behaves_like 'when runner is created successfully'
       it_behaves_like 'when model is invalid returns error'
     end
@@ -164,17 +140,12 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
       }
     end
 
-    before do
-      stub_feature_flags(create_runner_workflow_for_namespace: [group])
-    end
-
     it_behaves_like 'when user does not have permissions'
 
     context 'when user has permissions' do
       context 'when user is group owner' do
         let(:current_user) { group_owner }
 
-        it_behaves_like 'when :create_runner_workflow_for_namespace feature flag is disabled'
         it_behaves_like 'when runner is created successfully'
         it_behaves_like 'when model is invalid returns error'
 
@@ -226,7 +197,6 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
       context 'when user is admin in admin mode', :enable_admin_mode do
         let(:current_user) { admin }
 
-        it_behaves_like 'when :create_runner_workflow_for_namespace feature flag is disabled'
         it_behaves_like 'when runner is created successfully'
         it_behaves_like 'when model is invalid returns error'
       end
@@ -249,7 +219,6 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
       context 'when user is group owner' do
         let(:current_user) { group_owner }
 
-        it_behaves_like 'when :create_runner_workflow_for_namespace feature flag is disabled'
         it_behaves_like 'when runner is created successfully'
         it_behaves_like 'when model is invalid returns error'
 
@@ -304,7 +273,6 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
       context 'when user is admin in admin mode', :enable_admin_mode do
         let(:current_user) { admin }
 
-        it_behaves_like 'when :create_runner_workflow_for_namespace feature flag is disabled'
         it_behaves_like 'when runner is created successfully'
         it_behaves_like 'when model is invalid returns error'
       end

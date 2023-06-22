@@ -90,14 +90,6 @@ describe('RunnerInstructionsModal component', () => {
       await waitForPromises();
     });
 
-    it('should not show alert', () => {
-      expect(findAlert().exists()).toBe(false);
-    });
-
-    it('should not show deprecation alert', () => {
-      expect(findAlert('warning').exists()).toBe(false);
-    });
-
     it('should contain a number of platforms buttons', () => {
       expect(runnerPlatformsHandler).toHaveBeenCalledWith({});
 
@@ -112,19 +104,8 @@ describe('RunnerInstructionsModal component', () => {
       expect(architectures).toEqual(mockPlatformList[0].architectures.nodes);
     });
 
-    describe.each`
-      glFeatures                                    | deprecationAlertExists
-      ${{}}                                         | ${false}
-      ${{ createRunnerWorkflowForAdmin: true }}     | ${true}
-      ${{ createRunnerWorkflowForNamespace: true }} | ${true}
-    `('with features $glFeatures', ({ glFeatures, deprecationAlertExists }) => {
-      beforeEach(() => {
-        createComponent({ provide: { glFeatures } });
-      });
-
-      it(`alert is ${deprecationAlertExists ? 'shown' : 'not shown'}`, () => {
-        expect(findAlert('warning').exists()).toBe(deprecationAlertExists);
-      });
+    it('alert is shown', () => {
+      expect(findAlert('warning').exists()).toBe(true);
     });
 
     describe('when the modal resizes', () => {

@@ -16,21 +16,6 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
   end
 
   describe "Group runners page", :js do
-    describe "legacy runners registration" do
-      let_it_be(:group_registration_token) { group.runners_token }
-
-      before do
-        stub_feature_flags(create_runner_workflow_for_namespace: false)
-
-        visit group_runners_path(group)
-      end
-
-      it_behaves_like "shows and resets runner registration token" do
-        let(:dropdown_text) { 'Register a group runner' }
-        let(:registration_token) { group_registration_token }
-      end
-    end
-
     context "with no runners" do
       before do
         visit group_runners_path(group)

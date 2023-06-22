@@ -10,7 +10,6 @@ import {
   I18N_CREATE_RUNNER_LINK,
   I18N_STILL_USING_REGISTRATION_TOKENS,
   I18N_CONTACT_ADMIN_TO_REGISTER,
-  I18N_FOLLOW_REGISTRATION_INSTRUCTIONS,
   I18N_NO_RESULTS,
   I18N_EDIT_YOUR_SEARCH,
 } from '~/ci/runner/constants';
@@ -59,136 +58,84 @@ describe('RunnerListEmptyState', () => {
   });
 
   describe('when search is not filtered', () => {
-    describe.each([
-      { createRunnerWorkflowForAdmin: true },
-      { createRunnerWorkflowForNamespace: true },
-    ])('when createRunnerWorkflow is enabled by %o', (currentGlFeatures) => {
-      beforeEach(() => {
-        glFeatures = currentGlFeatures;
-      });
-
-      describe.each`
-        newRunnerPath        | registrationToken        | expectedMessages
-        ${mockNewRunnerPath} | ${mockRegistrationToken} | ${[I18N_CREATE_RUNNER_LINK, I18N_STILL_USING_REGISTRATION_TOKENS]}
-        ${mockNewRunnerPath} | ${null}                  | ${[I18N_CREATE_RUNNER_LINK]}
-        ${null}              | ${mockRegistrationToken} | ${[I18N_STILL_USING_REGISTRATION_TOKENS]}
-        ${null}              | ${null}                  | ${[I18N_CONTACT_ADMIN_TO_REGISTER]}
-      `(
-        'when newRunnerPath is $newRunnerPath and registrationToken is $registrationToken',
-        ({ newRunnerPath, registrationToken, expectedMessages }) => {
-          beforeEach(() => {
-            createComponent({
-              props: {
-                newRunnerPath,
-                registrationToken,
-              },
-            });
-          });
-
-          it('shows title', () => {
-            expectTitleToBe(I18N_GET_STARTED);
-          });
-
-          it('renders an illustration', () => {
-            expect(findEmptyState().props('svgPath')).toBe(EMPTY_STATE_SVG_URL);
-          });
-
-          it(`shows description: "${expectedMessages.join(' ')}"`, () => {
-            expectDescriptionToBe([I18N_RUNNERS_ARE_AGENTS, ...expectedMessages]);
-          });
-        },
-      );
-
-      describe('with newRunnerPath and registration token', () => {
+    describe.each`
+      newRunnerPath        | registrationToken        | expectedMessages
+      ${mockNewRunnerPath} | ${mockRegistrationToken} | ${[I18N_CREATE_RUNNER_LINK, I18N_STILL_USING_REGISTRATION_TOKENS]}
+      ${mockNewRunnerPath} | ${null}                  | ${[I18N_CREATE_RUNNER_LINK]}
+      ${null}              | ${mockRegistrationToken} | ${[I18N_STILL_USING_REGISTRATION_TOKENS]}
+      ${null}              | ${null}                  | ${[I18N_CONTACT_ADMIN_TO_REGISTER]}
+    `(
+      'when newRunnerPath is $newRunnerPath and registrationToken is $registrationToken',
+      ({ newRunnerPath, registrationToken, expectedMessages }) => {
         beforeEach(() => {
           createComponent({
             props: {
-              registrationToken: mockRegistrationToken,
-              newRunnerPath: mockNewRunnerPath,
+              newRunnerPath,
+              registrationToken,
             },
           });
         });
 
-        it('shows links to the new runner page and registration instructions', () => {
-          expect(findLinks().at(0).attributes('href')).toBe(mockNewRunnerPath);
-
-          const { value } = getBinding(findLinks().at(1).element, 'gl-modal');
-          expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
-        });
-      });
-
-      describe('with newRunnerPath and no registration token', () => {
-        beforeEach(() => {
-          createComponent({
-            props: {
-              registrationToken: mockRegistrationToken,
-              newRunnerPath: null,
-            },
-          });
-        });
-
-        it('opens a runner registration instructions modal with a link', () => {
-          const { value } = getBinding(findLink().element, 'gl-modal');
-          expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
-        });
-      });
-
-      describe('with no newRunnerPath nor registration token', () => {
-        beforeEach(() => {
-          createComponent({
-            props: {
-              registrationToken: null,
-              newRunnerPath: null,
-            },
-          });
-        });
-
-        it('has no link', () => {
-          expect(findLink().exists()).toBe(false);
-        });
-      });
-    });
-
-    describe('when createRunnerWorkflow is disabled', () => {
-      describe('when there is a registration token', () => {
-        beforeEach(() => {
-          createComponent({
-            props: {
-              registrationToken: mockRegistrationToken,
-            },
-          });
+        it('shows title', () => {
+          expectTitleToBe(I18N_GET_STARTED);
         });
 
         it('renders an illustration', () => {
           expect(findEmptyState().props('svgPath')).toBe(EMPTY_STATE_SVG_URL);
         });
 
-        it('opens a runner registration instructions modal with a link', () => {
-          const { value } = getBinding(findLink().element, 'gl-modal');
-          expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+        it(`shows description: "${expectedMessages.join(' ')}"`, () => {
+          expectDescriptionToBe([I18N_RUNNERS_ARE_AGENTS, ...expectedMessages]);
         });
+      },
+    );
 
-        it('displays text with registration instructions', () => {
-          expectTitleToBe(I18N_GET_STARTED);
-
-          expectDescriptionToBe([I18N_RUNNERS_ARE_AGENTS, I18N_FOLLOW_REGISTRATION_INSTRUCTIONS]);
+    describe('with newRunnerPath and registration token', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            registrationToken: mockRegistrationToken,
+            newRunnerPath: mockNewRunnerPath,
+          },
         });
       });
 
-      describe('when there is no registration token', () => {
-        beforeEach(() => {
-          createComponent({ props: { registrationToken: null } });
-        });
+      it('shows links to the new runner page and registration instructions', () => {
+        expect(findLinks().at(0).attributes('href')).toBe(mockNewRunnerPath);
 
-        it('displays "contact admin" text', () => {
-          expectTitleToBe(I18N_GET_STARTED);
+        const { value } = getBinding(findLinks().at(1).element, 'gl-modal');
+        expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+      });
+    });
 
-          expectDescriptionToBe([I18N_RUNNERS_ARE_AGENTS, I18N_CONTACT_ADMIN_TO_REGISTER]);
+    describe('with newRunnerPath and no registration token', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            registrationToken: mockRegistrationToken,
+            newRunnerPath: null,
+          },
         });
+      });
 
-        it('has no registration instructions link', () => {
-          expect(findLink().exists()).toBe(false);
+      it('opens a runner registration instructions modal with a link', () => {
+        const { value } = getBinding(findLink().element, 'gl-modal');
+        expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+      });
+    });
+
+    describe('with no newRunnerPath nor registration token', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            registrationToken: null,
+            newRunnerPath: null,
+          },
         });
+      });
+
+      it('has no link', () => {
+        expect(findLink().exists()).toBe(false);
       });
     });
   });
