@@ -1,5 +1,4 @@
 ---
-type: reference, howto
 stage: Secure
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
@@ -16,6 +15,11 @@ Dependency Scanning is often considered part of Software Composition Analysis (S
 aspects of inspecting the items your code uses. These items typically include application and system
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
+
+GitLab offers both Dependency Scanning and [Container Scanning](../container_scanning/index.md) to
+ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
+we encourage you to use all of our security scanners. For a comparison of these features, see
+[Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
 
 If you're using [GitLab CI/CD](../../../ci/index.md), you can use dependency scanning to analyze
 your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
@@ -37,48 +41,6 @@ vulnerability.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o).
-
-## Dependency Scanning compared to Container Scanning
-
-GitLab offers both Dependency Scanning and Container Scanning
-to ensure coverage for all of these dependency types. To cover as much of your risk area as
-possible, we encourage you to use all of our security scanning tools:
-
-- Dependency Scanning analyzes your project and tells you which software dependencies,
-  including upstream dependencies, have been included in your project, and what known
-  risks the dependencies contain. Dependency Scanning modifies its behavior based
-  on the language and package manager of the project. It typically looks for a lock file
-  then performs a build to fetch upstream dependency information. In the case of
-  containers, Dependency Scanning uses the compatible manifest and reports only these
-  declared software dependencies (and those installed as a sub-dependency).
-  Dependency Scanning cannot detect software dependencies that are pre-bundled
-  into the container's base image. To identify pre-bundled dependencies, enable
-  [Container Scanning](../container_scanning/index.md) language scanning using the
-  [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/index.md#report-language-specific-findings).
-- [Container Scanning](../container_scanning/index.md) analyzes your containers and tells
-  you about known risks in the operating system's (OS) packages. You can configure it
-  to also report on software and language dependencies, if you enable it and use
-  the [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/index.md#report-language-specific-findings).
-  Turning this variable on can result in some duplicate findings, as we do not yet
-  de-duplicate results between Container Scanning and Dependency Scanning. For more details,
-  efforts to de-duplicate these findings can be tracked in
-  [this epic](https://gitlab.com/groups/gitlab-org/-/epics/8026).
-
-The following table summarizes which types of dependencies each scanning tool can detect:
-
-| Feature                                                                                      | Dependency Scanning | Container Scanning  |
-| -----------------------------------------------------------                                  | ------------------- | ------------------- |
-| Identify the manifest, lock file, or static file that introduced the dependency              | **{check-circle}**  | **{dotted-circle}** |
-| Development dependencies                                                                     | **{check-circle}**  | **{dotted-circle}** |
-| Dependencies in a lock file committed to your repository                                     | **{check-circle}**  | **{check-circle}** <sup>1</sup> |
-| Binaries built by Go                                                                         | **{dotted-circle}** | **{check-circle}** <sup>2</sup> <sup>3</sup> |
-| Dynamically-linked language-specific dependencies installed by the Operating System          | **{dotted-circle}** | **{check-circle}** <sup>3</sup> |
-| Operating system dependencies                                                                | **{dotted-circle}** | **{check-circle}**  |
-| Language-specific dependencies installed on the operating system (not built by your project) | **{dotted-circle}** | **{check-circle}**  |
-
-1. Lock file must be present in the image to be detected.
-1. Binary file must be present in the image to be detected.
-1. Only when using Trivy
 
 ## Requirements
 

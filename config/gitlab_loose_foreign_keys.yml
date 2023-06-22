@@ -247,6 +247,10 @@ ml_candidates:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_nullify
+namespaces:
+  - table: organizations
+    column: organization_id
+    on_delete: async_nullify
 p_ci_builds_metadata:
   - table: projects
     column: project_id

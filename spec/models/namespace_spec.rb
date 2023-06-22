@@ -15,6 +15,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   let(:repository_storage) { 'default' }
 
   describe 'associations' do
+    it { is_expected.to belong_to :organization }
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many :project_statistics }
     it { is_expected.to belong_to :parent }
@@ -2745,6 +2746,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect(namespace.certificate_based_clusters_enabled?).to be_truthy
         end
       end
+    end
+  end
+
+  context 'with loose foreign key on organization_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:organization) }
+      let!(:model) { create(:namespace, organization: parent) }
     end
   end
 end

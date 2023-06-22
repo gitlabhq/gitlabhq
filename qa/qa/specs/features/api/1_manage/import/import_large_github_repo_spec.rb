@@ -204,6 +204,10 @@ module QA
         end
       end
 
+      before do
+        QA::Support::Helpers::ImportSource.enable('github')
+      end
+
       after do |example|
         next unless defined?(@import_time)
 

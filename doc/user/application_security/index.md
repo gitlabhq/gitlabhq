@@ -82,7 +82,7 @@ Dependency analysis can run:
   image is built - [Container Scanning](container_scanning/index.md).
 
 For more details, see
-[Dependency Scanning compared to Container Scanning](dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning).
+[Dependency Scanning compared to Container Scanning](comparison_dependency_and_container_scanning.md).
 
 Additionally, dependencies in operational container images can be analyzed for vulnerabilities
 on a regular schedule or cadence. For more details, see [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md).
