@@ -863,6 +863,10 @@ GEM
       hana (~> 1.3)
       regexp_parser (~> 2.0)
       uri_template (~> 0.7)
+    jsonb_accessor (1.3.10)
+      activerecord (>= 5.0)
+      activesupport (>= 5.0)
+      pg (>= 0.18.1)
     jsonpath (1.1.2)
       multi_json
     jwt (2.5.0)
@@ -1822,6 +1826,7 @@ DEPENDENCIES
   js_regex (~> 3.8)
   json (~> 2.6.3)
   json_schemer (~> 0.2.18)
+  jsonb_accessor (~> 1.3.10)
   jwt (~> 2.5)
   kaminari (~> 1.2.2)
   kas-grpc (~> 0.2.0)

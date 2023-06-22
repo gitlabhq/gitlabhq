@@ -316,6 +316,8 @@
 {"name":"json","version":"2.6.3","platform":"ruby","checksum":"86aaea16adf346a2b22743d88f8dcceeb1038843989ab93cda44b5176c845459"},
 {"name":"json-jwt","version":"1.15.3","platform":"ruby","checksum":"66db4f14e538a774c15502a5b5b26b1f3e7585481bbb96df490aa74b5c2d6110"},
 {"name":"json_schemer","version":"0.2.18","platform":"ruby","checksum":"3362c21efbefdd12ce994e541a1e7fdb86fd267a6541dd8715e8a580fe3b6be6"},
+{"name":"jsonb_accessor","version":"1.3.10","platform":"java","checksum":"6630ac69dac46457b03e1352178ed3e2d7ba2d8edb99f2e9b64a0e60cda9ed26"},
+{"name":"jsonb_accessor","version":"1.3.10","platform":"ruby","checksum":"670f80a257ae39e3be9233c6a8ef3b03517e06687affe510dfe61237454c58e0"},
 {"name":"jsonpath","version":"1.1.2","platform":"ruby","checksum":"6804124c244d04418218acb85b15c7caa79c592d7d6970195300428458946d3a"},
 {"name":"jwt","version":"2.5.0","platform":"ruby","checksum":"b835fe55287572e1f65128d6c12d3ff7402bb4652c4565bf3ecdcb974db7954d"},
 {"name":"kaminari","version":"1.2.2","platform":"ruby","checksum":"c4076ff9adccc6109408333f87b5c4abbda5e39dc464bd4c66d06d9f73442a3e"},

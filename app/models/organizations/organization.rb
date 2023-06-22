@@ -8,6 +8,8 @@ module Organizations
 
     before_destroy :check_if_default_organization
 
+    has_one :settings, class_name: "OrganizationSetting"
+
     validates :name,
       presence: true,
       length: { maximum: 255 }

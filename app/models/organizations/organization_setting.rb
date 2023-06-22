@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+module Organizations
+  class OrganizationSetting < ApplicationRecord
+    belongs_to :organization
+
+    jsonb_accessor :settings,
+      restricted_visibility_levels: [:integer, { array: true }]
+
+    validates_each :restricted_visibility_levels do |record, attr, value|
+      value&.each do |level|
+        unless Gitlab::VisibilityLevel.options.value?(level)
+          record.errors.add(attr, format(_("'%{level}' is not a valid visibility level"), level: level))
+        end
+      end
+    end
+  end
+end

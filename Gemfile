@@ -566,6 +566,7 @@ gem 'lockbox', '~> 1.1.1'
 gem 'valid_email', '~> 0.1'
 
 # JSON
+gem 'jsonb_accessor', '~> 1.3.10'
 gem 'json', '~> 2.6.3'
 gem 'json_schemer', '~> 0.2.18'
 gem 'oj', '~> 3.13.21'

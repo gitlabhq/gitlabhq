@@ -1,0 +1,5 @@
+mutation retryMrFailedJob($id: CiBuildID!) {
+  jobRetry(input: { id: $id }) {
+    errors
+  }
+}

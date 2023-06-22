@@ -244,6 +244,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     "GeoNodeStatus" => %w[status],
     "Operations::FeatureFlagScope" => %w[strategies],
     "Operations::FeatureFlags::Strategy" => %w[parameters],
+    "Organizations::OrganizationSetting" => %w[settings], # Custom validations
     "Packages::Composer::Metadatum" => %w[composer_json],
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary],

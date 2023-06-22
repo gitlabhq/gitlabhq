@@ -19,12 +19,17 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
           }
           name
           retried
+          retryable
           stage {
             id
             name
           }
           trace {
             htmlSummary
+          }
+          userPermissions {
+            readBuild
+            updateBuild
           }
           webPath
         }

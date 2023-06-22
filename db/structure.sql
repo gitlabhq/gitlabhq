@@ -19235,6 +19235,13 @@ CREATE SEQUENCE operations_user_lists_id_seq
 
 ALTER SEQUENCE operations_user_lists_id_seq OWNED BY operations_user_lists.id;
 
+CREATE TABLE organization_settings (
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    settings jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
 CREATE TABLE organizations (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -27787,6 +27794,9 @@ ALTER TABLE ONLY operations_strategies_user_lists
 
 ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY organization_settings
+    ADD CONSTRAINT organization_settings_pkey PRIMARY KEY (organization_id);
 
 ALTER TABLE ONLY organizations
     ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
@@ -37515,6 +37525,9 @@ ALTER TABLE ONLY boards_epic_board_recent_visits
 
 ALTER TABLE ONLY ci_job_artifacts
     ADD CONSTRAINT fk_rails_c5137cb2c1_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_settings
+    ADD CONSTRAINT fk_rails_c56e4690c0 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_rails_c6df6e6328 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

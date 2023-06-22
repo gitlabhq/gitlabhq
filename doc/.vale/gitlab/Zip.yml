@@ -1,0 +1,15 @@
+---
+# Warning: gitlab.Zip
+#
+# Recommends all instances of something.zip be wrapped in backticks
+# due to the .zip top-level domain
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: existence
+message: "Wrap '%s' in backticks to prevent unintentional links to .zip domain names."
+link: 'https://docs.gitlab.com/ee/development/documentation/styleguide/index.md#backticks-in-markdown'
+nonword: true
+level: error
+ignorecase: true
+tokens:
+  - '\b\w*\.zip'

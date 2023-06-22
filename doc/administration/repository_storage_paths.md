@@ -45,8 +45,8 @@ For more information on:
 
 WARNING:
 The following information is for configuring GitLab to directly access repositories. This
-configuration option is deprecated in favor of using [Gitaly](gitaly/index.md). Gitaly issue
-[1690](https://gitlab.com/gitlab-org/gitaly/-/issues/1690) proposes to remove this configuration option.
+configuration option is deprecated in favor of using [Gitaly](gitaly/index.md).
+[Issue 403318](https://gitlab.com/gitlab-org/gitlab/-/issues/403318) proposes to remove this configuration option.
 
 To configure repository storage paths:
 

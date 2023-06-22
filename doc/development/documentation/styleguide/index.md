@@ -190,6 +190,8 @@ Use backticks for:
 
 - [Code blocks](#code-blocks).
 - Error messages.
+- Commands, parameters, and filenames.
+- Values. For example: "In the **Name** text box, type `test`."
 
 ### Markdown Rules
 

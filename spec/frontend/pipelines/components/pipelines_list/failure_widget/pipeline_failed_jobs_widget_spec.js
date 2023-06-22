@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
-import { GlButton, GlIcon, GlLoadingIcon, GlPopover } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLoadingIcon, GlPopover, GlToast } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,14 +10,17 @@ import { createAlert } from '~/alert';
 import WidgetFailedJobRow from '~/pipelines/components/pipelines_list/failure_widget/widget_failed_job_row.vue';
 import * as utils from '~/pipelines/components/pipelines_list/failure_widget/utils';
 import getPipelineFailedJobs from '~/pipelines/graphql/queries/get_pipeline_failed_jobs.query.graphql';
-import { failedJobsMock } from './mock';
+import { failedJobsMock, failedJobsMock2 } from './mock';
 
 Vue.use(VueApollo);
+Vue.use(GlToast);
+
 jest.mock('~/alert');
 
 describe('PipelineFailedJobsWidget component', () => {
   let wrapper;
   let mockFailedJobsResponse;
+  const showToast = jest.fn();
 
   const defaultProps = {
     pipelineIid: 1,
@@ -42,6 +45,11 @@ describe('PipelineFailedJobsWidget component', () => {
         ...provide,
       },
       apolloProvider: mockApollo,
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
+      },
     });
   };
 
@@ -101,12 +109,13 @@ describe('PipelineFailedJobsWidget component', () => {
       await findFailedJobsButton().vm.$emit('click');
       await waitForPromises();
     });
+
     it('does not renders a loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('renders table column', () => {
-      expect(findAllHeaders()).toHaveLength(3);
+      expect(findAllHeaders()).toHaveLength(4);
     });
 
     it('shows the list of failed jobs', () => {
@@ -139,6 +148,38 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('calls create Alert with the error message and danger variant', () => {
       expect(createAlert).toHaveBeenCalledWith({ message: errorMessage, variant: 'danger' });
+    });
+  });
+
+  describe('when `refetch-jobs` job is fired from the widget', () => {
+    beforeEach(async () => {
+      mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock);
+      mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock2);
+
+      createComponent();
+
+      await findFailedJobsButton().vm.$emit('click');
+      await waitForPromises();
+    });
+
+    it('refetches all failed jobs', async () => {
+      expect(findFailedJobRows()).not.toHaveLength(
+        failedJobsMock2.data.project.pipeline.jobs.nodes.length,
+      );
+
+      await findFailedJobRows().at(0).vm.$emit('job-retried', 'job-name');
+      await waitForPromises();
+
+      expect(findFailedJobRows()).toHaveLength(
+        failedJobsMock2.data.project.pipeline.jobs.nodes.length,
+      );
+    });
+
+    it('shows a toast message', async () => {
+      await findFailedJobRows().at(0).vm.$emit('job-retried', 'job-name');
+      await waitForPromises();
+
+      expect(showToast).toHaveBeenCalledWith('job-name job is being retried');
     });
   });
 });

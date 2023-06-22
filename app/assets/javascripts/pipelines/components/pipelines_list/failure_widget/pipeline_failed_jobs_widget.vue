@@ -9,11 +9,12 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import getPipelineFailedJobs from '../../../graphql/queries/get_pipeline_failed_jobs.query.graphql';
 import WidgetFailedJobRow from './widget_failed_job_row.vue';
 import { sortJobsByStatus } from './utils';
 
+const JOB_ACTION_HEADER = __('Actions');
 const JOB_ID_HEADER = __('Job ID');
 const JOB_NAME_HEADER = __('Job name');
 const STAGE_HEADER = __('Stage');
@@ -44,6 +45,7 @@ export default {
     return {
       failedJobs: [],
       isExpanded: false,
+      isLoadingMore: false,
     };
   },
   apollo: {
@@ -77,11 +79,22 @@ export default {
     iconName() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
+    isInitialLoading() {
+      return this.isLoading && !this.isLoadingMore;
+    },
     isLoading() {
       return this.$apollo.queries.failedJobs.loading;
     },
   },
   methods: {
+    async refetchJobs(jobName) {
+      this.isLoadingMore = true;
+
+      await this.$apollo.queries.failedJobs.refetch();
+
+      this.isLoadingMore = false;
+      this.$toast.show(sprintf(this.$options.i18n.retriedJobsSuccess, { jobName }));
+    },
     toggleWidget() {
       this.isExpanded = !this.isExpanded;
     },
@@ -90,6 +103,7 @@ export default {
     { text: JOB_NAME_HEADER, class: 'col-6' },
     { text: STAGE_HEADER, class: 'col-2' },
     { text: JOB_ID_HEADER, class: 'col-2' },
+    { text: JOB_ACTION_HEADER, class: 'col-2' },
   ],
   i18n: {
     additionalInfoPopover: s__(
@@ -98,6 +112,7 @@ export default {
     additionalInfoTitle: __('Limitation on this view'),
     fetchError: __('There was a problem fetching failed jobs'),
     showFailedJobs: __('Show failed jobs'),
+    retriedJobsSuccess: __('%{jobName} job is being retried'),
   },
 };
 </script>
@@ -118,7 +133,7 @@ export default {
         </slot>
       </gl-popover>
     </gl-button>
-    <gl-loading-icon v-if="isLoading" />
+    <gl-loading-icon v-if="isInitialLoading" />
     <gl-collapse
       v-else
       v-model="isExpanded"
@@ -137,7 +152,12 @@ export default {
           </div>
         </div>
       </div>
-      <widget-failed-job-row v-for="job in failedJobs" :key="job.id" :job="job" />
+      <widget-failed-job-row
+        v-for="job in failedJobs"
+        :key="job.id"
+        :job="job"
+        @job-retried="refetchJobs"
+      />
     </gl-collapse>
   </div>
 </template>

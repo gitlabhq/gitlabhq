@@ -110,6 +110,8 @@ When a user submits an issue through Service Desk, GitLab sends a **thank you em
 
 To create a custom email template, in the `.gitlab/service_desk_templates/`
 directory in your repository, create a file named `thank_you.md`.
+[GitLab Flavored Markdown](../markdown.md) and
+[some HTML tags](../markdown.md#inline-html) are supported.
 
 You can use these placeholders to be automatically replaced in each email:
 
@@ -135,6 +137,8 @@ When a user-submitted issue receives a new comment, GitLab sends a **new note em
 
 To create a custom email template, in the `.gitlab/service_desk_templates/`
 directory in your repository, create a file named `new_note.md`.
+[GitLab Flavored Markdown](../markdown.md) and
+[some HTML tags](../markdown.md#inline-html) are supported.
 
 You can use these placeholders to be automatically replaced in each email:
 

@@ -805,6 +805,9 @@ msgstr ""
 msgid "%{itemsCount} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
+msgid "%{jobName} job is being retried"
+msgstr ""
+
 msgid "%{jobs} Jobs"
 msgstr ""
 
@@ -26356,6 +26359,12 @@ msgstr ""
 msgid "Job|We could not find this element"
 msgstr ""
 
+msgid "Job|You do not have permission to read this job's log"
+msgstr ""
+
+msgid "Job|You do not have permission to retry this job"
+msgstr ""
+
 msgid "Job|allowed to fail"
 msgstr ""
 
@@ -46654,6 +46663,9 @@ msgid "There was an error while fetching value stream analytics data."
 msgstr ""
 
 msgid "There was an error while fetching value stream analytics duration data."
+msgstr ""
+
+msgid "There was an error while retrying this job"
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
