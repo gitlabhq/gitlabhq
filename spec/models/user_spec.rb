@@ -186,6 +186,15 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
 
     it do
+      is_expected.to have_many(:organization_users).class_name('Organizations::OrganizationUser').inverse_of(:user)
+    end
+
+    it do
+      is_expected.to have_many(:organizations)
+                       .through(:organization_users).class_name('Organizations::Organization').inverse_of(:users)
+    end
+
+    it do
       is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
     end
 

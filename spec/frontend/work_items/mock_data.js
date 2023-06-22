@@ -1982,6 +1982,9 @@ export const mockWorkItemNotesResponse = {
                         webUrl: 'http://127.0.0.1:3000/root',
                         __typename: 'UserCore',
                       },
+                      awardEmoji: {
+                        nodes: [],
+                      },
                       __typename: 'Note',
                     },
                   ],
@@ -2093,6 +2096,9 @@ export const mockWorkItemNotesByIidResponse = {
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -2145,6 +2151,9 @@ export const mockWorkItemNotesByIidResponse = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2199,6 +2208,9 @@ export const mockWorkItemNotesByIidResponse = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2312,6 +2324,9 @@ export const mockMoreWorkItemNotesResponse = {
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -2365,6 +2380,9 @@ export const mockMoreWorkItemNotesResponse = {
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -2415,6 +2433,9 @@ export const mockMoreWorkItemNotesResponse = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2483,6 +2504,9 @@ export const createWorkItemNoteResponse = {
                   repositionNote: true,
                   __typename: 'NotePermissions',
                 },
+                awardEmoji: {
+                  nodes: [],
+                },
                 __typename: 'Note',
               },
             ],
@@ -2533,6 +2557,9 @@ export const mockWorkItemCommentNote = {
     username: 'root',
     webUrl: 'http://127.0.0.1:3000/root',
     __typename: 'UserCore',
+  },
+  awardEmoji: {
+    nodes: [mockAwardEmojiThumbsDown],
   },
 };
 
@@ -2633,6 +2660,9 @@ export const mockWorkItemNotesResponseWithComments = {
                               repositionNote: true,
                               __typename: 'NotePermissions',
                             },
+                            awardEmoji: {
+                              nodes: [mockAwardEmojiThumbsDown],
+                            },
                             __typename: 'Note',
                           },
                           {
@@ -2672,6 +2702,9 @@ export const mockWorkItemNotesResponseWithComments = {
                               resolveNote: true,
                               repositionNote: true,
                               __typename: 'NotePermissions',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2720,6 +2753,9 @@ export const mockWorkItemNotesResponseWithComments = {
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
                               __typename: 'UserCore',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },
@@ -2797,6 +2833,9 @@ export const workItemNotesCreateSubscriptionResponse = {
                 webUrl: 'http://127.0.0.1:3000/root',
                 __typename: 'UserCore',
               },
+              awardEmoji: {
+                nodes: [],
+              },
               __typename: 'Note',
             },
           ],
@@ -2823,6 +2862,9 @@ export const workItemNotesCreateSubscriptionResponse = {
         username: 'root',
         webUrl: 'http://127.0.0.1:3000/root',
         __typename: 'UserCore',
+      },
+      awardEmoji: {
+        nodes: [],
       },
       __typename: 'Note',
     },
@@ -2868,6 +2910,9 @@ export const workItemNotesUpdateSubscriptionResponse = {
         username: 'root',
         webUrl: 'http://127.0.0.1:3000/root',
         __typename: 'UserCore',
+      },
+      awardEmoji: {
+        nodes: [],
       },
       __typename: 'Note',
     },
@@ -3028,6 +3073,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                               },
                               __typename: 'SystemNoteMetadata',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -3091,6 +3139,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                               },
                               __typename: 'SystemNoteMetadata',
                             },
+                            awardEmoji: {
+                              nodes: [],
+                            },
                             __typename: 'Note',
                           },
                         ],
@@ -3153,6 +3204,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                                 __typename: 'DescriptionVersion',
                               },
                               __typename: 'SystemNoteMetadata',
+                            },
+                            awardEmoji: {
+                              nodes: [],
                             },
                             __typename: 'Note',
                           },

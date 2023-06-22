@@ -1,6 +1,7 @@
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import { debounce } from 'lodash';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
+import Tracking from '~/tracking';
 import { sidebarState } from './constants';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'page-with-super-sidebar-collapsed';
@@ -50,7 +51,15 @@ export const bindSuperSidebarCollapsedEvents = (forceDesktopExpandedSidebar = fa
     const widthChanged = previousWindowWidth !== newWindowWidth;
 
     if (widthChanged) {
+      const collapsedBeforeResize = sidebarState.isCollapsed;
       initSuperSidebarCollapsedState(forceDesktopExpandedSidebar);
+      const collapsedAfterResize = sidebarState.isCollapsed;
+      if (!collapsedBeforeResize && collapsedAfterResize) {
+        Tracking.event(undefined, 'nav_hide', {
+          label: 'browser_resize',
+          property: 'nav_sidebar',
+        });
+      }
     }
     previousWindowWidth = newWindowWidth;
   }, 100);

@@ -40,8 +40,6 @@ describe('Chunk component', () => {
 
   describe('rendering', () => {
     it('does not register window.requestIdleCallback for the first chunk, renders content immediately', () => {
-      jest.clearAllMocks();
-
       expect(window.requestIdleCallback).not.toHaveBeenCalled();
       expect(findContent().text()).toBe(CHUNK_1.highlightedContent);
     });

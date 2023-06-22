@@ -113,11 +113,6 @@ const createComponent = (customConfig = {}, createState = true) => {
       GlSprintf,
     },
     apolloProvider: createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]),
-    provide: {
-      glFeatures: {
-        autoMergeLabelsMrWidget: false,
-      },
-    },
   });
 };
 
@@ -144,6 +139,7 @@ const findDeleteSourceBranchCheckbox = () =>
 const triggerApprovalUpdated = () => eventHub.$emit('ApprovalUpdated');
 const triggerEditCommitInput = () =>
   wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
+const findMergeHelperText = () => wrapper.find('[data-testid="auto-merge-helper-text"]');
 
 describe('ReadyToMerge', () => {
   beforeEach(() => {
@@ -185,26 +181,6 @@ describe('ReadyToMerge', () => {
         expect(wrapper.vm.status).toEqual('failed');
       });
     });
-
-    describe('status icon', () => {
-      it('defaults to tick icon', () => {
-        createComponent({ mr: { mergeable: true } });
-
-        expect(wrapper.vm.iconClass).toEqual('success');
-      });
-
-      it('shows tick for success status', () => {
-        createComponent({ mr: { pipeline: { status: 'SUCCESS' }, mergeable: true } });
-
-        expect(wrapper.vm.iconClass).toEqual('success');
-      });
-
-      it('shows tick for pending status', () => {
-        createComponent({ mr: { pipeline: { active: true }, mergeable: true } });
-
-        expect(wrapper.vm.iconClass).toEqual('success');
-      });
-    });
   });
 
   describe('merge button text', () => {
@@ -214,18 +190,11 @@ describe('ReadyToMerge', () => {
       expect(findMergeButton().text()).toBe('Merge');
     });
 
-    it('should return "Merge when pipeline succeeds" when the MWPS auto merge strategy is available', () => {
-      createComponent({
-        mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY },
-      });
-
-      expect(findMergeButton().text()).toBe('Merge when pipeline succeeds');
-    });
-
-    it('should return Merge when pipeline succeeds', () => {
+    it('should return Set to auto-merge in the button and Merge when pipeline succeeds in the helper text', () => {
       createComponent({ mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY } });
 
-      expect(findMergeButton().text()).toBe('Merge when pipeline succeeds');
+      expect(findMergeButton().text()).toBe('Set to auto-merge');
+      expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
     });
   });
 

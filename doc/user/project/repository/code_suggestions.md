@@ -77,7 +77,6 @@ Prerequisites:
 
 - Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
 - Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
-- You must be a GitLab team member.
 
 Code Suggestions work automatically in the GitLab WebIDE if the prerequisites are met.
 
@@ -182,7 +181,6 @@ Prerequisites:
 
 - Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
 - Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
-- You are a GitLab team member.
 
 You should check that AI assisted code suggestions in the
 [GitLab WebIDE](../../project/web_ide/index.md) are enabled:

@@ -87,6 +87,46 @@ export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData) => 
   });
 };
 
+function updateNoteAwardEmojiCache(currentNotes, note, callback) {
+  if (!note.awardEmoji) {
+    return currentNotes;
+  }
+  const { awardEmoji } = note;
+
+  return produce(currentNotes, (draftData) => {
+    const notesWidget = getNotesWidgetFromSourceData(draftData);
+
+    if (!notesWidget.discussions) {
+      return;
+    }
+
+    notesWidget.discussions.nodes.forEach((discussion) => {
+      discussion.notes.nodes.forEach((n) => {
+        if (n.id === note.id) {
+          callback(n, awardEmoji);
+        }
+      });
+    });
+
+    updateNotesWidgetDataInDraftData(draftData, notesWidget);
+  });
+}
+
+export const updateCacheAfterAddingAwardEmojiToNote = (currentNotes, note) => {
+  return updateNoteAwardEmojiCache(currentNotes, note, (n, awardEmoji) => {
+    n.awardEmoji.nodes.push(awardEmoji);
+  });
+};
+
+export const updateCacheAfterRemovingAwardEmojiFromNote = (currentNotes, note) => {
+  return updateNoteAwardEmojiCache(currentNotes, note, (n, awardEmoji) => {
+    // eslint-disable-next-line no-param-reassign
+    n.awardEmoji.nodes = n.awardEmoji.nodes.filter((emoji) => {
+      return emoji.name !== awardEmoji.name || emoji.user.id !== awardEmoji.user.id;
+    });
+  });
+};
+
 export const addHierarchyChild = (cache, fullPath, iid, workItem) => {
   const queryArgs = { query: workItemByIidQuery, variables: { fullPath, iid } };
   const sourceData = cache.readQuery(queryArgs);

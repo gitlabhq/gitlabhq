@@ -7,6 +7,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { JS_TOGGLE_COLLAPSE_CLASS, JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager.js', () => ({
   toggleSuperSidebarCollapsed: jest.fn(),
@@ -61,7 +62,7 @@ describe('SuperSidebarToggle component', () => {
     });
   });
 
-  describe('toolip', () => {
+  describe('tooltip', () => {
     it('displays collapse when expanded', () => {
       createWrapper();
       expect(getTooltip().title).toBe(__('Hide sidebar'));
@@ -74,15 +75,19 @@ describe('SuperSidebarToggle component', () => {
   });
 
   describe('toggle', () => {
+    let trackingSpy = null;
+
     beforeEach(() => {
       setHTMLFixture(`
         <button class="${JS_TOGGLE_COLLAPSE_CLASS}">Hide</button>
         <button class="${JS_TOGGLE_EXPAND_CLASS}">Show</button>
       `);
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
     afterEach(() => {
       resetHTMLFixture();
+      unmockTracking();
     });
 
     it('collapses the sidebar and focuses the other toggle', async () => {
@@ -93,6 +98,10 @@ describe('SuperSidebarToggle component', () => {
       expect(document.activeElement).toEqual(
         document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`),
       );
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_hide', {
+        label: 'nav_toggle',
+        property: 'nav_sidebar',
+      });
     });
 
     it('expands the sidebar and focuses the other toggle', async () => {
@@ -101,6 +110,10 @@ describe('SuperSidebarToggle component', () => {
       await nextTick();
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
       expect(document.activeElement).toEqual(document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`));
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_show', {
+        label: 'nav_toggle',
+        property: 'nav_sidebar',
+      });
     });
   });
 });

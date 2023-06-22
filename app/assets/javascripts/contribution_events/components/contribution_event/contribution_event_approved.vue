@@ -1,8 +1,5 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import TargetLink from '../target_link.vue';
-import ResourceParentLink from '../resource_parent_link.vue';
 import ContributionEventBase from './contribution_event_base.vue';
 
 export default {
@@ -12,7 +9,7 @@ export default {
       'ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}.',
     ),
   },
-  components: { ContributionEventBase, GlSprintf, TargetLink, ResourceParentLink },
+  components: { ContributionEventBase },
   props: {
     /**
      * Expected format
@@ -52,14 +49,10 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base :event="event" icon-name="approval-solid" icon-class="gl-text-green-500">
-    <gl-sprintf :message="$options.i18n.message">
-      <template #targetLink>
-        <target-link :event="event" />
-      </template>
-      <template #resourceParentLink>
-        <resource-parent-link :event="event" />
-      </template>
-    </gl-sprintf>
-  </contribution-event-base>
+  <contribution-event-base
+    :event="event"
+    :message="$options.i18n.message"
+    icon-name="approval-solid"
+    icon-class="gl-text-green-500"
+  />
 </template>

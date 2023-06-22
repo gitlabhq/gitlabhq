@@ -104,7 +104,6 @@ describe('SourceBranchDropdown', () => {
         it('triggers a refetch', async () => {
           createComponent({ mountFn: mount, props: { selectedProject: mockSelectedProject } });
           await waitForPromises();
-          jest.clearAllMocks();
 
           const mockSearchTerm = 'mai';
           await findListbox().vm.$emit('search', mockSearchTerm);

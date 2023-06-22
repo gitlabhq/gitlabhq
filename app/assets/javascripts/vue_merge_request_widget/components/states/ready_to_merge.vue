@@ -27,7 +27,6 @@ import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import {
   AUTO_MERGE_STRATEGIES,
-  WARNING,
   MT_MERGE_STRATEGY,
   PIPELINE_FAILED_STATE,
   STATE_MACHINE,
@@ -42,7 +41,6 @@ import CommitMessageDropdown from './commit_message_dropdown.vue';
 import SquashBeforeMerge from './squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from './merge_failed_pipeline_confirmation_dialog.vue';
 
-const PIPELINE_RUNNING_STATE = 'running';
 const PIPELINE_PENDING_STATE = 'pending';
 const PIPELINE_SUCCESS_STATE = 'success';
 
@@ -133,8 +131,6 @@ export default {
     GlFormCheckbox,
     GlSkeletonLoader,
     MergeFailedPipelineConfirmationDialog,
-    MergeTrainHelperIcon: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_helper_icon.vue'),
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -246,30 +242,11 @@ export default {
 
       return PIPELINE_SUCCESS_STATE;
     },
-    iconClass() {
-      if (this.shouldRenderMergeTrainHelperIcon && !this.mr.preventMerge) {
-        return PIPELINE_RUNNING_STATE;
-      }
-
-      if (
-        this.status === PIPELINE_FAILED_STATE ||
-        !this.commitMessage.length ||
-        !this.isMergeAllowed ||
-        this.mr.preventMerge
-      ) {
-        return WARNING;
-      }
-
-      return PIPELINE_SUCCESS_STATE;
-    },
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return __('Merge in progress');
       }
-      if (this.isAutoMergeAvailable && !this.autoMergeLabelsEnabled) {
-        return this.autoMergeTextLegacy;
-      }
-      if (this.isAutoMergeAvailable && this.autoMergeLabelsEnabled) {
+      if (this.isAutoMergeAvailable) {
         return this.autoMergeText;
       }
 
@@ -278,9 +255,6 @@ export default {
       }
 
       return __('Merge');
-    },
-    autoMergeLabelsEnabled() {
-      return window.gon?.features?.autoMergeLabelsMrWidget;
     },
     showAutoMergeHelperText() {
       return (
@@ -708,18 +682,19 @@ export default {
                   @cancel="isPipelineFailedModalVisibleNormalMerge = false"
                 />
               </gl-button-group>
-              <merge-train-helper-icon
-                v-if="shouldRenderMergeTrainHelperIcon && !autoMergeLabelsEnabled"
-                class="gl-mx-3"
-              />
-              <template v-if="showAutoMergeHelperText && autoMergeLabelsEnabled">
+              <template v-if="showAutoMergeHelperText">
                 <div
                   class="gl-ml-4 gl-text-gray-500 gl-font-sm"
                   data-qa-selector="auto_merge_helper_text"
+                  data-testid="auto-merge-helper-text"
                 >
                   {{ autoMergeHelperText }}
                 </div>
-                <help-popover class="gl-ml-2" :options="autoMergeHelpPopoverOptions">
+                <help-popover
+                  class="gl-ml-2"
+                  :options="autoMergeHelpPopoverOptions"
+                  data-testid="auto-merge-helper-text-icon"
+                >
                   <gl-sprintf :message="autoMergePopoverSettings.bodyText">
                     <template #link="{ content }">
                       <gl-link

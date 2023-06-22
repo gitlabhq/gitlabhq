@@ -5,7 +5,6 @@ import initHeaderSearch, { eventHandler, cleanEventListeners } from '~/header_se
 describe('Header Search EventListener', () => {
   beforeEach(() => {
     jest.resetModules();
-    jest.restoreAllMocks();
     setHTMLFixture(`
       <div class="js-header-content">
         <div class="header-search-form" id="js-header-search" data-autocomplete-path="/search/autocomplete" data-issues-path="/dashboard/issues" data-mr-path="/dashboard/merge_requests" data-search-context="{}" data-search-path="/search">
@@ -16,7 +15,6 @@ describe('Header Search EventListener', () => {
 
   afterEach(() => {
     resetHTMLFixture();
-    jest.clearAllMocks();
   });
 
   it('attached event listener', () => {

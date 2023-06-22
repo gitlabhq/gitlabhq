@@ -90,10 +90,6 @@ describe('BoardSettingsSidebar', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findRemoveButton = () => wrapper.findComponent(GlButton);
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   it('finds a MountingPortal component', () => {
     createComponent();
 

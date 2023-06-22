@@ -63,21 +63,6 @@ If you need it, explain why by filling out [the survey](https://docs.google.com/
 
 ## Supported languages and package managers
 
-Dependency Scanning automatically detects the languages used in the repository. All analyzers
-matching the detected languages are run. There is usually no need to customize the selection of
-analyzers. We recommend not specifying the analyzers so you automatically use the full selection
-for best coverage, avoiding the need to make adjustments when there are deprecations or removals.
-However, you can override the selection using the variable `DS_EXCLUDED_ANALYZERS`.
-
-The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) and searches a
-maximum of two directory levels from the repository's root. For example, the
-`gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
-`api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is `api/v1/client/Gemfile`.
-
-For Java and Python, when a supported dependency file is detected, Dependency Scanning attempts to build the project and execute some Java or Python commands to get the list of dependencies. For all other projects, the lock file is parsed to obtain the list of dependencies without needing to build the project first.
-
-When a supported dependency file is detected, all dependencies, including transitive dependencies are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
-
 The following languages and dependency managers are supported:
 
 <style>
@@ -302,6 +287,40 @@ table.supported-languages ul {
   </li>
 </ol>
 <!-- markdownlint-enable MD044 -->
+
+## Dependency detection
+
+Dependency Scanning automatically detects the languages used in the repository. All analyzers
+matching the detected languages are run. There is usually no need to customize the selection of
+analyzers. We recommend not specifying the analyzers so you automatically use the full selection for
+best coverage, avoiding the need to make adjustments when there are deprecations or removals.
+However, you can override the selection using the variable `DS_EXCLUDED_ANALYZERS`.
+
+The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) and searches a
+maximum of two directory levels from the repository's root. For example, the
+`gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
+`api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is
+`api/v1/client/Gemfile`.
+
+For Java and Python, when a supported dependency file is detected, Dependency Scanning attempts to
+build the project and execute some Java or Python commands to get the list of dependencies. For all
+other projects, the lock file is parsed to obtain the list of dependencies without needing to build
+the project first.
+
+When a supported dependency file is detected, all dependencies, including transitive dependencies
+are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
+
+### Dependency analyzers
+
+Dependency Scanning supports the following official analyzers:
+
+- [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
+- [`gemnasium-maven`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven)
+- [`gemnasium-python`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python)
+
+The analyzers are published as Docker images, which Dependency Scanning uses
+to launch dedicated containers for each analysis. You can also integrate a custom
+[security scanner](../../../development/integrations/secure.md).
 
 ### How analyzers obtain dependency information
 
@@ -611,12 +630,12 @@ The following variables allow configuration of global dependency scanning settin
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
-| `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
+| `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](#dependency-analyzers). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10.) Automatically set to `"-fips"` when FIPS mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.) |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
-| `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
-| `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1. Default: `info`. |
+| `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
+| `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info` (default), `debug`. |
 
 #### Configuring specific analyzers used by dependency scanning
 

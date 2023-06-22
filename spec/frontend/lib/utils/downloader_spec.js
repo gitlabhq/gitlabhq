@@ -8,10 +8,6 @@ describe('Downloader', () => {
     jest.spyOn(document, 'createElement').mockImplementation(() => a);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('when inline file content is provided', () => {
     const fileData = 'inline content';
     const fileName = 'test.csv';

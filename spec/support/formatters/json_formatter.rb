@@ -74,7 +74,8 @@ module Support
           product_group: example.metadata[:product_group],
           feature_category: example.metadata[:feature_category],
           ci_job_url: ENV['CI_JOB_URL'],
-          retry_attempts: example.metadata[:retry_attempts]
+          retry_attempts: example.metadata[:retry_attempts],
+          level: example.metadata[:level]
         }
       end
 

@@ -141,10 +141,6 @@ describe('Pipeline Wizard - Commit Page', () => {
       it('emits a done event', () => {
         expect(wrapper.emitted().done.length).toBe(1);
       });
-
-      afterEach(() => {
-        jest.clearAllMocks();
-      });
     });
 
     describe('failed commit', () => {
@@ -166,10 +162,6 @@ describe('Pipeline Wizard - Commit Page', () => {
 
       it('will not emit a done event', () => {
         expect(wrapper.emitted().done?.length).toBeUndefined();
-      });
-
-      afterEach(() => {
-        jest.clearAllMocks();
       });
     });
   });

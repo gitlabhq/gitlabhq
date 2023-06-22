@@ -19,6 +19,7 @@ import {
   isCollapsed,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import { stubComponent } from 'helpers/stub_component';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { sidebarData as mockSidebarData } from '../mock_data';
 
 const initialSidebarState = { ...sidebarState };
@@ -49,6 +50,7 @@ describe('SuperSidebar component', () => {
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
+  let trackingSpy = null;
 
   const createWrapper = ({
     provide = {},
@@ -77,6 +79,11 @@ describe('SuperSidebar component', () => {
 
   beforeEach(() => {
     Object.assign(sidebarState, initialSidebarState);
+    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
+  });
+
+  afterEach(() => {
+    unmockTracking();
   });
 
   describe('default', () => {
@@ -143,12 +150,20 @@ describe('SuperSidebar component', () => {
 
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(1);
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(true, true);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_hide', {
+        label: 'nav_toggle_keyboard_shortcut',
+        property: 'nav_sidebar',
+      });
 
       isCollapsed.mockReturnValue(true);
       Mousetrap.trigger('mod+\\');
 
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(2);
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_show', {
+        label: 'nav_toggle_keyboard_shortcut',
+        property: 'nav_sidebar',
+      });
 
       jest.spyOn(Mousetrap, 'unbind');
 

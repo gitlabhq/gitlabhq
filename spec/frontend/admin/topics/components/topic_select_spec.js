@@ -58,10 +58,6 @@ describe('TopicSelect', () => {
     });
   }
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('mounts', () => {
     createComponent();
 

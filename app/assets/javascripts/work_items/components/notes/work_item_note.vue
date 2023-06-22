@@ -11,6 +11,7 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import EditedAt from '~/issues/show/components/edited.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
@@ -18,10 +19,12 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import updateWorkItemNoteMutation from '../../graphql/notes/update_work_item_note.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WorkItemCommentForm from './work_item_comment_form.vue';
+import WorkItemNoteAwardsList from './work_item_note_awards_list.vue';
 
 export default {
   name: 'WorkItemNoteThread',
   components: {
+    WorkItemNoteAwardsList,
     TimelineEntryItem,
     NoteBody,
     NoteHeader,
@@ -31,7 +34,7 @@ export default {
     WorkItemCommentForm,
     EditedAt,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: ['fullPath'],
   props: {
     workItemId: {
@@ -323,6 +326,8 @@ export default {
           <div class="gl-display-inline-flex">
             <note-actions
               :show-award-emoji="hasAwardEmojiPermission"
+              :work-item-iid="workItemIid"
+              :note="note"
               :note-url="noteUrl"
               :show-reply="showReply"
               :show-edit="hasAdminPermission"
@@ -354,6 +359,12 @@ export default {
           :updated-by-name="lastEditedBy.name"
           :updated-by-path="lastEditedBy.webPath"
           :class="isFirstNote ? 'gl-pl-3' : 'gl-pl-8'"
+        />
+        <work-item-note-awards-list
+          v-if="glFeatures.workItemsMvc2"
+          :note="note"
+          :work-item-iid="workItemIid"
+          :is-modal="isModal"
         />
       </div>
     </div>

@@ -111,7 +111,6 @@ describe('Board card component', () => {
 
   afterEach(() => {
     store = null;
-    jest.clearAllMocks();
   });
 
   it('renders issue title', () => {

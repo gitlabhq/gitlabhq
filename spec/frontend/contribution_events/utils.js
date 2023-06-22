@@ -1,3 +1,4 @@
+import events from 'test_fixtures/controller/users/activity.json';
 import {
   EVENT_TYPE_APPROVED,
   EVENT_TYPE_EXPIRED,
@@ -5,11 +6,12 @@ import {
   EVENT_TYPE_LEFT,
 } from '~/contribution_events/constants';
 
-export const eventApproved = (events) =>
-  events.find((event) => event.action === EVENT_TYPE_APPROVED);
+const findEventByAction = (action) => events.find((event) => event.action === action);
 
-export const eventExpired = (events) => events.find((event) => event.action === EVENT_TYPE_EXPIRED);
+export const eventApproved = () => findEventByAction(EVENT_TYPE_APPROVED);
 
-export const eventJoined = (events) => events.find((event) => event.action === EVENT_TYPE_JOINED);
+export const eventExpired = () => findEventByAction(EVENT_TYPE_EXPIRED);
 
-export const eventLeft = (events) => events.find((event) => event.action === EVENT_TYPE_LEFT);
+export const eventJoined = () => findEventByAction(EVENT_TYPE_JOINED);
+
+export const eventLeft = () => findEventByAction(EVENT_TYPE_LEFT);

@@ -18,5 +18,7 @@ export default {
 </script>
 
 <template>
-  <gl-link :href="resourceParent.web_url">{{ resourceParent.full_name }}</gl-link>
+  <gl-link v-if="resourceParent" :href="resourceParent.web_url">{{
+    resourceParent.full_name
+  }}</gl-link>
 </template>

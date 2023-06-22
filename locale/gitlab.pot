@@ -18672,6 +18672,9 @@ msgstr ""
 msgid "Failed to add a resource link"
 msgstr ""
 
+msgid "Failed to add emoji. Please try again"
+msgstr ""
+
 msgid "Failed to apply commands."
 msgstr ""
 
@@ -18852,6 +18855,9 @@ msgid "Failed to remove a Zoom meeting"
 msgstr ""
 
 msgid "Failed to remove a to-do item for the design."
+msgstr ""
+
+msgid "Failed to remove emoji. Please try again"
 msgstr ""
 
 msgid "Failed to remove mirror."
@@ -44088,9 +44094,6 @@ msgstr ""
 msgid "Start merge train"
 msgstr ""
 
-msgid "Start merge train when pipeline succeeds"
-msgstr ""
-
 msgid "Start merge train..."
 msgstr ""
 
@@ -51938,9 +51941,6 @@ msgstr ""
 msgid "WorkItem|Existing task"
 msgstr ""
 
-msgid "WorkItem|Failed to award emoji"
-msgstr ""
-
 msgid "WorkItem|Health status"
 msgstr ""
 
@@ -54806,9 +54806,6 @@ msgstr ""
 msgid "mrWidget|%{rules} invalid rules have been approved automatically"
 msgstr ""
 
-msgid "mrWidget|A merge train is a queued list of merge requests waiting to be merged into the target branch. The changes in each merge request are combined with the changes in earlier merge requests and tested before merge."
-msgstr ""
-
 msgid "mrWidget|A new merge train has started and this merge request is the first of the queue."
 msgstr ""
 
@@ -54930,9 +54927,6 @@ msgstr ""
 msgid "mrWidget|Merged by"
 msgstr ""
 
-msgid "mrWidget|More information"
-msgstr ""
-
 msgid "mrWidget|Please restore it or use a different %{type} branch."
 msgstr ""
 
@@ -55003,9 +54997,6 @@ msgid "mrWidget|To change this default message, edit the template for merge comm
 msgstr ""
 
 msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "mrWidget|What is a merge train?"
 msgstr ""
 
 msgid "mrWidget|Your merge request is almost ready!"

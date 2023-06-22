@@ -12,8 +12,22 @@ export default {
     SafeHtml,
   },
   mixins: [ViewerMixin],
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
   mounted() {
-    handleBlobRichViewer(this.$refs.content, this.type);
+    window.requestIdleCallback(async () => {
+      /**
+       * Rendering Markdown usually takes long due to the amount of HTML being parsed.
+       * This ensures that content is loaded only when the browser goes into idle.
+       * More details here: https://gitlab.com/gitlab-org/gitlab/-/issues/331448
+       * */
+      this.isLoading = false;
+      await this.$nextTick();
+      handleBlobRichViewer(this.$refs.content, this.type);
+    });
   },
   safeHtmlConfig: {
     ADD_TAGS: ['gl-emoji', 'copy-code'],
@@ -22,6 +36,7 @@ export default {
 </script>
 <template>
   <markdown-field-view
+    v-if="!isLoading"
     ref="content"
     v-safe-html:[$options.safeHtmlConfig]="richViewer || content"
   />

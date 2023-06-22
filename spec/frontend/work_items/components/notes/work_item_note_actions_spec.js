@@ -5,8 +5,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import { stubComponent } from 'helpers/stub_component';
-import EmojiPicker from '~/emoji/components/picker.vue';
-import waitForPromises from 'helpers/wait_for_promises';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import WorkItemNoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
 import addAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
@@ -36,11 +34,6 @@ describe('Work Item Note Actions', () => {
     },
   });
 
-  const EmojiPickerStub = {
-    props: EmojiPicker.props,
-    template: '<div></div>',
-  };
-
   const createComponent = ({
     showReply = true,
     showEdit = true,
@@ -57,6 +50,8 @@ describe('Work Item Note Actions', () => {
       propsData: {
         showReply,
         showEdit,
+        workItemIid: '1',
+        note: {},
         noteId,
         showAwardEmoji,
         showAssignUnassign,
@@ -68,12 +63,12 @@ describe('Work Item Note Actions', () => {
         projectName,
       },
       provide: {
+        fullPath: 'gitlab-org',
         glFeatures: {
           workItemsMvc2: true,
         },
       },
       stubs: {
-        EmojiPicker: EmojiPickerStub,
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: { close: showSpy },
         }),
@@ -135,22 +130,6 @@ describe('Work Item Note Actions', () => {
       createComponent({ showAwardEmoji: false });
 
       expect(findEmojiButton().exists()).toBe(false);
-    });
-
-    it('commits mutation on click', async () => {
-      const awardName = 'carrot';
-
-      createComponent();
-
-      findEmojiButton().vm.$emit('click', awardName);
-
-      await waitForPromises();
-
-      expect(findEmojiButton().emitted('errors')).toEqual(undefined);
-      expect(addEmojiMutationResolver).toHaveBeenCalledWith({
-        awardableId: noteId,
-        name: awardName,
-      });
     });
   });
 

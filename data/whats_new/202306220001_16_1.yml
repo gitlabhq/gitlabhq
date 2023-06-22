@@ -1,0 +1,98 @@
+- name: All new navigation experience
+  description: |  # Do not modify this line, instead modify the lines below.
+    GitLab 16.1 features an all-new navigation experience! We've defaulted this experience to on for all users. To get started, go to your avatar in the top right of the UI and turn on the **New navigation** toggle.
+
+    The new navigation was designed to solve three key areas of feedback: navigating GitLab can be overwhelming, it can be hard to pick up where you left off, and you can't customize the navigation.
+
+    The new navigation includes a streamlined and improved left sidebar, where you can:
+
+    * Pin 📌 frequently accessed items.
+    * Completely hide the sidebar and "peek" it back into view.
+    * Easily switch contexts, search, and view subsets of data with the new **Your Work** and **Explore** options.
+    * Scan more quickly because of fewer top-level menu items.
+
+    We are proud of the new navigation and can't wait to see what you think. Review a [list of what's changed](https://gitlab.com/groups/gitlab-org/-/epics/9044#whats-different) and read our blog posts about the navigation [vision](https://about.gitlab.com/blog/2023/05/01/gitlab-product-navigation/) and [design](https://about.gitlab.com/blog/2023/05/15/overhauling-the-navigation-is-like-building-a-dream-home/).
+
+    Please try the new navigation and let us know about your experience in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409005). We are already [addressing](https://gitlab.com/gitlab-org/gitlab/-/issues/409005#actions-we-are-taking-from-the-feedback) the feedback and will eventually remove the toggle.
+  stage: Manage
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/tutorials/left_sidebar/index.html
+  image_url: https://img.youtube.com/vi/rGTl9_HIpbY/hqdefault.jpg
+  published_at: 2023-06-22
+  release: 16.1
+
+- name: Visualize Kubernetes resources in GitLab
+  description: |  # Do not modify this line, instead modify the lines below.
+    How do you check the status of the applications running in your clusters? The pipeline status and environment pages provide insights about the latest deployment runs. However, previous versions of GitLab lacked insights about the state of your deployments. In GitLab 16.1, you can see an overview of the primary resources in your Kubernetes deployments.
+
+    This feature works with every connected Kubernetes cluster. It doesn't matter if you deploy your workloads with the CI/CD integration or GitOps. To further improve the feature for Flux users, support for showing the synchronization status of an environment is proposed in [issue 391581](https://gitlab.com/gitlab-org/gitlab/-/issues/391581).    There are many use cases for which a non-human user might need to authenticate. Previously, depending on the desired scope, users could use personal, project, or group access tokens to meet this need. These tokens were not ideal, due to still being either tied to a human (for personal access tokens), or an unnecessarily privileged role (for group and project access tokens).
+  stage: Deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html
+  image_url: https://about.gitlab.com/images/16_1/whats-new-k8s-visualization.png
+  published_at: 2023-06-22
+  release: 16.1
+
+- name: Authenticate with service accounts
+  description: |  # Do not modify this line, instead modify the lines below.
+    There are many use cases for which a non-human user might need to authenticate. Previously, depending on the desired scope, users could use personal, project, or group access tokens to meet this need. These tokens were not ideal, due to still being either tied to a human (for personal access tokens), or an unnecessarily privileged role (for group and project access tokens).
+
+    Service accounts are not tied to a human user, and are more granular in scope. Service account creation and management is API-only. Support for a UI option is proposed in [issue 9965](https://gitlab.com/groups/gitlab-org/-/epics/9965).
+  stage: Manage
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/api/groups.html#service-accounts
+  image_url: https://img.youtube.com/vi/oZvjg0SCsqY/hqdefault.jpg
+  published_at: 2023-06-22
+  release: 16.1
+
+- name: GitLab Dedicated is now generally available
+  description: |  # Do not modify this line, instead modify the lines below.
+    GitLab Dedicated is a fully managed, single-tenant SaaS deployment of our comprehensive DevSecOps platform designed to address the needs of customers with stringent compliance requirements.
+
+    Customers in highly-regulated industries are unable to adopt multi-tenant SaaS offerings due to strict compliance requirements like data isolation. With GitLab Dedicated, organizations can access all of the benefits of the DevSecOps platform – including faster releases, better security, and more productive developers – while satisfying compliance requirements such as data residency, isolation, and private networking.
+
+    [Learn more](https://about.gitlab.com/dedicated/) about GitLab Dedicated today.
+  stage: Platforms
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/subscriptions/gitlab_dedicated/
+  image_url: https://about.gitlab.com/images/16_1/gitlab-dedicated.png
+  published_at: 2023-06-22
+  release: 16.1
+
+- name: Manage job artifacts though the Artifacts page
+  description: |  # Do not modify this line, instead modify the lines below.
+    Previously, if you wanted to view or manage job artifacts, you had to go to each job's detail page, or use the API. Now, you can view and manage job artifacts through the **Artifacts** page accessed at **Build > Artifacts**.
+
+    Users with at least the Maintainer role can use this new interface to delete artifacts too. You can delete individual artifacts, or bulk delete up to 100 artifacts at a time through either manual selection or checking the **Select all** option at the top of the page.
+
+    Please use the survey at the top of the Artifacts page to share any feedback you have about this new functionality. To view additional UI features under consideration, you can check out the [Build Artifacts page enhancements epic](https://gitlab.com/groups/gitlab-org/-/epics/8311).
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/jobs/job_artifacts.html#view-all-job-artifacts-in-a-project
+  image_url: https://about.gitlab.com/images/16_1/artifacts-bulk-delete.png
+  published_at: 2023-06-22
+  release: 16.1
+
+- name: Improved CI/CD variables list view
+  description: |  # Do not modify this line, instead modify the lines below.
+    CI/CD variables are a key part of all pipelines and can be defined in multiple places, including in the project and group settings. To prepare for making bigger improvements that will help users intuitively navigate between variables at different hierarchy, we are starting out with improving the usability and layout of the variable list.
+
+    In GitLab 16.1, you will see the first iteration of these improvements. We have merged the "Type" and "Options" columns into a new **Attributes** column, which better represents these related attributes. We appreciate your feedback on how we can continue to improve the CI/CD variable experience, you are welcome to comment in our [variables improvement epic](https://gitlab.com/groups/gitlab-org/-/epics/10506).
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/variables/#define-a-cicd-variable-in-the-ui
+  image_url: https://about.gitlab.com/images/16_1/layout_changes.png
+  published_at: 2023-06-22
+  release: 16.1

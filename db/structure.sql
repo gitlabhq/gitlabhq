@@ -19243,6 +19243,23 @@ CREATE TABLE organization_settings (
     settings jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
+CREATE TABLE organization_users (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE organization_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_users_id_seq OWNED BY organization_users.id;
+
 CREATE TABLE organizations (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25539,6 +25556,8 @@ ALTER TABLE ONLY operations_strategies_user_lists ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY operations_user_lists ALTER COLUMN id SET DEFAULT nextval('operations_user_lists_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_users ALTER COLUMN id SET DEFAULT nextval('organization_users_id_seq'::regclass);
+
 ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_builds ALTER COLUMN id SET DEFAULT nextval('ci_builds_id_seq'::regclass);
@@ -27798,6 +27817,9 @@ ALTER TABLE ONLY operations_user_lists
 
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT organization_settings_pkey PRIMARY KEY (organization_id);
+
+ALTER TABLE ONLY organization_users
+    ADD CONSTRAINT organization_users_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY organizations
     ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
@@ -32043,6 +32065,10 @@ CREATE UNIQUE INDEX index_ops_feature_flags_issues_on_feature_flag_id_and_issue_
 
 CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list_id ON operations_strategies_user_lists USING btree (strategy_id, user_list_id);
 
+CREATE UNIQUE INDEX index_organization_users_on_organization_id_and_user_id ON organization_users USING btree (organization_id, user_id);
+
+CREATE INDEX index_organization_users_on_user_id ON organization_users USING btree (user_id);
+
 CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name), id);
 
 CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
@@ -35640,6 +35666,9 @@ ALTER TABLE ONLY import_export_uploads
 ALTER TABLE ONLY push_rules
     ADD CONSTRAINT fk_83b29894de FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY organization_users
+    ADD CONSTRAINT fk_8471abad75 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_8483f3258f FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -35681,6 +35710,9 @@ ALTER TABLE ONLY protected_branch_merge_access_levels
 
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_users
+    ADD CONSTRAINT fk_8d9b20725d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_8e4456f90f FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

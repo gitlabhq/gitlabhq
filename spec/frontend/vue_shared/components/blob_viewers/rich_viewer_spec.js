@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { handleBlobRichViewer } from '~/blob/viewer';
 import RichViewer from '~/vue_shared/components/blob_viewers/rich_viewer.vue';
@@ -21,16 +22,24 @@ describe('Blob Rich Viewer component', () => {
   }
 
   beforeEach(() => {
+    const execImmediately = (callback) => callback();
+    jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
+
     createComponent();
+  });
+
+  it('listens to requestIdleCallback', () => {
+    expect(window.requestIdleCallback).toHaveBeenCalled();
   });
 
   it('renders the passed content without transformations', () => {
     expect(wrapper.html()).toContain(content);
   });
 
-  it('renders the richViewer if one is present', () => {
+  it('renders the richViewer if one is present', async () => {
     const richViewer = '<div class="js-pdf-viewer"></div>';
     createComponent('pdf', richViewer);
+    await nextTick();
     expect(wrapper.html()).toContain(richViewer);
   });
 

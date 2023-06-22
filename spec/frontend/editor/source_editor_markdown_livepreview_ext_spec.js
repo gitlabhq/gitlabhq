@@ -182,10 +182,6 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       instance.togglePreview();
     });
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     it('does not do anything if there is no model', () => {
       instance.setModel(null);
 
@@ -198,9 +194,6 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     beforeEach(async () => {
       mockAxios.onPost().reply(HTTP_STATUS_OK, { body: responseData });
       await togglePreview();
-    });
-    afterEach(() => {
-      jest.clearAllMocks();
     });
 
     it('removes the registered buttons from the toolbar', () => {

@@ -13,6 +13,9 @@ module Organizations
 
     has_one :settings, class_name: "OrganizationSetting"
 
+    has_many :organization_users, inverse_of: :organization
+    has_many :users, through: :organization_users, inverse_of: :organizations
+
     validates :name,
       presence: true,
       length: { maximum: 255 }

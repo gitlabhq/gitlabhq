@@ -776,13 +776,12 @@ Example response:
 }
 ```
 
-## Reset instance's runner registration token (deprecated)
+## Reset instance's runner registration token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) in GitLab 15.7 and is planned for removal in 17.0. This change is a breaking change.
+Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
 
 Reset the runner registration token for the GitLab instance.
 
@@ -795,13 +794,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/runners/reset_registration_token"
 ```
 
-## Reset project's runner registration token (deprecated)
+## Reset project's runner registration token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) in GitLab 15.7 and is planned for removal in 17.0. This change is a breaking change.
+Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
 
 Reset the runner registration token for a project.
 
@@ -814,13 +812,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
 ```
 
-## Reset group's runner registration token (deprecated)
+## Reset group's runner registration token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383341) in GitLab 15.7 and is planned for removal in 17.0. This change is a breaking change.
+Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
 
 Reset the runner registration token for a group.
 

@@ -59,7 +59,6 @@ describe('Tracking', () => {
       window.doNotTrack = undefined;
       navigator.doNotTrack = undefined;
       navigator.msDoNotTrack = undefined;
-      jest.clearAllMocks();
     });
 
     it('tracks to snowplow (our current tracking system)', () => {

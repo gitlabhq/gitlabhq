@@ -239,8 +239,6 @@ describe('Batch comments store actions', () => {
       params = { note: { id: 1 }, noteText: 'test' };
     });
 
-    afterEach(() => jest.clearAllMocks());
-
     it('commits RECEIVE_DRAFT_UPDATE_SUCCESS with returned data', () => {
       return actions.updateDraft(context, { ...params, callback() {} }).then(() => {
         expect(commit).toHaveBeenCalledWith('RECEIVE_DRAFT_UPDATE_SUCCESS', { id: 1 });

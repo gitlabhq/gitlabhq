@@ -1,7 +1,5 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import ResourceParentLink from '../resource_parent_link.vue';
 import ContributionEventBase from './contribution_event_base.vue';
 
 export default {
@@ -11,7 +9,7 @@ export default {
       'ContributionEvent|Removed due to membership expiration from %{resourceParentLink}.',
     ),
   },
-  components: { ContributionEventBase, ResourceParentLink, GlSprintf },
+  components: { ContributionEventBase },
   props: {
     /**
      * Expected format
@@ -44,11 +42,5 @@ export default {
 </script>
 
 <template>
-  <contribution-event-base :event="event" icon-name="expire">
-    <gl-sprintf :message="$options.i18n.message">
-      <template #resourceParentLink>
-        <resource-parent-link :event="event" />
-      </template>
-    </gl-sprintf>
-  </contribution-event-base>
+  <contribution-event-base :event="event" :message="$options.i18n.message" icon-name="expire" />
 </template>

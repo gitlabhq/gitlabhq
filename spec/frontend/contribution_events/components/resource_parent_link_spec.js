@@ -1,30 +1,52 @@
 import { GlLink } from '@gitlab/ui';
-import events from 'test_fixtures/controller/users/activity.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { EVENT_TYPE_APPROVED } from '~/contribution_events/constants';
 import ResourceParentLink from '~/contribution_events/components/resource_parent_link.vue';
-
-const eventApproved = events.find((event) => event.action === EVENT_TYPE_APPROVED);
+import { EVENT_TYPE_PRIVATE } from '~/contribution_events/constants';
+import { eventApproved } from '../utils';
 
 describe('ResourceParentLink', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const defaultPropsData = {
+    event: eventApproved(),
+  };
+
+  const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMountExtended(ResourceParentLink, {
       propsData: {
-        event: eventApproved,
+        ...defaultPropsData,
+        ...propsData,
       },
     });
   };
 
-  beforeEach(() => {
-    createComponent();
+  describe('when resource parent is defined', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders link', () => {
+      const link = wrapper.findComponent(GlLink);
+      const { web_url, full_name } = defaultPropsData.event.resource_parent;
+
+      expect(link.attributes('href')).toBe(web_url);
+      expect(link.text()).toBe(full_name);
+    });
   });
 
-  it('renders link', () => {
-    const link = wrapper.findComponent(GlLink);
+  describe('when resource parent is not defined', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          event: {
+            type: EVENT_TYPE_PRIVATE,
+          },
+        },
+      });
+    });
 
-    expect(link.attributes('href')).toBe(eventApproved.resource_parent.web_url);
-    expect(link.text()).toBe(eventApproved.resource_parent.full_name);
+    it('renders nothing', () => {
+      expect(wrapper.html()).toBe('');
+    });
   });
 });

@@ -9,6 +9,7 @@ import SidebarPeek, {
   STATE_OPEN,
   STATE_WILL_CLOSE,
 } from '~/super_sidebar/components/sidebar_peek_behavior.vue';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 
 // These are measured at runtime in the browser, but statically defined here
 // since Jest does not do layout/styling.
@@ -32,6 +33,7 @@ jest.mock('~/lib/utils/css_utils', () => ({
 
 describe('SidebarPeek component', () => {
   let wrapper;
+  let trackingSpy = null;
 
   const createComponent = () => {
     wrapper = mount(SidebarPeek);
@@ -54,6 +56,11 @@ describe('SidebarPeek component', () => {
 
   beforeEach(() => {
     createComponent();
+    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
+  });
+
+  afterEach(() => {
+    unmockTracking();
   });
 
   it('begins in the closed state', () => {
@@ -87,6 +94,11 @@ describe('SidebarPeek component', () => {
     jest.advanceTimersByTime(1);
 
     expect(lastNChangeEvents(2)).toEqual([STATE_WILL_OPEN, STATE_OPEN]);
+
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_peek', {
+      label: 'nav_hover',
+      property: 'nav_sidebar',
+    });
   });
 
   it('cancels transition will-open -> open if mouse out of peek region', () => {

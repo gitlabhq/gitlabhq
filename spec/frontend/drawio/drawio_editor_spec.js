@@ -66,7 +66,6 @@ describe('drawio/drawio_editor', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     findDrawioIframe()?.remove();
   });
 

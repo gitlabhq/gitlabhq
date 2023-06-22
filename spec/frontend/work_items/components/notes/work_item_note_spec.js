@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import EditedAt from '~/issues/show/components/edited.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
+import WorkItemNoteAwardsList from '~/work_items/components/notes/work_item_note_awards_list.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
@@ -76,6 +77,7 @@ describe('Work Item Note', () => {
 
   const errorHandler = jest.fn().mockRejectedValue('Oops');
 
+  const findAwardsList = () => wrapper.findComponent(WorkItemNoteAwardsList);
   const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
   const findNoteHeader = () => wrapper.findComponent(NoteHeader);
   const findNoteBody = () => wrapper.findComponent(NoteBody);
@@ -92,10 +94,14 @@ describe('Work Item Note', () => {
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
     assignees = mockAssignees,
     workItemByIidResponseHandler = workItemResponseHandler,
+    workItemsMvc2 = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       provide: {
         fullPath: 'test-project-path',
+        glFeatures: {
+          workItemsMvc2,
+        },
       },
       propsData: {
         workItemId,
@@ -403,6 +409,19 @@ describe('Work Item Note', () => {
           );
         });
       });
+    });
+
+    it('does not show awards when feature flag disabled', () => {
+      createComponent();
+
+      expect(findAwardsList().exists()).toBe(false);
+    });
+
+    it('passes note props to awards list', () => {
+      createComponent({ note: mockWorkItemCommentNote, workItemsMvc2: true });
+
+      expect(findAwardsList().props('note')).toBe(mockWorkItemCommentNote);
+      expect(findAwardsList().props('workItemIid')).toBe('1');
     });
   });
 });

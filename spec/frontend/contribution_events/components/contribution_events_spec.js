@@ -20,10 +20,10 @@ describe('ContributionEvents', () => {
 
   it.each`
     expectedComponent            | expectedEvent
-    ${ContributionEventApproved} | ${eventApproved(events)}
-    ${ContributionEventExpired}  | ${eventExpired(events)}
-    ${ContributionEventJoined}   | ${eventJoined(events)}
-    ${ContributionEventLeft}     | ${eventLeft(events)}
+    ${ContributionEventApproved} | ${eventApproved()}
+    ${ContributionEventExpired}  | ${eventExpired()}
+    ${ContributionEventJoined}   | ${eventJoined()}
+    ${ContributionEventLeft}     | ${eventLeft()}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

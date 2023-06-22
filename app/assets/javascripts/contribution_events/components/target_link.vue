@@ -27,5 +27,5 @@ export default {
 </script>
 
 <template>
-  <gl-link v-bind="targetLinkAttributes">{{ targetLinkText }}</gl-link>
+  <gl-link v-if="target" v-bind="targetLinkAttributes">{{ targetLinkText }}</gl-link>
 </template>

@@ -471,7 +471,8 @@ This migration enters the index name and definition into the `postgres_async_ind
 table. The process that runs on weekends pulls indexes from this table and attempt
 to remove them.
 
-You must test the database index changes locally before creating a merge request.
+You must [test the database index changes locally](#verify-indexes-removed-asynchronously) before creating a merge request.
+Include the output of the test in the merge request description.
 
 ### Verify the MR was deployed and the index no longer exists in production
 

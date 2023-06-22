@@ -89,4 +89,4 @@ You can download your project's list of dependencies and their details in JSON f
 
 ### Using the API
 
-You can download your project's list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the Gemnasium family of analyzers and [not any other of the GitLab dependency analyzers](../dependency_scanning/analyzers.md).
+You can download your project's list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the [Gemnasium family of analyzers](../dependency_scanning/index.md#dependency-analyzers) and not any other of the GitLab dependency analyzers.

@@ -7,11 +7,11 @@ import {
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { __, s__, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import addAwardEmojiMutation from '../../graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
+import { getMutation, optimisticAwardUpdate } from '../../notes/award_utils';
 
 export default {
   name: 'WorkItemNoteActions',
@@ -37,7 +37,16 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: ['fullPath'],
   props: {
+    workItemIid: {
+      type: String,
+      required: true,
+    },
+    note: {
+      type: Object,
+      required: true,
+    },
     showReply: {
       type: Boolean,
       required: true,
@@ -126,24 +135,29 @@ export default {
 
   methods: {
     async setAwardEmoji(name) {
+      const { mutation, mutationName, errorMessage } = getMutation({ note: this.note, name });
+
       try {
-        const {
-          data: {
-            awardEmojiAdd: { errors = [] },
-          },
-        } = await this.$apollo.mutate({
-          mutation: addAwardEmojiMutation,
+        await this.$apollo.mutate({
+          mutation,
           variables: {
-            awardableId: this.noteId,
+            awardableId: this.note.id,
             name,
           },
+          optimisticResponse: {
+            [mutationName]: {
+              errors: [],
+            },
+          },
+          update: optimisticAwardUpdate({
+            note: this.note,
+            name,
+            fullPath: this.fullPath,
+            workItemIid: this.workItemIid,
+          }),
         });
-
-        if (errors.length > 0) {
-          throw new Error(errors[0].message);
-        }
       } catch (error) {
-        this.$emit('error', s__('WorkItem|Failed to award emoji'));
+        this.$emit('error', errorMessage);
         Sentry.captureException(error);
       }
     },

@@ -9,6 +9,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
   describe 'associations' do
     it { is_expected.to have_many :namespaces }
     it { is_expected.to have_many :groups }
+    it { is_expected.to have_many(:users).through(:organization_users).inverse_of(:organizations) }
+    it { is_expected.to have_many(:organization_users).inverse_of(:organization) }
   end
 
   describe 'validations' do

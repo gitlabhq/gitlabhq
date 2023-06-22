@@ -368,10 +368,6 @@ abc: def
     let highlightLinesSpy;
     let removeHighlightsSpy;
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     it.each`
       highlightPathOnSetup | path              | keepOnNotFound | expectHighlightLinesToBeCalled | withLines    | expectRemoveHighlightsToBeCalled | storedHighlightPath
       ${null}              | ${undefined}      | ${false}       | ${false}                       | ${undefined} | ${true}                          | ${null}
