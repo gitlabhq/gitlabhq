@@ -17,7 +17,7 @@ module LdapHelpers
   #     admin_group: 'my-admin-group'
   #   )
   def stub_ldap_config(messages)
-    allow_any_instance_of(::Gitlab::Auth::Ldap::Config).to receive_messages(messages)
+    allow_any_instance_of(::Gitlab::Auth::Ldap::Config).to receive_messages(to_settings(messages))
   end
 
   def stub_ldap_setting(messages)

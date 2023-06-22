@@ -35,7 +35,7 @@ module Types
     field :iid, GraphQL::Types::String, null: false,
                                         description: 'Internal ID of the merge request.'
     field :merge_when_pipeline_succeeds, GraphQL::Types::Boolean, null: true,
-                                                                  description: 'Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS).'
+                                                                  description: 'Indicates if the merge has been set to auto-merge.'
     field :merged_at, Types::TimeType, null: true, complexity: 5,
                                        description: 'Timestamp of when the merge request was merged, null if not merged.'
     field :project, Types::ProjectType, null: false,
@@ -207,7 +207,7 @@ module Types
     field :has_ci, GraphQL::Types::Boolean, null: false, method: :has_ci?,
                                             description: 'Indicates if the merge request has CI.'
     field :merge_user, Types::UserType, null: true,
-                                        description: 'User who merged this merge request or set it to merge when pipeline succeeds.'
+                                        description: 'User who merged this merge request or set it to auto-merge.'
     field :mergeable, GraphQL::Types::Boolean, null: false, method: :mergeable?, calls_gitaly: true,
                                                description: 'Indicates if the merge request is mergeable.'
     field :security_auto_fix, GraphQL::Types::Boolean, null: true,

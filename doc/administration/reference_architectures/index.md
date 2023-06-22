@@ -633,8 +633,8 @@ Most setups would only need vertical scaling, but there are some specific areas 
   - Gitaly to Gitaly Cluster w/ Praefect
 - From 10k users and higher, Redis is recommended to be split into multiple HA servers as it's single threaded.
 
-Conversely, if you have robust metrics in place that show the environment is over-provisioned you can apply the same process for
-scaling downloads. It's recommended to take an iterative approach when scaling downwards however to ensure there are no issues.
+Conversely, if you have robust metrics in place that show the environment is over-provisioned, you can apply the same process for
+scaling downwards. You should take an iterative approach when scaling downwards, however, to ensure there are no issues.
 
 ### How to monitor your environment
 

@@ -695,7 +695,7 @@ Additional configuration may be needed for connecting to private registries for:
 
 Prior to GitLab 13.3, offline environments required an exact name match for [project policies](../license_approval_policies.md).
 In GitLab 13.3 and later, GitLab matches the name of [project policies](../license_approval_policies.md)
-with identifiers from the [SPDX license list](https://spdx.org/licenses/).
+with license names from the [SPDX license list](https://spdx.org/licenses/).
 A local copy of the SPDX license list is distributed with the GitLab instance. If needed, the GitLab
 instance's administrator can manually update it with a [Rake task](../../../raketasks/spdx.md).
 
