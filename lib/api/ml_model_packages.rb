@@ -71,7 +71,7 @@ module API
           end
 
           desc 'Workhorse upload model package file' do
-            detail 'Introduced in GitLab 16.1'
+            detail 'Introduced in GitLab 16.2'
             success code: 201
             failure [
               { code: 401, message: 'Unauthorized' },
@@ -103,6 +103,26 @@ module API
             Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project.id })
 
             forbidden!
+          end
+
+          desc 'Download an ml_model package file' do
+            detail 'This feature was introduced in GitLab 16.2'
+            success code: 200
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[ml_model_registry]
+          end
+          get do
+            authorize_read_package!(project)
+
+            package = ::Packages::MlModel::PackageFinder.new(project)
+                                                        .execute!(params[:package_name], params[:package_version])
+            package_file = ::Packages::PackageFileFinder.new(package, params[:file_name]).execute!
+
+            present_package_file!(package_file)
           end
         end
       end
