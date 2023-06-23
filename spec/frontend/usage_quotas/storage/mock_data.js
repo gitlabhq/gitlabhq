@@ -5,7 +5,7 @@ export const mockEmptyResponse = { data: { project: null } };
 
 export const projectData = {
   storage: {
-    totalUsage: '13.8 MiB',
+    totalUsage: '13.4 MiB',
     storageTypes: [
       {
         storageType: {

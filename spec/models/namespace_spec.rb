@@ -1143,8 +1143,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       project1
       project2
       statistics = described_class.with_statistics.find(namespace.id)
+      expected_storage_size = project1.statistics.storage_size + project2.statistics.storage_size
 
-      expect(statistics.storage_size).to eq 3995
+      expect(statistics.storage_size).to eq expected_storage_size
       expect(statistics.repository_size).to eq 111
       expect(statistics.wiki_size).to eq 555
       expect(statistics.lfs_objects_size).to eq 222

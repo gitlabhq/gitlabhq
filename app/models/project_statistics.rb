@@ -34,7 +34,6 @@ class ProjectStatistics < ApplicationRecord
     :build_artifacts_size,
     :packages_size,
     :snippets_size,
-    :pipeline_artifacts_size,
     :uploads_size
   ].freeze
 
