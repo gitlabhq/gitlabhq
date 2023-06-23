@@ -71,9 +71,7 @@
 
     .submit-container.gl-mt-5
       = f.submit button_text, pajamas_button: true, class: 'gl-w-full', data: { qa_selector: 'new_user_register_button' }
-    - if Gitlab::CurrentSettings.sign_in_text.present? && Feature.enabled?(:restyle_login_page, @project)
-      .gl-pt-5
-        = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
+
     = render 'devise/shared/terms_of_service_notice', button_text: button_text
 
   = yield :omniauth_providers_bottom if show_omniauth_providers
