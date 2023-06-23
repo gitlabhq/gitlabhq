@@ -24,6 +24,7 @@ jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 
 describe('InviteGroupsModal', () => {
   let wrapper;
+  const mockToastShow = jest.fn();
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(InviteGroupsModal, {
@@ -39,8 +40,17 @@ describe('InviteGroupsModal', () => {
           template: '<div><slot></slot><slot name="modal-footer"></slot></div>',
         }),
       },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
+      },
     });
   };
+
+  afterEach(() => {
+    mockToastShow.mockClear();
+  });
 
   const createInviteGroupToProjectWrapper = () => {
     createComponent({ isProject: true });
@@ -133,7 +143,6 @@ describe('InviteGroupsModal', () => {
       createComponent();
       triggerGroupSelect(sharedGroup);
 
-      wrapper.vm.$toast = { show: jest.fn() };
       jest.spyOn(Api, 'groupShareWithGroup').mockImplementation(
         () =>
           new Promise((resolve, reject) => {
@@ -167,7 +176,7 @@ describe('InviteGroupsModal', () => {
       });
 
       it('displays the successful toastMessage', () => {
-        expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added', {
+        expect(mockToastShow).toHaveBeenCalledWith('Members were successfully added', {
           onComplete: expect.any(Function),
         });
       });
@@ -187,7 +196,7 @@ describe('InviteGroupsModal', () => {
       });
 
       it('does not show the toast message on failure', () => {
-        expect(wrapper.vm.$toast.show).not.toHaveBeenCalled();
+        expect(mockToastShow).not.toHaveBeenCalled();
       });
 
       it('displays the generic error for http server error', () => {
@@ -222,7 +231,6 @@ describe('InviteGroupsModal', () => {
       createComponent({ reloadPageOnSubmit: true });
       triggerGroupSelect(sharedGroup);
 
-      wrapper.vm.$toast = { show: jest.fn() };
       jest.spyOn(Api, 'groupShareWithGroup').mockResolvedValue({ data: groupPostData });
 
       clickInviteButton();
@@ -238,7 +246,7 @@ describe('InviteGroupsModal', () => {
       });
 
       it('does not show the toast message on failure', () => {
-        expect(wrapper.vm.$toast.show).not.toHaveBeenCalled();
+        expect(mockToastShow).not.toHaveBeenCalled();
       });
     });
   });

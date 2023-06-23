@@ -4,8 +4,7 @@ import {
   GlTooltipDirective,
   GlSprintf,
   GlIcon,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
 } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -33,8 +32,7 @@ export default {
     GlSprintf,
     GlFormCheckbox,
     GlIcon,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
     ListItem,
     ClipboardButton,
     TimeAgoTooltip,
@@ -76,6 +74,22 @@ export default {
     COPY_IMAGE_PATH_TITLE,
   },
   computed: {
+    items() {
+      return [
+        {
+          text: this.$options.i18n.REMOVE_TAG_BUTTON_TITLE,
+          extraAttrs: {
+            class: 'gl-text-red-500!',
+            'data-testid': 'single-delete-button',
+            'data-qa-selector': 'tag_delete_button',
+          },
+          action: () => {
+            this.$emit('delete');
+          },
+        },
+      ];
+    },
+
     formattedSize() {
       return this.tag.totalSize
         ? numberToHumanSize(Number(this.tag.totalSize))
@@ -177,27 +191,19 @@ export default {
       </span>
     </template>
     <template v-if="tag.canDelete" #right-action>
-      <gl-dropdown
+      <gl-disclosure-dropdown
         :disabled="disabled"
         icon="ellipsis_v"
-        :text="$options.i18n.MORE_ACTIONS_TEXT"
+        :toggle-text="$options.i18n.MORE_ACTIONS_TEXT"
         :text-sr-only="true"
         category="tertiary"
         no-caret
-        right
+        placement="right"
         :class="{ 'gl-opacity-0 gl-pointer-events-none': disabled }"
         data-testid="additional-actions"
         data-qa-selector="more_actions_menu"
-      >
-        <gl-dropdown-item
-          variant="danger"
-          data-testid="single-delete-button"
-          data-qa-selector="tag_delete_button"
-          @click="$emit('delete')"
-        >
-          {{ $options.i18n.REMOVE_TAG_BUTTON_TITLE }}
-        </gl-dropdown-item>
-      </gl-dropdown>
+        :items="items"
+      />
     </template>
 
     <template v-if="!isInvalidTag" #details-published>

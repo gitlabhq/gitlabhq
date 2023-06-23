@@ -1,5 +1,11 @@
-import { GlFormCheckbox, GlSprintf, GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import {
+  GlFormCheckbox,
+  GlSprintf,
+  GlIcon,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
+import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -37,16 +43,17 @@ describe('tags list row', () => {
   const findManifestDetail = () => wrapper.find('[data-testid="manifest-detail"]');
   const findConfigurationDetail = () => wrapper.find('[data-testid="configuration-detail"]');
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
-  const findAdditionalActionsMenu = () => wrapper.findComponent(GlDropdown);
-  const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
+  const findAdditionalActionsMenu = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
-  const mountComponent = (propsData = defaultProps) => {
-    wrapper = shallowMount(component, {
+  const mountComponent = (propsData = defaultProps, mountFn = shallowMount) => {
+    wrapper = mountFn(component, {
       stubs: {
         GlSprintf,
         ListItem,
         DetailsRow,
-        GlDropdown,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
       },
       propsData,
       directives: {
@@ -274,10 +281,10 @@ describe('tags list row', () => {
 
       expect(findAdditionalActionsMenu().props()).toMatchObject({
         icon: 'ellipsis_v',
-        text: 'More actions',
+        toggleText: 'More actions',
         textSrOnly: true,
         category: 'tertiary',
-        right: true,
+        placement: 'right',
         disabled: false,
       });
     });
@@ -308,16 +315,19 @@ describe('tags list row', () => {
         mountComponent();
 
         expect(findDeleteButton().exists()).toBe(true);
-        expect(findDeleteButton().attributes()).toMatchObject({
-          variant: 'danger',
+        expect(findDeleteButton().props('item').extraAttrs).toMatchObject({
+          class: 'gl-text-red-500!',
+          'data-testid': 'single-delete-button',
+          'data-qa-selector': 'tag_delete_button',
         });
+
         expect(findDeleteButton().text()).toBe(REMOVE_TAG_BUTTON_TITLE);
       });
 
       it('delete event emits delete', () => {
-        mountComponent();
+        mountComponent(undefined, mount);
 
-        findDeleteButton().vm.$emit('click');
+        wrapper.find('[data-testid="single-delete-button"]').trigger('click');
 
         expect(wrapper.emitted('delete')).toEqual([[]]);
       });
