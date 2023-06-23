@@ -52142,6 +52142,9 @@ msgstr ""
 msgid "Workspaces|Cancel"
 msgstr ""
 
+msgid "Workspaces|Could not load workspaces"
+msgstr ""
+
 msgid "Workspaces|Could not retrieve cluster agents for this project"
 msgstr ""
 
@@ -52236,6 +52239,9 @@ msgid "Workspaces|You can create a workspace for public projects only."
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"
+msgstr ""
+
+msgid "Workspaces|Your workspaces"
 msgstr ""
 
 msgid "Would you like to create a new branch?"
