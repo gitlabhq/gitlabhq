@@ -2146,10 +2146,10 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(repository.refs_by_oid(oid: Gitlab::Git::BLANK_SHA, limit: 0)).to eq([])
     end
 
-    it 'returns nil for an empty repo' do
+    it 'returns empty for an empty repo' do
       project = create(:project)
 
-      expect(project.repository.refs_by_oid(oid: TestEnv::BRANCH_SHA['master'], limit: 0)).to be_nil
+      expect(project.repository.refs_by_oid(oid: TestEnv::BRANCH_SHA['master'], limit: 0)).to eq([])
     end
   end
 

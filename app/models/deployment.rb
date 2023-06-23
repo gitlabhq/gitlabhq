@@ -447,7 +447,7 @@ class Deployment < ApplicationRecord
   # when refs_by_oid is passed an SHA, returns refs for that commit
   def tags(limit: 100)
     strong_memoize_with(:tag, limit) do
-      project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]) || []
+      project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX])
     end
   end
 

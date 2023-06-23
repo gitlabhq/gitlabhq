@@ -270,6 +270,17 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    it "updates default_branch_protection_defaults from the default_branch_protection param" do
+      expected_update = ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys
+
+      put api("/application/settings", admin),
+          params: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+      expect(ApplicationSetting.first.default_branch_protection_defaults).to eq(expected_update)
+    end
+
     it "supports legacy performance_bar_allowed_group_id" do
       put api("/application/settings", admin),
         params: { performance_bar_allowed_group_id: group.full_path }

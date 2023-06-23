@@ -320,7 +320,7 @@ module Gitlab
       end
 
       def first_ref_by_oid(repo)
-        ref = repo.refs_by_oid(oid: id, limit: 1)&.first
+        ref = repo.refs_by_oid(oid: id, limit: 1).first
 
         return unless ref
 

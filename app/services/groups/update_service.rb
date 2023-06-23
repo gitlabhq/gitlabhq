@@ -117,6 +117,7 @@ module Groups
 
     def handle_settings_update
       settings_params = params.slice(*allowed_settings_params)
+      settings_params.merge!({ default_branch_protection: params[:default_branch_protection] }.compact)
       allowed_settings_params.each { |param| params.delete(param) }
 
       ::NamespaceSettings::UpdateService.new(current_user, group, settings_params).execute

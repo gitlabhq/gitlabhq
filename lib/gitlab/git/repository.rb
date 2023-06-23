@@ -554,10 +554,10 @@ module Gitlab
       # Limit of 0 means there is no limit.
       def refs_by_oid(oid:, limit: 0, ref_patterns: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit, ref_patterns: ref_patterns)
+          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit, ref_patterns: ref_patterns) || []
         end
       rescue CommandError, TypeError, NoRepository
-        nil
+        []
       end
 
       # Returns url for submodule
