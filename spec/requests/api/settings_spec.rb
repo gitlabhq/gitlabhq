@@ -190,11 +190,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             default_syntax_highlighting_theme: 2,
             projects_api_rate_limit_unauthenticated: 100,
             silent_mode_enabled: true,
-            slack_app_enabled: true,
-            slack_app_id: 'SLACK_APP_ID',
-            slack_app_secret: 'SLACK_APP_SECRET',
-            slack_app_signing_secret: 'SLACK_APP_SIGNING_SECRET',
-            slack_app_verification_token: 'SLACK_APP_VERIFICATION_TOKEN',
             valid_runner_registrars: ['group'],
             allow_account_deletion: false
           }
@@ -270,11 +265,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['default_syntax_highlighting_theme']).to eq(2)
         expect(json_response['projects_api_rate_limit_unauthenticated']).to be(100)
         expect(json_response['silent_mode_enabled']).to be(true)
-        expect(json_response['slack_app_enabled']).to be(true)
-        expect(json_response['slack_app_id']).to eq('SLACK_APP_ID')
-        expect(json_response['slack_app_secret']).to eq('SLACK_APP_SECRET')
-        expect(json_response['slack_app_signing_secret']).to eq('SLACK_APP_SIGNING_SECRET')
-        expect(json_response['slack_app_verification_token']).to eq('SLACK_APP_VERIFICATION_TOKEN')
         expect(json_response['valid_runner_registrars']).to eq(['group'])
         expect(json_response['allow_account_deletion']).to be(false)
       end
@@ -546,6 +536,85 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
           expect(json_response['error']).to include('eks_account_id is missing')
           expect(json_response['error']).to include('eks_access_key_id is missing')
           expect(json_response['error']).to include('eks_secret_access_key is missing')
+        end
+      end
+    end
+
+    context 'GitLab for Slack app settings' do
+      let(:settings) do
+        {
+          slack_app_enabled: slack_app_enabled,
+          slack_app_id: slack_app_id,
+          slack_app_secret: slack_app_secret,
+          slack_app_signing_secret: slack_app_signing_secret,
+          slack_app_verification_token: slack_app_verification_token
+        }
+      end
+
+      context 'when GitLab for Slack app is enabled' do
+        let(:slack_app_enabled) { true }
+
+        context 'when other params are blank' do
+          let(:slack_app_id) { nil }
+          let(:slack_app_secret) { nil }
+          let(:slack_app_signing_secret) { nil }
+          let(:slack_app_verification_token) { nil }
+
+          it 'does not update the settings' do
+            put api("/application/settings", admin), params: settings
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+
+            expect(json_response['slack_app_enabled']).to be(nil)
+            expect(json_response['slack_app_id']).to be(nil)
+            expect(json_response['slack_app_secret']).to be(nil)
+            expect(json_response['slack_app_signing_secret']).to be(nil)
+            expect(json_response['slack_app_verification_token']).to be(nil)
+
+            message = json_response['message']
+
+            expect(message['slack_app_id']).to include("can't be blank")
+            expect(message['slack_app_secret']).to include("can't be blank")
+            expect(message['slack_app_signing_secret']).to include("can't be blank")
+            expect(message['slack_app_verification_token']).to include("can't be blank")
+          end
+        end
+
+        context 'when other params are present' do
+          let(:slack_app_id) { 'ID' }
+          let(:slack_app_secret) { 'SECRET' }
+          let(:slack_app_signing_secret) { 'SIGNING_SECRET' }
+          let(:slack_app_verification_token) { 'VERIFICATION_TOKEN' }
+
+          it 'updates the settings' do
+            put api("/application/settings", admin), params: settings
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['slack_app_enabled']).to be(true)
+            expect(json_response['slack_app_id']).to eq('ID')
+            expect(json_response['slack_app_secret']).to eq('SECRET')
+            expect(json_response['slack_app_signing_secret']).to eq('SIGNING_SECRET')
+            expect(json_response['slack_app_verification_token']).to eq('VERIFICATION_TOKEN')
+          end
+        end
+      end
+
+      context 'when GitLab for Slack app is not enabled' do
+        let(:slack_app_enabled) { false }
+        let(:slack_app_id) { nil }
+        let(:slack_app_secret) { nil }
+        let(:slack_app_signing_secret) { nil }
+        let(:slack_app_verification_token) { nil }
+
+        it 'allows blank attributes' do
+          put api("/application/settings", admin), params: settings
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['slack_app_enabled']).to be(false)
+          expect(json_response['slack_app_id']).to be(nil)
+          expect(json_response['slack_app_secret']).to be(nil)
+          expect(json_response['slack_app_signing_secret']).to be(nil)
+          expect(json_response['slack_app_verification_token']).to be(nil)
         end
       end
     end

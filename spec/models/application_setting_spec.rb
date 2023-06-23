@@ -493,6 +493,37 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
+    describe 'GitLab for Slack app settings' do
+      before do
+        setting.slack_app_enabled = slack_app_enabled
+      end
+
+      context 'when GitLab for Slack app is disabled' do
+        let(:slack_app_enabled) { false }
+
+        it { is_expected.to allow_value(nil).for(:slack_app_id) }
+        it { is_expected.to allow_value(nil).for(:slack_app_secret) }
+        it { is_expected.to allow_value(nil).for(:slack_app_signing_secret) }
+        it { is_expected.to allow_value(nil).for(:slack_app_verification_token) }
+      end
+
+      context 'when GitLab for Slack app is enabled' do
+        let(:slack_app_enabled) { true }
+
+        it { is_expected.to allow_value('123456789a').for(:slack_app_id) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_id) }
+
+        it { is_expected.to allow_value('secret').for(:slack_app_secret) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_secret) }
+
+        it { is_expected.to allow_value('signing-secret').for(:slack_app_signing_secret) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_signing_secret) }
+
+        it { is_expected.to allow_value('token').for(:slack_app_verification_token) }
+        it { is_expected.not_to allow_value(nil).for(:slack_app_verification_token) }
+      end
+    end
+
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
         expect do

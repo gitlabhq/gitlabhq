@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CompareApp from '~/projects/compare/components/app.vue';
@@ -18,6 +18,7 @@ describe('CompareApp component', () => {
         ...defaultProps,
         ...props,
       },
+      stubs: { GlCollapsibleListbox },
     });
   };
 
@@ -130,14 +131,14 @@ describe('CompareApp component', () => {
   });
 
   describe('mode dropdown', () => {
-    const findModeDropdownButton = () => wrapper.find('[data-testid="modeDropdown"]');
+    const findGlDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
     const findEnableStraightModeButton = () =>
-      wrapper.find('[data-testid="enableStraightModeButton"]');
+      wrapper.findComponent('[data-testid="listbox-item-true"]');
     const findDisableStraightModeButton = () =>
-      wrapper.find('[data-testid="disableStraightModeButton"]');
+      wrapper.findComponent('[data-testid="listbox-item-false"]');
 
     it('renders the mode dropdown button', () => {
-      expect(findModeDropdownButton().exists()).toBe(true);
+      expect(findGlDropdown().exists()).toBe(true);
     });
 
     it('has the correct text', () => {
@@ -146,17 +147,13 @@ describe('CompareApp component', () => {
     });
 
     it('straight mode button when clicked', async () => {
-      expect(wrapper.props('straight')).toBe(false);
       expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('false');
 
-      findEnableStraightModeButton().vm.$emit('click');
-
+      findGlDropdown().vm.$emit('select', 'true');
       await nextTick();
 
       expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('true');
-
-      findDisableStraightModeButton().vm.$emit('click');
-
+      findGlDropdown().vm.$emit('select', 'false');
       await nextTick();
 
       expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('false');

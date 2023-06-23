@@ -596,6 +596,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     allow_blank: true,
     public_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
+  with_options(presence: true, if: :slack_app_enabled?) do
+    validates :slack_app_id
+    validates :slack_app_secret
+    validates :slack_app_signing_secret
+    validates :slack_app_verification_token
+  end
+
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
     validates :throttle_unauthenticated_api_requests_per_period
     validates :throttle_unauthenticated_api_period_in_seconds

@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlButton } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { joinPaths } from '~/lib/utils/url_utility';
 import RevisionCard from './revision_card.vue';
@@ -9,8 +9,7 @@ export default {
   components: {
     RevisionCard,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   props: {
     projectCompareIndexPath: {
@@ -73,23 +72,19 @@ export default {
         revision: this.paramsTo,
         refsProjectPath: this.sourceProjectRefsPath,
       },
-      isStraight: this.straight,
+      isStraight: this.straight.toString(),
     };
   },
   computed: {
-    straightModeDropdownItems() {
+    dropdownItems() {
       return [
         {
-          modeType: 'off',
-          isEnabled: false,
-          content: '..',
-          testId: 'disableStraightModeButton',
+          text: '..',
+          value: 'false',
         },
         {
-          modeType: 'on',
-          isEnabled: true,
-          content: '...',
-          testId: 'enableStraightModeButton',
+          text: '...',
+          value: 'true',
         },
       ];
     },
@@ -109,9 +104,6 @@ export default {
     },
     onSwapRevision() {
       [this.from, this.to] = [this.to, this.from]; // swaps 'from' and 'to'
-    },
-    setStraightMode(isStraight) {
-      this.isStraight = isStraight;
     },
   },
 };
@@ -140,22 +132,11 @@ export default {
         @selectRevision="onSelectRevision"
       />
       <div
-        class="gl-display-flex gl-justify-content-center gl-align-items-center gl-align-self-end gl-my-3 gl-md-my-0 gl-pl-3 gl-pr-3"
+        class="gl-display-flex gl-justify-content-center gl-align-items-center gl-align-self-end gl-md-my-0 gl-pl-3 gl-pr-3"
         data-testid="ellipsis"
       >
-        <input :value="isStraight ? 'true' : 'false'" type="hidden" name="straight" />
-        <gl-dropdown data-testid="modeDropdown" :text="isStraight ? '...' : '..'" size="small">
-          <gl-dropdown-item
-            v-for="mode in straightModeDropdownItems"
-            :key="mode.modeType"
-            :is-check-item="true"
-            :is-checked="isStraight == mode.isEnabled"
-            :data-testid="mode.testId"
-            @click="setStraightMode(mode.isEnabled)"
-          >
-            <span class="dropdown-menu-inner-content"> {{ mode.content }} </span>
-          </gl-dropdown-item>
-        </gl-dropdown>
+        <input :value="isStraight" type="hidden" name="straight" />
+        <gl-collapsible-listbox v-model="isStraight" :items="dropdownItems" size="medium" />
       </div>
       <revision-card
         data-testid="targetRevisionCard"
