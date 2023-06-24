@@ -2001,6 +2001,15 @@
   :weight: 3
   :idempotent: false
   :tags: []
+- :name: pipeline_default:ci_pipeline_cleanup_ref
+  :worker_name: Ci::PipelineCleanupRefWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent: true
+  :tags: []
 - :name: pipeline_default:ci_retry_pipeline
   :worker_name: Ci::RetryPipelineWorker
   :feature_category: :continuous_integration

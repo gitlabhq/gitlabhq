@@ -335,9 +335,14 @@ module Ci
         end
       end
 
+      # This needs to be kept in sync with `Ci::PipelineRef#should_delete?`
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do
-          pipeline.persistent_ref.delete
+          if Feature.enabled?(:pipeline_cleanup_ref_worker_async, pipeline.project)
+            ::Ci::PipelineCleanupRefWorker.perform_async(pipeline.id)
+          else
+            pipeline.persistent_ref.delete
+          end
         end
       end
 
