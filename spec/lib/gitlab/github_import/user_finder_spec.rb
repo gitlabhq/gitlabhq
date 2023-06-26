@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feature_category: :importers do
   let(:project) do
     create(
       :project,
@@ -223,75 +223,40 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
     context 'when an Email address is not cached' do
       let(:user) { { email: email } }
 
-      it 'retrieves the Email address from the GitHub API' do
-        expect(client).to receive(:user).with('kittens').and_return(user)
-        expect(finder.email_for_github_username('kittens')).to eq(email)
-      end
-
-      it 'caches the Email address when an Email address is available' do
-        expect(client).to receive(:user).with('kittens').and_return(user)
+      it 'retrieves and caches the Email address when an Email address is available' do
+        expect(client).to receive(:user).with('kittens').and_return(user).once
 
         expect(Gitlab::Cache::Import::Caching)
           .to receive(:write)
-          .with(an_instance_of(String), email, timeout: Gitlab::Cache::Import::Caching::TIMEOUT)
+          .with(an_instance_of(String), email, timeout: Gitlab::Cache::Import::Caching::TIMEOUT).and_call_original
 
-        finder.email_for_github_username('kittens')
-      end
-
-      it 'returns nil if the user does not exist' do
-        expect(client)
-          .to receive(:user)
-          .with('kittens')
-          .and_return(nil)
-
-        expect(Gitlab::Cache::Import::Caching)
-          .not_to receive(:write)
-
-        expect(finder.email_for_github_username('kittens')).to be_nil
+        expect(finder.email_for_github_username('kittens')).to eq(email)
+        expect(finder.email_for_github_username('kittens')).to eq(email)
       end
 
       it 'shortens the timeout for Email address in cache when an Email address is private/nil from GitHub' do
         user = { email: nil }
-        expect(client).to receive(:user).with('kittens').and_return(user)
+        expect(client).to receive(:user).with('kittens').and_return(user).once
 
         expect(Gitlab::Cache::Import::Caching)
-          .to receive(:write).with(an_instance_of(String), nil, timeout: Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
+          .to receive(:write)
+          .with(an_instance_of(String), '', timeout: Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT)
+          .and_call_original
 
+        expect(finder.email_for_github_username('kittens')).to be_nil
         expect(finder.email_for_github_username('kittens')).to be_nil
       end
 
       context 'when a username does not exist on GitHub' do
-        context 'when github username inexistence is not cached' do
-          it 'caches github username inexistence' do
-            expect(client)
-              .to receive(:user)
-              .with('kittens')
-              .and_raise(::Octokit::NotFound)
+        it 'caches github username inexistence' do
+          expect(client)
+            .to receive(:user)
+            .with('kittens')
+            .and_raise(::Octokit::NotFound)
+            .once
 
-            expect(Gitlab::Cache::Import::Caching)
-              .to receive(:write).with(
-                described_class::INEXISTENCE_OF_GITHUB_USERNAME_CACHE_KEY % 'kittens', true
-              )
-
-            expect(finder.email_for_github_username('kittens')).to be_nil
-          end
-        end
-
-        context 'when github username inexistence is already cached' do
-          it 'does not make request to the client' do
-            expect(Gitlab::Cache::Import::Caching)
-              .to receive(:read).with(described_class::EMAIL_FOR_USERNAME_CACHE_KEY % 'kittens')
-
-            expect(Gitlab::Cache::Import::Caching)
-              .to receive(:read).with(
-                described_class::INEXISTENCE_OF_GITHUB_USERNAME_CACHE_KEY % 'kittens'
-              ).and_return('true')
-
-            expect(client)
-              .not_to receive(:user)
-
-            expect(finder.email_for_github_username('kittens')).to be_nil
-          end
+          expect(finder.email_for_github_username('kittens')).to be_nil
+          expect(finder.email_for_github_username('kittens')).to be_nil
         end
       end
     end
