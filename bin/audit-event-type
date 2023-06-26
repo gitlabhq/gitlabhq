@@ -11,9 +11,10 @@ require 'yaml'
 require 'fileutils'
 require 'uri'
 require 'readline'
+require_relative '../config/bundler_setup'
+require 'gitlab/utils/all'
 
 require_relative '../lib/gitlab/audit/type/shared' unless defined?(::Gitlab::Audit::Type::Shared)
-require_relative '../lib/gitlab/utils' unless defined?(::Gitlab::Utils)
 
 module AuditEventTypeHelpers
   Abort = Class.new(StandardError)

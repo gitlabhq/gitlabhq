@@ -16,8 +16,9 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :team_plann
     MERMAID
   end
 
-  let_it_be(:expected) do
-    %(<iframe src="/-/sandbox/mermaid" sandbox="allow-scripts allow-popups" frameborder="0" scrolling="no")
+  let(:expected) do
+    src = "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}/-/sandbox/mermaid"
+    %(<iframe src="#{src}" sandbox="allow-scripts allow-popups" frameborder="0" scrolling="no")
   end
 
   context 'in an issue' do

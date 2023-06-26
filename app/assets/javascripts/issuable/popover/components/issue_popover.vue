@@ -28,7 +28,7 @@ export default {
       type: HTMLAnchorElement,
       required: true,
     },
-    projectPath: {
+    namespacePath: {
       type: String,
       required: true,
     },
@@ -65,10 +65,10 @@ export default {
       query,
       update: (data) => data.project.issue,
       variables() {
-        const { projectPath, iid } = this;
+        const { namespacePath, iid } = this;
 
         return {
-          projectPath,
+          projectPath: namespacePath,
           iid,
         };
       },
@@ -100,7 +100,7 @@ export default {
     <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
     <div>
       <work-item-type-icon v-if="!$apollo.queries.issue.loading" :work-item-type="issue.type" />
-      <span class="gl-text-secondary">{{ `${projectPath}#${iid}` }}</span>
+      <span class="gl-text-secondary">{{ `${namespacePath}#${iid}` }}</span>
     </div>
     <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
 

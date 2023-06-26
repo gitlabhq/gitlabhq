@@ -18,13 +18,12 @@ RSpec.configure(&:disable_monkey_patching!)
 
 require 'active_support/all'
 require 'pry'
+require 'gitlab/utils/all'
 require_relative 'rails_autoload'
 
 require_relative '../config/settings'
 require_relative 'support/rspec'
 require_relative '../lib/gitlab'
-require_relative '../lib/gitlab/utils'
-require_relative '../lib/gitlab/utils/strong_memoize'
 
 require_relative 'simplecov_env'
 SimpleCovEnv.start!

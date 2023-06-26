@@ -5,3 +5,11 @@ gems gitlab-rspec:
   trigger:
     include: gems/gitlab-rspec/.gitlab-ci.yml
     strategy: depend
+
+gems gitlab-utils:
+  extends:
+    - .gems:rules:gitlab-utils
+  needs: []
+  trigger:
+    include: gems/gitlab-utils/.gitlab-ci.yml
+    strategy: depend

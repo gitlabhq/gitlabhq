@@ -72,11 +72,14 @@ function fixElementSource(el) {
 
 export function getSandboxFrameSrc() {
   const path = joinPaths(gon.relative_url_root || '', SANDBOX_FRAME_PATH);
-  if (!darkModeEnabled()) {
-    return path;
+  let absoluteUrl = relativePathToAbsolute(path, getBaseURL());
+  if (darkModeEnabled()) {
+    absoluteUrl = setUrlParams({ darkMode: darkModeEnabled() }, absoluteUrl);
   }
-  const absoluteUrl = relativePathToAbsolute(path, getBaseURL());
-  return setUrlParams({ darkMode: darkModeEnabled() }, absoluteUrl);
+  if (window.gon?.relative_url_root) {
+    absoluteUrl = setUrlParams({ relativeRootPath: window.gon.relative_url_root }, absoluteUrl);
+  }
+  return absoluteUrl;
 }
 
 function renderMermaidEl(el, source) {

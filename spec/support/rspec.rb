@@ -8,6 +8,7 @@ require_relative "helpers/stub_object_storage"
 require_relative "helpers/fast_rails_root"
 
 require 'gitlab/rspec/all'
+require 'gitlab/utils/all'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 

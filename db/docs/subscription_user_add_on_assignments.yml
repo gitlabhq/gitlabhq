@@ -1,0 +1,10 @@
+---
+table_name: subscription_user_add_on_assignments
+description: Tracks the assignment of an add-on to a user within a namespace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123967
+milestone: '16.2'
+feature_categories:
+- seat_cost_management
+classes:
+- GitlabSubscriptions::UserAddOnAssignment
+gitlab_schema: gitlab_main

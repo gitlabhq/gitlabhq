@@ -5,6 +5,16 @@ PATH
       rspec (~> 3.0)
 
 PATH
+  remote: gems/gitlab-utils
+  specs:
+    gitlab-utils (0.1.0)
+      actionview (>= 6.1.7.2)
+      activesupport (>= 6.1.7.2)
+      addressable (~> 2.8)
+      nokogiri (~> 1.15.2)
+      rake (~> 13.0)
+
+PATH
   remote: vendor/gems/attr_encrypted
   specs:
     attr_encrypted (3.2.4)
@@ -1778,6 +1788,7 @@ DEPENDENCIES
   gitlab-rspec!
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 10.0.0)
+  gitlab-utils!
   gitlab_chronic_duration (~> 0.10.6.2)
   gitlab_omniauth-ldap (~> 2.2.0)
   gitlab_quality-test_tooling (~> 0.8.1)

@@ -755,10 +755,14 @@ graph RL;
   click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
   2_5-1 --> 1-3 & 1-6 & 1-14 & 1-15;
 
-  3_2-1["rspec:coverage (5 minutes)"];
+  ac-1["rspec:artifact-collector (2 minutes)<br/>(workaround for 'needs' limitation)"];
+  class ac-1 criticalPath;
+  ac-1 --> 2_5-1;
+
+  3_2-1["rspec:coverage (3 minutes)"];
   class 3_2-1 criticalPath;
   click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
-  3_2-1 -.->|"(don't use needs<br/>because of limitations)"| 2_5-1;
+  3_2-1 --> ac-1;
 
   4_3-1["rspec:undercoverage (1.3 minutes)"];
   class 4_3-1 criticalPath;

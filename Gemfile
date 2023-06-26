@@ -20,6 +20,11 @@ gem 'bootsnap', '~> 1.16.0', require: false
 gem 'openssl', '~> 3.0'
 gem 'ipaddr', '~> 1.2.5'
 
+# GitLab Monorepo Gems
+group :monorepo do
+  gem 'gitlab-utils', path: 'gems/gitlab-utils'
+end
+
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0'
 

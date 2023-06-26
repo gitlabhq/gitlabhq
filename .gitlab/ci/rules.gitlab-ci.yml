@@ -2135,6 +2135,11 @@
     - <<: *if-merge-request
       changes: ["gems/gitlab-rspec/**/*"]
 
+.gems:rules:gitlab-utils:
+  rules:
+    - <<: *if-merge-request
+      changes: ["gems/gitlab-utils/**/*"]
+
 #######################
 # Vendored gems rules #
 #######################

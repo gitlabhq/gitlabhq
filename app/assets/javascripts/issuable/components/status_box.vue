@@ -4,7 +4,13 @@ import Vue from 'vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
-import { STATUS_CLOSED, STATUS_OPEN, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import {
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  TYPE_ISSUE,
+  TYPE_MERGE_REQUEST,
+  TYPE_EPIC,
+} from '~/issues/constants';
 
 export const badgeState = Vue.observable({
   state: '',
@@ -18,17 +24,22 @@ const CLASSES = {
   merged: 'issuable-status-badge-merged',
 };
 
-const ISSUE_ICONS = {
-  opened: 'issues',
-  locked: 'issues',
-  closed: 'issue-closed',
-};
-
-const MERGE_REQUEST_ICONS = {
-  opened: 'merge-request-open',
-  locked: 'merge-request-open',
-  closed: 'merge-request-close',
-  merged: 'merge',
+const ICONS = {
+  [TYPE_EPIC]: {
+    opened: 'epic',
+    closed: 'epic-closed',
+  },
+  [TYPE_ISSUE]: {
+    opened: 'issues',
+    locked: 'issues',
+    closed: 'issue-closed',
+  },
+  [TYPE_MERGE_REQUEST]: {
+    opened: 'merge-request-open',
+    locked: 'merge-request-open',
+    closed: 'merge-request-close',
+    merged: 'merge',
+  },
 };
 
 const STATUS = {
@@ -91,10 +102,8 @@ export default {
       return STATUS[this.state];
     },
     badgeIcon() {
-      if (this.issuableType === TYPE_ISSUE) {
-        return ISSUE_ICONS[this.state];
-      }
-      return MERGE_REQUEST_ICONS[this.state];
+      const type = this.issuableType || TYPE_MERGE_REQUEST;
+      return ICONS[type][this.state];
     },
   },
   created() {

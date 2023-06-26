@@ -26,10 +26,14 @@ module Support
               hash[:exceptions] = exceptions.map do |exception|
                 hash = {
                   class: exception.class.name,
-                  message: exception.message,
-                  message_lines: strip_ansi_codes(notification.message_lines),
-                  backtrace: notification.formatted_backtrace
+                  message: exception.message
                 }
+
+                hash[:backtrace] = notification.formatted_backtrace if notification.respond_to?(:backtrace)
+
+                if notification.respond_to?(:message_lines)
+                  hash[:message_lines] = strip_ansi_codes(notification.message_lines)
+                end
 
                 if loglinking
                   hash.merge!(

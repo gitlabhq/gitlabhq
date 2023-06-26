@@ -9,7 +9,7 @@ import { renderJSONTable } from './render_json_table';
 
 function initPopovers(elements) {
   if (!elements.length) return;
-  import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
+  import(/* webpackChunkName: 'IssuablePopoverBundle' */ 'ee_else_ce/issuable/popover')
     .then(({ default: initIssuablePopovers }) => {
       initIssuablePopovers(elements);
     })
@@ -39,7 +39,7 @@ export function renderGFM(element) {
     '.js-render-mermaid',
     '[lang="json"][data-lang-params="table"]',
     '.gfm-project_member',
-    '.gfm-issue, .gfm-work_item, .gfm-merge_request',
+    '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic',
     '.js-render-metrics',
     '.js-render-observability',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));

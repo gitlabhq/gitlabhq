@@ -97,6 +97,17 @@ integration-opensearch-compatibility-version-2:
     OPENSEARCH_VERSION: "2.0.1"
     QA_SCENARIO: "Test::Integration::Opensearch"
 
+# ------------------------------------------
+# Relative url
+# ------------------------------------------
+relative-url:
+  extends:
+    - .qa
+    - .ee
+    - .parallel
+  variables:
+    QA_SCENARIO: Test::Instance::RelativeUrl
+
 # ==========================================
 # Post test stage
 # ==========================================

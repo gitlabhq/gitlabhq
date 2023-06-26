@@ -1248,7 +1248,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/user_access.rb'
     - 'lib/gitlab/user_access_snippet.rb'
     - 'lib/gitlab/uuid.rb'
-    - 'lib/gitlab/version_info.rb'
     - 'lib/gitlab/visibility_level_checker.rb'
     - 'lib/gitlab/wiki_file_finder.rb'
     - 'lib/gitlab/workhorse.rb'

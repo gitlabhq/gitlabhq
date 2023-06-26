@@ -4413,7 +4413,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/utils/safe_inline_hash_spec.rb'
     - 'spec/lib/gitlab/utils/sanitize_node_link_spec.rb'
     - 'spec/lib/gitlab/utils/usage_data_spec.rb'
-    - 'spec/lib/gitlab/utils_spec.rb'
     - 'spec/lib/gitlab/uuid_spec.rb'
     - 'spec/lib/gitlab/verify/job_artifacts_spec.rb'
     - 'spec/lib/gitlab/verify/lfs_objects_spec.rb'

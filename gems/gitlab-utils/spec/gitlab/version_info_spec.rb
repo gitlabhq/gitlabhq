@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Gitlab::VersionInfo do
+RSpec.describe Gitlab::VersionInfo, feature_category: :shared do
   before do
     @unknown = described_class.new
     @v0_0_1 = described_class.new(0, 0, 1)

@@ -1820,7 +1820,6 @@ Layout/ArgumentAlignment:
     - 'spec/lib/gitlab/usage_data_queries_spec.rb'
     - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/lib/gitlab/utils/lazy_attributes_spec.rb'
-    - 'spec/lib/gitlab/utils_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/lib/google_api/cloud_platform/client_spec.rb'
     - 'spec/lib/peek/views/detailed_view_spec.rb'

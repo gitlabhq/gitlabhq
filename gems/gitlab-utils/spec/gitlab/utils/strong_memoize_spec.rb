@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'rspec-benchmark'
-require 'rspec-parameterized'
-require 'active_support/testing/time_helpers'
+# rubocop:disable GitlabSecurity/PublicSend
 
-RSpec.configure do |config|
-  config.include RSpec::Benchmark::Matchers
-end
+require 'spec_helper'
+require 'active_support/testing/time_helpers'
 
 RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
   include ActiveSupport::Testing::TimeHelpers
@@ -89,8 +85,8 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
     let(:member_name) { described_class.normalize_key(method_name) }
 
     it 'only calls the block once' do
-      value0 = object.send(method_name)
-      value1 = object.send(method_name)
+      value0 = object.public_send(method_name)
+      value1 = object.public_send(method_name)
 
       expect(value0).to eq(value)
       expect(value1).to eq(value)
@@ -98,7 +94,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
     end
 
     it 'returns and defines the instance variable for the exact value' do
-      returned_value = object.send(method_name)
+      returned_value = object.public_send(method_name)
       memoized_value = object.instance_variable_get(:"@#{member_name}")
 
       expect(returned_value).to eql(value)
@@ -125,7 +121,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
       end
     end
 
-    context "memory allocation", type: :benchmark do
+    context "with memory allocation", type: :benchmark do
       let(:value) { 'aaa' }
 
       before do
@@ -171,7 +167,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
       end
     end
 
-    context 'value memoization test' do
+    context 'with value memoization test' do
       let(:value) { 'value' }
 
       it 'caches the value for specified number of seconds' do
@@ -265,7 +261,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
       context "with value '#{value}'" do
         let(:value) { value }
 
-        context 'memoized after method definition' do
+        context 'with memoized after method definition' do
           let(:method_name) { :method_name_attr }
 
           it_behaves_like 'caching the value'
@@ -372,3 +368,5 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
     end
   end
 end
+
+# rubocop:enable GitlabSecurity/PublicSend

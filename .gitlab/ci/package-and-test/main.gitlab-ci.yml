@@ -81,6 +81,7 @@ instance-ff-inverse:
 # ------------------------------------------
 
 # ========== instance ===========
+
 instance:
   extends:
     - .parallel
@@ -145,38 +146,6 @@ praefect-selective-parallel:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-      variables:
-        QA_TESTS: ""
-
-# ========== relative-url ===========
-
-relative-url:
-  extends:
-    - .qa
-    - .parallel
-  variables:
-    QA_SCENARIO: Test::Instance::RelativeUrl
-  rules:
-    - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-relative-url-selective:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Instance::RelativeUrl
-  rules:
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-relative-url-selective-parallel:
-  extends:
-    - .qa
-    - .parallel
-  variables:
-    QA_SCENARIO: Test::Instance::RelativeUrl
   rules:
     - !reference [.rules:test:qa-selective-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/

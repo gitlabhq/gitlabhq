@@ -94,14 +94,6 @@ RSpec.shared_examples 'handle uploads' do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
-
-      it 'is a working exploit without the validation' do
-        allow_any_instance_of(FileUploader).to receive(:secret) { secret }
-
-        show_upload
-
-        expect(response).to have_gitlab_http_status(:ok)
-      end
     end
 
     context 'when accessing a specific upload via different model' do

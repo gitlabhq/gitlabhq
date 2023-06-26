@@ -107,7 +107,7 @@ You can see example adding new Gem: [!121676](https://gitlab.com/gitlab-org/gitl
      rspec:
        image: "ruby:${RUBY_VERSION}"
        cache:
-         key: gitlab-<name-of-gem>
+         key: gitlab-<name-of-gem>-${RUBY_VERSION}
          paths:
            - gitlab-<name-of-gem>/vendor/ruby
        before_script:

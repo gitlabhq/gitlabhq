@@ -6,7 +6,7 @@ module Gitlab
 
     attr_reader :major, :minor, :patch
 
-    VERSION_REGEX = /(\d+)\.(\d+)\.(\d+)/.freeze
+    VERSION_REGEX = /(\d+)\.(\d+)\.(\d+)/
     # To mitigate ReDoS, limit the length of the version string we're
     # willing to check
     MAX_VERSION_LENGTH = 128
@@ -21,7 +21,7 @@ module Gitlab
       end
     end
 
-    def initialize(major = 0, minor = 0, patch = 0, suffix = nil)
+    def initialize(major = 0, minor = 0, patch = 0, suffix = nil) # rubocop:disable Metrics/ParameterLists
       @major = major
       @minor = minor
       @patch = patch
@@ -59,7 +59,7 @@ module Gitlab
 
     def to_s
       if valid?
-        "%d.%d.%d%s" % [@major, @minor, @patch, @suffix_s]
+        "%d.%d.%d%s" % [@major, @minor, @patch, @suffix_s] # rubocop:disable Style/FormatString
       else
         'Unknown'
       end

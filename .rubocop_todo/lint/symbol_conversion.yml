@@ -117,7 +117,6 @@ Lint/SymbolConversion:
     - 'spec/lib/gitlab/search/abuse_validators/no_abusive_coercion_from_string_validator_spec.rb'
     - 'spec/lib/gitlab/slug/path_spec.rb'
     - 'spec/lib/gitlab/tracking_spec.rb'
-    - 'spec/lib/gitlab/utils_spec.rb'
     - 'spec/lib/google_api/cloud_platform/client_spec.rb'
     - 'spec/lib/service_ping/devops_report_spec.rb'
     - 'spec/models/integrations/prometheus_spec.rb'

@@ -2,13 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Utils do
+RSpec.describe Gitlab::Utils, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
+  include StubENV
 
   delegate :to_boolean, :boolean_to_yes_no, :slugify, :which,
-           :ensure_array_from_string, :bytes_to_megabytes,
-           :append_path, :remove_leading_slashes, :allowlisted?,
-           :decode_path, :ms_to_round_sec, to: :described_class
+    :ensure_array_from_string, :bytes_to_megabytes,
+    :append_path, :remove_leading_slashes, :allowlisted?,
+    :decode_path, :ms_to_round_sec, to: :described_class
 
   describe '.allowlisted?' do
     let(:allowed_paths) { ['/home/foo', '/foo/bar', '/etc/passwd'] }
@@ -225,7 +226,7 @@ RSpec.describe Gitlab::Utils do
   end
 
   describe '.ensure_utf8_size' do
-    context 'string is has less bytes than expected' do
+    context 'with string is has less bytes than expected' do
       it 'backfills string with null characters' do
         transformed = described_class.ensure_utf8_size('a' * 10, bytes: 32)
 
@@ -234,7 +235,7 @@ RSpec.describe Gitlab::Utils do
       end
     end
 
-    context 'string size is exactly the one that is expected' do
+    context 'with string size is exactly the one that is expected' do
       it 'returns original value' do
         transformed = described_class.ensure_utf8_size('a' * 32, bytes: 32)
 
@@ -247,7 +248,7 @@ RSpec.describe Gitlab::Utils do
       it 'backfills string with null characters' do
         transformed = described_class.ensure_utf8_size('❤' * 6, bytes: 32)
 
-        expect(transformed).to eq '❤❤❤❤❤❤' + ('0' * 14)
+        expect(transformed).to eq '❤❤❤❤❤❤' + ('0' * 14) # rubocop:disable Style/StringConcatenation
         expect(transformed.bytesize).to eq 32
       end
     end
@@ -368,7 +369,7 @@ RSpec.describe Gitlab::Utils do
       nil                          | { b: 3, a: 2 }     | '?a=2&b=3'
       'https://gitlab.com'         | nil                | 'https://gitlab.com'
       'https://gitlab.com'         | { b: 3, a: 2 }     | 'https://gitlab.com?a=2&b=3'
-      'https://gitlab.com?a=1#foo' | { b: 3, 'a': 2 }   | 'https://gitlab.com?a=2&b=3#foo'
+      'https://gitlab.com?a=1#foo' | { b: 3, 'a' => 2 } | 'https://gitlab.com?a=2&b=3#foo'
       'https://gitlab.com?a=1#foo' | [[:b, 3], [:a, 2]] | 'https://gitlab.com?a=2&b=3#foo'
     end
 
@@ -391,7 +392,8 @@ RSpec.describe Gitlab::Utils do
     end
 
     it 'returns string with filtered access_token param' do
-      expect(described_class.removes_sensitive_data_from_url('http://gitlab.com/auth.html#access_token=secret_token')).to eq('http://gitlab.com/auth.html#access_token=filtered')
+      expect(described_class.removes_sensitive_data_from_url('http://gitlab.com/auth.html#access_token=secret_token'))
+        .to eq('http://gitlab.com/auth.html#access_token=filtered')
     end
 
     it 'returns string with filtered access_token param but other params preserved' do

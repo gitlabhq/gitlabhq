@@ -5,11 +5,11 @@ require_relative '../config/bundler_setup'
 require 'optparse'
 require 'logger'
 require 'time'
+require 'gitlab/utils/all'
 
 # In environments where code is preloaded and cached such as `spring`,
 # we may run into "already initialized" warnings, hence the check.
 require_relative '../lib/gitlab'
-require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/sidekiq_config/cli_methods'
 require_relative '../lib/gitlab/sidekiq_config/worker_matcher'
 require_relative '../lib/gitlab/sidekiq_logging/json_formatter'

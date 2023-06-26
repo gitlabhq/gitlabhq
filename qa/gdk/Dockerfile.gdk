@@ -98,8 +98,8 @@ RUN set -eux; \
 # Install gitlab gem dependencies
 #
 COPY --chown=gdk:gdk Gemfile Gemfile.lock ./gitlab/
-COPY --chown=gdk:gdk vendor/gems ./gitlab/vendor/gems
-COPY --chown=gdk:gdk gems ./gitlab/gems
+COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
+COPY --chown=gdk:gdk gems/ ./gitlab/gems/
 RUN make .gitlab-bundle && rm -rf ${GEM_HOME}/cache
 
 # Install gitlab npm dependencies

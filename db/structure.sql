@@ -23057,6 +23057,23 @@ CREATE SEQUENCE subscription_add_ons_id_seq
 
 ALTER SEQUENCE subscription_add_ons_id_seq OWNED BY subscription_add_ons.id;
 
+CREATE TABLE subscription_user_add_on_assignments (
+    id bigint NOT NULL,
+    add_on_purchase_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE subscription_user_add_on_assignments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE subscription_user_add_on_assignments_id_seq OWNED BY subscription_user_add_on_assignments.id;
+
 CREATE TABLE subscriptions (
     id integer NOT NULL,
     user_id integer,
@@ -25862,6 +25879,8 @@ ALTER TABLE ONLY subscription_add_on_purchases ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY subscription_add_ons ALTER COLUMN id SET DEFAULT nextval('subscription_add_ons_id_seq'::regclass);
 
+ALTER TABLE ONLY subscription_user_add_on_assignments ALTER COLUMN id SET DEFAULT nextval('subscription_user_add_on_assignments_id_seq'::regclass);
+
 ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscriptions_id_seq'::regclass);
 
 ALTER TABLE ONLY suggestions ALTER COLUMN id SET DEFAULT nextval('suggestions_id_seq'::regclass);
@@ -28350,6 +28369,9 @@ ALTER TABLE ONLY subscription_add_on_purchases
 
 ALTER TABLE ONLY subscription_add_ons
     ADD CONSTRAINT subscription_add_ons_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY subscription_user_add_on_assignments
+    ADD CONSTRAINT subscription_user_add_on_assignments_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY subscriptions
     ADD CONSTRAINT subscriptions_pkey PRIMARY KEY (id);
@@ -32910,6 +32932,8 @@ CREATE INDEX index_subscription_add_on_purchases_on_subscription_add_on_id ON su
 
 CREATE UNIQUE INDEX index_subscription_add_ons_on_name ON subscription_add_ons USING btree (name);
 
+CREATE INDEX index_subscription_user_add_on_assignments_on_user_id ON subscription_user_add_on_assignments USING btree (user_id);
+
 CREATE INDEX index_subscriptions_on_project_id ON subscriptions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_subscriptions_on_subscribable_and_user_id_and_project_id ON subscriptions USING btree (subscribable_id, subscribable_type, user_id, project_id);
@@ -33555,6 +33579,8 @@ CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USIN
 CREATE UNIQUE INDEX u_project_compliance_standards_adherence_for_reporting ON project_compliance_standards_adherence USING btree (project_id, check_name, standard);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 14);
+
+CREATE UNIQUE INDEX uniq_idx_user_add_on_assignments_on_add_on_purchase_and_user ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, user_id);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 
@@ -35227,6 +35253,9 @@ ALTER TABLE ONLY notification_settings
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_0d3f677137 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY subscription_user_add_on_assignments
+    ADD CONSTRAINT fk_0d89020c49 FOREIGN KEY (add_on_purchase_id) REFERENCES subscription_add_on_purchases(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_0f58311058 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -35595,6 +35624,9 @@ ALTER TABLE ONLY integrations
 
 ALTER TABLE ONLY user_interacted_projects
     ADD CONSTRAINT fk_722ceba4f7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY subscription_user_add_on_assignments
+    ADD CONSTRAINT fk_724c2df9a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_725465b774 FOREIGN KEY (dismissed_by_id) REFERENCES users(id) ON DELETE SET NULL;

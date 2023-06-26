@@ -1120,6 +1120,12 @@ msgstr ""
 msgid "%{spanStart}in%{spanEnd} %{errorFn}"
 msgstr ""
 
+msgid "%{startDate} – %{dueDate}"
+msgstr ""
+
+msgid "%{startDate} – No due date"
+msgstr ""
+
 msgid "%{start} to %{end}"
 msgstr ""
 
@@ -17714,12 +17720,6 @@ msgstr ""
 msgid "Epics, issues, and merge requests"
 msgstr ""
 
-msgid "Epics|%{startDate} – %{dueDate}"
-msgstr ""
-
-msgid "Epics|%{startDate} – No due date"
-msgstr ""
-
 msgid "Epics|Add a new epic"
 msgstr ""
 
@@ -17733,9 +17733,6 @@ msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd}
 msgstr ""
 
 msgid "Epics|Leave empty to inherit from milestone dates"
-msgstr ""
-
-msgid "Epics|No start date – %{dueDate}"
 msgstr ""
 
 msgid "Epics|Remove epic"
@@ -30790,6 +30787,9 @@ msgid "No stack trace for this error"
 msgstr ""
 
 msgid "No starrers matched your search"
+msgstr ""
+
+msgid "No start date – %{dueDate}"
 msgstr ""
 
 msgid "No suggestions found"

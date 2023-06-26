@@ -256,6 +256,24 @@ Bulk requests getting rejected by the Elasticsearch nodes are likely due to load
 Ensure that your Elasticsearch cluster meets the [system requirements](elasticsearch.md#system-requirements) and has enough resources
 to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
 
+### Indexing fails with `strict_dynamic_mapping_exception`
+
+Indexing might fail if all [advanced search migrations were not finished before doing a major upgrade](elasticsearch.md#all-migrations-must-be-finished-before-doing-a-major-upgrade).
+A large Sidekiq backlog might accompany this error. To fix the indexing failures, you must re-index the database, repositories, and wikis.
+
+1. Pause indexing so Sidekiq can catch up:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:pause_indexing
+   ```
+
+1. [Recreate the index from scratch](#last-resort-to-recreate-an-index).
+1. Resume indexing:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:resume_indexing
+   ```
+
 ### Last resort to recreate an index
 
 There may be cases where somehow data never got indexed and it's not in the

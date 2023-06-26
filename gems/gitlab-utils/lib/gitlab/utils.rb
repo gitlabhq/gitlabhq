@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
+require "addressable/uri"
+require "active_support/all"
+require "action_view"
+
 module Gitlab
   module Utils
     extend self
-    DoubleEncodingError ||= Class.new(StandardError)
+    DoubleEncodingError = Class.new(StandardError)
 
     def allowlisted?(absolute_path, allowlist)
       path = absolute_path.downcase
@@ -15,7 +19,7 @@ module Gitlab
 
     def decode_path(encoded_path)
       decoded = CGI.unescape(encoded_path)
-      if decoded != CGI.unescape(decoded)
+      if decoded != CGI.unescape(decoded) # rubocop:disable Style/IfUnlessModifier
         raise DoubleEncodingError, "path #{encoded_path} is not allowed"
       end
 
@@ -31,7 +35,7 @@ module Gitlab
       raise ArgumentError, 'Negative string size provided!' if bytes < 0
 
       truncated = str.each_char.each_with_object(+'') do |char, object|
-        if object.bytesize + char.bytesize > bytes
+        if object.bytesize + char.bytesize > bytes # rubocop:disable Style/GuardClause
           break object
         else
           object.concat(char)
@@ -43,7 +47,7 @@ module Gitlab
 
     # Append path to host, making sure there's one single / in between
     def append_path(host, path)
-      "#{host.to_s.sub(%r{\/+$}, '')}/#{remove_leading_slashes(path)}"
+      "#{host.to_s.sub(%r{\/+$}, '')}/#{remove_leading_slashes(path)}" # rubocop:disable Style/RedundantRegexpEscape
     end
 
     def remove_leading_slashes(str)
@@ -128,7 +132,7 @@ module Gitlab
     def deep_indifferent_access(data)
       case data
       when Array
-        data.map(&method(:deep_indifferent_access))
+        data.map { |item| deep_indifferent_access(item) }
       when Hash
         data.with_indifferent_access
       else
@@ -139,7 +143,7 @@ module Gitlab
     def deep_symbolized_access(data)
       case data
       when Array
-        data.map(&method(:deep_symbolized_access))
+        data.map { |item| deep_symbolized_access(item) }
       when Hash
         data.deep_symbolize_keys
       else
@@ -242,7 +246,7 @@ module Gitlab
 
       unless allow_nested
         # nested brackets check
-        return false if brackets.include?('[[') || brackets.include?(']]')
+        return false if brackets.include?('[[') || brackets.include?(']]') # rubocop:disable Style/SoleNestedConditional
       end
 
       # open / close brackets coherence check

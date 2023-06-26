@@ -3,7 +3,7 @@
 require 'simplecov'
 require 'simplecov-cobertura'
 require 'simplecov-lcov'
-require_relative '../lib/gitlab/utils'
+require 'gitlab/utils/all'
 
 module SimpleCovEnv
   extend self

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require_relative '../config/bundler_setup'
 require_relative '../spec/simplecov_env'
 SimpleCovEnv.configure_profile
 SimpleCovEnv.configure_formatter

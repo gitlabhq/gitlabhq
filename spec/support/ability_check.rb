@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'gitlab/utils/strong_memoize'
+require 'gitlab/utils/all'
 
 module Support
   module AbilityCheck

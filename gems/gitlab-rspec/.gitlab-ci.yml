@@ -12,7 +12,7 @@ workflow:
 rspec:
   image: "ruby:${RUBY_VERSION}"
   cache:
-    key: gitlab-rspec
+    key: gitlab-rspec-${RUBY_VERSION}
     paths:
       - gitlab-rspec/vendor/ruby
   before_script:

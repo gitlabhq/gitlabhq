@@ -12,6 +12,8 @@ require 'action_mailer/railtie'
 require 'action_cable/engine'
 require 'rails/test_unit/railtie'
 
+require 'gitlab/utils/all'
+
 Bundler.require(*Rails.groups)
 
 module Gitlab
@@ -49,7 +51,6 @@ module Gitlab
     ActiveSupport.to_time_preserves_timezone = false
 
     require_dependency Rails.root.join('lib/gitlab')
-    require_dependency Rails.root.join('lib/gitlab/utils')
     require_dependency Rails.root.join('lib/gitlab/action_cable/config')
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')

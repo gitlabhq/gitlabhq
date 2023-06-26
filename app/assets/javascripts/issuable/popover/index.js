@@ -4,7 +4,7 @@ import createDefaultClient from '~/lib/graphql';
 import IssuePopover from './components/issue_popover.vue';
 import MRPopover from './components/mr_popover.vue';
 
-const componentsByReferenceType = {
+export const componentsByReferenceTypeMap = {
   issue: IssuePopover,
   work_item: IssuePopover,
   merge_request: MRPopover,
@@ -26,9 +26,10 @@ const popoverMountedAttr = 'data-popover-mounted';
  * Adds a MergeRequestPopover component to the body, hands over as much data as the target element has in data attributes.
  * loads based on data-project-path and data-iid more data about an MR from the API and sets it on the popover
  */
-const handleIssuablePopoverMount = ({
+export const handleIssuablePopoverMount = ({
+  componentsByReferenceType = componentsByReferenceTypeMap,
   apolloProvider,
-  projectPath,
+  namespacePath,
   title,
   iid,
   referenceType,
@@ -42,7 +43,7 @@ const handleIssuablePopoverMount = ({
     new PopoverComponent({
       propsData: {
         target,
-        projectPath,
+        namespacePath,
         iid,
         cachedTitle: title,
       },
@@ -53,7 +54,7 @@ const handleIssuablePopoverMount = ({
   }, 200); // 200ms delay so not every mouseover triggers Popover + API Call
 };
 
-export default (elements) => {
+export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => {
   if (elements.length > 0) {
     Vue.use(VueApollo);
 
@@ -63,15 +64,16 @@ export default (elements) => {
     const listenerAddedAttr = 'data-popover-listener-added';
 
     elements.forEach((el) => {
-      const { projectPath, iid, referenceType } = el.dataset;
+      const { projectPath, groupPath, iid, referenceType } = el.dataset;
       const title = el.dataset.mrTitle || el.title;
+      const namespacePath = groupPath || projectPath;
 
-      if (!el.getAttribute(listenerAddedAttr) && projectPath && title && iid && referenceType) {
+      if (!el.getAttribute(listenerAddedAttr) && namespacePath && title && iid && referenceType) {
         el.addEventListener('mouseenter', ({ target }) => {
           if (!el.getAttribute(popoverMountedAttr)) {
-            handleIssuablePopoverMount({
+            issuablePopoverMount({
               apolloProvider,
-              projectPath,
+              namespacePath,
               title,
               iid,
               referenceType,

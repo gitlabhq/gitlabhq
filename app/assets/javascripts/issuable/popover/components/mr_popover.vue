@@ -19,7 +19,7 @@ export default {
       type: HTMLAnchorElement,
       required: true,
     },
-    projectPath: {
+    namespacePath: {
       type: String,
       required: true,
     },
@@ -76,10 +76,10 @@ export default {
       query,
       update: (data) => data.project.mergeRequest,
       variables() {
-        const { projectPath, iid } = this;
+        const { namespacePath, iid } = this;
 
         return {
-          projectPath,
+          projectPath: namespacePath,
           iid,
         };
       },
@@ -108,7 +108,7 @@ export default {
       <h5 v-if="!$apollo.queries.mergeRequest.loading" class="my-2">{{ title }}</h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
       <div class="gl-text-secondary">
-        {{ `${projectPath}!${iid}` }}
+        {{ `${namespacePath}!${iid}` }}
       </div>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
     </div>

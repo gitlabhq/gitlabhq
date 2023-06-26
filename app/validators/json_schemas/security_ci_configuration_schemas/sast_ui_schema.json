@@ -32,12 +32,12 @@
     },
     {
       "field": "SEARCH_MAX_DEPTH",
-      "label": "Search maximum depth",
+      "label": "Search Maximum Depth",
       "type": "string",
       "default_value": "",
       "value": "",
       "size": "SMALL",
-      "description": "Maximum depth of language and framework detection"
+      "description": "Specifies the number of directory levels to be included in the repository search phase during SAST analysis. SAST scanner searches through the repository to detect the programming languages used and selects the corresponding analyzers. After that, the entire repository is analyzed."
     }
   ],
   "analyzers": [
@@ -80,56 +80,72 @@
       "label": "Kubesec",
       "enabled": true,
       "description": "Kubernetes manifests, Helm Charts",
-      "variables": []
+      "variables": [
+
+      ]
     },
     {
       "name": "nodejs-scan",
       "label": "Node.js Scan",
       "enabled": true,
       "description": "Node.js",
-      "variables": []
+      "variables": [
+
+      ]
     },
     {
       "name": "phpcs-security-audit",
       "label": "PHP Security Audit",
       "enabled": true,
       "description": "PHP",
-      "variables": []
+      "variables": [
+
+      ]
     },
     {
       "name": "pmd-apex",
       "label": "PMD APEX",
       "enabled": true,
       "description": "Apex (Salesforce)",
-      "variables": []
+      "variables": [
+
+      ]
     },
     {
       "name": "security-code-scan",
       "label": "Security Code Scan",
       "enabled": true,
       "description": ".NET Core, .NET Framework",
-      "variables": []
+      "variables": [
+
+      ]
     },
     {
       "name": "semgrep",
       "label": "Semgrep",
       "enabled": true,
       "description": "Multi-language scanning",
-      "variables": []
+      "variables": [
+
+      ]
     },
     {
       "name": "sobelow",
       "label": "Sobelow",
       "enabled": true,
       "description": "Elixir (Phoenix)",
-      "variables": []
+      "variables": [
+
+      ]
     },
     {
       "name": "spotbugs",
       "label": "Spotbugs",
       "enabled": true,
       "description": "Groovy, Java, Scala",
-      "variables": []
+      "variables": [
+
+      ]
     }
   ]
 }

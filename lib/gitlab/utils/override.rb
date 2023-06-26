@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../utils'
+require 'gitlab/utils/all'
 require_relative '../environment'
 
 module Gitlab

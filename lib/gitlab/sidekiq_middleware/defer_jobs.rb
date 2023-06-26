@@ -22,6 +22,8 @@ module Gitlab
           # Referred in job_logger's 'log_job_done' method to compute proper 'job_status'
           job['deferred'] = true
           job['deferred_by'] = deferred_by
+          job['deferred_count'] ||= 0
+          job['deferred_count'] += 1
 
           worker.class.perform_in(delay, *job['args'])
           counter.increment({ worker: worker.class.name })

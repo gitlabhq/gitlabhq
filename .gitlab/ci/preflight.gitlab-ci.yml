@@ -24,9 +24,6 @@
     - .ruby-cache
     - .preflight:rules:rails-production-server-boot
     - .use-pg13
-  variables:
-    BUNDLE_WITHOUT: "development:test"
-    BUNDLE_WITH: "production"
 
 # Test the puma configuration present in `config/puma.rb.example`
 rails-production-server-boot-puma-example:
