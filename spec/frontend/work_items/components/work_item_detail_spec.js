@@ -18,12 +18,8 @@ import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
-import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
-import WorkItemState from '~/work_items/components/work_item_state.vue';
+import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
-import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
-import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
@@ -69,12 +65,8 @@ describe('WorkItemDetail component', () => {
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
-  const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
-  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
-  const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
-  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
+  const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
   const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
@@ -168,7 +160,6 @@ describe('WorkItemDetail component', () => {
 
     it('renders skeleton loader', () => {
       expect(findSkeleton().exists()).toBe(true);
-      expect(findWorkItemState().exists()).toBe(false);
       expect(findWorkItemTitle().exists()).toBe(false);
     });
   });
@@ -181,7 +172,6 @@ describe('WorkItemDetail component', () => {
 
     it('does not render skeleton', () => {
       expect(findSkeleton().exists()).toBe(false);
-      expect(findWorkItemState().exists()).toBe(true);
       expect(findWorkItemTitle().exists()).toBe(true);
     });
 
@@ -480,83 +470,6 @@ describe('WorkItemDetail component', () => {
 
     expect(findAlert().text()).toBe(updateError);
   });
-  describe('assignees widget', () => {
-    it('renders assignees component when widget is returned from the API', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findWorkItemAssignees().exists()).toBe(true);
-    });
-
-    it('does not render assignees component when widget is not returned from the API', async () => {
-      createComponent({
-        handler: jest
-          .fn()
-          .mockResolvedValue(workItemByIidResponseFactory({ assigneesWidgetPresent: false })),
-      });
-      await waitForPromises();
-
-      expect(findWorkItemAssignees().exists()).toBe(false);
-    });
-  });
-
-  describe('labels widget', () => {
-    it.each`
-      description                                               | labelsWidgetPresent | exists
-      ${'renders when widget is returned from API'}             | ${true}             | ${true}
-      ${'does not render when widget is not returned from API'} | ${false}            | ${false}
-    `('$description', async ({ labelsWidgetPresent, exists }) => {
-      const response = workItemByIidResponseFactory({ labelsWidgetPresent });
-      const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler });
-      await waitForPromises();
-
-      expect(findWorkItemLabels().exists()).toBe(exists);
-    });
-  });
-
-  describe('dates widget', () => {
-    describe.each`
-      description                               | datesWidgetPresent | exists
-      ${'when widget is returned from API'}     | ${true}            | ${true}
-      ${'when widget is not returned from API'} | ${false}           | ${false}
-    `('$description', ({ datesWidgetPresent, exists }) => {
-      it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, async () => {
-        const response = workItemByIidResponseFactory({ datesWidgetPresent });
-        const handler = jest.fn().mockResolvedValue(response);
-        createComponent({ handler });
-        await waitForPromises();
-
-        expect(findWorkItemDueDate().exists()).toBe(exists);
-      });
-    });
-
-    it('shows an error message when it emits an `error` event', async () => {
-      createComponent();
-      await waitForPromises();
-      const updateError = 'Failed to update';
-
-      findWorkItemDueDate().vm.$emit('error', updateError);
-      await waitForPromises();
-
-      expect(findAlert().text()).toBe(updateError);
-    });
-  });
-
-  describe('milestone widget', () => {
-    it.each`
-      description                                               | milestoneWidgetPresent | exists
-      ${'renders when widget is returned from API'}             | ${true}                | ${true}
-      ${'does not render when widget is not returned from API'} | ${false}               | ${false}
-    `('$description', async ({ milestoneWidgetPresent, exists }) => {
-      const response = workItemByIidResponseFactory({ milestoneWidgetPresent });
-      const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler });
-      await waitForPromises();
-
-      expect(findWorkItemMilestone().exists()).toBe(exists);
-    });
-  });
 
   it('calls the work item query', async () => {
     createComponent();
@@ -711,6 +624,26 @@ describe('WorkItemDetail component', () => {
 
     it('does not renders if not logged in', () => {
       expect(findWorkItemTodos().exists()).toBe(false);
+    });
+  });
+
+  describe('work item attributes wrapper', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('renders the work item attributes wrapper', () => {
+      expect(findWorkItemAttributesWrapper().exists()).toBe(true);
+    });
+
+    it('shows an error message when it emits an `error` event', async () => {
+      const updateError = 'Failed to update';
+
+      findWorkItemAttributesWrapper().vm.$emit('error', updateError);
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(updateError);
     });
   });
 });

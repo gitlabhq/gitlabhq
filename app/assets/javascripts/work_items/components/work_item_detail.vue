@@ -22,18 +22,11 @@ import {
   sprintfWorkItem,
   i18n,
   WIDGET_TYPE_ASSIGNEES,
-  WIDGET_TYPE_LABELS,
   WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
-  WIDGET_TYPE_START_AND_DUE_DATE,
-  WIDGET_TYPE_WEIGHT,
-  WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_HIERARCHY,
-  WIDGET_TYPE_MILESTONE,
-  WIDGET_TYPE_ITERATION,
-  WIDGET_TYPE_HEALTH_STATUS,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WIDGET_TYPE_NOTES,
@@ -48,17 +41,13 @@ import { findHierarchyWidgetChildren } from '../utils';
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemTodos from './work_item_todos.vue';
-import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
+import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
 import WorkItemDescription from './work_item_description.vue';
-import WorkItemAwardEmoji from './work_item_award_emoji.vue';
-import WorkItemDueDate from './work_item_due_date.vue';
-import WorkItemAssignees from './work_item_assignees.vue';
-import WorkItemLabels from './work_item_labels.vue';
-import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemNotes from './work_item_notes.vue';
 import WorkItemDetailModal from './work_item_detail_modal.vue';
+import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 
 export default {
   i18n,
@@ -74,23 +63,14 @@ export default {
     GlSkeletonLoader,
     GlIcon,
     GlEmptyState,
-    WorkItemAssignees,
     WorkItemActions,
     WorkItemTodos,
     WorkItemCreatedUpdated,
     WorkItemDescription,
     WorkItemAwardEmoji,
-    WorkItemDueDate,
-    WorkItemLabels,
     WorkItemTitle,
-    WorkItemState,
-    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
-    WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
+    WorkItemAttributesWrapper,
     WorkItemTypeIcon,
-    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
-    WorkItemHealthStatus: () =>
-      import('ee_component/work_items/components/work_item_health_status.vue'),
-    WorkItemMilestone,
     WorkItemTree,
     WorkItemNotes,
     WorkItemDetailModal,
@@ -256,32 +236,11 @@ export default {
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
     },
-    workItemLabels() {
-      return this.isWidgetPresent(WIDGET_TYPE_LABELS);
-    },
-    workItemDueDate() {
-      return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
-    },
-    workItemWeight() {
-      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
-    },
-    workItemProgress() {
-      return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
-    },
     workItemAwardEmoji() {
       return this.isWidgetPresent(WIDGET_TYPE_AWARD_EMOJI);
     },
     workItemHierarchy() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
-    },
-    workItemIteration() {
-      return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
-    },
-    workItemHealthStatus() {
-      return this.isWidgetPresent(WIDGET_TYPE_HEALTH_STATUS);
-    },
-    workItemMilestone() {
-      return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
     workItemNotes() {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
@@ -511,83 +470,9 @@ export default {
           @error="updateError = $event"
         />
         <work-item-created-updated :work-item-iid="workItemIid" />
-        <work-item-state
+        <work-item-attributes-wrapper
           :work-item="workItem"
           :work-item-parent-id="workItemParentId"
-          :can-update="canUpdate"
-          @error="updateError = $event"
-        />
-        <work-item-assignees
-          v-if="workItemAssignees"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :assignees="workItemAssignees.assignees.nodes"
-          :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-          :work-item-type="workItemType"
-          :can-invite-members="workItemAssignees.canInviteMembers"
-          @error="updateError = $event"
-        />
-        <work-item-labels
-          v-if="workItemLabels"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :work-item-iid="workItem.iid"
-          @error="updateError = $event"
-        />
-        <work-item-due-date
-          v-if="workItemDueDate"
-          :can-update="canUpdate"
-          :due-date="workItemDueDate.dueDate"
-          :start-date="workItemDueDate.startDate"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-          @error="updateError = $event"
-        />
-        <work-item-milestone
-          v-if="workItemMilestone"
-          :work-item-id="workItem.id"
-          :work-item-milestone="workItemMilestone.milestone"
-          :work-item-type="workItemType"
-          :can-update="canUpdate"
-          @error="updateError = $event"
-        />
-        <work-item-weight
-          v-if="workItemWeight"
-          class="gl-mb-5"
-          :can-update="canUpdate"
-          :weight="workItemWeight.weight"
-          :work-item-id="workItem.id"
-          :work-item-iid="workItem.iid"
-          :work-item-type="workItemType"
-          @error="updateError = $event"
-        />
-        <work-item-progress
-          v-if="workItemProgress"
-          class="gl-mb-5"
-          :can-update="canUpdate"
-          :progress="workItemProgress.progress"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-          @error="updateError = $event"
-        />
-        <work-item-iteration
-          v-if="workItemIteration"
-          class="gl-mb-5"
-          :iteration="workItemIteration.iteration"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :work-item-iid="workItem.iid"
-          :work-item-type="workItemType"
-          @error="updateError = $event"
-        />
-        <work-item-health-status
-          v-if="workItemHealthStatus"
-          class="gl-mb-5"
-          :health-status="workItemHealthStatus.healthStatus"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :work-item-iid="workItem.iid"
-          :work-item-type="workItemType"
           @error="updateError = $event"
         />
         <work-item-description
