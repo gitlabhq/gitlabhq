@@ -1,11 +1,10 @@
 import $ from 'jquery';
 import { nextTick } from 'vue';
-import { GlToggle } from '@gitlab/ui';
+import { GlToggle, GlButton } from '@gitlab/ui';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 
 describe('Markdown field header component', () => {
   let wrapper;
@@ -100,7 +99,8 @@ describe('Markdown field header component', () => {
   it('hides toolbar in preview mode', () => {
     createWrapper({ previewMarkdown: true });
 
-    expect(findToolbar().classes().includes('gl-display-none!')).toBe(true);
+    // only one button is rendered in preview mode
+    expect(findToolbar().findAllComponents(GlButton)).toHaveLength(1);
   });
 
   it('emits toggle markdown event when clicking preview toggle', async () => {
@@ -203,20 +203,6 @@ describe('Markdown field header component', () => {
         uploadsPath,
         markdownPreviewPath,
       });
-    });
-  });
-
-  describe('with content editor switcher', () => {
-    beforeEach(() => {
-      createWrapper({
-        showContentEditorSwitcher: true,
-      });
-    });
-
-    it('re-emits event from switcher', () => {
-      wrapper.findComponent(EditorModeSwitcher).vm.$emit('input', 'richText');
-
-      expect(wrapper.emitted('enableContentEditor')).toEqual([[]]);
     });
   });
 });

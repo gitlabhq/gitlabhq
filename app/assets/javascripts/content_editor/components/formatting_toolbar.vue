@@ -1,5 +1,4 @@
 <script>
-import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 import trackUIControl from '../services/track_ui_control';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarAttachmentButton from './toolbar_attachment_button.vue';
@@ -14,9 +13,13 @@ export default {
     ToolbarTableButton,
     ToolbarAttachmentButton,
     ToolbarMoreDropdown,
-    EditorModeSwitcher,
   },
   props: {
+    supportsQuickActions: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     hideAttachmentButton: {
       type: Boolean,
       default: false,
@@ -26,9 +29,6 @@ export default {
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
       trackUIControl({ property: contentType, value });
-    },
-    handleEditorModeChanged() {
-      this.$emit('enableMarkdownEditor');
     },
   },
 };
@@ -125,10 +125,18 @@ export default {
           data-testid="attachment"
           @execute="trackToolbarControlExecution"
         />
+        <!-- TODO Add icon and trigger functionality from here -->
+        <toolbar-button
+          v-if="supportsQuickActions"
+          data-testid="quick-actions"
+          content-type="quickAction"
+          icon-name="quick-actions"
+          class="gl-display-none gl-sm-display-inline gl-mr-1!"
+          editor-command="insertQuickAction"
+          :label="__('Add a quick action')"
+          @execute="trackToolbarControlExecution"
+        />
         <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
-      </div>
-      <div class="content-editor-switcher gl-display-flex gl-align-items-center gl-ml-auto">
-        <editor-mode-switcher size="small" value="richText" @input="handleEditorModeChanged" />
       </div>
     </div>
   </div>

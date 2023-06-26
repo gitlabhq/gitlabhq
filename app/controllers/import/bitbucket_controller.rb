@@ -129,7 +129,7 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def options
-    OmniAuth::Strategies::Bitbucket.default_options[:client_options].deep_symbolize_keys
+    OmniAuth::Strategies::Bitbucket.default_options[:client_options].to_h.deep_symbolize_keys
   end
 
   def verify_bitbucket_import_enabled

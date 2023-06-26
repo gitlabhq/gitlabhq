@@ -46,7 +46,7 @@ This table shows the capabilities available with the Jira issue integration and 
 | [View a list of Jira issues](issues.md#view-jira-issues) | **{check-circle}** Yes | **{dotted-circle}** No |
 | [Create a Jira issue for a vulnerability](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability) | **{check-circle}** Yes | **{dotted-circle}** No |
 | Create a GitLab branch from a Jira issue | **{dotted-circle}** No | **{check-circle}** Yes, in the issue's development panel |
-| Mention a Jira issue ID in a GitLab merge request, and deployments are synced | **{dotted-circle}** No | **{check-circle}** Yes, in the issue's development panel |
+| Sync GitLab deployments to Jira issues | **{dotted-circle}** No | **{check-circle}** Yes, in the issue's development panel. Mention a Jira issue ID in a GitLab merge request, branch name, or any of the last 5,000 commits made to the branch after the last successful deployment to the environment |
 
 ## Privacy considerations
 

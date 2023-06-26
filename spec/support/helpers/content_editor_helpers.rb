@@ -2,7 +2,7 @@
 
 module ContentEditorHelpers
   def switch_to_content_editor
-    click_button("Switch to rich text")
+    click_button("Switch to rich text editing")
   end
 
   def type_in_content_editor(keys)

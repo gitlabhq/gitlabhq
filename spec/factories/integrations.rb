@@ -136,6 +136,8 @@ FactoryBot.define do
           jira_auth_type: evaluator.jira_auth_type,
           jira_issue_transition_automatic: evaluator.jira_issue_transition_automatic,
           jira_issue_transition_id: evaluator.jira_issue_transition_id,
+          jira_issue_prefix: evaluator.jira_issue_prefix,
+          jira_issue_regex: evaluator.jira_issue_regex,
           username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
           project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
           vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype, deployment_type: evaluator.deployment_type

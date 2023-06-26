@@ -124,7 +124,7 @@ export default {
               :textarea-value="noteData.note"
               :markdown-preview-path="getNoteableData.preview_note_path"
               :markdown-docs-path="getNotesData.markdownDocsPath"
-              :quick-actions-docs-path="getNotesData.quickActionsDocsPath"
+              supports-quick-actions
               :restricted-tool-bar-items="$options.restrictedToolbarItems"
               :force-autosize="false"
               class="js-no-autosize"

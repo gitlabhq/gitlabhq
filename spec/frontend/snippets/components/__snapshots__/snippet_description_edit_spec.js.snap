@@ -83,7 +83,6 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
           <markdown-toolbar-stub
             canattachfile="true"
             markdowndocspath="help/"
-            quickactionsdocspath=""
             showcommenttoolbar="true"
           />
         </div>

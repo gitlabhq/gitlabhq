@@ -68,10 +68,10 @@ export default {
       required: false,
       default: false,
     },
-    quickActionsDocsPath: {
-      type: String,
+    supportsQuickActions: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     canAttachFile: {
       type: Boolean,
@@ -371,13 +371,12 @@ export default {
       :uploads-path="uploadsPath"
       :markdown-preview-path="markdownPreviewPath"
       :drawio-enabled="drawioEnabled"
+      :supports-quick-actions="supportsQuickActions"
       data-testid="markdownHeader"
       :restricted-tool-bar-items="restrictedToolBarItems"
-      :show-content-editor-switcher="showContentEditorSwitcher"
       @showPreview="showPreview"
       @hidePreview="hidePreview"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
-      @enableContentEditor="$emit('enableContentEditor')"
     />
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
@@ -391,9 +390,10 @@ export default {
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
-          :quick-actions-docs-path="quickActionsDocsPath"
           :can-attach-file="canAttachFile"
           :show-comment-tool-bar="showCommentToolBar"
+          :show-content-editor-switcher="showContentEditorSwitcher"
+          @enableContentEditor="$emit('enableContentEditor')"
         />
       </div>
     </div>

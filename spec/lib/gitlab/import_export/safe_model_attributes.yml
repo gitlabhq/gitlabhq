@@ -905,7 +905,7 @@ List:
 - max_issue_count
 - max_issue_weight
 - limit_metric
-ExternalPullRequest:
+Ci::ExternalPullRequest:
 - id
 - created_at
 - updated_at

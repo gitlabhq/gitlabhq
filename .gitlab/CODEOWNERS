@@ -1236,7 +1236,6 @@ lib/gitlab/checks/**
 /app/controllers/projects/triggers_controller.rb
 /app/controllers/projects/variables_controller.rb
 /app/models/commit_status.rb
-/app/models/external_pull_request.rb
 /app/models/generic_commit_status.rb
 /app/models/namespace_ci_cd_setting.rb
 /app/models/project_ci_cd_setting.rb

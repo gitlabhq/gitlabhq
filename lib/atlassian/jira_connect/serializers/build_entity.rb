@@ -22,13 +22,7 @@ module Atlassian
         expose :references
 
         def issue_keys
-          commit_message_issue_keys = JiraIssueKeyExtractor.new(pipeline.git_commit_message).issue_keys
-
-          # extract Jira issue keys from either the source branch/ref or the merge request title.
-          @issue_keys ||= commit_message_issue_keys + pipeline.all_merge_requests.flat_map do |mr|
-            src = "#{mr.source_branch} #{mr.title} #{mr.description}"
-            JiraIssueKeyExtractor.new(src).issue_keys
-          end.uniq
+          @issue_keys ||= (pipeline_commit_issue_keys + pipeline_mrs_issue_keys).uniq
         end
 
         private
@@ -88,6 +82,18 @@ module Atlassian
 
         def update_sequence_id
           options[:update_sequence_id] || Client.generate_update_sequence_id
+        end
+
+        def pipeline_commit_issue_keys
+          JiraIssueKeyExtractor.new(pipeline.git_commit_message).issue_keys
+        end
+
+        # Extract Jira issue keys from either the source branch/ref, merge request title or merge request description.
+        def pipeline_mrs_issue_keys
+          pipeline.all_merge_requests.flat_map do |mr|
+            src = "#{mr.source_branch} #{mr.title} #{mr.description}"
+            JiraIssueKeyExtractor.new(src).issue_keys
+          end
         end
       end
     end

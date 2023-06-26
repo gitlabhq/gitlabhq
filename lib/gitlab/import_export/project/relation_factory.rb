@@ -16,6 +16,8 @@ module Gitlab
                       bridges: 'Ci::Bridge',
                       runners: 'Ci::Runner',
                       pipeline_metadata: 'Ci::PipelineMetadata',
+                      external_pull_request: 'Ci::ExternalPullRequest',
+                      external_pull_requests: 'Ci::ExternalPullRequest',
                       hooks: 'ProjectHook',
                       merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                       push_access_levels: 'ProtectedBranch::PushAccessLevel',
@@ -61,8 +63,7 @@ module Gitlab
           epic
           ProjectCiCdSetting
           container_expiration_policy
-          external_pull_request
-          external_pull_requests
+          Ci::ExternalPullRequest
           DesignManagement::Design
           MergeRequest::DiffCommitUser
           MergeRequestDiffCommit

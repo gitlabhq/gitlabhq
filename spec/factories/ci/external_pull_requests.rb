@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :external_pull_request do
+  factory :external_pull_request, class: 'Ci::ExternalPullRequest' do
     sequence(:pull_request_iid)
     project
     source_branch { 'feature' }

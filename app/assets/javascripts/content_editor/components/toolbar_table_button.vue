@@ -88,10 +88,11 @@ export default {
     size="small"
     category="tertiary"
     icon="table"
+    no-caret
     :aria-label="__('Insert table')"
     :toggle-text="__('Insert table')"
     positioning-strategy="fixed"
-    class="content-editor-table-dropdown"
+    class="content-editor-table-dropdown gl-mr-3"
     text-sr-only
     :fluid-width="true"
     @shown="setFocus(1, 1)"

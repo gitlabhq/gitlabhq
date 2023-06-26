@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ExternalPullRequest do
+RSpec.describe Ci::ExternalPullRequest, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:source_branch) { 'the-branch' }
@@ -228,12 +228,12 @@ RSpec.describe ExternalPullRequest do
 
     it 'returns modified paths' do
       expect(modified_paths).to eq ['bar/branch-test.txt',
-                                    'files/js/commit.coffee',
-                                    'with space/README.md']
+        'files/js/commit.coffee',
+        'with space/README.md']
     end
   end
 
-  context 'loose foreign key on external_pull_requests.project_id' do
+  context 'with a loose foreign key on external_pull_requests.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
       let!(:model) { create(:external_pull_request, project: parent) }

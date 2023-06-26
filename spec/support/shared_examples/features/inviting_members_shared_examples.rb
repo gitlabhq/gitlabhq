@@ -159,6 +159,40 @@ RSpec.shared_examples 'inviting members' do |snowplow_invite_label|
         end
       end
 
+      context 'when a user already exists, and private email is used' do
+        it 'fails with an error', :js do
+          visit subentity_members_page_path
+
+          invite_member(user2.email, role: role)
+
+          invite_modal = page.find(invite_modal_selector)
+          expect(invite_modal).to have_content "#{user2.email}: Access level should be greater than or equal to " \
+                                               "Developer inherited membership from group #{group.name}"
+
+          page.refresh
+
+          page.within find_invited_member_row(user2.name) do
+            expect(page).to have_content('Developer')
+            expect(page).not_to have_button('Developer')
+          end
+        end
+
+        it 'does not allow inviting of an email that has spaces', :js do
+          visit subentity_members_page_path
+
+          click_on _('Invite members')
+
+          page.within invite_modal_selector do
+            choose_options(role, nil)
+            find(member_dropdown_selector).set("#{user2.email} ")
+            wait_for_requests
+
+            expect(page).to have_content('No matches found')
+            expect(page).not_to have_button("#{user2.email} ")
+          end
+        end
+      end
+
       context 'when there are multiple users invited with errors' do
         let_it_be(:user3) { create(:user) }
 

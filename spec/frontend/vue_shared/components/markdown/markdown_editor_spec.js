@@ -29,7 +29,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const value = 'test markdown';
   const renderMarkdownPath = '/api/markdown';
   const markdownDocsPath = '/help/markdown';
-  const quickActionsDocsPath = '/help/quickactions';
   const enableAutocomplete = true;
   const enablePreview = false;
   const formFieldId = 'markdown_field';
@@ -43,7 +42,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     value,
     renderMarkdownPath,
     markdownDocsPath,
-    quickActionsDocsPath,
     enableAutocomplete,
     autocompleteDataSources,
     enablePreview,
@@ -110,7 +108,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findMarkdownField().props()).toMatchObject({
       autocompleteDataSources,
       markdownPreviewPath: renderMarkdownPath,
-      quickActionsDocsPath,
+      supportsQuickActions: true,
       canAttachFile: true,
       enableAutocomplete,
       textareaValue: value,
@@ -145,13 +143,13 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {
     buildWrapper({ propsData: { enableContentEditor: true } });
 
-    expect(findMarkdownField().text()).toContain('Switch to rich text');
+    expect(findMarkdownField().text()).toContain('Switch to rich text editing');
   });
 
   it('hides content editor switcher when contentEditorEnabled prop is false', () => {
     buildWrapper({ propsData: { enableContentEditor: false } });
 
-    expect(findMarkdownField().text()).not.toContain('Switch to rich text');
+    expect(findMarkdownField().text()).not.toContain('Switch to rich text editing');
   });
 
   it('passes down any additional props to markdown field component', () => {

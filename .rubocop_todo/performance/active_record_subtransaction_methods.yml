@@ -9,7 +9,7 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'app/models/container_repository.rb'
     - 'app/models/design_management/design_collection.rb'
     - 'app/models/error_tracking/error.rb'
-    - 'app/models/external_pull_request.rb'
+    - 'app/models/ci/external_pull_request.rb'
     - 'app/models/plan.rb'
     - 'app/models/project.rb'
     - 'app/models/shard.rb'

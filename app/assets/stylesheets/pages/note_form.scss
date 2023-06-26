@@ -348,10 +348,6 @@ table {
 .toolbar-text {
   font-size: 14px;
   line-height: $gl-spacing-scale-7;
-
-  @include media-breakpoint-up(md) {
-    float: left;
-  }
 }
 
 .note-form-actions {

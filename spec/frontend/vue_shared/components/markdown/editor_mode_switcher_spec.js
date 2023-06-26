@@ -17,8 +17,8 @@ describe('vue_shared/component/markdown/editor_mode_switcher', () => {
 
   describe.each`
     modeText       | value         | buttonText
-    ${'Rich text'} | ${'richText'} | ${'Switch to Markdown'}
-    ${'Markdown'}  | ${'markdown'} | ${'Switch to rich text'}
+    ${'Rich text'} | ${'richText'} | ${'Switch to plain text editing'}
+    ${'Markdown'}  | ${'markdown'} | ${'Switch to rich text editing'}
   `('when $modeText', ({ modeText, value, buttonText }) => {
     beforeEach(() => {
       createComponent({ value });

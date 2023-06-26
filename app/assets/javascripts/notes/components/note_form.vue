@@ -192,9 +192,6 @@ export default {
     markdownDocsPath() {
       return this.getNotesDataByProp('markdownDocsPath');
     },
-    quickActionsDocsPath() {
-      return this.getNotesDataByProp('quickActionsDocsPath');
-    },
     currentUserId() {
       return this.getUserDataByProp('id');
     },
@@ -359,7 +356,6 @@ export default {
           :note="discussionNote"
           :form-field-props="formFieldProps"
           :show-suggest-popover="showSuggestPopover"
-          :quick-actions-docs-path="quickActionsDocsPath"
           :autosave-key="autosaveKey"
           :autocomplete-data-sources="autocompleteDataSources"
           :disabled="isSubmitting"

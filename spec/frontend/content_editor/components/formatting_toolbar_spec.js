@@ -6,7 +6,6 @@ import {
   TOOLBAR_CONTROL_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
 } from '~/content_editor/constants';
-import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 
 describe('content_editor/components/formatting_toolbar', () => {
   let wrapper;
@@ -17,7 +16,6 @@ describe('content_editor/components/formatting_toolbar', () => {
       stubs: {
         GlTabs,
         GlTab,
-        EditorModeSwitcher,
       },
       propsData: props,
     });
@@ -67,12 +65,6 @@ describe('content_editor/components/formatting_toolbar', () => {
         value,
       });
     });
-  });
-
-  it('renders an editor mode dropdown', () => {
-    buildWrapper();
-
-    expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
   });
 
   describe('when attachment button is hidden', () => {

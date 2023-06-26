@@ -139,7 +139,6 @@ describe('Design description form', () => {
           mockDesign.id,
         )}`,
         markdownDocsPath: '/help/user/markdown',
-        quickActionsDocsPath: '/help/user/project/quick_actions',
       });
     });
 

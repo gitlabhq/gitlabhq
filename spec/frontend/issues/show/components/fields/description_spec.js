@@ -16,7 +16,6 @@ describe('Description field component', () => {
       propsData: {
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
-        quickActionsDocsPath: '/',
         value: description,
       },
       provide: {
@@ -80,7 +79,6 @@ describe('Description field component', () => {
         renderMarkdownPath: '/',
         autofocus: true,
         supportsQuickActions: true,
-        quickActionsDocsPath: expect.any(String),
         markdownDocsPath: '/',
         enableAutocomplete: true,
       });

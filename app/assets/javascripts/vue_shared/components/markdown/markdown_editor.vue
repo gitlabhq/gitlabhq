@@ -80,11 +80,6 @@ export default {
       required: false,
       default: '',
     },
-    quickActionsDocsPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     drawioEnabled: {
       type: Boolean,
       required: false,
@@ -245,7 +240,7 @@ export default {
       :enable-autocomplete="enableAutocomplete"
       :autocomplete-data-sources="autocompleteDataSources"
       :markdown-docs-path="markdownDocsPath"
-      :quick-actions-docs-path="quickActionsDocsPath"
+      :supports-quick-actions="supportsQuickActions"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
@@ -272,9 +267,10 @@ export default {
       <content-editor
         ref="contentEditor"
         :render-markdown="renderMarkdown"
+        :markdown-docs-path="markdownDocsPath"
         :uploads-path="uploadsPath"
         :markdown="markdown"
-        :quick-actions-docs-path="quickActionsDocsPath"
+        :supports-quick-actions="supportsQuickActions"
         :autofocus="contentEditorAutofocused"
         :placeholder="formFieldProps.placeholder"
         :drawio-enabled="drawioEnabled"

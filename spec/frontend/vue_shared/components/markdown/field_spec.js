@@ -65,6 +65,7 @@ describe('Markdown field component', () => {
           enablePreview,
           restrictedToolBarItems,
           showContentEditorSwitcher,
+          supportsQuickActions: true,
         },
       },
     );
@@ -206,12 +207,12 @@ describe('Markdown field component', () => {
         expect(findMarkdownToolbar().props()).toEqual({
           canAttachFile: true,
           markdownDocsPath,
-          quickActionsDocsPath: '',
           showCommentToolBar: true,
+          showContentEditorSwitcher: false,
         });
 
         expect(findMarkdownHeader().props()).toMatchObject({
-          showContentEditorSwitcher: false,
+          supportsQuickActions: true,
         });
       });
     });
@@ -368,13 +369,13 @@ describe('Markdown field component', () => {
     it('defaults to false', () => {
       createSubject();
 
-      expect(findMarkdownHeader().props('showContentEditorSwitcher')).toBe(false);
+      expect(findMarkdownToolbar().props('showContentEditorSwitcher')).toBe(false);
     });
 
     it('passes showContentEditorSwitcher', () => {
       createSubject({ showContentEditorSwitcher: true });
 
-      expect(findMarkdownHeader().props('showContentEditorSwitcher')).toBe(true);
+      expect(findMarkdownToolbar().props('showContentEditorSwitcher')).toBe(true);
     });
   });
 });

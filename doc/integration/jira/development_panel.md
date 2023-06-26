@@ -51,9 +51,9 @@ depends on where you mention the Jira issue ID in GitLab.
 
 | GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
 |------------------------------------------------|-------------------------------------------------------|
-| Merge request title or description             | Link to the merge request<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11) |
-| Branch name                                    | Link to the branch                                    |
-| Commit message                                 | Link to the commit                                    |
+| Merge request title or description             | Link to the merge request<br>Link to the deployment<br>Link to the pipeline by title only and by description ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390888) in GitLab 15.10)<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11) |
+| Branch name                                    | Link to the branch<br>Link to the deployment                                    |
+| Commit message                                 | Link to the commit<br>Link to the deployment from up to 5,000 commits after the last successful deployment to the environment ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `jira_deployment_issue_keys`. Disabled by default) |
 | [Jira Smart Commit](#jira-smart-commits)       | Custom comment, logged time, or workflow transition   |
 
 ## Jira Smart Commits

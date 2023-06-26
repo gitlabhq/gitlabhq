@@ -9,6 +9,9 @@ info: A tutorial using Flux
 This tutorial teaches you how to set up Flux for GitOps. You'll complete a bootstrap installation,
 install `agentk` in your cluster, and deploy a simple `nginx` application.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview of an example Flux
+configuration, see [Flux bootstrap and manifest synchronization with GitLab](https://www.youtube.com/watch?v=EjPVRM-N_PQ).
+
 To set up Flux for GitOps:
 
 1. [Create a personal access token](#create-a-personal-access-token)

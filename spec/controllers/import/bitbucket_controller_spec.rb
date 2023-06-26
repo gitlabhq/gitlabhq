@@ -31,6 +31,16 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
       let(:external_bitbucket_auth_url) { "http://fake.bitbucket.host/url" }
 
       it "redirects to external auth url" do
+        expected_client_options = {
+          site: OmniAuth::Strategies::Bitbucket.default_options[:client_options]['site'],
+          authorize_url: OmniAuth::Strategies::Bitbucket.default_options[:client_options]['authorize_url'],
+          token_url: OmniAuth::Strategies::Bitbucket.default_options[:client_options]['token_url']
+        }
+
+        expect(OAuth2::Client)
+          .to receive(:new)
+          .with(anything, anything, expected_client_options)
+
         allow(SecureRandom).to receive(:base64).and_return(random_key)
         allow_next_instance_of(OAuth2::Client) do |client|
           allow(client).to receive_message_chain(:auth_code, :authorize_url)
@@ -101,7 +111,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
       @invalid_repo = double(name: 'mercurialrepo', slug: 'mercurialrepo', owner: 'asd', full_name: 'asd/mercurialrepo', clone_url: 'http://test.host/demo/mercurialrepo.git', 'valid?' => false)
     end
 
-    context "when token does not exists" do
+    context "when token does not exist" do
       let(:random_key) { "pure_random"  }
       let(:external_bitbucket_auth_url) { "http://fake.bitbucket.host/url" }
 

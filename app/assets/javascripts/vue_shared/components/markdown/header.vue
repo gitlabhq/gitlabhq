@@ -19,7 +19,6 @@ import { updateText } from '~/lib/utils/text_markdown';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
 import CommentTemplatesDropdown from './comment_templates_dropdown.vue';
-import EditorModeSwitcher from './editor_mode_switcher.vue';
 
 export default {
   components: {
@@ -29,7 +28,6 @@ export default {
     DrawioToolbarButton,
     CommentTemplatesDropdown,
     AiActionsDropdown: () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
-    EditorModeSwitcher,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -91,7 +89,7 @@ export default {
       required: false,
       default: false,
     },
-    showContentEditorSwitcher: {
+    supportsQuickActions: {
       type: Boolean,
       required: false,
       default: false,
@@ -125,9 +123,6 @@ export default {
     mdCollapsibleSection() {
       const expandText = s__('MarkdownEditor|Click to expand');
       return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
-    },
-    showEditorModeSwitcher() {
-      return this.showContentEditorSwitcher && !this.previewMarkdown;
     },
   },
   watch: {
@@ -208,9 +203,6 @@ export default {
         });
       }
     },
-    handleEditorModeChanged() {
-      this.$emit('enableContentEditor');
-    },
     switchPreview() {
       if (this.previewMarkdown) {
         this.hideMarkdownPreview();
@@ -236,233 +228,228 @@ export default {
 
 <template>
   <div class="md-header gl-bg-gray-50 gl-px-2 gl-rounded-base gl-mx-2 gl-mt-2">
-    <div
-      class="gl-display-flex gl-align-items-center gl-flex-wrap"
-      :class="{
-        'gl-justify-content-end': previewMarkdown,
-        'gl-justify-content-space-between': !previewMarkdown,
-      }"
-    >
+    <div class="gl-display-flex gl-align-items-center gl-flex-wrap">
       <div
         data-testid="md-header-toolbar"
-        class="md-header-toolbar gl-display-flex gl-py-2 gl-flex-wrap"
-        :class="{ 'gl-display-none!': previewMarkdown }"
+        class="md-header-toolbar gl-display-flex gl-py-2 gl-flex-wrap gl-row-gap-3"
       >
-        <template v-if="canSuggest">
-          <toolbar-button
-            ref="suggestButton"
-            :tag="mdSuggestion"
-            :prepend="true"
-            :button-title="__('Insert suggestion')"
-            :cursor-offset="4"
-            :tag-content="lineContent"
-            icon="doc-code"
-            data-qa-selector="suggestion_button"
-            class="js-suggestion-btn"
-            @click="handleSuggestDismissed"
-          />
-          <gl-popover
-            v-if="suggestPopoverVisible"
-            :target="$refs.suggestButton.$el"
-            :css-classes="['diff-suggest-popover']"
-            placement="bottom"
-            :show="suggestPopoverVisible"
-            triggers=""
-          >
-            <strong>{{ __('New! Suggest changes directly') }}</strong>
-            <p class="mb-2">
-              {{
-                __(
-                  'Suggest code changes which can be immediately applied in one click. Try it out!',
-                )
-              }}
-            </p>
-            <gl-button
-              variant="confirm"
-              category="primary"
-              size="small"
-              data-qa-selector="dismiss_suggestion_popover_button"
-              @click="handleSuggestDismissed"
-            >
-              {{ __('Got it') }}
-            </gl-button>
-          </gl-popover>
-        </template>
-        <ai-actions-dropdown
-          v-if="editorAiActions.length"
-          :actions="editorAiActions"
-          @input="insertIntoTextarea"
-        />
-        <toolbar-button
-          tag="**"
-          :button-title="
-            /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-            sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
-              modifierKey,
-            }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
-          "
-          :shortcuts="$options.shortcuts.bold"
-          icon="bold"
-        />
-        <toolbar-button
-          tag="_"
-          :button-title="
-            /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-            sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
-              modifierKey,
-            }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
-          "
-          :shortcuts="$options.shortcuts.italic"
-          icon="italic"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('strikethrough')"
-          tag="~~"
-          :button-title="
-            /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-            sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
-              modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
-            })
-          "
-          :shortcuts="$options.shortcuts.strikethrough"
-          icon="strikethrough"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('quote')"
-          :prepend="true"
-          :tag="tag"
-          :button-title="__('Insert a quote')"
-          icon="quote"
-          @click="handleQuote"
-        />
-        <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />
-        <toolbar-button
-          tag="[{text}](url)"
-          tag-select="url"
-          :button-title="
-            /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-            sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
-              modifierKey,
-            }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
-          "
-          :shortcuts="$options.shortcuts.link"
-          icon="link"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('bullet-list')"
-          :prepend="true"
-          tag="- "
-          :button-title="__('Add a bullet list')"
-          icon="list-bulleted"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('numbered-list')"
-          :prepend="true"
-          tag="1. "
-          :button-title="__('Add a numbered list')"
-          icon="list-numbered"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('task-list')"
-          :prepend="true"
-          tag="- [ ] "
-          :button-title="__('Add a checklist')"
-          icon="list-task"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('indent')"
-          class="gl-display-none"
-          :button-title="
-            /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-            sprintf(s__('MarkdownEditor|Indent line (%{modifierKey}])'), {
-              modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
-            })
-          "
-          :shortcuts="$options.shortcuts.indent"
-          command="indentLines"
-          icon="list-indent"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('outdent')"
-          class="gl-display-none"
-          :button-title="
-            /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-            sprintf(s__('MarkdownEditor|Outdent line (%{modifierKey}[)'), {
-              modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
-            })
-          "
-          :shortcuts="$options.shortcuts.outdent"
-          command="outdentLines"
-          icon="list-outdent"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('collapsible-section')"
-          :tag="mdCollapsibleSection"
-          :prepend="true"
-          tag-select="Click to expand"
-          :button-title="__('Add a collapsible section')"
-          icon="details-block"
-        />
-        <toolbar-button
-          v-if="!restrictedToolBarItems.includes('table')"
-          :tag="mdTable"
-          :prepend="true"
-          :button-title="__('Add a table')"
-          icon="table"
-        />
-        <gl-button
-          v-if="!restrictedToolBarItems.includes('attach-file')"
-          v-gl-tooltip
-          :aria-label="__('Attach a file or image')"
-          :title="__('Attach a file or image')"
-          class="gl-mr-2"
-          data-testid="button-attach-file"
-          category="tertiary"
-          icon="paperclip"
-          size="small"
-          @click="handleAttachFile"
-        />
-        <drawio-toolbar-button
-          v-if="drawioEnabled"
-          :uploads-path="uploadsPath"
-          :markdown-preview-path="markdownPreviewPath"
-        />
-        <comment-templates-dropdown
-          v-if="newCommentTemplatePath && glFeatures.savedReplies"
-          :new-comment-template-path="newCommentTemplatePath"
-        />
-      </div>
-      <div class="switch-preview gl-py-2 gl-display-flex gl-align-items-center gl-ml-auto">
-        <editor-mode-switcher
-          v-if="showEditorModeSwitcher"
-          size="small"
-          class="gl-mr-2"
-          value="markdown"
-          @input="handleEditorModeChanged"
-        />
         <gl-button
           v-if="enablePreview"
           data-testid="preview-toggle"
           value="preview"
           :label="$options.i18n.previewTabTitle"
-          class="js-md-preview-button gl-flex-direction-row-reverse gl-align-items-center gl-font-weight-normal!"
+          class="js-md-preview-button gl-flex-direction-row-reverse gl-align-items-center gl-font-weight-normal! gl-mr-2"
           size="small"
           category="tertiary"
           @click="switchPreview"
           >{{ previewMarkdown ? $options.i18n.hidePreview : $options.i18n.preview }}</gl-button
         >
-        <gl-button
-          v-if="!restrictedToolBarItems.includes('full-screen')"
-          v-gl-tooltip
-          :class="{ 'gl-display-none!': previewMarkdown }"
-          class="js-zen-enter gl-ml-2"
-          category="tertiary"
-          icon="maximize"
-          size="small"
-          :title="__('Go full screen')"
-          :prepend="true"
-          :aria-label="__('Go full screen')"
-        />
+        <template v-if="!previewMarkdown">
+          <template v-if="canSuggest">
+            <toolbar-button
+              ref="suggestButton"
+              :tag="mdSuggestion"
+              :prepend="true"
+              :button-title="__('Insert suggestion')"
+              :cursor-offset="4"
+              :tag-content="lineContent"
+              icon="doc-code"
+              data-qa-selector="suggestion_button"
+              class="js-suggestion-btn"
+              @click="handleSuggestDismissed"
+            />
+            <gl-popover
+              v-if="suggestPopoverVisible"
+              :target="$refs.suggestButton.$el"
+              :css-classes="['diff-suggest-popover']"
+              placement="bottom"
+              :show="suggestPopoverVisible"
+              triggers=""
+            >
+              <strong>{{ __('New! Suggest changes directly') }}</strong>
+              <p class="mb-2">
+                {{
+                  __(
+                    'Suggest code changes which can be immediately applied in one click. Try it out!',
+                  )
+                }}
+              </p>
+              <gl-button
+                variant="confirm"
+                category="primary"
+                size="small"
+                data-qa-selector="dismiss_suggestion_popover_button"
+                @click="handleSuggestDismissed"
+              >
+                {{ __('Got it') }}
+              </gl-button>
+            </gl-popover>
+          </template>
+          <ai-actions-dropdown
+            v-if="editorAiActions.length"
+            :actions="editorAiActions"
+            @input="insertIntoTextarea"
+          />
+          <toolbar-button
+            tag="**"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
+            "
+            :shortcuts="$options.shortcuts.bold"
+            icon="bold"
+          />
+          <toolbar-button
+            tag="_"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
+            "
+            :shortcuts="$options.shortcuts.italic"
+            icon="italic"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('strikethrough')"
+            tag="~~"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              })
+            "
+            :shortcuts="$options.shortcuts.strikethrough"
+            icon="strikethrough"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('quote')"
+            :prepend="true"
+            :tag="tag"
+            :button-title="__('Insert a quote')"
+            icon="quote"
+            @click="handleQuote"
+          />
+          <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />
+          <toolbar-button
+            tag="[{text}](url)"
+            tag-select="url"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
+            "
+            :shortcuts="$options.shortcuts.link"
+            icon="link"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('bullet-list')"
+            :prepend="true"
+            tag="- "
+            :button-title="__('Add a bullet list')"
+            icon="list-bulleted"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('numbered-list')"
+            :prepend="true"
+            tag="1. "
+            :button-title="__('Add a numbered list')"
+            icon="list-numbered"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('task-list')"
+            :prepend="true"
+            tag="- [ ] "
+            :button-title="__('Add a checklist')"
+            icon="list-task"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('indent')"
+            class="gl-display-none"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Indent line (%{modifierKey}])'), {
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              })
+            "
+            :shortcuts="$options.shortcuts.indent"
+            command="indentLines"
+            icon="list-indent"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('outdent')"
+            class="gl-display-none"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Outdent line (%{modifierKey}[)'), {
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              })
+            "
+            :shortcuts="$options.shortcuts.outdent"
+            command="outdentLines"
+            icon="list-outdent"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('collapsible-section')"
+            :tag="mdCollapsibleSection"
+            :prepend="true"
+            tag-select="Click to expand"
+            :button-title="__('Add a collapsible section')"
+            icon="details-block"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('table')"
+            :tag="mdTable"
+            :prepend="true"
+            :button-title="__('Add a table')"
+            icon="table"
+          />
+          <gl-button
+            v-if="!restrictedToolBarItems.includes('attach-file')"
+            v-gl-tooltip
+            :aria-label="__('Attach a file or image')"
+            :title="__('Attach a file or image')"
+            class="gl-mr-3"
+            data-testid="button-attach-file"
+            category="tertiary"
+            icon="paperclip"
+            size="small"
+            @click="handleAttachFile"
+          />
+          <drawio-toolbar-button
+            v-if="drawioEnabled"
+            :uploads-path="uploadsPath"
+            :markdown-preview-path="markdownPreviewPath"
+          />
+          <!-- TODO Add icon and trigger functionality from here -->
+          <toolbar-button
+            v-if="supportsQuickActions"
+            :prepend="true"
+            tag="/"
+            :button-title="__('Add a quick action')"
+            icon="quick-actions"
+          />
+          <comment-templates-dropdown
+            v-if="newCommentTemplatePath && glFeatures.savedReplies"
+            :new-comment-template-path="newCommentTemplatePath"
+          />
+          <div class="full-screen">
+            <gl-button
+              v-if="!restrictedToolBarItems.includes('full-screen')"
+              v-gl-tooltip
+              class="js-zen-enter"
+              category="tertiary"
+              icon="maximize"
+              size="small"
+              :title="__('Go full screen')"
+              :prepend="true"
+              :aria-label="__('Go full screen')"
+            />
+          </div>
+        </template>
       </div>
     </div>
   </div>

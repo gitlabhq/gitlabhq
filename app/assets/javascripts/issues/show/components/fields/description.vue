@@ -1,7 +1,6 @@
 <script>
 import { __ } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateMixin from '../../mixins/update';
@@ -46,11 +45,6 @@ export default {
       },
     };
   },
-  computed: {
-    quickActionsDocsPath() {
-      return helpPagePath('user/project/quick_actions');
-    },
-  },
   mounted() {
     this.focus();
   },
@@ -72,7 +66,6 @@ export default {
       :render-markdown-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
       :form-field-props="formFieldProps"
-      :quick-actions-docs-path="quickActionsDocsPath"
       :enable-autocomplete="enableAutocomplete"
       supports-quick-actions
       autofocus
@@ -85,7 +78,7 @@ export default {
       class="gl-mt-3"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :quick-actions-docs-path="quickActionsDocsPath"
+      supports-quick-actions
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
       :textarea-value="value"

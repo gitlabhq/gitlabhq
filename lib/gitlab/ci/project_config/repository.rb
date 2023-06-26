@@ -4,6 +4,8 @@ module Gitlab
   module Ci
     class ProjectConfig
       class Repository < Source
+        extend ::Gitlab::Utils::Override
+
         def content
           strong_memoize(:content) do
             next unless file_in_repository?

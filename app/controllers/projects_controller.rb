@@ -173,7 +173,9 @@ class ProjectsController < Projects::ApplicationController
       flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
     end
 
-    if ambiguous_ref?(@project, @ref)
+    if Feature.enabled?(:redirect_with_ref_type, @project)
+      @ref_type = 'heads'
+    elsif ambiguous_ref?(@project, @ref)
       branch = @project.repository.find_branch(@ref)
 
       # The files view would render a ref other than the default branch

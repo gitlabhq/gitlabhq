@@ -17,16 +17,20 @@ export default {
       return this.value === 'markdown';
     },
     text() {
-      return this.markdownEditorSelected ? __('Switch to rich text') : __('Switch to Markdown');
+      return this.markdownEditorSelected
+        ? __('Switch to rich text editing')
+        : __('Switch to plain text editing');
     },
   },
 };
 </script>
 <template>
-  <gl-button
-    class="btn btn-default btn-sm gl-button btn-default-tertiary"
-    data-qa-selector="editing_mode_switcher"
-    @click="$emit('input')"
-    >{{ text }}</gl-button
-  >
+  <div class="content-editor-switcher gl-display-inline-flex gl-align-items-center">
+    <gl-button
+      class="btn btn-default btn-sm gl-button btn-default-tertiary"
+      data-qa-selector="editing_mode_switcher"
+      @click="$emit('input')"
+      >{{ text }}</gl-button
+    >
+  </div>
 </template>

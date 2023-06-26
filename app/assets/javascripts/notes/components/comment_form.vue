@@ -146,9 +146,6 @@ export default {
     markdownDocsPath() {
       return this.getNotesData.markdownDocsPath;
     },
-    quickActionsDocsPath() {
-      return this.getNotesData.quickActionsDocsPath;
-    },
     markdownPreviewPath() {
       return this.getNoteableData.preview_note_path;
     },
@@ -366,7 +363,6 @@ export default {
                 :render-markdown-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
                 :add-spacing-classes="false"
-                :quick-actions-docs-path="quickActionsDocsPath"
                 :form-field-props="formFieldProps"
                 :autosave-key="autosaveKey"
                 :disabled="isSubmitting"

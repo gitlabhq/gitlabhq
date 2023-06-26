@@ -219,6 +219,18 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
         expect(result[:message][params[:email]]).to eq("Invite email is invalid")
       end
     end
+
+    context 'with email that has trailing spaces' do
+      let(:params) { { email: ' foo@bar.com ' } }
+
+      it 'returns an error' do
+        expect_not_to_create_members
+        expect(result[:status]).to eq(:error)
+        expect(result[:message][params[:email]]).to eq("Invite email is invalid")
+      end
+
+      it_behaves_like 'does not record an onboarding progress action'
+    end
   end
 
   context 'with duplicate invites' do

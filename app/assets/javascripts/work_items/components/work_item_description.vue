@@ -36,8 +36,7 @@ export default {
       required: true,
     },
   },
-  markdownDocsPath: helpPagePath('user/project/quick_actions'),
-  quickActionsDocsPath: helpPagePath('user/project/quick_actions'),
+  markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
       workItem: {},

@@ -139,7 +139,7 @@ $(document).on('markdown-preview:show', (e, $form) => {
   // toggle content
   $form.find('.md-write-holder').hide();
   $form.find('.md-preview-holder').show();
-  $form.find('.md-header-toolbar, .js-zen-enter').addClass('gl-display-none!');
+  $form.find('.haml-markdown-button, .js-zen-enter').addClass('gl-display-none!');
 
   markdownPreview.showPreview($form);
 });
@@ -162,7 +162,7 @@ $(document).on('markdown-preview:hide', (e, $form) => {
   $form.find('.md-write-holder').show();
   $form.find('textarea.markdown-area').focus();
   $form.find('.md-preview-holder').hide();
-  $form.find('.md-header-toolbar, .js-zen-enter').removeClass('gl-display-none!');
+  $form.find('.haml-markdown-button, .js-zen-enter').removeClass('gl-display-none!');
 
   markdownPreview.hideReferencedCommands($form);
 });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::LegacyGithubImport::Client do
+RSpec.describe Gitlab::LegacyGithubImport::Client, feature_category: :importers do
   let(:token) { '123456' }
   let(:github_provider) { GitlabSettings::Options.build('app_id' => 'asd123', 'app_secret' => 'asd123', 'name' => 'github', 'args' => { 'client_options' => {} }) }
   let(:wait_for_rate_limit_reset) { true }
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Client do
   end
 
   describe '#api_endpoint' do
-    context 'when provider does not specity an API endpoint' do
+    context 'when provider does not specify an API endpoint' do
       it 'uses GitHub root API endpoint' do
         expect(client.api.api_endpoint).to eq 'https://api.github.com/'
       end

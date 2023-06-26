@@ -81,13 +81,14 @@ export default {
       :items="filteredSavedReplies"
       :toggle-text="__('Insert comment template')"
       text-sr-only
+      no-caret
       toggle-class="js-comment-template-toggle"
       icon="comment-lines"
       category="tertiary"
       placement="right"
       searchable
       size="small"
-      class="comment-template-dropdown"
+      class="comment-template-dropdown gl-mr-3"
       positioning-strategy="fixed"
       :searching="$apollo.queries.savedReplies.loading"
       @shown="fetchCommentTemplates"

@@ -672,7 +672,7 @@ end
 #### Ordering by `JOIN` columns
 
 Ordering records by mixed columns where one or more columns are coming from `JOIN` tables
-works with limitations. It requires extra configuration (CTE). The trick is to use a
+works with limitations. It requires extra configuration via Common Table Expression (CTE). The trick is to use a
 non-materialized CTE to act as a "fake" table which exposes all required columns.
 
 NOTE:

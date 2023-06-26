@@ -50,12 +50,6 @@ integration_reliable:
   variables:
     JOB_FETCHER: reliable
 
-integration_basic:
-  extends: .integration
-  allow_failure: yes
-  variables:
-    JOB_FETCHER: basic
-
 kill_interruption:
   stage: test
   script:

@@ -143,12 +143,19 @@ describe('MembersTokenSelect', () => {
       });
 
       describe('when input text is an email', () => {
-        it('allows user defined tokens', async () => {
-          tokenSelector.vm.$emit('text-input', 'foo@bar.com');
+        it.each`
+          email             | result
+          ${'foo@bar.com'}  | ${true}
+          ${'foo@bar.com '} | ${false}
+          ${' foo@bar.com'} | ${false}
+          ${'foo@ba r.com'} | ${false}
+          ${'fo o@bar.com'} | ${false}
+        `(`with token creation validation on $email`, async ({ email, result }) => {
+          tokenSelector.vm.$emit('text-input', email);
 
           await nextTick();
 
-          expect(tokenSelector.props('allowUserDefinedTokens')).toBe(true);
+          expect(tokenSelector.props('allowUserDefinedTokens')).toBe(result);
         });
       });
     });

@@ -116,7 +116,7 @@ module Gitlab
         if config
           config["args"]["client_options"].deep_symbolize_keys
         else
-          OmniAuth::Strategies::GitHub.default_options[:client_options].symbolize_keys
+          OmniAuth::Strategies::GitHub.default_options[:client_options].to_h.symbolize_keys
         end
       end
 

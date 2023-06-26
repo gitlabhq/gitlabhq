@@ -63,6 +63,12 @@ export default Node.create({
     };
   },
 
+  addCommands() {
+    return {
+      insertQuickAction: () => ({ commands }) => commands.insertContent('<p>/</p>'),
+    };
+  },
+
   addInputRules() {
     const { editor } = this;
     const { assetResolver } = this.options;

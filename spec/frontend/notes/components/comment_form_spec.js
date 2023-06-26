@@ -294,13 +294,13 @@ describe('issue_comment_form component', () => {
     it('hides content editor switcher if feature flag content_editor_on_issues is off', () => {
       mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: false } });
 
-      expect(wrapper.text()).not.toContain('Switch to rich text');
+      expect(wrapper.text()).not.toContain('Switch to rich text editing');
     });
 
     it('shows content editor switcher if feature flag content_editor_on_issues is on', () => {
       mountComponent({ mountFunction: mount, features: { contentEditorOnIssues: true } });
 
-      expect(wrapper.text()).toContain('Switch to rich text');
+      expect(wrapper.text()).toContain('Switch to rich text editing');
     });
 
     describe('textarea', () => {
@@ -346,15 +346,7 @@ describe('issue_comment_form component', () => {
 
           const { markdownDocsPath } = notesDataMock;
 
-          expect(wrapper.find(`a[href="${markdownDocsPath}"]`).text()).toBe('Markdown');
-        });
-
-        it('should link to quick actions docs', () => {
-          mountComponent({ mountFunction: mount });
-
-          const { quickActionsDocsPath } = notesDataMock;
-
-          expect(wrapper.find(`a[href="${quickActionsDocsPath}"]`).text()).toBe('quick actions');
+          expect(wrapper.find(`[href="${markdownDocsPath}"]`).exists()).toBe(true);
         });
 
         it('should resize textarea after note discarded', async () => {
