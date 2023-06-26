@@ -61,7 +61,7 @@ RSpec.describe Projects::PipelineHelper do
         failed: pipeline.failure_reason?.to_s,
         auto_devops: pipeline.auto_devops_source?.to_s,
         detached: pipeline.detached_merge_request_pipeline?.to_s,
-        stuck: pipeline.stuck?,
+        stuck: pipeline.stuck?.to_s,
         ref_text: pipeline.ref_text
       })
     end

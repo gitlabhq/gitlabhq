@@ -65,28 +65,6 @@ module Ci
       '%.2f' % pipeline.coverage
     end
 
-    def ref_text_legacy
-      if pipeline.detached_merge_request_pipeline?
-        _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch}")
-          .html_safe % {
-            link_to_merge_request: link_to_merge_request,
-            link_to_merge_request_source_branch: link_to_merge_request_source_branch
-          }
-      elsif pipeline.merged_result_pipeline?
-        _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}")
-          .html_safe % {
-            link_to_merge_request: link_to_merge_request,
-            link_to_merge_request_source_branch: link_to_merge_request_source_branch,
-            link_to_merge_request_target_branch: link_to_merge_request_target_branch
-          }
-      elsif pipeline.ref && pipeline.ref_exists?
-        _("for %{link_to_pipeline_ref}")
-        .html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
-      elsif pipeline.ref
-        _("for %{ref}").html_safe % { ref: plain_ref_name }
-      end
-    end
-
     def ref_text
       if pipeline.detached_merge_request_pipeline?
         _("Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}")
@@ -107,22 +85,6 @@ module Ci
       elsif pipeline.ref
         _("For %{ref}").html_safe % { ref: plain_ref_name }
       end
-    end
-
-    def all_related_merge_request_text(limit: nil)
-      if all_related_merge_requests.none?
-        _("No related merge requests found.")
-      else
-        (_("%{count} related %{pluralized_subject}: %{links}") % {
-          count: all_related_merge_requests.count,
-          pluralized_subject: n_('merge request', 'merge requests', all_related_merge_requests.count),
-          links: all_related_merge_request_links(limit: limit).join(', ')
-        }).html_safe
-      end
-    end
-
-    def has_many_merge_requests?
-      all_related_merge_requests.count > 1
     end
 
     def link_to_pipeline_ref

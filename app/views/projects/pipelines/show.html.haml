@@ -9,15 +9,9 @@
 - add_page_startup_graphql_call('pipelines/get_pipeline_details', { projectPath: @project.full_path, iid: @pipeline.iid })
 
 .js-pipeline-container{ data: { controller_action: "#{controller.action_name}" } }
-  - if Feature.enabled?(:pipeline_details_header_vue, @project)
-    #js-pipeline-details-header-vue{ data: js_pipeline_details_header_data(@project, @pipeline) }
-  - else
-    #js-pipeline-header-vue.pipeline-header-container{ data: { full_path: @project.full_path, graphql_resource_etag: graphql_etag_pipeline_path(@pipeline), pipeline_iid: @pipeline.iid, pipeline_id: @pipeline.id, pipelines_path: project_pipelines_path(@project) } }
+  #js-pipeline-details-header-vue{ data: js_pipeline_details_header_data(@project, @pipeline) }
 
   = render_if_exists 'projects/pipelines/cc_validation_required_alert', pipeline: @pipeline
-
-  - if @pipeline.commit.present? && !Feature.enabled?(:pipeline_details_header_vue, @project)
-    = render "projects/pipelines/info", commit: @pipeline.commit
 
   - if pipeline_has_errors
     = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),

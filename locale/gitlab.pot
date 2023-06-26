@@ -658,9 +658,6 @@ msgid_plural "%{count} projects"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{count} related %{pluralized_subject}: %{links}"
-msgstr ""
-
 msgid "%{count} selected"
 msgstr ""
 
@@ -30729,9 +30726,6 @@ msgstr ""
 msgid "No regions configured"
 msgstr ""
 
-msgid "No related merge requests found."
-msgstr ""
-
 msgid "No repository"
 msgstr ""
 
@@ -33733,9 +33727,6 @@ msgstr ""
 msgid "Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})"
 msgstr ""
 
-msgid "Pipelines|Child pipeline (%{link_start}parent%{link_end})"
-msgstr ""
-
 msgid "Pipelines|Clear runner caches"
 msgstr ""
 
@@ -33899,9 +33890,6 @@ msgid "Pipelines|This GitLab CI configuration is invalid: %{reason}. %{linkStart
 msgstr ""
 
 msgid "Pipelines|This GitLab CI configuration is valid."
-msgstr ""
-
-msgid "Pipelines|This is a child pipeline within the parent pipeline"
 msgstr ""
 
 msgid "Pipelines|This pipeline is stuck"
@@ -47205,9 +47193,6 @@ msgstr ""
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
 msgstr ""
 
-msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{b_open}Auto DevOps.%{b_close}"
-msgstr ""
-
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
 msgstr ""
 
@@ -54328,18 +54313,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "finding is not found or is already attached to a vulnerability"
-msgstr ""
-
-msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch}"
-msgstr ""
-
-msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}"
-msgstr ""
-
-msgid "for %{link_to_pipeline_ref}"
-msgstr ""
-
-msgid "for %{ref}"
 msgstr ""
 
 msgid "for Workspace is required to be public"

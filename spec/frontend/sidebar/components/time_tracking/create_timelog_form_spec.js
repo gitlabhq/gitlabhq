@@ -1,9 +1,10 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlModal } from '@gitlab/ui';
+import { GlAlert, GlModal, GlFormInput, GlDatepicker, GlFormTextarea } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog_form.vue';
 import createTimelogMutation from '~/sidebar/queries/create_timelog.mutation.graphql';
@@ -49,21 +50,19 @@ describe('Create Timelog Form', () => {
   const findSaveButton = () => findModal().props('actionPrimary');
   const findSaveButtonLoadingState = () => findSaveButton().attributes.loading;
   const findSaveButtonDisabledState = () => findSaveButton().attributes.disabled;
+  const findGlFormInput = () => wrapper.findComponent(GlFormInput);
+  const findGlDatepicker = () => wrapper.findComponent(GlDatepicker);
+  const findGlFormTextarea = () => wrapper.findComponent(GlFormTextarea);
 
   const submitForm = () => findForm().trigger('submit');
 
   const mountComponent = (
-    { props, data, providedProps } = {},
+    { props, providedProps } = {},
     mutationResolverMock = rejectedMutationMock,
   ) => {
     fakeApollo = createMockApollo([[createTimelogMutation, mutationResolverMock]]);
 
     wrapper = shallowMountExtended(CreateTimelogForm, {
-      data() {
-        return {
-          ...data,
-        };
-      },
       provide: {
         issuableType: 'issue',
         ...providedProps,
@@ -73,13 +72,17 @@ describe('Create Timelog Form', () => {
         ...props,
       },
       apolloProvider: fakeApollo,
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: { close: modalCloseMock },
+        }),
+      },
     });
-
-    wrapper.vm.$refs.modal.close = modalCloseMock;
   };
 
   afterEach(() => {
     fakeApollo = null;
+    modalCloseMock.mockClear();
   });
 
   describe('save button', () => {
@@ -90,15 +93,18 @@ describe('Create Timelog Form', () => {
       expect(findSaveButtonDisabledState()).toBe(true);
     });
 
-    it('is enabled and not loading when time spent is not empty', () => {
-      mountComponent({ data: { timeSpent: '2d' } });
+    it('is enabled and not loading when time spent is not empty', async () => {
+      mountComponent();
+
+      await findGlFormInput().vm.$emit('input', '2d');
 
       expect(findSaveButtonLoadingState()).toBe(false);
       expect(findSaveButtonDisabledState()).toBe(false);
     });
 
     it('is disabled and loading when the the form is submitted', async () => {
-      mountComponent({ data: { timeSpent: '2d' } });
+      mountComponent();
+      await findGlFormInput().vm.$emit('input', '2d');
 
       submitForm();
 
@@ -109,7 +115,8 @@ describe('Create Timelog Form', () => {
     });
 
     it('is enabled and not loading the when form is submitted but the mutation has errors', async () => {
-      mountComponent({ data: { timeSpent: '2d' } });
+      mountComponent();
+      await findGlFormInput().vm.$emit('input', '2d');
 
       submitForm();
 
@@ -121,7 +128,8 @@ describe('Create Timelog Form', () => {
     });
 
     it('is enabled and not loading the when form is submitted but the mutation returns errors', async () => {
-      mountComponent({ data: { timeSpent: '2d' } }, resolvedMutationWithErrorsMock);
+      mountComponent({}, resolvedMutationWithErrorsMock);
+      await findGlFormInput().vm.$emit('input', '2d');
 
       submitForm();
 
@@ -145,7 +153,8 @@ describe('Create Timelog Form', () => {
     });
 
     it('closes the modal after a successful mutation', async () => {
-      mountComponent({ data: { timeSpent: '2d' } }, resolvedMutationWithoutErrorsMock);
+      mountComponent({}, resolvedMutationWithoutErrorsMock);
+      await findGlFormInput().vm.$emit('input', '2d');
 
       submitForm();
 
@@ -166,7 +175,10 @@ describe('Create Timelog Form', () => {
         const spentAt = '2022-11-20T21:53:00+0000';
         const summary = 'Example';
 
-        mountComponent({ data: { timeSpent, spentAt, summary }, providedProps: { issuableType } });
+        mountComponent({ providedProps: { issuableType } });
+        await findGlFormInput().vm.$emit('input', timeSpent);
+        await findGlDatepicker().vm.$emit('input', spentAt);
+        await findGlFormTextarea().vm.$emit('input', summary);
 
         submitForm();
 
@@ -187,7 +199,8 @@ describe('Create Timelog Form', () => {
     });
 
     it('shows an error if the submission fails with a handled error', async () => {
-      mountComponent({ data: { timeSpent: '2d' } }, resolvedMutationWithErrorsMock);
+      mountComponent({}, resolvedMutationWithErrorsMock);
+      await findGlFormInput().vm.$emit('input', '2d');
 
       submitForm();
 
@@ -198,7 +211,8 @@ describe('Create Timelog Form', () => {
     });
 
     it('shows an error if the submission fails with an unhandled error', async () => {
-      mountComponent({ data: { timeSpent: '2d' } });
+      mountComponent();
+      await findGlFormInput().vm.$emit('input', '2d');
 
       submitForm();
 

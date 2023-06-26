@@ -387,7 +387,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-my-4">
+  <div class="gl-my-4" data-testid="pipeline-details-header">
     <gl-alert
       v-if="hasError"
       class="gl-mb-4"
@@ -447,6 +447,7 @@ export default {
               class="gl-display-inline gl-mb-0"
               :display-calendar-icon="false"
               font-size="gl-font-md"
+              data-testid="pipeline-time-ago"
             />
           </div>
         </div>
@@ -527,7 +528,6 @@ export default {
             :title="$options.i18n.detachedBadgeTooltip"
             variant="info"
             size="sm"
-            data-qa-selector="merge_request_badge_tag"
           >
             {{ $options.i18n.detachedBadgeText }}
           </gl-badge>

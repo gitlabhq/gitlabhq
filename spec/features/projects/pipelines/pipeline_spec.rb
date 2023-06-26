@@ -13,7 +13,6 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
   let(:role) { :developer }
 
   before do
-    stub_feature_flags(pipeline_details_header_vue: false)
     sign_in(user)
     project.add_role(user, role)
   end
@@ -93,9 +92,9 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
     it 'shows the pipeline information' do
       visit_pipeline
 
-      within '.pipeline-info' do
-        expect(page).to have_content("#{pipeline.statuses.count} jobs " \
-                                      "for #{pipeline.ref}")
+      within '[data-testid="pipeline-details-header"]' do
+        expect(page).to have_content("For #{pipeline.ref}")
+        expect(page).to have_content("#{pipeline.statuses.count} Jobs")
         expect(page).to have_link(pipeline.ref,
           href: project_commits_path(pipeline.project, pipeline.ref))
       end
@@ -104,13 +103,25 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
     it 'displays pipeline name instead of commit title' do
       visit_pipeline
 
-      within 'h3' do
+      within '[data-testid="pipeline-details-header"]' do
         expect(page).to have_content(pipeline.name)
+        expect(page).to have_content(project.commit.short_id)
+        expect(page).not_to have_selector('[data-testid="pipeline-commit-title"]')
+      end
+    end
+
+    context 'without pipeline name' do
+      let(:pipeline) do
+        create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user)
       end
 
-      within '.well-segment[data-testid="commit-row"]' do
-        expect(page).to have_content(project.commit.title)
-        expect(page).to have_content(project.commit.short_id)
+      it 'displays commit title' do
+        visit_pipeline
+
+        within '[data-testid="pipeline-details-header"]' do
+          expect(page).to have_content(project.commit.title)
+          expect(page).not_to have_selector('[data-testid="pipeline-name"]')
+        end
       end
     end
 
@@ -126,109 +137,22 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       end
 
       context 'pipeline has finished' do
-        it 'shows pipeline stats with flag on' do
+        it 'shows time ago' do
           visit project_pipeline_path(project, finished_pipeline)
 
-          within '.pipeline-info' do
-            expect(page).to have_content("in #{finished_pipeline.duration} seconds")
-            expect(page).to have_content("and was queued for #{finished_pipeline.queued_duration} seconds")
+          within '[data-testid="pipeline-details-header"]' do
+            expect(page).to have_selector('[data-testid="pipeline-time-ago"]')
           end
         end
       end
 
       context 'pipeline has not finished' do
-        it 'does not show pipeline stats' do
+        it 'does not show time ago' do
           visit_pipeline
 
-          within '.pipeline-info' do
-            expect(page).not_to have_selector('[data-testid="pipeline-stats-text"]')
+          within '[data-testid="pipeline-details-header"]' do
+            expect(page).not_to have_selector('[data-testid="pipeline-time-ago"]')
           end
-        end
-      end
-    end
-
-    describe 'related merge requests' do
-      context 'when there are no related merge requests' do
-        it 'shows a "no related merge requests" message' do
-          visit_pipeline
-
-          within '.related-merge-request-info' do
-            expect(page).to have_content('No related merge requests found.')
-          end
-        end
-      end
-
-      context 'when there is one related merge request' do
-        let!(:merge_request) do
-          create(:merge_request,
-            source_project: project,
-            source_branch: pipeline.ref)
-        end
-
-        it 'shows a link to the merge request' do
-          visit_pipeline
-
-          within '.related-merge-requests' do
-            expect(page).to have_content('1 related merge request: ')
-            expect(page).to have_selector('.js-truncated-mr-list')
-            expect(page).to have_link("#{merge_request.to_reference} #{merge_request.title}")
-
-            expect(page).not_to have_selector('.js-full-mr-list')
-            expect(page).not_to have_selector('.text-expander')
-          end
-        end
-      end
-
-      context 'when there are two related merge requests' do
-        let!(:merge_request1) do
-          create(:merge_request,
-            source_project: project,
-            source_branch: pipeline.ref)
-        end
-
-        let!(:merge_request2) do
-          create(:merge_request,
-            source_project: project,
-            source_branch: pipeline.ref,
-            target_branch: 'fix')
-        end
-
-        it 'links to the most recent related merge request' do
-          visit_pipeline
-
-          within '.related-merge-requests' do
-            expect(page).to have_content('2 related merge requests: ')
-            expect(page).to have_link("#{merge_request2.to_reference} #{merge_request2.title}")
-            expect(page).to have_selector('.text-expander')
-            expect(page).to have_selector('.js-full-mr-list', visible: false)
-          end
-        end
-
-        it 'expands to show links to all related merge requests' do
-          visit_pipeline
-
-          within '.related-merge-requests' do
-            find('.text-expander').click
-
-            expect(page).to have_selector('.js-full-mr-list', visible: true)
-
-            pipeline.all_merge_requests.map do |merge_request|
-              expect(page).to have_link(href: project_merge_request_path(project, merge_request))
-            end
-          end
-        end
-      end
-    end
-
-    describe 'pipelines details view' do
-      let!(:status) { create(:user_status, user: pipeline.user, emoji: 'smirk', message: 'Authoring this object') }
-
-      it 'pipeline header shows the user status and emoji' do
-        visit project_pipeline_path(project, pipeline)
-
-        within '[data-testid="ci-header-content"]' do
-          expect(page).to have_selector("[data-testid='#{status.message}']")
-          expect(page).to have_selector("[data-name='#{status.emoji}']")
         end
       end
     end
@@ -299,8 +223,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
           wait_for_requests
 
           expect(page).not_to have_content('Retry job')
-          within('.js-pipeline-header-container') do
-            expect(page).to have_selector('.js-ci-status-icon-running')
+          within('[data-testid="pipeline-details-header"]') do
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
         end
       end
@@ -353,8 +277,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
           wait_for_requests
 
           expect(page).not_to have_content('Retry job')
-          within('.js-pipeline-header-container') do
-            expect(page).to have_selector('.js-ci-status-icon-running')
+          within('[data-testid="pipeline-details-header"]') do
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
         end
 
@@ -387,8 +311,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
           wait_for_requests
 
           expect(page).not_to have_content('Play job')
-          within('.js-pipeline-header-container') do
-            expect(page).to have_selector('.js-ci-status-icon-running')
+          within('[data-testid="pipeline-details-header"]') do
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
         end
       end
@@ -601,7 +525,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
       context 'when retrying' do
         before do
-          find('[data-testid="retryPipeline"]').click
+          find('[data-testid="retry-pipeline"]').click
           wait_for_requests
         end
 
@@ -610,8 +534,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         end
 
         it 'shows running status in pipeline header', :sidekiq_might_not_need_inline do
-          within('.js-pipeline-header-container') do
-            expect(page).to have_selector('.js-ci-status-icon-running')
+          within('[data-testid="pipeline-details-header"]') do
+            expect(page).to have_selector('[data-testid="ci-badge-running"]')
           end
         end
       end
@@ -677,7 +601,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       end
 
       it 'does not render render raw HTML to the pipeline ref' do
-        page.within '.pipeline-info' do
+        page.within '[data-testid="pipeline-details-header"]' do
           expect(page).not_to have_content('<span class="ref-name"')
         end
       end
@@ -701,10 +625,10 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       it 'shows the pipeline information' do
         visit_pipeline
 
-        within '.pipeline-info' do
-          expect(page).to have_content("#{pipeline.statuses.count} jobs " \
-                                       "for !#{merge_request.iid} " \
-                                       "with #{merge_request.source_branch}")
+        within '[data-testid="pipeline-details-header"]' do
+          expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+          expect(page).to have_content("Related merge request !#{merge_request.iid} " \
+                                       "to merge #{merge_request.source_branch}")
           expect(page).to have_link("!#{merge_request.iid}",
             href: project_merge_request_path(project, merge_request))
           expect(page).to have_link(merge_request.source_branch,
@@ -720,7 +644,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         it 'does not link to the source branch commit path' do
           visit_pipeline
 
-          within '.pipeline-info' do
+          within '[data-testid="pipeline-details-header"]' do
             expect(page).not_to have_link(merge_request.source_branch)
             expect(page).to have_content(merge_request.source_branch)
           end
@@ -735,10 +659,10 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         end
 
         it 'shows the pipeline information', :sidekiq_might_not_need_inline do
-          within '.pipeline-info' do
-            expect(page).to have_content("#{pipeline.statuses.count} jobs " \
-                                         "for !#{merge_request.iid} " \
-                                         "with #{merge_request.source_branch}")
+          within '[data-testid="pipeline-details-header"]' do
+            expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+            expect(page).to have_content("Related merge request !#{merge_request.iid} " \
+                                         "to merge #{merge_request.source_branch}")
             expect(page).to have_link("!#{merge_request.iid}",
               href: project_merge_request_path(project, merge_request))
             expect(page).to have_link(merge_request.source_branch,
@@ -772,10 +696,10 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       it 'shows the pipeline information' do
         visit_pipeline
 
-        within '.pipeline-info' do
-          expect(page).to have_content("#{pipeline.statuses.count} jobs " \
-                                       "for !#{merge_request.iid} " \
-                                       "with #{merge_request.source_branch} " \
+        within '[data-testid="pipeline-details-header"]' do
+          expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+          expect(page).to have_content("Related merge request !#{merge_request.iid} " \
+                                       "to merge #{merge_request.source_branch} " \
                                        "into #{merge_request.target_branch}")
           expect(page).to have_link("!#{merge_request.iid}",
             href: project_merge_request_path(project, merge_request))
@@ -794,7 +718,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         it 'does not link to the target branch commit path' do
           visit_pipeline
 
-          within '.pipeline-info' do
+          within '[data-testid="pipeline-details-header"]' do
             expect(page).not_to have_link(merge_request.target_branch)
             expect(page).to have_content(merge_request.target_branch)
           end
@@ -809,10 +733,10 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         end
 
         it 'shows the pipeline information', :sidekiq_might_not_need_inline do
-          within '.pipeline-info' do
-            expect(page).to have_content("#{pipeline.statuses.count} jobs " \
-                                       "for !#{merge_request.iid} " \
-                                       "with #{merge_request.source_branch} " \
+          within '[data-testid="pipeline-details-header"]' do
+            expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+            expect(page).to have_content("Related merge request !#{merge_request.iid} " \
+                                       "to merge #{merge_request.source_branch} " \
                                        "into #{merge_request.target_branch}")
             expect(page).to have_link("!#{merge_request.iid}",
               href: project_merge_request_path(project, merge_request))
@@ -957,7 +881,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       it 'shows deploy job as created' do
         subject
 
-        within('.js-pipeline-header-container') do
+        within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_content('pending')
         end
 
@@ -982,7 +906,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         it 'shows deploy job as pending' do
           subject
 
-          within('.js-pipeline-header-container') do
+          within('[data-testid="pipeline-details-header"]') do
             expect(page).to have_content('running')
           end
 
@@ -1011,7 +935,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         it 'shows deploy job as waiting for resource' do
           subject
 
-          within('.js-pipeline-header-container') do
+          within('[data-testid="pipeline-details-header"]') do
             expect(page).to have_content('waiting')
           end
 
@@ -1031,7 +955,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
           it 'shows deploy job as pending' do
             subject
 
-            within('.js-pipeline-header-container') do
+            within('[data-testid="pipeline-details-header"]') do
               expect(page).to have_content('running')
             end
 
@@ -1059,7 +983,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
           it 'shows deploy job as waiting for resource' do
             subject
 
-            within('.js-pipeline-header-container') do
+            within('[data-testid="pipeline-details-header"]') do
               expect(page).to have_content('waiting')
             end
 
@@ -1327,7 +1251,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       end
 
       it 'contains badge that indicates it is the latest build' do
-        page.within(all('.well-segment')[1]) do
+        page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_content 'latest'
         end
       end
@@ -1348,7 +1272,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       end
 
       it 'contains badge that indicates errors' do
-        page.within(all('.well-segment')[1]) do
+        page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_content 'yaml invalid'
         end
       end
@@ -1356,7 +1280,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       it 'contains badge with tooltip which contains error' do
         expect(pipeline).to have_yaml_errors
 
-        page.within(all('.well-segment')[1]) do
+        page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_selector(
             %{span[title="#{pipeline.yaml_errors}"]})
         end
@@ -1369,25 +1293,18 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       it 'contains badge with tooltip which contains failure reason' do
         expect(pipeline.failure_reason?).to eq true
 
-        page.within(all('.well-segment')[1]) do
+        page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_selector(
             %{span[title="#{pipeline.present.failure_reason}"]})
         end
       end
-
-      it 'contains a pipeline header with title' do
-        expect(page).to have_content "Pipeline ##{pipeline.id}"
-      end
     end
 
     context 'when pipeline is stuck' do
-      include_context 'pipeline builds'
-
       let(:pipeline) do
         create(:ci_pipeline,
                project: project,
-               ref: 'master',
-               sha: project.commit.id,
+               status: :created,
                user: user)
       end
 
@@ -1397,7 +1314,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       end
 
       it 'contains badge that indicates being stuck' do
-        page.within(all('.well-segment')[1]) do
+        page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_content 'stuck'
         end
       end
@@ -1421,7 +1338,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       end
 
       it 'contains badge that indicates using auto devops' do
-        page.within(all('.well-segment')[1]) do
+        page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_content 'Auto DevOps'
         end
       end
@@ -1453,7 +1370,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       end
 
       it 'contains badge that indicates detached merge request pipeline' do
-        page.within(all('.well-segment')[1]) do
+        page.within('[data-testid="pipeline-details-header"]') do
           expect(page).to have_content 'merge request'
         end
       end

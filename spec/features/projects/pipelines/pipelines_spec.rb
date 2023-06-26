@@ -10,10 +10,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
   let(:project) { create(:project) }
   let(:expected_detached_mr_tag) { 'merge request' }
 
-  before do
-    stub_feature_flags(pipeline_details_header_vue: false)
-  end
-
   context 'when user is logged in' do
     let(:user) { create(:user) }
 
@@ -656,7 +652,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         # header
         expect(page).to have_text("##{pipeline.id}")
-        expect(page).to have_selector(%(img[src="#{pipeline.user.avatar_url}"]))
         expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
 
         # stages
