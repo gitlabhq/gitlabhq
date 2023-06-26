@@ -3402,6 +3402,9 @@ msgstr ""
 msgid "AdminSettings|Import sources"
 msgstr ""
 
+msgid "AdminSettings|Improve non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed."
+msgstr ""
+
 msgid "AdminSettings|Inactive project deletion"
 msgstr ""
 
@@ -3499,6 +3502,9 @@ msgid "AdminSettings|Protect CI/CD variables by default"
 msgstr ""
 
 msgid "AdminSettings|Registration Features include:"
+msgstr ""
+
+msgid "AdminSettings|Requeue indexing workers"
 msgstr ""
 
 msgid "AdminSettings|Require users to prove ownership of custom domains"
@@ -3615,6 +3621,9 @@ msgstr ""
 msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
 msgstr ""
 
+msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
+msgstr ""
+
 msgid "AdminSettings|Used to connect Jitsu to the Clickhouse instance."
 msgstr ""
 
@@ -3625,9 +3634,6 @@ msgid "AdminSettings|Used to retrieve dashboard data from the Cube instance."
 msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
-msgstr ""
-
-msgid "AdminSettings|When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."
 msgstr ""
 
 msgid "AdminSettings|When to delete inactive projects"

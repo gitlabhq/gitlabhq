@@ -68,6 +68,7 @@ module API
           desc: 'The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`'
       end
 
+      route_setting :authentication, job_token_allowed: true
       get ':id/deployments' do
         authorize! :read_deployment, user_project
 
@@ -92,6 +93,7 @@ module API
       params do
         requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/deployments/:deployment_id' do
         authorize! :read_deployment, user_project
 
@@ -132,6 +134,7 @@ module API
           desc: 'The status to filter deployments by. One of `running`, `success`, `failed`, or `canceled`',
           values: %w[running success failed canceled]
       end
+      route_setting :authentication, job_token_allowed: true
       post ':id/deployments' do
         authorize!(:create_deployment, user_project)
         authorize!(:create_environment, user_project)
@@ -175,6 +178,7 @@ module API
                  desc: 'The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`',
                  values: %w[running success failed canceled]
       end
+      route_setting :authentication, job_token_allowed: true
       put ':id/deployments/:deployment_id' do
         authorize!(:read_deployment, user_project)
 
@@ -207,6 +211,7 @@ module API
       params do
         requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
       end
+      route_setting :authentication, job_token_allowed: true
       delete ':id/deployments/:deployment_id' do
         deployment = user_project.deployments.find(params[:deployment_id])
 
@@ -240,7 +245,7 @@ module API
 
         use :merge_requests_base_params
       end
-
+      route_setting :authentication, job_token_allowed: true
       get ':id/deployments/:deployment_id/merge_requests' do
         authorize! :read_deployment, user_project
 

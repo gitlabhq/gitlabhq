@@ -10,7 +10,6 @@ Rails.application.configure do
 end
 
 ActionCable::SubscriptionAdapter::Base.prepend(Gitlab::Patch::ActionCableSubscriptionAdapterIdentifier)
-ActionCable::SubscriptionAdapter::Redis::Listener.prepend(Gitlab::Patch::ActionCableRedisListener)
 
 # https://github.com/rails/rails/blob/bb5ac1623e8de08c1b7b62b1368758f0d3bb6379/actioncable/lib/action_cable/subscription_adapter/redis.rb#L18
 ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|

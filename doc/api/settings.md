@@ -372,6 +372,7 @@ listed in the descriptions of the relevant settings.
 | `elasticsearch_indexed_field_length_limit` **(PREMIUM)** | integer | no                                   | Maximum size of text fields to index by Elasticsearch. 0 value means no limit. This does not apply to repository and wiki indexing. |
 | `elasticsearch_indexed_file_size_limit_kb` **(PREMIUM)** | integer | no                                   | Maximum size of repository and wiki files that are indexed by Elasticsearch. |
 | `elasticsearch_indexing` **(PREMIUM)**   | boolean          | no                                   | Enable Elasticsearch indexing. |
+| `elasticsearch_requeue_workers` **(PREMIUM)**   | boolean          | no                                   | Enable automatic requeuing of indexing workers. This improves non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed. |
 | `elasticsearch_limit_indexing` **(PREMIUM)** | boolean      | no                                   | Limit Elasticsearch to index certain namespaces and projects. |
 | `elasticsearch_max_bulk_concurrency` **(PREMIUM)** | integer | no                                   | Maximum concurrency of Elasticsearch bulk requests per indexing operation. This only applies to repository indexing operations. |
 | `elasticsearch_max_bulk_size_mb` **(PREMIUM)** | integer    | no                                   | Maximum size of Elasticsearch bulk indexing requests in MB. This only applies to repository indexing operations. |

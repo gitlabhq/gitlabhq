@@ -5,8 +5,8 @@ module ActionDispatch
     class Router
       private
 
-      # Besides the patche, this method is a duplicate for the original method defined in Rails:
-      # https://github.com/rails/rails/blob/v7.0.4.2/actionpack/lib/action_dispatch/journey/router.rb#L109-L132
+      # Besides the patch, this method is a duplicate for the original method defined in Rails:
+      # https://github.com/rails/rails/blob/v7.0.5/actionpack/lib/action_dispatch/journey/router.rb#L109-L132
       # See https://github.com/rails/rails/issues/47244
       def find_routes(req)
         path_info = req.path_info

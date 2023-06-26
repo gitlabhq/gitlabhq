@@ -31,14 +31,14 @@ module ActiveRecord
         end
 
         module NonActiveRecordPreloader
-          # https://github.com/rails/rails/blob/v7.0.4.2/activerecord/lib/active_record/associations/preloader/association.rb#L114-L116
+          # https://github.com/rails/rails/blob/v7.0.5/activerecord/lib/active_record/associations/preloader/association.rb#L114-L116
           def run?
             return true unless klass < ActiveRecord::Base
 
             super
           end
 
-          # https://github.com/rails/rails/blob/v7.0.4.2/activerecord/lib/active_record/associations/preloader/association.rb#L137-L141
+          # https://github.com/rails/rails/blob/v7.0.5/activerecord/lib/active_record/associations/preloader/association.rb#L137-L141
           def preloaded_records
             return [] unless klass < ActiveRecord::Base
 
@@ -51,7 +51,7 @@ module ActiveRecord
 
       class Branch
         module NonActiveRecordPreloader
-          # https://github.com/rails/rails/blob/v7.0.4.2/activerecord/lib/active_record/associations/preloader/branch.rb#L37-L45
+          # https://github.com/rails/rails/blob/v7.0.5/activerecord/lib/active_record/associations/preloader/branch.rb#L37-L45
           def target_classes
             super.delete_if { |klass| !(klass < ActiveRecord::Base) }
           end

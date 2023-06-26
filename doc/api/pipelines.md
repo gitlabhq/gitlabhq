@@ -308,7 +308,7 @@ GET /projects/:id/pipelines/latest
 | `ref`       | string  | no       | The branch or tag to check for the latest pipeline. Defaults to the default branch when not specified. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
 ```
 
 Example of response
