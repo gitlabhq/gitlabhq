@@ -326,6 +326,24 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 - Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
   maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](#gitaly-omnibus-gitlab-configuration-structure-change).
+- You might encounter the following error while upgrading to GitLab 15.10 or later:
+
+  ```shell
+  STDOUT: rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+  PG::CheckViolation: ERROR:  check constraint "check_70f294ef54" is violated by some row
+  ```
+
+  This error is caused by a [batched background migration introduced in GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107701)
+  not being finalized before GitLab 15.10. To resolve this error:
+
+  1. Execute the following SQL statement using the database console (`sudo gitlab-psql` for Linux package installs):
+
+     ```sql
+     UPDATE oauth_access_tokens SET expires_in = '7200' WHERE expires_in IS NULL;
+     ```
+
+  1. [Re-run database migrations](../administration/raketasks/maintenance.md#run-incomplete-database-migrations).
 
 ### 15.9.0
 

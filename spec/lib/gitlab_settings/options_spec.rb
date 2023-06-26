@@ -12,9 +12,10 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
       it 'returns the unchanged internal hash' do
         stub_rails_env('production')
 
-        expect(Gitlab::AppLogger)
-          .to receive(:warn)
-          .with('Warning: Do not mutate GitlabSettings::Options objects', method: method)
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_and_raise_for_dev_exception)
+          .with(RuntimeError.new("Warning: Do not mutate GitlabSettings::Options objects: `#{method}`"), method: method)
+          .and_call_original
 
         expect(options.send(method)).to be_truthy
       end
@@ -233,9 +234,10 @@ RSpec.describe GitlabSettings::Options, :aggregate_failures, feature_category: :
         it 'delegates the method to the internal options hash' do
           stub_rails_env('production')
 
-          expect(Gitlab::AppLogger)
-            .to receive(:warn)
-            .with('Calling a hash method on GitlabSettings::Options', method: :delete)
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_and_raise_for_dev_exception)
+            .with(RuntimeError.new('Calling a hash method on GitlabSettings::Options: `delete`'), method: :delete)
+            .and_call_original
 
           expect { options.foo.delete('bar') }
             .to change { options.to_hash }

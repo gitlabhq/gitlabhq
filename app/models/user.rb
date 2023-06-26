@@ -31,7 +31,6 @@ class User < ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
-  include SafelyChangeColumnDefault
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -59,8 +58,6 @@ class User < ApplicationRecord
 
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
-
-  columns_changing_default :notified_of_own_activity
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
@@ -2066,6 +2063,7 @@ class User < ApplicationRecord
   # override, from Devise
   def lock_access!(opts = {})
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
+    audit_lock_access
     super
   end
 
@@ -2592,6 +2590,9 @@ class User < ApplicationRecord
   def prefix_for_feed_token
     FEED_TOKEN_PREFIX
   end
+
+  # method overriden in EE
+  def audit_lock_access; end
 end
 
 User.prepend_mod_with('User')

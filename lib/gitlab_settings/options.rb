@@ -121,10 +121,9 @@ module GitlabSettings
 
     # Don't alter the internal keys
     def stringify_keys!
-      error_msg = "Warning: Do not mutate #{self.class} objects"
-      raise "#{error_msg}: `#{__method__}`" unless Rails.env.production?
+      error_msg = "Warning: Do not mutate #{self.class} objects: `#{__method__}`"
 
-      Gitlab::AppLogger.warn(error_msg, method: __method__)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(RuntimeError.new(error_msg), method: __method__)
 
       to_hash.deep_stringify_keys
     end
@@ -132,10 +131,9 @@ module GitlabSettings
 
     # Don't alter the internal keys
     def symbolize_keys!
-      error_msg = "Warning: Do not mutate #{self.class} objects"
-      raise "#{error_msg}: `#{__method__}`" unless Rails.env.production?
+      error_msg = "Warning: Do not mutate #{self.class} objects: `#{__method__}`"
 
-      Gitlab::AppLogger.warn(error_msg, method: __method__)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(RuntimeError.new(error_msg), method: __method__)
 
       to_hash.deep_symbolize_keys
     end
@@ -151,10 +149,9 @@ module GitlabSettings
       end
 
       if @options.respond_to?(name)
-        error_msg = "Calling a hash method on #{self.class}"
-        raise "#{error_msg}: `#{name}`" unless Rails.env.production?
+        error_msg = "Calling a hash method on #{self.class}: `#{name}`"
 
-        Gitlab::AppLogger.warn(error_msg, method: name)
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(RuntimeError.new(error_msg), method: name)
 
         return @options.public_send(name, *args, &block) # rubocop: disable GitlabSecurity/PublicSend
       end

@@ -539,6 +539,12 @@ performance gains.
 When combining tests, consider using `:aggregate_failures`, so that the full
 results are available, and not just the first failure.
 
+#### In case you're stuck
+
+We have a `backend_testing_performance` [domain expertise](https://about.gitlab.com/handbook/engineering/workflow/code-review/#domain-experts) to list people that could help refactor slow backend specs.
+
+To find people that could help, search for `backend testing performance` on the [Engineering Projects page](https://about.gitlab.com/handbook/engineering/projects/), or look directly in [the `www-gitlab-org` project](https://gitlab.com/search?group_id=6543&nav_source=navbar&project_id=7764&repository_ref=master&scope=blobs&search=backend_testing_performance+path%3Adata%2Fteam_members%2F*&search_code=true).
+
 ### Feature category metadata
 
 You must [set feature category metadata for each RSpec example](../feature_categorization/index.md#rspec-examples).

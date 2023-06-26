@@ -362,6 +362,9 @@ GitLab generates audit events when a cluster agent token is created or revoked.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276250) in GitLab 13.6, audit events for when a user is approved using the Admin Area.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6, audit events for when a user's personal access token is successfully or unsuccessfully created or revoked.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9, audit events for when a user requests access to an instance or is rejected using the Admin Area.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
+  GitLab 15.1, audit events when a user's two-factor authentication is disabled.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124169) in GitLab 16.2, audit events when a user's access is locked.
 
 The following user actions on a GitLab instance generate instance audit events:
 
@@ -373,8 +376,8 @@ The following user actions on a GitLab instance generate instance audit events:
 - Grant OAuth access.
 - Failed second-factor authentication attempt.
 - A user's personal access token was successfully or unsuccessfully created or revoked.
-- A user's two-factor authentication was disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
-  GitLab 15.1.
+- A user's two-factor authentication was disabled.
+- A user's access is locked.
 
 #### User management
 
