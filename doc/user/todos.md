@@ -81,7 +81,7 @@ When you enable this feature:
 
 ## Create a to-do item
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results and, tasks in GitLab 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
 
 You can manually add an item to your To-Do List.
 
@@ -96,10 +96,6 @@ You can manually add an item to your To-Do List.
    - [Task](tasks.md)
 
 1. In the upper-right corner, select  **Add a to do** (**{todo-add}**).
-
-   ![Adding a to-do item from the issuable sidebar](img/todos_add_todo_sidebar_v14_1.png)
-
-   ![Adding a to-do item from the Objective and Key results](img/todos_add_okrs_v16_0.png)
 
 ## Create a to-do item by mentioning someone
 
@@ -157,10 +153,6 @@ There are two ways to do this:
 
 - In the To-Do List, to the right of the to-do item, select **Mark as done** (**{check}**).
 - In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** (**{todo-done}**).
-
-  ![Mark as done from the sidebar](img/todos_mark_done_sidebar_v14_1.png)
-
-  ![Mark as done from the Objectives and Key results](img/todos_mark_done_okrs_v16_0.png)
 
 ## Mark all to-do items as done
 

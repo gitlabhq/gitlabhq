@@ -21,16 +21,23 @@ Due to high demand, this feature may have unscheduled downtime and Code Suggesti
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.
 
-Code Suggestions use generative AI to suggest code while you're developing.
-Use Code Suggestions to write code more efficiently by viewing Code Suggestions
-as you type. Depending on the cursor position, the extension either:
+Write code more efficiently by using generative AI to suggest code while you're developing.
 
-- Provides entire code snippets, like generating functions.
-- Completes the current line.
+Code Suggestions are available:
 
-To accept a suggestion, press <kbd>Tab</kbd>.
+- To users of both GitLab SaaS and self-managed GitLab.
+- In Visual Studio Code when you have the GitLab Workflow extension installed.
+- As Experiments for [additional IDEs](#enable-code-suggestions-in-other-ides-and-editors).
 
-Code Suggestions are available in Visual Studio Code when you have the GitLab Workflow extension installed. [Additional IDE extension support](https://gitlab.com/groups/gitlab-org/-/epics/10542) is planned for the near future.
+<div class="video-fallback">
+  <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">View an end-to-end demo of Code Suggestions in VS Code</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
+Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
 
 ## Supported languages
 
@@ -45,17 +52,11 @@ The best results from Code Suggestions are expected for these languages:
 
 Suggestions may be mixed for other languages. Using natural language code comments to request completions may also not function as expected.
 
-Suggestions are best when writing new code. Editing existing functions or 'fill in the middle' of a function may not perform as expected.
-
-We are making improvements to the Code Suggestions underlying AI model weekly to improve the quality of suggestions. Please remember that AI is non-deterministic, so you may not get the same suggestion week to week.
-
-Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/). Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
-
-Code Suggestions are available on both GitLab SaaS and self-managed GitLab.
-
 ## Enable Code Suggestions on GitLab SaaS **(FREE SAAS)**
 
-There are different scenarios in which you can enable code suggestions.
+Code Suggestions can be enabled [for all members of a group](../../group/manage.md#enable-code-suggestions).
+
+Each individual user must also choose to enable Code Suggestions.
 
 ### Enable Code Suggestions for an individual user
 
@@ -65,72 +66,33 @@ Each user can enable Code Suggestions for themselves:
 
 1. On the left sidebar, select your avatar.
 1. On the left sidebar, select **Preferences**.
-1. In the **Code Suggestions** section, select **Enable Code Suggestions**.
+1. In the **Code Suggestions** section, select the **Enable Code Suggestions** checkbox.
 1. Select **Save changes**.
 
-NOTE:
-If Code Suggestions is [enabled for the group](../../group/manage.md#enable-code-suggestions), the group setting overrides the user setting.
-
-### Enable Code Suggestions in WebIDE
-
-Prerequisites:
-
-- Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
-- Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
-
-Code Suggestions work automatically in the GitLab WebIDE if the prerequisites are met.
-
-To disable Code Suggestions in the WebIDE, disable the user account setting.
+If Code Suggestions is enabled for the group, the group setting overrides the user setting.
 
 NOTE:
-Disabling in the WebIDE will also disable in any other IDEs you use locally like VS Code. Support for [more granular control per IDE](https://gitlab.com/groups/gitlab-org/-/epics/10624) is proposed.
-
-### Enable Code Suggestions in VS Code
-
-Prerequisites:
-
-- Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
-- Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
-- Completed the [setup instructions](https://gitlab.com/gitlab-org/gitlab-vscode-extension#setup) for the GitLab Visual Studio Code Extension.
-
-Start typing in VS Code and you receive suggestions for your GitLab projects.
-
-<div class="video-fallback">
-  See an end-to-end demo: <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">Get started with GitLab Code Suggestions in VS Code</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
-</figure>
+This setting controls Code Suggestions for all IDEs. Support for [more granular control per IDE](https://gitlab.com/groups/gitlab-org/-/epics/10624) is proposed.
 
 ## Enable Code Suggestions on self-managed GitLab **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../policy/experiment-beta-support.md#beta).
 
-To enable Code Suggestions on a self-managed GitLab instance:
+To enable Code Suggestions on a self-managed GitLab instance, you must:
 
-- The instance administrator enables Code Suggestions for the instance.
-- The user enables Code Suggestions in Visual Studio (VS) Code.
-
-### Enable Code Suggestions for the instance
-
-Prerequisites:
-
-You must:
-
-- Be an administrator for your self-managed instance.
+- Be an administrator.
 - Have a [GitLab SaaS account](https://gitlab.com/users/sign_up).
   You do not need to have a GitLab SaaS subscription.
 
-You, as an administrator, must:
+Then, you will:
 
-1. Enable Code Suggestions:
-   - In your SaaS account.
-   - At the self-managed instance level.
-1. Request early access to the Code Suggestions Beta for self-managed instances.
+1. Enable Code Suggestions for your SaaS account.
+1. Enable Code Suggestions for the instance.
+1. Request early access to the Code Suggestions Beta.
 
-#### Enable Code Suggestions in your GitLab SaaS account
+### Enable Code Suggestions for your SaaS account
 
-In your GitLab SaaS account:
+To enable Code Suggestions for your GitLab SaaS account:
 
 1. Create a [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token)
    with the `api` scope.
@@ -139,9 +101,16 @@ In your GitLab SaaS account:
 1. In the **Code Suggestions** section, select **Enable Code Suggestions**.
 1. Select **Save changes**.
 
-#### Enable Code Suggestions in your self-managed GitLab instance
+### Enable Code Suggestions for the instance
 
-In your self-managed GitLab instance:
+You must enable Code Suggestions for the instance. When you do this, you:
+
+- Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+- Acknowledge that GitLab:
+  - Sends data from the instance, including personal data, to Google for cloud hosting.
+  - Might send data to third-party AI providers.
+
+To enable Code Suggestions for your self-managed GitLab instance:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -151,19 +120,12 @@ In your self-managed GitLab instance:
    - In **Personal access token**, enter your GitLab SaaS personal access token.
 1. Select **Save changes**.
 
-This setting is only visible in self-managed GitLab instances.
-
-By turning on this feature, you:
-
-- Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
-- Acknowledge that GitLab:
-  - Sends data from the instance, including personal data, to Google for cloud hosting.
-  - Might send data to third-party AI providers.
+This setting is visible only in self-managed GitLab instances.
 
 WARNING:
 If you clear the **Turn on code suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
 
-#### Request access to Code Suggestions
+### Request access to Code Suggestions
 
 GitLab provisions access on a customer-by-customer basis for Code Suggestions
 on self-managed instances. To request access:
@@ -175,70 +137,32 @@ on self-managed instances. To request access:
 After GitLab has provisioned access to Code Suggestions for your instance,
 the users in your instance can now enable Code Suggestions in VS Code.
 
-### Enable Code Suggestions in WebIDE
-
-Prerequisites:
-
-- Code Suggestions must be [enabled for the top-level group](../../group/manage.md#enable-code-suggestions).
-- Code Suggestions must be [enabled for your user account](#enable-code-suggestions-for-an-individual-user).
-
-You should check that AI assisted code suggestions in the
-[GitLab WebIDE](../../project/web_ide/index.md) are enabled:
-
-1. In the left sidebar, select **Extensions > GitLab Workflow**.
-1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
-1. In **GitLab > AI Assisted Code Suggestions**, select the **Enable code completion (Beta)**
-   checkbox.
-
-### Enable Code Suggestions in VS Code
-
-Prerequisites:
-
-- You are a user in a self-managed instance.
-- Your instance administrator has enabled Code Suggestions for the instance.
-
-To use Code Suggestions in your self-managed instance,
-[enable it in VS Code](#enable-code-suggestions-in-vs-code).
-
-To start using Code Suggestions with your GitLab project, open your GitLab project in VS Code.
-
-Start typing and receive suggestions for your GitLab projects.
-
-<div class="video-fallback">
-  See an end-to-end demo: <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">Get started with GitLab Code Suggestions in VS Code</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
-</figure>
-
 ## Enable Code Suggestions in other IDEs and editors
 
 We have experimental support for Code Suggestions in Visual Studio, JetBrains, Neovim, Emacs, Sublime, etc.
 
 More details in this [blog](https://about.gitlab.com/blog/2023/06/01/extending-code-suggestions/).
 
-## Why aren't Code Suggestions displayed?
+## Use Code Suggestions
 
-If Code Suggestions are not displayed, try the following troubleshooting steps.
+Prerequisites:
 
-In GitLab, ensure Code Suggestions is enabled:
+- For self-managed GitLab, Code Suggestions must be enabled [for the instance](#enable-code-suggestions-on-self-managed-gitlab).
+- Code Suggestions must be enabled [for the top-level group](../../group/manage.md#enable-code-suggestions) and [for your user account](#enable-code-suggestions-for-an-individual-user).
+- To use VS Code, ensure you have installed [the GitLab Workflow extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension#setup).
 
-- [For your user account](#enable-code-suggestions-for-an-individual-user).
-- [For *all* top-level groups your account belongs to](../../group/manage.md#enable-code-suggestions). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
+To use Code Suggestions:
 
-In VS Code:
+1. Author your code. As you type, suggestions are displayed. Depending on the cursor position, the extension either:
 
-- Ensure [your IDE is configured properly](#enable-code-suggestions-in-vs-code).
+   - Provides entire code snippets, like generating functions.
+   - Completes the current line.
 
-To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.
+1. To accept a suggestion, press <kbd>Tab</kbd>.
 
-### Authentication troubleshooting
+Suggestions are best when writing new code. Editing existing functions or 'fill in the middle' of a function may not perform as expected.
 
-If the above steps do not solve your issue, the problem may be related to the recent changes in authentication, specifically the token system. To resolve the issue, please follow these troubleshooting steps:
-
-- Remove the existing PAT from your GitLab account settings.
-- Reauthorize your GitLab account in VS Code using OAuth.
-- Test the code suggestions feature with different file extensions to verify if the issue is resolved.
+GitLab is making improvements to the Code Suggestions underlying AI model weekly to improve the quality of suggestions. AI is non-deterministic, so you may not get the same suggestion week-to-week.
 
 ## Third-party AI services controls
 
@@ -363,3 +287,31 @@ We are also aware of specific situations that can produce unexpected or incohere
 ## Feedback
 
 Report issues in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/405152).
+
+## Troubleshooting
+
+### Code Suggestions aren't displayed
+
+If Code Suggestions are not displayed, try the following troubleshooting steps.
+
+In GitLab, ensure Code Suggestions is enabled:
+
+- [For your user account](#enable-code-suggestions-for-an-individual-user).
+- [For *all* top-level groups your account belongs to](../../group/manage.md#enable-code-suggestions). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
+
+To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.
+
+If you are a self-managed user, in VS Code, ensure that Code Suggestions for the [GitLab WebIDE](../../project/web_ide/index.md) are enabled:
+
+1. On the left sidebar, select **Extensions > GitLab Workflow**.
+1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
+1. In **GitLab > AI Assisted Code Suggestions**, select the **Enable code completion (Beta)**
+   checkbox.
+
+### Authentication troubleshooting
+
+If the above steps do not solve your issue, the problem may be related to the recent changes in authentication, specifically the token system. To resolve the issue, please follow these troubleshooting steps:
+
+- Remove the existing personal access token from your GitLab account settings.
+- Reauthorize your GitLab account in VS Code using OAuth.
+- Test the code suggestions feature with different file extensions to verify if the issue is resolved.

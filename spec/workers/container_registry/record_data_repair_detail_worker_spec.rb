@@ -36,6 +36,10 @@ RSpec.describe ContainerRegistry::RecordDataRepairDetailWorker, :aggregate_failu
       end
 
       context 'when on Gitlab.com', :saas do
+        before do
+          allow(::Gitlab).to receive(:com_except_jh?).and_return(true)
+        end
+
         it 'obtains exclusive lease on the project' do
           expect(Project).to receive(:pending_data_repair_analysis).and_call_original
           expect_to_obtain_exclusive_lease("container_registry_data_repair_detail_worker:#{project.id}",

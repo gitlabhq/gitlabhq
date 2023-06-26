@@ -87,6 +87,7 @@ describe('DiffsStoreActions', () => {
         a: ['z', 'hash:a'],
         b: ['y', 'hash:a'],
       };
+      const diffViewType = 'inline';
 
       return testAction(
         diffActions.setBaseConfig,
@@ -100,6 +101,7 @@ describe('DiffsStoreActions', () => {
           dismissEndpoint,
           showSuggestPopover,
           mrReviews,
+          diffViewType,
         },
         {
           endpoint: '',
@@ -124,6 +126,7 @@ describe('DiffsStoreActions', () => {
               dismissEndpoint,
               showSuggestPopover,
               mrReviews,
+              diffViewType,
             },
           },
           {

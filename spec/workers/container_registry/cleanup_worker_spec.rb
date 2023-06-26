@@ -71,6 +71,7 @@ RSpec.describe ContainerRegistry::CleanupWorker, :aggregate_failures, feature_ca
         let(:relation) { instance_double(ActiveRecord::Relation) }
 
         before do
+          allow(::Gitlab).to receive(:com_except_jh?).and_return(true)
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
           allow(Project).to receive(:pending_data_repair_analysis).and_return(relation)
         end

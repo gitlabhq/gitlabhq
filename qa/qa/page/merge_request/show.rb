@@ -331,13 +331,15 @@ module QA
         #
         # @param [Boolean] transient_test true if the current test is a transient test (default: false)
         def wait_until_ready_to_merge(transient_test: false)
-          wait_until do
-            has_element?(:merge_button)
+          wait_until(message: "Waiting for ready to merge", sleep_interval: 1) do
+            # changes in mr are rendered async, because of that mr can sometimes show no changes and there will be no
+            # merge button, in such case we must retry loop otherwise find_element will raise ElementNotFound error
+            next false unless has_element?(:merge_button, wait: 1)
 
             break true unless find_element(:merge_button).disabled?
 
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
-            next false if has_element?(:head_mismatch_content)
+            next false if has_element?(:head_mismatch_content, wait: 1)
 
             # Stop waiting if we're in a transient test. By this point we're in an unexpected state and should let the
             # test fail so we can investigate. If we're not in a transient test we keep trying until we reach timeout.

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'socket'
+
 module QA
   module Service
     module DockerRun
@@ -11,8 +13,7 @@ module QA
         end
 
         def initialize
-          @network = Runtime::Scenario.attributes[:network] || 'test'
-          @runner_network = Runtime::Scenario.attributes[:runner_network] || @network
+          @network = gdk_network || Runtime::Scenario.attributes[:network] || 'test'
         end
 
         # Authenticate against a container registry
@@ -40,10 +41,6 @@ module QA
 
         def network
           network_exists?(@network) ? @network : 'bridge'
-        end
-
-        def runner_network
-          network_exists?(@runner_network) ? @runner_network : network
         end
 
         def inspect_network(name)
@@ -89,6 +86,24 @@ module QA
 
         def health
           shell("docker inspect --format='{{json .State.Health.Status}}' #{@name}").delete('"')
+        end
+
+        # The network to use when testing against GDK in docker
+        #
+        # @return [String]
+        def gdk_network
+          return unless Runtime::Env.gdk_url
+
+          'host'
+        end
+
+        # The IP address of the docker host when testing against GDK in docker
+        #
+        # @return [String]
+        def gdk_host_ip
+          return unless Runtime::Env.gdk_url
+
+          Addrinfo.tcp(URI(Runtime::Env.gdk_url).host, nil).ip_address
         end
       end
     end

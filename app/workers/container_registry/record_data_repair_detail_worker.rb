@@ -17,7 +17,7 @@ module ContainerRegistry
     LEASE_TIMEOUT = 1.hour.to_i
 
     def perform_work
-      return unless Gitlab.com?
+      return unless Gitlab.com_except_jh?
       return unless next_project
       return if next_project.container_registry_data_repair_detail
 
@@ -51,7 +51,7 @@ module ContainerRegistry
     end
 
     def remaining_work_count
-      return 0 unless Gitlab.com?
+      return 0 unless Gitlab.com_except_jh?
       return 0 unless Feature.enabled?(:registry_data_repair_worker)
       return 0 unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 

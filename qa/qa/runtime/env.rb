@@ -622,6 +622,10 @@ module QA
         ENV['QA_1P_GITHUB_UUID']
       end
 
+      def gdk_url
+        ENV['GDK_URL']
+      end
+
       private
 
       def remote_grid_credentials

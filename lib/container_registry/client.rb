@@ -88,7 +88,7 @@ module ContainerRegistry
     def supports_tag_delete?
       strong_memoize(:supports_tag_delete) do
         registry_features = Gitlab::CurrentSettings.container_registry_features || []
-        next true if ::Gitlab.com? && registry_features.include?(REGISTRY_TAG_DELETE_FEATURE)
+        next true if ::Gitlab.com_except_jh? && registry_features.include?(REGISTRY_TAG_DELETE_FEATURE)
 
         response = faraday.run_request(:options, '/v2/name/tags/reference/tag', '', {})
         response.success? && response.headers['allow']&.include?('DELETE')

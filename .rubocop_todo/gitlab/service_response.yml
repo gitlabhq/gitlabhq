@@ -49,7 +49,6 @@ Gitlab/ServiceResponse:
     - 'ee/app/services/external_status_checks/destroy_service.rb'
     - 'ee/app/services/external_status_checks/dispatch_service.rb'
     - 'ee/app/services/external_status_checks/update_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/create_trial_or_lead_service.rb'
     - 'ee/app/services/group_saml/saml_group_links/create_service.rb'
     - 'ee/app/services/iterations/cadences/create_iterations_in_advance_service.rb'
     - 'ee/app/services/iterations/cadences/create_service.rb'

@@ -54,7 +54,7 @@ module ContainerRegistry
     end
 
     def should_enqueue_record_detail_jobs?
-      return false unless Gitlab.com?
+      return false unless Gitlab.com_except_jh?
       return false unless Feature.enabled?(:registry_data_repair_worker)
       return false unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 

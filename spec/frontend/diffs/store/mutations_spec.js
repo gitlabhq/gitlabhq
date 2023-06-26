@@ -12,6 +12,7 @@ describe('DiffsStoreMutations', () => {
       ${'endpoint'}           | ${'/diffs/endpoint'}
       ${'projectPath'}        | ${'/root/project'}
       ${'endpointUpdateUser'} | ${'/user/preferences'}
+      ${'diffViewType'}       | ${'parallel'}
     `('should set the $prop property into state', ({ prop, value }) => {
       const state = {};
 

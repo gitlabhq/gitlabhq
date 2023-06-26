@@ -193,8 +193,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    | `postgresql['md5_auth_cidr_addresses']` | **Primary** and **Secondary** sites' public or VPC private addresses. |
 
    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
-   provides a virtual private cloud (VPC), you can use the **primary** and **secondary** sites'
-   private addresses (corresponds to "internal address" for Google Cloud Platform) for
+   provides a virtual private cloud (VPC), we recommend using the **primary**
+   and **secondary** sites' "private" or "internal" addresses for
    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
    The `listen_address` option opens PostgreSQL up to network connections with the interface
@@ -468,7 +468,8 @@ data before running `pg_basebackup`.
    sudo -i
    ```
 
-1. Choose a database-friendly name to use for your **secondary** site to
+1. Choose a [database-friendly name](https://www.postgresql.org/docs/13/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)
+   to use for your **secondary** site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
    name as shown in the commands below.

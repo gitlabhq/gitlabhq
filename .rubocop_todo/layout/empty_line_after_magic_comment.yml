@@ -232,7 +232,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/app/services/ee/ip_restrictions/update_service.rb'
     - 'ee/app/services/ee/projects/autocomplete_service.rb'
     - 'ee/app/services/ee/system_notes/issuables_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/create_trial_or_lead_service.rb'
     - 'ee/app/services/gitlab_subscriptions/fetch_subscription_plans_service.rb'
     - 'ee/app/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service.rb'
     - 'ee/app/services/group_saml/group_managed_accounts/clean_up_members_service.rb'

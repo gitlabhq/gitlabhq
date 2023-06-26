@@ -700,6 +700,9 @@ page), use these phrases:
 | No     | `**{dotted-circle}** No` | **{dotted-circle}** No |
 | Yes    | `**{check-circle}** Yes` | **{check-circle}** Yes |
 
+Don't use `**{dotted-circle}**` and `**{check-circle}**` in API documentation.
+Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).
+
 ### Footnotes
 
 To indicate a footnote, use the HTML tag `<sup>` with a number.

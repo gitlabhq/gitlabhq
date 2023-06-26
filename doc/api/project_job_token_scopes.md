@@ -22,14 +22,14 @@ GET /projects/:id/job_token_scope
 
 Supported attributes:
 
-| Attribute | Type           | Required               | Description |
-|-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
 
-| Attribute          | Type    | Description           |
-|:-------------------|:--------|:----------------------|
+| Attribute          | Type    | Description |
+|--------------------|---------|-------------|
 | `inbound_enabled`  | boolean | Indicates if the CI/CD job token generated in other projects has access to this project. |
 | `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 17.0 .](../update/removals.md#limit-ci_job_token-scope-is-disabled) |
 
@@ -58,10 +58,10 @@ PATCH /projects/:id/job_token_scope
 
 Supported attributes:
 
-| Attribute | Type           | Required               | Description |
-|-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `enabled` | boolean        | **{check-circle}** Yes | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `enabled` | boolean        | Yes      | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
 
 If successful, returns [`204`](rest/index.md#status-codes) and no response body.
 
@@ -85,9 +85,9 @@ GET /projects/:id/job_token_scope/allowlist
 
 Supported attributes:
 
-| Attribute | Type           | Required               | Description |
-|-----------|----------------|------------------------|-------------|
-| `id`      | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 This endpoint supports [offset-based pagination](rest/index.md#offset-based-pagination).
 
@@ -152,10 +152,10 @@ POST /projects/:id/job_token_scope/allowlist
 
 Supported attributes:
 
-| Attribute           | Type           | Required               | Description |
-|---------------------|----------------|------------------------|-------------|
-| `id`                | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `target_project_id` | integer        | **{check-circle}** Yes | The ID of the project added to the CI/CD job token inbound allowlist. |
+| Attribute           | Type           | Required | Description |
+|---------------------|----------------|----------|-------------|
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `target_project_id` | integer        | Yes      | The ID of the project added to the CI/CD job token inbound allowlist. |
 
 If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
 
@@ -193,10 +193,10 @@ DELETE /projects/:id/job_token_scope/allowlist/:target_project_id
 
 Supported attributes:
 
-| Attribute           | Type           | Required               | Description |
-|---------------------|----------------|------------------------|-------------|
-| `id`                | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `target_project_id` | integer        | **{check-circle}** Yes | The ID of the project that is removed from the CI/CD job token inbound allowlist. |
+| Attribute           | Type           | Required | Description |
+|---------------------|----------------|----------|-------------|
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `target_project_id` | integer        | Yes      | The ID of the project that is removed from the CI/CD job token inbound allowlist. |
 
 If successful, returns [`204`](rest/index.md#status-codes) and no response body.
 

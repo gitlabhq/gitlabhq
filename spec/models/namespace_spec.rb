@@ -890,6 +890,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     context 'when Gitlab API is supported' do
       before do
+        allow(Gitlab).to receive(:com_except_jh?).and_return(true)
         allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
         stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
       end
@@ -932,7 +933,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         before do
           allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
           stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
-          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(Gitlab).to receive(:com_except_jh?).and_return(true)
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
           allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(no_container_repositories)
           allow(project_namespace).to receive_message_chain(:all_container_repositories, :all_migrated?).and_return(all_migrated)

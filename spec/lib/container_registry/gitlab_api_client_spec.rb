@@ -28,7 +28,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
 
     with_them do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(is_on_dot_com)
         stub_registry_gitlab_api_support(registry_gitlab_api_enabled)
         stub_application_setting(container_registry_features: container_registry_features)
       end
@@ -46,7 +46,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
 
     context 'with 401 response' do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(false)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(false)
         stub_application_setting(container_registry_features: [])
         stub_request(:get, "#{registry_api_url}/gitlab/v1/")
           .to_return(status: 401, body: '')
@@ -428,7 +428,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
 
     with_them do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(is_on_dot_com)
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(is_on_dot_com)
         stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
         stub_registry_gitlab_api_support(registry_gitlab_api_enabled)
         stub_application_setting(container_registry_features: container_registry_features)

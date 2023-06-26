@@ -306,7 +306,7 @@ class Namespace < ApplicationRecord
   end
 
   def first_project_with_container_registry_tags
-    if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+    if Gitlab.com_except_jh? && ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       ContainerRegistry::GitlabApiClient.one_project_with_container_registry_tag(full_path)
     else
       all_projects.includes(:container_repositories).find(&:has_container_registry_tags?)
@@ -479,7 +479,7 @@ class Namespace < ApplicationRecord
 
   def container_repositories_size
     strong_memoize(:container_repositories_size) do
-      next unless Gitlab.com?
+      next unless Gitlab.com_except_jh?
       next unless root?
       next unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       next 0 if all_container_repositories.empty?

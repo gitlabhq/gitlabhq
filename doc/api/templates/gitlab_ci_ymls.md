@@ -120,9 +120,9 @@ Get a single GitLab CI/CD YAML template.
 GET /templates/gitlab_ci_ymls/:key
 ```
 
-| Attribute  | Type   | Required | Description                           |
-| ---------- | ------ | -------- | ------------------------------------- |
-| `key`      | string | yes      | The key of the GitLab CI/CD YAML template |
+| Attribute | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| `key`     | string | Yes      | The key of the GitLab CI/CD YAML template |
 
 Example request:
 

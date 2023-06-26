@@ -85,7 +85,7 @@ module ContainerRegistry
     def supports_gitlab_api?
       strong_memoize(:supports_gitlab_api) do
         registry_features = Gitlab::CurrentSettings.container_registry_features || []
-        next true if ::Gitlab.com? && registry_features.include?(REGISTRY_GITLAB_V1_API_FEATURE)
+        next true if ::Gitlab.com_except_jh? && registry_features.include?(REGISTRY_GITLAB_V1_API_FEATURE)
 
         with_token_faraday do |faraday_client|
           response = faraday_client.get('/gitlab/v1/')

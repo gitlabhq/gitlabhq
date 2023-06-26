@@ -84,6 +84,7 @@ export const setBaseConfig = ({ commit }, options) => {
     defaultSuggestionCommitMessage,
     viewDiffsFileByFile,
     mrReviews,
+    diffViewType,
   } = options;
   commit(types.SET_BASE_CONFIG, {
     endpoint,
@@ -98,6 +99,7 @@ export const setBaseConfig = ({ commit }, options) => {
     defaultSuggestionCommitMessage,
     viewDiffsFileByFile,
     mrReviews,
+    diffViewType,
   });
 
   Array.from(new Set(Object.values(mrReviews).flat())).forEach((id) => {

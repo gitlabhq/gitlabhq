@@ -40,9 +40,10 @@ module QA
           raise("Missing runner token value!") unless token
 
           cmd = <<~CMD.tr("\n", ' ')
-            docker run -d --rm --network #{runner_network} --name #{@name}
+            docker run -d --rm --network #{network} --name #{@name}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}
             --privileged
+            #{"--add-host gdk.test:#{gdk_host_ip}" if gdk_network}
             #{@image}  #{add_gitlab_tls_cert if @address.include? 'https'}
             && docker exec --detach #{@name} sh -c "#{register_command}"
           CMD
@@ -51,7 +52,7 @@ module QA
           wait_until_running_and_configured
 
           # Prove airgappedness
-          shell("docker exec #{@name} sh -c '#{prove_airgap}'") if runner_network == 'airgapped'
+          shell("docker exec #{@name} sh -c '#{prove_airgap}'") if network == 'airgapped'
         end
 
         def tags=(tags)
