@@ -1,7 +1,0 @@
-= javascript_tag do
-  :plain
-    document.querySelectorAll('link[media="print"]').forEach(linkTag => {
-      linkTag.setAttribute('data-startupcss', 'loading');
-      const startupLinkLoadedEvent = new CustomEvent('CSSStartupLinkLoaded');
-      linkTag.addEventListener('load',function(){this.media='all';this.setAttribute('data-startupcss', 'loaded');document.dispatchEvent(startupLinkLoadedEvent);},{once: true});
-    })

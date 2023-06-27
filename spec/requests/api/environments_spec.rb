@@ -31,6 +31,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response.first).not_to have_key('last_deployment')
       end
 
+      it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+        job = create(:ci_build, :running, project: project, user: user)
+
+        get api("/projects/#{project.id}/environments"), params: { job_token: job.token }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
       context 'when filtering' do
         let_it_be(:stopped_environment) { create(:environment, :stopped, project: project) }
 
@@ -132,6 +140,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response['external']).to be nil
       end
 
+      it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+        job = create(:ci_build, :running, project: project, user: user)
+
+        post api("/projects/#{project.id}/environments"), params: { name: "mepmep", job_token: job.token }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
       it 'requires name to be passed' do
         post api("/projects/#{project.id}/environments", user), params: { external_url: 'test.gitlab.com' }
 
@@ -169,6 +185,15 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
     context 'as a maintainer' do
       it 'returns a 200' do
         post api("/projects/#{project.id}/environments/stop_stale", user), params: { before: 1.week.ago.to_date.to_s }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+        job = create(:ci_build, :running, project: project, user: user)
+
+        post api("/projects/#{project.id}/environments/stop_stale"),
+             params: { before: 1.week.ago.to_date.to_s, job_token: job.token }
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -229,6 +254,15 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       expect(json_response['tier']).to eq('production')
     end
 
+    it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+      job = create(:ci_build, :running, project: project, user: user)
+
+      put api("/projects/#{project.id}/environments/#{environment.id}"),
+          params: { tier: 'production', job_token: job.token }
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it "won't allow slug to be changed" do
       slug = environment.slug
       api_url = api("/projects/#{project.id}/environments/#{environment.id}", user)
@@ -257,6 +291,17 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         environment.stop
 
         delete api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'returns 204 HTTP status when using JOB-TOKEN auth' do
+        environment.stop
+
+        job = create(:ci_build, :running, project: project, user: user)
+
+        delete api("/projects/#{project.id}/environments/#{environment.id}"),
+               params: { job_token: job.token }
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
@@ -291,17 +336,23 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       context 'with a stoppable environment' do
         before do
           environment.update!(state: :available)
-
-          post api("/projects/#{project.id}/environments/#{environment.id}/stop", user)
         end
 
         it 'returns a 200' do
+          post api("/projects/#{project.id}/environments/#{environment.id}/stop", user)
+
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('public_api/v4/environment')
+          expect(environment.reload).to be_stopped
         end
 
-        it 'actually stops the environment' do
-          expect(environment.reload).to be_stopped
+        it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+          job = create(:ci_build, :running, project: project, user: user)
+
+          post api("/projects/#{project.id}/environments/#{environment.id}/stop"),
+               params: { job_token: job.token }
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -332,6 +383,15 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/environment')
         expect(json_response['last_deployment']).to be_present
+      end
+
+      it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+        job = create(:ci_build, :running, project: project, user: user)
+
+        get api("/projects/#{project.id}/environments/#{environment.id}"),
+            params: { job_token: job.token }
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

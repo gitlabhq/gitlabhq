@@ -274,15 +274,7 @@ module ApplicationHelper
   end
 
   def stylesheet_link_tag_defer(path)
-    if startup_css_enabled?
-      stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
-    else
-      stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
-    end
-  end
-
-  def startup_css_enabled?
-    !Feature.enabled?(:remove_startup_css) && !params.has_key?(:no_startup_css)
+    stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
   end
 
   def sign_in_with_redirect?

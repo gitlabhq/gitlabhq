@@ -153,15 +153,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         end
       end
 
-      [true, false].each do |enabled|
-        context "with feature flag autcomplete_users_use_search_service #{enabled}" do
-          before do
-            stub_feature_flags(autocomplete_users_use_search_service: enabled)
-          end
-
-          include_examples 'for users'
-        end
-      end
+      include_examples 'for users'
 
       it "includes the required project attrs" do
         project = create(:project, namespace: create(:namespace, owner: user))

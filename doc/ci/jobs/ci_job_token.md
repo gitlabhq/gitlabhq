@@ -25,6 +25,7 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Releases](../../api/releases/index.md) and [Release links](../../api/releases/links.md).
 - [Terraform plan](../../user/infrastructure/index.md).
 - [Deployments](../../api/deployments.md).
+- [Environments](../../api/environments.md).
 
 The token has the same permissions to access the API as the user that caused the
 job to run. A user can cause a job to run by taking action like pushing a commit,

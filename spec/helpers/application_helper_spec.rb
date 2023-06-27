@@ -720,21 +720,7 @@ RSpec.describe ApplicationHelper do
   end
 
   describe 'stylesheet_link_tag_defer' do
-    it 'uses print stylesheet when feature flag disabled' do
-      stub_feature_flags(remove_startup_css: false)
-
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" href="/stylesheets/test.css" media="print" />')
-    end
-
-    it 'uses regular stylesheet when feature flag enabled' do
-      stub_feature_flags(remove_startup_css: true)
-
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
-    end
-
-    it 'uses regular stylesheet when no_startup_css param present' do
-      allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
-
+    it 'uses media="all" in stylesheet' do
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
     end
   end

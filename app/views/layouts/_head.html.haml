@@ -20,12 +20,9 @@
 
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
-  - if startup_css_enabled?
-    = render 'layouts/startup_css', { startup_filename: local_assigns.fetch(:startup_filename, nil) }
-  - else
-    - diffs_colors = user_diffs_colors
-    = stylesheet_link_tag "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
-    = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
+  - diffs_colors = user_diffs_colors
+  = stylesheet_link_tag "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
+  = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
 
   - if user_application_theme == 'gl-dark'
     %meta{ name: 'color-scheme', content: 'dark light' }
@@ -42,9 +39,6 @@
   = stylesheet_link_tag_defer "fonts"
 
   = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"
-
-  - if startup_css_enabled?
-    = render 'layouts/startup_css_activation'
 
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
   = render 'layouts/snowplow'

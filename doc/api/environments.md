@@ -7,6 +7,8 @@ type: concepts, howto
 
 # Environments API **(FREE)**
 
+> Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
+
 ## List environments
 
 Get all environments for a given project.

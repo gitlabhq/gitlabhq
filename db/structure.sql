@@ -22602,9 +22602,6 @@ CREATE TABLE sent_notifications (
     recipient_id integer,
     commit_id character varying,
     reply_key character varying NOT NULL,
-    line_code character varying,
-    note_type character varying,
-    "position" text,
     in_reply_to_discussion_id character varying,
     id bigint NOT NULL
 );

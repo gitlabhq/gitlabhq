@@ -80,15 +80,11 @@ class UsersFinder
   def by_search(users)
     return users unless params[:search].present?
 
-    if Feature.enabled?(:autocomplete_users_use_search_service)
-      users.search(
-        params[:search],
-        with_private_emails: current_user&.can_admin_all_resources?,
-        use_minimum_char_limit: params[:use_minimum_char_limit]
-      )
-    else
-      users.search(params[:search], with_private_emails: current_user&.can_admin_all_resources?)
-    end
+    users.search(
+      params[:search],
+      with_private_emails: current_user&.can_admin_all_resources?,
+      use_minimum_char_limit: params[:use_minimum_char_limit]
+    )
   end
 
   def by_blocked(users)

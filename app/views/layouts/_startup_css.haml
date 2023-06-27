@@ -1,9 +1,0 @@
-- startup_filename_default = user_application_theme == 'gl-dark' ? 'dark' : 'general'
-- startup_filename = local_assigns.fetch(:startup_filename, nil) || startup_filename_default
-- diffs_colors = user_diffs_colors
-
-%style
-  = Rails.application.assets_manifest.find_sources("themes/#{user_application_theme_css_filename}.css").first.to_s.html_safe if user_application_theme_css_filename
-  = Rails.application.assets_manifest.find_sources("startup/startup-#{startup_filename}.css").first.to_s.html_safe
-
-= render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path

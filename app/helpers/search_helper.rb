@@ -373,17 +373,10 @@ module SearchHelper
   def users_autocomplete(term, limit = 5)
     return [] unless current_user && Ability.allowed?(current_user, :read_users_list)
 
-    users = if Feature.enabled?(:autocomplete_users_use_search_service)
-              ::SearchService
-              .new(current_user, { scope: 'users', per_page: limit, search: term })
-              .search_objects
-            else
-              is_current_user_admin = current_user.can_admin_all_resources?
-              scope = is_current_user_admin ? User.all : User.without_forbidden_states
-              scope.search(term, with_private_emails: is_current_user_admin, use_minimum_char_limit: false).limit(limit)
-            end
-
-    users.map do |user|
+    ::SearchService
+      .new(current_user, { scope: 'users', per_page: limit, search: term })
+      .search_objects
+      .map do |user|
       {
         category: "Users",
         id: user.id,

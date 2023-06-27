@@ -1,6 +1,7 @@
 ---
 table_name: external_pull_requests
 classes:
+- Ci::ExternalPullRequest
 - ExternalPullRequest
 feature_categories:
 - continuous_integration

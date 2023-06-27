@@ -70,19 +70,6 @@ RSpec.describe UsersFinder do
 
           expect(users).to be_empty
         end
-
-        context 'when autocomplete_users_use_search_service feature flag is disabled' do
-          before do
-            stub_feature_flags(autocomplete_users_use_search_service: false)
-          end
-
-          it 'does not pass use_minimum_char_limit from params' do
-            search_term = normal_user.username[..1]
-            expect(User).to receive(:search).with(search_term, with_private_emails: anything).once.and_call_original
-
-            described_class.new(user, { search: search_term, use_minimum_char_limit: false }).execute
-          end
-        end
       end
 
       it 'filters by external users' do
