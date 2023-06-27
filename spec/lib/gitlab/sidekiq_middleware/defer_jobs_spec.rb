@@ -5,19 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::SidekiqMiddleware::DeferJobs, feature_category: :scalability do
   let(:job) { { 'jid' => 123, 'args' => [456] } }
   let(:queue) { 'test_queue' }
-  let(:deferred_worker) do
+  let(:test_worker) do
     Class.new do
       def self.name
-        'TestDeferredWorker'
-      end
-      include ApplicationWorker
-    end
-  end
-
-  let(:undeferred_worker) do
-    Class.new do
-      def self.name
-        'UndeferredWorker'
+        'TestWorker'
       end
       include ApplicationWorker
     end
@@ -26,55 +17,43 @@ RSpec.describe Gitlab::SidekiqMiddleware::DeferJobs, feature_category: :scalabil
   subject { described_class.new }
 
   before do
-    stub_const('TestDeferredWorker', deferred_worker)
-    stub_const('UndeferredWorker', undeferred_worker)
+    stub_const('TestWorker', test_worker)
   end
 
   describe '#call' do
     context 'with worker not opted for database health check' do
-      context 'when sidekiq_defer_jobs feature flag is enabled for a worker' do
+      context 'when run_sidekiq_jobs feature flag is disabled' do
+        let(:deferred_jobs_metric) { instance_double(Prometheus::Client::Counter, increment: true) }
+
         before do
-          stub_feature_flags("defer_sidekiq_jobs_#{TestDeferredWorker.name}": true)
-          stub_feature_flags("defer_sidekiq_jobs_#{UndeferredWorker.name}": false)
+          stub_feature_flags(run_sidekiq_jobs_TestWorker: false)
+          allow(Gitlab::Metrics).to receive(:counter).and_call_original
+          allow(Gitlab::Metrics).to receive(:counter).with(described_class::DEFERRED_COUNTER, anything)
+                                                     .and_return(deferred_jobs_metric)
         end
 
-        context 'for the affected worker' do
-          it 'defers the job' do
-            expect(TestDeferredWorker).to receive(:perform_in).with(described_class::DELAY, *job['args'])
-            expect { |b| subject.call(TestDeferredWorker.new, job, queue, &b) }.not_to yield_control
-          end
-
-          it 'increments the defer_count' do
-            (1..5).each do |count|
-              subject.call(TestDeferredWorker.new, job, queue)
-              expect(job).to include('deferred_count' => count)
-            end
-          end
+        it 'defers the job' do
+          expect(TestWorker).to receive(:perform_in).with(described_class::DELAY, *job['args'])
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.not_to yield_control
         end
 
-        context 'for other workers' do
-          it 'runs the job normally' do
-            expect { |b| subject.call(UndeferredWorker.new, job, queue, &b) }.to yield_control
+        it 'increments the defer_count' do
+          (1..5).each do |count|
+            subject.call(TestWorker.new, job, queue)
+            expect(job).to include('deferred_count' => count)
           end
         end
 
-        it 'increments the metric counter' do
-          subject.call(TestDeferredWorker.new, job, queue)
+        it 'increments the counter' do
+          expect(deferred_jobs_metric).to receive(:increment).with({ worker: "TestWorker" })
 
-          counter = ::Gitlab::Metrics.registry.get(:sidekiq_jobs_deferred_total)
-          expect(counter.get({ worker: "TestDeferredWorker" })).to eq(1)
+          subject.call(TestWorker.new, job, queue)
         end
       end
 
-      context 'when sidekiq_defer_jobs feature flag is disabled' do
-        before do
-          stub_feature_flags("defer_sidekiq_jobs_#{TestDeferredWorker.name}": false)
-          stub_feature_flags("defer_sidekiq_jobs_#{UndeferredWorker.name}": false)
-        end
-
+      context 'when run_sidekiq_jobs feature flag is enabled' do
         it 'runs the job normally' do
-          expect { |b| subject.call(TestDeferredWorker.new, job, queue, &b) }.to yield_control
-          expect { |b| subject.call(UndeferredWorker.new, job, queue, &b) }.to yield_control
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
         end
       end
     end
@@ -90,14 +69,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::DeferJobs, feature_category: :scalabil
       end
 
       before do
-        stub_feature_flags("defer_sidekiq_jobs_#{TestDeferredWorker.name}": false)
-
-        TestDeferredWorker.defer_on_database_health_signal(*health_signal_attrs.values)
+        TestWorker.defer_on_database_health_signal(*health_signal_attrs.values)
       end
 
       context 'without any stop signal from database health check' do
         it 'runs the job normally' do
-          expect { |b| subject.call(TestDeferredWorker.new, job, queue, &b) }.to yield_control
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
         end
       end
 
@@ -108,9 +85,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::DeferJobs, feature_category: :scalabil
         end
 
         it 'defers the job by set time' do
-          expect(TestDeferredWorker).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
+          expect(TestWorker).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
 
-          TestDeferredWorker.perform_async(*job['args'])
+          TestWorker.perform_async(*job['args'])
         end
       end
     end

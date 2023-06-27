@@ -27,4 +27,8 @@ Please refer to the [Resolution guidance](https://about.gitlab.com/handbook/engi
 
 Once the flaky failure has been fixed on the default branch, open merge requests to cherry-pick the fix to the active stable branches.
 
+### Logs
+
+<!-- Add here failing job logs -->
+
 /label ~"type::maintenance" ~"failure::flaky-test" ~"priority::3" ~"severity::3"

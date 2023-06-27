@@ -79,4 +79,14 @@ export const takeOwnershipMutationResponse = {
   },
 };
 
+export const createScheduleMutationResponse = {
+  data: {
+    pipelineScheduleCreate: {
+      clientMutationId: null,
+      errors: [],
+      __typename: 'PipelineScheduleCreatePayload',
+    },
+  },
+};
+
 export { mockGetPipelineSchedulesGraphQLResponse };

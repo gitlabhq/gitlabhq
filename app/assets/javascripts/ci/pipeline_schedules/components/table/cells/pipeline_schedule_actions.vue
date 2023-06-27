@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 export const i18n = {
   playTooltip: s__('PipelineSchedules|Run pipeline schedule'),
@@ -44,6 +45,11 @@ export default {
     canRemove() {
       return this.schedule.userPermissions.adminPipelineSchedule;
     },
+    editPathWithIdParam() {
+      const id = getIdFromGraphQLId(this.schedule.id);
+
+      return `${this.schedule.editPath}?id=${id}`;
+    },
   },
 };
 </script>
@@ -67,7 +73,14 @@ export default {
         data-testid="take-ownership-pipeline-schedule-btn"
         @click="$emit('showTakeOwnershipModal', schedule.id)"
       />
-      <gl-button v-if="canUpdate" v-gl-tooltip :title="$options.i18n.editTooltip" icon="pencil" />
+      <gl-button
+        v-if="canUpdate"
+        v-gl-tooltip
+        :href="editPathWithIdParam"
+        :title="$options.i18n.editTooltip"
+        icon="pencil"
+        data-testid="edit-pipeline-schedule-btn"
+      />
       <gl-button
         v-if="canRemove"
         v-gl-tooltip

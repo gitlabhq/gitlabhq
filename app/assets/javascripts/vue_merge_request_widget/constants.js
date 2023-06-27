@@ -1,5 +1,6 @@
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 import { stateToComponentMap as classStateMap, stateKey } from './stores/state_maps';
 
 export const FOUR_MINUTES_IN_MS = 1000 * 60 * 4;
@@ -26,7 +27,7 @@ export const SP_SHOW_TRACK_VALUE = 10;
 export const SP_HELP_CONTENT = s__(
   `mrWidget|GitLab %{linkStart}CI/CD can automatically build, test, and deploy your application.%{linkEnd} It only takes a few minutes to get started, and we can help you create a pipeline configuration file.`,
 );
-export const SP_HELP_URL = 'https://docs.gitlab.com/ee/ci/quick_start/';
+export const SP_HELP_URL = `${DOCS_URL_IN_EE_DIR}/ci/quick_start/`;
 export const SP_ICON_NAME = 'status_notfound';
 
 export const MERGE_ACTIVE_STATUS_PHRASES = [

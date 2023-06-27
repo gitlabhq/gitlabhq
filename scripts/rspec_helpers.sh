@@ -151,7 +151,9 @@ function debug_rspec_variables() {
 function handle_retry_rspec_in_new_process() {
   local rspec_run_status="${1}"
 
-  if [[ $rspec_run_status -eq 2 ]]; then
+  if [[ $rspec_run_status -eq 3 ]]; then
+    echoerr "Not retrying failing examples since we failed early on purpose!"
+  elif [[ $rspec_run_status -eq 2 ]]; then
     echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
   elif [[ $rspec_run_status -eq 1 ]]; then
     # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148

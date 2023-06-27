@@ -4,10 +4,12 @@ import { __, n__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
+import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 import getIssueCrmContactsQuery from '../../queries/get_issue_crm_contacts.query.graphql';
 import issueCrmContactsSubscription from '../../queries/issue_crm_contacts.subscription.graphql';
 
 export default {
+  crmDocsLink: `${DOCS_URL_IN_EE_DIR}/user/crm/`,
   components: {
     GlIcon,
     GlLink,
@@ -104,9 +106,7 @@ export default {
       <span> {{ contactCount }} </span>
     </div>
     <div class="hide-collapsed help-button gl-float-right">
-      <gl-link href="https://docs.gitlab.com/ee/user/crm/" target="_blank"
-        ><gl-icon name="question-o"
-      /></gl-link>
+      <gl-link :href="$options.crmDocsLink" target="_blank"><gl-icon name="question-o" /></gl-link>
     </div>
     <div class="title hide-collapsed gl-mb-2 gl-line-height-20 gl-font-weight-bold">
       {{ contactsLabel }}

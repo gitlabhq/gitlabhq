@@ -2,7 +2,7 @@ import initPipelineSchedulesFormApp from '~/ci/pipeline_schedules/mount_pipeline
 import initForm from '../shared/init_form';
 
 if (gon.features?.pipelineSchedulesVue) {
-  initPipelineSchedulesFormApp('#pipeline-schedules-form-edit');
+  initPipelineSchedulesFormApp('#pipeline-schedules-form-edit', true);
 } else {
   initForm();
 }

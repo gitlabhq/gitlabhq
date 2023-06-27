@@ -81,7 +81,6 @@ Use the toggles to enable or disable features in the project.
 | **Wiki**                         | **{check-circle}** Yes | Enables a separate system for [documentation](../wiki/index.md).
 | **Snippets**                     | **{check-circle}** Yes | Enables [sharing of code and text](../../snippets.md).
 | **Pages**                        | **{check-circle}** Yes | Allows you to [publish static websites](../pages/index.md).
-| **Metrics Dashboard**            | **{check-circle}** Yes | Control access to [metrics dashboard](../integrations/prometheus.md).
 | **Releases**                     | **{check-circle}** Yes | Control access to [Releases](../releases/index.md).
 | **Environments**                 | **{check-circle}** Yes | Control access to [Environments and Deployments](../../../ci/environments/index.md).
 | **Feature flags**                | **{check-circle}** Yes | Control access to [Feature flags](../../../operations/feature_flags.md).

@@ -16,7 +16,7 @@ import {
 import * as Sentry from '@sentry/browser';
 import { isEqual, isEmpty, omit } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL, DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 import {
   integrationTypes,
   integrationSteps,
@@ -38,6 +38,7 @@ export default {
   placeholders: {
     prometheus: targetPrometheusUrlPlaceholder,
   },
+  incidentManagementDocsLink: `${DOCS_URL_IN_EE_DIR}/operations/incident_management/integrations.html#configuration`,
   JSON_VALIDATE_DELAY,
   typeSet,
   integrationSteps,
@@ -617,7 +618,7 @@ export default {
       >
         <alert-settings-form-help-block
           :message="viewCredentialsHelpMsg"
-          link="https://docs.gitlab.com/ee/operations/incident_management/integrations.html#configuration"
+          :link="$options.incidentManagementDocsLink"
         />
 
         <gl-form-group id="integration-webhook">

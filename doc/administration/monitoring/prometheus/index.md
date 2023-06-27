@@ -435,22 +435,6 @@ The GitLab exporter allows you to measure various GitLab metrics, pulled from Re
 
 [Read more about the GitLab exporter](gitlab_exporter.md).
 
-## Configuring Prometheus to monitor Kubernetes
-
-If your GitLab server is running within Kubernetes, Prometheus collects metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration](../../../user/project/integrations/prometheus.md) to monitor them.
-
-To disable the monitoring of Kubernetes:
-
-1. Edit `/etc/gitlab/gitlab.rb`.
-1. Add (or find and uncomment) the following line and set it to `false`:
-
-   ```ruby
-   prometheus['monitor_kubernetes'] = false
-   ```
-
-1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
-   take effect.
-
 ## Troubleshooting
 
 ### `/var/opt/gitlab/prometheus` consumes too much disk space

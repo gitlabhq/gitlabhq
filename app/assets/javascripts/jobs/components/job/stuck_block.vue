@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlBadge, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 /**
  * Renders Stuck Runners block for job's view.
  */
@@ -31,7 +32,7 @@ export default {
       return this.tags.length > 0;
     },
     protectedBranchSettingsDocsLink() {
-      return 'https://docs.gitlab.com/runner/security/index.html#reduce-the-security-risk-of-using-privileged-containers';
+      return `${DOCS_URL}/runner/security/index.html#reduce-the-security-risk-of-using-privileged-containers`;
     },
     stuckData() {
       if (this.hasNoRunnersWithCorrespondingTags) {

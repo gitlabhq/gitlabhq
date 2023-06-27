@@ -160,6 +160,30 @@ Any group owner can approve or decline the request.
 If you change your mind before your request is approved, select
 **Withdraw Access Request**.
 
+## View group members
+
+To view a group's members:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Members**.
+
+A table displays the member's:
+
+- **Account** name and username
+- **Source** of their [membership](../project/members/index.md#membership-types).
+   For transparency, GitLab displays all membership sources of group members.
+   Members who have multiple membership sources are displayed and counted as separate members.
+   For example, if a member has been added to the group both directly and through inheritance,
+   the member is displayed twice in the **Members** table, with different sources,
+   and is counted as two individual members of the group.
+- [**Max role**](../project/members/index.md#which-roles-you-can-assign) in the group
+- **Expiration** date of their group membership
+- **Activity** related to their account
+
+NOTE:
+The display of group members' **Source** might be inconsistent.
+For more information, see [issue 414557](https://gitlab.com/gitlab-org/gitlab/-/issues/414557).
+
 ## Filter and sort members in a group
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.

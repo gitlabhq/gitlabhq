@@ -302,4 +302,3 @@ and customized to fit your workflow. Here are some helpful resources for further
 1. [Incremental rollout to production](../cicd_variables.md#incremental-rollout-to-production)
 1. [Disable jobs you don't need with CI/CD variables](../cicd_variables.md)
 1. [Use your own buildpacks to build your application](../customize.md#custom-buildpacks)
-1. [Prometheus monitoring](../../../user/project/integrations/prometheus.md)

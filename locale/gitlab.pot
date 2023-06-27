@@ -23421,6 +23421,9 @@ msgstr ""
 msgid "Improve customer support with Service Desk"
 msgstr ""
 
+msgid "Improve indexing performance by increasing Sidekiq load. Values greater than the current shard limit (%{limit}) are not allowed."
+msgstr ""
+
 msgid "Improve quality with test cases"
 msgstr ""
 
@@ -31531,6 +31534,9 @@ msgstr ""
 msgid "Number of shards"
 msgstr ""
 
+msgid "Number of shards for non-code indexing"
+msgstr ""
+
 msgid "OK"
 msgstr ""
 
@@ -33497,6 +33503,9 @@ msgid "PipelineSchedules|Active"
 msgstr ""
 
 msgid "PipelineSchedules|All"
+msgstr ""
+
+msgid "PipelineSchedules|An error occurred while creating the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|Are you sure you want to delete this pipeline schedule?"

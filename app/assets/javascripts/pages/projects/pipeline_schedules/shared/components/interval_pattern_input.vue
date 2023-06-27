@@ -10,6 +10,7 @@ import {
 import { getWeekdayNames } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
 const KEY_EVERY_DAY = 'everyDay';
 const KEY_EVERY_WEEK = 'everyWeek';
@@ -54,7 +55,7 @@ export default {
       inputNameAttribute: 'schedule[cron]',
       radioValue: this.initialCronInterval ? KEY_CUSTOM : KEY_EVERY_DAY,
       cronInterval: this.initialCronInterval,
-      cronSyntaxUrl: 'https://docs.gitlab.com/ee/topics/cron/',
+      cronSyntaxUrl: `${DOCS_URL_IN_EE_DIR}/topics/cron/`,
     };
   },
   computed: {
@@ -116,7 +117,7 @@ export default {
     },
   },
   watch: {
-    cronInterval() {
+    cronInterval(val) {
       // updates field validation state when model changes, as
       // glFieldError only updates on input.
       if (this.sendNativeErrors) {
@@ -124,6 +125,8 @@ export default {
           gl.pipelineScheduleFieldErrors.updateFormValidityState();
         });
       }
+
+      this.$emit('cronValue', val);
     },
     radioValue: {
       immediate: true,

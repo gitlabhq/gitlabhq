@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineScheduleActions from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_actions.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   mockPipelineScheduleNodes,
   mockPipelineScheduleCurrentUser,
@@ -28,6 +29,7 @@ describe('Pipeline schedule actions', () => {
   const findDeleteBtn = () => wrapper.findByTestId('delete-pipeline-schedule-btn');
   const findTakeOwnershipBtn = () => wrapper.findByTestId('take-ownership-pipeline-schedule-btn');
   const findPlayScheduleBtn = () => wrapper.findByTestId('play-pipeline-schedule-btn');
+  const findEditScheduleBtn = () => wrapper.findByTestId('edit-pipeline-schedule-btn');
 
   it('displays buttons when user is the owner of schedule and has adminPipelineSchedule permissions', () => {
     createComponent();
@@ -75,5 +77,16 @@ describe('Pipeline schedule actions', () => {
     expect(wrapper.emitted()).toEqual({
       playPipelineSchedule: [[mockPipelineScheduleNodes[0].id]],
     });
+  });
+
+  it('edit button links to edit schedule path', () => {
+    createComponent();
+
+    const { schedule } = defaultProps;
+    const id = getIdFromGraphQLId(schedule.id);
+
+    const expectedPath = `${schedule.editPath}?id=${id}`;
+
+    expect(findEditScheduleBtn().attributes('href')).toBe(expectedPath);
   });
 });

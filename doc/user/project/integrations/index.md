@@ -72,7 +72,6 @@ You can configure the following integrations.
 | Packagist                                                                   | Keep your PHP dependencies updated on Packagist.                      | **{check-circle}** Yes |
 | [Pipelines emails](pipeline_status_emails.md)                               | Send the pipeline status to a list of recipients by email.            | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                                       | Add commit messages as comments to Pivotal Tracker stories.           | **{dotted-circle}** No |
-| [Prometheus](prometheus.md)                                                 | Monitor application metrics.                                          | **{dotted-circle}** No |
 | [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                         | **{dotted-circle}** No |
 | Pushover                                                                    | Get real-time notifications on your device.                           | **{dotted-circle}** No |
 | [Redmine](redmine.md)                                                       | Use Redmine as the issue tracker.                                     | **{dotted-circle}** No |

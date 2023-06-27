@@ -57,6 +57,7 @@ describe('Pipeline schedules app', () => {
     wrapper = mountExtended(PipelineSchedules, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
+        newSchedulePath: '/root/ci-project/-/pipeline_schedules/new',
       },
       mocks: {
         $toast,
@@ -100,6 +101,10 @@ describe('Pipeline schedules app', () => {
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
+    });
+
+    it('new schedule button links to new schedule path', () => {
+      expect(findNewButton().attributes('href')).toBe('/root/ci-project/-/pipeline_schedules/new');
     });
   });
 

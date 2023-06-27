@@ -4,13 +4,19 @@ module Gitlab
   module SidekiqMiddleware
     class DeferJobs
       DELAY = ENV.fetch("SIDEKIQ_DEFER_JOBS_DELAY", 5.minutes)
-      FEATURE_FLAG_PREFIX = "defer_sidekiq_jobs"
+      RUN_FEATURE_FLAG_PREFIX = "run_sidekiq_jobs"
 
       DatabaseHealthStatusChecker = Struct.new(:id, :job_class_name)
 
+      DEFERRED_COUNTER = :sidekiq_jobs_deferred_total
+
+      def initialize
+        @metrics = init_metrics
+      end
+
       # There are 2 scenarios under which this middleware defers a job
-      # 1. defer_sidekiq_jobs_#{worker_name} FF, jobs are deferred indefinitely until this feature flag
-      #    is turned off or when Feature.enabled? returns false by chance while using `percentage of time` value.
+      # 1. When run_sidekiq_jobs_#{worker_name} FF is disabled. This FF is enabled by default
+      #    for all workers.
       # 2. Gitlab::Database::HealthStatus, on evaluating the db health status if it returns any indicator
       #    with stop signal, the jobs will be delayed by 'x' seconds (set in worker).
       def call(worker, job, _queue)
@@ -26,7 +32,7 @@ module Gitlab
           job['deferred_count'] += 1
 
           worker.class.perform_in(delay, *job['args'])
-          counter.increment({ worker: worker.class.name })
+          @metrics.fetch(DEFERRED_COUNTER).increment({ worker: worker.class.name })
 
           # This breaks the middleware chain and return
           return
@@ -38,18 +44,19 @@ module Gitlab
       private
 
       def defer_job_info(worker_class, job)
-        if defer_job_by_ff?(worker_class)
+        if !run_job_by_ff?(worker_class)
           [true, DELAY, :feature_flag]
         elsif defer_job_by_database_health_signal?(job, worker_class)
           [true, worker_class.database_health_check_attrs[:delay_by], :database_health_check]
         end
       end
 
-      def defer_job_by_ff?(worker_class)
+      def run_job_by_ff?(worker_class)
+        # always returns true by default for all workers unless the FF is specifically disabled, e.g. during an incident
         Feature.enabled?(
-          :"#{FEATURE_FLAG_PREFIX}_#{worker_class.name}",
+          :"#{RUN_FEATURE_FLAG_PREFIX}_#{worker_class.name}",
           type: :worker,
-          default_enabled_if_undefined: false
+          default_enabled_if_undefined: true
         )
       end
 
@@ -72,8 +79,10 @@ module Gitlab
         Gitlab::Database::HealthStatus.evaluate(health_context).any?(&:stop?)
       end
 
-      def counter
-        @counter ||= Gitlab::Metrics.counter(:sidekiq_jobs_deferred_total, 'The number of jobs deferred')
+      def init_metrics
+        {
+          DEFERRED_COUNTER => Gitlab::Metrics.counter(DEFERRED_COUNTER, 'The number of jobs deferred')
+        }
       end
     end
   end

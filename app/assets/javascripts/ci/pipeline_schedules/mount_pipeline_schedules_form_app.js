@@ -9,7 +9,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-export default (selector) => {
+export default (selector, editing = false) => {
   const containerEl = document.querySelector(selector);
 
   if (!containerEl) {
@@ -25,6 +25,7 @@ export default (selector) => {
     projectId,
     defaultBranch,
     settingsLink,
+    schedulesPath,
   } = containerEl.dataset;
 
   return new Vue({
@@ -39,12 +40,14 @@ export default (selector) => {
       cronTimezone: cronTimezone ?? '',
       cron: cron ?? '',
       settingsLink,
+      schedulesPath,
     },
     render(createElement) {
       return createElement(PipelineSchedulesForm, {
         props: {
           timezoneData: JSON.parse(timezoneData),
           refParam: defaultBranch,
+          editing,
         },
       });
     },

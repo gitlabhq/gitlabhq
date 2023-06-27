@@ -375,6 +375,7 @@ listed in the descriptions of the relevant settings.
 | `elasticsearch_requeue_workers` **(PREMIUM)**   | boolean          | no                                   | Enable automatic requeuing of indexing workers. This improves non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed. |
 | `elasticsearch_limit_indexing` **(PREMIUM)** | boolean      | no                                   | Limit Elasticsearch to index certain namespaces and projects. |
 | `elasticsearch_max_bulk_concurrency` **(PREMIUM)** | integer | no                                   | Maximum concurrency of Elasticsearch bulk requests per indexing operation. This only applies to repository indexing operations. |
+| `elasticsearch_worker_number_of_shards` **(PREMIUM)** | integer | no                                   | Number of indexing worker shards. This improves non-code indexing throughput by enqueuing more parallel Sidekiq jobs. Default is `2`. |
 | `elasticsearch_max_bulk_size_mb` **(PREMIUM)** | integer    | no                                   | Maximum size of Elasticsearch bulk indexing requests in MB. This only applies to repository indexing operations. |
 | `elasticsearch_namespace_ids` **(PREMIUM)** | array of integers | no                                  | The namespaces to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
 | `elasticsearch_project_ids` **(PREMIUM)** | array of integers | no                                  | The projects to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. |
@@ -555,6 +556,7 @@ listed in the descriptions of the relevant settings.
 | `unique_ips_limit_enabled`               | boolean          | no                                   | (**If enabled, requires:** `unique_ips_limit_per_user` and `unique_ips_limit_time_window`) Limit sign in from multiple IPs. |
 | `unique_ips_limit_per_user`              | integer          | required by: `unique_ips_limit_enabled` | Maximum number of IPs per user. |
 | `unique_ips_limit_time_window`           | integer          | required by: `unique_ips_limit_enabled` | How many seconds an IP is counted towards the limit. |
+| `update_runner_versions_enabled`                | boolean          | no | Fetch GitLab Runner release version data from GitLab.com. For more information, see how to [determine which runners need to be upgraded](../ci/runners/configure_runners.md#determine-which-runners-need-to-be-upgraded). |
 | `usage_ping_enabled`                     | boolean          | no                                   | Every week GitLab reports license usage back to GitLab, Inc. |
 | `user_deactivation_emails_enabled`       | boolean          | no                                   | Send an email to users upon account deactivation. |
 | `user_default_external`                  | boolean          | no                                   | Newly registered users are external by default. |

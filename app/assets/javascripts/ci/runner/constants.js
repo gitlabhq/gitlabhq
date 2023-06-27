@@ -1,4 +1,5 @@
 import { __, s__ } from '~/locale';
+import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 
 export const RUNNER_TYPENAME = 'CiRunner'; // __typename
 
@@ -268,12 +269,10 @@ export const DEFAULT_PLATFORM = LINUX_PLATFORM;
 
 // Runner docs are in a separate repository and are not shipped with GitLab
 // they are rendered as external URLs.
-export const INSTALL_HELP_URL = 'https://docs.gitlab.com/runner/install';
-export const EXECUTORS_HELP_URL = 'https://docs.gitlab.com/runner/executors/';
-export const SERVICE_COMMANDS_HELP_URL =
-  'https://docs.gitlab.com/runner/commands/#service-related-commands';
-export const CHANGELOG_URL = 'https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md';
-export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
-export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';
-export const RUNNER_MANAGERS_HELP_URL =
-  'https://docs.gitlab.com/runner/fleet_scaling/#workers-executors-and-autoscaling-capabilities';
+export const INSTALL_HELP_URL = `${DOCS_URL}/runner/install`;
+export const EXECUTORS_HELP_URL = `${DOCS_URL}/runner/executors/`;
+export const SERVICE_COMMANDS_HELP_URL = `${DOCS_URL}/runner/commands/#service-related-commands`;
+export const CHANGELOG_URL = `https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md`;
+export const DOCKER_HELP_URL = `${DOCS_URL}/runner/install/docker.html`;
+export const KUBERNETES_HELP_URL = `${DOCS_URL}/runner/install/kubernetes.html`;
+export const RUNNER_MANAGERS_HELP_URL = `${DOCS_URL}/runner/fleet_scaling/#workers-executors-and-autoscaling-capabilities`;

@@ -26,6 +26,11 @@ export default {
     GlLink,
     GlSprintf,
   },
+  inject: {
+    newSchedulePath: {
+      default: '',
+    },
+  },
   computed: {
     schedulesHelpPath() {
       return helpPagePath('ci/pipelines/schedules');
@@ -37,7 +42,7 @@ export default {
   <gl-empty-state
     :svg-path="$options.SCHEDULE_MD_SVG_URL"
     :primary-button-text="$options.i18n.createNew"
-    primary-button-link="#"
+    :primary-button-link="newSchedulePath"
   >
     <template #title>
       <h3>

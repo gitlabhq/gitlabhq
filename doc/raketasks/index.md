@@ -35,7 +35,6 @@ The following Rake tasks are available for use with GitLab:
 | [Migrate snippets to Git](migrate_snippets.md)        | Migrate GitLab Snippets to Git repositories, and show the migration status. |
 | [Praefect Rake tasks](../administration/raketasks/praefect.md) | [Praefect](../administration/gitaly/praefect.md)-related tasks. |
 | [Project import/export](../administration/raketasks/project_import_export.md) | Prepare for [project exports and imports](../user/project/settings/import_export.md). |
-| [Sample Prometheus data](generate_sample_prometheus_data.md) | Generate sample Prometheus data. |
 | [Sidekiq job migration](../administration/sidekiq/sidekiq_job_migration.md) | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
 | [Service Desk email](../administration/raketasks/service_desk_email.md) | Service Desk email-related tasks. |
 | [SMTP maintenance](../administration/raketasks/smtp.md) | SMTP-related tasks. |

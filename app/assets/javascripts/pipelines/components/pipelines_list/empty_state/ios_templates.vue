@@ -2,7 +2,7 @@
 import { GlButton, GlCard, GlSprintf, GlLink, GlPopover, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams, DOCS_URL } from '~/lib/utils/url_utility';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import apolloProvider from '~/pipelines/graphql/provider';
 import CiTemplates from './ci_templates.vue';
@@ -31,7 +31,7 @@ export default {
   apolloProvider,
   iOSTemplateName: 'iOS-Fastlane',
   modalId: 'runner-instructions-modal',
-  runnerDocsLink: 'https://docs.gitlab.com/runner/install/osx',
+  runnerDocsLink: `${DOCS_URL}/runner/install/osx`,
   whatElseLink: helpPagePath('ci/index.md'),
   i18n: {
     title: s__('Pipelines|Get started with GitLab CI/CD'),

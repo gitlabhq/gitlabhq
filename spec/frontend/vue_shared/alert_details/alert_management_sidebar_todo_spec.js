@@ -1,5 +1,7 @@
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import SidebarTodo from '~/vue_shared/alert_details/components/sidebar/sidebar_todo.vue';
 import createAlertTodoMutation from '~/vue_shared/alert_details/graphql/mutations/alert_todo_create.mutation.graphql';
@@ -9,41 +11,39 @@ const mockAlert = mockAlerts[0];
 
 describe('Alert Details Sidebar To Do', () => {
   let wrapper;
+  let requestHandler;
 
-  function mountComponent({ data, sidebarCollapsed = true, loading = false, stubs = {} } = {}) {
+  const defaultHandler = {
+    createAlertTodo: jest.fn().mockResolvedValue({}),
+    markAsDone: jest.fn().mockResolvedValue({}),
+  };
+
+  const createMockApolloProvider = (handler) => {
+    Vue.use(VueApollo);
+
+    requestHandler = handler;
+
+    return createMockApollo([
+      [todoMarkDoneMutation, handler.markAsDone],
+      [createAlertTodoMutation, handler.createAlertTodo],
+    ]);
+  };
+
+  function mountComponent({ data, sidebarCollapsed = true, handler = defaultHandler } = {}) {
     wrapper = mount(SidebarTodo, {
+      apolloProvider: createMockApolloProvider(handler),
       propsData: {
         alert: { ...mockAlert },
         ...data,
         sidebarCollapsed,
         projectPath: 'projectPath',
       },
-      mocks: {
-        $apollo: {
-          mutate: jest.fn(),
-          queries: {
-            alert: {
-              loading,
-            },
-          },
-        },
-      },
-      stubs,
     });
   }
 
   const findToDoButton = () => wrapper.find('[data-testid="alert-todo-button"]');
 
   describe('updating the alert to do', () => {
-    const mockUpdatedMutationResult = {
-      data: {
-        updateAlertTodo: {
-          errors: [],
-          alert: {},
-        },
-      },
-    };
-
     describe('adding a todo', () => {
       beforeEach(() => {
         mountComponent({
@@ -60,18 +60,15 @@ describe('Alert Details Sidebar To Do', () => {
       });
 
       it('calls `$apollo.mutate` with `createAlertTodoMutation` mutation and variables containing `iid`, `todoEvent`, & `projectPath`', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
-
         findToDoButton().trigger('click');
         await nextTick();
 
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: createAlertTodoMutation,
-          variables: {
+        expect(requestHandler.createAlertTodo).toHaveBeenCalledWith(
+          expect.objectContaining({
             iid: '1527542',
             projectPath: 'projectPath',
-          },
-        });
+          }),
+        );
       });
     });
 
@@ -91,17 +88,11 @@ describe('Alert Details Sidebar To Do', () => {
       });
 
       it('calls `$apollo.mutate` with `todoMarkDoneMutation` mutation and variables containing `id`', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue(mockUpdatedMutationResult);
-
         findToDoButton().trigger('click');
         await nextTick();
 
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation: todoMarkDoneMutation,
-          update: expect.anything(),
-          variables: {
-            id: '1234',
-          },
+        expect(requestHandler.markAsDone).toHaveBeenCalledWith({
+          id: '1234',
         });
       });
     });

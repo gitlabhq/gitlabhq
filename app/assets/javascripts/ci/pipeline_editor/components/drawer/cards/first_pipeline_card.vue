@@ -2,6 +2,7 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { pipelineEditorTrackingOptions } from '../../../constants';
 
 export default {
@@ -34,7 +35,7 @@ export default {
       this.track(actions.helpDrawerLinks.runners, { label });
     },
   },
-  RUNNER_HELP_URL: 'https://docs.gitlab.com/runner/register/index.html',
+  RUNNER_HELP_URL: `${DOCS_URL}/runner/register/index.html`,
 };
 </script>
 <template>

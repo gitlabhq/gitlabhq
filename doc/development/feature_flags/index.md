@@ -149,7 +149,7 @@ created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/g
 `worker` feature flags are used for controlling Sidekiq workers behavior, such as deferring Sidekiq jobs.
 
 `worker` feature flags likely do not have any YAML definition as the name could be dynamically generated using
-the worker name itself, e.g. `defer_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
+the worker name itself, e.g. `run_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
 flags can be found in [deferring Sidekiq jobs](#deferring-sidekiq-jobs).
 
 ## Feature flag definition and validation
@@ -713,33 +713,29 @@ Feature flags with [`worker` type](#worker-type) can be used to control the beha
 
 ### Deferring Sidekiq jobs
 
-Feature flags with the format of `defer_sidekiq_jobs_{WorkerName}` delay the execution of the worker
-by scheduling the job at a later time.
+When disabled, feature flags with the format of `run_sidekiq_jobs_{WorkerName}` delay the execution of the worker
+by scheduling the job at a later time. This feature flag is enabled by default for all workers.
 Deferring jobs can be useful during an incident where contentious behavior from
 worker instances are saturating infrastructure resources (such as database and database connection pool).
 The implementation can be found at [DeferJobs Sidekiq server middleware](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/sidekiq_middleware/defer_jobs.rb).
 
 NOTE:
-Jobs are deferred indefinitely as long as the feature flag is enabled. It is important to disable the
+Jobs are deferred indefinitely as long as the feature flag is disabled. It is important to enable the
 feature flag after the worker is deemed safe to continue processing.
 
-When set to true, 100% of the jobs are deferred. When you want processing to resume, you can
+When set to false, 100% of the jobs are deferred. When you want processing to resume, you can
 use a **percentage of time** rollout. For example:
 
 ```shell
-# defer 100% of the jobs
-/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker true
+# not running any jobs, deferring all 100% of the jobs
+/chatops run feature set run_sidekiq_jobs_SlowRunningWorker false
 
-# defer 99% of the jobs, only letting 1% processed
-/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker 99
+# only running 10% of the jobs, deferring 90% of the jobs
+/chatops run feature set run_sidekiq_jobs_SlowRunningWorker 10
 
-# defer 50% of the jobs
-/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker 50
+# running 50% of the jobs, deferring 50% of the jobs
+/chatops run feature set run_sidekiq_jobs_SlowRunningWorker 50
 
-# stop deferring the jobs, jobs are being processed normally
-/chatops run feature set defer_sidekiq_jobs_SlowRunningWorker false
+# back to running all jobs normally
+/chatops run feature set run_sidekiq_jobs_SlowRunningWorker true
 ```
-
-NOTE:
-The percentage of time value denotes the percentage of time the jobs are being deferred (instead of being processed).
-For example, setting to `99` means only 1% of the jobs are being processed at random.

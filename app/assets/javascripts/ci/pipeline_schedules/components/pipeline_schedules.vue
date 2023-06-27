@@ -58,6 +58,9 @@ export default {
     pipelinesPath: {
       default: '',
     },
+    newSchedulePath: {
+      default: '',
+    },
   },
   apollo: {
     schedules: {
@@ -289,7 +292,12 @@ export default {
       </gl-tab>
 
       <template #tabs-end>
-        <gl-button variant="confirm" class="gl-ml-auto" data-testid="new-schedule-button">
+        <gl-button
+          :href="newSchedulePath"
+          variant="confirm"
+          class="gl-ml-auto"
+          data-testid="new-schedule-button"
+        >
           {{ $options.i18n.newSchedule }}
         </gl-button>
       </template>
