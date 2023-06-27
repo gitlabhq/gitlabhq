@@ -41,6 +41,21 @@ RSpec.describe 'Users > Terms', :js, feature_category: :user_profile do
     end
   end
 
+  context 'when user is a service account' do
+    let(:service_account) { create(:user, :service_account) }
+
+    before do
+      enforce_terms
+    end
+
+    it 'auto accepts the terms' do
+      visit terms_path
+
+      expect(page).not_to have_content('Accept terms')
+      expect(service_account.terms_accepted?).to be(true)
+    end
+  end
+
   context 'when signed in' do
     let(:user) { create(:user) }
 

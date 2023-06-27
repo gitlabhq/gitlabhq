@@ -15,7 +15,6 @@ import {
   ENVIRONMENT_NEW_HELP_TEXT,
   ENVIRONMENT_EDIT_HELP_TEXT,
 } from 'ee_else_ce/environments/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getUserAuthorizedAgents from '../graphql/queries/user_authorized_agents.query.graphql';
 
 export default {
@@ -28,7 +27,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     protectedEnvironmentSettingsPath: { default: '' },
     projectPath: { default: '' },
@@ -68,7 +66,7 @@ export default {
     cancel: __('Cancel'),
     reset: __('Reset'),
   },
-  helpPagePath: helpPagePath('ci/environments/index.md'),
+  environmentsHelpPagePath: helpPagePath('ci/environments/index.md'),
   renamingDisabledHelpPagePath: helpPagePath('ci/environments/index.md', {
     anchor: 'rename-an-environment',
   }),
@@ -120,9 +118,6 @@ export default {
         item.text.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },
-    showAgentsSelect() {
-      return this.glFeatures?.environmentSettingsToGraphql;
-    },
   },
   watch: {
     environment(change) {
@@ -171,7 +166,9 @@ export default {
         >
           <template #link="{ content }">
             <gl-link
-              :href="showEditHelp ? protectedEnvironmentSettingsPath : $options.helpPagePath"
+              :href="
+                showEditHelp ? protectedEnvironmentSettingsPath : $options.environmentsHelpPagePath
+              "
               >{{ content }}</gl-link
             >
           </template>
@@ -223,11 +220,7 @@ export default {
           />
         </gl-form-group>
 
-        <gl-form-group
-          v-if="showAgentsSelect"
-          :label="$options.i18n.agentLabel"
-          label-for="environment_agent"
-        >
+        <gl-form-group :label="$options.i18n.agentLabel" label-for="environment_agent">
           <gl-collapsible-listbox
             id="environment_agent"
             v-model="selectedAgentId"

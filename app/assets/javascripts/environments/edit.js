@@ -12,10 +12,9 @@ export default (el) => {
 
   const {
     projectEnvironmentsPath,
-    updateEnvironmentPath,
     protectedEnvironmentSettingsPath,
     projectPath,
-    environment,
+    environmentName,
   } = el.dataset;
 
   return new Vue({
@@ -23,16 +22,12 @@ export default (el) => {
     apolloProvider: apolloProvider(),
     provide: {
       projectEnvironmentsPath,
-      updateEnvironmentPath,
       protectedEnvironmentSettingsPath,
       projectPath,
+      environmentName,
     },
     render(h) {
-      return h(EditEnvironment, {
-        props: {
-          environment: JSON.parse(environment),
-        },
-      });
+      return h(EditEnvironment);
     },
   });
 };

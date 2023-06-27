@@ -147,13 +147,4 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
       expect(helper.environment_logs_data(project, environment)).to eq(expected_data)
     end
   end
-
-  describe '#environment_data' do
-    it 'returns the environment as JSON' do
-      expected_data = { id: environment.id,
-                        name: environment.name,
-                        external_url: environment.external_url }.to_json
-      expect(helper.environment_data(environment)).to eq(expected_data)
-    end
-  end
 end

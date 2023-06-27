@@ -40,9 +40,6 @@ describe('~/environments/components/form.vue', () => {
     return mountExtended(EnvironmentForm, {
       provide: {
         ...PROVIDE,
-        glFeatures: {
-          environmentSettingsToGraphql: true,
-        },
       },
       propsData: {
         ...DEFAULT_PROPS,
@@ -207,12 +204,6 @@ describe('~/environments/components/form.vue', () => {
 
       expect(urlInput.element.value).toBe('https://example.com');
     });
-  });
-
-  describe('when `environmentSettingsToGraphql feature flag is enabled', () => {
-    beforeEach(() => {
-      wrapper = createWrapperWithApollo();
-    });
 
     it('renders an agent selector listbox', () => {
       expect(findAgentSelector().props()).toMatchObject({
@@ -223,6 +214,12 @@ describe('~/environments/components/form.vue', () => {
         loading: false,
         items: [],
       });
+    });
+  });
+
+  describe('agent selector', () => {
+    beforeEach(() => {
+      wrapper = createWrapperWithApollo();
     });
 
     it('sets the items prop of the agent selector after fetching the list', async () => {

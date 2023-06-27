@@ -1,8 +1,0 @@
----
-name: environment_settings_to_graphql
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121091
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/412332
-milestone: '16.1'
-type: development
-group: group::environments
-default_enabled: true
