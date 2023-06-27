@@ -1,14 +1,17 @@
 import { escape, minBy } from 'lodash';
 import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
+import createApolloClient from '~/lib/graphql';
 import { setAttributes } from '~/lib/utils/dom_utils';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
+import customEmojiQuery from './queries/custom_emoji.query.graphql';
 import { CACHE_KEY, CACHE_VERSION_KEY, CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from './constants';
 
 let emojiMap = null;
 let validEmojiNames = null;
+
 export const FALLBACK_EMOJI_KEY = 'grey_question';
 
 // Keep the version in sync with `lib/gitlab/emoji.rb`
@@ -53,9 +56,42 @@ async function loadEmojiWithNames() {
   }, {});
 }
 
+export async function loadCustomEmojiWithNames() {
+  if (document.body?.dataset?.group && window.gon?.features?.customEmoji) {
+    const client = createApolloClient();
+    const { data } = await client.query({
+      query: customEmojiQuery,
+      variables: {
+        groupPath: document.body.dataset.group,
+      },
+    });
+
+    return data?.group?.customEmoji?.nodes?.reduce((acc, e) => {
+      // Map the custom emoji into the format of the normal emojis
+      acc[e.name] = {
+        c: 'custom',
+        d: e.name,
+        e: undefined,
+        name: e.name,
+        src: e.url,
+        u: 'custom',
+      };
+
+      return acc;
+    }, {});
+  }
+
+  return {};
+}
+
 async function prepareEmojiMap() {
-  emojiMap = await loadEmojiWithNames();
-  validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
+  return Promise.all([loadEmojiWithNames(), loadCustomEmojiWithNames()]).then((values) => {
+    emojiMap = {
+      ...values[0],
+      ...values[1],
+    };
+    validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
+  });
 }
 
 export function initEmojiMap() {
@@ -82,6 +118,10 @@ export function isEmojiNameValid(name) {
 
 export function getAllEmoji() {
   return emojiMap;
+}
+
+export function findCustomEmoji(name) {
+  return emojiMap[name];
 }
 
 function getAliasesMatchingQuery(query) {
@@ -176,7 +216,7 @@ export const CATEGORY_NAMES = Object.keys(CATEGORY_ICON_MAP);
 
 let emojiCategoryMap;
 export function getEmojiCategoryMap() {
-  if (!emojiCategoryMap) {
+  if (!emojiCategoryMap && emojiMap) {
     emojiCategoryMap = CATEGORY_NAMES.reduce((acc, category) => {
       if (category === FREQUENTLY_USED_KEY) {
         return acc;
@@ -218,10 +258,11 @@ export function getEmojiInfo(query, fallback = true) {
 }
 
 export function emojiFallbackImageSrc(inputName) {
-  const { name } = getEmojiInfo(inputName);
-  return `${gon.asset_host || ''}${
-    gon.relative_url_root || ''
-  }/-/emojis/${EMOJI_VERSION}/${name}.png`;
+  const { name, src } = getEmojiInfo(inputName);
+  return (
+    src ||
+    `${gon.asset_host || ''}${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/${name}.png`
+  );
 }
 
 export function emojiImageTag(name, src) {

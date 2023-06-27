@@ -124,7 +124,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   }.with_indifferent_access.freeze
 
   context 'for table' do
-    Gitlab::Database::EachDatabase.each_database_connection do |connection, _|
+    Gitlab::Database::EachDatabase.each_connection do |connection, _|
       schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
       (connection.tables - TABLE_PARTITIONS).sort.each do |table|
         table_schema = Gitlab::Database::GitlabSchema.table_schema(table)
@@ -300,7 +300,7 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   context 'primary keys' do
     it 'expects every table to have a primary key defined' do
-      Gitlab::Database::EachDatabase.each_database_connection do |connection, _|
+      Gitlab::Database::EachDatabase.each_connection do |connection, _|
         schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
 
         problematic_tables = connection.tables.select do |table|

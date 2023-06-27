@@ -126,12 +126,12 @@ module Gitlab
     end
 
     def self.without_statement_timeout
-      Gitlab::Database::EachDatabase.each_database_connection do |connection|
+      Gitlab::Database::EachDatabase.each_connection do |connection|
         connection.execute('SET statement_timeout=0')
       end
       yield
     ensure
-      Gitlab::Database::EachDatabase.each_database_connection do |connection|
+      Gitlab::Database::EachDatabase.each_connection do |connection|
         connection.execute('RESET statement_timeout')
       end
     end

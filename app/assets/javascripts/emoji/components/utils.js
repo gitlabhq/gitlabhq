@@ -52,7 +52,7 @@ export const getEmojiCategories = memoize(async () => {
 
   return Object.freeze(
     Object.keys(categories)
-      .filter((c) => c !== FREQUENTLY_USED_KEY)
+      .filter((c) => c !== FREQUENTLY_USED_KEY && categories[c].length)
       .reduce((acc, category) => {
         const emojis = chunk(categories[category], EMOJIS_PER_ROW);
         const height = generateCategoryHeight(emojis.length);

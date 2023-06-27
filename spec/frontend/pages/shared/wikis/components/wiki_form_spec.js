@@ -17,6 +17,7 @@ import {
 import { DRAWIO_ORIGIN } from 'spec/test_constants';
 
 jest.mock('~/emoji');
+jest.mock('~/lib/graphql');
 
 describe('WikiForm', () => {
   let wrapper;

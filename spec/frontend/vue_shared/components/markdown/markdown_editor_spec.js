@@ -21,6 +21,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/emoji');
 jest.mock('autosize');
+jest.mock('~/lib/graphql');
 
 describe('vue_shared/component/markdown/markdown_editor', () => {
   useLocalStorageSpy();

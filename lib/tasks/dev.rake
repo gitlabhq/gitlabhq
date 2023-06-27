@@ -8,7 +8,7 @@ namespace :dev do
     ENV['force'] = 'yes'
     Rake::Task["gitlab:setup"].invoke
 
-    Gitlab::Database::EachDatabase.each_database_connection do |connection|
+    Gitlab::Database::EachDatabase.each_connection do |connection|
       # Make sure DB statistics are up to date.
       # gitlab:setup task can insert quite a bit of data, especially with MASS_INSERT=1
       # so ANALYZE can take more than default 15s statement timeout. This being a dev task,
@@ -61,7 +61,7 @@ namespace :dev do
         AND pid <> pg_backend_pid();
       SQL
 
-      Gitlab::Database::EachDatabase.each_database_connection(include_shared: false) do |connection|
+      Gitlab::Database::EachDatabase.each_connection(include_shared: false) do |connection|
         connection.execute(cmd)
       rescue ActiveRecord::NoDatabaseError
       end

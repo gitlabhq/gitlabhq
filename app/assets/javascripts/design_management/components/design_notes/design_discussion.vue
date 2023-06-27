@@ -292,7 +292,9 @@ export default {
     <design-note-pin :is-resolved="discussion.resolved" :label="discussion.index" />
     <ul
       class="design-discussion bordered-box gl-relative gl-p-0 gl-list-style-none"
+      :class="{ 'gl-bg-blue-50': isDiscussionActive }"
       data-qa-selector="design_discussion_content"
+      data-testid="design-discussion-content"
     >
       <design-note
         :note="firstNote"
@@ -300,7 +302,6 @@ export default {
         :is-resolving="isResolving"
         :is-discussion="true"
         :noteable-id="noteableId"
-        :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @delete-note="showDeleteNoteConfirmationModal($event)"
       >
         <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
@@ -343,7 +344,6 @@ export default {
         :is-resolving="isResolving"
         :noteable-id="noteableId"
         :is-discussion="false"
-        :class="{ 'gl-bg-blue-50': isDiscussionActive }"
         @delete-note="showDeleteNoteConfirmationModal($event)"
       />
       <li

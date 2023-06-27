@@ -1959,6 +1959,9 @@ msgstr ""
 msgid "AI|I don't see how I can help. Please give better instructions!"
 msgstr ""
 
+msgid "AI|May provide inappropriate responses not representative of GitLab's views. Do not input personal data."
+msgstr ""
+
 msgid "AI|Populate issue description"
 msgstr ""
 
@@ -35122,6 +35125,9 @@ msgstr ""
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
 msgstr ""
 
+msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered. You might have to wait seven days before creating a new account with the same username or email."
+msgstr ""
+
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
@@ -55054,6 +55060,9 @@ msgid "must be at least 1 day"
 msgstr ""
 
 msgid "must be before %{expiry_date}"
+msgstr ""
+
+msgid "must be false when email confirmation setting is off"
 msgstr ""
 
 msgid "must be greater than start date"

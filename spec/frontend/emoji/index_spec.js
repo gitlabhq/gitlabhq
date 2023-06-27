@@ -7,6 +7,7 @@ import {
   clearEmojiMock,
 } from 'helpers/emoji';
 import { trimText } from 'helpers/text_helper';
+import { createMockClient } from 'helpers/mock_apollo_helper';
 import {
   glEmojiTag,
   searchEmoji,
@@ -14,6 +15,8 @@ import {
   sortEmoji,
   initEmojiMap,
   getAllEmoji,
+  emojiFallbackImageSrc,
+  loadCustomEmojiWithNames,
 } from '~/emoji';
 
 import isEmojiUnicodeSupported, {
@@ -25,6 +28,12 @@ import isEmojiUnicodeSupported, {
   isPersonZwjEmoji,
 } from '~/emoji/support/is_emoji_unicode_supported';
 import { NEUTRAL_INTENT_MULTIPLIER } from '~/emoji/constants';
+import customEmojiQuery from '~/emoji/queries/custom_emoji.query.graphql';
+
+let mockClient;
+jest.mock('~/lib/graphql', () => {
+  return () => mockClient;
+});
 
 const emptySupportMap = {
   personZwj: false,
@@ -45,12 +54,35 @@ const emptySupportMap = {
   1.1: false,
 };
 
+function createMockEmojiClient() {
+  mockClient = createMockClient([
+    [
+      customEmojiQuery,
+      jest.fn().mockResolvedValue({
+        data: {
+          group: {
+            id: 1,
+            customEmoji: {
+              nodes: [{ id: 1, name: 'parrot', url: 'parrot.gif' }],
+            },
+          },
+        },
+      }),
+    ],
+  ]);
+
+  window.gon = { features: { customEmoji: true } };
+  document.body.dataset.group = 'test-group';
+}
+
 describe('emoji', () => {
   beforeEach(async () => {
     await initEmojiMock();
   });
 
   afterEach(() => {
+    window.gon = {};
+    delete document.body.dataset.group;
     clearEmojiMock();
   });
 
@@ -688,6 +720,69 @@ describe('emoji', () => {
 
     it.each(testCases)('%s', (_, scoredItems, expected) => {
       expect(scoredItems.sort(sortEmoji)).toEqual(expected);
+    });
+  });
+
+  describe('emojiFallbackImageSrc', () => {
+    beforeEach(async () => {
+      createMockEmojiClient();
+
+      await initEmojiMock();
+    });
+
+    it.each`
+      emoji         | src
+      ${'thumbsup'} | ${'/-/emojis/2/thumbsup.png'}
+      ${'parrot'}   | ${'parrot.gif'}
+    `('returns $src for emoji with name $emoji', ({ emoji, src }) => {
+      expect(emojiFallbackImageSrc(emoji)).toBe(src);
+    });
+  });
+
+  describe('loadCustomEmojiWithNames', () => {
+    beforeEach(() => {
+      createMockEmojiClient();
+    });
+
+    describe('flag disabled', () => {
+      beforeEach(() => {
+        window.gon = {};
+      });
+
+      it('returns empty object', async () => {
+        const result = await loadCustomEmojiWithNames();
+
+        expect(result).toEqual({});
+      });
+    });
+
+    describe('when not in a group', () => {
+      beforeEach(() => {
+        delete document.body.dataset.group;
+      });
+
+      it('returns empty object', async () => {
+        const result = await loadCustomEmojiWithNames();
+
+        expect(result).toEqual({});
+      });
+    });
+
+    describe('when in a group with flag enabled', () => {
+      it('returns empty object', async () => {
+        const result = await loadCustomEmojiWithNames();
+
+        expect(result).toEqual({
+          parrot: {
+            c: 'custom',
+            d: 'parrot',
+            e: undefined,
+            name: 'parrot',
+            src: 'parrot.gif',
+            u: 'custom',
+          },
+        });
+      });
     });
   });
 });

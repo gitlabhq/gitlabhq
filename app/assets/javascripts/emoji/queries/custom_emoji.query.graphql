@@ -1,0 +1,12 @@
+query getCustomEmoji($groupPath: ID!) {
+  group(fullPath: $groupPath) {
+    id
+    customEmoji {
+      nodes {
+        id
+        name
+        url
+      }
+    }
+  }
+}

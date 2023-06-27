@@ -29,6 +29,7 @@ const DEFAULT_TODO_COUNT = 2;
 describe('Design discussions component', () => {
   let wrapper;
 
+  const findDesignNotesList = () => wrapper.find('[data-testid="design-discussion-content"]');
   const findDesignNotes = () => wrapper.findAllComponents(DesignNote);
   const findReplyPlaceholder = () => wrapper.findComponent(ReplyPlaceholder);
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
@@ -287,7 +288,7 @@ describe('Design discussions component', () => {
 
   describe('when any note from a discussion is active', () => {
     it.each([notes[0], notes[0].discussion.notes.nodes[1]])(
-      'applies correct class to all notes in the active discussion',
+      'applies correct class to the active discussion',
       (note) => {
         createComponent({
           props: { discussion: mockDiscussion },
@@ -299,11 +300,7 @@ describe('Design discussions component', () => {
           },
         });
 
-        expect(
-          wrapper
-            .findAllComponents(DesignNote)
-            .wrappers.every((designNote) => designNote.classes('gl-bg-blue-50')),
-        ).toBe(true);
+        expect(findDesignNotesList().classes('gl-bg-blue-50')).toBe(true);
       },
     );
   });

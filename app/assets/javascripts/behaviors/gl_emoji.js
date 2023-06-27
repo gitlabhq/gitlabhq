@@ -1,4 +1,10 @@
-import { initEmojiMap, getEmojiInfo, emojiFallbackImageSrc, emojiImageTag } from '../emoji';
+import {
+  initEmojiMap,
+  getEmojiInfo,
+  emojiFallbackImageSrc,
+  emojiImageTag,
+  findCustomEmoji,
+} from '../emoji';
 import isEmojiUnicodeSupported from '../emoji/support';
 
 class GlEmoji extends HTMLElement {
@@ -33,6 +39,7 @@ class GlEmoji extends HTMLElement {
         this.childNodes &&
         Array.prototype.every.call(this.childNodes, (childNode) => childNode.nodeType === 3);
 
+      const customEmoji = findCustomEmoji(name);
       const hasImageFallback = fallbackSrc?.length > 0;
       const hasCssSpriteFallback = fallbackSpriteClass?.length > 0;
 
@@ -51,7 +58,7 @@ class GlEmoji extends HTMLElement {
         this.classList.add(fallbackSpriteClass);
       } else if (hasImageFallback) {
         this.innerHTML = '';
-        this.appendChild(emojiImageTag(name, fallbackSrc));
+        this.appendChild(emojiImageTag(name, customEmoji?.src || fallbackSrc));
       } else {
         const src = emojiFallbackImageSrc(name);
         this.innerHTML = '';

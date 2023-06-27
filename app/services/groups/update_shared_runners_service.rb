@@ -25,7 +25,14 @@ module Groups
     end
 
     def update_shared_runners
-      group.update_shared_runners_setting!(params[:shared_runners_setting])
+      case params[:shared_runners_setting]
+      when Namespace::SR_DISABLED_AND_UNOVERRIDABLE
+        disable_shared_runners! # also disallows override
+      when Namespace::SR_DISABLED_WITH_OVERRIDE, Namespace::SR_DISABLED_AND_OVERRIDABLE
+        disable_shared_runners_and_allow_override!
+      when Namespace::SR_ENABLED
+        enable_shared_runners! # set both to true
+      end
     end
 
     def update_pending_builds?
@@ -40,6 +47,43 @@ module Groups
 
         ::Ci::UpdatePendingBuildService.new(group, pending_builds_params).execute
       end
+    end
+
+    def disable_shared_runners!
+      group.update!(
+        shared_runners_enabled: false,
+        allow_descendants_override_disabled_shared_runners: false)
+
+      group_ids = group.descendants
+      unless group_ids.empty?
+        Group.by_id(group_ids).update_all(
+          shared_runners_enabled: false,
+          allow_descendants_override_disabled_shared_runners: false)
+      end
+
+      group.all_projects.update_all(shared_runners_enabled: false)
+    end
+
+    def disable_shared_runners_and_allow_override!
+      # enabled -> disabled_and_overridable
+      if group.shared_runners_enabled?
+        group.update!(
+          shared_runners_enabled: false,
+          allow_descendants_override_disabled_shared_runners: true)
+
+        group_ids = group.descendants
+        Group.by_id(group_ids).update_all(shared_runners_enabled: false) unless group_ids.empty?
+
+        group.all_projects.update_all(shared_runners_enabled: false)
+
+      # disabled_and_unoverridable -> disabled_and_overridable
+      else
+        group.update!(allow_descendants_override_disabled_shared_runners: true)
+      end
+    end
+
+    def enable_shared_runners!
+      group.update!(shared_runners_enabled: true)
     end
   end
 end

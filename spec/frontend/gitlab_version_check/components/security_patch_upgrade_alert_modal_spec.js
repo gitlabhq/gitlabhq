@@ -1,6 +1,7 @@
 import { GlModal, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { sprintf } from '~/locale';
 import SecurityPatchUpgradeAlertModal from '~/gitlab_version_check/components/security_patch_upgrade_alert_modal.vue';
 import * as utils from '~/gitlab_version_check/utils';
@@ -14,6 +15,8 @@ import {
 describe('SecurityPatchUpgradeAlertModal', () => {
   let wrapper;
   let trackingSpy;
+  const hideMock = jest.fn();
+  const { i18n } = SecurityPatchUpgradeAlertModal;
 
   const defaultProps = {
     currentVersion: '11.1.1',
@@ -28,14 +31,20 @@ describe('SecurityPatchUpgradeAlertModal', () => {
         ...props,
       },
       stubs: {
-        GlModal,
         GlSprintf,
+        GlModal: stubComponent(GlModal, {
+          methods: {
+            hide: hideMock,
+          },
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
       },
     });
   };
 
   afterEach(() => {
     unmockTracking();
+    hideMock.mockClear();
   });
 
   const expectDispatchedTracking = (action, label) => {
@@ -63,12 +72,12 @@ describe('SecurityPatchUpgradeAlertModal', () => {
     });
 
     it('renders the modal title correctly', () => {
-      expect(findGlModalTitle().text()).toBe(wrapper.vm.$options.i18n.modalTitle);
+      expect(findGlModalTitle().text()).toBe(i18n.modalTitle);
     });
 
     it('renders modal body without suggested versions', () => {
       expect(findGlModalBody().text()).toBe(
-        sprintf(wrapper.vm.$options.i18n.modalBodyNoStableVersions, {
+        sprintf(i18n.modalBodyNoStableVersions, {
           currentVersion: defaultProps.currentVersion,
         }),
       );
@@ -90,7 +99,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
 
     describe('Learn more link', () => {
       it('renders with correct text and link', () => {
-        expect(findGlLink().text()).toBe(wrapper.vm.$options.i18n.learnMore);
+        expect(findGlLink().text()).toBe(i18n.learnMore);
         expect(findGlLink().attributes('href')).toBe(ABOUT_RELEASES_PAGE);
       });
 
@@ -102,12 +111,8 @@ describe('SecurityPatchUpgradeAlertModal', () => {
     });
 
     describe('Remind me button', () => {
-      beforeEach(() => {
-        wrapper.vm.$refs.alertModal.hide = jest.fn();
-      });
-
       it('renders with correct text', () => {
-        expect(findGlRemindButton().text()).toBe(wrapper.vm.$options.i18n.secondaryButtonText);
+        expect(findGlRemindButton().text()).toBe(i18n.secondaryButtonText);
       });
 
       it(`tracks click ${TRACKING_LABELS.REMIND_ME_BTN} when clicked`, async () => {
@@ -126,13 +131,13 @@ describe('SecurityPatchUpgradeAlertModal', () => {
       it('hides the modal', async () => {
         await findGlRemindButton().vm.$emit('click');
 
-        expect(wrapper.vm.$refs.alertModal.hide).toHaveBeenCalled();
+        expect(hideMock).toHaveBeenCalled();
       });
     });
 
     describe('Upgrade button', () => {
       it('renders with correct text and link', () => {
-        expect(findGlUpgradeButton().text()).toBe(wrapper.vm.$options.i18n.primaryButtonText);
+        expect(findGlUpgradeButton().text()).toBe(i18n.primaryButtonText);
         expect(findGlUpgradeButton().attributes('href')).toBe(UPGRADE_DOCS_URL);
       });
 
@@ -160,7 +165,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
 
     it('renders modal body with suggested versions', () => {
       expect(findGlModalBody().text()).toBe(
-        sprintf(wrapper.vm.$options.i18n.modalBodyStableVersions, {
+        sprintf(i18n.modalBodyStableVersions, {
           currentVersion: defaultProps.currentVersion,
           latestStableVersions: latestStableVersions.join(', '),
         }),
@@ -176,9 +181,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
     });
 
     it('renders modal details', () => {
-      expect(findGlModalDetails().text()).toBe(
-        sprintf(wrapper.vm.$options.i18n.modalDetails, { details }),
-      );
+      expect(findGlModalDetails().text()).toBe(sprintf(i18n.modalDetails, { details }));
     });
   });
 

@@ -131,7 +131,7 @@ export default {
 
 <template>
   <timeline-entry-item :id="`note_${noteAnchorId}`" class="design-note note-form">
-    <gl-avatar-link :href="author.webUrl" class="gl-float-left gl-mr-3">
+    <gl-avatar-link :href="author.webUrl" class="gl-float-left gl-mr-3 link-inherit-color">
       <gl-avatar :size="32" :src="author.avatarUrl" :entity-name="author.username" />
     </gl-avatar-link>
 
@@ -140,7 +140,7 @@ export default {
         <gl-link
           v-once
           :href="author.webUrl"
-          class="js-user-link"
+          class="js-user-link link-inherit-color"
           data-testid="user-link"
           :data-user-id="authorId"
           :data-username="author.username"
@@ -152,7 +152,7 @@ export default {
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
           <gl-link
-            class="note-timestamp system-note-separator gl-display-block gl-mb-2 gl-font-sm"
+            class="note-timestamp system-note-separator gl-display-block gl-mb-2 gl-font-sm link-inherit-color"
             :href="`#note_${noteAnchorId}`"
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
@@ -175,7 +175,6 @@ export default {
         <gl-disclosure-dropdown
           v-if="isEditingAndHasPermissions"
           v-gl-tooltip.hover
-          toggle-class="btn-sm"
           icon="ellipsis_v"
           category="tertiary"
           data-qa-selector="design_discussion_actions_ellipsis_dropdown"

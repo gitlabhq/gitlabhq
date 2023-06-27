@@ -46,9 +46,9 @@ For an overview, see
 
 After you add a group, the following data is synced to Jira for all projects in that group:
 
-- New merge requests, branches, and commits
-- Existing merge requests (GitLab 13.8 and later)
-- Existing branches and commits (GitLab 15.11 and later)
+- New merge requests, branches, and commits.
+- Existing merge requests (GitLab 13.8 and later).
+- Existing branches and commits (GitLab 15.11 and later). You must delete and add any namespaces that were added to the GitLab for Jira Cloud app in GitLab 15.10 and earlier.
 
 ## Update the GitLab for Jira Cloud app
 

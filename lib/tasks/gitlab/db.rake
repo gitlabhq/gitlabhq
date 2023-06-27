@@ -33,7 +33,7 @@ namespace :gitlab do
         exit 1
       end
 
-      Gitlab::Database::EachDatabase.each_database_connection(only: only_on) do |connection, name|
+      Gitlab::Database::EachDatabase.each_connection(only: only_on) do |connection, name|
         connection.execute("INSERT INTO schema_migrations (version) VALUES (#{connection.quote(version)})")
 
         puts "Successfully marked '#{version}' as complete on database #{name}".color(:green)
@@ -57,7 +57,7 @@ namespace :gitlab do
     end
 
     def drop_tables(only_on: nil)
-      Gitlab::Database::EachDatabase.each_database_connection(only: only_on) do |connection, name|
+      Gitlab::Database::EachDatabase.each_connection(only: only_on) do |connection, name|
         # In PostgreSQLAdapter, data_sources returns both views and tables, so use tables instead
         tables = connection.tables
 
@@ -292,7 +292,7 @@ namespace :gitlab do
             exit
           end
 
-          Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
+          Gitlab::Database::EachDatabase.each_connection(only: database_name) do
             Gitlab::Database::AsyncIndexes.execute_pending_actions!(how_many: args[:pick].to_i)
           end
         end
@@ -322,7 +322,7 @@ namespace :gitlab do
             exit
           end
 
-          Gitlab::Database::EachDatabase.each_database_connection(only: database_name) do
+          Gitlab::Database::EachDatabase.each_connection(only: database_name) do
             Gitlab::Database::AsyncConstraints.validate_pending_entries!(how_many: args[:pick].to_i)
           end
         end
@@ -413,7 +413,7 @@ namespace :gitlab do
 
     desc 'Run all pending batched migrations'
     task execute_batched_migrations: :environment do
-      Gitlab::Database::EachDatabase.each_database_connection do |connection, name|
+      Gitlab::Database::EachDatabase.each_connection do |connection, name|
         Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:active).queue_order.each do |migration|
           Gitlab::AppLogger.info("Executing batched migration #{migration.id} on database #{name} inline")
           Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new(connection: connection).run_entire_migration(migration)

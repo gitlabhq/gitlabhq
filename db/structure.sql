@@ -33171,7 +33171,7 @@ CREATE INDEX index_users_on_state_and_user_type ON users USING btree (state, use
 
 CREATE UNIQUE INDEX index_users_on_static_object_token ON users USING btree (static_object_token);
 
-CREATE INDEX index_users_on_unconfirmed_and_created_at_for_active_humans ON users USING btree (created_at, id) WHERE ((confirmed_at IS NULL) AND ((state)::text = 'active'::text) AND (user_type = 0));
+CREATE INDEX index_users_on_unconfirmed_created_at_active_type_sign_in_count ON users USING btree (created_at, id) WHERE ((confirmed_at IS NULL) AND ((state)::text = 'active'::text) AND (user_type = 0) AND (sign_in_count = 0));
 
 CREATE INDEX index_users_on_unconfirmed_email ON users USING btree (unconfirmed_email) WHERE (unconfirmed_email IS NOT NULL);
 

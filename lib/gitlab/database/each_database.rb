@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module EachDatabase
       class << self
-        def each_database_connection(only: nil, include_shared: true)
+        def each_connection(only: nil, include_shared: true)
           selected_names = Array.wrap(only)
           base_models = select_base_models(selected_names)
 
@@ -18,7 +18,6 @@ module Gitlab
             end
           end
         end
-        alias_method :each_db_connection, :each_database_connection
 
         def each_model_connection(models, only_on: nil, &blk)
           selected_databases = Array.wrap(only_on).map(&:to_sym)

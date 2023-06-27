@@ -824,16 +824,6 @@ class Group < Namespace
     ).call
   end
 
-  def update_shared_runners_setting!(state)
-    raise ArgumentError unless SHARED_RUNNERS_SETTINGS.include?(state)
-
-    case state
-    when SR_DISABLED_AND_UNOVERRIDABLE then disable_shared_runners! # also disallows override
-    when SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE then disable_shared_runners_and_allow_override!
-    when SR_ENABLED then enable_shared_runners! # set both to true
-    end
-  end
-
   def first_owner
     owners.first || parent&.first_owner || owner
   end
@@ -1066,45 +1056,6 @@ class Group < Namespace
     Arel::Nodes::As.new(
       Arel::Nodes::NamedFunction.new('LEAST', args),
       Arel::Nodes::SqlLiteral.new(column_alias))
-  end
-
-  def disable_shared_runners!
-    update!(
-      shared_runners_enabled: false,
-      allow_descendants_override_disabled_shared_runners: false)
-
-    group_ids = descendants
-    unless group_ids.empty?
-      Group.by_id(group_ids).update_all(
-        shared_runners_enabled: false,
-        allow_descendants_override_disabled_shared_runners: false)
-    end
-
-    all_projects.update_all(shared_runners_enabled: false)
-  end
-
-  def disable_shared_runners_and_allow_override!
-    # enabled -> disabled_and_overridable
-    if shared_runners_enabled?
-      update!(
-        shared_runners_enabled: false,
-        allow_descendants_override_disabled_shared_runners: true)
-
-      group_ids = descendants
-      unless group_ids.empty?
-        Group.by_id(group_ids).update_all(shared_runners_enabled: false)
-      end
-
-      all_projects.update_all(shared_runners_enabled: false)
-
-    # disabled_and_unoverridable -> disabled_and_overridable
-    else
-      update!(allow_descendants_override_disabled_shared_runners: true)
-    end
-  end
-
-  def enable_shared_runners!
-    update!(shared_runners_enabled: true)
   end
 
   def runners_token_prefix

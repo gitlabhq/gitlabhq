@@ -1109,7 +1109,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     before do
       each_database = class_double('Gitlab::Database::EachDatabase').as_stubbed_const
 
-      allow(each_database).to receive(:each_database_connection)
+      allow(each_database).to receive(:each_connection)
         .and_yield(connections[:main], 'main')
         .and_yield(connections[:ci], 'ci')
 

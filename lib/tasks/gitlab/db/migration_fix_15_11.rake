@@ -5,7 +5,7 @@ task migration_fix_15_11: [:environment] do
   next if Gitlab.com?
 
   only_on = %i[main ci].select { |db| Gitlab::Database.has_database?(db) }
-  Gitlab::Database::EachDatabase.each_database_connection(only: only_on) do |conn, database|
+  Gitlab::Database::EachDatabase.each_connection(only: only_on) do |conn, database|
     begin
       first_migration = conn.execute('SELECT * FROM schema_migrations ORDER BY version ASC LIMIT 1')
     rescue ActiveRecord::StatementInvalid
