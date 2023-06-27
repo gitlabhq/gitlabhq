@@ -11,6 +11,9 @@ let wrapper;
 const tagName = 'test-tag';
 const path = '/path/to/tag';
 const isProtected = false;
+const modalHideSpy = jest.fn();
+const modalShowSpy = jest.fn();
+const formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
 
 const createComponent = (data = {}) => {
   wrapper = extendedWrapper(
@@ -27,6 +30,10 @@ const createComponent = (data = {}) => {
         GlModal: stubComponent(GlModal, {
           template:
             '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
+          methods: {
+            hide: modalHideSpy,
+            show: modalShowSpy,
+          },
         }),
         GlButton,
         GlFormInput,
@@ -61,32 +68,26 @@ describe('Delete tag modal', () => {
     });
 
     it('submits the form when the delete button is clicked', () => {
-      const submitFormSpy = jest.spyOn(wrapper.vm.$refs.form, 'submit');
-
       findDeleteButton().trigger('click');
 
       expect(findForm().attributes('action')).toBe(path);
-      expect(submitFormSpy).toHaveBeenCalled();
+      expect(formSubmitSpy).toHaveBeenCalledTimes(1);
     });
 
     it('calls show on the modal when a `openModal` event is received through the event hub', () => {
-      const showSpy = jest.spyOn(wrapper.vm.$refs.modal, 'show');
-
       eventHub.$emit('openModal', {
         isProtected,
         tagName,
         path,
       });
 
-      expect(showSpy).toHaveBeenCalled();
+      expect(modalShowSpy).toHaveBeenCalled();
     });
 
     it('calls hide on the modal when cancel button is clicked', () => {
-      const closeModalSpy = jest.spyOn(wrapper.vm.$refs.modal, 'hide');
-
       findCancelButton().trigger('click');
 
-      expect(closeModalSpy).toHaveBeenCalled();
+      expect(modalHideSpy).toHaveBeenCalled();
     });
   });
 

@@ -47,6 +47,21 @@ export default {
       required: false,
       default: false,
     },
+    fluidWidth: {
+      type: GlCollapsibleListbox.props.fluidWidth.type,
+      required: false,
+      default: GlCollapsibleListbox.props.fluidWidth.default,
+    },
+    placement: {
+      type: GlCollapsibleListbox.props.placement.type,
+      required: false,
+      default: GlCollapsibleListbox.props.placement.default,
+    },
+    block: {
+      type: GlCollapsibleListbox.props.block.type,
+      required: false,
+      default: GlCollapsibleListbox.props.block.default,
+    },
   },
   data() {
     return {
@@ -123,6 +138,9 @@ export default {
       :searchable="isSearchable"
       :no-results-text="$options.i18n.noResultsText"
       :disabled="disabled"
+      :fluid-width="fluidWidth"
+      :placement="placement"
+      :block="block"
       @search="search"
       @select="$emit($options.model.event, $event)"
     />

@@ -7,7 +7,7 @@ describe('ListboxInput', () => {
 
   // Props
   const label = 'label';
-  const decription = 'decription';
+  const description = 'description';
   const name = 'name';
   const defaultToggleText = 'defaultToggleText';
   const items = [
@@ -34,7 +34,7 @@ describe('ListboxInput', () => {
     wrapper = shallowMount(ListboxInput, {
       propsData: {
         label,
-        decription,
+        description,
         name,
         defaultToggleText,
         items,
@@ -72,8 +72,8 @@ describe('ListboxInput', () => {
       expect(findGlFormGroup().attributes('label')).toBe(label);
     });
 
-    it('passes the decription to the form group', () => {
-      expect(findGlFormGroup().attributes('decription')).toBe(decription);
+    it('passes the description to the form group', () => {
+      expect(findGlFormGroup().attributes('description')).toBe(description);
     });
 
     it('sets the input name', () => {
@@ -86,6 +86,26 @@ describe('ListboxInput', () => {
 
     it('passes attributes to the root element', () => {
       expect(findGlFormGroup().attributes('id')).toBe(id);
+    });
+  });
+
+  describe('props', () => {
+    it.each([true, false])("passes %s to the listbox's fluidWidth prop", (fluidWidth) => {
+      createComponent({ fluidWidth });
+
+      expect(findGlListbox().props('fluidWidth')).toBe(fluidWidth);
+    });
+
+    it.each(['right', 'left'])("passes %s to the listbox's placement prop", (placement) => {
+      createComponent({ placement });
+
+      expect(findGlListbox().props('placement')).toBe(placement);
+    });
+
+    it.each([true, false])("passes %s to the listbox's block prop", (block) => {
+      createComponent({ block });
+
+      expect(findGlListbox().props('block')).toBe(block);
     });
   });
 

@@ -12,14 +12,21 @@ describe('diff_discussion_header component', () => {
   let store;
   let wrapper;
 
+  const createComponent = ({ propsData = {} } = {}) => {
+    wrapper = shallowMount(diffDiscussionHeader, {
+      store,
+      propsData: {
+        discussion: discussionMock,
+        ...propsData,
+      },
+    });
+  };
+
   beforeEach(() => {
     window.mrTabs = {};
     store = createStore();
 
-    wrapper = shallowMount(diffDiscussionHeader, {
-      store,
-      propsData: { discussion: discussionMock },
-    });
+    createComponent({ propsData: { discussion: discussionMock } });
   });
 
   describe('Avatar', () => {
@@ -33,13 +40,9 @@ describe('diff_discussion_header component', () => {
     });
 
     it('renders avatar of the first note author', () => {
-      const props = findAvatar().props();
-
-      expect(props).toMatchObject({
-        src: firstNoteAuthor.avatar_url,
-        alt: firstNoteAuthor.name,
-        size: 32,
-      });
+      expect(findAvatar().props('src')).toBe(firstNoteAuthor.avatar_url);
+      expect(findAvatar().props('alt')).toBe(firstNoteAuthor.name);
+      expect(findAvatar().props('size')).toBe(32);
     });
   });
 
@@ -53,14 +56,16 @@ describe('diff_discussion_header component', () => {
         projectPath: 'something',
       };
 
-      wrapper.setProps({
-        discussion: {
-          ...discussionMock,
-          for_commit: true,
-          commit_id: commitId,
-          diff_discussion: true,
-          diff_file: {
-            ...mockDiffFile,
+      createComponent({
+        propsData: {
+          discussion: {
+            ...discussionMock,
+            for_commit: true,
+            commit_id: commitId,
+            diff_discussion: true,
+            diff_file: {
+              ...mockDiffFile,
+            },
           },
         },
       });
@@ -71,9 +76,15 @@ describe('diff_discussion_header component', () => {
 
     describe('for diff threads without a commit id', () => {
       it('should show started a thread on the diff text', async () => {
-        Object.assign(wrapper.vm.discussion, {
-          for_commit: false,
-          commit_id: null,
+        createComponent({
+          propsData: {
+            discussion: {
+              ...discussionMock,
+              diff_discussion: true,
+              for_commit: false,
+              commit_id: null,
+            },
+          },
         });
 
         await nextTick();
@@ -81,10 +92,16 @@ describe('diff_discussion_header component', () => {
       });
 
       it('should show thread on older version text', async () => {
-        Object.assign(wrapper.vm.discussion, {
-          for_commit: false,
-          commit_id: null,
-          active: false,
+        createComponent({
+          propsData: {
+            discussion: {
+              ...discussionMock,
+              diff_discussion: true,
+              for_commit: false,
+              commit_id: null,
+              active: false,
+            },
+          },
         });
 
         await nextTick();
@@ -102,7 +119,16 @@ describe('diff_discussion_header component', () => {
 
     describe('for diff thread with a commit id', () => {
       it('should display started thread on commit header', async () => {
-        wrapper.vm.discussion.for_commit = false;
+        createComponent({
+          propsData: {
+            discussion: {
+              ...discussionMock,
+              diff_discussion: true,
+              for_commit: false,
+              commit_id: commitId,
+            },
+          },
+        });
 
         await nextTick();
         expect(wrapper.text()).toContain(`started a thread on commit ${truncatedCommitId}`);
@@ -111,8 +137,17 @@ describe('diff_discussion_header component', () => {
       });
 
       it('should display outdated change on commit header', async () => {
-        wrapper.vm.discussion.for_commit = false;
-        wrapper.vm.discussion.active = false;
+        createComponent({
+          propsData: {
+            discussion: {
+              ...discussionMock,
+              diff_discussion: true,
+              for_commit: false,
+              commit_id: commitId,
+              active: false,
+            },
+          },
+        });
 
         await nextTick();
         expect(wrapper.text()).toContain(

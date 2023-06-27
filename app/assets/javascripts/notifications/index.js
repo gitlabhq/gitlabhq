@@ -10,7 +10,7 @@ const initNotificationEmailListboxInputs = () => {
   const els = [...document.querySelectorAll('.js-notification-email-listbox-input')];
 
   els.forEach((el, index) => {
-    const { label, name, emptyValueText, value = '' } = el.dataset;
+    const { label, name, emptyValueText, value = '', placement } = el.dataset;
 
     return new Vue({
       el,
@@ -22,6 +22,7 @@ const initNotificationEmailListboxInputs = () => {
         emptyValueText,
         value,
         disabled: parseBoolean(el.dataset.disabled),
+        placement,
       },
       render(h) {
         return h(NotificationEmailListboxInput);

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import ListboxInput from '~/vue_shared/components/listbox_input/listbox_input.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export const initListboxInputs = () => {
   const els = [...document.querySelectorAll('.js-listbox-input')];
@@ -30,6 +31,8 @@ export const initListboxInputs = () => {
             name,
             defaultToggleText,
             selected: this.selected,
+            block: parseBoolean(el.dataset.block),
+            fluidWidth: parseBoolean(el.dataset.fluidWidth),
             items,
           },
           attrs: {

@@ -69,17 +69,23 @@ module QA
             QA::Runtime::Logger.warn("Video deletion error: #{e}")
           end
 
+          def record?(example)
+            example.metadata[:file_path].include?("/browser_ui/")
+          end
+
           private
 
           def configure_rspec
             RSpec.configure do |config|
               config.prepend_before do |example|
-                QA::Service::DockerRun::Video.start_recording(example)
+                QA::Service::DockerRun::Video.start_recording(example) if QA::Service::DockerRun::Video.record?(example)
               end
 
               config.append_after do |example|
-                QA::Service::DockerRun::Video.stop_recording
-                QA::Service::DockerRun::Video.delete_video unless example.exception
+                if QA::Service::DockerRun::Video.record?(example)
+                  QA::Service::DockerRun::Video.stop_recording
+                  QA::Service::DockerRun::Video.delete_video unless example.exception
+                end
               end
             end
           end

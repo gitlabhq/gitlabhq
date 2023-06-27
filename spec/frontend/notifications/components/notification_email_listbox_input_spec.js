@@ -13,6 +13,7 @@ describe('NotificationEmailListboxInput', () => {
   const emptyValueText = 'emptyValueText';
   const value = 'value';
   const disabled = false;
+  const placement = 'right';
 
   // Finders
   const findListboxInput = () => wrapper.findComponent(ListboxInput);
@@ -26,6 +27,7 @@ describe('NotificationEmailListboxInput', () => {
         emptyValueText,
         value,
         disabled,
+        placement,
       },
       attachTo,
     });

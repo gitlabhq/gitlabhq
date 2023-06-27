@@ -1363,7 +1363,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/serializers/licenses_list_serializer_spec.rb'
     - 'ee/spec/serializers/linked_feature_flag_issue_entity_spec.rb'
     - 'ee/spec/serializers/member_user_entity_spec.rb'
-    - 'ee/spec/serializers/merge_request_poll_widget_entity_spec.rb'
     - 'ee/spec/serializers/merge_request_sidebar_basic_entity_spec.rb'
     - 'ee/spec/serializers/metrics_report_metric_entity_spec.rb'
     - 'ee/spec/serializers/metrics_reports_comparer_entity_spec.rb'
