@@ -2,6 +2,10 @@
   overflow-y: auto;
   overflow-x: hidden;
   max-width: calc(100% - 6px);
+  @include gl-border-b-1;
+  @include gl-border-b-solid;
+  @include gl-border-b-gray-100;
+  @include gl-rounded-lg;
 
   .name,
   small.aliases,
@@ -44,11 +48,13 @@
 
   // TODO: fallback to global style
   .atwho-view-ul {
-    padding: 8px 1px;
+    @include gl-p-2;
 
     li {
-      padding: 8px 16px;
+      @include gl-px-3;
+      @include gl-py-2;
       border: 0;
+      @include gl-rounded-base;
 
       &.cur {
         background-color: $gray-darker;

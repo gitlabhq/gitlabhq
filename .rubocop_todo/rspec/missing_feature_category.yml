@@ -5741,7 +5741,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/views/layouts/nav/sidebar/_profile.html.haml_spec.rb'
     - 'spec/views/layouts/profile.html.haml_spec.rb'
     - 'spec/views/layouts/signup_onboarding.html.haml_spec.rb'
-    - 'spec/views/layouts/simple_registration.html.haml_spec.rb'
     - 'spec/views/layouts/terms.html.haml_spec.rb'
     - 'spec/views/notify/approved_merge_request_email.html.haml_spec.rb'
     - 'spec/views/notify/autodevops_disabled_email.text.erb_spec.rb'

@@ -12,7 +12,6 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
-import { __, s__ } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
@@ -52,7 +51,15 @@ import {
   EVT_MR_PREPARED,
   FILE_DIFF_POSITION_TYPE,
 } from '../constants';
-import { DISCUSSION_SINGLE_DIFF_FAILED, LOAD_SINGLE_DIFF_FAILED } from '../i18n';
+import {
+  DISCUSSION_SINGLE_DIFF_FAILED,
+  LOAD_SINGLE_DIFF_FAILED,
+  BUILDING_YOUR_MR,
+  SOMETHING_WENT_WRONG,
+  SAVING_THE_COMMENT_FAILD,
+  ERROR_LOADING_FULL_DIFF,
+  ERROR_DISMISSING_SUGESTION_POPOVER,
+} from '../i18n';
 import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
@@ -292,9 +299,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
     .catch((error) => {
       if (error.response.status === HTTP_STATUS_NOT_FOUND) {
         const alert = createAlert({
-          message: __(
-            'Building your merge request… This page will update when the build is complete.',
-          ),
+          message: BUILDING_YOUR_MR,
           variant: VARIANT_WARNING,
         });
 
@@ -320,7 +325,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
     },
     errorCallback: () =>
       createAlert({
-        message: __('Something went wrong on our end. Please try again!'),
+        message: SOMETHING_WENT_WRONG,
       }),
   });
 
@@ -624,7 +629,7 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
     })
     .catch(() =>
       createAlert({
-        message: s__('MergeRequests|Saving the comment failed'),
+        message: SAVING_THE_COMMENT_FAILD,
       }),
     );
 };
@@ -759,7 +764,7 @@ export const cacheTreeListWidth = (_, size) => {
 export const receiveFullDiffError = ({ commit }, filePath) => {
   commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
   createAlert({
-    message: s__('MergeRequest|Error loading full diff. Please try again.'),
+    message: ERROR_LOADING_FULL_DIFF,
   });
 };
 
@@ -897,7 +902,7 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
     })
     .catch(() => {
       createAlert({
-        message: s__('MergeRequest|Error dismissing suggestion popover. Please try again.'),
+        message: ERROR_DISMISSING_SUGESTION_POPOVER,
       });
     });
 

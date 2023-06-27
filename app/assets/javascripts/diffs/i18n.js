@@ -58,3 +58,15 @@ export const CONFLICT_TEXT = {
 export const HIDE_COMMENTS = __('Hide comments');
 
 export const NEW_CODE_QUALITY_FINDINGS = __('New code quality findings');
+
+export const BUILDING_YOUR_MR = __(
+  'Building your merge request… This page will update when the build is complete.',
+);
+export const SOMETHING_WENT_WRONG = __('Something went wrong on our end. Please try again!');
+export const SAVING_THE_COMMENT_FAILD = s__('MergeRequests|Saving the comment failed');
+export const ERROR_LOADING_FULL_DIFF = s__(
+  'MergeRequest|Error loading full diff. Please try again.',
+);
+export const ERROR_DISMISSING_SUGESTION_POPOVER = s__(
+  'MergeRequest|Error dismissing suggestion popover. Please try again.',
+);

@@ -9864,7 +9864,6 @@
 - './spec/views/layouts/profile.html.haml_spec.rb'
 - './spec/views/layouts/_published_experiments.html.haml_spec.rb'
 - './spec/views/layouts/signup_onboarding.html.haml_spec.rb'
-- './spec/views/layouts/simple_registration.html.haml_spec.rb'
 - './spec/views/layouts/terms.html.haml_spec.rb'
 - './spec/views/notify/autodevops_disabled_email.text.erb_spec.rb'
 - './spec/views/notify/changed_milestone_email.html.haml_spec.rb'

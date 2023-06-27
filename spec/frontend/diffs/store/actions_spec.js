@@ -11,7 +11,7 @@ import {
   PARALLEL_DIFF_VIEW_TYPE,
   EVT_MR_PREPARED,
 } from '~/diffs/constants';
-import { LOAD_SINGLE_DIFF_FAILED } from '~/diffs/i18n';
+import { LOAD_SINGLE_DIFF_FAILED, BUILDING_YOUR_MR, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
@@ -421,9 +421,7 @@ describe('DiffsStoreActions', () => {
 
         expect(createAlert).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
-          message: expect.stringMatching(
-            'Building your merge request… This page will update when the build is complete.',
-          ),
+          message: BUILDING_YOUR_MR,
           variant: 'warning',
         });
       });
@@ -485,7 +483,7 @@ describe('DiffsStoreActions', () => {
       await testAction(diffActions.fetchCoverageFiles, {}, { endpointCoverage }, [], []);
       expect(createAlert).toHaveBeenCalledTimes(1);
       expect(createAlert).toHaveBeenCalledWith({
-        message: expect.stringMatching('Something went wrong'),
+        message: SOMETHING_WENT_WRONG,
       });
     });
   });

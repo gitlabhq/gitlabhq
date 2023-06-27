@@ -56,6 +56,17 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
   describe '#content_security_policy' do
     let_it_be(:user) { create(:user) }
 
+    let(:gitlab_config) do
+      Gitlab.config.gitlab.deep_merge(
+        {
+          'host' => 'gitlab.example.com',
+          'content_security_policy' => { 'enabled' => content_security_policy_enabled }
+        }
+      )
+    end
+
+    let(:content_security_policy_enabled) { true }
+
     controller(ApplicationController) do
       include KasCookie
 
@@ -65,7 +76,7 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
     end
 
     before do
-      stub_config_setting(host: 'gitlab.example.com')
+      stub_config_setting(gitlab_config)
       sign_in(user)
       allow(::Gitlab::Kas).to receive(:enabled?).and_return(true)
       allow(::Gitlab::Kas).to receive(:tunnel_url).and_return(kas_tunnel_url)
@@ -108,6 +119,14 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
         it 'adds KAS url to CSP connect-src directive' do
           expect(kas_csp_connect_src).to include(::Gitlab::Kas.tunnel_url)
         end
+
+        context 'when content_security_policy is disabled' do
+          let(:content_security_policy_enabled) { false }
+
+          it 'does not add KAS url to CSP connect-src directive' do
+            expect(kas_csp_connect_src).not_to include(::Gitlab::Kas.tunnel_url)
+          end
+        end
       end
 
       context 'when KAS tunnel url is configured without trailing slash' do
@@ -115,6 +134,14 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
 
         it 'adds KAS url to CSP connect-src directive with trailing slash' do
           expect(kas_csp_connect_src).to include("#{::Gitlab::Kas.tunnel_url}/")
+        end
+
+        context 'when content_security_policy is disabled' do
+          let(:content_security_policy_enabled) { false }
+
+          it 'does not add KAS url to CSP connect-src directive' do
+            expect(kas_csp_connect_src).not_to include("#{::Gitlab::Kas.tunnel_url}/")
+          end
         end
       end
     end

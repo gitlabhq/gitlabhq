@@ -2039,10 +2039,16 @@ job_with_id_tokens:
       aud:
         - https://gcp.com
         - https://aws.com
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
   script:
     - command_to_authenticate_with_gitlab $ID_TOKEN_1
     - command_to_authenticate_with_aws $ID_TOKEN_2
 ```
+
+**Related topics**:
+
+- [Keyless signing with Sigstore](signing_examples.md).
 
 ### `image`
 
