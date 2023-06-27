@@ -68,7 +68,8 @@ RSpec.describe 'search/_results', feature_category: :global_search do
 
   context 'rendering all types of search results' do
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
-    let_it_be(:issue) { create(:issue, project: project, title: 'testing') }
+    let_it_be(:label) { create(:label, project: project, title: 'test label') }
+    let_it_be(:issue) { create(:issue, project: project, title: 'testing', labels: [label]) }
     let_it_be(:merge_request) { create(:merge_request, title: 'testing', source_project: project, target_project: project) }
     let_it_be(:milestone) { create(:milestone, title: 'testing', project: project) }
     let_it_be(:note) { create(:discussion_note_on_issue, project: project, note: 'testing') }

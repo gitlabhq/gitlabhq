@@ -1,0 +1,3 @@
+mutation setError($error: String!) {
+  setError(error: $error) @client
+}

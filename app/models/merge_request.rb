@@ -421,7 +421,9 @@ class MergeRequest < ApplicationRecord
   scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: { merge_request_diff_commits: [:commit_author, :committer] }) }
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
 
-  scope :with_web_entity_associations, -> { preload(:author, target_project: [:project_feature, group: [:route, :parent], namespace: :route]) }
+  scope :with_web_entity_associations, -> do
+    preload(:author, :labels, target_project: [:project_feature, group: [:route, :parent], namespace: :route])
+  end
 
   scope :with_auto_merge_enabled, -> do
     with_state(:opened).where(auto_merge_enabled: true)

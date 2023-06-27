@@ -63,7 +63,7 @@ METHOD /endpoint
 Supported attributes:
 
 | Attribute                | Type     | Required | Description           |
-|:-------------------------|:---------|:---------|:----------------------|
+|--------------------------|----------|----------|-----------------------|
 | `attribute`              | datatype | Yes      | Detailed description. |
 | `attribute` **(<tier>)** | datatype | No       | Detailed description. |
 | `attribute`              | datatype | No       | Detailed description. |
@@ -73,7 +73,7 @@ If successful, returns [`<status_code>`](rest/index.md#status-codes) and the fol
 response attributes:
 
 | Attribute                | Type     | Description           |
-|:-------------------------|:---------|:----------------------|
+|--------------------------|----------|-----------------------|
 | `attribute`              | datatype | Detailed description. |
 | `attribute` **(<tier>)** | datatype | Detailed description. |
 
@@ -127,8 +127,8 @@ To deprecate an attribute:
 1. Add inline deprecation text to the description.
 
    ```markdown
-   | Attribute     | Type   | Required | Description                                  |
-   |:--------------|:-------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------------------|
+   | Attribute     | Type   | Required | Description |
+   |---------------|--------|----------|-------------|
    | `widget_name` | string | No       | [Deprecated](<link-to-issue>) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
    ```
 
@@ -144,7 +144,7 @@ Sort the table by required attributes first, then alphabetically.
 
 ```markdown
 | Attribute                    | Type          | Required | Description                                         |
-|:-----------------------------|:--------------|:---------|:----------------------------------------------------|
+|------------------------------|---------------|----------|-----------------------------------------------------|
 | `title`                      | string        | Yes      | Title of the issue.                                 |
 | `assignee_ids` **(PREMIUM)** | integer array | No       | IDs of the users to assign the issue to.            |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
@@ -153,7 +153,7 @@ Sort the table by required attributes first, then alphabetically.
 Rendered example:
 
 | Attribute                    | Type          | Required | Description                                         |
-|:-----------------------------|:--------------|:---------|:----------------------------------------------------|
+|------------------------------|---------------|----------|-----------------------------------------------------|
 | `title`                      | string        | Yes      | Title of the issue.                                 |
 | `assignee_ids` **(PREMIUM)** | integer array | No       | IDs of the users to assign the issue to.            |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
@@ -180,7 +180,7 @@ Sort the table alphabetically.
 
 ```markdown
 | Attribute                    | Type          | Description                               |
-|:-----------------------------|:--------------|:------------------------------------------|
+|------------------------------|---------------|-------------------------------------------|
 | `assignee_ids` **(PREMIUM)** | integer array | IDs of the users to assign the issue to.  |
 | `confidential`               | boolean       | Whether the issue is confidential or not. |
 | `title`                      | string        | Title of the issue.                       |
@@ -189,7 +189,7 @@ Sort the table alphabetically.
 Rendered example:
 
 | Attribute                    | Type          | Description                               |
-|:-----------------------------|:--------------|:------------------------------------------|
+|------------------------------|---------------|-------------------------------------------|
 | `assignee_ids` **(PREMIUM)** | integer array | IDs of the users to assign the issue to.  |
 | `confidential`               | boolean       | Whether the issue is confidential or not. |
 | `title`                      | string        | Title of the issue.                       |
@@ -211,7 +211,7 @@ For information about writing attribute descriptions, see the [GraphQL API descr
   commands apart into multiple lines.
 
 | Methods                                         | Description                                            |
-|:------------------------------------------------|:-------------------------------------------------------|
+|-------------------------------------------------|--------------------------------------------------------|
 | `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed. |
 | `--request POST`                                | Use this method when creating new objects.             |
 | `--request PUT`                                 | Use this method when updating existing objects.        |

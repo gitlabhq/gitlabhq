@@ -187,7 +187,10 @@ class Issue < ApplicationRecord
   scope :order_closed_at_desc, -> { reorder(arel_table[:closed_at].desc.nulls_last) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
-  scope :with_web_entity_associations, -> { preload(:author, :namespace, project: [:project_feature, :route, namespace: :route]) }
+  scope :with_web_entity_associations, -> do
+    preload(:author, :namespace, :labels, project: [:project_feature, :route, namespace: :route])
+  end
+
   scope :preload_awardable, -> { preload(:award_emoji) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeploymentsFinder do
+RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
   subject { described_class.new(params).execute }
 
   describe "validation" do
@@ -166,8 +166,8 @@ RSpec.describe DeploymentsFinder do
           'id'          | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
           'iid'         | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
           'iid'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
-          'ref'         | 'asc'  | [:deployment_2, :deployment_1, :deployment_3]
-          'ref'         | 'desc' | [:deployment_3, :deployment_1, :deployment_2]
+          'ref'         | 'asc'  | [:deployment_1, :deployment_2, :deployment_3] # ref acts like id because of remove_deployments_api_ref_sort feature flag
+          'ref'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1] # ref acts like id because of remove_deployments_api_ref_sort feature flag
           'updated_at'  | 'asc'  | [:deployment_2, :deployment_3, :deployment_1]
           'updated_at'  | 'desc' | [:deployment_1, :deployment_3, :deployment_2]
           'finished_at' | 'asc'  | described_class::InefficientQueryError
@@ -182,6 +182,39 @@ RSpec.describe DeploymentsFinder do
               expect { subject }.to raise_error(described_class::InefficientQueryError)
             else
               expect(subject).to eq(ordered_deployments.map { |name| public_send(name) })
+            end
+          end
+        end
+
+        context 'when remove_deployments_api_ref_sort is disabled' do
+          before do
+            stub_feature_flags(remove_deployments_api_ref_sort: false)
+          end
+
+          where(:order_by, :sort, :ordered_deployments) do
+            'created_at'  | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
+            'created_at'  | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
+            'id'          | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
+            'id'          | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
+            'iid'         | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
+            'iid'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
+            'ref'         | 'asc'  | [:deployment_2, :deployment_1, :deployment_3] # ref sorts when remove_deployments_api_ref_sort feature flag is disabled
+            'ref'         | 'desc' | [:deployment_3, :deployment_1, :deployment_2] # ref sorts when remove_deployments_api_ref_sort feature flag is disabled
+            'updated_at'  | 'asc'  | [:deployment_2, :deployment_3, :deployment_1]
+            'updated_at'  | 'desc' | [:deployment_1, :deployment_3, :deployment_2]
+            'finished_at' | 'asc'  | described_class::InefficientQueryError
+            'finished_at' | 'desc' | described_class::InefficientQueryError
+            'invalid'     | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]
+            'iid'         | 'err'  | [:deployment_1, :deployment_2, :deployment_3]
+          end
+
+          with_them do
+            it 'returns the deployments ordered' do
+              if ordered_deployments == described_class::InefficientQueryError
+                expect { subject }.to raise_error(described_class::InefficientQueryError)
+              else
+                expect(subject).to eq(ordered_deployments.map { |name| public_send(name) })
+              end
             end
           end
         end

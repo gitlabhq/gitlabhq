@@ -2,6 +2,7 @@ import produce from 'immer';
 import VueApollo from 'vue-apollo';
 import { defaultDataIdFromObject } from '@apollo/client/core';
 import { concatPagination } from '@apollo/client/utilities';
+import errorQuery from '~/boards/graphql/client/error.query.graphql';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
@@ -194,6 +195,13 @@ export const resolvers = {
         data: { activeBoardItem: boardItem },
       });
       return boardItem;
+    },
+    setError(_, { error }, { cache }) {
+      cache.writeQuery({
+        query: errorQuery,
+        data: { boardsAppError: error },
+      });
+      return error;
     },
     clientToggleListCollapsed(_, { list = {}, collapsed = false }) {
       return {

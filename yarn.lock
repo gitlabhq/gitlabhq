@@ -1705,15 +1705,15 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.5.tgz#db5a11bf66bdab39569719555b0f76e138d7bd64"
   integrity sha512-9X2obfABZuDVLCgPK9aX0a/x4jaOEweTTWE2+9sr0Qqqevj2Uv5XorvusThmc9XGYpS9yI+fhh8RTafBtGposw==
 
-"@rails/actioncable@7.0.5":
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.0.5.tgz#bbc11203e0d3d5084002abfcf01d621fdf5f3a9d"
-  integrity sha512-SOBA2heB9lTw0VYIx8M/ed7inSf4I9sR8OIlJprhgkfQ3WJtrxPJ6DDATR1Z3RYaIR7HlT2Olj08v1lfGIGuHA==
+"@rails/actioncable@7.0.5-1":
+  version "7.0.5-1"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.0.5-1.tgz#900ef463774b94d81d1b5fca5cf4d0fa40aec6c2"
+  integrity sha512-Dj/VTnMTUfLSqXI1+t7nmDs1wODu08mF8Ct6H4WjRxDjmgCp/OPI5x8WWdm1IEdlQApfcuMX2/UVpttKdJUFpA==
 
-"@rails/ujs@7.0.5":
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/@rails/ujs/-/ujs-7.0.5.tgz#d35a71fe6ecd4ab88bbe4bc6c2f287c992c2de4c"
-  integrity sha512-/wQ6v4DGxhxflPWoLwGkOQoKbtIXx/LsVNKd8shRM+/HXxlVBEb+F5znN99TlxX8e/R3dN6anTPAqA+mfA5YtQ==
+"@rails/ujs@7.0.5-1":
+  version "7.0.5-1"
+  resolved "https://registry.yarnpkg.com/@rails/ujs/-/ujs-7.0.5-1.tgz#d73baa07f53da9875b5ac32b1a38bab32bdde970"
+  integrity sha512-GsD/zYWf2jCfyoNE5rf/ftgHi6RxBugHB3gycWYsMkXXsKX05tS+iDw0/45syvyFr5TwZ0YmfEXd5H+oRNG7Gg==
 
 "@remirror/core-constants@^2.0.0":
   version "2.0.0"

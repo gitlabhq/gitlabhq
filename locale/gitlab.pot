@@ -7812,6 +7812,9 @@ msgstr ""
 msgid "Boards|An error occurred while fetching group projects. Please try again."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching groups. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching issues. Please reload the page."
 msgstr ""
 
@@ -33295,9 +33298,6 @@ msgstr ""
 msgid "Pipeline URL"
 msgstr ""
 
-msgid "Pipeline artifacts"
-msgstr ""
-
 msgid "Pipeline creation rate limits"
 msgstr ""
 
@@ -49298,9 +49298,6 @@ msgid "UsageQuota|Pending Members"
 msgstr ""
 
 msgid "UsageQuota|Pipeline artifacts and job artifacts, created with CI/CD."
-msgstr ""
-
-msgid "UsageQuota|Pipeline artifacts created by CI/CD."
 msgstr ""
 
 msgid "UsageQuota|Pipelines"

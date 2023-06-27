@@ -222,7 +222,7 @@ You cannot use [auto-merge](../../user/project/merge_requests/merge_when_pipelin
 (formerly **Merge when pipeline succeeds**) to skip the merge train, when merge trains are enabled.
 See [issue 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267) for more information.
 
-### Cannot retry merge train pipeline cannot
+### Cannot retry merge train pipeline
 
 When a merge train pipeline fails, the merge request is dropped from the train and the pipeline can't be retried.
 Merge train pipelines run on the merged result of the changes in the merge request and

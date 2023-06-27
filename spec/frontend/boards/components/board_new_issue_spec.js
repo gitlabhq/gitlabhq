@@ -14,10 +14,11 @@ const addListNewIssuesSpy = jest.fn().mockResolvedValue();
 const mockActions = { addListNewIssue: addListNewIssuesSpy };
 
 const createComponent = ({
-  state = { selectedProject: mockGroupProjects[0] },
+  state = {},
   actions = mockActions,
   getters = { getBoardItemsByList: () => () => [] },
   isGroupBoard = true,
+  data = { selectedProject: mockGroupProjects[0] },
 } = {}) =>
   shallowMount(BoardNewIssue, {
     store: new Vuex.Store({
@@ -28,6 +29,7 @@ const createComponent = ({
     propsData: {
       list: mockList,
     },
+    data: () => data,
     provide: {
       groupId: 1,
       fullPath: mockGroupProjects[0].fullPath,

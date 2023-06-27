@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
 import BoardNewIssueMixin from 'ee_else_ce/boards/mixins/board_new_issue';
 
@@ -16,15 +16,19 @@ export default {
     ProjectSelect,
   },
   mixins: [BoardNewIssueMixin],
-  inject: ['groupId', 'fullPath', 'isGroupBoard'],
+  inject: ['fullPath', 'isGroupBoard'],
   props: {
     list: {
       type: Object,
       required: true,
     },
   },
+  data() {
+    return {
+      selectedProject: {},
+    };
+  },
   computed: {
-    ...mapState(['selectedProject']),
     ...mapGetters(['getBoardItemsByList']),
     formEventPrefix() {
       return toggleFormEventPrefix.issue;
@@ -74,6 +78,6 @@ export default {
     @form-submit="submit"
     @form-cancel="cancel"
   >
-    <project-select v-if="isGroupBoard" :group-id="groupId" :list="list" />
+    <project-select v-if="isGroupBoard" v-model="selectedProject" :list="list" />
   </board-new-item>
 </template>

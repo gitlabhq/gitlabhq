@@ -109,7 +109,7 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389905) in GitLab 15.11 [with a flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`. Disabled by default.
-> - [Enabled by default on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.1.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.2. Feature flag `invalid_scan_result_policy_prevents_merge` removed.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,

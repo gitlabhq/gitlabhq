@@ -12,7 +12,6 @@ query getProjectStorageStatistics($fullPath: ID!) {
     statistics {
       containerRegistrySize
       buildArtifactsSize
-      pipelineArtifactsSize
       lfsObjectsSize
       packagesSize
       repositorySize

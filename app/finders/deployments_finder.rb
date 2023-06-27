@@ -128,6 +128,7 @@ class DeploymentsFinder
 
   def build_sort_params
     order_by = ALLOWED_SORT_VALUES.include?(params[:order_by]) ? params[:order_by] : DEFAULT_SORT_VALUE
+    order_by = DEFAULT_SORT_VALUE if order_by == 'ref' && Feature.enabled?(:remove_deployments_api_ref_sort)
     order_direction = ALLOWED_SORT_DIRECTIONS.include?(params[:sort]) ? params[:sort] : DEFAULT_SORT_DIRECTION
 
     { order_by => order_direction }

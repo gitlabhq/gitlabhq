@@ -237,15 +237,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION trigger_023e82d8e257() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."id_convert_to_bigint" := NEW."id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_080e73845bfd() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13669,7 +13660,6 @@ CREATE SEQUENCE ci_pipeline_schedules_id_seq
 ALTER SEQUENCE ci_pipeline_schedules_id_seq OWNED BY ci_pipeline_schedules.id;
 
 CREATE TABLE ci_pipeline_variables (
-    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     key character varying NOT NULL,
     value text,
     encrypted_value text,
@@ -35132,8 +35122,6 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
-
-CREATE TRIGGER trigger_023e82d8e257 BEFORE INSERT OR UPDATE ON ci_pipeline_variables FOR EACH ROW EXECUTE FUNCTION trigger_023e82d8e257();
 
 CREATE TRIGGER trigger_080e73845bfd BEFORE INSERT OR UPDATE ON notes FOR EACH ROW EXECUTE FUNCTION trigger_080e73845bfd();
 

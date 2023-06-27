@@ -38,11 +38,6 @@ export const PROJECT_STORAGE_TYPES = [
     description: s__('UsageQuota|Job artifacts created by CI/CD.'),
   },
   {
-    id: 'pipelineArtifacts',
-    name: __('Pipeline artifacts'),
-    description: s__('UsageQuota|Pipeline artifacts created by CI/CD.'),
-  },
-  {
     id: 'lfsObjects',
     name: __('LFS'),
     description: s__('UsageQuota|Audio samples, videos, datasets, and graphics.'),
@@ -79,9 +74,6 @@ export const projectHelpPaths = {
   }),
   buildArtifacts: helpPagePath('ci/pipelines/job_artifacts', {
     anchor: 'when-job-artifacts-are-deleted',
-  }),
-  pipelineArtifacts: helpPagePath('/ci/pipelines/pipeline_artifacts', {
-    anchor: 'when-pipeline-artifacts-are-deleted',
   }),
   packages: helpPagePath('user/packages/package_registry/index.md', {
     anchor: 'reduce-storage-usage',

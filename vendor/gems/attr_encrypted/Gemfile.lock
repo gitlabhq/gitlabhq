@@ -7,25 +7,25 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    actionpack (7.0.4.1)
-      actionview (= 7.0.4.1)
-      activesupport (= 7.0.4.1)
-      rack (~> 2.0, >= 2.2.0)
+    actionpack (7.0.5.1)
+      actionview (= 7.0.5.1)
+      activesupport (= 7.0.5.1)
+      rack (~> 2.0, >= 2.2.4)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actionview (7.0.4.1)
-      activesupport (= 7.0.4.1)
+    actionview (7.0.5.1)
+      activesupport (= 7.0.5.1)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activemodel (7.0.4.1)
-      activesupport (= 7.0.4.1)
-    activerecord (7.0.4.1)
-      activemodel (= 7.0.4.1)
-      activesupport (= 7.0.4.1)
-    activesupport (7.0.4.1)
+    activemodel (7.0.5.1)
+      activesupport (= 7.0.5.1)
+    activerecord (7.0.5.1)
+      activemodel (= 7.0.5.1)
+      activesupport (= 7.0.5.1)
+    activesupport (7.0.5.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -136,8 +136,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack (~> 7.0.4)
-  activerecord (~> 7.0.4)
+  actionpack (~> 7.0.5.1)
+  activerecord (~> 7.0.5.1)
   attr_encrypted!
   codeclimate-test-reporter (<= 0.6.0)
   datamapper

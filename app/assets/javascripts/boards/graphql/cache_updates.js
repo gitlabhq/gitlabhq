@@ -1,6 +1,10 @@
+import * as Sentry from '@sentry/browser';
 import produce from 'immer';
+import { defaultClient } from '~/graphql_shared/issuable_client';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { listsDeferredQuery } from 'ee_else_ce/boards/constants';
+
+import setErrorMutation from './client/set_error.mutation.graphql';
 
 export function removeItemFromList({
   query,
@@ -130,4 +134,17 @@ export function updateEpicsCount({
       },
     }),
   );
+}
+
+export function setError({ message, error, captureError = true }) {
+  defaultClient.mutate({
+    mutation: setErrorMutation,
+    variables: {
+      error: message,
+    },
+  });
+
+  if (captureError) {
+    Sentry.captureException(error);
+  }
 }

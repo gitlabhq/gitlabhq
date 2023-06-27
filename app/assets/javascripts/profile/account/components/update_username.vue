@@ -115,7 +115,7 @@ Please update your Git repository remotes as soon as possible.`),
           v-model="newUsername"
           data-testid="new-username-input"
           :disabled="isRequestPending"
-          class="form-control"
+          class="form-control gl-md-form-input-lg"
           required="required"
         />
       </div>

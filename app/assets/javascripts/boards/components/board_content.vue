@@ -107,7 +107,7 @@ export default {
       return this.canDragColumns ? options : {};
     },
     errorToDisplay() {
-      return this.isApolloBoard ? this.apolloError : this.error;
+      return this.apolloError || this.error || null;
     },
   },
   created() {

@@ -1040,4 +1040,43 @@ export const destroyBoardListMutationResponse = {
   },
 };
 
+export const mockProjects = [
+  {
+    id: 'gid://gitlab/Project/1',
+    name: 'Gitlab Shell',
+    nameWithNamespace: 'Gitlab Org / Gitlab Shell',
+    fullPath: 'gitlab-org/gitlab-shell',
+    archived: false,
+    __typename: 'Project',
+  },
+  {
+    id: 'gid://gitlab/Project/2',
+    name: 'Gitlab Test',
+    nameWithNamespace: 'Gitlab Org / Gitlab Test',
+    fullPath: 'gitlab-org/gitlab-test',
+    archived: true,
+    __typename: 'Project',
+  },
+];
+
+export const mockGroupProjectsResponse = (projects = mockProjects) => ({
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      projects: {
+        nodes: projects,
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'abc',
+          endCursor: 'bcd',
+          __typename: 'PageInfo',
+        },
+        __typename: 'ProjectConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+});
+
 export const DEFAULT_COLOR = '#1068bf';
