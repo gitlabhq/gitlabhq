@@ -179,6 +179,17 @@
   min-width: auto;
 }
 
+.content-editor-suggestions-dropdown {
+  .gl-new-dropdown-panel {
+    width: max-content;
+  }
+
+  li.focused div.gl-new-dropdown-item-content {
+    @include gl-focus($inset: true);
+    @include gl-bg-gray-50;
+  }
+}
+
 .bubble-menu-form {
   min-width: 320px;
 }

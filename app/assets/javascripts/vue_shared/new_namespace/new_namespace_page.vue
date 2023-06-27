@@ -1,6 +1,5 @@
 <script>
 import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
@@ -17,9 +16,6 @@ export default {
     WelcomePage,
     LegacyContainer,
     SuperSidebarToggle,
-  },
-  directives: {
-    SafeHtml,
   },
   props: {
     title: {
@@ -137,7 +133,9 @@ export default {
 
     <template v-if="activePanel">
       <div class="gl-display-flex gl-align-items-center gl-py-5">
-        <div v-safe-html="activePanel.illustration" class="gl-text-white col-auto"></div>
+        <div class="col-auto">
+          <img aria-hidden :src="activePanel.imageSrc" />
+        </div>
         <div class="col">
           <h4>{{ activePanel.title }}</h4>
 

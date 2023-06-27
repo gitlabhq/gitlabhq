@@ -40,6 +40,7 @@ AllCops:
   TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
   TargetRailsVersion: 6.0
   Exclude:
+    - 'gems/**/*'
     - 'vendor/**/*'
     - 'node_modules/**/*'
     - 'db/fixtures/**/*'

@@ -23,8 +23,8 @@ module RuboCop
       # with offenses.
       #
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/415330#caveats
-      # on why the entry must end with `.html.haml.rb`.
-      RETAIN_EXCLUSIONS = %r{\.html\.haml\.rb$}
+      # on why the entry must end with `.haml.rb`.
+      RETAIN_EXCLUSIONS = %r{\.haml\.rb$}
 
       class << self
         attr_accessor :base_directory

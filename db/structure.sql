@@ -32410,6 +32410,8 @@ CREATE INDEX index_project_topics_on_topic_id ON project_topics USING btree (top
 
 CREATE UNIQUE INDEX index_project_user_callouts_feature ON user_project_callouts USING btree (user_id, feature_name, project_id);
 
+CREATE INDEX index_project_vulnerability_reads_common_finder_query_desc ON vulnerability_reads USING btree (project_id, state, report_type, severity DESC, vulnerability_id DESC);
+
 CREATE UNIQUE INDEX index_project_wiki_repositories_on_project_id ON project_wiki_repositories USING btree (project_id);
 
 CREATE INDEX index_projects_aimed_for_deletion ON projects USING btree (marked_for_deletion_at) WHERE ((marked_for_deletion_at IS NOT NULL) AND (pending_delete = false));

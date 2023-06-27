@@ -99,6 +99,16 @@ msgid_plural "%d Approvals"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d Issue"
+msgid_plural "%d Issues"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d Merge Request"
+msgid_plural "%d Merge Requests"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d Module"
 msgid_plural "%d Modules"
 msgstr[0] ""
@@ -351,16 +361,6 @@ msgstr[1] ""
 
 msgid "%d more comment"
 msgid_plural "%d more comments"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d opened Issue"
-msgid_plural "%d opened Issues"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d opened Merge Request"
-msgid_plural "%d opened Merge Requests"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3867,9 +3867,6 @@ msgstr ""
 msgid "AdminUsers|Is using seat"
 msgstr ""
 
-msgid "AdminUsers|Issues and merge requests authored by this user are hidden from other users."
-msgstr ""
-
 msgid "AdminUsers|It's you!"
 msgstr ""
 
@@ -3913,6 +3910,9 @@ msgid "AdminUsers|Personal projects, group and user history will be left intact"
 msgstr ""
 
 msgid "AdminUsers|Private profile"
+msgstr ""
+
+msgid "AdminUsers|Projects, issues, merge requests, and comments of this user are hidden from other users."
 msgstr ""
 
 msgid "AdminUsers|Reactivating a user will:"
@@ -21478,9 +21478,6 @@ msgstr ""
 msgid "Group information"
 msgstr ""
 
-msgid "Group is required when cluster_type is :group"
-msgstr ""
-
 msgid "Group jobs by"
 msgstr ""
 
@@ -35653,9 +35650,6 @@ msgstr ""
 msgid "Project information"
 msgstr ""
 
-msgid "Project is required when cluster_type is :project"
-msgstr ""
-
 msgid "Project members"
 msgstr ""
 
@@ -42000,6 +41994,9 @@ msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkS
 msgstr ""
 
 msgid "SecurityReports|There was an error adding the comment."
+msgstr ""
+
+msgid "SecurityReports|There was an error creating a Jira issue for the finding. Please try again."
 msgstr ""
 
 msgid "SecurityReports|There was an error creating the issue."
@@ -48937,9 +48934,6 @@ msgstr ""
 msgid "Unrecognized approval status."
 msgstr ""
 
-msgid "Unrecognized cluster type"
-msgstr ""
-
 msgid "Unresolve"
 msgstr ""
 
@@ -50193,7 +50187,7 @@ msgstr ""
 msgid "ValueStreamAnalytics|High vulnerabilities over time."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Key metrics"
+msgid "ValueStreamAnalytics|Lifecycle metrics"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period."
@@ -50506,9 +50500,6 @@ msgstr ""
 msgid "View page @ "
 msgstr ""
 
-msgid "View performance dashboard."
-msgstr ""
-
 msgid "View project in admin area"
 msgstr ""
 
@@ -50536,9 +50527,6 @@ msgid "View the documentation"
 msgstr ""
 
 msgid "View the latest successful deployment to this environment"
-msgstr ""
-
-msgid "View the performance dashboard at"
 msgstr ""
 
 msgid "View usage details"

@@ -119,6 +119,9 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+    - if: '$CI_PROJECT_PATH == "gitlab/gitaly" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $GITALY_TEST'
+      variables:
+        PIPELINE_NAME: 'Gitaly Rails Test Pipeline'
 
 variables:
   PG_VERSION: "14"

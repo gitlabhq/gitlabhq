@@ -23,6 +23,12 @@ describe('Experimental new project creation app', () => {
     expect(wrapper.find(guidelineSelector).text()).toBe(DEMO_GUIDELINES);
   });
 
+  it('creates correct panels', () => {
+    createComponent();
+
+    expect(findNewNamespacePage().props('panels')).toMatchSnapshot();
+  });
+
   it.each`
     isCiCdAvailable | outcome
     ${false}        | ${'do not show CI/CD panel'}

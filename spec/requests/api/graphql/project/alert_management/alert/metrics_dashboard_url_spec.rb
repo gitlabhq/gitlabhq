@@ -40,12 +40,6 @@ RSpec.describe 'getting Alert Management Alert Assignees', feature_category: :in
       create(:alert_management_alert, :prometheus, project: project, payload: payload)
     end
 
-    it 'includes the correct metrics dashboard url' do
-      post_graphql(graphql_query, current_user: current_user)
-
-      expect(first_alert).to include('metricsDashboardUrl' => dashboard_url_for_alert)
-    end
-
     context 'when metrics dashboard feature is unavailable' do
       before do
         stub_feature_flags(remove_monitor_metrics: true)

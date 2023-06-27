@@ -29,10 +29,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Use this scope for all new project routes.
       scope '-' do
         get 'archive/*id', format: true, constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
-        get 'metrics(/:dashboard_path)', constraints: { dashboard_path: /.+\.yml/ },
-          to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
-        get 'metrics(/:dashboard_path)/panel/new', constraints: { dashboard_path: /.+\.yml/ },
-          to: 'metrics_dashboard#show', as: :new_metrics_dashboard, format: false
 
         namespace :metrics, module: :metrics do
           namespace :dashboards do
@@ -330,9 +326,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :stop
             post :cancel_auto_stop
             get :terminal
-            get :metrics
-            get :additional_metrics
-            get :metrics_dashboard
 
             # This route is also defined in gitlab-workhorse. Make sure to update accordingly.
             get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', format: false
@@ -343,7 +336,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
 
           collection do
-            get :metrics, action: :metrics_redirect
             get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
             get :search
           end

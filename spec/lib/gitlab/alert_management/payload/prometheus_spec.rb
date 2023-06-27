@@ -185,8 +185,6 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
 
     subject { parsed_payload.metrics_dashboard_url }
 
-    it { is_expected.to eq(dashboard_url_for_alert) }
-
     context 'without environment' do
       let(:raw_payload) { payload.except('labels') }
 

@@ -63,7 +63,7 @@ To start, we will find the project we want to work on.
 
    ![Project-specific options](img/project_selected_v16_0.png)
 
-## Customize the sidebar
+## Pin frequently used items
 
 You can pin menu items if you tend to use them frequently.
 
@@ -75,6 +75,9 @@ You can pin menu items if you tend to use them frequently.
 The item is displayed in the **Pinned** section:
 
 ![pinned item](img/pinned_v16_0.png)
+
+NOTE:
+The items you pin while you're viewing a project are different than the items you pin while viewing a group.
 
 ## Use a more focused view
 

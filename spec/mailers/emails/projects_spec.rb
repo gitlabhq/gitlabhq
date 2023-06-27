@@ -104,7 +104,6 @@ RSpec.describe Emails::Projects do
       let_it_be(:environment) { create(:environment, project: project) }
 
       let(:payload) { { 'gitlab_environment_name' => environment.name } }
-      let(:metrics_url) { metrics_project_environment_url(project, environment) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -131,7 +130,6 @@ RSpec.describe Emails::Projects do
 
       let(:alert) { create(:alert_management_alert, :prometheus, :from_payload, payload: payload, project: project) }
       let(:title) { "#{prometheus_alert.title} #{prometheus_alert.computed_operator} #{prometheus_alert.threshold}" }
-      let(:metrics_url) { metrics_project_environment_url(project, environment) }
 
       before do
         payload['labels'] = {
@@ -157,7 +155,6 @@ RSpec.describe Emails::Projects do
         is_expected.to have_body_text(environment.name)
         is_expected.to have_body_text('Metric:')
         is_expected.to have_body_text(prometheus_alert.full_query)
-        is_expected.to have_body_text(metrics_url)
         is_expected.not_to have_body_text('Description:')
       end
     end

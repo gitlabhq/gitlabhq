@@ -255,6 +255,10 @@ class ProjectPolicy < BasePolicy
 
   condition(:namespace_catalog_available) { namespace_catalog_available? }
 
+  condition(:created_and_owned_by_banned_user, scope: :subject) do
+    Feature.enabled?(:hide_projects_of_banned_users) && @subject.created_and_owned_by_banned_user?
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -899,6 +903,10 @@ class ProjectPolicy < BasePolicy
 
   rule { model_experiments_enabled }.policy do
     enable :read_model_experiments
+  end
+
+  rule { ~admin & created_and_owned_by_banned_user }.policy do
+    prevent :read_project
   end
 
   private

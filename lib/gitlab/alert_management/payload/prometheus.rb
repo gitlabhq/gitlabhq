@@ -78,18 +78,6 @@ module Gitlab
         rescue URI::InvalidURIError, KeyError
         end
 
-        def metrics_dashboard_url
-          return unless environment && full_query && title
-
-          metrics_dashboard_project_environment_url(
-            project,
-            environment,
-            embed_json: dashboard_json,
-            embedded: true,
-            **alert_embed_window_params
-          )
-        end
-
         def has_required_attributes?
           project && title && starts_at_raw
         end

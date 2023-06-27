@@ -44,20 +44,8 @@ module AlertManagement
       project.incident_management_setting&.create_issue?
     end
 
-    def show_performance_dashboard_link?
-      prometheus_alert.present?
-    end
-
     def incident_issues_link
       project_incidents_url(project)
-    end
-
-    def performance_dashboard_link
-      if environment
-        metrics_project_environment_url(project, environment)
-      else
-        metrics_project_environments_url(project)
-      end
     end
 
     def email_title

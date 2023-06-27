@@ -1,11 +1,7 @@
 <script>
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 
 export default {
-  directives: {
-    SafeHtml,
-  },
   mixins: [Tracking.mixin()],
   props: {
     title: {
@@ -38,9 +34,10 @@ export default {
           @click="track('click_tab', { label: panel.name })"
         >
           <div
-            v-safe-html="panel.illustration"
-            class="new-namespace-panel-illustration gl-text-white gl-display-flex gl-flex-shrink-0 gl-justify-content-center"
-          ></div>
+            class="new-namespace-panel-illustration gl-display-flex gl-flex-shrink-0 gl-justify-content-center"
+          >
+            <img aria-hidden :src="panel.imageSrc" />
+          </div>
           <div class="gl-pl-4">
             <h3 class="gl-font-size-h2 gl-reset-color">
               {{ panel.title }}

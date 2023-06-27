@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlAvatarLabeled, GlLoadingIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SuggestionsDropdown from '~/content_editor/components/suggestions_dropdown.vue';
@@ -113,7 +113,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       ${'emoji'}     | ${'emoji'}         | ${':'}               | ${exampleEmoji}         | ${`😃`}                       | ${insertedEmojiProps}
     `(
       'runs a command to insert the selected $referenceType',
-      ({ char, nodeType, referenceType, reference, insertedText, insertedProps }) => {
+      async ({ char, nodeType, referenceType, reference, insertedText, insertedProps }) => {
         const commandSpy = jest.fn();
 
         buildWrapper({
@@ -129,7 +129,10 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
           },
         });
 
-        wrapper.findComponent(GlDropdownItem).vm.$emit('click');
+        await wrapper
+          .findByTestId('content-editor-suggestions-dropdown')
+          .find('li .gl-new-dropdown-item-content')
+          .trigger('click');
 
         expect(commandSpy).toHaveBeenCalledWith(
           expect.objectContaining({

@@ -106,6 +106,8 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
             Exclude:
               - 'd.rb'
               - 'app/views/project.html.haml.rb'
+              - 'app/views/project.haml.rb'
+              - 'app/views/project.text.haml.rb'
               - 'app/views/unrelated.html.haml.rb.ext'
               - 'app/views/unrelated.html.haml.ext'
               - 'app/views/unrelated.html.haml'
@@ -122,7 +124,9 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
           B/TooManyOffenses:
             Exclude:
               - 'a.rb'
+              - 'app/views/project.haml.rb'
               - 'app/views/project.html.haml.rb'
+              - 'app/views/project.text.haml.rb'
               - 'c.rb'
         YAML
       end

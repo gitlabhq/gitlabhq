@@ -26,7 +26,7 @@ module EnvironmentsHelper
 
     metrics_data = {}
     metrics_data.merge!(project_metrics_data(project)) if project
-    metrics_data.merge!(environment_metrics_data(environment, project)) if environment
+    metrics_data.merge!(environment_metrics_data(environment)) if environment
     metrics_data.merge!(project_and_environment_metrics_data(project, environment)) if project && environment
     metrics_data.merge!(static_metrics_data)
 
@@ -66,34 +66,20 @@ module EnvironmentsHelper
     }
   end
 
-  def environment_metrics_data(environment, project = nil)
+  def environment_metrics_data(environment)
     return {} unless environment
 
     {
-      'metrics_dashboard_base_path' => metrics_dashboard_base_path(environment, project),
       'current_environment_name' => environment.name,
       'has_metrics' => environment.has_metrics?.to_s,
       'environment_state' => environment.state.to_s
     }
   end
 
-  def metrics_dashboard_base_path(environment, project)
-    # This is needed to support our transition from environment scoped metric paths to project scoped.
-    if project
-      path = project_metrics_dashboard_path(project)
-
-      return path if request.path.include?(path)
-    end
-
-    project_metrics_dashboard_path(project, environment: environment)
-  end
-
   def project_and_environment_metrics_data(project, environment)
     return {} unless project && environment
 
     {
-      'metrics_endpoint' => additional_metrics_project_environment_path(project, environment, format: :json),
-      'dashboard_endpoint' => metrics_dashboard_project_environment_path(project, environment, format: :json),
       'deployments_endpoint' => project_environment_deployments_path(project, environment, format: :json),
       'operations_settings_path' => project_settings_operations_path(project),
       'can_access_operations_settings' => can?(current_user, :admin_operations, project).to_s,

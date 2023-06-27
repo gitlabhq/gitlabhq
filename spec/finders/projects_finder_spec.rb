@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectsFinder do
+RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
   include AdminModeHelper
 
   describe '#execute' do
@@ -23,6 +23,12 @@ RSpec.describe ProjectsFinder do
 
     let_it_be(:shared_project) do
       create(:project, :private, name: 'D', path: 'D')
+    end
+
+    let_it_be(:banned_user_project) do
+      create(:project, :public, name: 'Project created by a banned user', creator: create(:user, :banned)).tap do |p|
+        create(:project_authorization, :owner, user: p.creator, project: p)
+      end
     end
 
     let(:params) { {} }
@@ -488,16 +494,32 @@ RSpec.describe ProjectsFinder do
       describe 'with admin user' do
         let(:user) { create(:admin) }
 
-        context 'admin mode enabled' do
+        context 'with admin mode enabled' do
           before do
             enable_admin_mode!(current_user)
           end
 
-          it { is_expected.to match_array([public_project, internal_project, private_project, shared_project]) }
+          it do
+            is_expected.to match_array([
+              public_project,
+              internal_project,
+              private_project,
+              shared_project,
+              banned_user_project
+            ])
+          end
         end
 
-        context 'admin mode disabled' do
+        context 'with admin mode disabled' do
           it { is_expected.to match_array([public_project, internal_project]) }
+
+          context 'when hide_projects_of_banned_users FF is disabled' do
+            before do
+              stub_feature_flags(hide_projects_of_banned_users: false)
+            end
+
+            it { is_expected.to match_array([public_project, internal_project, banned_user_project]) }
+          end
         end
       end
     end

@@ -572,7 +572,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
 
       expect(find(suggestions_dropdown)).to have_text('My Cool Merge Request')
 
-      send_keys :enter
+      send_keys [:arrow_down, :enter]
 
       expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('!1')
@@ -583,7 +583,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
 
       expect(find(suggestions_dropdown)).to have_text('My Cool Linked Issue')
 
-      send_keys :enter
+      send_keys [:arrow_down, :enter]
 
       expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('#1')
@@ -594,7 +594,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
 
       expect(find(suggestions_dropdown)).to have_text('My Cool Milestone')
 
-      send_keys :enter
+      send_keys [:arrow_down, :enter]
 
       expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('%My Cool Milestone')
@@ -606,7 +606,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
       expect(find(suggestions_dropdown)).to have_text('🙂 slight_smile')
       expect(find(suggestions_dropdown)).to have_text('😸 smile_cat')
 
-      send_keys :enter
+      send_keys [:arrow_down, :enter]
 
       expect(page).not_to have_css(suggestions_dropdown)
 
@@ -636,7 +636,7 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
     end
 
     def dropdown_scroll_top
-      evaluate_script("document.querySelector('#{suggestions_dropdown} .gl-dropdown-inner').scrollTop")
+      evaluate_script("document.querySelector('#{suggestions_dropdown}').scrollTop")
     end
   end
 end

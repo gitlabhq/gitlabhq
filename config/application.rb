@@ -217,6 +217,9 @@ module Gitlab
       sharedSecret
     )
 
+    # This config option can be removed after Rails 7.1 by https://gitlab.com/gitlab-org/gitlab/-/issues/416270
+    config.active_support.use_rfc4122_namespaced_uuids = true
+
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
 

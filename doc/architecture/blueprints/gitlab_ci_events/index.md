@@ -2,6 +2,7 @@
 status: proposed
 creation-date: "2023-03-15"
 authors: [ "@furkanayhan" ]
+owners: [ "@furkanayhan" ]
 coach: "@grzesiek"
 approvers: [ "@jreporter", "@cheryl.li" ]
 owning-stage: "~devops::verify"

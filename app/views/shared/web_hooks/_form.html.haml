@@ -3,7 +3,7 @@
 .js-vue-webhook-form{ data: webhook_form_data(hook) }
 .form-group
   = form.label :token, s_('Webhooks|Secret token'), class: 'label-bold'
-  = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input'
+  = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input gl-max-w-48'
   %p.form-text.text-muted
     - code_start = '<code>'.html_safe
     - code_end = '</code>'.html_safe

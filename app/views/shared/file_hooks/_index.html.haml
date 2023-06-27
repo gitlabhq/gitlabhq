@@ -1,15 +1,13 @@
 - file_hooks = Gitlab::FileHook.files
 
-.row.gl-mt-3
-  .col-lg-4
-    %h4.gl-mt-0
-      = _('File Hooks')
-    %p
-      = _('File hooks are similar to system hooks but are executed as files instead of sending data to a URL.')
-      = link_to _('For more information, see the File Hooks documentation.'), help_page_path('administration/file_hooks')
+.gl-mt-7
+  %h4.gl-my-0
+    = _('File Hooks')
+  %p.gl-text-secondary
+    = _('File hooks are similar to system hooks but are executed as files instead of sending data to a URL.')
+    = link_to _('For more information, see the File Hooks documentation.'), help_page_path('administration/file_hooks')
 
-
-  .col-lg-8.gl-mb-3
+  .gl-mb-3
     - if file_hooks.any?
       = render Pajamas::CardComponent.new do |c|
         - c.with_header do

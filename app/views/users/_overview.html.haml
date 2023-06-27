@@ -13,12 +13,10 @@
     .col-12.col-md-10.col-lg-8.gl-my-6
       .gl-display-flex
         %ol.breadcrumb.gl-breadcrumb-list.gl-mb-4
-          %li.breadcrumb-item.gl-breadcrumb-item
+          %li.gl-breadcrumb-item
             = link_to project_path(@user.user_project) do
               = @user.username
-              %span.gl-breadcrumb-separator
-                = sprite_icon("chevron-right", size: 16)
-          %li.breadcrumb-item.gl-breadcrumb-item
+          %li.gl-breadcrumb-item
             = link_to @user.user_readme.path, @user.user_project.readme_url
         - if current_user == @user
           .gl-ml-auto

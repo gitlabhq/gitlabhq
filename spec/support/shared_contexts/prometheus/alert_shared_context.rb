@@ -37,17 +37,6 @@ RSpec.shared_context 'self-managed prometheus alert attributes' do
       }
     }
   end
-
-  let(:dashboard_url_for_alert) do
-    Gitlab::Routing.url_helpers.metrics_dashboard_project_environment_url(
-      project,
-      environment,
-      embed_json: embed_content,
-      embedded: true,
-      end: '2018-03-12T09:36:00Z',
-      start: '2018-03-12T08:36:00Z'
-    )
-  end
 end
 
 RSpec.shared_context 'gitlab-managed prometheus alert attributes' do

@@ -8,7 +8,7 @@ module API
       included do
         helpers do
           params :with_custom_attributes do
-            optional :with_custom_attributes, type: Boolean, default: false, desc: 'Include custom attributes in the response'
+            optional :with_custom_attributes, type: ::Grape::API::Boolean, default: false, desc: 'Include custom attributes in the response'
 
             optional :custom_attributes, type: Hash,
                                          desc: 'Filter with custom attributes'

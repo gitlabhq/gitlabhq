@@ -396,11 +396,10 @@ convert the information to XML. An example SAML response is shown here.
 By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can
 [configure GitLab with a custom domain](../../enterprise_user/index.md#set-up-a-verified-domain) and GitLab
 automatically confirms user accounts. Users still receive an
-[enterprise user](../../enterprise_user/index.md) welcome email. Confirmation is
-bypassed for users:
+[enterprise user](../../enterprise_user/index.md) welcome email. Confirmation is bypassed if both of the following are true:
 
-- That are provisioned with SAML or SCIM.
-- That have an email address that belongs to the verified domain.
+- The user is provisioned with SAML or SCIM.
+- The user has an email address that belongs to the verified domain.
 
 ### Block user access
 

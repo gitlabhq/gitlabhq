@@ -246,7 +246,6 @@ InitializerConnections.raise_if_new_database_connection do
           end
 
           get :metrics_dashboard
-          get :'/prometheus/api/v1/*proxy_path', to: 'clusters#prometheus_proxy', as: :prometheus_api
           get :cluster_status, format: :json
           delete :clear_cache
         end

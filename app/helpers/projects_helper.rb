@@ -547,6 +547,14 @@ module ProjectsHelper
     project.ssh_url_to_repo
   end
 
+  def can_view_branch_rules?
+    can?(current_user, :maintainer_access, @project)
+  end
+
+  def can_push_code?
+    current_user&.can?(:push_code, @project)
+  end
+
   private
 
   def create_merge_request_path(project, source_project, ref, merge_request)
@@ -890,10 +898,6 @@ end
 
 def can_admin_group_clusters?(project)
   project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
-end
-
-def can_view_branch_rules?
-  can?(current_user, :maintainer_access, @project)
 end
 
 def branch_rules_path

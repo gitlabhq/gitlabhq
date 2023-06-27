@@ -50,20 +50,6 @@ For deprecation reviewers (Technical Writers only):
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Accessibility Testing is deprecated
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.9</span>
-- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390424).
-</div>
-
-Due to low customer usage, Accessibility Testing is deprecated and will be removed. There is no planned replacement and users should stop using Accessibility Testing before GitLab 17.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### Atlassian Crowd OmniAuth provider
 
 <div class="deprecation-notes">
@@ -92,20 +78,6 @@ next major release, GitLab 16.0. This gem sees very little use and its
 Auto DevOps support for Herokuish is deprecated in favor of [Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build-using-cloud-native-buildpacks). You should [migrate your builds from Herokuish to Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#moving-from-herokuish-to-cloud-native-buildpacks). From GitLab 14.0, Auto Build uses Cloud Native Buildpacks by default.
 
 Because Cloud Native Buildpacks do not support automatic testing, the Auto Test feature of Auto DevOps is also deprecated.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Browser Performance Testing is deprecated
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.9</span>
-- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388719).
-</div>
-
-Due to limited customer usage, Browser Performance Testing is deprecated and will be removed. There is no planned replacement and users should stop using Browser Performance Testing before GitLab 17.0.
 
 </div>
 
@@ -328,20 +300,6 @@ the aliasing for the `RunnerMembershipFilter` type will be removed.
 </div>
 
 In GitLab 17.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` GraphQL enum type will be replaced with the value, `DISABLED_AND_OVERRIDABLE`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Load Performance Testing is deprecated
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.9</span>
-- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388723).
-</div>
-
-Due to low customer usage, Load Performance Testing is deprecated and will be removed. There is no planned replacement and users should stop using Load Performance Testing before GitLab 17.0.
 
 </div>
 

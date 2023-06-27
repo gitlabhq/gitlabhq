@@ -12,26 +12,6 @@ module Gitlab
           ANCHOR_PATTERN = '(?<anchor>\#[a-z0-9_-]+)?'
           DASH_PATTERN = '(?:/-)'
 
-          # Matches urls for a metrics dashboard.
-          # This regex needs to match the old metrics URL, the new metrics URL,
-          # and the dashboard URL (inline_metrics_redactor_filter.rb
-          # uses this regex to match against the dashboard URL.)
-          #
-          # EX - Old URL: https://<host>/<namespace>/<project>/environments/<env_id>/metrics
-          # OR
-          # New URL: https://<host>/<namespace>/<project>/-/metrics?environment=<env_id>
-          # OR
-          # dashboard URL: https://<host>/<namespace>/<project>/environments/<env_id>/metrics_dashboard
-          def metrics_regex
-            strong_memoize(:metrics_regex) do
-              regex_for_project_metrics(
-                %r{
-                    ( #{environment_metrics_regex} ) | ( #{non_environment_metrics_regex} )
-                }x
-              )
-            end
-          end
-
           # Matches dashboard urls for a Grafana embed.
           #
           # EX - https://<host>/<namespace>/<project>/grafana/metrics_dashboard
@@ -97,11 +77,6 @@ module Gitlab
             CGI.parse(query_string)
               .transform_values { |value| value.first }
               .symbolize_keys
-          end
-
-          # Builds a metrics dashboard url based on the passed in arguments
-          def build_dashboard_url(...)
-            Gitlab::Routing.url_helpers.metrics_dashboard_namespace_project_environment_url(...)
           end
 
           private

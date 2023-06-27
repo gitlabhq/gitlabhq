@@ -12,7 +12,7 @@ const messageHtml = `
     <li>${s__("AdminUsers|The user can't log in.")}</li>
     <li>${s__("AdminUsers|The user can't access git repositories.")}</li>
     <li>${s__(
-      'AdminUsers|Issues and merge requests authored by this user are hidden from other users.',
+      'AdminUsers|Projects, issues, merge requests, and comments of this user are hidden from other users.',
     )}</li>
   </ul>
   <p>${s__('AdminUsers|You can unban their account in the future. Their data remains intact.')}</p>
