@@ -270,6 +270,11 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
   all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 
+### 15.11.10
+
+- Accessing a public or internal project with a [CI/CD job token](../ci/jobs/ci_job_token.md)
+  now needs explicit authorization in the target project's allowlist.
+
 ### 15.10.0
 
 - Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
