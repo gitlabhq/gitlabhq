@@ -52,11 +52,11 @@ To add streaming destinations to a top-level group:
 
 ### Instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
 
 Prerequisites:
 
@@ -91,11 +91,11 @@ To list the streaming destinations for a top-level group:
 
 ### For instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
 
 Prerequisites:
 
@@ -163,11 +163,11 @@ To delete only the custom HTTP headers for a streaming destination:
 
 ### Instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
 
 Prerequisites:
 
@@ -208,11 +208,11 @@ To list streaming destinations and see the verification tokens:
 
 ### Instance streaming destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `instance_streaming_audit_events`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md) named
-`instance_streaming_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+`ff_external_audit_events`. On GitLab.com, this feature is not available. The feature is not ready for production use.
 
 Prerequisites:
 

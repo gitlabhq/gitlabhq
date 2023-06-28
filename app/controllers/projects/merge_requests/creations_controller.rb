@@ -25,7 +25,9 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def create
-    @merge_request = ::MergeRequests::CreateService.new(project: project, current_user: current_user, params: merge_request_params).execute
+    @merge_request = ::MergeRequests::CreateService
+      .new(project: project, current_user: current_user, params: merge_request_params)
+      .execute
 
     if @merge_request.valid?
       incr_count_webide_merge_request
@@ -82,7 +84,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def branch_to
     @target_project = selected_target_project
 
-    if @target_project && params[:ref].present? && Ability.allowed?(current_user, :create_merge_request_in, @target_project)
+    if @target_project &&
+        params[:ref].present? &&
+        Ability.allowed?(current_user, :create_merge_request_in, @target_project)
+
       @ref = params[:ref]
       @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
@@ -104,10 +109,13 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    new_params = merge_request_params.merge(diff_options: diff_options)
 
     # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/58096
     Gitlab::GitalyClient.allow_n_plus_1_calls do
-      @merge_request = ::MergeRequests::BuildService.new(project: project, current_user: current_user, params: merge_request_params.merge(diff_options: diff_options)).execute
+      @merge_request = ::MergeRequests::BuildService
+        .new(project: project, current_user: current_user, params: new_params)
+        .execute
     end
   end
 

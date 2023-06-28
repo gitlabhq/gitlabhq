@@ -15,7 +15,8 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     respond_to do |format|
       format.html do
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
-        Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_loading_conflict_ui_action(user: current_user)
+        Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter
+          .track_loading_conflict_ui_action(user: current_user)
       end
 
       format.json do
@@ -23,12 +24,14 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
           render json: @conflicts_list
         elsif @merge_request.can_be_merged?
           render json: {
-            message: _('The merge conflicts for this merge request have already been resolved. Please return to the merge request.'),
+            message: _('The merge conflicts for this merge request have already been resolved. ' \
+                       'Please return to the merge request.'),
             type: 'error'
           }
         else
           render json: {
-            message: _('The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally.'),
+            message: _('The merge conflicts for this merge request cannot be resolved through GitLab. ' \
+                       'Please try to resolve them locally.'),
             type: 'error'
           }
         end
@@ -52,7 +55,8 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_resolve_conflict_action(user: current_user)
 
     if @merge_request.can_be_merged?
-      render status: :bad_request, json: { message: _('The merge conflicts for this merge request have already been resolved.') }
+      render status: :bad_request,
+        json: { message: _('The merge conflicts for this merge request have already been resolved.') }
       return
     end
 

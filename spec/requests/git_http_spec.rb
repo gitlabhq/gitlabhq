@@ -236,11 +236,6 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
             allow(::Users::ActivityService).to receive(:new).and_return(activity_service)
             allow(activity_service).to receive(:execute)
 
-            # During project creation, we need to track the project wiki
-            # repository. So it is over the query limit threshold, and we
-            # have to adjust it.
-            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(101)
-
             expect do
               upload(path, user: user.username, password: user.password) do |response|
                 expect(response).to have_gitlab_http_status(:ok)
