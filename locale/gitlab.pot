@@ -28153,7 +28153,13 @@ msgstr ""
 msgid "Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling."
 msgstr ""
 
+msgid "Maximum number of stages per value stream exceeded"
+msgstr ""
+
 msgid "Maximum number of unique IP addresses per user."
+msgstr ""
+
+msgid "Maximum number of value streams per namespace exceeded"
 msgstr ""
 
 msgid "Maximum number of variables loaded (2000)"

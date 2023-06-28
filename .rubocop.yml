@@ -274,6 +274,11 @@ Naming/FileName:
     - XSS
     - GRPC
 
+# Check for the use of before with let_it_be when using "add_role" methods
+# e.g. add_guest, add_reporter, add_developer
+RSpec/BeforeAllRoleAssignment:
+  Enabled: true
+
 Rails/ApplicationRecord:
   Enabled: true
   Exclude:

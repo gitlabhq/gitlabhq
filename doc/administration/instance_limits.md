@@ -1048,3 +1048,8 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file) enforces the following limits:
 
 - The commit range between `from` and `to` cannot exceed 15000 commits.
+
+## Value Stream Analytics limits
+
+- Each namespace (such as a group or a project) can have a maximum of 50 value streams.
+- Each value stream can have a maximum of 15 stages.

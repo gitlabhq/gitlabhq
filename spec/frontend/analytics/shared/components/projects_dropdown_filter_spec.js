@@ -57,7 +57,6 @@ describe('ProjectsDropdownFilter component', () => {
     });
   };
 
-  const findClearAllButton = () => wrapper.findByTestId('listbox-reset-button');
   const findSelectedProjectsLabel = () => wrapper.findComponent(GlTruncate);
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
@@ -143,10 +142,6 @@ describe('ProjectsDropdownFilter component', () => {
 
         expect(findSelectedProjectsLabel().text()).toBe('Select projects');
       });
-
-      it('does not render the clear all button', () => {
-        expect(findClearAllButton().exists()).toBe(false);
-      });
     });
 
     describe('with a selected project', () => {
@@ -169,12 +164,6 @@ describe('ProjectsDropdownFilter component', () => {
         expect(findSelectedProjectsLabel().text()).toBe(projects[0].name);
       });
 
-      it('renders the clear all button', async () => {
-        await selectDropdownItemAtIndex([0], false);
-
-        expect(findClearAllButton().exists()).toBe(true);
-      });
-
       it('clears all selected items when the clear all button is clicked', async () => {
         createComponent({
           mountFn: mountExtended,
@@ -186,7 +175,7 @@ describe('ProjectsDropdownFilter component', () => {
 
         expect(findSelectedProjectsLabel().text()).toBe('2 projects selected');
 
-        await findClearAllButton().vm.$emit('click');
+        await findDropdown().vm.$emit('reset');
 
         expect(findSelectedProjectsLabel().text()).toBe('Select projects');
       });

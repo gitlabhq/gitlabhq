@@ -40,7 +40,6 @@ A deploy key is given a permission level when it is created:
 You can change a deploy key's permission level after creating it. Changing a project deploy key's
 permissions only applies for the current project.
 
-Although a deploy key is a secret that isn't associated with a specific user,
 GitLab authorizes the creator of the deploy key if the Git-command triggers additional processes. For example:
 
 - When a deploy key is used to push a commit to a [protected branch](../protected_branches.md),

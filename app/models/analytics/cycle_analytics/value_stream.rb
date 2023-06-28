@@ -3,6 +3,8 @@
 module Analytics
   module CycleAnalytics
     class ValueStream < ApplicationRecord
+      MAX_VALUE_STREAMS_PER_NAMESPACE = 50
+
       self.table_name = :analytics_cycle_analytics_group_value_streams
 
       include Analytics::CycleAnalytics::Parentable
@@ -15,6 +17,7 @@ module Analytics
 
       validates :name, presence: true
       validates :name, length: { minimum: 3, maximum: 100, allow_nil: false }, uniqueness: { scope: :group_id }
+      validate :max_value_streams_count, on: :create
 
       accepts_nested_attributes_for :stages, allow_destroy: true
 
@@ -34,6 +37,13 @@ module Analytics
       end
 
       private
+
+      def max_value_streams_count
+        return unless namespace
+        return unless namespace.value_streams.count >= MAX_VALUE_STREAMS_PER_NAMESPACE
+
+        errors.add(:namespace, _('Maximum number of value streams per namespace exceeded'))
+      end
 
       def ensure_aggregation_record_presence
         Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(namespace)

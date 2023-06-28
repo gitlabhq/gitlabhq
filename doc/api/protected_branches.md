@@ -510,7 +510,7 @@ Example response:
 
 ```shell
 curl --header 'Content-Type: application/json' --request PATCH \
-     --data '{"allowed_to_push": [{"id": 12, "access_level": 0}]' \
+     --data '{"allowed_to_push": [{"id": 12, "access_level": 0}]}' \
      --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
 ```
 

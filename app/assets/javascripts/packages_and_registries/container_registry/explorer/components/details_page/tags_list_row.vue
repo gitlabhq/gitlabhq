@@ -207,7 +207,7 @@ export default {
     </template>
 
     <template v-if="!isInvalidTag" #details-published>
-      <details-row icon="clock" data-testid="published-date-detail">
+      <details-row icon="clock" padding="gl-py-3" data-testid="published-date-detail">
         <gl-sprintf :message="$options.i18n.PUBLISHED_DETAILS_ROW_TEXT">
           <template #repositoryPath>
             <i>{{ tagLocation }}</i>

@@ -126,6 +126,45 @@ function rspec_db_library_code() {
   rspec_simple_job_with_retry "-- ${db_files}"
 }
 
+# Below is the list of options (https://linuxcommand.org/lc3_man_pages/seth.html)
+#
+#   allexport    same as -a
+#   braceexpand  same as -B
+#   emacs        use an emacs-style line editing interface
+#   errexit      same as -e
+#   errtrace     same as -E
+#   functrace    same as -T
+#   hashall      same as -h
+#   histexpand   same as -H
+#   history      enable command history
+#   ignoreeof    the shell will not exit upon reading EOF
+#   interactive-comments
+#                 allow comments to appear in interactive commands
+#   keyword      same as -k
+#   monitor      same as -m
+#   noclobber    same as -C
+#   noexec       same as -n
+#   noglob       same as -f
+#   nolog        currently accepted but ignored
+#   notify       same as -b
+#   nounset      same as -u
+#   onecmd       same as -t
+#   physical     same as -P
+#   pipefail     the return value of a pipeline is the status of
+#                 the last command to exit with a non-zero status,
+#                 or zero if no command exited with a non-zero status
+#   posix        change the behavior of bash where the default
+#                 operation differs from the Posix standard to
+#                 match the standard
+#   privileged   same as -p
+#   verbose      same as -v
+#   vi           use a vi-style line editing interface
+#   xtrace       same as -x
+function debug_shell_options() {
+  echoinfo "Shell set options (set -o) enabled:"
+  echoinfo "$(set -o | grep 'on$')"
+}
+
 function debug_rspec_variables() {
   echoinfo "SKIP_FLAKY_TESTS_AUTOMATICALLY: ${SKIP_FLAKY_TESTS_AUTOMATICALLY:-}"
   echoinfo "RETRY_FAILED_TESTS_IN_NEW_PROCESS: ${RETRY_FAILED_TESTS_IN_NEW_PROCESS:-}"
@@ -153,21 +192,32 @@ function handle_retry_rspec_in_new_process() {
 
   if [[ $rspec_run_status -eq 3 ]]; then
     echoerr "Not retrying failing examples since we failed early on purpose!"
-  elif [[ $rspec_run_status -eq 2 ]]; then
+    exit 1
+  fi
+
+  if [[ $rspec_run_status -eq 2 ]]; then
     echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
-  elif [[ $rspec_run_status -eq 1 ]]; then
-    # Experiment to retry failed examples in a new RSpec process: https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148
-    if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" == "true" ]]; then
-      retry_failed_rspec_examples
-      rspec_run_status=$?
-    else
-      echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
+    exit 1
+  fi
+
+  if [[ $rspec_run_status -eq 1 ]]; then
+    if is_rspec_last_run_results_file_missing; then
+      exit 1
     fi
+
+    local failed_examples_count=$(grep -c " failed" "${RSPEC_LAST_RUN_RESULTS_FILE}")
+    if [[ "${failed_examples_count}" -eq "${RSPEC_FAIL_FAST_THRESHOLD}" ]]; then
+      echoerr "Not retrying failing examples since we reached the maximum number of allowed test failures!"
+      exit 1
+    fi
+
+    retry_failed_rspec_examples
+    rspec_run_status=$?
   else
     echosuccess "No examples to retry, congrats!"
   fi
 
-  exit $rspec_run_status
+  exit "${rspec_run_status}"
 }
 
 function rspec_paralellized_job() {
@@ -224,6 +274,7 @@ function rspec_paralellized_job() {
   fi
 
   debug_rspec_variables
+  debug_shell_options
 
   if [[ -n "${rspec_tests_mapping_enabled}" ]]; then
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" || rspec_run_status=$?
@@ -239,9 +290,12 @@ function rspec_paralellized_job() {
 function retry_failed_rspec_examples() {
   local rspec_run_status=0
 
-  # Sometimes the file isn't created or is empty. In that case we exit(1) ourselves, otherwise, RSpec would
-  # not run any examples an exit successfully, actually hiding failed tests!
-  if [[ ! -f "${RSPEC_LAST_RUN_RESULTS_FILE}" ]] || [[ ! -s "${RSPEC_LAST_RUN_RESULTS_FILE}" ]]; then
+  if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" != "true" ]]; then
+    echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
+    exit 1
+  fi
+
+  if is_rspec_last_run_results_file_missing; then
     exit 1
   fi
 
@@ -418,4 +472,14 @@ function generate_flaky_tests_reports() {
   find ${rspec_flaky_folder_path} -type f -name 'retried_tests_*_report.txt' -exec cat {} + >> "${RETRIED_TESTS_REPORT_PATH}"
 
   cleanup_individual_job_reports
+}
+
+function is_rspec_last_run_results_file_missing() {
+  # Sometimes the file isn't created or is empty.
+  if [[ ! -f "${RSPEC_LAST_RUN_RESULTS_FILE}" ]] || [[ ! -s "${RSPEC_LAST_RUN_RESULTS_FILE}" ]]; then
+    echoerr "The file set inside RSPEC_LAST_RUN_RESULTS_FILE ENV variable does not exist or is empty. As a result, we won't retry failed specs."
+    return 0
+  else
+    return 1
+  fi
 }
