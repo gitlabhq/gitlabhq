@@ -2526,7 +2526,6 @@ In GitLab 15.4, GitLab SAST will no longer use the following analyzers:
 
 NOTE:
 This change was originally planned for GitLab 15.0 and was postponed to GitLab 15.4.
-See [the removal notice](./removals.md#sast-analyzer-consolidation-and-cicd-template-changes) for further details.
 
 These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 Effective immediately, they will receive only security updates; other routine improvements or updates are not guaranteed.

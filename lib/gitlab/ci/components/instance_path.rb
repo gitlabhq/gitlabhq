@@ -73,9 +73,7 @@ module Gitlab
         end
 
         def latest_version_sha
-          return unless catalog_resource = project&.catalog_resource
-
-          catalog_resource.latest_version&.sha
+          project.releases.latest&.sha
         end
       end
     end

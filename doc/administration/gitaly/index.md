@@ -55,7 +55,7 @@ Before deploying Gitaly Cluster, review:
 If you have:
 
 - Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. However, NFS
-  is [no longer supported](../../update/removals.md#nfs-as-git-repository-storage-is-no-longer-supported).
+  is [no longer supported](../../update/deprecations.md#nfs-for-git-repository-storage).
 - Not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options:
   - A sharded Gitaly instance.
   - Gitaly Cluster.

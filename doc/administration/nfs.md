@@ -364,8 +364,8 @@ sudo ufw allow from <client_ip_address> to any port nfs
 ### Upgrade to Gitaly Cluster or disable caching if experiencing data loss
 
 WARNING:
-Engineering support for NFS for Git repositories
-[is unavailable](../update/removals.md#nfs-as-git-repository-storage-is-no-longer-supported).
+NFS for Git repositories
+[has been removed](../update/deprecations.md#nfs-for-git-repository-storage).
 
 Customers and users have reported data loss on high-traffic repositories when using NFS for Git repositories.
 For example, we have seen:

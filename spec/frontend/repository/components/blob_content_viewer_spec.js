@@ -52,6 +52,8 @@ let userInfoMockResolver;
 let projectInfoMockResolver;
 let applicationInfoMockResolver;
 
+Vue.use(Vuex);
+
 const mockAxios = new MockAdapter(axios);
 
 const createMockStore = () =>

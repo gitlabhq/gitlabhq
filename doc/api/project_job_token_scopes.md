@@ -31,7 +31,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
 | `inbound_enabled`  | boolean | Indicates if the CI/CD job token generated in other projects has access to this project. |
-| `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 17.0 .](../update/removals.md#limit-ci_job_token-scope-is-disabled) |
+| `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 17.0](../update/deprecations.md#default-cicd-job-token-ci_job_token-scope-changed). |
 
 Example request:
 

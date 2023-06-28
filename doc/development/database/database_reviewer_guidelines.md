@@ -26,17 +26,23 @@ For more information on the database review process, check the [database review 
 
 ## How to apply for becoming a database reviewer
 
-Team members are encouraged to self-identify as database domain experts, and add it to their profile YAML file:
+Team members are encouraged to self-identify as database domain experts, by adding it
+to your profile YAML file:
 
-```yaml
-projects:
-  gitlab:
-    - reviewer database
-```
+1. Make a merge request using the
+   [`Database reviewer` template](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Database%20reviewer.md).
+1. Add your database expertise to your YAML file:
 
-Create the merge request [using the "Database reviewer" template](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Database%20reviewer.md),
-adding your expertise your profile YAML file. Assign to a database maintainer or the
-[Database Team's Engineering Manager](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/).
+   ```yaml
+   projects:
+     gitlab:
+       - reviewer database
+   ```
+
+1. Create the merge request
+   [using the "Database reviewer" template](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Database%20reviewer.md).
+1. Assign to a database maintainer or the
+   [Database Team's Engineering Manager](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/).
 
 After the `team.yml` update is merged, the [Reviewer roulette](../code_review.md#reviewer-roulette)
 may recommend you as a database reviewer.
@@ -75,21 +81,10 @@ topics and use cases. The most frequently required during database reviewing are
 
 ## How to apply to become a database maintainer
 
-Once a database reviewer feels confident on switching to a database maintainer,
-they can update their [team profile](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/team.yml)
-to a `trainee_maintainer database`:
+Database maintainership uses the same process as other projects for identifying maintainers.
+[Follow the general process documented here](https://about.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer).
 
-```yaml
-projects:
-  gitlab:
-    - trainee_maintainer database
-```
-
-The first step is to a create a [Trainee Database Maintainer Issue](https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/new?issuable_template=trainee-database-maintainer).
-Use and follow the process described in the 'Trainee database maintainer' template.
-
-Note that [trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
-are three times as likely to be picked by the [Danger bot](../dangerbot.md) as other reviewers.
+For database specific requirements, please see [`Project maintainer process for gitlab-database`](https://about.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database)
 
 ## What to do if you feel overwhelmed
 

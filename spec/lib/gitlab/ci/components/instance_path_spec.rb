@@ -101,30 +101,22 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     context 'when version is `~latest`' do
       let(:version) { '~latest' }
 
-      context 'when project is a catalog resource' do
-        before do
-          create(:catalog_resource, project: existing_project)
+      context 'when project has releases' do
+        let_it_be(:latest_release) do
+          create(:release, project: existing_project, sha: 'sha-1', released_at: Time.zone.now)
         end
 
-        context 'when project has releases' do
-          let_it_be(:releases) do
-            [
-              create(:release, project: existing_project, sha: 'sha-1', released_at: Time.zone.now - 1.day),
-              create(:release, project: existing_project, sha: 'sha-2', released_at: Time.zone.now)
-            ]
-          end
-
-          it 'returns the sha of the latest release' do
-            expect(path.sha).to eq(releases.last.sha)
-          end
+        before(:all) do
+          # Previous release
+          create(:release, project: existing_project, sha: 'sha-2', released_at: Time.zone.now - 1.day)
         end
 
-        context 'when project does not have releases' do
-          it { expect(path.sha).to be_nil }
+        it 'returns the sha of the latest release' do
+          expect(path.sha).to eq(latest_release.sha)
         end
       end
 
-      context 'when project is not a catalog resource' do
+      context 'when project does not have releases' do
         it { expect(path.sha).to be_nil }
       end
     end

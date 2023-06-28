@@ -216,7 +216,7 @@
 .use-pg12:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-12-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -228,7 +228,7 @@
 .use-pg13:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-13-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -240,7 +240,7 @@
 .use-pg14:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-14-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -252,7 +252,7 @@
 .use-pg15:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -264,7 +264,7 @@
 .use-pg12-es7-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-12-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -282,7 +282,7 @@
 .use-pg13-es7-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-13-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -300,7 +300,7 @@
 .use-pg14-es7-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-14-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -318,7 +318,7 @@
 .use-pg15-es7-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -336,7 +336,7 @@
 .use-pg13-es8-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-13-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -355,7 +355,7 @@
 .use-pg14-es8-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-14-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -374,7 +374,7 @@
 .use-pg15-es8-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-15-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -393,7 +393,7 @@
 .use-pg13-opensearch1-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-13-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
@@ -412,7 +412,7 @@
 .use-pg13-opensearch2-ee:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-13-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=128"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
