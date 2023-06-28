@@ -29,15 +29,19 @@ module Banzai
           @references_per_parent[parent_type] ||= begin
             refs = Hash.new { |hash, key| hash[key] = Set.new }
 
-            prepare_doc_for_scan.to_enum(:scan, regex).each do
-              parent_path = if parent_type == :project
-                              full_project_path($~[:namespace], $~[:project])
-                            else
-                              full_group_path($~[:group])
-                            end
+            [filter.object_class.link_reference_pattern, filter.object_class.reference_pattern].each do |pattern|
+              next unless pattern
 
-              ident = filter.identifier($~)
-              refs[parent_path] << ident if ident
+              prepare_doc_for_scan.to_enum(:scan, pattern).each do
+                parent_path = if parent_type == :project
+                                full_project_path($~[:namespace], $~[:project])
+                              else
+                                full_group_path($~[:group])
+                              end
+
+                ident = filter.identifier($~)
+                refs[parent_path] << ident if ident
+              end
             end
 
             refs
@@ -170,15 +174,6 @@ module Banzai
         attr_accessor :filter, :context, :result
 
         delegate :project, :group, :parent, :parent_type, to: :filter
-
-        def regex
-          strong_memoize(:regex) do
-            [
-              filter.object_class.link_reference_pattern,
-              filter.object_class.reference_pattern
-            ].compact.reduce { |a, b| Regexp.union(a, b) }
-          end
-        end
 
         def refs_cache
           Gitlab::SafeRequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}

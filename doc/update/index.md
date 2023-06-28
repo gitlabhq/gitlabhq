@@ -270,6 +270,11 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 16.1.1
+
+- Accessing a public or internal project with a [CI/CD job token](../ci/jobs/ci_job_token.md)
+  now needs explicit authorization in the target project's allowlist.
+
 ### 16.1.0
 
 - A `MigrateHumanUserType` background migration will be finalized with
@@ -285,6 +290,11 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   migration may take multiple days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 16.1.0.
 
+### 16.0.6
+
+- Accessing a public or internal project with a [CI/CD job token](../ci/jobs/ci_job_token.md)
+  now needs explicit authorization in the target project's allowlist.
+
 ### 16.0.0
 
 - Sidekiq crashes if there are non-ASCII characters in the GitLab.rb file. You can fix this
@@ -294,6 +304,11 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
   [throw errors on startup](../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
+
+### 15.11.10
+
+- Accessing a public or internal project with a [CI/CD job token](../ci/jobs/ci_job_token.md)
+  now needs explicit authorization in the target project's allowlist.
 
 ### 15.11.1
 

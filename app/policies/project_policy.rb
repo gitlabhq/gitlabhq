@@ -670,7 +670,7 @@ class ProjectPolicy < BasePolicy
     enable :read_project_for_iids
   end
 
-  rule { ~public_project & ~internal_access & ~project_allowed_for_job_token }.prevent_all
+  rule { ~project_allowed_for_job_token }.prevent_all
 
   rule { can?(:public_access) }.policy do
     enable :read_package
