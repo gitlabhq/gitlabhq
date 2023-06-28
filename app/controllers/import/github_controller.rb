@@ -7,6 +7,8 @@ class Import::GithubController < Import::BaseController
   include ActionView::Helpers::SanitizeHelper
   include Import::GithubOauth
 
+  before_action :authorize_owner_access!, except: [:new, :callback, :personal_access_token, :status, :details, :create,
+    :realtime_changes, :cancel_all, :counts]
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :realtime_changes, :create]
   before_action :expire_etag_cache, only: [:status, :create]
@@ -92,8 +94,6 @@ class Import::GithubController < Import::BaseController
   end
 
   def failures
-    project = Project.imported_from(provider_name).find(params[:project_id])
-
     unless project.import_finished?
       return render status: :bad_request, json: {
         message: _('The import is not complete.')
@@ -107,7 +107,6 @@ class Import::GithubController < Import::BaseController
   end
 
   def cancel
-    project = Project.imported_from(provider_name).find(params[:project_id])
     result = Import::Github::CancelProjectImportService.new(project, current_user).execute
 
     if result[:status] == :success
@@ -167,6 +166,14 @@ class Import::GithubController < Import::BaseController
   end
 
   private
+
+  def project
+    @project ||= Project.imported_from(provider_name).find(params[:project_id])
+  end
+
+  def authorize_owner_access!
+    return render_404 unless current_user.can?(:owner_access, project)
+  end
 
   def import_params
     params.permit(permitted_import_params)
