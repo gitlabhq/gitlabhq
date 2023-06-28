@@ -16,15 +16,19 @@ RSpec.describe 'User squashes a merge request', :js, feature_category: :code_rev
 
       latest_master_commits = project.repository.commits_between(original_head.sha, 'master').map(&:raw)
 
-      squash_commit = an_object_having_attributes(sha: a_string_matching(/\h{40}/),
-                                                  message: a_string_starting_with(project.merge_requests.first.default_squash_commit_message),
-                                                  author_name: user.name,
-                                                  committer_name: user.name)
+      squash_commit = an_object_having_attributes(
+        sha: a_string_matching(/\h{40}/),
+        message: a_string_starting_with(project.merge_requests.first.default_squash_commit_message),
+        author_name: user.name,
+        committer_name: user.name
+      )
 
-      merge_commit = an_object_having_attributes(sha: a_string_matching(/\h{40}/),
-                                                 message: a_string_starting_with("Merge branch '#{source_branch}' into 'master'"),
-                                                 author_name: user.name,
-                                                 committer_name: user.name)
+      merge_commit = an_object_having_attributes(
+        sha: a_string_matching(/\h{40}/),
+        message: a_string_starting_with("Merge branch '#{source_branch}' into 'master'"),
+        author_name: user.name,
+        committer_name: user.name
+      )
 
       expect(project.repository).not_to be_merged_to_root_ref(source_branch)
       expect(latest_master_commits).to match([squash_commit, merge_commit])

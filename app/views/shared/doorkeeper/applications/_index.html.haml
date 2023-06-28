@@ -1,10 +1,10 @@
 - @force_desktop_expanded_sidebar = true
 
-.row.gl-mt-3.js-search-settings-section
-  .col-lg-4.profile-settings-sidebar
-    %h4.gl-mt-0
+.js-search-settings-section
+  .profile-settings-sidebar
+    %h4.gl-my-0
       = page_title
-    %p
+    %p.gl-text-secondary
       - if oauth_applications_enabled
         - if oauth_authorized_applications_enabled
           = _("Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account.")
@@ -12,77 +12,77 @@
           = _("Manage applications that use GitLab as an OAuth provider.")
       - else
         = _("Manage applications that you've authorized to use your account.")
-  .col-lg-8
-    - if oauth_applications_enabled
-      %h5.gl-mt-0
-        = _('Add new application')
+  - if oauth_applications_enabled
+    %h5.gl-mt-0
+      = _('Add new application')
+    .gl-border-b.gl-pb-6
       = render 'shared/doorkeeper/applications/form', url: form_url
-      %hr
-    - else
-      .bs-callout.bs-callout-disabled
-        = _('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission')
-    - if oauth_applications_enabled
-      .oauth-applications
-        %h5
-          = _("Your applications (%{size})") % { size: @applications.size }
-        - if @applications.any?
-          .table-responsive
-            %table.table
-              %thead
-                %tr
-                  %th= _('Name')
-                  %th= _('Callback URL')
-                  %th= _('Clients')
-                  %th.last-heading
-              %tbody
-                - @applications.each do |application|
-                  %tr{ id: "application_#{application.id}" }
-                    %td= link_to application.name, application_url.call(application)
-                    %td
-                      - application.redirect_uri.split.each do |uri|
-                        %div= uri
-                    %td= application.access_tokens.count
-                    %td.gl-display-flex
-                      = link_to edit_application_url.call(application), class: "gl-button btn btn-default btn-icon gl-mr-3" do
-                        %span.sr-only
-                          = _('Edit')
-                        = sprite_icon('pencil')
-                      = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
-        - else
-          .settings-message.text-center
-            = _("You don't have any applications")
-    - if oauth_authorized_applications_enabled
-      .oauth-authorized-applications.prepend-top-20.gl-mb-3
-        - if oauth_applications_enabled
-          %h5
-            = _("Authorized applications (%{size})") % { size: @authorized_tokens.size }
 
-        - if @authorized_tokens.any?
-          .table-responsive
-            %table.table.table-striped
-              %thead
-                %tr
-                  %th= _('Name')
-                  %th= _('Authorized At')
-                  %th= _('Scope')
-                  %th
-              %tbody
-                - @authorized_tokens.each do |token|
-                  %tr{ id: ("application_#{token.application.id}" if token.application) }
-                    %td
-                      - if token.application
-                        = token.application.name
-                      - else
-                        = _('Anonymous')
-                        .form-text.text-muted
-                          %em= _("Authorization was granted by entering your username and password in the application.")
-                    %td= token.created_at
-                    %td= token.scopes
-                    %td
-                      - if token.application
-                        = render 'doorkeeper/authorized_applications/delete_form', application: token.application
-                      - else
-                        = render 'doorkeeper/authorized_applications/delete_form', token: token
-        - else
-          .settings-message.text-center
-            = _("You don't have any authorized applications")
+  - else
+    .bs-callout.bs-callout-disabled
+      = _('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission')
+  - if oauth_applications_enabled
+    .oauth-applications.gl-pt-6
+      %h5.gl-mt-0
+        = _("Your applications (%{size})") % { size: @applications.size }
+      - if @applications.any?
+        .table-responsive
+          %table.table
+            %thead
+              %tr
+                %th= _('Name')
+                %th= _('Callback URL')
+                %th= _('Clients')
+                %th.last-heading
+            %tbody
+              - @applications.each do |application|
+                %tr{ id: "application_#{application.id}" }
+                  %td= link_to application.name, application_url.call(application)
+                  %td
+                    - application.redirect_uri.split.each do |uri|
+                      %div= uri
+                  %td= application.access_tokens.count
+                  %td.gl-display-flex
+                    = link_to edit_application_url.call(application), class: "gl-button btn btn-default btn-icon gl-mr-3" do
+                      %span.sr-only
+                        = _('Edit')
+                      = sprite_icon('pencil')
+                    = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
+      - else
+        .settings-message
+          = _("You don't have any applications")
+  - if oauth_authorized_applications_enabled
+    .oauth-authorized-applications.gl-mt-4
+      - if oauth_applications_enabled
+        %h5.gl-mt-0
+          = _("Authorized applications (%{size})") % { size: @authorized_tokens.size }
+
+      - if @authorized_tokens.any?
+        .table-responsive
+          %table.table.table-striped
+            %thead
+              %tr
+                %th= _('Name')
+                %th= _('Authorized At')
+                %th= _('Scope')
+                %th
+            %tbody
+              - @authorized_tokens.each do |token|
+                %tr{ id: ("application_#{token.application.id}" if token.application) }
+                  %td
+                    - if token.application
+                      = token.application.name
+                    - else
+                      = _('Anonymous')
+                      .form-text.text-muted
+                        %em= _("Authorization was granted by entering your username and password in the application.")
+                  %td= token.created_at
+                  %td= token.scopes
+                  %td
+                    - if token.application
+                      = render 'doorkeeper/authorized_applications/delete_form', application: token.application
+                    - else
+                      = render 'doorkeeper/authorized_applications/delete_form', token: token
+      - else
+        .settings-message
+          = _("You don't have any authorized applications")

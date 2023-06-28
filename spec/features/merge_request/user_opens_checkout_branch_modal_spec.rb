@@ -20,13 +20,15 @@ RSpec.describe 'Merge request > User opens checkout branch modal', :js, feature_
     let(:source_project) { fork_project(project, author, repository: true) }
 
     let(:merge_request) do
-      create(:merge_request,
-             source_project: source_project,
-             target_project: project,
-             source_branch: 'fix',
-             target_branch: 'master',
-             author: author,
-             allow_collaboration: true)
+      create(
+        :merge_request,
+        source_project: source_project,
+        target_project: project,
+        source_branch: 'fix',
+        target_branch: 'master',
+        author: author,
+        allow_collaboration: true
+      )
     end
 
     it 'shows instructions' do

@@ -13,8 +13,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
   end
 
   let!(:note) do
-    create(:note_on_merge_request, :with_attachment, noteable: merge_request,
-                                                     project: project)
+    create(:note_on_merge_request, :with_attachment, noteable: merge_request, project: project)
   end
 
   before do

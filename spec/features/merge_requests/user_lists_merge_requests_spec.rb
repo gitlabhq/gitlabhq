@@ -14,44 +14,52 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
   let(:user5) { create(:user) }
 
   before do
-    @fix = create(:merge_request,
-                  title: 'fix',
-                  source_project: project,
-                  source_branch: 'fix',
-                  assignees: [user],
-                  reviewers: [user, user2, user3, user4, user5],
-                  milestone: create(:milestone, project: project, due_date: '2013-12-11'),
-                  created_at: 1.minute.ago,
-                  updated_at: 1.minute.ago)
+    @fix = create(
+      :merge_request,
+      title: 'fix',
+      source_project: project,
+      source_branch: 'fix',
+      assignees: [user],
+      reviewers: [user, user2, user3, user4, user5],
+      milestone: create(:milestone, project: project, due_date: '2013-12-11'),
+      created_at: 1.minute.ago,
+      updated_at: 1.minute.ago
+    )
     @fix.metrics.update!(merged_at: 10.seconds.ago, latest_closed_at: 20.seconds.ago)
 
-    @markdown = create(:merge_request,
-           title: 'markdown',
-           source_project: project,
-           source_branch: 'markdown',
-           assignees: [user],
-           reviewers: [user, user2, user3, user4],
-           milestone: create(:milestone, project: project, due_date: '2013-12-12'),
-           created_at: 2.minutes.ago,
-           updated_at: 2.minutes.ago,
-           state: 'merged')
+    @markdown = create(
+      :merge_request,
+      title: 'markdown',
+      source_project: project,
+      source_branch: 'markdown',
+      assignees: [user],
+      reviewers: [user, user2, user3, user4],
+      milestone: create(:milestone, project: project, due_date: '2013-12-12'),
+      created_at: 2.minutes.ago,
+      updated_at: 2.minutes.ago,
+      state: 'merged'
+    )
     @markdown.metrics.update!(merged_at: 10.minutes.ago, latest_closed_at: 10.seconds.ago)
 
-    @merge_test = create(:merge_request,
-           title: 'merge-test',
-           source_project: project,
-           source_branch: 'merge-test',
-           created_at: 3.minutes.ago,
-           updated_at: 10.seconds.ago)
+    @merge_test = create(
+      :merge_request,
+      title: 'merge-test',
+      source_project: project,
+      source_branch: 'merge-test',
+      created_at: 3.minutes.ago,
+      updated_at: 10.seconds.ago
+    )
     @merge_test.metrics.update!(merged_at: 10.seconds.ago, latest_closed_at: 10.seconds.ago)
 
-    @feature = create(:merge_request,
-           title: 'feature',
-           source_project: project,
-           source_branch: 'feautre',
-           created_at: 2.minutes.ago,
-           updated_at: 1.minute.ago,
-           state: 'merged')
+    @feature = create(
+      :merge_request,
+      title: 'feature',
+      source_project: project,
+      source_branch: 'feautre',
+      created_at: 2.minutes.ago,
+      updated_at: 1.minute.ago,
+      state: 'merged'
+    )
     @feature.metrics.update!(merged_at: 10.seconds.ago, latest_closed_at: 10.minutes.ago)
   end
 
@@ -134,8 +142,7 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
     label = create(:label, project: project)
     create(:label_link, label: label, target: @fix)
 
-    visit_merge_requests(project, label_name: [label.name],
-                                  sort: sort_value_milestone)
+    visit_merge_requests(project, label_name: [label.name], sort: sort_value_milestone)
 
     expect(first_merge_request).to include('fix')
     expect(count_merge_requests).to eq(1)
@@ -160,8 +167,7 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
     end
 
     it 'sorts by milestone due date' do
-      visit_merge_requests(project, label_name: [label.name, label2.name],
-                                    sort: sort_value_milestone)
+      visit_merge_requests(project, label_name: [label.name, label2.name], sort: sort_value_milestone)
 
       expect(first_merge_request).to include('fix')
       expect(count_merge_requests).to eq(1)
@@ -169,9 +175,12 @@ RSpec.describe 'Merge requests > User lists merge requests', feature_category: :
 
     context 'filter on assignee and' do
       it 'sorts by milestone due date' do
-        visit_merge_requests(project, label_name: [label.name, label2.name],
-                                      assignee_id: user.id,
-                                      sort: sort_value_milestone)
+        visit_merge_requests(
+          project,
+          label_name: [label.name, label2.name],
+          assignee_id: user.id,
+          sort: sort_value_milestone
+        )
 
         expect(first_merge_request).to include('fix')
         expect(count_merge_requests).to eq(1)

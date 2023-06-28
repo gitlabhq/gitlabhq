@@ -1,24 +1,37 @@
-import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlIcon, GlLink, GlSprintf, GlFormGroup, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CompareApp from '~/projects/compare/components/app.vue';
+import {
+  COMPARE_REVISIONS_DOCS_URL,
+  I18N,
+  COMPARE_OPTIONS,
+  COMPARE_OPTIONS_INPUT_NAME,
+} from '~/projects/compare/constants';
 import RevisionCard from '~/projects/compare/components/revision_card.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { appDefaultProps as defaultProps } from './mock_data';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('CompareApp component', () => {
   let wrapper;
-  const findSourceRevisionCard = () => wrapper.find('[data-testid="sourceRevisionCard"]');
-  const findTargetRevisionCard = () => wrapper.find('[data-testid="targetRevisionCard"]');
+  const findSourceRevisionCard = () => wrapper.findByTestId('sourceRevisionCard');
+  const findTargetRevisionCard = () => wrapper.findByTestId('targetRevisionCard');
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(CompareApp, {
+    wrapper = shallowMountExtended(CompareApp, {
       propsData: {
         ...defaultProps,
         ...props,
       },
-      stubs: { GlCollapsibleListbox },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
+      stubs: {
+        GlSprintf,
+        GlFormRadioGroup,
+      },
     });
   };
 
@@ -38,6 +51,21 @@ describe('CompareApp component', () => {
     );
   });
 
+  it('renders title', () => {
+    const title = wrapper.find('h1');
+    expect(title.text()).toBe(I18N.title);
+  });
+
+  it('renders subtitle', () => {
+    const subtitle = wrapper.find('p');
+    expect(subtitle.text()).toMatchInterpolatedText(I18N.subtitle);
+  });
+
+  it('renders link to docs', () => {
+    const docsLink = wrapper.findComponent(GlLink);
+    expect(docsLink.attributes('href')).toBe(COMPARE_REVISIONS_DOCS_URL);
+  });
+
   it('contains the correct form attributes', () => {
     expect(wrapper.attributes('action')).toBe(defaultProps.projectCompareIndexPath);
     expect(wrapper.attributes('method')).toBe('POST');
@@ -49,20 +77,16 @@ describe('CompareApp component', () => {
     );
   });
 
-  it('has ellipsis', () => {
-    expect(wrapper.find('[data-testid="ellipsis"]').exists()).toBe(true);
-  });
-
   it('render Source and Target BranchDropdown components', () => {
     const revisionCards = wrapper.findAllComponents(RevisionCard);
 
     expect(revisionCards.length).toBe(2);
-    expect(revisionCards.at(0).props('revisionText')).toBe('Source');
-    expect(revisionCards.at(1).props('revisionText')).toBe('Target');
+    expect(revisionCards.at(0).props('revisionText')).toBe(I18N.source);
+    expect(revisionCards.at(1).props('revisionText')).toBe(I18N.target);
   });
 
   describe('compare button', () => {
-    const findCompareButton = () => wrapper.findComponent(GlButton);
+    const findCompareButton = () => wrapper.findByTestId('compare-button');
 
     it('renders button', () => {
       expect(findCompareButton().exists()).toBe(true);
@@ -110,14 +134,19 @@ describe('CompareApp component', () => {
   });
 
   describe('swap revisions button', () => {
-    const findSwapRevisionsButton = () => wrapper.find('[data-testid="swapRevisionsButton"]');
+    const findSwapRevisionsButton = () => wrapper.findByTestId('swapRevisionsButton');
 
     it('renders the swap revisions button', () => {
       expect(findSwapRevisionsButton().exists()).toBe(true);
     });
 
-    it('has the correct text', () => {
-      expect(findSwapRevisionsButton().text()).toBe('Swap revisions');
+    it('renders icon', () => {
+      expect(findSwapRevisionsButton().findComponent(GlIcon).props('name')).toBe('substitute');
+    });
+
+    it('has tooltip', () => {
+      const tooltip = getBinding(findSwapRevisionsButton().element, 'gl-tooltip');
+      expect(tooltip.value).toBe(I18N.swapRevisions);
     });
 
     it('swaps revisions when clicked', async () => {
@@ -130,39 +159,43 @@ describe('CompareApp component', () => {
     });
   });
 
-  describe('mode dropdown', () => {
-    const findGlDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-    const findEnableStraightModeButton = () =>
-      wrapper.findComponent('[data-testid="listbox-item-true"]');
-    const findDisableStraightModeButton = () =>
-      wrapper.findComponent('[data-testid="listbox-item-false"]');
+  describe('compare options', () => {
+    const findGroup = () => wrapper.findComponent(GlFormGroup);
+    const findOptionsGroup = () => wrapper.findComponent(GlFormRadioGroup);
 
-    it('renders the mode dropdown button', () => {
-      expect(findGlDropdown().exists()).toBe(true);
+    const findOptions = () => wrapper.findAllComponents(GlFormRadio);
+
+    it('renders label for the compare options', () => {
+      expect(findGroup().attributes('label')).toBe(I18N.optionsLabel);
     });
 
-    it('has the correct text', () => {
-      expect(findEnableStraightModeButton().text()).toBe('...');
-      expect(findDisableStraightModeButton().text()).toBe('..');
+    it('correct input name', () => {
+      expect(findOptionsGroup().attributes('name')).toBe(COMPARE_OPTIONS_INPUT_NAME);
+    });
+
+    it('renders "only incoming changes" option', () => {
+      expect(findOptions().at(0).text()).toBe(COMPARE_OPTIONS[0].text);
+    });
+
+    it('renders "since source was created" option', () => {
+      expect(findOptions().at(1).text()).toBe(COMPARE_OPTIONS[1].text);
     });
 
     it('straight mode button when clicked', async () => {
-      expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('false');
+      expect(wrapper.props('straight')).toBe(false);
+      expect(wrapper.vm.isStraight).toBe(false);
 
-      findGlDropdown().vm.$emit('select', 'true');
+      findOptionsGroup().vm.$emit('input', COMPARE_OPTIONS[1].value);
+
       await nextTick();
 
-      expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('true');
-      findGlDropdown().vm.$emit('select', 'false');
-      await nextTick();
-
-      expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('false');
+      expect(wrapper.vm.isStraight).toBe(true);
     });
   });
 
   describe('merge request buttons', () => {
-    const findProjectMrButton = () => wrapper.find('[data-testid="projectMrButton"]');
-    const findCreateMrButton = () => wrapper.find('[data-testid="createMrButton"]');
+    const findProjectMrButton = () => wrapper.findByTestId('projectMrButton');
+    const findCreateMrButton = () => wrapper.findByTestId('createMrButton');
 
     it('does not have merge request buttons', () => {
       createComponent();

@@ -3,19 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge Request > User tries to access private project information through the new mr page',
-feature_category: :code_review_workflow do
+  feature_category: :code_review_workflow do
   let(:current_user) { create(:user) }
   let(:private_project) do
-    create(:project, :public, :repository,
-           path: 'nothing-to-see-here',
-           name: 'nothing to see here',
-           repository_access_level: ProjectFeature::PRIVATE)
+    create(
+      :project,
+      :public,
+      :repository,
+      path: 'nothing-to-see-here',
+      name: 'nothing to see here',
+      repository_access_level: ProjectFeature::PRIVATE
+    )
   end
 
   let(:owned_project) do
-    create(:project, :public, :repository,
-           namespace: current_user.namespace,
-           creator: current_user)
+    create(
+      :project,
+      :public,
+      :repository,
+      namespace: current_user.namespace,
+      creator: current_user
+    )
   end
 
   context 'when the user enters the querystring info for the other project' do

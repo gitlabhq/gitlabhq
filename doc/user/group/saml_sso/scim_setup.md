@@ -183,7 +183,11 @@ The following diagram describes what happens when you add users to your SCIM app
 graph TD
   A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exist?)
   B -->|No| C[GitLab creates user with SCIM identity]
-  B -->|Yes| D[GitLab sends message back 'Email exists']
+  B -->|Yes| D(GitLab: Is the user part of the group?)
+  D -->|No| E(GitLab: Is SSO enforcement enabled?)
+  E -->|No| G
+  E -->|Yes| F[GitLab sends message back:\nThe member's email address is not linked to a SAML account]
+  D -->|Yes| G[Associate SCIM identity to user]
 ```
 
 During provisioning:

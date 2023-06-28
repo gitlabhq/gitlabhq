@@ -1418,6 +1418,48 @@ wrapper = mount(SomeComponent, {
 });
 ```
 
+#### Testing subscriptions
+
+When testing subscriptions, be aware that default behavior for subscription in `vue-apollo@4` is to re-subscribe and immediatelly issue new request on error (unless value of `skip` restricts us from doing that)
+
+```javascript
+import waitForPromises from 'helpers/wait_for_promises';
+
+// subscriptionMock is registered as handler function for subscription
+// in our helper
+const subcriptionMock = jest.fn().mockResolvedValue(okResponse);
+
+// ...
+
+it('testing error state', () => {
+  // Avoid: will stuck below!
+  subscriptionMock = jest.fn().mockRejectedValue({ errors: [] });
+
+  // component calls subscription mock as part of
+  createComponent();
+  // will be stuck forever:
+  // * rejected promise will trigger resubscription
+  // * re-subscription will call subscriptionMock again, resulting in rejected promise
+  // * rejected promise will trigger next re-subscription,
+  await waitForPromises();
+  // ...
+})
+```
+
+To avoid such infinite loops when using `vue@3` and `vue-apollo@4` consider using one-time rejections
+
+```javascript
+it('testing failure', () => {
+  // OK: subscription will fail once
+  subscriptionMock.mockRejectedValueOnce({ errors: [] });
+  // component calls subscription mock as part of
+  createComponent();
+  await waitForPromises();
+
+  // code below now will be executred
+})
+```
+
 #### Testing `@client` queries
 
 ##### Using mock resolvers

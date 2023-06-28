@@ -1025,24 +1025,6 @@ See explanations of the variables above in the [configuration section](#configur
 
 See the following sections for configuring specific languages and package managers.
 
-#### JavaScript (npm and yarn) projects
-
-Add the following to the variables section of `.gitlab-ci.yml`:
-
-```yaml
-RETIREJS_JS_ADVISORY_DB: "example.com/jsrepository.json"
-RETIREJS_NODE_ADVISORY_DB: "example.com/npmrepository.json"
-```
-
-#### Ruby (gem) projects
-
-Add the following to the variables section of `.gitlab-ci.yml`:
-
-```yaml
-BUNDLER_AUDIT_ADVISORY_DB_REF_NAME: "master"
-BUNDLER_AUDIT_ADVISORY_DB_URL: "gitlab.example.com/ruby-advisory-db.git"
-```
-
 #### Python (pip)
 
 If you need to install Python packages before the analyzer runs, you should use `pip install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.

@@ -52,6 +52,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
   end
 
+  before_action only: [:edit] do
+    if can?(current_user, :fill_in_merge_request_template, project)
+      push_frontend_feature_flag(:fill_in_mr_template, project)
+    end
+  end
+
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
 
   after_action :log_merge_request_show, only: [:show, :diffs]

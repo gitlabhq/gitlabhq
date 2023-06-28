@@ -303,13 +303,17 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           "5 # heh"
         ]
 
-        expect_suggestion_has_content(suggestion_1,
-                                      suggestion_1_expected_changing_content,
-                                      suggestion_1_expected_suggested_content)
+        expect_suggestion_has_content(
+          suggestion_1,
+          suggestion_1_expected_changing_content,
+          suggestion_1_expected_suggested_content
+        )
 
-        expect_suggestion_has_content(suggestion_2,
-                                      suggestion_2_expected_changing_content,
-                                      suggestion_2_expected_suggested_content)
+        expect_suggestion_has_content(
+          suggestion_2,
+          suggestion_2_expected_changing_content,
+          suggestion_2_expected_suggested_content
+        )
       end
     end
   end

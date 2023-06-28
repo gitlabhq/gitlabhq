@@ -518,63 +518,23 @@
   }
 }
 
-.project-refs-form .dropdown-menu {
-  width: 300px;
-
-  @include media-breakpoint-up(sm) {
-    width: 500px;
-  }
-
-  a {
-    white-space: normal;
-  }
-}
-
-.compare-form-group {
-  .dropdown-menu,
-  .inline-input-group {
-    width: 100%;
-
-    @include media-breakpoint-up(sm) {
-      width: 300px;
-    }
-  }
-
-  + .compare-ellipsis {
-    width: 100%;
-    vertical-align: middle;
-    text-align: center;
-    margin-top: -20px;
-
-    @include media-breakpoint-up(sm) {
-      margin: 0 $gl-padding-8;
-      width: auto;
-    }
-  }
-
-  // Remove once gitlab/ui solution is implemented:
-  // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1157
-  // https://gitlab.com/gitlab-org/gitlab/-/issues/300405
-  .gl-search-box-by-type-input {
-    width: 100%;
-  }
-
-  // Remove once gitlab/ui solution is implemented
-  // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1158
-  // https://gitlab.com/gitlab-org/gitlab/-/issues/300405
-  .gl-dropdown-button-text {
-    @include str-truncated;
-  }
-}
 
 .compare-revision-cards {
+  @media (max-width: $breakpoint-lg) {
+    .swap-button {
+      display: none;
+    }
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    .swap-button-mobile {
+      display: flex;
+    }
+  }
+
   @media (min-width: $breakpoint-lg) {
     .gl-card {
       width: calc(50% - 15px);
-    }
-
-    .compare-ellipsis {
-      width: 30px;
     }
   }
 }

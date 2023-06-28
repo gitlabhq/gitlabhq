@@ -22,7 +22,10 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
 
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
-        expect(result.message).to eq(_('The current user is not authorized to update the pipeline schedule'))
+
+        error_message = _('The current user is not authorized to update the pipeline schedule')
+        expect(result.message).to match_array([error_message])
+        expect(pipeline_schedule.errors).to match_array([error_message])
       end
     end
 
@@ -58,7 +61,7 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
         subject(:service) { described_class.new(pipeline_schedule, user, {}) }
 
         before do
-          allow(pipeline_schedule).to receive(:update).and_return(false)
+          allow(pipeline_schedule).to receive(:save).and_return(false)
 
           errors = ActiveModel::Errors.new(pipeline_schedule)
           errors.add(:base, 'An error occurred')

@@ -1,7 +1,8 @@
+import { mountMarkdownEditor } from 'ee_else_ce/vue_shared/components/markdown/mount_markdown_editor';
+
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import { mountMarkdownEditor } from '~/vue_shared/components/markdown/mount_markdown_editor';
 import { GitLabDropdown } from '~/deprecated_jquery_dropdown/gl_dropdown';
 
 import initMergeRequest from '~/pages/projects/merge_requests/init_merge_request';

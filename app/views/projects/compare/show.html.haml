@@ -1,7 +1,7 @@
 - add_to_breadcrumbs _("Compare revisions"), project_compare_index_path(@project)
-- page_title "#{params[:from]}...#{params[:to]}"
+- page_title "#{params[:from]} to #{params[:to]}"
 
-.sub-header-block.gl-border-b-0.gl-mb-0
+.sub-header-block.gl-border-b-0.gl-mb-0.gl-pt-4
   .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
     #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 

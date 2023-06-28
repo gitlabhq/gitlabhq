@@ -110,11 +110,13 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
 
     context 'when project is public and merge requests are private' do
       let_it_be(:project) do
-        create(:project,
-               :public,
-               :repository,
-               group: group,
-               merge_requests_access_level: ProjectFeature::DISABLED)
+        create(
+          :project,
+          :public,
+          :repository,
+          group: group,
+          merge_requests_access_level: ProjectFeature::DISABLED
+        )
       end
 
       context 'and user is a guest' do

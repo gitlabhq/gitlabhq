@@ -57,10 +57,12 @@ RSpec.describe 'User views open merge requests', feature_category: :code_review_
         let!(:build) { create :ci_build, pipeline: pipeline }
 
         let(:merge_request) do
-          create(:merge_request_with_diffs,
-          source_project: project,
-          target_project: project,
-          source_branch: 'merge-test')
+          create(
+            :merge_request_with_diffs,
+            source_project: project,
+            target_project: project,
+            source_branch: 'merge-test'
+          )
         end
 
         let(:pipeline) do

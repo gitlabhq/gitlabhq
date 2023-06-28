@@ -64,7 +64,7 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
 
     context 'which is in at least page 2 of the batched pages of diffs' do
       it 'scrolls to the correct discussion',
-         quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/293814' } do
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/293814' } do
         page.within get_first_diff do
           click_link('just now')
         end

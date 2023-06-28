@@ -5,11 +5,8 @@ description: 'GitLab CI Events Proposal 3: Using the .gitlab/ci/events folder'
 
 # GitLab CI Events Proposal 3: Using the `.gitlab/ci/events` folder
 
-We can also approach this problem by creating separate files for events.
-
-Let's say we'll have the `.gitlab/ci/events` folder (or `.gitlab/workflows/ci`).
-
-We can define events in the following format:
+In this proposal we want to create separate files for each group of events. We
+can define events in the following format:
 
 ```yaml
 # .gitlab/ci/events/package-published.yml
@@ -17,9 +14,7 @@ We can define events in the following format:
 spec:
   events:
     - name: package/published
-
 ---
-
 include:
   - local: .gitlab-ci.yml
     with:
@@ -35,9 +30,7 @@ spec:
   inputs:
     event:
       default: push
-
 ---
-
 job1:
   script: echo "Hello World"
 
@@ -61,4 +54,4 @@ When an event happens;
 1. For every defined event run, we need to enqueue a new job.
 1. Every event-job will need to search for files.
 1. This would be only for the project-scope events.
-1. This can be inefficient because of searching for files for the project for every event.
+1. This will not work for GitLab.com scale.

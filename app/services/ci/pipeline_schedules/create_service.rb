@@ -2,31 +2,33 @@
 
 module Ci
   module PipelineSchedules
-    class UpdateService
-      def initialize(schedule, user, params)
-        @schedule = schedule
+    class CreateService
+      def initialize(project, user, params)
+        @project = project
         @user = user
         @params = params
+
+        @schedule = project.pipeline_schedules.new
       end
 
       def execute
         return forbidden unless allowed?
 
-        schedule.assign_attributes(params)
+        schedule.assign_attributes(params.merge(owner: user))
 
         if schedule.save
           ServiceResponse.success(payload: schedule)
         else
-          ServiceResponse.error(message: schedule.errors.full_messages)
+          ServiceResponse.error(payload: schedule, message: schedule.errors.full_messages)
         end
       end
 
       private
 
-      attr_reader :schedule, :user, :params
+      attr_reader :project, :user, :params, :schedule
 
       def allowed?
-        user.can?(:update_pipeline_schedule, schedule)
+        user.can?(:create_pipeline_schedule, schedule)
       end
 
       def forbidden
@@ -34,11 +36,11 @@ module Ci
         # because model errors are used in the API responses and the `form_errors` helper.
         schedule.errors.add(:base, forbidden_message)
 
-        ServiceResponse.error(message: [forbidden_message], reason: :forbidden)
+        ServiceResponse.error(payload: schedule, message: [forbidden_message], reason: :forbidden)
       end
 
       def forbidden_message
-        _('The current user is not authorized to update the pipeline schedule')
+        _('The current user is not authorized to create the pipeline schedule')
       end
     end
   end

@@ -62,6 +62,17 @@ To create a workspace:
 The workspace might take a few minutes to start. To access the workspace, under **Preview**, select the workspace link.
 You also have access to the terminal and can install any necessary dependencies.
 
+## Deleting data associated with a workspace
+
+When you delete a project, agent, user, or token associated with a workspace:
+
+- The workspace is deleted from both the user interface and the Kubernetes cluster.
+- In the Kubernetes cluster, the running workspace resources become orphaned.
+
+To clean up orphaned resources, a cluster administrator must manually delete the namespace.
+
+For more information about our plans to change the current behavior, see [issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384).
+
 ## Devfile
 
 A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project.

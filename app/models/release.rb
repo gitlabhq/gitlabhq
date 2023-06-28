@@ -64,10 +64,10 @@ class Release < ApplicationRecord
     end
 
     # This query uses LATERAL JOIN to find the latest release for each project. To avoid
-    # joining the `releases` table, we build an in-memory table using the project ids.
+    # joining the `projects` table, we build an in-memory table using the project ids.
     # Example:
     # SELECT ...
-    # FROM (VALUES (PROJECT_ID_1),(PROJECT_ID_2)) project_ids (id)
+    # FROM (VALUES (PROJECT_ID_1),(PROJECT_ID_2)) projects (id)
     # INNER JOIN LATERAL (...)
     def latest_for_projects(projects, order_by: 'released_at')
       return Release.none if projects.empty?

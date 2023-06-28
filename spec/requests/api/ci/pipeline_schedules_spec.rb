@@ -311,7 +311,8 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
   end
 
-  describe 'POST /projects/:id/pipeline_schedules' do
+  # Move this from `shared_context` to `describe` when `ci_refactoring_pipeline_schedule_create_service` is removed.
+  shared_context 'POST /projects/:id/pipeline_schedules' do # rubocop:disable RSpec/ContextWording
     let(:params) { attributes_for(:ci_pipeline_schedule) }
 
     context 'authenticated user with valid permissions' do
@@ -368,7 +369,8 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
   end
 
-  describe 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id' do
+  # Move this from `shared_context` to `describe` when `ci_refactoring_pipeline_schedule_create_service` is removed.
+  shared_context 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id' do
     let(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
@@ -435,6 +437,18 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+  end
+
+  it_behaves_like 'POST /projects/:id/pipeline_schedules'
+  it_behaves_like 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id'
+
+  context 'when the FF ci_refactoring_pipeline_schedule_create_service is disabled' do
+    before do
+      stub_feature_flags(ci_refactoring_pipeline_schedule_create_service: false)
+    end
+
+    it_behaves_like 'POST /projects/:id/pipeline_schedules'
+    it_behaves_like 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id'
   end
 
   describe 'POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do

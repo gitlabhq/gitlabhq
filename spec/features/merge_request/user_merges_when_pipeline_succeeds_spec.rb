@@ -6,17 +6,23 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) do
-    create(:merge_request_with_diffs, source_project: project,
-                                      author: user,
-                                      title: 'Bug NS-04',
-                                      merge_params: { force_remove_source_branch: '1' })
+    create(
+      :merge_request_with_diffs,
+      source_project: project,
+      author: user,
+      title: 'Bug NS-04',
+      merge_params: { force_remove_source_branch: '1' }
+    )
   end
 
   let(:pipeline) do
-    create(:ci_pipeline, project: project,
-                         sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch,
-                         head_pipeline_of: merge_request)
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: merge_request.diff_head_sha,
+      ref: merge_request.source_branch,
+      head_pipeline_of: merge_request
+    )
   end
 
   before do
@@ -67,12 +73,14 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
 
       context 'when it was enabled and then canceled' do
         let(:merge_request) do
-          create(:merge_request_with_diffs,
-                 :merge_when_pipeline_succeeds,
-                 source_project: project,
-                 title: 'Bug NS-04',
-                 author: user,
-                 merge_user: user)
+          create(
+            :merge_request_with_diffs,
+            :merge_when_pipeline_succeeds,
+            source_project: project,
+            title: 'Bug NS-04',
+            author: user,
+            merge_user: user
+          )
         end
 
         before do
@@ -88,11 +96,15 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
 
   context 'when merge when pipeline succeeds is enabled' do
     let(:merge_request) do
-      create(:merge_request_with_diffs, :simple, :merge_when_pipeline_succeeds,
-             source_project: project,
-             author: user,
-             merge_user: user,
-             title: 'MepMep')
+      create(
+        :merge_request_with_diffs,
+        :simple,
+        :merge_when_pipeline_succeeds,
+        source_project: project,
+        author: user,
+        merge_user: user,
+        title: 'MepMep'
+      )
     end
 
     let!(:build) do

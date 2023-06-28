@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'PipelineSchedulecreate' do
+RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
@@ -68,7 +68,8 @@ RSpec.describe 'PipelineSchedulecreate' do
     end
   end
 
-  context 'when authorized' do
+  # Move this from `shared_context` to `context` when `ci_refactoring_pipeline_schedule_create_service` is removed.
+  shared_context 'when authorized' do # rubocop:disable RSpec/ContextWording
     before do
       project.add_developer(user)
     end
@@ -147,5 +148,15 @@ RSpec.describe 'PipelineSchedulecreate' do
         end
       end
     end
+  end
+
+  it_behaves_like 'when authorized'
+
+  context 'when the FF ci_refactoring_pipeline_schedule_create_service is disabled' do
+    before do
+      stub_feature_flags(ci_refactoring_pipeline_schedule_create_service: false)
+    end
+
+    it_behaves_like 'when authorized'
   end
 end

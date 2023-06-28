@@ -1,12 +1,15 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createApolloClient from '~/lib/graphql';
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
+
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '../../constants';
 import MarkdownEditor from './markdown_editor.vue';
 import eventHub from './eventhub';
 
-const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
-const MR_TARGET_BRANCH = 'merge_request[target_branch]';
+export const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
+export const MR_TARGET_BRANCH = 'merge_request[target_branch]';
 
 function organizeQuery(obj, isFallbackKey = false) {
   if (!obj[MR_SOURCE_BRANCH] && !obj[MR_TARGET_BRANCH]) {
@@ -51,8 +54,13 @@ function mountAutosaveClearOnSubmit(autosaveKey) {
   }
 }
 
-export function mountMarkdownEditor() {
+export function mountMarkdownEditor(options = {}) {
   const el = document.querySelector('.js-markdown-editor');
+  const componentConfiguration = {
+    provide: {
+      ...options.provide,
+    },
+  };
 
   if (!el) {
     return null;
@@ -86,6 +94,16 @@ export function mountMarkdownEditor() {
   const setFacade = (props) => Object.assign(facade, props);
   const autosaveKey = `autosave/${document.location.pathname}/${searchTerm}/description`;
 
+  if (options.useApollo || options.apolloProvider) {
+    let { apolloProvider } = options;
+
+    if (!apolloProvider) {
+      apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
+    }
+
+    componentConfiguration.apolloProvider = apolloProvider;
+  }
+
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -114,6 +132,7 @@ export function mountMarkdownEditor() {
         },
       });
     },
+    ...componentConfiguration,
   });
 
   mountAutosaveClearOnSubmit(autosaveKey);

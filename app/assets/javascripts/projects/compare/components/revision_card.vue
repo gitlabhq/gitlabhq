@@ -40,7 +40,7 @@ export default {
 
 <template>
   <div class="revision-card gl-flex-basis-half">
-    <h2 class="gl-font-size-h2">
+    <h2 class="gl-font-base gl-mt-0">
       {{ s__(`CompareRevisions|${revisionText}`) }}
     </h2>
     <div class="gl-sm-display-flex gl-align-items-center gl-gap-3">
