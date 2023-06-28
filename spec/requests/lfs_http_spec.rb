@@ -677,7 +677,8 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 context 'tries to push to other project' do
                   let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
-                  it_behaves_like 'LFS http 404 response'
+                  # I'm not sure what this tests that is different from the previous test
+                  it_behaves_like 'LFS http 403 response'
                 end
               end
 
@@ -1197,7 +1198,8 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               context 'tries to push to other project' do
                 let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
-                it_behaves_like 'LFS http 404 response'
+                # I'm not sure what this tests that is different from the previous test
+                it_behaves_like 'LFS http 403 response'
               end
             end
 
