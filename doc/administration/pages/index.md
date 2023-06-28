@@ -1158,7 +1158,7 @@ If you want to store the pages content locally or continue using an NFS server, 
 
 ## Backup
 
-GitLab Pages are part of the [regular backup](../../raketasks/backup_restore.md), so there is no separate backup to configure.
+GitLab Pages are part of the [regular backup](../../administration/backup_restore/index.md), so there is no separate backup to configure.
 
 ## Security
 

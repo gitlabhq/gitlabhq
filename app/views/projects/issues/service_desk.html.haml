@@ -8,15 +8,18 @@
 - support_bot_attrs = { service_desk_enabled: @project.service_desk_enabled?, **UserSerializer.new.represent(User.support_bot) }.to_json
 
 .js-service-desk-issues.service-desk-issues{ data: { support_bot: support_bot_attrs } }
-  .top-area
-    = render 'shared/issuable/nav', type: :issues
-    .nav-controls.d-block.d-sm-none
-      = render "projects/issues/service_desk/nav_btns", show_feed_buttons: false, show_import_button: false, show_export_button: false
+  - if ::Feature.enabled?(:service_desk_vue_list, @project)
+    .js-service-desk-list{ data: project_issues_list_data(@project, current_user) }
+  - else
+    .top-area
+      = render 'shared/issuable/nav', type: :issues
+      .nav-controls.gl-display-block.gl-sm-display-none
+        = render "projects/issues/service_desk/nav_btns", show_feed_buttons: false, show_import_button: false, show_export_button: false
 
-  - if @issues.present?
-    = render 'shared/issuable/search_bar', type: :issues
-    - if Gitlab::ServiceDesk.supported?
-      = render 'projects/issues/service_desk/service_desk_info_content'
+    - if @issues.present?
+      = render 'shared/issuable/search_bar', type: :issues
+      - if Gitlab::ServiceDesk.supported?
+        = render 'projects/issues/service_desk/service_desk_info_content'
 
-  .issues-holder
-    = render 'projects/issues/issues', empty_state_path: 'projects/issues/service_desk/service_desk_empty_state'
+    .issues-holder
+      = render 'projects/issues/issues', empty_state_path: 'projects/issues/service_desk/service_desk_empty_state'

@@ -571,7 +571,7 @@ in the Troubleshooting section before proceeding.
 
 Do not backup or restore GitLab through a PgBouncer connection: this causes a GitLab outage.
 
-[Read more about this and how to reconfigure backups](../../raketasks/backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer).
+[Read more about this and how to reconfigure backups](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
 
 ### Ensure GitLab is running
 

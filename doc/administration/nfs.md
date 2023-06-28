@@ -293,7 +293,7 @@ NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
 
 Using bind mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
-[restore prerequisites](../raketasks/backup_restore.md).
+[restore prerequisites](../administration/backup_restore/index.md).
 
 ### Multiple NFS mounts
 
@@ -315,7 +315,7 @@ provide configuration for [UDP log shipping](https://docs.gitlab.com/omnibus/set
 
 Having multiple NFS mounts requires you to manually make sure the data directories
 are empty before attempting a restore. Read more about the
-[restore prerequisites](../raketasks/backup_restore.md).
+[restore prerequisites](../administration/backup_restore/index.md).
 
 ## Testing NFS
 

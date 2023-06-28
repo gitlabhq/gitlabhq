@@ -20,7 +20,7 @@ The following Rake tasks are available for use with GitLab:
 
 | Tasks                                                 | Description |
 |:------------------------------------------------------|:------------|
-| [Back up and restore](backup_restore.md)              | Back up, restore, and migrate GitLab instances between servers. |
+| [Back up and restore](../administration/backup_restore/index.md)              | Back up, restore, and migrate GitLab instances between servers. |
 | [Clean up](cleanup.md)                                | Clean up unneeded items from GitLab instances. |
 | [Development](../development/rake_tasks.md)           | Tasks for GitLab contributors. |
 | [Elasticsearch](../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) | Maintain Elasticsearch in a GitLab instance. |

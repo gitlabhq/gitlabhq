@@ -596,7 +596,7 @@ To downgrade GitLab after an upgrade:
 
    - Restoring is required to back out database data and schema changes (migrations) made as part of the upgrade.
    - GitLab backups must be restored to the exact same version and edition.
-   - [Follow the restore steps for Docker images](../raketasks/restore_gitlab.md#restore-for-docker-image-and-gitlab-helm-chart-installations), including
+   - [Follow the restore steps for Docker images](../administration/backup_restore/restore_gitlab.md#restore-for-docker-image-and-gitlab-helm-chart-installations), including
      stopping Puma and Sidekiq. Only the database must be restored, so add
      `SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state`
      to the `gitlab-backup restore` command line arguments.
@@ -609,7 +609,7 @@ You can create a GitLab backup with:
 docker exec -t <container name> gitlab-backup create
 ```
 
-Read more on how to [back up and restore GitLab](../raketasks/backup_restore.md).
+Read more on how to [back up and restore GitLab](../administration/backup_restore/index.md).
 
 NOTE:
 If configuration is provided entirely via the `GITLAB_OMNIBUS_CONFIG` environment variable
@@ -618,8 +618,8 @@ meaning no configuration is set directly in the `gitlab.rb` file, then there is 
 to back up the `gitlab.rb` file.
 
 WARNING:
-[Backing up the GitLab secrets file](../raketasks/backup_gitlab.md#storing-configuration-files) is required
-to avoid [complicated steps](../raketasks/backup_restore.md#when-the-secrets-file-is-lost) when recovering
+[Backing up the GitLab secrets file](../administration/backup_restore/backup_gitlab.md#storing-configuration-files) is required
+to avoid [complicated steps](../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost) when recovering
 GitLab from backup. The secrets file is stored at `/etc/gitlab/gitlab-secrets.json` inside the container, or
 `$GITLAB_HOME/config/gitlab-secrets.json` [on the container host](#set-up-the-volumes-location).
 

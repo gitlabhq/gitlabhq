@@ -58,7 +58,7 @@ const createTestMr = (customConfig) => {
     mergeImmediatelyDocsPath: 'path/to/merge/immediately/docs',
     transitionStateMachine: (transition) => eventHub.$emit('StateMachineValueChanged', transition),
     translateStateToMachine: () => this.transitionStateMachine(),
-    state: 'open',
+    state: 'readyToMerge',
     canMerge: true,
     mergeable: true,
     userPermissions: {
@@ -185,7 +185,9 @@ describe('ReadyToMerge', () => {
 
   describe('merge button text', () => {
     it('should return "Merge" when no auto merge strategies are available', () => {
-      createComponent({ mr: { availableAutoMergeStrategies: [] } });
+      createComponent({
+        mr: { availableAutoMergeStrategies: [] },
+      });
 
       expect(findMergeButton().text()).toBe('Merge');
     });
@@ -227,10 +229,10 @@ describe('ReadyToMerge', () => {
       expect(findMergeButton().props('disabled')).toBe(true);
     });
 
-    it('should be disabled if merge is not allowed', () => {
-      createComponent({ mr: { preventMerge: true } });
+    it('should not exist if merge is not allowed', () => {
+      createComponent({ mr: { state: 'checking' } });
 
-      expect(findMergeButton().props('disabled')).toBe(true);
+      expect(findMergeButton().exists()).toBe(false);
     });
 
     it('should be disabled when making request', async () => {
@@ -290,7 +292,7 @@ describe('ReadyToMerge', () => {
   describe('Merge Button Variant', () => {
     it('defaults to confirm class', () => {
       createComponent({
-        mr: { availableAutoMergeStrategies: [], mergeable: true },
+        mr: { availableAutoMergeStrategies: [] },
       });
 
       expect(findMergeButton().attributes('variant')).toBe('confirm');

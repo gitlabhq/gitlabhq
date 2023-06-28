@@ -72,7 +72,7 @@ When following the instructions on this page, you create this directory structur
 - `/home/git/repositories` - Bare repositories for all projects organized by
   namespace. This is where the Git repositories which are pushed/pulled are
   maintained for all projects. **This area contains critical data for projects.
-  [Keep a backup](../raketasks/backup_restore.md).**
+  [Keep a backup](../administration/backup_restore/index.md).**
 
 The default locations for repositories can be configured in `config/gitlab.yml`
 of GitLab and `config.yml` of GitLab Shell.

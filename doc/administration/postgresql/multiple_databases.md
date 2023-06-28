@@ -103,7 +103,7 @@ the other way around.
 1. For existing installations,
    [migrate the data](#migrate-existing-installations) first.
 
-1. [Back up GitLab](../../raketasks/backup_restore.md)
+1. [Back up GitLab](../../administration/backup_restore/index.md)
    in case of unforeseen issues.
 
 1. Stop GitLab:
@@ -157,7 +157,7 @@ the other way around.
 1. For existing installations,
    [migrate the data](#migrate-existing-installations) first.
 
-1. [Back up GitLab](../../raketasks/backup_restore.md)
+1. [Back up GitLab](../../administration/backup_restore/index.md)
    in case of unforeseen issues.
 
 1. Stop GitLab:

@@ -81,11 +81,6 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'data/deprecations/*.yml'
       run: echo "Changes to deprecation files detected. Checking deprecations..\n"; bundle exec rake gitlab:docs:check_deprecations
-    docs-removals:
-      tags: documentation
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: 'data/removals/*.yml'
-      run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals
     db-schema-changes:
       tags: database
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

@@ -40,49 +40,32 @@ For configuration removals, see the [Omnibus deprecation policy](../../administr
 
 For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).
 
-## Update the deprecations and removals documentation pages
+## Update the deprecations documentation pages
 
-The [deprecations](../../update/deprecations.md) and [removals](../../update/removals.md)
+The [deprecations](../../update/deprecations.md)
 documentation is generated from the YAML files located in
 [`gitlab/data/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data).
 
-To update the deprecations and removals pages when an entry is added,
+To update the deprecations page when an entry is added,
 edited, or removed:
 
 1. From the command line, navigate to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
-1. Create, edit, or remove the YAML file under [deprecations](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations)
-   or [removals](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/removals).
-1. Compile the deprecation or removals documentation with the appropriate command:
+1. Create, edit, or remove the YAML file under [`data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
+1. Compile the deprecation documentation:
 
-   - For deprecations:
-
-     ```shell
-     bin/rake gitlab:docs:compile_deprecations
-     ```
-
-   - For removals:
-
-     ```shell
-     bin/rake gitlab:docs:compile_removals
-     ```
+   ```shell
+   bin/rake gitlab:docs:compile_deprecations
+   ```
 
 1. If needed, you can verify the docs are up to date with:
 
-   - For deprecations:
-
-     ```shell
-     bin/rake gitlab:docs:check_deprecations
-     ```
-
-   - For removals:
-
-     ```shell
-     bin/rake gitlab:docs:check_removals
-     ```
+   ```shell
+   bin/rake gitlab:docs:check_deprecations
+   ```
 
 1. Commit the updated documentation and push the changes.
 1. Create a merge request using the [Deprecations](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Deprecations.md)
-   or [Removals](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Removals.md) templates.
+   template.
 
 Related Handbook pages:
 

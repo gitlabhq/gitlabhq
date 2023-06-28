@@ -40,7 +40,7 @@ installation.
 
 ## Backup and upgrade
 
-- [Back up and restore GitLab](../raketasks/backup_restore.md): Learn the different
+- [Back up and restore GitLab](../administration/backup_restore/index.md): Learn the different
   ways you can back up or restore GitLab.
 - [Upgrade GitLab](../update/index.md): Every 22nd of the month, a new feature-rich GitLab version
   is released. Learn how to upgrade to it, or to an interim release that contains a security fix.

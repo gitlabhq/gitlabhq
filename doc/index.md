@@ -39,7 +39,7 @@ Have a look at some of our most popular topics:
 | [GitLab groups](user/group/index.md)                                                       | Manage projects together. |
 | [Keyword reference for the `.gitlab-ci.yml` file](ci/yaml/index.md)                        | Available configuration options for `.gitlab-ci.yml` files. |
 | [Activate GitLab EE with a license](user/admin_area/license.md)                            | Activate GitLab Enterprise Edition functionality with a license. |
-| [Back up and restore GitLab](raketasks/backup_restore.md)                                  | Rake tasks for backing up and restoring GitLab self-managed instances. |
+| [Back up and restore GitLab](administration/backup_restore/index.md)                                  | Backing up and restoring GitLab self-managed instances. |
 | [GitLab release and maintenance policy](policy/maintenance.md)                             | Policies for version naming and cadence, and also upgrade recommendations. |
 | [Elasticsearch integration](integration/advanced_search/elasticsearch.md)                  | Integrate Elasticsearch with GitLab to enable advanced search. |
 | [Database settings for Linux package installations](https://docs.gitlab.com/omnibus/settings/database.html) | Database settings for self-managed instances installed using Linux packages. |

@@ -318,15 +318,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: cronjob:clusters_integrations_check_prometheus_health
-  :worker_name: Clusters::Integrations::CheckPrometheusHealthWorker
-  :feature_category: :incident_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:container_expiration_policy
   :worker_name: ContainerExpirationPolicyWorker
   :feature_category: :container_registry
@@ -560,15 +551,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-- :name: cronjob:metrics_dashboard_schedule_annotations_prune
-  :worker_name: Metrics::Dashboard::ScheduleAnnotationsPruneWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
@@ -3078,24 +3060,6 @@
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: metrics_dashboard_prune_old_annotations
-  :worker_name: Metrics::Dashboard::PruneOldAnnotationsWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: metrics_dashboard_sync_dashboards
-  :worker_name: Metrics::Dashboard::SyncDashboardsWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
   :tags: []

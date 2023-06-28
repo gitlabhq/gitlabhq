@@ -47,7 +47,7 @@ export default {
       };
     },
     shouldShowMergeImmediatelyDropdown() {
-      return this.isPipelineActive && !this.stateData.onlyAllowMergeIfPipelineSucceeds;
+      return this.isPipelineActive && !this.state.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeImmediatelyDangerous() {
       return false;

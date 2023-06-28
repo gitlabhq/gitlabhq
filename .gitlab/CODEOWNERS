@@ -20,12 +20,10 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /doc/**/*.jpg
 /doc/**/*.png
 /data/deprecations/*.yml
-/data/removals/**/*.yml
 
 ## Technical writing files that do not need `*` rule approval,
 ## but still require an approval from a TW team DRI for each file.
 /data/deprecations/templates/ @marcel.amirault @sarahgerman @gitlab-org/tw-leadership
-/data/removals/templates/ @marcel.amirault @sarahgerman @gitlab-org/tw-leadership
 .markdownlint.yml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.markdownlint/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
@@ -392,7 +390,6 @@ lib/gitlab/checks/**
 ^[Documentation Directories] @gl-docsteam
 /doc/
 /data/deprecations/
-/data/removals/
 
 ^[Documentation Pages]
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!

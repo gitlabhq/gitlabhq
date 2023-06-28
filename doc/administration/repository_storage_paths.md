@@ -73,7 +73,7 @@ For repository storage paths:
 
 ### Configure for backups
 
-For [backups](../raketasks/backup_restore.md) to work correctly:
+For [backups](../administration/backup_restore/index.md) to work correctly:
 
 - The repository storage path cannot be a mount point.
 - The GitLab user must have correct permissions for the parent directory of the path.

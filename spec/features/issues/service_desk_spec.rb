@@ -15,6 +15,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
 
     project.add_maintainer(user)
     sign_in(user)
+    stub_feature_flags(service_desk_vue_list: false)
   end
 
   describe 'navigation to service desk' do
@@ -172,6 +173,35 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
             # NOTE: here, "enabled" is not used in the sense of "ServiceDesk::Enabled?"
             expect(page).to have_text('Service Desk is not enabled')
             expect(page).to have_text('For help setting up the Service Desk for your instance, please contact an administrator.')
+          end
+        end
+      end
+    end
+
+    context 'when service_desk_vue_list feature flag is enabled' do
+      before do
+        stub_feature_flags(service_desk_vue_list: true)
+      end
+
+      context 'when there are issues' do
+        let_it_be(:project) { create(:project, :private, service_desk_enabled: true) }
+        let_it_be(:other_user) { create(:user) }
+        let_it_be(:service_desk_issue) { create(:issue, project: project, title: 'Help from email', author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
+        let_it_be(:other_user_issue) { create(:issue, project: project, author: other_user) }
+
+        describe 'issues list' do
+          before do
+            visit service_desk_project_issues_path(project)
+          end
+
+          it 'only displays issues created by support bot' do
+            expect(page).to have_selector('.issues-list .issue', count: 1)
+            expect(page).to have_text('Help from email')
+            expect(page).not_to have_text('Unrelated issue')
+          end
+
+          it 'shows service_desk_reply_to in issues list' do
+            expect(page).to have_text('by GitLab Support Bot')
           end
         end
       end

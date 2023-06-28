@@ -3,11 +3,12 @@ import { NodeViewWrapper } from '@tiptap/vue-2';
 import { GlLink } from '@gitlab/ui';
 
 export default {
-  name: 'DetailsWrapper',
+  name: 'ReferenceWrapper',
   components: {
     NodeViewWrapper,
     GlLink,
   },
+  inject: ['contentEditor'],
   props: {
     node: {
       type: Object,
@@ -18,6 +19,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      href: '#',
+    };
   },
   computed: {
     text() {
@@ -33,6 +39,11 @@ export default {
       return gon.current_username === this.text.substring(1);
     },
   },
+  async mounted() {
+    const text = this.node.attrs.originalText || this.node.attrs.text;
+    const { href } = await this.contentEditor.resolveReference(text);
+    this.href = href || '';
+  },
 };
 </script>
 <template>
@@ -40,7 +51,7 @@ export default {
     <span v-if="isCommand">{{ text }}</span>
     <gl-link
       v-else
-      href="#"
+      :href="href"
       tabindex="-1"
       class="gfm gl-cursor-text"
       :class="{

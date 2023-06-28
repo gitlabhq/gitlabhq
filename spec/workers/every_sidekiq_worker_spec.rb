@@ -367,8 +367,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MergeRequests::SyncCodeOwnerApprovalRulesWorker' => 3,
         'MergeTrains::RefreshWorker' => 3,
         'MergeWorker' => 3,
-        'Metrics::Dashboard::PruneOldAnnotationsWorker' => 3,
-        'Metrics::Dashboard::SyncDashboardsWorker' => 3,
         'MigrateExternalDiffsWorker' => 3,
         'Onboarding::IssueCreatedWorker' => 3,
         'Onboarding::PipelineCreatedWorker' => 3,

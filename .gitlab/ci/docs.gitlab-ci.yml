@@ -123,4 +123,3 @@ docs-lint deprecations-and-removals:
   needs: []
   script:
     - bundle exec rake gitlab:docs:check_deprecations
-    - bundle exec rake gitlab:docs:check_removals

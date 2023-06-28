@@ -12,7 +12,7 @@ of a package.
 WARNING:
 You must at least have a database backup created under the version you are
 downgrading to. Ideally, you should have a
-[full backup archive](../../raketasks/backup_restore.md)
+[full backup archive](../../administration/backup_restore/index.md)
 on hand.
 
 The example below demonstrates the downgrade procedure when downgrading between minor
@@ -79,5 +79,5 @@ Steps:
    sudo gitlab-ctl reconfigure
    ```
 
-1. [Restore GitLab](../../raketasks/restore_gitlab.md#restore-for-omnibus-gitlab-installations)
+1. [Restore GitLab](../../administration/backup_restore/restore_gitlab.md#restore-for-omnibus-gitlab-installations)
    to complete the downgrade.

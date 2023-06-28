@@ -347,8 +347,15 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
     context 'when the latest pipeline is running in the parent project' do
       before do
-        Ci::CreatePipelineService.new(project, user, ref: 'feature')
-          .execute(:merge_request_event, merge_request: merge_request)
+        create(:ci_pipeline,
+          source: :merge_request_event,
+          project: project,
+          ref: 'feature',
+          sha: merge_request.diff_head_sha,
+          user: user,
+          merge_request: merge_request,
+          status: :running)
+        merge_request.update_head_pipeline
       end
 
       context 'when the previous pipeline failed in the fork project' do

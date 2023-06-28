@@ -215,7 +215,7 @@ secrets file (`gitlab-secrets.json`).
 
 Automatic resolution is not yet implemented. If you have values that
 cannot be decrypted, you can follow steps to reset them, see our
-documentation on what to do [when the secrets file is lost](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost).
+documentation on what to do [when the secrets file is lost](../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost).
 
 This can take a very long time, depending on the size of your
 database, as it checks all rows in all tables.

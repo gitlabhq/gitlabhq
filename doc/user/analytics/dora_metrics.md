@@ -43,7 +43,7 @@ High deployment frequency means you can get feedback sooner and iterate faster t
 ### How deployment frequency is calculated
 
 In GitLab, Deployment frequency is measured by the average number of deployments per day to a given environment, based on the deployment's end time (its `finished_at` property).
-GitLab calculates the deployment frequency from the number of finished deployments on the given day.
+GitLab calculates the deployment frequency from the number of finished deployments on the given day. Only successful deployments (`Deployment.statuses = success`) are counted.
 
 The calculation takes into account the production `environment tier` or the environments named `production/prod`. The environment must be part of the production deployment tier for its deployment information to appear on the graphs.
 

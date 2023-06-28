@@ -754,16 +754,16 @@ Read more on configuring an
 
 ## Backup and restore
 
-GitLab provides [a tool to back up](../../raketasks/backup_restore.md)
+GitLab provides [a tool to back up](../../administration/backup_restore/index.md)
 and restore its Git data, database, attachments, LFS objects, and so on.
 
 Some important things to know:
 
 - The backup/restore tool **does not** store some configuration files, like secrets; you
-  must [configure this yourself](../../raketasks/backup_gitlab.md#storing-configuration-files).
+  must [configure this yourself](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - By default, the backup files are stored locally, but you can
-  [backup GitLab using S3](../../raketasks/backup_gitlab.md#using-amazon-s3).
-- You can [exclude specific directories form the backup](../../raketasks/backup_gitlab.md#excluding-specific-directories-from-the-backup).
+  [backup GitLab using S3](../../administration/backup_restore/backup_gitlab.md#using-amazon-s3).
+- You can [exclude specific directories form the backup](../../administration/backup_restore/backup_gitlab.md#excluding-specific-directories-from-the-backup).
 
 ### Backing up GitLab
 
@@ -781,9 +781,9 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 ### Restoring GitLab from a backup
 
-To restore GitLab, first review the [restore documentation](../../raketasks/backup_restore.md#restore-gitlab),
+To restore GitLab, first review the [restore documentation](../../administration/backup_restore/index.md#restore-gitlab),
 and primarily the restore prerequisites. Then, follow the steps under the
-[Linux package installations section](../../raketasks/restore_gitlab.md#restore-for-omnibus-gitlab-installations).
+[Linux package installations section](../../administration/backup_restore/restore_gitlab.md#restore-for-omnibus-gitlab-installations).
 
 ## Updating GitLab
 

@@ -465,7 +465,7 @@ a GitLab global administrator disable 2FA for your account:
 
 ## Information for GitLab administrators **(FREE SELF)**
 
-- Take care that 2FA keeps working after [restoring a GitLab backup](../../../raketasks/backup_restore.md).
+- Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/index.md).
 - To ensure 2FA authorizes correctly with a time-based one-time password (TOTP) server, synchronize your GitLab
   server's time using a service like NTP. Otherwise, authorization can always fail because of time differences.
 - The GitLab WebAuthn implementation does _not_ work when the GitLab instance is accessed from multiple hostnames

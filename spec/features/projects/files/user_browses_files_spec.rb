@@ -134,7 +134,7 @@ RSpec.describe "User browses files", :js, feature_category: :groups_and_projects
         click_link("Rake tasks")
 
         expect(page).to have_current_path(project_tree_path(project, "markdown/doc/raketasks"), ignore_query: true)
-        expect(page).to have_content("backup_restore.md").and have_content("maintenance.md")
+        expect(page).to have_content("maintenance.md")
 
         click_link("maintenance.md")
 

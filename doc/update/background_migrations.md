@@ -263,7 +263,7 @@ version and manually ensuring that the batched migrations complete successfully.
 
 #### Roll back and follow the required upgrade path
 
-1. [Rollback and restore the previously installed version](../raketasks/backup_restore.md)
+1. [Rollback and restore the previously installed version](../administration/backup_restore/index.md)
 1. Update to either 14.0.5 or 14.1 **before** updating to 14.2+
 1. [Check the status](#check-the-status-of-batched-background-migrations) of the batched background migrations and
 make sure they are all marked as finished before attempting to upgrade again. If any remain marked as active,

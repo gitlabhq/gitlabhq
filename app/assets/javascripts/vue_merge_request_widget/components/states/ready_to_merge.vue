@@ -172,14 +172,11 @@ export default {
     };
   },
   computed: {
-    stateData() {
-      return this.state;
-    },
     hasCI() {
-      return this.stateData.hasCI || this.stateData.hasCi;
+      return this.state.hasCI || this.state.hasCi;
     },
     isAutoMergeAvailable() {
-      return !isEmpty(this.stateData.availableAutoMergeStrategies);
+      return !isEmpty(this.state.availableAutoMergeStrategies);
     },
     pipeline() {
       return this.state.headPipeline;
@@ -263,7 +260,7 @@ export default {
       );
     },
     hasPipelineMustSucceedConflict() {
-      return !this.hasCI && this.stateData.onlyAllowMergeIfPipelineSucceeds;
+      return !this.hasCI && this.state.onlyAllowMergeIfPipelineSucceeds;
     },
     isNotClosed() {
       return this.mr.state !== STATUS_CLOSED;
@@ -296,12 +293,7 @@ export default {
       return this.preferredAutoMergeStrategy === MT_MERGE_STRATEGY && this.isPipelineFailed;
     },
     shouldShowMergeControls() {
-      return (
-        (this.isMergeAllowed || this.isAutoMergeAvailable) &&
-        (this.stateData.userPermissions?.canMerge || this.mr.canMerge) &&
-        !this.mr.mergeOngoing &&
-        !this.mr.autoMergeEnabled
-      );
+      return this.state.userPermissions?.canMerge && this.mr.state === 'readyToMerge';
     },
     sourceBranchDeletedText() {
       const isPreMerge = this.mr.state !== STATUS_MERGED;
@@ -326,6 +318,11 @@ export default {
       return {
         title: this.autoMergePopoverSettings.title,
       };
+    },
+  },
+  watch: {
+    'mr.state': function mrStateWatcher() {
+      this.isMakingRequest = false;
     },
   },
   mounted() {
@@ -415,8 +412,6 @@ export default {
           }
 
           this.updateGraphqlState();
-
-          this.isMakingRequest = false;
         })
         .catch(() => {
           this.isMakingRequest = false;
@@ -665,22 +660,7 @@ export default {
                   >
                     {{ __('Merge immediately') }}
                   </gl-dropdown-item>
-                  <merge-immediately-confirmation-dialog
-                    ref="confirmationDialog"
-                    :docs-url="mr.mergeImmediatelyDocsPath"
-                    @mergeImmediately="onMergeImmediatelyConfirmation"
-                  />
                 </gl-dropdown>
-                <merge-train-failed-pipeline-confirmation-dialog
-                  :visible="isPipelineFailedModalVisibleMergeTrain"
-                  @startMergeTrain="onStartMergeTrainConfirmation"
-                  @cancel="isPipelineFailedModalVisibleMergeTrain = false"
-                />
-                <merge-failed-pipeline-confirmation-dialog
-                  :visible="isPipelineFailedModalVisibleNormalMerge"
-                  @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
-                  @cancel="isPipelineFailedModalVisibleNormalMerge = false"
-                />
               </gl-button-group>
               <template v-if="showAutoMergeHelperText">
                 <div
@@ -758,6 +738,21 @@ export default {
           </div>
         </div>
       </div>
+      <merge-immediately-confirmation-dialog
+        ref="confirmationDialog"
+        :docs-url="mr.mergeImmediatelyDocsPath"
+        @mergeImmediately="onMergeImmediatelyConfirmation"
+      />
+      <merge-train-failed-pipeline-confirmation-dialog
+        :visible="isPipelineFailedModalVisibleMergeTrain"
+        @startMergeTrain="onStartMergeTrainConfirmation"
+        @cancel="isPipelineFailedModalVisibleMergeTrain = false"
+      />
+      <merge-failed-pipeline-confirmation-dialog
+        :visible="isPipelineFailedModalVisibleNormalMerge"
+        @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
+        @cancel="isPipelineFailedModalVisibleNormalMerge = false"
+      />
     </template>
   </div>
 </template>

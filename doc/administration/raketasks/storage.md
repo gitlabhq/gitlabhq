@@ -244,9 +244,9 @@ If destroying the project generates a stack trace relating to encryption or the 
 1. [Verify your GitLab secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 1. If the affected projects have secrets that cannot be decrypted it will be necessary to remove those specific secrets.
-   [Our documentation for dealing with lost secrets](../../raketasks/backup_restore.md#when-the-secrets-file-is-lost)
+   [Our documentation for dealing with lost secrets](../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost)
    is for loss of all secrets, but it's possible for specific projects to be affected. For example,
-   to [reset specific runner registration tokens](../../raketasks/backup_restore.md#reset-runner-registration-tokens)
+   to [reset specific runner registration tokens](../../administration/backup_restore/backup_gitlab.md#reset-runner-registration-tokens)
    for a specific project ID:
 
    ```sql

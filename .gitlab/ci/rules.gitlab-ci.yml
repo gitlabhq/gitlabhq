@@ -226,9 +226,7 @@
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
-  - "doc/update/removals.md"
   - "data/deprecations/**/*"
-  - "data/removals/**/*"
   - "tooling/docs/**/*"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
 

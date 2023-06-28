@@ -56,12 +56,12 @@ site you are about to failover to:
 rsync --archive --perms --delete root@<geo-primary>:/var/opt/gitlab/gitlab-rails/shared/registry/. /var/opt/gitlab/gitlab-rails/shared/registry
 ```
 
-Alternatively, you can [back up](../../../raketasks/backup_restore.md#back-up-gitlab)
+Alternatively, you can [back up](../../../administration/backup_restore/index.md#back-up-gitlab)
 the container registry on the primary site and restore it onto the secondary
 site:
 
 1. On your primary site, back up only the registry and
-   [exclude specific directories from the backup](../../../raketasks/backup_gitlab.md#excluding-specific-directories-from-the-backup):
+   [exclude specific directories from the backup](../../../administration/backup_restore/backup_gitlab.md#excluding-specific-directories-from-the-backup):
 
    ```shell
    # Create a backup in the /var/opt/gitlab/backups folder
@@ -71,7 +71,7 @@ site:
 1. Copy the backup tarball generated from your primary site to the `/var/opt/gitlab/backups` folder
 on your secondary site.
 
-1. On your secondary site, restore the registry following the [Restore GitLab](../../../raketasks/backup_restore.md#restore-gitlab)
+1. On your secondary site, restore the registry following the [Restore GitLab](../../../administration/backup_restore/index.md#restore-gitlab)
 documentation.
 
 ## Preflight checks

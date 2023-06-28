@@ -77,9 +77,9 @@ the current status of these issues, refer to the referenced issues and epics.
 
 Gitaly Cluster does not support snapshot backups. Snapshot backups can cause issues where the Praefect database becomes
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information
-during a restore, you should use the [official backup and restore Rake tasks](../../raketasks/backup_restore.md).
+during a restore, you should use the [official backup and restore Rake tasks](../../administration/backup_restore/index.md).
 
-The [incremental backup method](../../raketasks/backup_gitlab.md#incremental-repository-backups)
+The [incremental backup method](../../administration/backup_restore/backup_gitlab.md#incremental-repository-backups)
 can be used to speed up Gitaly Cluster backups.
 
 If you are unable to use either method, contact customer support for restoration help.
@@ -174,7 +174,7 @@ best suited by using Gitaly Cluster.
 
 ### Backing up repositories
 
-When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../raketasks/backup_restore.md#prevent-writes-and-copy-the-git-repository-data)
+When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../../administration/backup_restore/backup_gitlab.md#prevent-writes-and-copy-the-git-repository-data)
 while copying repository data.
 
 ## Gitaly Cluster

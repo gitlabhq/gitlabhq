@@ -130,7 +130,7 @@ The routine differs, depending on whether you deployed with the Linux package or
 
 When backing up (single node) GitLab server installed using the Linux package, you can use a single Rake task.
 
-Learn about [backing up Linux package or Helm variations](../raketasks/backup_restore.md).
+Learn about [backing up Linux package or Helm variations](../administration/backup_restore/index.md).
 This process backs up your entire instance, but does not back up the configuration files. Ensure those are backed up separately.
 Keep your configuration files and backup archives in a separate location to ensure the encryption keys are not kept with the encrypted data.
 
@@ -163,7 +163,7 @@ For more information about GitLab SaaS backups, see our [Backup FAQ page](https:
 ### Alternative backup strategies
 
 In some situations the Rake task for backups may not be the most optimal solution. Here are some
-[alternatives](../raketasks/backup_restore.md) to consider if the Rake task does not work for you.
+[alternatives](../administration/backup_restore/index.md) to consider if the Rake task does not work for you.
 
 #### Option 1: File system snapshot
 

@@ -155,7 +155,7 @@ Prerequisites:
 
 To do it:
 
-1. Optional (but recommended). [Create a backup](../../../raketasks/backup_restore.md) before
+1. Optional (but recommended). [Create a backup](../../../administration/backup_restore/index.md) before
    attempting any changes in the console.
 1. Open the [Rails console](../../../administration/operations/rails_console.md).
 1. Run the following script. Make sure to change `project`, `admin_user`, and `target_project` to

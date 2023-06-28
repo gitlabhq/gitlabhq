@@ -161,3 +161,17 @@ You can provide your own container image, which can run as any Linux user ID. It
 GitLab uses the Linux root group ID permission to create, update, or delete files in a container. The container runtime used by the Kubernetes cluster must ensure all containers have a default Linux group ID of `0`.
 
 If you have a container image that does not support arbitrary user IDs, you cannot create, update, or delete files in a workspace. To create a container image that supports arbitrary user IDs, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+
+## Troubleshooting
+
+When working with workspaces, you might encounter the following issues.
+
+### `Failed to renew lease` when creating a workspace
+
+You might not be able to create a workspace due to a known issue in the GitLab agent for Kubernetes. The following error message might appear in the agent's log:
+
+```plaintext
+{"level":"info","time":"2023-01-01T00:00:00.000Z","msg":"failed to renew lease gitlab-agent-remote-dev-dev/agent-123XX-lock: timed out waiting for the condition\n","agent_id":XXXX}
+```
+
+This issue occurs when an agent instance cannot renew its leadership lease, which results in the shutdown of leader-only modules including the `remote_development` module. The workaround is to restart the agent instance.
