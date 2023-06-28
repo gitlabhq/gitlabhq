@@ -1013,7 +1013,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'
     - 'ee/spec/models/approval_wrapped_any_approver_rule_spec.rb'
-    - 'ee/spec/models/approval_wrapped_code_owner_rule_spec.rb'
     - 'ee/spec/models/approval_wrapped_rule_spec.rb'
     - 'ee/spec/models/approvals/scan_finding_wrapped_rule_set_spec.rb'
     - 'ee/spec/models/approvals/wrapped_rule_set_spec.rb'
