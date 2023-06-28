@@ -29,7 +29,7 @@ module Support
                   message: exception.message
                 }
 
-                hash[:backtrace] = notification.formatted_backtrace if notification.respond_to?(:backtrace)
+                hash[:backtrace] = notification.formatted_backtrace if notification.respond_to?(:formatted_backtrace)
 
                 if notification.respond_to?(:message_lines)
                   hash[:message_lines] = strip_ansi_codes(notification.message_lines)

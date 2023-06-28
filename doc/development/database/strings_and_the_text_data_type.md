@@ -308,7 +308,7 @@ end
 
 If you have to clean up a text column for a really [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
 (for example, the `artifacts` in `ci_builds`), your background migration goes on for a while and
-it needs an additional [batched background migration cleaning up](batched_background_migrations.md#cleaning-up)
+it needs an additional [batched background migration cleaning up](batched_background_migrations.md#cleaning-up-a-batched-background-migration)
 in the release after adding the data migration.
 
 In that rare case you need 3 releases end-to-end:

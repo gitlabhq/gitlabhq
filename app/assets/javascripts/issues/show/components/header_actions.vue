@@ -13,7 +13,7 @@ import * as Sentry from '@sentry/browser';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { STATUS_CLOSED, TYPE_INCIDENT, TYPE_ISSUE, IssuableTypeText } from '~/issues/constants';
+import { STATUS_CLOSED, TYPE_ISSUE, IssuableTypeText } from '~/issues/constants';
 import {
   ISSUE_STATE_EVENT_CLOSE,
   ISSUE_STATE_EVENT_REOPEN,
@@ -22,7 +22,7 @@ import {
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { getCookie, parseBoolean, setCookie, isLoggedIn } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { s__, __, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -172,12 +172,9 @@ export default {
       return this.openState === STATUS_CLOSED;
     },
     issueTypeText() {
-      const issueTypeTexts = {
-        [TYPE_ISSUE]: s__('HeaderAction|issue'),
-        [TYPE_INCIDENT]: s__('HeaderAction|incident'),
-      };
+      const { issueType } = this;
 
-      return issueTypeTexts[this.issueType] ?? this.issueType;
+      return IssuableTypeText[issueType] ?? issueType;
     },
     buttonText() {
       return this.isClosed
@@ -192,11 +189,11 @@ export default {
     },
     dropdownText() {
       return sprintf(__('%{issueType} actions'), {
-        issueType: capitalizeFirstCharacter(this.issueType),
+        issueType: capitalizeFirstCharacter(this.issueTypeText),
       });
     },
     newIssueTypeText() {
-      return sprintf(__('New related %{issueType}'), { issueType: this.issueType });
+      return sprintf(__('New related %{issueType}'), { issueType: this.issueTypeText });
     },
     showToggleIssueStateButton() {
       const canClose = !this.isClosed && this.canUpdateIssue;
@@ -217,7 +214,7 @@ export default {
     },
     copyMailAddressText() {
       return sprintf(__('Copy %{issueType} email address'), {
-        issueType: IssuableTypeText[this.issueType],
+        issueType: this.issueTypeText,
       });
     },
     isMrSidebarMoved() {

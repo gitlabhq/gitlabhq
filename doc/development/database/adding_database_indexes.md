@@ -252,7 +252,7 @@ Sometimes it is necessary to add an index to support a [batched background migra
 It is commonly done by creating two [post deployment migrations](post_deployment_migrations.md):
 
 1. Add the new index, often a [temporary index](#temporary-indexes).
-1. [Queue the batched background migration](batched_background_migrations.md#queueing).
+1. [Queue the batched background migration](batched_background_migrations.md#enqueue-a-batched-background-migration).
 
 In most cases, no additional work is needed. The new index is created and is used
 as expected when queuing and executing the batched background migration.

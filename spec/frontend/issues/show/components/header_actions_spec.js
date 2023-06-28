@@ -1,12 +1,20 @@
 import Vue, { nextTick } from 'vue';
-import { GlDropdownItem, GlLink, GlModal, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlLink, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
-import { STATUS_CLOSED, STATUS_OPEN, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
+import {
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  TYPE_INCIDENT,
+  TYPE_ISSUE,
+  TYPE_TEST_CASE,
+  TYPE_ALERT,
+  TYPE_MERGE_REQUEST,
+} from '~/issues/constants';
 import DeleteIssueModal from '~/issues/show/components/delete_issue_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
@@ -14,6 +22,7 @@ import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show
 import issuesEventHub from '~/issues/show/event_hub';
 import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutation.graphql';
 import * as urlUtility from '~/lib/utils/url_utility';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import eventHub from '~/notes/event_hub';
 import createStore from '~/notes/stores';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -689,5 +698,28 @@ describe('HeaderActions component', () => {
         });
       },
     );
+  });
+
+  describe('issue type text', () => {
+    it.each`
+      issueType             | expectedText
+      ${TYPE_ISSUE}         | ${'issue'}
+      ${TYPE_INCIDENT}      | ${'incident'}
+      ${TYPE_MERGE_REQUEST} | ${'merge request'}
+      ${TYPE_ALERT}         | ${'alert'}
+      ${TYPE_TEST_CASE}     | ${'test case'}
+      ${'unknown'}          | ${'unknown'}
+    `('$issueType', ({ issueType, expectedText }) => {
+      wrapper = mountComponent({
+        movedMrSidebarEnabled: true,
+        props: { issueType, issuableEmailAddress: 'mock-email-address' },
+      });
+
+      expect(wrapper.findComponent(GlDropdown).attributes('text')).toBe(
+        `${capitalizeFirstCharacter(expectedText)} actions`,
+      );
+      expect(findDropdownBy('copy-email').text()).toBe(`Copy ${expectedText} email address`);
+      expect(findDesktopDropdownItems().at(0).text()).toBe(`New related ${expectedText}`);
+    });
   });
 });

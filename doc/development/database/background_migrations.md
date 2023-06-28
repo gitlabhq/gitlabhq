@@ -54,7 +54,7 @@ way that would cause conflicts.
 
 ## Accessing data for multiple databases
 
-See [Accessing data for multiple databases of Batched Background Migrations](batched_background_migrations.md#accessing-data-for-multiple-databases) for more details.
+See [Accessing data for multiple databases of Batched Background Migrations](batched_background_migrations.md#access-data-for-multiple-databases) for more details.
 
 ## Idempotence
 

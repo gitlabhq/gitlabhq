@@ -381,7 +381,7 @@ when migrating a column in a large table (for example, `issues`). Background
 migrations spread the work / load over a longer time period, without slowing
 down deployments.
 
-For more information, see [the documentation on cleaning up batched background migrations](batched_background_migrations.md#cleaning-up).
+For more information, see [the documentation on cleaning up batched background migrations](batched_background_migrations.md#cleaning-up-a-batched-background-migration).
 
 ## Adding indexes
 

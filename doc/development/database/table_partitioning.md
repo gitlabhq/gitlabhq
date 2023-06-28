@@ -256,7 +256,7 @@ class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.1]
 end
 ```
 
-This step [queues a batched background migration](batched_background_migrations.md#queueing) internally with BATCH_SIZE and SUB_BATCH_SIZE as `50,000` and `2,500`. Refer [Batched Background migrations guide](batched_background_migrations.md) for more details.
+This step [queues a batched background migration](batched_background_migrations.md#enqueue-a-batched-background-migration) internally with BATCH_SIZE and SUB_BATCH_SIZE as `50,000` and `2,500`. Refer [Batched Background migrations guide](batched_background_migrations.md) for more details.
 
 ### Step 3: Post-backfill cleanup (Release N+1)
 

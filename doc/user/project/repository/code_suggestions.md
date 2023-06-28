@@ -12,14 +12,16 @@ type: index, reference
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1.
-> - [Default to third-party AI services](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
+> - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../policy/experiment-beta-support.md#beta) on self-managed GitLab.
+> - Code suggestions in the GitLab WebIDE enabled for all GitLab-hosted customers.
+> - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
 Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
-Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your feedback.
+Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your [feedback](#feedback).
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -27,7 +29,7 @@ Code Suggestions are available:
 
 - To users of both GitLab SaaS and self-managed GitLab.
 - In Visual Studio Code when you have the GitLab Workflow extension installed.
-- As Experiments for [additional IDEs](#enable-code-suggestions-in-other-ides-and-editors).
+- [Support for additional IDE extensions](https://gitlab.com/groups/gitlab-org/-/epics/10542) is proposed.
 
 <div class="video-fallback">
   <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">View an end-to-end demo of Code Suggestions in VS Code</a>.
@@ -43,14 +45,22 @@ Learn about [data usage when using Code Suggestions](#code-suggestions-data-usag
 
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 
-Language support varies depending on which AI model serves Code Suggestions. To use Code Suggestions entirely within GitLab cloud infrastructure, disable third-party AI services. To receive higher quality suggestions, [enable third-party AI services](#third-party-ai-services-controls).
+The best results from Code Suggestions are expected [for languages the Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_coding_languages) directly support:
 
-The best results from Code Suggestions are expected for these languages:
+- Go
+- Google SQL
+- Java
+- JavaScript
+- Python
+- TypeScript
 
-- **Third-party AI services (Google Codey)**: Go, Google Cloud CLI, Google SQL, Java, JavaScript, Kubernetes Resource Model (KRM), Python, Terraform, TypeScript.
-- **GitLab first-party AI model**: C/C++, C#, Go, Java, JavaScript, Python, PHP, Ruby, Rust, Scala, TypeScript.
+ Supported [code infrastructure interfaces](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) include: 
 
-Suggestions may be mixed for other languages. Using natural language code comments to request completions may also not function as expected.
+- Google Cloud CLI
+- Kubernetes Resource Model (KRM)
+- Terraform
+
+Suggestion quality may be mixed for other languages. Using natural language code comments to request completions may also not function as expected.
 
 ## Enable Code Suggestions on GitLab SaaS **(FREE SAAS)**
 
@@ -88,7 +98,7 @@ Then, you will:
 
 1. Enable Code Suggestions for your SaaS account.
 1. Enable Code Suggestions for the instance.
-1. Request early access to the Code Suggestions Beta.
+1. [Request early access](#request-access-to-code-suggestions) to the Code Suggestions Beta.
 
 ### Enable Code Suggestions for your SaaS account
 
@@ -107,8 +117,7 @@ You must enable Code Suggestions for the instance. When you do this, you:
 
 - Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 - Acknowledge that GitLab:
-  - Sends data from the instance, including personal data, to Google for cloud hosting.
-  - Might send data to third-party AI providers.
+  - Sends data from the instance, including personal data, to GitLab.com infrastructure.
 
 To enable Code Suggestions for your self-managed GitLab instance:
 
@@ -135,7 +144,7 @@ on self-managed instances. To request access:
    and tag your customer success manager.
 
 After GitLab has provisioned access to Code Suggestions for your instance,
-the users in your instance can now enable Code Suggestions in VS Code.
+the users in your instance can now enable Code Suggestions.
 
 ## Enable Code Suggestions in other IDEs and editors
 
@@ -162,45 +171,33 @@ To use Code Suggestions:
 
 Suggestions are best when writing new code. Editing existing functions or 'fill in the middle' of a function may not perform as expected.
 
-GitLab is making improvements to the Code Suggestions underlying AI model weekly to improve the quality of suggestions. AI is non-deterministic, so you may not get the same suggestion week-to-week.
-
-## Third-party AI services controls
-
-Organizations can opt to use Code Suggestions entirely within GitLab cloud infrastructure. This option can be controlled with the top-level group [Third-party AI setting](../../group/manage.md#enable-third-party-ai-features).
-
-Having the third-party AI setting enabled will allow Code Suggestions to use third-party AI services, which is likely to produce higher quality results. Please note that language support varies between the two options and will change over time.
-
-To use Code Suggestions entirely within GitLab’s cloud infrastructure, disable third-party AI services. You can disable Code Suggestions entirely in [your user profile settings](#enable-code-suggestions-for-an-individual-user).
-
-## Stability and performance
+GitLab is making improvements to the Code Suggestions to improve the quality. AI is non-deterministic, so you may not get the same suggestion every time with the same input.
 
 This feature is currently in [Beta](../../../policy/experiment-beta-support.md#beta).
-While the Code Suggestions inference API operates completely within the GitLab.com enterprise infrastructure,
-we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime
+Code Suggestions depends on both Google Vertex AI Codey APIs and the GitLab Code Suggestions service. We expect a 
+high demand for this Beta feature, which may cause degraded performance or unexpected downtime
 of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to
 mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
 
 ## Code Suggestions data usage
 
-Code Suggestions is a generative artificial intelligence (AI) model hosted on GitLab.com.
+Code Suggestions is a generative artificial intelligence (AI) model.
 
 Your personal access token enables a secure API connection to GitLab.com.
-This API connection securely transmits a context window from VS Code to the Code Suggestions ML model for inference,
-and the generated suggestion is transmitted back to VS Code.
+This API connection securely transmits a context window from your IDE/editor to the Code Suggestions GitLab hosted service,
+and the generated suggestion is transmitted back to your IDE/editor.
 
-Depending on your settings, different ML models will be used to provide Code Suggestions. GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) for third-party AI powered Code Suggestions. The sections below refer only to GitLab first-party AI Model.
+GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview).
 
 ### Data privacy
 
-This section applies only to customers who have third-party AI services disabled.
-
-Code Suggestions operate completely in the GitLab.com infrastructure, providing the same level of
-[security](https://about.gitlab.com/security/) as any other feature of GitLab.com, and processing any personal
+Code Suggestions operate completely in the GitLab infrastructure, providing the same level of
+[security](https://about.gitlab.com/security/) as any other features of GitLab, and processing any personal
 data in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/).
 
 No new additional data is collected to enable this feature. The content of your GitLab hosted source code is
 not used as training data. Source code inference against the Code Suggestions model is not used to re-train the model.
-Your data also never leaves GitLab.com. All training and inference is done in GitLab.com infrastructure.
+Your data also never leaves GitLab. All training and inference is done in GitLab.com infrastructure.
 
 [Read more about the security of GitLab.com](https://about.gitlab.com/security/faq/).
 
@@ -214,26 +211,18 @@ GitLab.com's Code Suggestions service for processing.
 
 The Code Suggestion service then securely returns an AI-generated code suggestion.
 
-GitLab does not have any visibility into a self-managed customer's code other than
+Neither GitLab nor Google Vertex AI Codey APIs have any visibility into a self-managed customer's code other than
 what is sent to generate the code suggestion.
 
 ### Training data
 
-This section applies only to customers who have third-party AI services disabled.
+Code suggestions are routed through Google Vertex AI Codey APIs. Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [Responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
 
-Code Suggestions uses open source pre-trained base models from the
-[CodeGen family](https://openreview.net/forum?id=iaYcJKpY2B_) including CodeGen-MULTI and CodeGen-NL.
-We then re-train and fine-tune these base models with a customized open source dataset to enable multi-language
-support and additional use cases. This customized dataset contains non-preprocessed open source code in 13
-programming languages from [The Pile](https://pile.eleuther.ai/) and the
-[Google BigQuery source code dataset](https://cloud.google.com/blog/topics/public-datasets/github-on-bigquery-analyze-all-the-open-source-code).
-We then process this raw dataset against heuristics that aim to increase the quality of the dataset.
-
-The Code Suggestions model is not trained on GitLab customer or user data.
+Google Vertex AI Codey APIs are not trained on private non-public GitLab customer or user data.
 
 ## Progressive enhancement
 
-This feature is designed as a progressive enhancement to developers IDEs.
+This feature is designed as a progressive enhancement to developer's IDEs.
 Code Suggestions offer a completion if the machine learning engine can generate a recommendation.
 In the event of a connection issue or model inference failure, the feature gracefully degrades.
 Code Suggestions do not prevent you from writing code in your IDE.
@@ -247,25 +236,16 @@ To use Code Suggestions:
 - On GitLab.com, you must have an internet connection and be able to access GitLab.
 - In GitLab 16.1 and later, on self-managed GitLab, you must have an internet connection.
 
-[Self-managed support via a proxy to GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/10528) has been proposed.
-
 ### Model accuracy and quality
 
-Regardless of whether third-party AI services are enabled, while in Beta, Code Suggestions can generate low-quality, incomplete, and possibly insecure code.
+Code Suggestions can generate low-quality, incomplete, and possibly insecure code.
 We strongly encourage all beta users to leverage GitLab native
 [Code Quality Scanning](../../../ci/testing/code_quality.md) and
 [Security Scanning](../../application_security/index.md) capabilities.
 
-GitLab uses a customized open source dataset to fine-tune the model to support multiple languages.
-Based on the languages you code in, GitLab routes the request to a targeted inference and prompt engine
-to get relevant suggestions.
-
-GitLab is actively refining these models to:
-
-- Improve the quality of recommendations.
-- Add support for more languages.
-- Add protections to limit personal data, insecure code, and other unwanted behavior
-  that the model may have learned from training data.
+GitLab currently does not retrain Google Vertex AI Codey APIs. GitLab makes no claims 
+to the accuracy or quality of code suggestions generated by Google Vertex AI Codey API. 
+Read more about [Google Vertex AI foundation model capabilities](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models). 
 
 ## Known limitations
 
