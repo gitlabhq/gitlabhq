@@ -93,10 +93,9 @@ describe('AppComponent', () => {
             page: 2,
             filterGroupsBy: 'git',
             sortBy: 'created_desc',
-            archived: true,
           })
           .then(() => {
-            expect(getGroupsSpy).toHaveBeenCalledWith(1, 2, 'git', 'created_desc', true);
+            expect(getGroupsSpy).toHaveBeenCalledWith(1, 2, 'git', 'created_desc');
           });
       });
 
@@ -154,7 +153,6 @@ describe('AppComponent', () => {
           filterGroupsBy: 'foobar',
           sortBy: null,
           updatePagination: true,
-          archived: null,
         });
         return fetchPromise.then(() => {
           expect(vm.updateGroups).toHaveBeenCalledWith(mockSearchedGroups, true);
@@ -177,7 +175,6 @@ describe('AppComponent', () => {
           page: 2,
           filterGroupsBy: null,
           sortBy: null,
-          archived: true,
         });
 
         expect(vm.isLoading).toBe(true);
@@ -186,7 +183,6 @@ describe('AppComponent', () => {
           filterGroupsBy: null,
           sortBy: null,
           updatePagination: true,
-          archived: true,
         });
 
         return fetchPagePromise.then(() => {
@@ -471,7 +467,7 @@ describe('AppComponent', () => {
     it('calls API with expected params', () => {
       emitFetchFilteredAndSortedGroups();
 
-      expect(getGroupsSpy).toHaveBeenCalledWith(undefined, undefined, search, sort, undefined);
+      expect(getGroupsSpy).toHaveBeenCalledWith(undefined, undefined, search, sort);
     });
 
     it('updates pagination', () => {

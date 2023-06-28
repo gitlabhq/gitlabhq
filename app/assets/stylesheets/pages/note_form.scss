@@ -245,24 +245,21 @@ table {
 .diff-file,
 .commit-diff {
   .discussion-reply-holder {
-    background-color: $gray-light;
     border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
-    padding: $gl-padding;
+    padding: 0 $gl-padding $gl-padding-12 $gl-padding;
     border-top: 1px solid $gray-50;
 
     + .new-note {
-      background-color: $gray-light;
       border-top: 1px solid $gray-50;
     }
 
     &.is-replying {
-      padding-bottom: $gl-padding;
-      background-color: $white;
+      padding-top: $gl-padding-12;
     }
 
     &.internal-note,
     &.internal-note.is-replying {
-      background-color: $orange-50;
+      padding-top: $gl-padding-12 !important;
     }
 
     .user-avatar-link {

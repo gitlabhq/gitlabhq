@@ -17,6 +17,10 @@ module Gitlab
             @variable = { key: key, value: value, public: public, file: file, masked: masked, raw: raw }
           end
 
+          def key
+            @variable.fetch(:key)
+          end
+
           def value
             @variable.fetch(:value)
           end

@@ -106,6 +106,7 @@ different actions. See the following table for all available scopes.
 | `openid`           | Grants permission to authenticate with GitLab using [OpenID Connect](openid_connect_provider.md). Also gives read-only access to the user's profile and group memberships. |
 | `profile`          | Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            | Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
+| `create_runner`    | Grants permission to create runners. |
 
 At any time you can revoke any access by selecting **Revoke**.
 

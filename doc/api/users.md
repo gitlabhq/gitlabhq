@@ -2244,6 +2244,7 @@ Prerequisites:
 
 - You must be an administrator or have the Owner role of the target namespace or project.
 - For `instance_type`, you must be an administrator of the GitLab instance.
+- An access token with the `create_runner` scope.
 
 Be sure to copy or save the `token` in the response, the value cannot be retrieved again.
 

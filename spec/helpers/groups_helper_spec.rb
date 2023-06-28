@@ -503,6 +503,7 @@ RSpec.describe GroupsHelper do
     it 'returns expected hash' do
       expect(helper.group_overview_tabs_app_data(group)).to match(
         {
+          group_id: group.id,
           subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json"),
           shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
           archived_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),

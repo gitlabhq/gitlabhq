@@ -9,7 +9,8 @@ module Gitlab
     API_SCOPE = :api
     READ_API_SCOPE = :read_api
     READ_USER_SCOPE = :read_user
-    API_SCOPES = [API_SCOPE, READ_API_SCOPE, READ_USER_SCOPE].freeze
+    CREATE_RUNNER_SCOPE = :create_runner
+    API_SCOPES = [API_SCOPE, READ_API_SCOPE, READ_USER_SCOPE, CREATE_RUNNER_SCOPE].freeze
 
     PROFILE_SCOPE = :profile
     EMAIL_SCOPE = :email
@@ -251,7 +252,8 @@ module Gitlab
           read_registry: [:read_container_image],
           write_registry: [:create_container_image],
           read_repository: [:download_code],
-          write_repository: [:download_code, :push_code]
+          write_repository: [:download_code, :push_code],
+          create_runner: [:create_instance_runner, :create_runner]
         }
 
         scopes.flat_map do |scope|

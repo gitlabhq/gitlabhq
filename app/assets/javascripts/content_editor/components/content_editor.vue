@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
@@ -30,6 +30,9 @@ export default {
     EditorStateObserver,
     ReferenceBubbleMenu,
     EditorModeSwitcher,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     renderMarkdown: {
@@ -257,11 +260,13 @@ export default {
       >
         <editor-mode-switcher size="small" value="richText" @input="handleEditorModeChanged" />
         <gl-button
+          v-gl-tooltip
           icon="markdown-mark"
           :href="markdownDocsPath"
           target="_blank"
           category="tertiary"
           size="small"
+          title="Markdown is supported"
         />
       </div>
     </div>

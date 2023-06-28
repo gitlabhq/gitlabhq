@@ -8,6 +8,21 @@ module Gitlab
 
         attr_reader :errors
 
+        def self.fabricate(input)
+          case input
+          when Array
+            new(input)
+          when Hash
+            new(input.map { |key, value| { key: key, value: value } })
+          when Proc
+            fabricate(input.call)
+          when self
+            input
+          else
+            raise ArgumentError, "Unknown `#{input.class}` variable collection!"
+          end
+        end
+
         def initialize(variables = [], errors = nil)
           @variables = []
           @variables_by_key = Hash.new { |h, k| h[k] = [] }

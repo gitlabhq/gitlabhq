@@ -79,8 +79,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
       context 'when a job can be retried' do
         let!(:job) do
-          create(:ci_build, pipeline: pipeline,
-                            stage: 'test')
+          create(:ci_build, pipeline: pipeline, stage: 'test')
         end
 
         before do
@@ -148,10 +147,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
       context 'with downloadable artifacts' do
         let!(:with_artifacts) do
-          build = create(:ci_build, :success,
-                         pipeline: pipeline,
-                         name: 'rspec tests',
-                         stage: 'test')
+          build = create(:ci_build, :success, pipeline: pipeline, name: 'rspec tests', stage: 'test')
 
           create(:ci_job_artifact, :archive, job: build)
         end
@@ -167,10 +163,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
       context 'with artifacts expired' do
         let!(:with_artifacts_expired) do
-          create(:ci_build, :expired, :success,
-                 pipeline: pipeline,
-                 name: 'rspec',
-                 stage: 'test')
+          create(:ci_build, :expired, :success, pipeline: pipeline, name: 'rspec', stage: 'test')
         end
 
         before do
@@ -188,8 +181,7 @@ RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
 
       context 'column links' do
         let!(:job) do
-          create(:ci_build, pipeline: pipeline,
-                            stage: 'test')
+          create(:ci_build, pipeline: pipeline, stage: 'test')
         end
 
         before do

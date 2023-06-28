@@ -8,6 +8,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Users can create custom roles and define those roles by assigning specific abilities. For example, a user could create an "Engineer" role with `read code` and `admin merge requests` abilities, but without abilities like `admin issues`.
 
+In this context:
+
+- "Ability" is an action a user can do.
+- "Permission" defines the policy classes.
+
+## Custom roles vs static roles
+
+In GitLab 15.9 and earlier, GitLab only had [static roles](predefined_roles.md) as a permission system. In this system, there are a few predefined roles that are statically assigned to certain abilities. These static roles are not customizable by customers.
+
+With custom roles, the customers can decide which abilities they want to assign to certain user groups. For example:
+
+- In the static role system, reading of vulnerabilities is limited to a Developer role.
+- In the custom role system, a customer can assign this ability to a new custom role based on the Reporter role.
+
 ## Technical overview
 
 Individual custom roles are stored in the `member_roles` table (`MemberRole` model) and can be defined only for top-level groups. This table includes individual abilities and a `base_access_level` value. This value defines the minimum access level of:

@@ -1094,34 +1094,6 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           process_pipeline
         end
       end
-
-      context 'when FF `ci_reset_skipped_jobs_in_atomic_processing` is disabled' do
-        before do
-          stub_feature_flags(ci_reset_skipped_jobs_in_atomic_processing: false)
-
-          process_pipeline # First pipeline processing
-
-          # Change the manual jobs from stopped to alive status
-          manual1.enqueue!
-          manual2.enqueue!
-
-          mock_play_jobs_during_processing([manual1, manual2])
-        end
-
-        it 'does not run ResetSkippedJobsService' do
-          expect(Ci::ResetSkippedJobsService).not_to receive(:new)
-
-          process_pipeline
-
-          expect(all_builds_names_and_statuses).to eq(statuses_2)
-        end
-
-        it 'does not log event' do
-          expect(Gitlab::AppJsonLogger).not_to receive(:info)
-
-          process_pipeline
-        end
-      end
     end
 
     context 'when a bridge job has parallel:matrix config', :sidekiq_inline do

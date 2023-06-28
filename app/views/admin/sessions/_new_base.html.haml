@@ -1,7 +1,7 @@
-= form_tag(admin_session_path, method: :post, class: 'new_user gl-show-field-errors', 'aria-live': 'assertive') do
+= gitlab_ui_form_for(:user, url: admin_session_path, html: { class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' } }) do |f|
   .form-group
-    = label_tag :user_password, _('Password'), class: 'label-bold'
-    = password_field_tag 'user[password]', nil, { class: 'form-control js-password', data: { id: 'user_password', name: 'user[password]', qa_selector: 'password_field', testid: 'password-field' } }
+    = f.label :password, _('Password')
+    = f.password_field :password, class: 'form-control js-password', data: { id: 'user_password', name: 'user[password]', qa_selector: 'password_field', testid: 'password-field' }
 
-  .submit-container
-    = submit_tag _('Enter admin mode'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'enter_admin_mode_button' }
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { qa_selector: 'enter_admin_mode_button' } }) do
+    = _('Enter admin mode')

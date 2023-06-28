@@ -47788,9 +47788,6 @@ msgstr ""
 msgid "Titles"
 msgstr ""
 
-msgid "Titles and Descriptions"
-msgstr ""
-
 msgid "To"
 msgstr ""
 

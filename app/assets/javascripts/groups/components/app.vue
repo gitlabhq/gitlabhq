@@ -114,9 +114,9 @@ export default {
     showModal() {
       this.isModalVisible = true;
     },
-    fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
+    fetchGroups({ parentId, page, filterGroupsBy, sortBy, updatePagination }) {
       return this.service
-        .getGroups(parentId, page, filterGroupsBy, sortBy, archived)
+        .getGroups(parentId, page, filterGroupsBy, sortBy)
         .then((res) => {
           if (updatePagination) {
             this.updatePagination(res.headers);
@@ -133,7 +133,6 @@ export default {
     fetchAllGroups() {
       const page = getParameterByName('page') || null;
       const sortBy = getParameterByName('sort') || null;
-      const archived = getParameterByName('archived') || null;
 
       this.isLoading = true;
 
@@ -141,7 +140,6 @@ export default {
         page,
         filterGroupsBy: this.filterGroupsBy,
         sortBy,
-        archived,
         updatePagination: true,
       }).then((res) => {
         this.isLoading = false;
@@ -160,14 +158,13 @@ export default {
         this.updateGroups(res, Boolean(filterGroupsBy));
       });
     },
-    fetchPage({ page, filterGroupsBy, sortBy, archived }) {
+    fetchPage({ page, filterGroupsBy, sortBy }) {
       this.isLoading = true;
 
       return this.fetchGroups({
         page,
         filterGroupsBy,
         sortBy,
-        archived,
         updatePagination: true,
       }).then((res) => {
         this.isLoading = false;

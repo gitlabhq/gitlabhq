@@ -148,6 +148,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 | `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                                              |
 | `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                    |
 | `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                 |
+| `create_runner`    | Grants permission to create runners in a group.                                                                                                                                  |
 
 ## Enable or disable group access token creation
 

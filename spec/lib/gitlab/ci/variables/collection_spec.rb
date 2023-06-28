@@ -3,6 +3,62 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_management do
+  describe '.fabricate' do
+    using RSpec::Parameterized::TableSyntax
+
+    where do
+      {
+        "given an array of variables": {
+          input: [
+            { key: 'VAR1', value: 'value1' },
+            { key: 'VAR2', value: 'value2' }
+          ]
+        },
+        "given a hash of variables": {
+          input: { 'VAR1' => 'value1', 'VAR2' => 'value2' }
+        },
+        "given a proc that evaluates to an array": {
+          input: -> do
+            [
+              { key: 'VAR1', value: 'value1' },
+              { key: 'VAR2', value: 'value2' }
+            ]
+          end
+        },
+        "given a proc that evaluates to a hash": {
+          input: -> do
+            { 'VAR1' => 'value1', 'VAR2' => 'value2' }
+          end
+        },
+        "given a collection": {
+          input: Gitlab::Ci::Variables::Collection.new(
+            [
+              { key: 'VAR1', value: 'value1' },
+              { key: 'VAR2', value: 'value2' }
+            ]
+          )
+        }
+      }
+    end
+
+    with_them do
+      subject(:collection) { Gitlab::Ci::Variables::Collection.fabricate(input) }
+
+      it 'returns a collection' do
+        expect(collection).to be_a(Gitlab::Ci::Variables::Collection)
+        expect(collection.size).to eq(2)
+        expect(collection.map(&:key)).to contain_exactly('VAR1', 'VAR2')
+        expect(collection.map(&:value)).to contain_exactly('value1', 'value2')
+      end
+    end
+
+    context 'when given an unrecognized type' do
+      it 'raises error' do
+        expect { Gitlab::Ci::Variables::Collection.fabricate(1) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
   describe '.new' do
     it 'can be initialized with an array' do
       variable = { key: 'VAR', value: 'value', public: true, masked: false }

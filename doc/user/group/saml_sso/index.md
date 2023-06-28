@@ -489,6 +489,18 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
 - For non-members or users who are not signed in:
   - SSO is not enforced when they access public group resources.
   - SSO is enforced when they access private group resources.
+- For items in the organization's group hierarchy, dashboard visibility is as
+  follows:
+  - SSO is enforced when viewing your [To-Do List](../../todos.md). Your
+    to-do items are hidden if your SSO session has expired, and an
+    [alert is shown](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115254).
+  - SSO is enforced when viewing your list of assigned issues. Your issues are
+    hidden if your SSO session has expired.
+    [Issue 414475](https://gitlab.com/gitlab-org/gitlab/-/issues/414475) proposes to change this
+    behavior so that issues are visible.
+  - SSO is not enforced when viewing lists of merge requests where you are the
+    assignee or your review is requested. You can see merge requests even if
+    your SSO session has expired.
 
 SSO enforcement for web activity has the following effects when enabled:
 

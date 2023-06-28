@@ -175,9 +175,13 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
       let(:confidential_issue) { create(:issue, confidential: true, title: 'Secret issue!', project: project) }
 
       before do
-        project.repository.create_file(user, 'dummy-file', 'dummy content',
-                                       branch_name: 'feature',
-                                       message: "Linking #{confidential_issue.to_reference}")
+        project.repository.create_file(
+          user,
+          'dummy-file',
+          'dummy content',
+          branch_name: 'feature',
+          message: "Linking #{confidential_issue.to_reference}"
+        )
       end
 
       context 'when the user cannot see confidential issues but was cached with a link', :use_clean_rails_memory_store_fragment_caching do

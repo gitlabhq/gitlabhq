@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-RSpec.describe ExpandVariables do
+RSpec.describe ExpandVariables, feature_category: :secrets_management do
   shared_examples 'common variable expansion' do |expander|
     using RSpec::Parameterized::TableSyntax
 
@@ -35,7 +35,14 @@ RSpec.describe ExpandVariables do
             { key: 'variable', value: 'value' }
           ]
         },
-        "simple expansions": {
+        "expansion using %": {
+          value: 'key%variable%',
+          result: 'keyvalue',
+          variables: [
+            { key: 'variable', value: 'value' }
+          ]
+        },
+        "multiple simple expansions": {
           value: 'key$variable$variable2',
           result: 'keyvalueresult',
           variables: [
@@ -43,12 +50,21 @@ RSpec.describe ExpandVariables do
             { key: 'variable2', value: 'result' }
           ]
         },
-        "complex expansions": {
+        "multiple complex expansions": {
           value: 'key${variable}${variable2}',
           result: 'keyvalueresult',
           variables: [
             { key: 'variable', value: 'value' },
             { key: 'variable2', value: 'result' }
+          ]
+        },
+        "nested expansion is not expanded": {
+          value: 'key$variable$variable2',
+          result: 'keyvalue$variable3',
+          variables: [
+            { key: 'variable', value: 'value' },
+            { key: 'variable2', value: '$variable3' },
+            { key: 'variable3', value: 'result' }
           ]
         },
         "out-of-order expansion": {
@@ -99,9 +115,85 @@ RSpec.describe ExpandVariables do
     end
   end
 
+  shared_examples 'file variable expansion with expand_file_refs true' do |expander|
+    using RSpec::Parameterized::TableSyntax
+
+    where do
+      {
+        "simple with a file variable": {
+          value: 'key$variable',
+          result: 'keyvalue',
+          variables: [
+            { key: 'variable', value: 'value', file: true }
+          ]
+        },
+        "complex expansion with a file variable": {
+          value: 'key${variable}',
+          result: 'keyvalue',
+          variables: [
+            { key: 'variable', value: 'value', file: true }
+          ]
+        },
+        "expansion using % with a file variable": {
+          value: 'key%variable%',
+          result: 'keyvalue',
+          variables: [
+            { key: 'variable', value: 'value', file: true }
+          ]
+        }
+      }
+    end
+
+    with_them do
+      subject { expander.call(value, variables, expand_file_refs: true) }
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  shared_examples 'file variable expansion with expand_file_refs false' do |expander|
+    using RSpec::Parameterized::TableSyntax
+
+    where do
+      {
+        "simple with a file variable": {
+          value: 'key$variable',
+          result: 'key$variable',
+          variables: [
+            { key: 'variable', value: 'value', file: true }
+          ]
+        },
+        "complex expansion with a file variable": {
+          value: 'key${variable}',
+          result: 'key${variable}',
+          variables: [
+            { key: 'variable', value: 'value', file: true }
+          ]
+        },
+        "expansion using % with a file variable": {
+          value: 'key%variable%',
+          result: 'key%variable%',
+          variables: [
+            { key: 'variable', value: 'value', file: true }
+          ]
+        }
+      }
+    end
+
+    with_them do
+      subject { expander.call(value, variables, expand_file_refs: false) }
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
   describe '#expand' do
     context 'table tests' do
       it_behaves_like 'common variable expansion', described_class.method(:expand)
+
+      it_behaves_like 'file variable expansion with expand_file_refs true', described_class.method(:expand)
+
+      it_behaves_like 'file variable expansion with expand_file_refs false', described_class.method(:expand)
 
       context 'with missing variables' do
         using RSpec::Parameterized::TableSyntax
@@ -168,6 +260,10 @@ RSpec.describe ExpandVariables do
   describe '#expand_existing' do
     context 'table tests' do
       it_behaves_like 'common variable expansion', described_class.method(:expand_existing)
+
+      it_behaves_like 'file variable expansion with expand_file_refs true', described_class.method(:expand_existing)
+
+      it_behaves_like 'file variable expansion with expand_file_refs false', described_class.method(:expand_existing)
 
       context 'with missing variables' do
         using RSpec::Parameterized::TableSyntax

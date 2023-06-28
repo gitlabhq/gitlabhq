@@ -21,42 +21,39 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
     let!(:external_stage) { create(:ci_stage, name: 'external', pipeline: pipeline) }
 
     let!(:build_passed) do
-      create(:ci_build, :success,
-             pipeline: pipeline, stage: 'build', stage_idx: 0, name: 'build')
+      create(:ci_build, :success, pipeline: pipeline, stage: 'build', stage_idx: 0, name: 'build')
     end
 
     let!(:build_failed) do
-      create(:ci_build, :failed,
-             pipeline: pipeline, stage: 'test', stage_idx: 1, name: 'test')
+      create(:ci_build, :failed, pipeline: pipeline, stage: 'test', stage_idx: 1, name: 'test')
     end
 
     let!(:build_preparing) do
-      create(:ci_build, :preparing,
-             pipeline: pipeline, stage: 'deploy', stage_idx: 2, name: 'prepare')
+      create(:ci_build, :preparing, pipeline: pipeline, stage: 'deploy', stage_idx: 2, name: 'prepare')
     end
 
     let!(:build_running) do
-      create(:ci_build, :running,
-             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'deploy')
+      create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'deploy')
     end
 
     let!(:build_manual) do
-      create(:ci_build, :manual,
-             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'manual-build')
+      create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'manual-build')
     end
 
     let!(:build_scheduled) do
-      create(:ci_build, :scheduled,
-             pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'delayed-job')
+      create(:ci_build, :scheduled, pipeline: pipeline, stage: 'deploy', stage_idx: 3, name: 'delayed-job')
     end
 
     let!(:build_external) do
-      create(:generic_commit_status, status: 'success',
-                                     pipeline: pipeline,
-                                     name: 'jenkins',
-                                     ci_stage: external_stage,
-                                     ref: 'master',
-                                     target_url: 'http://gitlab.com/status')
+      create(
+        :generic_commit_status,
+        status: 'success',
+        pipeline: pipeline,
+        name: 'jenkins',
+        ci_stage: external_stage,
+        ref: 'master',
+        target_url: 'http://gitlab.com/status'
+      )
     end
   end
 
@@ -127,13 +124,16 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
     describe 'pipeline stats text' do
       let(:finished_pipeline) do
-        create(:ci_pipeline, :success, project: project,
-               ref: 'master', sha: project.commit.id, user: user)
+        create(:ci_pipeline, :success, project: project, ref: 'master', sha: project.commit.id, user: user)
       end
 
       before do
-        finished_pipeline.update!(started_at: "2023-01-01 01:01:05", created_at: "2023-01-01 01:01:01",
-                                  finished_at: "2023-01-01 01:01:10", duration: 9)
+        finished_pipeline.update!(
+          started_at: "2023-01-01 01:01:05",
+          created_at: "2023-01-01 01:01:01",
+          finished_at: "2023-01-01 01:01:10",
+          duration: 9
+        )
       end
 
       context 'pipeline has finished' do
@@ -332,13 +332,15 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       context 'when pipeline has a downstream pipeline' do
         let(:downstream_project) { create(:project, :repository, group: group) }
         let(:downstream_pipeline) do
-          create(:ci_pipeline,
-          status,
-          user: user,
-          project: downstream_project,
-          ref: 'master',
-          sha: downstream_project.commit.id,
-          child_of: pipeline)
+          create(
+            :ci_pipeline,
+            status,
+            user: user,
+            project: downstream_project,
+            ref: 'master',
+            sha: downstream_project.commit.id,
+            child_of: pipeline
+          )
         end
 
         let!(:build) { create(:ci_build, status, pipeline: downstream_pipeline, user: user) }
@@ -585,10 +587,13 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
     context 'when pipeline ref does not exist in repository anymore' do
       let(:pipeline) do
-        create(:ci_empty_pipeline, project: project,
-                                   ref: 'non-existent',
-                                   sha: project.commit.id,
-                                   user: user)
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          ref: 'non-existent',
+          sha: project.commit.id,
+          user: user
+        )
       end
 
       before do
@@ -612,10 +617,12 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       let(:target_project) { project }
 
       let(:merge_request) do
-        create(:merge_request,
+        create(
+          :merge_request,
           :with_detached_merge_request_pipeline,
           source_project: source_project,
-          target_project: target_project)
+          target_project: target_project
+        )
       end
 
       let(:pipeline) do
@@ -788,17 +795,23 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
     let(:downstream) { create(:project, :repository) }
 
     let(:pipeline) do
-      create(:ci_pipeline, project: project,
-                           ref: 'master',
-                           sha: project.commit.id,
-                           user: user)
+      create(
+        :ci_pipeline,
+        project: project,
+        ref: 'master',
+        sha: project.commit.id,
+        user: user
+      )
     end
 
     let!(:bridge) do
-      create(:ci_bridge, pipeline: pipeline,
-                         name: 'cross-build',
-                         user: user,
-                         downstream: downstream)
+      create(
+        :ci_bridge,
+        pipeline: pipeline,
+        name: 'cross-build',
+        user: user,
+        downstream: downstream
+      )
     end
 
     describe 'GET /:project/-/pipelines/:id' do
@@ -866,13 +879,20 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
     let(:resource_group) { create(:ci_resource_group, project: project) }
 
     let!(:test_job) do
-      create(:ci_build, :pending, stage: 'test', name: 'test',
-                                  stage_idx: 1, pipeline: pipeline, project: project)
+      create(:ci_build, :pending, stage: 'test', name: 'test', stage_idx: 1, pipeline: pipeline, project: project)
     end
 
     let!(:deploy_job) do
-      create(:ci_build, :created, stage: 'deploy', name: 'deploy',
-                                  stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
+      create(
+        :ci_build,
+        :created,
+        stage: 'deploy',
+        name: 'deploy',
+        stage_idx: 2,
+        pipeline: pipeline,
+        project: project,
+        resource_group: resource_group
+      )
     end
 
     describe 'GET /:project/-/pipelines/:id' do
@@ -1131,8 +1151,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
       context 'when user does have permission to retry build' do
         before do
-          create(:protected_branch, :developers_can_merge,
-                 name: pipeline.ref, project: project)
+          create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
         end
 
         it 'shows retry button for failed build' do
@@ -1239,11 +1258,13 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       include_context 'pipeline builds'
 
       let(:pipeline) do
-        create(:ci_pipeline,
-               project: project,
-               ref: 'master',
-               sha: project.commit.id,
-               user: user)
+        create(
+          :ci_pipeline,
+          project: project,
+          ref: 'master',
+          sha: project.commit.id,
+          user: user
+        )
       end
 
       before do
@@ -1259,12 +1280,14 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
     context 'when pipeline has configuration errors' do
       let(:pipeline) do
-        create(:ci_pipeline,
-               :invalid,
-               project: project,
-               ref: 'master',
-               sha: project.commit.id,
-               user: user)
+        create(
+          :ci_pipeline,
+          :invalid,
+          project: project,
+          ref: 'master',
+          sha: project.commit.id,
+          user: user
+        )
       end
 
       before do
@@ -1302,10 +1325,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
     context 'when pipeline is stuck' do
       let(:pipeline) do
-        create(:ci_pipeline,
-               project: project,
-               status: :created,
-               user: user)
+        create(:ci_pipeline, project: project, status: :created, user: user)
       end
 
       before do
@@ -1325,12 +1345,14 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
       let(:project) { create(:project, :repository, auto_devops_attributes: { enabled: true }) }
       let(:pipeline) do
-        create(:ci_pipeline,
-               :auto_devops_source,
-               project: project,
-               ref: 'master',
-               sha: project.commit.id,
-               user: user)
+        create(
+          :ci_pipeline,
+          :auto_devops_source,
+          project: project,
+          ref: 'master',
+          sha: project.commit.id,
+          user: user
+        )
       end
 
       before do
@@ -1348,21 +1370,25 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
       include_context 'pipeline builds'
 
       let(:pipeline) do
-        create(:ci_pipeline,
-               source: :merge_request_event,
-               project: merge_request.source_project,
-               ref: 'feature',
-               sha: merge_request.diff_head_sha,
-               user: user,
-               merge_request: merge_request)
+        create(
+          :ci_pipeline,
+          source: :merge_request_event,
+          project: merge_request.source_project,
+          ref: 'feature',
+          sha: merge_request.diff_head_sha,
+          user: user,
+          merge_request: merge_request
+        )
       end
 
       let(:merge_request) do
-        create(:merge_request,
-               source_project: project,
-               source_branch: 'feature',
-               target_project: project,
-               target_branch: 'master')
+        create(
+          :merge_request,
+          source_project: project,
+          source_branch: 'feature',
+          target_project: project,
+          target_branch: 'master'
+        )
       end
 
       before do

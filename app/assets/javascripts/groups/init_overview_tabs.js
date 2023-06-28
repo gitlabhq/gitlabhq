@@ -40,6 +40,7 @@ export const initGroupOverviewTabs = () => {
   const router = createRouter();
 
   const {
+    groupId,
     newSubgroupPath,
     newProjectPath,
     newSubgroupIllustration,
@@ -59,6 +60,7 @@ export const initGroupOverviewTabs = () => {
     el,
     router,
     provide: {
+      groupId,
       newSubgroupPath,
       newProjectPath,
       newSubgroupIllustration,

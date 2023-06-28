@@ -25,25 +25,39 @@ export const ITEM_TYPE = {
   GROUP: 'group',
 };
 
+export const SORTING_ITEM_NAME = {
+  label: __('Name'),
+  asc: 'name_asc',
+  desc: 'name_desc',
+};
+
+export const SORTING_ITEM_CREATED = {
+  label: __('Created'),
+  asc: 'created_asc',
+  desc: 'created_desc',
+};
+
+export const SORTING_ITEM_UPDATED = {
+  label: __('Updated'),
+  asc: 'latest_activity_asc',
+  desc: 'latest_activity_desc',
+};
+
+export const SORTING_ITEM_STARS = {
+  label: __('Stars'),
+  asc: 'stars_asc',
+  desc: 'stars_desc',
+};
+
 export const OVERVIEW_TABS_SORTING_ITEMS = [
-  {
-    label: __('Name'),
-    asc: 'name_asc',
-    desc: 'name_desc',
-  },
-  {
-    label: __('Created'),
-    asc: 'created_asc',
-    desc: 'created_desc',
-  },
-  {
-    label: __('Updated'),
-    asc: 'latest_activity_asc',
-    desc: 'latest_activity_desc',
-  },
-  {
-    label: __('Stars'),
-    asc: 'stars_asc',
-    desc: 'stars_desc',
-  },
+  SORTING_ITEM_NAME,
+  SORTING_ITEM_CREATED,
+  SORTING_ITEM_UPDATED,
+  SORTING_ITEM_STARS,
+];
+
+export const OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS = [
+  SORTING_ITEM_NAME,
+  SORTING_ITEM_CREATED,
+  SORTING_ITEM_UPDATED,
 ];

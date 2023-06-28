@@ -7,10 +7,12 @@ RSpec.describe 'User views Release', :js, feature_category: :continuous_delivery
   let(:user) { create(:user) }
 
   let(:release) do
-    create(:release,
-           project: project,
-           name: 'The first release',
-           description: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)')
+    create(
+      :release,
+      project: project,
+      name: 'The first release',
+      description: '**Lorem** _ipsum_ dolor sit [amet](https://example.com)'
+    )
   end
 
   before do

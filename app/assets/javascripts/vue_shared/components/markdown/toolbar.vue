@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLoadingIcon, GlSprintf, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import EditorModeSwitcher from './editor_mode_switcher.vue';
 
 export default {
@@ -9,6 +9,9 @@ export default {
     GlSprintf,
     GlIcon,
     EditorModeSwitcher,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     markdownDocsPath: {
@@ -47,8 +50,12 @@ export default {
 <template>
   <div
     v-if="showCommentToolBar"
-    class="comment-toolbar gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-mx-2 gl-mb-2 gl-px-2 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
-    :class="{ 'gl-bg-gray-10': showContentEditorSwitcher }"
+    class="comment-toolbar gl-display-flex gl-flex-direction-row gl-mx-2 gl-mb-2 gl-px-2 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+    :class="
+      showContentEditorSwitcher
+        ? 'gl-bg-gray-10 gl-justify-content-space-between'
+        : 'gl-justify-content-end'
+    "
   >
     <editor-mode-switcher
       v-if="showEditorModeSwitcher"
@@ -60,11 +67,13 @@ export default {
       <div class="toolbar-text gl-font-sm">
         <template v-if="markdownDocsPath">
           <gl-button
+            v-gl-tooltip
             icon="markdown-mark"
             :href="markdownDocsPath"
             target="_blank"
             category="tertiary"
             size="small"
+            title="Markdown is supported"
           />
         </template>
       </div>

@@ -105,8 +105,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
       context 'when pipeline is cancelable' do
         let!(:build) do
-          create(:ci_build, pipeline: pipeline,
-                            stage: 'test')
+          create(:ci_build, pipeline: pipeline, stage: 'test')
         end
 
         before do
@@ -135,8 +134,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
       context 'when pipeline is retryable', :sidekiq_might_not_need_inline do
         let!(:build) do
-          create(:ci_build, pipeline: pipeline,
-                            stage: 'test')
+          create(:ci_build, pipeline: pipeline, stage: 'test')
         end
 
         before do
@@ -164,10 +162,12 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
       context 'when pipeline is detached merge request pipeline' do
         let(:merge_request) do
-          create(:merge_request,
-                 :with_detached_merge_request_pipeline,
-                 source_project: source_project,
-                 target_project: target_project)
+          create(
+            :merge_request,
+            :with_detached_merge_request_pipeline,
+            source_project: source_project,
+            target_project: target_project
+          )
         end
 
         let!(:pipeline) { merge_request.all_pipelines.first }
@@ -183,8 +183,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             within '.pipeline-tags' do
               expect(page).to have_content(expected_detached_mr_tag)
 
-              expect(page).to have_link(merge_request.iid,
-                                        href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(merge_request.iid, href: project_merge_request_path(project, merge_request))
 
               expect(page).not_to have_link(pipeline.ref)
             end
@@ -202,11 +201,13 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
       context 'when pipeline is merge request pipeline' do
         let(:merge_request) do
-          create(:merge_request,
-                 :with_merge_request_pipeline,
-                 source_project: source_project,
-                 target_project: target_project,
-                 merge_sha: target_project.commit.sha)
+          create(
+            :merge_request,
+            :with_merge_request_pipeline,
+            source_project: source_project,
+            target_project: target_project,
+            merge_sha: target_project.commit.sha
+          )
         end
 
         let!(:pipeline) { merge_request.all_pipelines.first }
@@ -222,8 +223,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             within '.pipeline-tags' do
               expect(page).not_to have_content(expected_detached_mr_tag)
 
-              expect(page).to have_link(merge_request.iid,
-                                        href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(merge_request.iid, href: project_merge_request_path(project, merge_request))
 
               expect(page).not_to have_link(pipeline.ref)
             end
@@ -520,9 +520,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
       context 'mini pipeline graph' do
         let!(:build) do
-          create(:ci_build, :pending, pipeline: pipeline,
-                                      stage: 'build',
-                                      name: 'build')
+          create(:ci_build, :pending, pipeline: pipeline, stage: 'build', name: 'build')
         end
 
         dropdown_selector = '[data-testid="mini-pipeline-graph-dropdown"]'
@@ -554,9 +552,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'for a failed pipeline' do
           let!(:build) do
-            create(:ci_build, :failed, pipeline: pipeline,
-                                       stage: 'build',
-                                       name: 'build')
+            create(:ci_build, :failed, pipeline: pipeline, stage: 'build', name: 'build')
           end
 
           it 'displays the failure reason' do
@@ -624,10 +620,12 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       let(:project) { create(:project, :repository) }
 
       let(:pipeline) do
-        create(:ci_empty_pipeline,
-              project: project,
-              sha: project.commit.id,
-              user: user)
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          sha: project.commit.id,
+          user: user
+        )
       end
 
       let(:external_stage) { create(:ci_stage, name: 'external', pipeline: pipeline) }

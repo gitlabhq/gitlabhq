@@ -228,7 +228,7 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
         end
       end
 
-      it_behaves_like 'raising an', ::Packages::Nuget::MetadataExtractionService::ExtractionError, with_message: 'nuspec file not found'
+      it_behaves_like 'raising an', ::Packages::Nuget::ExtractMetadataFileService::ExtractionError, with_message: 'nuspec file not found'
     end
 
     context 'with a symbol package' do

@@ -69,7 +69,7 @@ When you delete a project, agent, user, or token associated with a workspace:
 - The workspace is deleted from both the user interface and the Kubernetes cluster.
 - In the Kubernetes cluster, the running workspace resources become orphaned.
 
-To clean up orphaned resources, a cluster administrator must manually delete the namespace.
+To clean up orphaned resources, an administrator must manually delete the workspace in Kubernetes.
 
 For more information about our plans to change the current behavior, see [issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384).
 
@@ -185,4 +185,4 @@ You might not be able to create a workspace due to a known issue in the GitLab a
 {"level":"info","time":"2023-01-01T00:00:00.000Z","msg":"failed to renew lease gitlab-agent-remote-dev-dev/agent-123XX-lock: timed out waiting for the condition\n","agent_id":XXXX}
 ```
 
-This issue occurs when an agent instance cannot renew its leadership lease, which results in the shutdown of leader-only modules including the `remote_development` module. The workaround is to restart the agent instance.
+This issue occurs when an agent instance cannot renew its leadership lease, which results in the shutdown of leader-only modules including the `remote_development` module. To resolve this issue, restart the agent instance.

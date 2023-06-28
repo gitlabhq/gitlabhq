@@ -23,14 +23,12 @@ module Ci
         success = try_obtain_lease { process! }
 
         if success
-          if ::Feature.enabled?(:ci_reset_skipped_jobs_in_atomic_processing, project)
-            # If any jobs changed from stopped to alive status during pipeline processing, we must
-            # re-reset their dependent jobs; see https://gitlab.com/gitlab-org/gitlab/-/issues/388539.
-            new_alive_jobs.group_by(&:user).each do |user, jobs|
-              log_running_reset_skipped_jobs_service(jobs)
+          # If any jobs changed from stopped to alive status during pipeline processing, we must
+          # re-reset their dependent jobs; see https://gitlab.com/gitlab-org/gitlab/-/issues/388539.
+          new_alive_jobs.group_by(&:user).each do |user, jobs|
+            log_running_reset_skipped_jobs_service(jobs)
 
-              ResetSkippedJobsService.new(project, user).execute(jobs)
-            end
+            ResetSkippedJobsService.new(project, user).execute(jobs)
           end
 
           # Re-schedule if we need further processing

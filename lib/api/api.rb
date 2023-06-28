@@ -316,6 +316,7 @@ module API
         mount ::API::UsageDataQueries
         mount ::API::Users
         mount ::API::UserCounts
+        mount ::API::UserRunners
         mount ::API::Wikis
 
         add_open_api_documentation!

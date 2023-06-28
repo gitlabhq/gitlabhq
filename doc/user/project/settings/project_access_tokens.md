@@ -81,14 +81,15 @@ To revoke a project access token:
 
 The scope determines the actions you can perform when you authenticate with a project access token.
 
-| Scope              | Description                                                                                                                                                 |
-|:-------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`              | Grants complete read and write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                |
-| `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                                   |
+| Scope              | Description                                                                                                                                                     |
+|:-------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `api`              | Grants complete read and write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                    |
+| `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                                       |
 | `read_registry`    | Grants read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
 | `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                             |
-| `read_repository`  | Grants read access (pull) to the repository.                                                                                                                |
-| `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                             |
+| `read_repository`  | Grants read access (pull) to the repository.                                                                                                                    |
+| `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                 |
+| `create_runner`    | Grants permission to create runners in the project.                                                                                                             |
 
 ## Enable or disable project access token creation
 

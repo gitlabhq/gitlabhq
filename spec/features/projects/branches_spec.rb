@@ -95,15 +95,22 @@ RSpec.describe 'Branches', feature_category: :groups_and_projects do
         it 'shows only default_per_page active branches sorted by last updated' do
           visit project_branches_filtered_path(project, state: 'active')
 
-          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page,
-                                                                   sort_by: :updated_desc, state: 'active'))
+          expect(page).to have_content(sorted_branches(
+            repository,
+            count: Kaminari.config.default_per_page,
+            sort_by: :updated_desc,
+            state: 'active'
+          ))
         end
 
         it 'shows only default_per_page branches sorted by last updated on All branches' do
           visit project_branches_filtered_path(project, state: 'all')
 
-          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page,
-                                                                   sort_by: :updated_desc))
+          expect(page).to have_content(sorted_branches(
+            repository,
+            count: Kaminari.config.default_per_page,
+            sort_by: :updated_desc
+          ))
         end
       end
     end

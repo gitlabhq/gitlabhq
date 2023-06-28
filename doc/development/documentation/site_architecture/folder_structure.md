@@ -17,7 +17,7 @@ API.
 Our goal is to have a clear hierarchical structure with meaningful URLs like
 `docs.gitlab.com/user/project/merge_requests/`. With this pattern, you can
 immediately tell that you are navigating to user-related documentation about
-Project features; specifically about Merge Requests. Our site's paths match
+project features; specifically about merge requests. Our site's paths match
 those of our repository, so the clear structure also makes documentation easier
 to update.
 
@@ -32,7 +32,14 @@ Put files for a specific product area into the related folder:
 | `doc/legal/`          | Legal documents about contributing to GitLab. |
 | `doc/install/`        | Instructions for installing GitLab. |
 | `doc/update/`         | Instructions for updating GitLab. |
-| `doc/topics/`         | Indexes per topic (`doc/topics/topic_name/index.md`): all resources for that topic. |
+| `doc/tutorials/`         | Tutorials for how to use GitLab. |
+
+The following are legacy or deprecated folders.
+Do not add new content to these folders:
+
+- `/gitlab-basics/`
+- `/topics/`
+- `/university/`
 
 ## Work with directories and files
 
@@ -45,20 +52,15 @@ When working with directories and files:
 1. When creating or renaming a file or directory and it has more than one word
    in its name, use underscores (`_`) instead of spaces or dashes. For example,
    proper naming would be `import_project/import_from_github.md`. This applies
-   to both image files and Markdown files.
-1. For image files, do not exceed 100KB.
+   to both [image files](../styleguide/index.md#images) and Markdown files.
 1. Do not upload video files to the product repositories.
    [Link or embed videos](../styleguide/index.md#videos) instead.
-1. There are four main directories: `user`, `administration`, `api`, and
-   `development`.
-1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
-   `profile/`, `dashboard/` and `admin_area/`.
+1. In the `doc/user/` directory:
    - `doc/user/project/` should contain all project related documentation.
    - `doc/user/group/` should contain all group related documentation.
    - `doc/user/profile/` should contain all profile related documentation.
      Every page you would navigate under `/profile` should have its own document,
      for example, `account.md`, `applications.md`, or `emails.md`.
-   - `doc/user/dashboard/` should contain all dashboard related documentation.
    - `doc/user/admin_area/` should contain all administrator-related
      documentation describing what can be achieved by accessing the GitLab
      administrator interface (not to be confused with `doc/administration` where
@@ -67,11 +69,6 @@ When working with directories and files:
       own document located at `doc/user/admin_area/settings/`. For example,
       the **Visibility and Access Controls** category should have a document
       located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
-1. The `doc/topics/` directory holds topic-related technical content. Create
-   `doc/topics/topic_name/subtopic_name/index.md` when subtopics become necessary.
-   General user and administrator documentation should be placed accordingly.
-1. The `/university/` directory is *deprecated* and the majority of its documentation
-   has been moved.
 
 If you're unsure where to place a document or a content addition, this shouldn't
 stop you from authoring and contributing. Use your best judgment, and then ask

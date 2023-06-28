@@ -11,7 +11,7 @@ RSpec.describe 'Search Snippets', :js, feature_category: :source_code_management
     visit dashboard_snippets_path
 
     submit_search('Middle')
-    select_search_scope('Titles and Descriptions')
+    select_search_scope(_("Snippets"))
 
     expect(page).to have_link(public_snippet.title)
     expect(page).to have_link(private_snippet.title)

@@ -61,7 +61,7 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_categor
         allow_any_instance_of(Zip::File).to receive(:glob).and_return([])
       end
 
-      it_behaves_like 'handling the metadata error', exception_class: ::Packages::Nuget::MetadataExtractionService::ExtractionError
+      it_behaves_like 'handling the metadata error', exception_class: ::Packages::Nuget::ExtractMetadataFileService::ExtractionError
     end
 
     context 'with package with an invalid package name' do

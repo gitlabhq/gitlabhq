@@ -300,14 +300,12 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
 
         context 'with manual action' do
           let(:action) do
-            create(:ci_build, :manual, pipeline: pipeline,
-                                       name: 'deploy to production', environment: environment.name)
+            create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production', environment: environment.name)
           end
 
           context 'when user has ability to trigger deployment' do
             let(:permissions) do
-              create(:protected_branch, :developers_can_merge,
-                     name: action.ref, project: project)
+              create(:protected_branch, :developers_can_merge, name: action.ref, project: project)
             end
 
             it 'does show a play button' do
@@ -331,8 +329,7 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
 
           context 'when user has no ability to trigger a deployment' do
             let(:permissions) do
-              create(:protected_branch, :no_one_can_merge,
-                     name: action.ref, project: project)
+              create(:protected_branch, :no_one_can_merge, name: action.ref, project: project)
             end
 
             it 'does not show a play button' do
@@ -391,10 +388,7 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
               end
 
               let(:deployment) do
-                create(:deployment, :success,
-                                    environment: environment,
-                                    deployable: build,
-                                    on_stop: 'close_app')
+                create(:deployment, :success, environment: environment, deployable: build, on_stop: 'close_app')
               end
 
               context 'when user has ability to stop environment' do
@@ -411,8 +405,7 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
 
               context 'when user has no ability to stop environment' do
                 let(:permissions) do
-                  create(:protected_branch, :no_one_can_merge,
-                         name: action.ref, project: project)
+                  create(:protected_branch, :no_one_can_merge, name: action.ref, project: project)
                 end
 
                 it 'does not allow to stop environment', :js do
@@ -445,9 +438,7 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
   describe 'environment folders', :js do
     context 'when folder name contains special charaters' do
       before do
-        create(:environment, project: project,
-                             name: 'staging-1.0/review',
-                             state: :available)
+        create(:environment, project: project, name: 'staging-1.0/review', state: :available)
       end
 
       it 'renders a correct environment folder' do
@@ -465,8 +456,7 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
     let(:project) { create(:project, :repository) }
 
     let!(:environment) do
-      create(:environment, :with_review_app, project: project,
-                                             ref: 'feature')
+      create(:environment, :with_review_app, project: project, ref: 'feature')
     end
 
     it 'user visits environment page', :js do

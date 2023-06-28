@@ -147,6 +147,7 @@ module GroupsHelper
 
   def group_overview_tabs_app_data(group)
     {
+      group_id: group.id,
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
       archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),

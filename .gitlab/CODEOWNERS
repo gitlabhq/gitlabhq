@@ -1445,6 +1445,40 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/elastic/migrate/
 /ee/spec/support/elastic.rb
 
+[Create::IDE - Remote Development Backend]  @gitlab-org/maintainers/remote-development/backend
+
+/ee/app/models/remote_development/
+/ee/app/policies/remote_development/
+/ee/app/finders/remote_development/
+/ee/app/graphql/types/remote_development/
+/ee/app/graphql/mutations/remote_development/
+/ee/app/graphql/resolvers/remote_development/
+/ee/app/controllers/remote_development/
+/ee/app/services/remote_development/
+/ee/spec/frontend/remote_development/
+/ee/spec/features/remote_development/
+/ee/spec/models/remote_development/
+/ee/spec/policies/remote_development/
+/ee/spec/requests/api/graphql/mutations/remote_development/
+/ee/spec/requests/api/graphql/remote_development/
+/ee/spec/finders/remote_development/
+/ee/spec/support/shared_contexts/remote_development/
+/ee/spec/graphql/types/remote_development/
+/ee/spec/factories/remote_development/
+/ee/spec/lib/remote_development/
+/ee/spec/fixtures/remote_development/
+/ee/spec/controllers/remote_development/
+/ee/spec/services/remote_development/
+/ee/lib/remote_development/
+/qa/qa/specs/features/ee/browser_ui/3_create/remote_development/
+/scripts/remote_development/
+
+[Create::IDE - Remote Development Frontend]  @gitlab-org/maintainers/remote-development/frontend
+
+/ee/app/views/remote_development/
+/ee/app/assets/javascripts/remote_development/
+/ee/app/assets/javascripts/pages/remote_development/
+
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 
 [JH Frontend] @jihulab/maintainers/frontend

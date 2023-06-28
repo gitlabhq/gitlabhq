@@ -132,6 +132,13 @@ export const MOCK_NAVIGATION = {
     active: true,
     count: '2,430',
   },
+  epics: {
+    label: 'Epics',
+    scope: 'epics',
+    link: '/search?scope=epics&search=et',
+    active: true,
+    count: '0',
+  },
   merge_requests: {
     label: 'Merge requests',
     scope: 'merge_requests',
@@ -496,6 +503,14 @@ export const MOCK_NAVIGATION_ITEMS = [
     items: [],
   },
   {
+    title: 'Epics',
+    icon: 'epic',
+    link: '/search?scope=epics&search=et',
+    is_active: true,
+    pill_count: '0',
+    items: [],
+  },
+  {
     title: 'Merge requests',
     icon: 'merge-request',
     link: '/search?scope=merge_requests&search=et',
@@ -505,7 +520,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   },
   {
     title: 'Wiki',
-    icon: 'overview',
+    icon: 'book',
     link: '/search?scope=wiki_blobs&search=et',
     is_active: false,
     pill_count: '0',
@@ -529,7 +544,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   },
   {
     title: 'Milestones',
-    icon: 'tag',
+    icon: 'clock',
     link: '/search?scope=milestones&search=et',
     is_active: false,
     pill_count: '0',

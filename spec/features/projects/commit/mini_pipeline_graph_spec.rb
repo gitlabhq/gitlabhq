@@ -7,11 +7,13 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
 
   context 'when commit has pipelines' do
     let(:pipeline) do
-      create(:ci_pipeline,
-              status: :running,
-              project: project,
-              ref: project.default_branch,
-              sha: project.commit.sha)
+      create(
+        :ci_pipeline,
+        status: :running,
+        project: project,
+        ref: project.default_branch,
+        sha: project.commit.sha
+      )
     end
 
     let(:build) { create(:ci_build, pipeline: pipeline, status: :running) }

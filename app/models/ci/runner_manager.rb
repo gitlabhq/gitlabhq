@@ -77,7 +77,7 @@ module Ci
         end
 
         new_version = values[:version]
-        schedule_runner_version_update(new_version) if new_version && values[:version] != version
+        schedule_runner_version_update(new_version) if new_version && new_version != version
 
         merge_cache_attributes(values)
 
