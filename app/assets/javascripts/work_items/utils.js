@@ -14,7 +14,7 @@ export const findHierarchyWidgets = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
 export const findHierarchyWidgetChildren = (workItem) =>
-  findHierarchyWidgets(workItem?.widgets)?.children.nodes;
+  findHierarchyWidgets(workItem?.widgets)?.children?.nodes || [];
 
 const autocompleteSourcesPath = (autocompleteType, fullPath, workItemIid) => {
   return `${

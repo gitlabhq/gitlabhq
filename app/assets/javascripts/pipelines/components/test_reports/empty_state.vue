@@ -43,7 +43,7 @@ export default {
       };
     },
     testReportDocPath() {
-      return helpPagePath('ci/unit_test_reports');
+      return helpPagePath('ci/testing/unit_test_reports');
     },
   },
 };

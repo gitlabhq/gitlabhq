@@ -9060,7 +9060,6 @@
 - './spec/services/clusters/create_service_spec.rb'
 - './spec/services/clusters/destroy_service_spec.rb'
 - './spec/services/clusters/integrations/create_service_spec.rb'
-- './spec/services/clusters/integrations/prometheus_health_check_service_spec.rb'
 - './spec/services/clusters/kubernetes/create_or_update_namespace_service_spec.rb'
 - './spec/services/clusters/kubernetes/create_or_update_service_account_service_spec.rb'
 - './spec/services/clusters/kubernetes/fetch_kubernetes_token_service_spec.rb'

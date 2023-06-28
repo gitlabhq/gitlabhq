@@ -37,27 +37,6 @@ describe('AssigneeTitle component', () => {
     });
   });
 
-  describe('gutter toggle', () => {
-    it('does not show toggle by default', () => {
-      wrapper = createComponent({
-        numberOfAssignees: 2,
-        editable: false,
-      });
-
-      expect(wrapper.vm.$el.querySelector('.gutter-toggle')).toBeNull();
-    });
-
-    it('shows toggle when showToggle is true', () => {
-      wrapper = createComponent({
-        numberOfAssignees: 2,
-        editable: false,
-        showToggle: true,
-      });
-
-      expect(wrapper.vm.$el.querySelector('.gutter-toggle')).toEqual(expect.any(Object));
-    });
-  });
-
   describe('when changing is false', () => {
     it('renders "Edit"', () => {
       wrapper = createComponent({ editable: true });

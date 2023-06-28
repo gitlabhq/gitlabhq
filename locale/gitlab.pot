@@ -6594,9 +6594,6 @@ msgstr ""
 msgid "AuditStreams|Custom HTTP headers (optional)"
 msgstr ""
 
-msgid "AuditStreams|Delete %{link}"
-msgstr ""
-
 msgid "AuditStreams|Delete destination"
 msgstr ""
 
@@ -6610,9 +6607,6 @@ msgid "AuditStreams|Destination has filters applied. %{linkStart}What are filter
 msgstr ""
 
 msgid "AuditStreams|Destinations receive all audit event data"
-msgstr ""
-
-msgid "AuditStreams|Edit %{link}"
 msgstr ""
 
 msgid "AuditStreams|Event filtering (optional)"
@@ -6661,12 +6655,6 @@ msgid "AuditStreams|Value"
 msgstr ""
 
 msgid "AuditStreams|Verification token"
-msgstr ""
-
-msgid "AuditStreams|Verification token for the %{link} stream"
-msgstr ""
-
-msgid "AuditStreams|View verification token"
 msgstr ""
 
 msgid "AuditStreams|ex: 1000"

@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -7,7 +7,6 @@ export default {
   name: 'AssigneeTitle',
   components: {
     GlLoadingIcon,
-    GlIcon,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -61,16 +60,6 @@ export default {
       data-track-property="assignee"
     >
       {{ titleCopy }}
-    </a>
-    <a
-      v-if="showToggle"
-      :aria-label="__('Toggle sidebar')"
-      class="gutter-toggle float-right js-sidebar-toggle"
-      :class="{ 'gl-display-block gl-md-display-none!': glFeatures.movedMrSidebar }"
-      href="#"
-      role="button"
-    >
-      <gl-icon data-hidden="true" name="chevron-double-lg-right" :size="12" />
     </a>
   </div>
 </template>

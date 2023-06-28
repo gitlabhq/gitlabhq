@@ -12113,7 +12113,7 @@ CREATE TABLE audit_events_external_audit_event_destinations (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     verification_token text,
-    name text,
+    name text NOT NULL,
     CONSTRAINT check_2feafb9daf CHECK ((char_length(destination_url) <= 255)),
     CONSTRAINT check_8ec80a7d06 CHECK ((char_length(verification_token) <= 24)),
     CONSTRAINT check_c52ff8e90e CHECK ((char_length(name) <= 72))
@@ -12168,7 +12168,7 @@ CREATE TABLE audit_events_instance_external_audit_event_destinations (
     destination_url text NOT NULL,
     encrypted_verification_token bytea NOT NULL,
     encrypted_verification_token_iv bytea NOT NULL,
-    name text,
+    name text NOT NULL,
     CONSTRAINT check_433fbb3305 CHECK ((char_length(name) <= 72)),
     CONSTRAINT check_4dc67167ce CHECK ((char_length(destination_url) <= 255))
 );

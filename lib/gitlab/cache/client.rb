@@ -5,6 +5,7 @@ module Gitlab
     # It replaces Rails.cache with metrics support
     class Client
       DEFAULT_BACKING_RESOURCE = :unknown
+      DEFAULT_FEATURE_CATEGORY = :not_owned
 
       def initialize(metrics, backend: Rails.cache)
         @metrics = metrics

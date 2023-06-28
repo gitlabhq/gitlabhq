@@ -113,7 +113,7 @@ export default {
       return this.parentIssue?.milestone;
     },
     children() {
-      return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
+      return findHierarchyWidgetChildren(this.workItem);
     },
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
