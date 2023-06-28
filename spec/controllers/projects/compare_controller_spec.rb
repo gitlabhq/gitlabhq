@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CompareController do
+RSpec.describe Projects::CompareController, feature_category: :source_code_management do
   include ProjectForksHelper
 
   using RSpec::Parameterized::TableSyntax
@@ -203,6 +203,36 @@ RSpec.describe Projects::CompareController do
       let(:whitespace) { nil }
 
       it 'does not show the diff' do
+        show_request
+
+        expect(response).to be_successful
+        expect(assigns(:diffs)).to be_empty
+        expect(assigns(:commits)).to be_empty
+      end
+    end
+
+    context 'when the target project is the default source but hidden to the user' do
+      let(:project) { create(:project, :repository, :private) }
+      let(:from_ref) { 'improve%2Fmore-awesome' }
+      let(:to_ref) { 'feature' }
+      let(:whitespace) { nil }
+
+      let(:request_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          from: from_ref,
+          to: to_ref,
+          w: whitespace,
+          page: page,
+          straight: straight
+        }
+      end
+
+      it 'does not show the diff' do
+        allow(controller).to receive(:source_project).and_return(project)
+        expect(project).to receive(:default_merge_request_target).and_return(private_fork)
+
         show_request
 
         expect(response).to be_successful
