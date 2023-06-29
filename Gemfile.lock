@@ -1,4 +1,10 @@
 PATH
+  remote: gems/activerecord-gitlab
+  specs:
+    activerecord-gitlab (0.1.0)
+      activerecord (>= 6.1.7.3)
+
+PATH
   remote: gems/gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
@@ -1690,6 +1696,7 @@ DEPENDENCIES
   RedCloth (~> 4.3.2)
   acme-client (~> 2.0)
   activerecord-explain-analyze (~> 0.1)
+  activerecord-gitlab!
   acts-as-taggable-on (~> 9.0)
   addressable (~> 2.8)
   akismet (~> 3.0)

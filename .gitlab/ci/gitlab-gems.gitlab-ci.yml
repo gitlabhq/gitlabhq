@@ -1,3 +1,11 @@
+gems activerecord-gitlab:
+  extends:
+    - .gems:rules:activerecord-gitlab
+  needs: []
+  trigger:
+    include: gems/activerecord-gitlab/.gitlab-ci.yml
+    strategy: depend
+
 gems gitlab-rspec:
   extends:
     - .gems:rules:gitlab-rspec

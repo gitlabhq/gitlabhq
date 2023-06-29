@@ -1,0 +1,19 @@
+%section.settings.no-animate#js-gitlab-shell-operation-limits-settings{ class: ('expanded' if expanded_by_default?), 'data-testid': 'gitlab-shell-operation-limits' }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('ShellOperations|Git SSH operations rate limit')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = s_('ShellOperations|Limit the number of Git operations a user can perform per minute, per repository.')
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/rate_limits_on_git_ssh_operations.md'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-gitlab-shell-operation-limits-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          = f.label :gitlab_shell_operation_limit, s_('ShellOperations|Maximum number of Git operations per minute'), class: 'gl-font-bold'
+          = f.number_field :gitlab_shell_operation_limit, class: 'form-control gl-form-input'
+
+      = f.submit _('Save changes'), pajamas_button: true

@@ -10,6 +10,33 @@ RSpec.describe Organizations::OrganizationSetting, type: :model, feature_categor
   end
 
   describe 'validations' do
+    context 'for json schema' do
+      let(:restricted_visibility_levels) { [] }
+      let(:settings) do
+        {
+          restricted_visibility_levels: restricted_visibility_levels
+        }
+      end
+
+      it { is_expected.to allow_value(settings).for(:settings) }
+
+      context 'when trying to store an unsupported key' do
+        let(:settings) do
+          {
+            unsupported_key: 'some_value'
+          }
+        end
+
+        it { is_expected.not_to allow_value(settings).for(:settings) }
+      end
+
+      context "when key 'restricted_visibility_levels' is invalid" do
+        let(:restricted_visibility_levels) { ['some_string'] }
+
+        it { is_expected.not_to allow_value(settings).for(:settings) }
+      end
+    end
+
     context 'when setting restricted_visibility_levels' do
       it 'is one or more of Gitlab::VisibilityLevel constants' do
         setting = build(:organization_setting)

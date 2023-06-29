@@ -346,13 +346,25 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
   end
 
   describe '.metric_definitions_changed?', :freeze_time do
-    let(:timestamps) { [Time.current] }
-    let(:files) { %w[file2.yml] }
+    let(:metric1) { Dir.mktmpdir('metric1') }
+    let(:metric2) { Dir.mktmpdir('metric2') }
 
     before do
       allow(Rails).to receive_message_chain(:env, :development?).and_return(is_dev)
-      allow(File).to receive(:mtime).and_return(*timestamps)
-      allow(described_class).to receive(:paths).and_return(files)
+      allow(described_class).to receive(:paths).and_return(
+        [
+          File.join(metric1, '**', '*.yml'),
+          File.join(metric2, '**', '*.yml')
+        ]
+      )
+
+      write_metric(metric1, path, yaml_content)
+      write_metric(metric2, path, yaml_content)
+    end
+
+    after do
+      FileUtils.rm_rf(metric1)
+      FileUtils.rm_rf(metric2)
     end
 
     context 'in development', :freeze_time do
@@ -371,11 +383,10 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       end
 
       context 'when file is changed' do
-        let(:timestamps) { [2.minutes.ago, Time.current] }
-
         it 'has changes on the next invocation when more than 3 seconds have passed' do
           described_class.metric_definitions_changed?
 
+          write_metric(metric1, path, yaml_content)
           travel_to 10.seconds.from_now
 
           expect(described_class.metric_definitions_changed?).to be_truthy
@@ -384,6 +395,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
         it 'does not have changes on the next invocation when less than 3 seconds have passed' do
           described_class.metric_definitions_changed?
 
+          write_metric(metric1, path, yaml_content)
           travel_to 1.second.from_now
 
           expect(described_class.metric_definitions_changed?).to be_falsy

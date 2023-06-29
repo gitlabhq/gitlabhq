@@ -4,6 +4,8 @@ module Organizations
   class OrganizationSetting < ApplicationRecord
     belongs_to :organization
 
+    validates :settings, json_schema: { filename: "organization_settings" }
+
     jsonb_accessor :settings,
       restricted_visibility_levels: [:integer, { array: true }]
 

@@ -80,6 +80,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['valid_runner_registrars']).to match_array(%w(project group))
       expect(json_response['ci_max_includes']).to eq(150)
       expect(json_response['allow_account_deletion']).to eq(true)
+      expect(json_response['gitlab_shell_operation_limit']).to eq(600)
     end
   end
 
@@ -191,7 +192,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             projects_api_rate_limit_unauthenticated: 100,
             silent_mode_enabled: true,
             valid_runner_registrars: ['group'],
-            allow_account_deletion: false
+            allow_account_deletion: false,
+            gitlab_shell_operation_limit: 500
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -267,6 +269,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['silent_mode_enabled']).to be(true)
         expect(json_response['valid_runner_registrars']).to eq(['group'])
         expect(json_response['allow_account_deletion']).to be(false)
+        expect(json_response['gitlab_shell_operation_limit']).to be(500)
       end
     end
 

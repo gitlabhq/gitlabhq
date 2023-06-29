@@ -39,6 +39,7 @@ You can set these rate limits in the Admin Area of your instance:
 - [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md)
 - [Package registry rate limits](../user/admin_area/settings/package_registry_rate_limits.md)
 - [Git LFS rate limits](../user/admin_area/settings/git_lfs_rate_limits.md)
+- [Rate limits on Git SSH operations](../user/admin_area/settings/rate_limits_on_git_ssh_operations.md)
 - [Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md)
 - [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
@@ -72,24 +73,6 @@ For configuration information, see
 [Omnibus GitLab configuration options](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-failed-authentication-ban).
 
 ## Non-configurable limits
-
-### Git operations using SSH
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `rate_limit_gitlab_shell`. Available by default without a feature flag from 15.8.
-
-GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
-further connection requests from that user for the project.
-
-The rate limit applies at the Git command ([plumbing](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain)) level.
-Each command has a rate limit of 600 per minute. For example:
-
-- `git push` has a rate limit of 600 per minute.
-- `git pull` has its own rate limit of 600 per minute.
-
-Because the same commands are shared by `git-upload-pack`, `git pull`, and `git clone`, they share a rate limit.
-
-The requests per minute threshold for this rate limit is not configurable. Self-managed customers can disable this
-rate limit.
 
 ### Repository archives
 

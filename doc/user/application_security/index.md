@@ -247,7 +247,10 @@ If security scans have not run for the completed pipeline in the target branch w
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 
-From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type. Select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
+From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type.
+
+The widget only displays the first 25 findings of each type, sorted by severity. To see all
+findings, select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
 
 ![Security scanning results in a merge request](img/mr_security_scanning_results_v14_3.png)
 

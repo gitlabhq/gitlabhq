@@ -84,6 +84,9 @@
   .settings-content
     = render 'git_lfs_limits'
 
+
+= render 'gitlab_shell_operation_limits'
+
 %section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'outbound_requests_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only

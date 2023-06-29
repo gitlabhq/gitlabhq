@@ -53,15 +53,18 @@ module SimpleCovEnv
   def configure_profile
     SimpleCov.configure do
       load_profile 'test_frameworks'
-      track_files '{app,config/initializers,config/initializers_before_autoloader,db/post_migrate,haml_lint,lib,rubocop,tooling}/**/*.rb'
 
-      add_filter '/vendor/ruby/'
       add_filter '/bin/'
       add_filter 'db/fixtures/development/' # Matches EE files as well
-      add_filter %r|db/migrate/\d{14}_init_schema\.rb\z|
+      add_filter %r|db/migrate/\d{14}_init_schema\.rb\z| # Matches EE files as well
+      add_filter '/gems/'
+      add_filter '/vendor/'
 
       add_group 'Channels',     'app/channels' # Matches EE files as well
+      add_group 'Components',   'app/components' # Matches EE files as well
       add_group 'Controllers',  'app/controllers' # Matches EE files as well
+      add_group 'Events',       'app/events' # Matches EE files as well
+      add_group 'Experiments',  'app/experiments' # Matches EE files as well
       add_group 'Finders',      'app/finders' # Matches EE files as well
       add_group 'GraphQL',      'app/graphql' # Matches EE files as well
       add_group 'Helpers',      'app/helpers' # Matches EE files as well
@@ -73,7 +76,8 @@ module SimpleCovEnv
       add_group 'Services',     'app/services' # Matches EE files as well
       add_group 'Uploaders',    'app/uploaders' # Matches EE files as well
       add_group 'Validators',   'app/validators' # Matches EE files as well
-      add_group 'Workers',      %w[app/jobs app/workers] # Matches EE files as well
+      add_group 'Views',        'app/views' # Matches EE files as well
+      add_group 'Workers',      'app/workers' # Matches EE files as well
       add_group 'Initializers', %w[config/initializers config/initializers_before_autoloader] # Matches EE files as well
       add_group 'Migrations',   %w[db/migrate db/optional_migrations db/post_migrate] # Matches EE files as well
       add_group 'Libraries',    %w[/lib /ee/lib]

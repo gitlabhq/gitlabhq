@@ -215,13 +215,12 @@ export default {
 
 <template>
   <div class="gl-new-dropdown content-editor-suggestions-dropdown">
-    <div class="gl-new-dropdown-panel gl-display-block! gl-absolute">
+    <div
+      v-if="!loading && items.length > 0"
+      class="gl-new-dropdown-panel gl-display-block! gl-absolute"
+    >
       <div class="gl-new-dropdown-inner">
-        <ul
-          v-if="!loading && items.length > 0"
-          class="gl-new-dropdown-contents"
-          data-testid="content-editor-suggestions-dropdown"
-        >
+        <ul class="gl-new-dropdown-contents" data-testid="content-editor-suggestions-dropdown">
           <li
             v-for="(item, index) in items"
             :key="index"
@@ -287,12 +286,12 @@ export default {
             </div>
           </li>
         </ul>
-        <div v-if="loading" class="gl-new-dropdown show dropdown-menu gl-relative gl-m-0!">
-          <div class="gl-new-dropdown-inner gl-overflow-y-auto">
-            <div class="gl-px-5">
-              <gl-loading-icon size="sm" class="gl-display-inline-block" /> {{ __('Loading...') }}
-            </div>
-          </div>
+      </div>
+    </div>
+    <div v-if="loading" class="gl-new-dropdown-panel gl-display-block! gl-absolute">
+      <div class="gl-new-dropdown-inner">
+        <div class="gl-px-4 gl-py-3">
+          <gl-loading-icon size="sm" class="gl-display-inline-block" /> {{ __('Loading...') }}
         </div>
       </div>
     </div>

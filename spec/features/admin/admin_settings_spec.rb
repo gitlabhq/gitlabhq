@@ -775,6 +775,18 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.users_get_by_id_limit_allowlist).to eq(%w[someone someone_else])
       end
 
+      it 'changes gitlab shell operation limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('[data-testid="gitlab-shell-operation-limits"]') do
+          fill_in 'Maximum number of Git operations per minute', with: 100
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.gitlab_shell_operation_limit).to eq(100)
+      end
+
       it 'changes Projects API rate limits settings' do
         visit network_admin_application_settings_path
 

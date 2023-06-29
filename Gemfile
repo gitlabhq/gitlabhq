@@ -15,6 +15,8 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
 gem 'rails', '~> 7.0.5.1'
 
+gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab'
+
 gem 'bootsnap', '~> 1.16.0', require: false
 
 gem 'openssl', '~> 3.0'

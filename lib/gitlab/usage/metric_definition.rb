@@ -113,7 +113,7 @@ module Gitlab
 
           @last_change_check = Time.current
 
-          last_change = paths.map { |f| File.mtime(f) }.max
+          last_change = Dir.glob(paths).map { |f| File.mtime(f) }.max
           did_change = @last_metric_update != last_change
           @last_metric_update = last_change
           did_change

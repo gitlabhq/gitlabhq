@@ -2126,6 +2126,11 @@
 # GitLab monorepo gems #
 ########################
 
+.gems:rules:activerecord-gitlab:
+  rules:
+    - <<: *if-merge-request
+      changes: ["gems/activerecord-gitlab/**/*"]
+
 .gems:rules:gitlab-rspec:
   rules:
     - <<: *if-merge-request

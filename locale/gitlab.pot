@@ -42805,6 +42805,15 @@ msgstr ""
 msgid "SharedRunnersMinutesSettings|When you reset the compute usage for this namespace, the compute usage changes to zero."
 msgstr ""
 
+msgid "ShellOperations|Git SSH operations rate limit"
+msgstr ""
+
+msgid "ShellOperations|Limit the number of Git operations a user can perform per minute, per repository."
+msgstr ""
+
+msgid "ShellOperations|Maximum number of Git operations per minute"
+msgstr ""
+
 msgid "Shimo|Go to Shimo Workspace"
 msgstr ""
 

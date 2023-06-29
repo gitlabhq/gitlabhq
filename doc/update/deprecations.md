@@ -142,6 +142,21 @@ In GitLab 11.11 the Windows Batch executor, the CMD shell was deprecated in GitL
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Deprecate `message` field from Vulnerability Management features
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.1</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411573).
+</div>
+
+This MR deprecates the `message` field on the `VulnerabilityCreate` GraphQL mutation, and in the `AdditionalInfo` column of the vulnerability export.
+The message field was removed from security reports schema in GitLab 16.0 and is no longer being used elsewhere.
+
+</div>
+
 <div class="deprecation " data-milestone="17.0">
 
 ### Deprecate legacy shell escaping and quoting runner shell executor

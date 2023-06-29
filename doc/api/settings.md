@@ -570,6 +570,7 @@ listed in the descriptions of the relevant settings.
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
 | `jira_connect_application_key`           | String           | no                                   | Application ID of the OAuth application that should be used to authenticate with the GitLab for Jira Cloud app |
 | `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app |
+| `gitlab_shell_operation_limit`           | integer          | no                                   | Maximum number of Git operations per minute a user can perform. Default: `600`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412088) in GitLab 16.2. |
 
 ### Configure inactive project deletion
 

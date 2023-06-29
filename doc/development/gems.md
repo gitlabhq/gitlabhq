@@ -74,7 +74,7 @@ You can see example adding new Gem: [!121676](https://gitlab.com/gitlab-org/gitl
      spec.summary = "GitLab's RSpec extensions"
      spec.description = "A set of useful helpers to configure RSpec with various stubs and CI configs."
      spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-<name-of-gem>"
-     spec.required_ruby_version = ">= 2.6.0"
+     spec.required_ruby_version = ">= 2.7"
    end
    ```
 
