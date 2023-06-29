@@ -47,11 +47,19 @@ Code Suggestions may produce [low-quality or incomplete suggestions](#model-accu
 
 The best results from Code Suggestions are expected [for languages the Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_coding_languages) directly support:
 
+- C++
+- C#
 - Go
 - Google SQL
 - Java
 - JavaScript
+- Kotlin
+- PHP
 - Python
+- Ruby
+- Rust
+- Scala
+- Swift
 - TypeScript
 
  Supported [code infrastructure interfaces](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) include:
@@ -185,22 +193,17 @@ mitigate abuse or misuse. GitLab may disable this feature for any or all custome
 Code Suggestions is a generative artificial intelligence (AI) model.
 
 Your personal access token enables a secure API connection to GitLab.com.
-This API connection securely transmits a context window from your IDE/editor to the Code Suggestions GitLab hosted service,
+This API connection securely transmits a context window from your IDE/editor to the Code Suggestions GitLab hosted service which calls Google Vertex AI Codey APIs,
 and the generated suggestion is transmitted back to your IDE/editor.
 
 GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview).
 
 ### Data privacy
 
-Code Suggestions operate completely in the GitLab infrastructure, providing the same level of
-[security](https://about.gitlab.com/security/) as any other features of GitLab, and processing any personal
-data in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/).
+No new additional data is collected to enable this feature. Private non-public GitLab customer data is
+not used as training data. 
 
-No new additional data is collected to enable this feature. The content of your GitLab hosted source code is
-not used as training data. Source code inference against the Code Suggestions model is not used to re-train the model.
-Your data also never leaves GitLab. All training and inference is done in GitLab.com infrastructure.
-
-[Read more about the security of GitLab.com](https://about.gitlab.com/security/faq/).
+Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance)
 
 ### Self-managed instance data privacy
 
@@ -220,6 +223,10 @@ what is sent to generate the code suggestion.
 Code suggestions are routed through Google Vertex AI Codey APIs. Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [Responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
 
 Google Vertex AI Codey APIs are not trained on private non-public GitLab customer or user data.
+
+Google has [shared the following](https://ai.google/discover/foundation-models/) about the data Codey models are trained on: 
+
+> Codey is our family of foundational coding models built on PaLM 2. Codey was fine-tuned on a large dataset of high quality, permissively licensed code from external sources
 
 ## Progressive enhancement
 

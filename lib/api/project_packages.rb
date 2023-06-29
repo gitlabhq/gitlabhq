@@ -15,6 +15,7 @@ module API
     urgency :low
 
     helpers ::API::Helpers::PackagesHelpers
+    helpers ::API::Helpers::Packages::Npm
     helpers do
       def package
         strong_memoize(:package) do # rubocop:disable Gitlab/StrongMemoizeAttr
@@ -133,6 +134,8 @@ module API
 
         destroy_conditionally!(package) do |package|
           ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
+
+          enqueue_sync_metadata_cache_worker(user_project, package.name) if package.npm?
         end
       end
     end

@@ -13,7 +13,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/features/projects/feature_flags/user_deletes_feature_flag_spec.rb'
     - 'ee/spec/features/projects/settings/ee/service_desk_setting_spec.rb'
     - 'ee/spec/features/signup_spec.rb'
-    - 'ee/spec/features/trial_registrations/company_information_spec.rb'
     - 'ee/spec/finders/license_template_finder_spec.rb'
     - 'ee/spec/finders/projects/integrations/jira/issues_finder_spec.rb'
     - 'ee/spec/finders/template_finder_spec.rb'

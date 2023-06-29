@@ -1494,7 +1494,6 @@ Layout/LineLength:
     - 'ee/spec/features/search/elastic/project_search_spec.rb'
     - 'ee/spec/features/search/elastic/snippet_search_spec.rb'
     - 'ee/spec/features/subscriptions_spec.rb'
-    - 'ee/spec/features/trial_registrations/company_information_spec.rb'
     - 'ee/spec/features/users/login_spec.rb'
     - 'ee/spec/finders/analytics/devops_adoption/enabled_namespaces_finder_spec.rb'
     - 'ee/spec/finders/analytics/devops_adoption/snapshots_finder_spec.rb'

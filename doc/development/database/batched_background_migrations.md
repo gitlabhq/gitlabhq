@@ -538,6 +538,136 @@ Bumping the [import/export version](../../user/project/settings/import_export.md
 be required, if importing a project from a prior version of GitLab requires the
 data to be in the new format.
 
+## Managing
+
+NOTE:
+BBM management takes place through `chatops` integration, which is limited to GitLab team members only.
+
+### List batched background migrations
+
+To list the batched background migrations in the system, run this command:
+
+`/chatops run batched_background_migrations list`
+
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default).
+    - `ci`: Uses the CI database.
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
+
+Output example:
+
+![List command](img/list_v15_4.png)
+
+NOTE:
+ChatOps returns 20 batched background migrations order by `created_at` (DESC).
+
+### Monitor the progress and status of a batched background migration
+
+To see the status and progress of a specific batched background migration, run this command:
+
+`/chatops run batched_background_migrations status MIGRATION_ID`
+
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default)
+    - `ci`: Uses the CI database
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
+
+Output example:
+
+![Status command](img/status_v15_4.png)
+
+`Progress` represents the percentage of the background migration that has been completed.
+
+Definitions of the batched background migration states:
+
+- **Active:** Either:
+  - Ready to be picked by the runner.
+  - Running batched jobs.
+- **Finalizing:** Running batched jobs.
+- **Failed:** Failed batched background migration.
+- **Finished:** Completed batched background migration.
+- **Paused:** Not visible to the runner.
+
+### Pause a batched background migration
+
+If you want to pause a batched background migration, you need to run the following command:
+
+`/chatops run batched_background_migrations pause MIGRATION_ID`
+
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default).
+    - `ci`: Uses the CI database.
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
+
+Output example:
+
+![Pause command](img/pause_v15_4.png)
+
+NOTE:
+You can pause only `active` batched background migrations.
+
+### Resume a batched background migration
+
+If you want to resume a batched background migration, you need to run the following command:
+
+`/chatops run batched_background_migrations resume MIGRATION_ID`
+
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default).
+    - `ci`: Uses the CI database.
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
+
+Output example:
+
+![Resume command](img/resume_v15_4.png)
+
+NOTE:
+You can resume only `active` batched background migrations
+
+### Enable or disable background migrations
+
+In extremely limited circumstances, a GitLab administrator can disable either or
+both of these [feature flags](../../administration/feature_flags.md):
+
+- `execute_background_migrations`
+- `execute_batched_migrations_on_schedule`
+
+These flags are enabled by default. Disable them only as a last resort
+to limit database operations in special circumstances, like database host maintenance.
+
+WARNING:
+Do not disable either of these flags unless you fully understand the ramifications. If you disable
+the `execute_background_migrations` or `execute_batched_migrations_on_schedule` feature flag,
+GitLab upgrades might fail and data loss might occur.
+
 ## Batched background migrations for EE-only features
 
 All the background migration classes for EE-only features should be present in GitLab FOSS.
@@ -807,115 +937,6 @@ for more details.
 ### ChatOps integration
 
 The batched background migrations framework has ChatOps support. Using ChatOps, GitLab engineers can interact with the batched background migrations present in the system.
-
-#### List batched background migrations
-
-To list the batched background migrations in the system, run this command:
-
-`/chatops run batched_background_migrations list`
-
-This command supports the following options:
-
-- Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database:
-    - `main`: Uses the main database (default).
-    - `ci`: Uses the CI database.
-- Environment selection:
-  - `--dev`: Uses the `dev` environment.
-  - `--staging`: Uses the `staging` environment.
-  - `--staging_ref`: Uses the `staging_ref` environment.
-  - `--production` : Uses the `production` environment (default).
-
-Output example:
-
-![List command](img/list_v15_4.png)
-
-NOTE:
-ChatOps returns 20 batched background migrations order by `created_at` (DESC).
-
-#### Monitor the progress and status of a batched background migration
-
-To see the status and progress of a specific batched background migration, run this command:
-
-`/chatops run batched_background_migrations status MIGRATION_ID`
-
-This command supports the following options:
-
-- Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database:
-    - `main`: Uses the main database (default)
-    - `ci`: Uses the CI database
-- Environment selection:
-  - `--dev`: Uses the `dev` environment.
-  - `--staging`: Uses the `staging` environment.
-  - `--staging_ref`: Uses the `staging_ref` environment.
-  - `--production` : Uses the `production` environment (default).
-
-Output example:
-
-![Status command](img/status_v15_4.png)
-
-`Progress` represents the percentage of the background migration that has been completed.
-
-Definitions of the batched background migration states:
-
-- **Active:** Either:
-  - Ready to be picked by the runner.
-  - Running batched jobs.
-- **Finalizing:** Running batched jobs.
-- **Failed:** Failed batched background migration.
-- **Finished:** Completed batched background migration.
-- **Paused:** Not visible to the runner.
-
-#### Pause a batched background migration
-
-If you want to pause a batched background migration, you need to run the following command:
-
-`/chatops run batched_background_migrations pause MIGRATION_ID`
-
-This command supports the following options:
-
-- Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database:
-    - `main`: Uses the main database (default).
-    - `ci`: Uses the CI database.
-- Environment selection:
-  - `--dev`: Uses the `dev` environment.
-  - `--staging`: Uses the `staging` environment.
-  - `--staging_ref`: Uses the `staging_ref` environment.
-  - `--production` : Uses the `production` environment (default).
-
-Output example:
-
-![Pause command](img/pause_v15_4.png)
-
-NOTE:
-You can pause only `active` batched background migrations.
-
-#### Resume a batched background migration
-
-If you want to resume a batched background migration, you need to run the following command:
-
-`/chatops run batched_background_migrations resume MIGRATION_ID`
-
-This command supports the following options:
-
-- Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database:
-    - `main`: Uses the main database (default).
-    - `ci`: Uses the CI database.
-- Environment selection:
-  - `--dev`: Uses the `dev` environment.
-  - `--staging`: Uses the `staging` environment.
-  - `--staging_ref`: Uses the `staging_ref` environment.
-  - `--production` : Uses the `production` environment (default).
-
-Output example:
-
-![Resume command](img/resume_v15_4.png)
-
-NOTE:
-You can resume only `active` batched background migrations
 
 ### Viewing failure error logs
 

@@ -3,6 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registry do  # rubocop: disable RSpec/FilePath
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:namespace) { group }
+  let_it_be(:project) { create(:project, :public, namespace: namespace) }
+  let_it_be(:package) { create(:npm_package, project: project) }
+
+  let(:package_name) { package.name }
+  let(:params) { { id: project.id } }
+  let(:endpoint_scope) { :project }
   let(:object) { klass.new(params) }
   let(:klass) do
     Struct.new(:params) do
@@ -10,12 +19,6 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
       include ::API::Helpers::Packages::Npm
     end
   end
-
-  let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:namespace) { group }
-  let_it_be(:project) { create(:project, :public, namespace: namespace) }
-  let_it_be(:package) { create(:npm_package, project: project) }
 
   before do
     allow(object).to receive(:endpoint_scope).and_return(endpoint_scope)
@@ -25,12 +28,7 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
   describe '#finder_for_endpoint_scope' do
     subject { object.finder_for_endpoint_scope(package_name) }
 
-    let(:package_name) { package.name }
-
     context 'when called with project scope' do
-      let(:params) { { id: project.id } }
-      let(:endpoint_scope) { :project }
-
       it 'returns a PackageFinder for project scope' do
         expect(::Packages::Npm::PackageFinder).to receive(:new).with(package_name, project: project)
 
@@ -140,6 +138,12 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
           end
         end
       end
+    end
+  end
+
+  describe '#enqueue_sync_metadata_cache_worker' do
+    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+      subject { object.enqueue_sync_metadata_cache_worker(project, package_name) }
     end
   end
 end

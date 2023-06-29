@@ -24,8 +24,15 @@ module Banzai
         #
         # Returns a String replaced with the return of the block.
         def references_in(text, pattern = object_reference_pattern)
-          text.gsub(pattern) do |match|
-            yield match, $~[:issue]
+          case pattern
+          when Regexp
+            text.gsub(pattern) do |match|
+              yield match, $~[:issue]
+            end
+          when Gitlab::UntrustedRegexp
+            pattern.replace_gsub(text) do |match|
+              yield match, match[:issue]
+            end
           end
         end
 

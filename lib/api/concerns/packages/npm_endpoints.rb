@@ -130,6 +130,8 @@ module API
 
                 track_package_event(:create_tag, :npm, project: project, namespace: project.namespace)
 
+                enqueue_sync_metadata_cache_worker(project, package_name)
+
                 ::Packages::Npm::CreateTagService.new(package, tag).execute
 
                 no_content!
@@ -163,6 +165,8 @@ module API
                 not_found!('Package tag') unless package_tag
 
                 track_package_event(:delete_tag, :npm, project: project, namespace: project.namespace)
+
+                enqueue_sync_metadata_cache_worker(project, package_name)
 
                 ::Packages::RemoveTagService.new(package_tag).execute
 
@@ -210,14 +214,19 @@ module API
 
               not_found!('Packages') if packages.empty?
 
-              if endpoint_scope == :project && Feature.enabled?(:npm_metadata_cache, project) &&
-                  metadata_cache&.file&.exists?
-                metadata_cache.touch_last_downloaded_at
-                present_carrierwave_file!(metadata_cache.file)
-              else
-                present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
-                  with: ::API::Entities::NpmPackage
+              if endpoint_scope == :project && Feature.enabled?(:npm_metadata_cache, project)
+                if metadata_cache&.file&.exists?
+                  metadata_cache.touch_last_downloaded_at
+                  present_carrierwave_file!(metadata_cache.file)
+
+                  break
+                end
+
+                enqueue_sync_metadata_cache_worker(project, package_name)
               end
+
+              present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
+                with: ::API::Entities::NpmPackage
             end
           end
 

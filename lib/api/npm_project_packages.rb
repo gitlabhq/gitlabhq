@@ -80,6 +80,7 @@ module API
           if created_package[:status] == :error
             render_api_error!(created_package[:message], created_package[:http_status])
           else
+            enqueue_sync_metadata_cache_worker(project, created_package.name)
             track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
             created_package
           end

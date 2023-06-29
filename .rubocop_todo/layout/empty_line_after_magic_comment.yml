@@ -289,7 +289,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/features/projects/kerberos_clone_instructions_spec.rb'
     - 'ee/spec/features/projects/settings/merge_request_approvals_settings_spec.rb'
     - 'ee/spec/features/projects/settings/merge_requests_settings_spec.rb'
-    - 'ee/spec/features/trial_registrations/company_information_spec.rb'
     - 'ee/spec/finders/auth/group_saml_identity_finder_spec.rb'
     - 'ee/spec/finders/geo/design_registry_finder_spec.rb'
     - 'ee/spec/finders/geo/project_registry_status_finder_spec.rb'

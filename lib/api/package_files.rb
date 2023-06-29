@@ -14,6 +14,7 @@ module API
     urgency :low
 
     helpers ::API::Helpers::PackagesHelpers
+    helpers ::API::Helpers::Packages::Npm
 
     params do
       requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project'
@@ -70,6 +71,8 @@ module API
 
         destroy_conditionally!(package_file) do |package_file|
           package_file.pending_destruction!
+
+          enqueue_sync_metadata_cache_worker(user_project, package.name) if package.npm?
         end
       end
     end

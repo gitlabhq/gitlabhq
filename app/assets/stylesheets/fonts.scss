@@ -9,8 +9,19 @@ Usage:
   font-weight: 100 900;
   font-display: optional;
   font-style: normal;
-  font-named-instance: 'Regular'; /* stylelint-disable property-no-unknown */
+  /* stylelint-disable-next-line property-no-unknown */
+  font-named-instance: 'Regular';
   src: font-url('gitlab-sans/GitLabSans.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'GitLab Sans';
+  font-weight: 100 900;
+  font-display: optional;
+  font-style: italic;
+  /* stylelint-disable-next-line property-no-unknown */
+  font-named-instance: 'Regular';
+  src: font-url('gitlab-sans/GitLabSans-Italic.woff2') format('woff2');
 }
 
 /* -------------------------------------------------------

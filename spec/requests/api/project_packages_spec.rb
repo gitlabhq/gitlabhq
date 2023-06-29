@@ -660,6 +660,12 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:no_content)
         end
 
+        it_behaves_like 'enqueue a worker to sync a metadata cache' do
+          let(:package_name) { package1.name }
+
+          subject { delete api(package_url, user) }
+        end
+
         context 'with JOB-TOKEN auth' do
           let(:job) { create(:ci_build, :running, user: user, project: project) }
 
@@ -691,6 +697,14 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
             .to receive(:perform_async).with(user.id, project.id, package1.name)
 
           delete api(package_url, user)
+        end
+
+        it_behaves_like 'does not enqueue a worker to sync a metadata cache' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          subject { delete api(package_url, user) }
         end
       end
     end
