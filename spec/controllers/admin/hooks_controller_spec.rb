@@ -55,12 +55,13 @@ RSpec.describe Admin::HooksController do
       hook.update!(url_variables: { 'foo' => 'bar', 'baz' => 'woo' })
 
       hook_params = {
-        url: 'http://example.com/{baz}?token={token}',
+        url: 'http://example.com/{bar}?token={token}',
         enable_ssl_verification: false,
         url_variables: [
           { key: 'token', value: 'some secret value' },
-          { key: 'baz', value: 'qux' },
-          { key: 'foo', value: nil }
+          { key: 'baz', value: nil },
+          { key: 'foo', value: nil },
+          { key: 'bar', value: 'qux' }
         ]
       }
 
@@ -72,7 +73,7 @@ RSpec.describe Admin::HooksController do
       expect(flash[:notice]).to include('was updated')
       expect(hook).to have_attributes(hook_params.except(:url_variables))
       expect(hook).to have_attributes(
-        url_variables: { 'token' => 'some secret value', 'baz' => 'qux' }
+        url_variables: { 'token' => 'some secret value', 'bar' => 'qux' }
       )
     end
   end

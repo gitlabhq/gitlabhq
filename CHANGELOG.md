@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.10 (2023-06-28)
+
+### Security (10 changes)
+
+- [Revert 'security-leaked-ci-job-token-permission-15-11' from '15-11'"](gitlab-org/security/gitlab@19f73bf5494d34b43eb8c807f860d545acae0c32) ([merge request](gitlab-org/security/gitlab!3375))
+- [Use fully qualified ref when loading code owner file](gitlab-org/security/gitlab@d7ffb4cca68373bff38bd05f0b8afc868cda9e04) ([merge request](gitlab-org/security/gitlab!3354))
+- [Maintainer can leak masked webhook secrets by manipulating URL masking](gitlab-org/security/gitlab@3a7ccdac5e41870fdce362c38d0a1d1437906fbd) ([merge request](gitlab-org/security/gitlab!3361))
+- [Remove approvals when the only commit gets amended](gitlab-org/security/gitlab@f8a4ad8be7e5fdf752f525ed58b94b1ce625b9a1) ([merge request](gitlab-org/security/gitlab!3368))
+- [Fix for fork permissions check in compare controller](gitlab-org/security/gitlab@8edf44b13e55ffe0c912f98134d0341a5a6bcd28) ([merge request](gitlab-org/security/gitlab!3344))
+- [Webhook token leaked in Sidekiq logs if log format is 'default'](gitlab-org/security/gitlab@02b58237085930c62ee277c9ebd89a0560f44a98) ([merge request](gitlab-org/security/gitlab!3347))
+- [Mitigate epic reference filter ReDOS](gitlab-org/security/gitlab@4c2cd6e5f7c994aca554be37d9ea9e5e114341f1) ([merge request](gitlab-org/security/gitlab!3339))
+- [Increasing security for CI_JOB_TOKEN on public and internal projects](gitlab-org/security/gitlab@4f8a00b2499e876df5b65eca921812fbb3215800) ([merge request](gitlab-org/security/gitlab!3319))
+- [Sanitize user email addresses in admin confirm user dialog](gitlab-org/security/gitlab@608c8001c349b0a62aae81850de669d3af02ab60) ([merge request](gitlab-org/security/gitlab!3332))
+- [Obfuscate email of service desk issue creator in issue REST API](gitlab-org/security/gitlab@a092ebc54cce4492f87f8ed2bf67c31793b0bd0e) ([merge request](gitlab-org/security/gitlab!3316))
+
 ## 15.11.9 (2023-06-15)
 
 ### Changed (1 change)
