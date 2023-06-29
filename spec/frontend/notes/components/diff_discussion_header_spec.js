@@ -34,9 +34,17 @@ describe('diff_discussion_header component', () => {
     const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
     const findAvatar = () => wrapper.findComponent(GlAvatar);
 
-    it('should render user avatar and user avatar link', () => {
+    it('should render user avatar and user avatar link with popover support', () => {
       expect(findAvatar().exists()).toBe(true);
-      expect(findAvatarLink().exists()).toBe(true);
+
+      const avatarLink = findAvatarLink();
+      expect(avatarLink.exists()).toBe(true);
+      expect(avatarLink.classes()).toContain('js-user-link');
+      expect(avatarLink.attributes()).toMatchObject({
+        href: firstNoteAuthor.path,
+        'data-user-id': `${firstNoteAuthor.id}`,
+        'data-username': `${firstNoteAuthor.username}`,
+      });
     });
 
     it('renders avatar of the first note author', () => {

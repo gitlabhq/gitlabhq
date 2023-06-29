@@ -141,21 +141,34 @@ RSpec.describe AwardEmoji do
     end
   end
 
-  describe 'expiring ETag cache' do
+  describe 'broadcasting updates' do
     context 'on a note' do
       let(:note) { create(:note_on_issue) }
       let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note) }
 
-      it 'calls expire_etag_cache on the note when saved' do
+      it 'broadcasts updates on the note when saved' do
         expect(note).to receive(:expire_etag_cache)
+        expect(note).to receive(:trigger_note_subscription_update)
 
         award_emoji.save!
       end
 
-      it 'calls expire_etag_cache on the note when destroyed' do
+      it 'broadcasts updates on the note when destroyed' do
         expect(note).to receive(:expire_etag_cache)
+        expect(note).to receive(:trigger_note_subscription_update)
 
         award_emoji.destroy!
+      end
+
+      context 'when importing' do
+        let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note, importing: true) }
+
+        it 'does not broadcast updates on the note when saved' do
+          expect(note).not_to receive(:expire_etag_cache)
+          expect(note).not_to receive(:trigger_note_subscription_update)
+
+          award_emoji.save!
+        end
       end
     end
 
@@ -163,14 +176,16 @@ RSpec.describe AwardEmoji do
       let(:issue) { create(:issue) }
       let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: issue) }
 
-      it 'does not call expire_etag_cache on the issue when saved' do
+      it 'does not broadcast updates on the issue when saved' do
         expect(issue).not_to receive(:expire_etag_cache)
+        expect(issue).not_to receive(:trigger_note_subscription_update)
 
         award_emoji.save!
       end
 
-      it 'does not call expire_etag_cache on the issue when destroyed' do
+      it 'does not broadcast updates on the issue when destroyed' do
         expect(issue).not_to receive(:expire_etag_cache)
+        expect(issue).not_to receive(:trigger_note_subscription_update)
 
         award_emoji.destroy!
       end

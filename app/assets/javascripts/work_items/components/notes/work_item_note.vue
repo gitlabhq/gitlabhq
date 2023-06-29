@@ -104,6 +104,9 @@ export default {
     author() {
       return this.note.author;
     },
+    authorId() {
+      return getIdFromGraphQLId(this.author.id);
+    },
     entryClass() {
       return {
         'note note-wrapper note-comment': true,
@@ -152,10 +155,10 @@ export default {
       return window.gon.current_user_id;
     },
     isCurrentUserAuthorOfNote() {
-      return getIdFromGraphQLId(this.author.id) === this.currentUserId;
+      return this.authorId === this.currentUserId;
     },
     isWorkItemAuthor() {
-      return getIdFromGraphQLId(this.workItem?.author?.id) === getIdFromGraphQLId(this.author.id);
+      return getIdFromGraphQLId(this.workItem?.author?.id) === this.authorId;
     },
     projectName() {
       return this.workItem?.project?.name;
@@ -287,7 +290,12 @@ export default {
 <template>
   <timeline-entry-item :id="noteAnchorId" :class="entryClass">
     <div :key="note.id" class="timeline-avatar gl-float-left">
-      <gl-avatar-link :href="author.webUrl">
+      <gl-avatar-link
+        :href="author.webUrl"
+        :data-user-id="authorId"
+        :data-username="author.username"
+        class="js-user-link"
+      >
         <gl-avatar
           :src="author.avatarUrl"
           :entity-name="author.username"

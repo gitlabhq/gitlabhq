@@ -4785,6 +4785,9 @@ msgstr ""
 msgid "Also unassign this user from related issues and merge requests"
 msgstr ""
 
+msgid "Alt text"
+msgstr ""
+
 msgid "Alternate support URL for Help page and Help dropdown."
 msgstr ""
 
@@ -15722,9 +15725,6 @@ msgid "Describe the goal of the changes and what reviewers should be aware of."
 msgstr ""
 
 msgid "Description"
-msgstr ""
-
-msgid "Description (alt text)"
 msgstr ""
 
 msgid "Description (optional)"

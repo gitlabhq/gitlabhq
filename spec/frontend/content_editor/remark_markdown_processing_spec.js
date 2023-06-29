@@ -1337,13 +1337,13 @@ content
 alert("Hello world")
 </script>
     `,
-      expectedHtml: '<p></p>',
+      expectedHtml: '<p dir="auto"></p>',
     },
     {
       markdown: `
 <foo>Hello</foo>
       `,
-      expectedHtml: '<p></p>',
+      expectedHtml: '<p dir="auto"></p>',
     },
     {
       markdown: `
@@ -1356,7 +1356,7 @@ alert("Hello world")
 <a id="link-id">Header</a> and other text
       `,
       expectedHtml:
-        '<p><a target="_blank" rel="noopener noreferrer nofollow">Header</a> and other text</p>',
+        '<p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow">Header</a> and other text</p>',
     },
     {
       markdown: `
@@ -1366,11 +1366,11 @@ body {
 }
 </style>
       `,
-      expectedHtml: '<p></p>',
+      expectedHtml: '<p dir="auto"></p>',
     },
     {
       markdown: '<div style="transform">div</div>',
-      expectedHtml: '<div><p>div</p></div>',
+      expectedHtml: '<div><p dir="auto">div</p></div>',
     },
   ])(
     'removes unknown tags and unsupported attributes from HTML output',

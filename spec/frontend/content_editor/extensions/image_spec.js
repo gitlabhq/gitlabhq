@@ -35,7 +35,7 @@ describe('content_editor/extensions/image', () => {
     tiptapEditor.commands.setContent(initialDoc.toJSON());
 
     expect(tiptapEditor.getHTML()).toEqual(
-      '<p><img src="/-/wikis/uploads/image.jpg" alt="image" title="this is an image"></p>',
+      '<p dir="auto"><img src="/-/wikis/uploads/image.jpg" alt="image" title="this is an image"></p>',
     );
   });
 });

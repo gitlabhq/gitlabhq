@@ -1014,6 +1014,19 @@ around(:each) do |example|
 end
 ```
 
+Remember that any objects created before the examples run (such as objects created via `let_it_be`) will be outside spec scope.
+If the time for everything needs to be frozen, `before :all` can be used to encapsulate the setup as well.
+
+```ruby
+before :all do
+  freeze_time
+end
+
+after :all do
+  unfreeze_time
+end
+```
+
 ### Feature flags in tests
 
 This section was moved to [developing with feature flags](../feature_flags/index.md).

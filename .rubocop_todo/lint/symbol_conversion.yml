@@ -34,7 +34,6 @@ Lint/SymbolConversion:
     - 'ee/spec/lib/gitlab/ci/parsers/security/dast_spec.rb'
     - 'ee/spec/lib/gitlab/search/aggregation_parser_spec.rb'
     - 'ee/spec/lib/gitlab/search/aggregation_spec.rb'
-    - 'ee/spec/lib/gitlab/subscription_portal/clients/graphql_spec.rb'
     - 'ee/spec/models/ee/integrations/jira_spec.rb'
     - 'ee/spec/models/integrations/github_spec.rb'
     - 'ee/spec/requests/api/analytics/product_analytics_spec.rb'

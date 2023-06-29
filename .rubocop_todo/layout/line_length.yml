@@ -1816,7 +1816,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/status_page/filter/image_filter_spec.rb'
     - 'ee/spec/lib/gitlab/status_page/filter/mention_anonymization_filter_spec.rb'
     - 'ee/spec/lib/gitlab/status_page/storage/s3_multipart_upload_spec.rb'
-    - 'ee/spec/lib/gitlab/subscription_portal/clients/graphql_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/approval_project_rules_with_user_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/count_ci_builds_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/count_distinct_merged_merge_requests_using_approval_rules_metric_spec.rb'

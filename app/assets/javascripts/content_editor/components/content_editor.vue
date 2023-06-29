@@ -244,7 +244,7 @@ export default {
           {{ placeholder }}
         </div>
         <tiptap-editor-content
-          class="md gl-px-5"
+          class="md"
           data-testid="content_editor_editablebox"
           :editor="contentEditor.tiptapEditor"
         />

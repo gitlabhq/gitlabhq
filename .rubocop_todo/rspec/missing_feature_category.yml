@@ -924,7 +924,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/lib/gitlab/status_page/usage_data_counters/incident_counter_spec.rb'
     - 'ee/spec/lib/gitlab/status_page_spec.rb'
     - 'ee/spec/lib/gitlab/subscription_portal/client_spec.rb'
-    - 'ee/spec/lib/gitlab/subscription_portal/clients/rest_spec.rb'
     - 'ee/spec/lib/gitlab/template/custom_templates_spec.rb'
     - 'ee/spec/lib/gitlab/tracking/snowplow_schema_validation_spec.rb'
     - 'ee/spec/lib/gitlab/tracking/standard_context_spec.rb'

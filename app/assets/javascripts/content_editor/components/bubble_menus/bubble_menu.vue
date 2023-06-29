@@ -44,7 +44,7 @@ export default {
             this.menuVisible = false;
           },
           strategy: 'fixed',
-          maxWidth: 'auto',
+          maxWidth: '400px',
         },
       }),
     );

@@ -6,7 +6,9 @@ exports[`Design note component should match the snapshot 1`] = `
   id="note_123"
 >
   <glavatarlink-stub
-    class="gl-float-left gl-mr-3 link-inherit-color"
+    class="gl-float-left gl-mr-3 link-inherit-color js-user-link"
+    data-user-id="1"
+    data-username="foo-bar"
     href="https://gitlab.com/user"
   >
     <glavatar-stub

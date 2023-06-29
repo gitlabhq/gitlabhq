@@ -16,7 +16,8 @@ const CODE_BLOCK_HTML = '<pre class="js-syntax-highlight" lang="javascript">var 
 const DIAGRAM_HTML =
   '<img data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,WzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybl0=">';
 const FRONTMATTER_HTML = '<pre lang="yaml" data-lang-params="frontmatter">key: value</pre>';
-const PARAGRAPH_HTML = '<p>Some text with <strong>bold</strong> and <em>italic</em> text.</p>';
+const PARAGRAPH_HTML =
+  '<p dir="auto">Some text with <strong>bold</strong> and <em>italic</em> text.</p>';
 
 describe('content_editor/extensions/paste_markdown', () => {
   let tiptapEditor;

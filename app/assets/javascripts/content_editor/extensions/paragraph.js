@@ -9,4 +9,14 @@ export default Paragraph.extend({
       },
     };
   },
+
+  addKeyboardShortcuts() {
+    return {
+      'Shift-Enter': async () => {
+        // can only delegate one shortcut to another async
+        await Promise.resolve();
+        this.editor.commands.enter();
+      },
+    };
+  },
 });

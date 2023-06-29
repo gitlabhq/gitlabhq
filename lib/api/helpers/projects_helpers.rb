@@ -15,7 +15,6 @@ module API
         optional :auto_cancel_pending_pipelines, type: String, values: %w(disabled enabled), desc: 'Auto-cancel pending pipelines'
         optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :service_desk_enabled, type: Boolean, desc: 'Disable or enable the service desk'
-        optional :keep_latest_artifact, type: Boolean, desc: 'Indicates if the latest artifact should be kept for this project.'
 
         # TODO: remove in API v5, replaced by *_access_level
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
@@ -101,6 +100,7 @@ module API
 
       params :optional_update_params_ce do
         optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
+        optional :keep_latest_artifact, type: Boolean, desc: 'Indicates if the latest artifact should be kept for this project.'
         optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Prevent older deployment jobs that are still pending'
         optional :ci_allow_fork_pipelines_to_run_in_parent_project, type: Boolean, desc: 'Allow fork merge request pipelines to run in parent project'
         optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'

@@ -241,7 +241,7 @@ describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
       await buildWrapperAndDisplayMenu();
       await wrapper.findByTestId('remove-reference').trigger('click');
 
-      expect(tiptapEditor.getHTML()).toBe('<p></p>');
+      expect(tiptapEditor.getHTML()).toBe('<p dir="auto"></p>');
     });
   });
 });

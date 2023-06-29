@@ -92,7 +92,11 @@ describe('Design note component', () => {
       entityName: note.author.username,
     });
 
-    expect(findUserAvatarLink().attributes('href')).toBe(note.author.webUrl);
+    expect(findUserAvatarLink().attributes()).toMatchObject({
+      href: note.author.webUrl,
+      'data-user-id': '1',
+      'data-username': `${note.author.username}`,
+    });
   });
 
   it('should render author details', () => {

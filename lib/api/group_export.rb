@@ -80,8 +80,13 @@ module API
             { code: 503, message: 'Service unavailable' }
           ]
         end
+        params do
+          optional :batched, type: Boolean, desc: 'Whether to export in batches'
+        end
         post ':id/export_relations' do
-          response = ::BulkImports::ExportService.new(portable: user_group, user: current_user).execute
+          response = ::BulkImports::ExportService
+            .new(portable: user_group, user: current_user, batched: params[:batched])
+            .execute
 
           if response.success?
             accepted!
@@ -104,15 +109,32 @@ module API
         end
         params do
           requires :relation, type: String, desc: 'Group relation name'
+          optional :batched, type: Boolean, desc: 'Whether to download in batches'
+          optional :batch_number, type: Integer, desc: 'Batch number to download'
+
+          all_or_none_of :batched, :batch_number
         end
         get ':id/export_relations/download' do
           export = user_group.bulk_import_exports.find_by_relation(params[:relation])
-          file = export&.upload&.export_file
 
-          if file
-            present_carrierwave_file!(file)
+          break render_api_error!('Export not found', 404) unless export
+
+          if params[:batched]
+            batch = export.batches.find_by_batch_number(params[:batch_number])
+            batch_file = batch&.upload&.export_file
+
+            break render_api_error!('Export is not batched', 400) unless export.batched?
+            break render_api_error!('Batch not found', 404) unless batch
+            break render_api_error!('Batch file not found', 404) unless batch_file
+
+            present_carrierwave_file!(batch_file)
           else
-            render_api_error!('404 Not found', 404)
+            file = export&.upload&.export_file
+
+            break render_api_error!('Export is batched', 400) if export.batched?
+            break render_api_error!('Export file not found', 404) unless file
+
+            present_carrierwave_file!(file)
           end
         end
 
@@ -128,8 +150,19 @@ module API
             { code: 503, message: 'Service unavailable' }
           ]
         end
+        params do
+          optional :relation, type: String, desc: 'Group relation name'
+        end
         get ':id/export_relations/status' do
-          present user_group.bulk_import_exports, with: Entities::BulkImports::ExportStatus
+          if params[:relation]
+            export = user_group.bulk_import_exports.find_by_relation(params[:relation])
+
+            break render_api_error!('Export not found', 404) unless export
+
+            present export, with: Entities::BulkImports::ExportStatus
+          else
+            present user_group.bulk_import_exports, with: Entities::BulkImports::ExportStatus
+          end
         end
       end
     end

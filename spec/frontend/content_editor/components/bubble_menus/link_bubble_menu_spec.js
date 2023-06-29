@@ -206,7 +206,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       await buildWrapperAndDisplayMenu();
       await wrapper.findByTestId('remove-link').vm.$emit('click');
 
-      expect(tiptapEditor.getHTML()).toBe('<p>Download PDF File</p>');
+      expect(tiptapEditor.getHTML()).toBe('<p dir="auto">Download PDF File</p>');
     });
   });
 

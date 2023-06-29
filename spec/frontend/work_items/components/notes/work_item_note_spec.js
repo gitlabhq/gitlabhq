@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlAvatarLink } from '@gitlab/ui';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
@@ -268,6 +269,19 @@ describe('Work Item Note', () => {
     describe('comment threads', () => {
       beforeEach(() => {
         createComponent();
+      });
+
+      it('should show avatar link with popover support', () => {
+        const avatarLink = findTimelineEntryItem().findComponent(GlAvatarLink);
+        const { author } = mockWorkItemCommentNote;
+
+        expect(avatarLink.exists()).toBe(true);
+        expect(avatarLink.classes()).toContain('js-user-link');
+        expect(avatarLink.attributes()).toMatchObject({
+          href: author.webUrl,
+          'data-user-id': '1',
+          'data-username': `${author.username}`,
+        });
       });
 
       it('should have the note header, actions and body', () => {

@@ -131,7 +131,12 @@ export default {
 
 <template>
   <timeline-entry-item :id="`note_${noteAnchorId}`" class="design-note note-form">
-    <gl-avatar-link :href="author.webUrl" class="gl-float-left gl-mr-3 link-inherit-color">
+    <gl-avatar-link
+      :href="author.webUrl"
+      :data-user-id="authorId"
+      :data-username="author.username"
+      class="gl-float-left gl-mr-3 link-inherit-color js-user-link"
+    >
       <gl-avatar :size="32" :src="author.avatarUrl" :entity-name="author.username" />
     </gl-avatar-link>
 

@@ -1,7 +1,10 @@
 .ProseMirror {
   padding-top: $gl-spacing-scale-4;
+  padding-left: $gl-spacing-scale-5;
+  padding-right: $gl-spacing-scale-5;
   min-height: 140px;
   max-height: 55vh;
+  position: static;
   overflow-y: auto;
 
   ::selection {
@@ -44,6 +47,48 @@
     pointer-events: none;
   }
 
+  .image-resize-container {
+    position: relative;
+  }
+
+  .image-resize {
+    display: inline-block;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: $blue-200;
+    outline: 1px solid $white;
+  }
+
+  .image-resize-nw {
+    top: -4px;
+    left: -4px;
+    cursor: nw-resize;
+  }
+
+  .image-resize-ne {
+    top: -4px;
+    right: -4px;
+    cursor: ne-resize;
+  }
+
+  .image-resize-sw {
+    bottom: 4px;
+    left: -4px;
+    cursor: sw-resize;
+  }
+
+  .image-resize-se {
+    bottom: 4px;
+    right: -4px;
+    cursor: se-resize;
+  }
+
+  img.ProseMirror-selectednode {
+    outline: 2px solid $blue-200;
+    outline-offset: -2px;
+  }
+
   video {
     max-width: 400px;
   }
@@ -77,7 +122,6 @@
       }
     }
   }
-
 
   .dl-content {
     width: 100%;
