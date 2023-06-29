@@ -2,22 +2,25 @@ import { GlTabs, GlTab } from '@gitlab/ui';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
+import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
 import {
   TOOLBAR_CONTROL_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
 } from '~/content_editor/constants';
+import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/formatting_toolbar', () => {
   let wrapper;
   let trackingSpy;
 
-  const buildWrapper = (props) => {
+  const buildWrapper = ({ props = {}, provide = {} } = {}) => {
     wrapper = shallowMountExtended(FormattingToolbar, {
       stubs: {
         GlTabs,
         GlTab,
       },
       propsData: props,
+      provide,
     });
   };
 
@@ -69,9 +72,37 @@ describe('content_editor/components/formatting_toolbar', () => {
 
   describe('when attachment button is hidden', () => {
     it('does not show the attachment button', () => {
-      buildWrapper({ hideAttachmentButton: true });
+      buildWrapper({ props: { hideAttachmentButton: true } });
 
       expect(wrapper.findByTestId('attachment').exists()).toBe(false);
+    });
+  });
+
+  describe('when selecting a saved reply from the comment templates dropdown', () => {
+    it('updates the rich text editor with the saved comment', async () => {
+      const tiptapEditor = createTestEditor();
+
+      buildWrapper({
+        provide: {
+          tiptapEditor,
+          newCommentTemplatePath: 'some/path',
+        },
+      });
+
+      const commands = mockChainedCommands(tiptapEditor, ['focus', 'pasteContent', 'run']);
+      await wrapper
+        .findComponent(CommentTemplatesDropdown)
+        .vm.$emit('select', 'Some saved comment');
+
+      expect(commands.focus).toHaveBeenCalled();
+      expect(commands.pasteContent).toHaveBeenCalledWith('Some saved comment');
+      expect(commands.run).toHaveBeenCalled();
+    });
+
+    it('does not show the saved replies icon if newCommentTemplatePath is not provided', () => {
+      buildWrapper();
+
+      expect(wrapper.findComponent(CommentTemplatesDropdown).exists()).toBe(false);
     });
   });
 });

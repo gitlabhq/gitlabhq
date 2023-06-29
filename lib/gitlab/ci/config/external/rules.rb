@@ -17,16 +17,12 @@ module Gitlab
           end
 
           def evaluate(context)
-            if Feature.enabled?(:ci_support_include_rules_when_never, context.project)
-              if @rule_list.nil?
-                Result.new('always')
-              elsif matched_rule = match_rule(context)
-                Result.new(matched_rule.attributes[:when])
-              else
-                Result.new('never')
-              end
+            if @rule_list.nil?
+              Result.new('always')
+            elsif matched_rule = match_rule(context)
+              Result.new(matched_rule.attributes[:when])
             else
-              LegacyResult.new(@rule_list.nil? || match_rule(context))
+              Result.new('never')
             end
           end
 
@@ -53,12 +49,6 @@ module Gitlab
           Result = Struct.new(:when) do
             def pass?
               self.when != 'never'
-            end
-          end
-
-          LegacyResult = Struct.new(:result) do
-            def pass?
-              !!result
             end
           end
         end

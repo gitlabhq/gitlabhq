@@ -165,7 +165,6 @@ export default {
   updated() {
     this.$nextTick(() => {
       highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member'));
-      eventHub.$emit('scrollToNote');
     });
   },
   beforeDestroy() {

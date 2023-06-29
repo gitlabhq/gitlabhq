@@ -1,4 +1,5 @@
 <script>
+import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
 import trackUIControl from '../services/track_ui_control';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarAttachmentButton from './toolbar_attachment_button.vue';
@@ -13,6 +14,11 @@ export default {
     ToolbarTableButton,
     ToolbarAttachmentButton,
     ToolbarMoreDropdown,
+    CommentTemplatesDropdown,
+  },
+  inject: {
+    newCommentTemplatePath: { default: null },
+    tiptapEditor: { default: null },
   },
   props: {
     supportsQuickActions: {
@@ -29,6 +35,9 @@ export default {
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
       trackUIControl({ property: contentType, value });
+    },
+    insertSavedReply(savedReply) {
+      this.tiptapEditor.chain().focus().pasteContent(savedReply).run();
     },
   },
 };
@@ -131,10 +140,15 @@ export default {
           data-testid="quick-actions"
           content-type="quickAction"
           icon-name="quick-actions"
-          class="gl-display-none gl-sm-display-inline gl-mr-1!"
+          class="gl-display-none gl-sm-display-inline"
           editor-command="insertQuickAction"
           :label="__('Add a quick action')"
           @execute="trackToolbarControlExecution"
+        />
+        <comment-templates-dropdown
+          v-if="newCommentTemplatePath"
+          :new-comment-template-path="newCommentTemplatePath"
+          @select="insertSavedReply"
         />
         <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
       </div>

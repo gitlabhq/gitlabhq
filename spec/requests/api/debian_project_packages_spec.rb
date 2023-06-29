@@ -7,22 +7,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
   include WorkhorseHelpers
 
   include_context 'Debian repository shared context', :project, false do
-    shared_examples 'a Debian package tracking event' do |action|
-      include_context 'Debian repository access', :public, :developer, :basic do
-        let(:snowplow_gitlab_standard_context) do
-          { project: container, namespace: container.namespace, user: user, property: 'i_package_debian_user' }
-        end
-
-        it_behaves_like 'a package tracking event', described_class.name, action
-      end
-    end
-
-    shared_examples 'not a Debian package tracking event' do
-      include_context 'Debian repository access', :public, :developer, :basic do
-        it_behaves_like 'not a package tracking event', described_class.name, /.*/
-      end
-    end
-
     shared_examples 'accept GET request on private project with access to package registry for everyone' do
       include_context 'Debian repository access', :private, :anonymous, :basic do
         before do
@@ -37,14 +21,12 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/1/packages/debian/dists/with+space/InRelease" }
 
       it_behaves_like 'Debian packages GET request', :bad_request, /^distribution is invalid$/
-      it_behaves_like 'not a Debian package tracking event'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/Release.gpg' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/Release.gpg" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNATURE-----/
-      it_behaves_like 'not a Debian package tracking event'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -52,7 +34,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/Release" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Codename: fixture-distribution\n$/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -60,7 +41,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/InRelease" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNED MESSAGE-----/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -70,7 +50,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete Packages file/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -78,7 +57,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/Packages.gz" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :not_found, /Format gz is not supported/
-      it_behaves_like 'not a Debian package tracking event'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
@@ -88,7 +66,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
       it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -98,7 +75,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/Sources" }
 
       it_behaves_like 'Debian packages index endpoint', /^Description: This is an incomplete Sources file$/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -109,7 +85,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/by-hash/SHA256/#{target_sha256}" }
 
       it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -119,7 +94,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete D-I Packages file/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -127,7 +101,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages.gz" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :not_found, /Format gz is not supported/
-      it_behaves_like 'not a Debian package tracking event'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do
@@ -137,7 +110,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
       it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
-      it_behaves_like 'a Debian package tracking event', 'list_package'
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
@@ -159,7 +131,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
 
       with_them do
         it_behaves_like 'Debian packages read endpoint', 'GET', :success, params[:success_body]
-        it_behaves_like 'a Debian package tracking event', 'pull_package'
 
         context 'for bumping last downloaded at' do
           include_context 'Debian repository access', :public, :developer, :basic do
@@ -182,13 +153,11 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
 
         it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
         it_behaves_like 'Debian packages endpoint catching ObjectStorage::RemoteStoreError'
-        it_behaves_like 'a Debian package tracking event', 'push_package'
 
         context 'with codename and component' do
           let(:extra_params) { { distribution: distribution.codename, component: 'main' } }
 
           it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
-          it_behaves_like 'a Debian package tracking event', 'push_package'
         end
 
         context 'with codename and without component' do
@@ -197,8 +166,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
           include_context 'Debian repository access', :public, :developer, :basic do
             it_behaves_like 'Debian packages GET request', :bad_request, /component is missing/
           end
-
-          it_behaves_like 'not a Debian package tracking event'
         end
       end
 
@@ -209,8 +176,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
           it_behaves_like "Debian packages upload request", :created, nil
         end
 
-        it_behaves_like 'a Debian package tracking event', 'push_package'
-
         context 'with codename and component' do
           let(:extra_params) { { distribution: distribution.codename, component: 'main' } }
 
@@ -218,8 +183,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
             it_behaves_like "Debian packages upload request", :bad_request,
               /^file_name Only debs, udebs and ddebs can be directly added to a distribution$/
           end
-
-          it_behaves_like 'not a Debian package tracking event'
         end
       end
 
@@ -227,7 +190,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
         let(:file_name) { 'sample_1.2.3~alpha2_amd64.changes' }
 
         it_behaves_like 'Debian packages write endpoint', 'upload', :created, nil
-        it_behaves_like 'a Debian package tracking event', 'push_package'
       end
     end
 
@@ -237,7 +199,6 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/#{file_name}/authorize" }
 
       it_behaves_like 'Debian packages write endpoint', 'upload authorize', :created, nil
-      it_behaves_like 'not a Debian package tracking event'
     end
   end
 end

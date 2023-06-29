@@ -117,4 +117,3 @@ export const TRACKING_MULTIPLE_FILES_MODE = 'i_code_review_diff_multiple_files';
 
 // UI
 export const ZERO_CHANGES_ALT_DISPLAY = '-';
-export const STICKY_FILE_HEADER_HEIGHT = 40;

@@ -35,7 +35,7 @@ When importing projects:
 - The organization the repository belongs to must not impose restrictions of a [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions) on the GitLab instance you import to.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of the import process, see [Migrating from GitHub to GitLab](https://youtu.be/VYOXuOg9tQI).
+For an overview of the import process, see [How to migrate from GitHub to GitLab including Actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs).
 
 ## Prerequisites
 

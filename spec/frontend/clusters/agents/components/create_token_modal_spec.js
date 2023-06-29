@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import {
@@ -37,6 +38,7 @@ describe('CreateTokenModal', () => {
   };
   const agentName = 'cluster-agent';
   const projectPath = 'path/to/project';
+  const hideModalMock = jest.fn();
 
   const provide = {
     agentName,
@@ -91,10 +93,12 @@ describe('CreateTokenModal', () => {
       provide,
       propsData,
       stubs: {
-        GlModal,
+        GlModal: stubComponent(GlModal, {
+          methods: { hide: hideModalMock },
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
       },
     });
-    wrapper.vm.$refs.modal.hide = jest.fn();
 
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
@@ -136,6 +140,11 @@ describe('CreateTokenModal', () => {
     it('renders a cancel button', () => {
       expect(findCancelButton().isVisible()).toBe(true);
       expectDisabledAttribute(findCancelButton(), false);
+    });
+
+    it('cancel button should hide the modal', () => {
+      findCancelButton().vm.$emit('click');
+      expect(hideModalMock).toHaveBeenCalled();
     });
 
     it('renders a disabled next button', () => {

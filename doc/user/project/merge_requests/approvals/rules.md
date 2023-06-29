@@ -42,7 +42,7 @@ To add a merge request approval rule:
    - To apply the rule to a specific branch, select it from the list.
 1. Set the number of required approvals in **Approvals required**. A value of `0` makes
    [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
-   creates a required rule.
+   creates a required rule. Maximum number of required approvals is `100`.
 1. To add users or groups as approvers, search for users or groups that are
    [eligible to approve](#eligible-approvers), and select **Add**. GitLab suggests approvers based on
    previous authors of the files changed by the merge request.

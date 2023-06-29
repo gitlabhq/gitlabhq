@@ -5,7 +5,7 @@ import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { INLINE_DIFF_LINES_KEY, STICKY_FILE_HEADER_HEIGHT } from '~/diffs/constants';
+import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
@@ -14,7 +14,6 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import { __, s__, sprintf } from '~/locale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
-import { scrollToElement } from '~/lib/utils/common_utils';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -235,13 +234,12 @@ export default {
         this.scrollToNoteIfNeeded($(this.$el));
       }
     });
+  },
 
-    eventHub.$on('scrollToNote', () => {
-      if (this.isTarget && this.shouldScrollToNote) {
-        const offset = this.line ? STICKY_FILE_HEADER_HEIGHT * -1 : 0;
-        setTimeout(() => scrollToElement(this.$el, { offset, behavior: 'instant' }), 1500);
-      }
-    });
+  mounted() {
+    if (this.isTarget && this.shouldScrollToNote) {
+      this.scrollToNoteIfNeeded($(this.$el));
+    }
   },
 
   methods: {
@@ -422,10 +420,7 @@ export default {
 <template>
   <timeline-entry-item
     :id="noteAnchorId"
-    :class="{
-      ...classNameBindings,
-      'internal-note': note.internal,
-    }"
+    :class="{ ...classNameBindings, 'internal-note': note.internal }"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
     class="note note-wrapper note-comment"
