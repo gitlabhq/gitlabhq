@@ -89,10 +89,14 @@ class Projects::CompareController < Projects::ApplicationController
   # target == start_ref == from
   def target_project
     strong_memoize(:target_project) do
-      next source_project.default_merge_request_target unless compare_params.key?(:from_project_id)
-      next source_project if compare_params[:from_project_id].to_i == source_project.id
-
-      target_project = target_projects(source_project).find_by_id(compare_params[:from_project_id])
+      target_project =
+        if !compare_params.key?(:from_project_id)
+          source_project.default_merge_request_target
+        elsif compare_params[:from_project_id].to_i == source_project.id
+          source_project
+        else
+          target_projects(source_project).find_by_id(compare_params[:from_project_id])
+        end
 
       # Just ignore the field if it points at a non-existent or hidden project
       next source_project unless target_project && can?(current_user, :read_code, target_project)

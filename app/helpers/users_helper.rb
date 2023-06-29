@@ -136,7 +136,7 @@ module UsersHelper
 
   def confirm_user_data(user)
     message = if user.unconfirmed_email.present?
-                _('This user has an unconfirmed email address (%{email}). You may force a confirmation.') % { email: user.unconfirmed_email }
+                safe_format(_('This user has an unconfirmed email address (%{email}). You may force a confirmation.'), email: user.unconfirmed_email)
               else
                 _('This user has an unconfirmed email address. You may force a confirmation.')
               end

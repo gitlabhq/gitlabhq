@@ -6,7 +6,8 @@ module Gitlab
       include Sidekiq::ServerMiddleware
 
       def call(worker, job, queue)
-        logger.info "arguments: #{Gitlab::Json.dump(job['args'])}"
+        loggable_args = Gitlab::ErrorTracking::Processor::SidekiqProcessor.loggable_arguments(job['args'], job['class'])
+        logger.info "arguments: #{Gitlab::Json.dump(loggable_args)}"
         yield
       end
     end
