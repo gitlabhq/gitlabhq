@@ -27,9 +27,9 @@ Write code more efficiently by using generative AI to suggest code while you're 
 
 Code Suggestions are available:
 
-- To users of both GitLab SaaS and self-managed GitLab.
-- In Visual Studio Code when you have the GitLab Workflow extension installed.
-- [Support for additional IDE extensions](https://gitlab.com/groups/gitlab-org/-/epics/10542) is proposed.
+- To users of GitLab SaaS (by default) and self-managed GitLab (when requested).
+- In VS Code and Microsoft Visual Studio when you have the corresponding GitLab extension installed. 
+- In the GitLab WebIDE
 
 <div class="video-fallback">
   <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">View an end-to-end demo of Code Suggestions in VS Code</a>.
@@ -60,7 +60,7 @@ The best results from Code Suggestions are expected [for languages the Google Ve
 - Kubernetes Resource Model (KRM)
 - Terraform
 
-Suggestion quality may be mixed for other languages. Using natural language code comments to request completions may also not function as expected.
+Suggestion quality for other languages and using natural language code comments to request completions may not yet result in high-quality suggestions.
 
 ## Enable Code Suggestions on GitLab SaaS **(FREE SAAS)**
 
@@ -148,7 +148,7 @@ the users in your instance can now enable Code Suggestions.
 
 ## Enable Code Suggestions in other IDEs and editors
 
-We have experimental support for Code Suggestions in Visual Studio, JetBrains, Neovim, Emacs, Sublime, etc.
+We have experimental support for Code Suggestions in JetBrains, Neovim, Emacs, Sublime, etc.
 
 More details in this [blog](https://about.gitlab.com/blog/2023/06/01/extending-code-suggestions/).
 
@@ -158,7 +158,8 @@ Prerequisites:
 
 - For self-managed GitLab, Code Suggestions must be enabled [for the instance](#enable-code-suggestions-on-self-managed-gitlab).
 - Code Suggestions must be enabled [for the top-level group](../../group/manage.md#enable-code-suggestions) and [for your user account](#enable-code-suggestions-for-an-individual-user).
-- To use VS Code, ensure you have installed [the GitLab Workflow extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension#setup).
+- To use VS Code, ensure you have installed [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+- To use Microsoft Visual Studio, ensure you have installed [the Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 
 To use Code Suggestions:
 
@@ -206,7 +207,7 @@ Your data also never leaves GitLab. All training and inference is done in GitLab
 A self-managed GitLab instance does not generate the code suggestion. After successful
 authentication to the self-managed instance, a token is generated.
 
-The VS Code plugin then uses this token to securely transmit data directly to
+The IDE/editor then uses this token to securely transmit data directly to
 GitLab.com's Code Suggestions service for processing.
 
 The Code Suggestion service then securely returns an AI-generated code suggestion.
@@ -281,7 +282,7 @@ In GitLab, ensure Code Suggestions is enabled:
 
 To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.
 
-If you are a self-managed user, in VS Code, ensure that Code Suggestions for the [GitLab WebIDE](../../project/web_ide/index.md) are enabled:
+If you are a self-managed user, ensure that Code Suggestions for the [GitLab WebIDE](../../project/web_ide/index.md) are enabled:
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.

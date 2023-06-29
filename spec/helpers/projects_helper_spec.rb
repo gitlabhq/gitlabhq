@@ -1565,4 +1565,53 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it { is_expected.to be_falsey }
     end
   end
+
+  describe '#can_admin_associated_clusters?(project)' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:project_clusters_exist, :user_can_admin_project_clusters, :group_clusters_exist, :user_can_admin_group_clusters, :expected) do
+      false | false | false | false | false
+      true  | false | false | false | false
+      false | true  | false | false | false
+      false | false | true  | false | false
+      false | false | false | true  | false
+      true  | true  | false | false | true
+      false | false | true  | true  | true
+      true  | true  | true  | true  | true
+    end
+
+    with_them do
+      subject { helper.can_admin_associated_clusters?(project) }
+
+      let(:clusters) { [double('Cluster')] }
+      let(:group) { double('Group') }
+
+      before do
+        allow(project)
+          .to receive(:clusters)
+          .and_return(project_clusters_exist ? clusters : [])
+        allow(helper)
+          .to receive(:can?).with(user, :admin_cluster, project)
+          .and_return(user_can_admin_project_clusters)
+
+        allow(project)
+          .to receive(:group)
+          .and_return(group)
+        allow(group)
+          .to receive(:clusters)
+          .and_return(group_clusters_exist ? clusters : [])
+        allow(helper)
+          .to receive(:can?).with(user, :admin_cluster, project.group)
+          .and_return(user_can_admin_group_clusters)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#branch_rules_path' do
+    subject { helper.branch_rules_path }
+
+    it { is_expected.to eq(project_settings_repository_path(project, anchor: 'js-branch-rules')) }
+  end
 end

@@ -18,8 +18,7 @@ To navigate to your profile's preferences:
 ## Navigation theme
 
 The GitLab navigation theme setting allows you to personalize your GitLab experience.
-You can choose from several color themes that add unique colors to the top navigation
-and left side navigation.
+You can choose from several color themes that add unique colors to the left sidebar.
 Using individual color themes might help you differentiate between your different
 GitLab instances.
 

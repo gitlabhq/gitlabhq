@@ -555,7 +555,23 @@ module ProjectsHelper
     current_user&.can?(:push_code, @project)
   end
 
+  def can_admin_associated_clusters?(project)
+    can_admin_project_clusters?(project) || can_admin_group_clusters?(project)
+  end
+
+  def branch_rules_path
+    project_settings_repository_path(@project, anchor: 'js-branch-rules')
+  end
+
   private
+
+  def can_admin_project_clusters?(project)
+    project.clusters.any? && can?(current_user, :admin_cluster, project)
+  end
+
+  def can_admin_group_clusters?(project)
+    project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
+  end
 
   def create_merge_request_path(project, source_project, ref, merge_request)
     return if merge_request.present?
@@ -886,22 +902,6 @@ module ProjectsHelper
       ::Gitlab::CurrentSettings.delete_inactive_projects?
     end
   end
-end
-
-def can_admin_associated_clusters?(project)
-  can_admin_project_clusters?(project) || can_admin_group_clusters?(project)
-end
-
-def can_admin_project_clusters?(project)
-  project.clusters.any? && can?(current_user, :admin_cluster, project)
-end
-
-def can_admin_group_clusters?(project)
-  project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
-end
-
-def branch_rules_path
-  project_settings_repository_path(@project, anchor: 'js-branch-rules')
 end
 
 ProjectsHelper.prepend_mod_with('ProjectsHelper')
