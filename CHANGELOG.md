@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.1.1 (2023-06-28)
+
+### Security (12 changes)
+
+- [Revert 'security-leaked-ci-job-token-permission-16-1' from '16-1'](gitlab-org/security/gitlab@d2599119b120eab983a1446fc9ed3ca801c88368) ([merge request](gitlab-org/security/gitlab!3374))
+- [Use fully qualified ref when loading code owner file](gitlab-org/security/gitlab@e8ba90bb85de376bb020350c027bb369671c83d6) ([merge request](gitlab-org/security/gitlab!3356))
+- [Maintainer can leak masked webhook secrets by manipulating URL masking](gitlab-org/security/gitlab@2cf91108544e8c30aae6d9b207385c90c299869c) ([merge request](gitlab-org/security/gitlab!3359))
+- [Remove approvals when the only commit gets amended](gitlab-org/security/gitlab@3f81f7bc4236bcc2ed887f40b7a14702d756ca9e) ([merge request](gitlab-org/security/gitlab!3366))
+- [Add authorization validation to GithubController#failures action](gitlab-org/security/gitlab@3c8c305deef9c9bd1194788b40e0d7ae1de45f3b) ([merge request](gitlab-org/security/gitlab!3335))
+- [Fix for fork permissions check in compare controller](gitlab-org/security/gitlab@5b14436f3874de7be62e0f46a25e93a1d8c99975) ([merge request](gitlab-org/security/gitlab!3342))
+- [Webhook token leaked in Sidekiq logs if log format is 'default'](gitlab-org/security/gitlab@d2d76399c880c62d7449cdae6014ee3236bffc0b) ([merge request](gitlab-org/security/gitlab!3345))
+- [Mitigate epic reference filter ReDOS](gitlab-org/security/gitlab@874d5bc2d55e2e1092bf7cc4ebb0e53fc716d850) ([merge request](gitlab-org/security/gitlab!3341))
+- [Increasing security for CI_JOB_TOKEN on public and internal projects](gitlab-org/security/gitlab@c2aa392b932af04e395d67eb06a20b5c768ec683) ([merge request](gitlab-org/security/gitlab!3337))
+- [Adjust access to value stream create, edit and destroy actions](gitlab-org/security/gitlab@8a3645e265c71886951bdc03857837aacb57e558) ([merge request](gitlab-org/security/gitlab!3349))
+- [Sanitize user email addresses in admin confirm user dialog](gitlab-org/security/gitlab@70553e6ca6b3f244df37e306466e2d3b5d54f76b) ([merge request](gitlab-org/security/gitlab!3338))
+- [Obfuscate email of service desk issue creator in issue REST API](gitlab-org/security/gitlab@d0f27b8241ab53bee11f8ce6efb20811690a2d0d) ([merge request](gitlab-org/security/gitlab!3317))
+
 ## 16.1.0 (2023-06-21)
 
 ### Added (224 changes)
@@ -930,6 +947,23 @@ entry.
 - [Migrate custom CSS to utility classes](gitlab-org/gitlab@a67999317bec111d523c763fc865665d4ded0aaf) ([merge request](gitlab-org/gitlab!120745)) **GitLab Enterprise Edition**
 - [Remove the vsa_group_and_project_parity FF](gitlab-org/gitlab@d090818bdedb0e220928d8e456cf36c8bce81f42) ([merge request](gitlab-org/gitlab!120727)) **GitLab Enterprise Edition**
 
+## 16.0.6 (2023-06-28)
+
+### Security (12 changes)
+
+- [Revert 'security-leaked-ci-job-token-permission-16-0' from '16-0'"](gitlab-org/security/gitlab@3c4fdbad26a123c581253fb501b5bace953a5e85) ([merge request](gitlab-org/security/gitlab!3373))
+- [Use fully qualified ref when loading code owner file](gitlab-org/security/gitlab@69c61fcbdc88873b60a217cfd3810364718417e9) ([merge request](gitlab-org/security/gitlab!3355))
+- [Maintainer can leak masked webhook secrets by manipulating URL masking](gitlab-org/security/gitlab@a3e055010523db5a1c346464e2589cc75f73629d) ([merge request](gitlab-org/security/gitlab!3360))
+- [Remove approvals when the only commit gets amended](gitlab-org/security/gitlab@01e59413e2570744dc34dd50efd2601dc91c8d2d) ([merge request](gitlab-org/security/gitlab!3367))
+- [Add authorization validation to GithubController#failures action](gitlab-org/security/gitlab@9eab0689991debab8c8a1afb9e32a3bac9978325) ([merge request](gitlab-org/security/gitlab!3334))
+- [Fix for fork permissions check in compare controller](gitlab-org/security/gitlab@da9bb4c761dfe7e8efdd910ed3fc89f348e47e90) ([merge request](gitlab-org/security/gitlab!3343))
+- [Webhook token leaked in Sidekiq logs if log format is 'default'](gitlab-org/security/gitlab@a9835cb72eddfae1748c66314618b3157a6bcb57) ([merge request](gitlab-org/security/gitlab!3346))
+- [Mitigate epic reference filter ReDOS](gitlab-org/security/gitlab@c8046028a30fe9dca7e141eec2acf3d4b49d93ee) ([merge request](gitlab-org/security/gitlab!3340))
+- [Increasing security for CI_JOB_TOKEN on public and internal projects](gitlab-org/security/gitlab@b67db0cdd9324633f4abb59bc27bca43e94e3362) ([merge request](gitlab-org/security/gitlab!3318))
+- [Adjust access to value stream create, edit and destroy actions](gitlab-org/security/gitlab@ee20f3f3a84a75c7e07e1aa6fde95761636a669f) ([merge request](gitlab-org/security/gitlab!3321))
+- [Sanitize user email addresses in admin confirm user dialog](gitlab-org/security/gitlab@545e0913336e823eb905a8bd86fe2905b321a284) ([merge request](gitlab-org/security/gitlab!3331))
+- [Obfuscate email of service desk issue creator in issue REST API](gitlab-org/security/gitlab@b921f10b565bafbd6d50d93d84d34b5f103839ea) ([merge request](gitlab-org/security/gitlab!3315))
+
 ## 16.0.5 (2023-06-16)
 
 ### Fixed (1 change)
@@ -1764,6 +1798,21 @@ entry.
 - [Purges legacy bg migration helpers from partitioning helpers](gitlab-org/gitlab@e51304127b8032819e1689d297e8a5c21e958572) ([merge request](gitlab-org/gitlab!116601))
 - [Add index to group_group_links table](gitlab-org/gitlab@9a3f2c1a90b54074e61d0abf07101ce664198e81) ([merge request](gitlab-org/gitlab!117386))
 - [Validate the projects.creator_id foregin key synchronously](gitlab-org/gitlab@ed9351984a16f20506babf6eab6706b917904ed1) ([merge request](gitlab-org/gitlab!117147))
+
+## 15.11.10 (2023-06-28)
+
+### Security (10 changes)
+
+- [Revert 'security-leaked-ci-job-token-permission-15-11' from '15-11'"](gitlab-org/security/gitlab@19f73bf5494d34b43eb8c807f860d545acae0c32) ([merge request](gitlab-org/security/gitlab!3375))
+- [Use fully qualified ref when loading code owner file](gitlab-org/security/gitlab@d7ffb4cca68373bff38bd05f0b8afc868cda9e04) ([merge request](gitlab-org/security/gitlab!3354))
+- [Maintainer can leak masked webhook secrets by manipulating URL masking](gitlab-org/security/gitlab@3a7ccdac5e41870fdce362c38d0a1d1437906fbd) ([merge request](gitlab-org/security/gitlab!3361))
+- [Remove approvals when the only commit gets amended](gitlab-org/security/gitlab@f8a4ad8be7e5fdf752f525ed58b94b1ce625b9a1) ([merge request](gitlab-org/security/gitlab!3368))
+- [Fix for fork permissions check in compare controller](gitlab-org/security/gitlab@8edf44b13e55ffe0c912f98134d0341a5a6bcd28) ([merge request](gitlab-org/security/gitlab!3344))
+- [Webhook token leaked in Sidekiq logs if log format is 'default'](gitlab-org/security/gitlab@02b58237085930c62ee277c9ebd89a0560f44a98) ([merge request](gitlab-org/security/gitlab!3347))
+- [Mitigate epic reference filter ReDOS](gitlab-org/security/gitlab@4c2cd6e5f7c994aca554be37d9ea9e5e114341f1) ([merge request](gitlab-org/security/gitlab!3339))
+- [Increasing security for CI_JOB_TOKEN on public and internal projects](gitlab-org/security/gitlab@4f8a00b2499e876df5b65eca921812fbb3215800) ([merge request](gitlab-org/security/gitlab!3319))
+- [Sanitize user email addresses in admin confirm user dialog](gitlab-org/security/gitlab@608c8001c349b0a62aae81850de669d3af02ab60) ([merge request](gitlab-org/security/gitlab!3332))
+- [Obfuscate email of service desk issue creator in issue REST API](gitlab-org/security/gitlab@a092ebc54cce4492f87f8ed2bf67c31793b0bd0e) ([merge request](gitlab-org/security/gitlab!3316))
 
 ## 15.11.9 (2023-06-15)
 

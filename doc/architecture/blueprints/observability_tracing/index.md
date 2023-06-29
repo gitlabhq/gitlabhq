@@ -156,7 +156,7 @@ The new UI will be built using the Pajamas Design System in accordance with GitL
 - provision API
 - remove existing iframe provisioning
 - UI for trace detail
-- UI for filtering/searching traces 
+- UI for filtering/searching traces
 - basic e2e test for provision, send data, query in UI
 - metrics, dashboards, alerts
 

@@ -23116,6 +23116,52 @@ CREATE SEQUENCE suggestions_id_seq
 
 ALTER SEQUENCE suggestions_id_seq OWNED BY suggestions.id;
 
+CREATE TABLE system_access_microsoft_applications (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint,
+    enabled boolean DEFAULT false NOT NULL,
+    tenant_xid text NOT NULL,
+    client_xid text NOT NULL,
+    login_endpoint text DEFAULT 'https://login.microsoftonline.com'::text NOT NULL,
+    graph_endpoint text DEFAULT 'https://graph.microsoft.com'::text NOT NULL,
+    encrypted_client_secret bytea NOT NULL,
+    encrypted_client_secret_iv bytea NOT NULL,
+    CONSTRAINT check_042f6b21aa CHECK ((char_length(login_endpoint) <= 255)),
+    CONSTRAINT check_1e8b2d405f CHECK ((char_length(tenant_xid) <= 255)),
+    CONSTRAINT check_339c3ffca8 CHECK ((char_length(graph_endpoint) <= 255)),
+    CONSTRAINT check_ee72fb5459 CHECK ((char_length(client_xid) <= 255))
+);
+
+CREATE SEQUENCE system_access_microsoft_applications_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE system_access_microsoft_applications_id_seq OWNED BY system_access_microsoft_applications.id;
+
+CREATE TABLE system_access_microsoft_graph_access_tokens (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    system_access_microsoft_application_id bigint,
+    expires_in integer NOT NULL,
+    encrypted_token bytea NOT NULL,
+    encrypted_token_iv bytea NOT NULL
+);
+
+CREATE SEQUENCE system_access_microsoft_graph_access_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE system_access_microsoft_graph_access_tokens_id_seq OWNED BY system_access_microsoft_graph_access_tokens.id;
+
 CREATE TABLE system_note_metadata (
     id integer NOT NULL,
     commit_count integer,
@@ -25885,6 +25931,10 @@ ALTER TABLE ONLY subscriptions ALTER COLUMN id SET DEFAULT nextval('subscription
 
 ALTER TABLE ONLY suggestions ALTER COLUMN id SET DEFAULT nextval('suggestions_id_seq'::regclass);
 
+ALTER TABLE ONLY system_access_microsoft_applications ALTER COLUMN id SET DEFAULT nextval('system_access_microsoft_applications_id_seq'::regclass);
+
+ALTER TABLE ONLY system_access_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_microsoft_graph_access_tokens_id_seq'::regclass);
+
 ALTER TABLE ONLY system_note_metadata ALTER COLUMN id SET DEFAULT nextval('system_note_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY taggings ALTER COLUMN id SET DEFAULT nextval('taggings_id_seq'::regclass);
@@ -28378,6 +28428,12 @@ ALTER TABLE ONLY subscriptions
 
 ALTER TABLE ONLY suggestions
     ADD CONSTRAINT suggestions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY system_access_microsoft_applications
+    ADD CONSTRAINT system_access_microsoft_applications_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
+    ADD CONSTRAINT system_access_microsoft_graph_access_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT system_note_metadata_pkey PRIMARY KEY (id);
@@ -32950,6 +33006,8 @@ CREATE INDEX index_successful_deployments_on_cluster_id_and_environment_id ON de
 
 CREATE UNIQUE INDEX index_suggestions_on_note_id_and_relative_order ON suggestions USING btree (note_id, relative_order);
 
+CREATE UNIQUE INDEX index_system_access_microsoft_applications_on_namespace_id ON system_access_microsoft_applications USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_system_note_metadata_on_description_version_id ON system_note_metadata USING btree (description_version_id) WHERE (description_version_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
@@ -33619,6 +33677,8 @@ CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_i
 CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_settings USING btree (pages_unique_domain) WHERE (pages_unique_domain IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_events USING btree (system_note_metadata_id);
+
+CREATE UNIQUE INDEX unique_index_sysaccess_ms_access_tokens_on_sysaccess_ms_app_id ON system_access_microsoft_graph_access_tokens USING btree (system_access_microsoft_application_id);
 
 CREATE UNIQUE INDEX unique_instance_audit_event_destination_name ON audit_events_instance_external_audit_event_destinations USING btree (name);
 
@@ -36917,6 +36977,9 @@ ALTER TABLE ONLY incident_management_oncall_participants
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT fk_rails_601d5bec3a FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
+    ADD CONSTRAINT fk_rails_604908851f FOREIGN KEY (system_access_microsoft_application_id) REFERENCES system_access_microsoft_applications(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY vulnerability_state_transitions
     ADD CONSTRAINT fk_rails_60e4899648 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
@@ -37606,6 +37669,9 @@ ALTER TABLE ONLY ci_job_artifacts
 
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT fk_rails_c56e4690c0 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY system_access_microsoft_applications
+    ADD CONSTRAINT fk_rails_c5b7765d04 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_rails_c6df6e6328 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

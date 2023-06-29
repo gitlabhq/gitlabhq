@@ -185,7 +185,7 @@ This table shows available scopes per token. Scopes can be limited further on to
 1. You can also store token using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 1. Do not:
    - Store tokens in plain text in your projects.
-   - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, or comment. 
+   - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, or comment.
    Consider an approach such as [using external secrets in CI](../ci/secrets/index.md).
 1. Do not log credentials in the console logs or artifacts. Consider [protecting](../ci/variables/index.md#protect-a-cicd-variable) and
   [masking](../ci/variables/index.md#mask-a-cicd-variable) your credentials.
@@ -194,5 +194,5 @@ This table shows available scopes per token. Scopes can be limited further on to
    - Personal, project, and group access tokens.
    - Feed tokens.
    - Trigger tokens.
-   - Runner registration tokens. 
+   - Runner registration tokens.
    - Any other sensitive secrets etc.

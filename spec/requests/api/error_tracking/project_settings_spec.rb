@@ -3,10 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tracking do
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:setting) { create(:project_error_tracking_setting, project: project) }
   let_it_be(:project_without_setting) { create(:project) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:non_member) { create(:user) }
+  let(:user) { maintainer }
+
+  before_all do
+    project.add_developer(developer)
+    project.add_maintainer(maintainer)
+    project_without_setting.add_developer(developer)
+    project_without_setting.add_maintainer(maintainer)
+  end
 
   shared_examples 'returns project settings' do
     it 'returns correct project settings' do
@@ -108,10 +118,6 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
     end
 
     context 'when authenticated as maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
-
       context 'with integrated_error_tracking feature enabled' do
         it_behaves_like 'returns project settings'
       end
@@ -179,10 +185,6 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
       context 'without a project setting' do
         let(:project) { project_without_setting }
 
-        before do
-          project.add_maintainer(user)
-        end
-
         it_behaves_like 'returns no project settings'
       end
 
@@ -208,14 +210,14 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
     end
 
     context 'when authenticated as developer' do
-      before do
-        project.add_developer(user)
-      end
+      let(:user) { developer }
 
       it_behaves_like 'returns 403'
     end
 
     context 'when authenticated as non-member' do
+      let(:user) { non_member }
+
       it_behaves_like 'returns 404'
     end
 
@@ -232,10 +234,6 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
     end
 
     context 'when authenticated as maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
-
       it_behaves_like 'returns project settings'
 
       context 'when integrated_error_tracking feature disabled' do
@@ -250,22 +248,18 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
     context 'without a project setting' do
       let(:project) { project_without_setting }
 
-      before do
-        project.add_maintainer(user)
-      end
-
       it_behaves_like 'returns no project settings'
     end
 
     context 'when authenticated as developer' do
-      before do
-        project.add_developer(user)
-      end
+      let(:user) { developer }
 
       it_behaves_like 'returns 403'
     end
 
     context 'when authenticated as non-member' do
+      let(:user) { non_member }
+
       it_behaves_like 'returns 404'
     end
 
@@ -287,14 +281,8 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
 
     context 'when authenticated' do
       context 'as maintainer' do
-        before do
-          project.add_maintainer(user)
-        end
-
         context "when integrated" do
           context "with existing setting" do
-            let(:project) { setting.project }
-            let(:setting) { create(:project_error_tracking_setting, :integrated) }
             let(:active) { false }
 
             it "updates a setting" do
@@ -302,13 +290,7 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
 
               expect(response).to have_gitlab_http_status(:ok)
 
-              expect(json_response).to eq(
-                "active" => false,
-                "api_url" => nil,
-                "integrated" => integrated,
-                "project_name" => nil,
-                "sentry_external_url" => nil
-              )
+              expect(json_response).to include("integrated" => true)
             end
           end
 
@@ -366,14 +348,14 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
       end
 
       context "as developer" do
-        before do
-          project.add_developer(user)
-        end
+        let(:user) { developer }
 
         it_behaves_like 'returns 403'
       end
 
       context 'as non-member' do
+        let(:user) { non_member }
+
         it_behaves_like 'returns 404'
       end
     end

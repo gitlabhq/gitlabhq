@@ -1,15 +1,15 @@
 - add_page_specific_style 'page_bundles/login'
 !!! 5
-%html.devise-layout-html{ lang: "en", class: system_message_class }
+%html.html-devise-layout{ lang: "en" }
   = render "layouts/head"
-  %body.login-page.application.navless{ class: "#{user_application_theme} #{client_class_list}" }
+  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{user_application_theme} #{client_class_list}" }
     = header_message
     = render "layouts/init_client_detection_flags"
     = render "layouts/header/empty"
-    = render "layouts/broadcast"
-    .container.navless-container
-      .content
-        = render "layouts/flash"
-        = yield
+    .gl-h-full.gl-display-flex.gl-flex-wrap
+      .container
+        .content
+          = render "layouts/flash"
+          = yield
 
-    = render 'devise/shared/footer', footer_message: footer_message
+      = render 'devise/shared/footer'

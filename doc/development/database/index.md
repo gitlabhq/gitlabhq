@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Database Reviews
 
-- During the design phase of the feature you're working on, be mindful if you are adding any database-related changes. If you're adding or modifying a query, start looking at the `explain` plan early to avoid surprises late in the review phase. 
+- During the design phase of the feature you're working on, be mindful if you are adding any database-related changes. If you're adding or modifying a query, start looking at the `explain` plan early to avoid surprises late in the review phase.
 - If, at any time, you need help optimizing a query or understanding an `explain` plan, ask for assistance in `#database`.
 - If you're creating a database MR for review, check out our [Database review guidelines](../database_review.md).
 

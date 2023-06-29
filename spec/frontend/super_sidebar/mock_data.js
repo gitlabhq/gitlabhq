@@ -126,6 +126,7 @@ export const userMenuMockStatus = {
   customized: false,
   emoji: 'art',
   message: 'Working on user menu in super sidebar',
+  message_html: '<gl-emoji></gl-emoji> Working on user menu in super sidebar',
   availability: 'busy',
   clear_after: '2023-02-09 20:06:35 UTC',
 };

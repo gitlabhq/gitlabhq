@@ -1,0 +1,10 @@
+---
+table_name: system_access_microsoft_applications
+classes:
+  - SystemAccess::MicrosoftApplication
+feature_categories:
+  - system_access
+description: Integration with Microsoft Azure application
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124101
+milestone: '16.2'
+gitlab_schema: gitlab_main

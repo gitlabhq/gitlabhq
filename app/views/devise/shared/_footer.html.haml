@@ -1,10 +1,11 @@
-%hr.footer-fixed
-.container.footer-container.gl-display-flex.gl-justify-content-space-between
-  .footer-links
-    - unless public_visibility_restricted?
-      = link_to _("Explore"), explore_root_path
-      = link_to _("Help"), help_path
-    = link_to _("About GitLab"), "https://#{ApplicationHelper.promo_host}"
-    = link_to _("Community forum"), ApplicationHelper.community_forum, target: '_blank', class: 'text-nowrap', rel: 'noopener noreferrer'
-  = render 'devise/shared/language_switcher'
+.footer-container.gl-w-full.gl-align-self-end
+  %hr.gl-m-0
+  .container.gl-py-5.gl-display-flex.gl-justify-content-space-between
+    .gl-display-flex.gl-gap-5.gl-flex-wrap
+      - unless public_visibility_restricted?
+        = link_to _("Explore"), explore_root_path
+        = link_to _("Help"), help_path
+      = link_to _("About GitLab"), "https://#{ApplicationHelper.promo_host}"
+      = link_to _("Community forum"), ApplicationHelper.community_forum, target: '_blank', class: 'text-nowrap', rel: 'noopener noreferrer'
+    = render 'devise/shared/language_switcher'
 = footer_message

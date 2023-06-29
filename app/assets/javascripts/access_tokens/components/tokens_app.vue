@@ -91,8 +91,10 @@ export default {
     >
       <template #title>{{ $options.i18n[tokenType].label }}</template>
       <template #description>
-        <p>{{ $options.i18n[tokenType].description }}</p>
-        <p>{{ $options.i18n.canNotAccessOtherData }}</p>
+        <p class="gl-text-secondary">
+          {{ $options.i18n[tokenType].description }}
+          {{ $options.i18n.canNotAccessOtherData }}
+        </p>
       </template>
       <template #input-description>
         <gl-sprintf :message="$options.i18n[tokenType].inputDescription">

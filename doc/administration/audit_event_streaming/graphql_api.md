@@ -481,7 +481,7 @@ Streaming destination is deleted if:
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
 
-To remove an HTTP header, use the GraphQL `auditEventsStreamingInstanceHeadersDestroy` mutation. 
+To remove an HTTP header, use the GraphQL `auditEventsStreamingInstanceHeadersDestroy` mutation.
 To retrieve the header ID,
 [list all the custom HTTP headers](#list-streaming-destinations) for the instance.
 

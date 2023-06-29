@@ -258,6 +258,13 @@ RSpec.describe WebHook, feature_category: :webhooks do
         expect(hook.url_variables).to eq({})
       end
 
+      it 'resets url variables if url variables are overwritten' do
+        hook.url_variables = hook.url_variables.merge('abc' => 'baz')
+
+        expect(hook).not_to be_valid
+        expect(hook.url_variables).to eq({})
+      end
+
       it 'does not reset url variables if both url and url variables are changed' do
         hook.url = 'http://example.com/{one}/{two}'
         hook.url_variables = { 'one' => 'foo', 'two' => 'bar' }

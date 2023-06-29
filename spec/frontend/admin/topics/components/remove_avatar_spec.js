@@ -73,7 +73,7 @@ describe('RemoveAvatar', () => {
         let formSubmitSpy;
 
         beforeEach(() => {
-          formSubmitSpy = jest.spyOn(wrapper.vm.$refs.deleteForm, 'submit');
+          formSubmitSpy = jest.spyOn(findForm().element, 'submit');
           findModal().vm.$emit('primary');
         });
 

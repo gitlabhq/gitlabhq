@@ -152,7 +152,8 @@ module SidebarsHelper
       customized: user.status&.customized?,
       availability: user.status&.availability.to_s,
       emoji: user.status&.emoji,
-      message: user.status&.message_html&.html_safe,
+      message_html: user.status&.message_html&.html_safe,
+      message: user.status&.message,
       clear_after: user_clear_status_at(user)
     }
   end

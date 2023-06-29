@@ -1962,6 +1962,9 @@ msgstr ""
 msgid "AI|May provide inappropriate responses not representative of GitLab's views. Do not input personal data."
 msgstr ""
 
+msgid "AI|New chat"
+msgstr ""
+
 msgid "AI|Populate issue description"
 msgstr ""
 
@@ -2440,9 +2443,6 @@ msgid "AccessTokens|Create %{type}"
 msgstr ""
 
 msgid "AccessTokens|Created"
-msgstr ""
-
-msgid "AccessTokens|Enter the name of your application, and we'll return a unique %{type}."
 msgstr ""
 
 msgid "AccessTokens|Feed token"
@@ -31273,6 +31273,9 @@ msgstr ""
 msgid "Notify|Committed by"
 msgstr ""
 
+msgid "Notify|Could not find the following %{column} values in %{project}%{parent_groups_clause}: %{error_lines}"
+msgstr ""
+
 msgid "Notify|Don't want to receive updates from GitLab administrators?"
 msgstr ""
 
@@ -31388,6 +31391,9 @@ msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
 msgstr ""
 
 msgid "Notify|Please check that your service provider supports email subaddressing and that you have set up email forwarding correctly."
+msgstr ""
+
+msgid "Notify|Please fix the errors above and try the CSV import again."
 msgstr ""
 
 msgid "Notify|Please fix the lines with errors and try the CSV import again."

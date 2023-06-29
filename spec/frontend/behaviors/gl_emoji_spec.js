@@ -162,14 +162,14 @@ describe('gl_emoji', () => {
       ]);
 
       window.gon = { features: { customEmoji: true } };
-      document.body.dataset.group = 'test-group';
+      document.body.dataset.groupFullPath = 'test-group';
 
       await initEmojiMock(emojiData);
     });
 
     afterEach(() => {
       window.gon = {};
-      delete document.body.dataset.group;
+      delete document.body.dataset.groupFullPath;
     });
 
     it('renders custom emoji', async () => {

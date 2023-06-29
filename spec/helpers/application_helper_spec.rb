@@ -433,7 +433,8 @@ RSpec.describe ApplicationHelper do
             page: 'application',
             page_type_id: nil,
             find_file: nil,
-            group: nil
+            group: nil,
+            group_full_path: nil
           }
         )
       end
@@ -449,7 +450,8 @@ RSpec.describe ApplicationHelper do
               page: 'application',
               page_type_id: nil,
               find_file: nil,
-              group: group.path
+              group: group.path,
+              group_full_path: group.full_path
             }
           )
         end
@@ -473,6 +475,7 @@ RSpec.describe ApplicationHelper do
             page_type_id: nil,
             find_file: nil,
             group: nil,
+            group_full_path: nil,
             project_id: project.id,
             project: project.path,
             namespace_id: project.namespace.id
@@ -491,6 +494,7 @@ RSpec.describe ApplicationHelper do
               page_type_id: nil,
               find_file: nil,
               group: project.group.name,
+              group_full_path: project.group.full_path,
               project_id: project.id,
               project: project.path,
               namespace_id: project.namespace.id
@@ -517,6 +521,7 @@ RSpec.describe ApplicationHelper do
                 page_type_id: issue.id,
                 find_file: nil,
                 group: nil,
+                group_full_path: nil,
                 project_id: issue.project.id,
                 project: issue.project.path,
                 namespace_id: issue.project.namespace.id

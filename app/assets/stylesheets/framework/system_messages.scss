@@ -36,16 +36,6 @@
   }
 }
 
-// System Footer
-.with-system-footer {
-  // navless pages' footer eg: login page
-  // navless pages' footer border eg: login page
-  &.devise-layout-html body .footer-container,
-  &.devise-layout-html body hr.footer-fixed {
-    bottom: $system-footer-height;
-  }
-}
-
 .fullscreen-layout {
   .header-message,
   .footer-message {

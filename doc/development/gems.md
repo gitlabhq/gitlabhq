@@ -45,6 +45,20 @@ Using Gems can provide several benefits for code maintenance:
   Since the gem is packaged, not changed too often, it also allows us to run those tests less frequently improving
   CI testing time.
 
+## Gem naming
+
+Gems can fall under three different case:
+
+- `unique_gem`: Don't include `gitlab` in the gem name if the gem doesn't include anything specific to GitLab
+- `existing_gem-gitlab`: When you fork and modify/extend a publicly available gem, add the `-gitlab` suffix, according to [Rubygems' convention](https://guides.rubygems.org/name-your-gem/)
+- `gitlab-unique_gem`: Include a `gitlab-` prefix to gems that are only useful in the context of GitLab projects.
+
+Examples of existing gems:
+
+- `y-rb`: Ruby bindings for yrs. Yrs "wires" is a Rust port of the Yjs framework.
+- `activerecord-gitlab`: Adds GitLab-specific patches to the `activerecord` public gem.
+- `gitlab-rspec` and `gitlab-utils`: GitLab-specific set of classes to help in a particular context, or re-use code.
+
 ## In the same repo
 
 **Our GitLab Gems should be always put in `gems/` of GitLab monorepo.**
@@ -57,23 +71,24 @@ They should not be published to RubyGems.
 
 ### Create and use a new Gem
 
-You can see example adding new Gem: [!121676](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121676).
+You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121676).
 
-1. Create a new Ruby Gem in `gems/gitlab-<name-of-gem>` with `bundle gem gems/gitlab-<name-of-gem> --no-exe --no-coc --no-ext --no-mit`.
-1. Remove the `.git` folder in `gems/gitlab-<name-of-gem>` with `rm -rf gems/gitlab-<name-of-gem>/.git`.
-1. Edit `gitlab-<name-of-gem>/README.md` to provide a simple description of the Gem.
-1. Edit `gitlab-<name-of-gem>/gitlab-<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
+1. Pick a good name for the gem, by following the [Gem naming](#gem-naming) convention.
+1. Create the new gem in `gems/<name-of-gem>` with `bundle gem gems/<name-of-gem> --no-exe --no-coc --no-ext --no-mit`.
+1. Remove the `.git` folder in `gems/<name-of-gem>` with `rm -rf gems/<name-of-gem>/.git`.
+1. Edit `gems/<name-of-gem>/README.md` to provide a simple description of the Gem.
+1. Edit `gems/<name-of-gem>/<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
 
    ```ruby
    Gem::Specification.new do |spec|
-     spec.name = "gitlab-<name-of-gem>"
+     spec.name = "<name-of-gem>"
      spec.version = Gitlab::NameOfGem::VERSION
      spec.authors = ["group::tenant-scale"]
      spec.email = ["engineering@gitlab.com"]
 
      spec.summary = "GitLab's RSpec extensions"
      spec.description = "A set of useful helpers to configure RSpec with various stubs and CI configs."
-     spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-<name-of-gem>"
+     spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/<name-of-gem>"
      spec.required_ruby_version = ">= 2.7"
    end
    ```
@@ -174,7 +189,7 @@ usage, adding consistency checks and various helpers to track owners of feature 
 not really part of GitLab business logic and could be used to better track our implementation
 of Flipper and possibly much easier change it to dogfood [GitLab Feature Flags](../operations/feature_flags.md).
 
-The `gitlab-active_record` is a gem adding GitLab specific Active Record patches.
+The `activerecord-gitlab` is a gem adding GitLab specific Active Record patches.
 It is very well desired for such to be managed separately to isolate complexity.
 
 ### Other potential use cases

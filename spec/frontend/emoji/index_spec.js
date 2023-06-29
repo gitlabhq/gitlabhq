@@ -72,7 +72,7 @@ function createMockEmojiClient() {
   ]);
 
   window.gon = { features: { customEmoji: true } };
-  document.body.dataset.group = 'test-group';
+  document.body.dataset.groupFullPath = 'test-group';
 }
 
 describe('emoji', () => {
@@ -82,7 +82,7 @@ describe('emoji', () => {
 
   afterEach(() => {
     window.gon = {};
-    delete document.body.dataset.group;
+    delete document.body.dataset.groupFullPath;
     clearEmojiMock();
   });
 
@@ -758,7 +758,7 @@ describe('emoji', () => {
 
     describe('when not in a group', () => {
       beforeEach(() => {
-        delete document.body.dataset.group;
+        delete document.body.dataset.groupFullPath;
       });
 
       it('returns empty object', async () => {

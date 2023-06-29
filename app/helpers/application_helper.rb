@@ -124,7 +124,8 @@ module ApplicationHelper
       page: body_data_page,
       page_type_id: controller.params[:id],
       find_file: find_file_path,
-      group: @group&.path
+      group: @group&.path,
+      group_full_path: @group&.full_path
     }.merge(project_data)
   end
 
@@ -135,6 +136,7 @@ module ApplicationHelper
       project_id: @project.id,
       project: @project.path,
       group: @project.group&.path,
+      group_full_path: @project.group&.full_path,
       namespace_id: @project.namespace&.id
     }
   end
@@ -328,7 +330,7 @@ module ApplicationHelper
     class_names << 'with-system-header' if appearance.show_header?
     class_names << 'with-system-footer' if appearance.show_footer?
 
-    class_names
+    class_names.join(' ')
   end
 
   # Returns active css class when condition returns true

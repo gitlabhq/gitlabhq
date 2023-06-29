@@ -8,6 +8,7 @@ import {
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import DiffStatsDropdown, { i18n } from '~/vue_shared/components/diff_stats_dropdown.vue';
 
 jest.mock('fuzzaldrin-plus', () => ({
@@ -38,6 +39,7 @@ const mockFiles = [
 
 describe('Diff Stats Dropdown', () => {
   let wrapper;
+  const focusInputMock = jest.fn();
 
   const createComponent = ({ changed = 0, added = 0, deleted = 0, files = [] } = {}) => {
     wrapper = shallowMountExtended(DiffStatsDropdown, {
@@ -50,6 +52,9 @@ describe('Diff Stats Dropdown', () => {
       stubs: {
         GlSprintf,
         GlDropdown,
+        GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+          methods: { focusInput: focusInputMock },
+        }),
       },
     });
   };
@@ -151,10 +156,8 @@ describe('Diff Stats Dropdown', () => {
     });
 
     it('should set the search input focus', () => {
-      wrapper.vm.$refs.search.focusInput = jest.fn();
       findChanged().vm.$emit('shown');
-
-      expect(wrapper.vm.$refs.search.focusInput).toHaveBeenCalled();
+      expect(focusInputMock).toHaveBeenCalled();
     });
   });
 });

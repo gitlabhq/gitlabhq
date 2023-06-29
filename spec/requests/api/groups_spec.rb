@@ -844,6 +844,39 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           expect(shared_with_groups).to contain_exactly(group_link_1.shared_with_group_id, group_link_2.shared_with_group_id)
         end
       end
+
+      context "expose shared_runners_setting attribute" do
+        let(:group) { create(:group, shared_runners_enabled: true) }
+
+        before do
+          group.add_owner(user1)
+        end
+
+        it "returns the group with shared_runners_setting as 'enabled'", :aggregate_failures do
+          get api("/groups/#{group.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['shared_runners_setting']).to eq("enabled")
+        end
+
+        it "returns the group with shared_runners_setting as 'disabled_and_unoverridable'", :aggregate_failures do
+          group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false)
+
+          get api("/groups/#{group.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['shared_runners_setting']).to eq("disabled_and_unoverridable")
+        end
+
+        it "returns the group with shared_runners_setting as 'disabled_and_overridable'", :aggregate_failures do
+          group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true)
+
+          get api("/groups/#{group.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['shared_runners_setting']).to eq("disabled_and_overridable")
+        end
+      end
     end
   end
 

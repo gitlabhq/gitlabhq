@@ -1,0 +1,10 @@
+---
+table_name: system_access_microsoft_graph_access_tokens
+classes:
+  - SystemAccess::MicrosoftGraphAccessToken
+feature_categories:
+  - system_access
+description: Access tokens for the Microsoft Graph API
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124101
+milestone: '16.2'
+gitlab_schema: gitlab_main

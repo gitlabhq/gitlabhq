@@ -9,34 +9,25 @@
 
 %h5.gl-mt-0
   = title
-%p.profile-settings-content
-  = s_("AccessTokens|Enter the name of your application, and we'll return a unique %{type}.") % { type: type }
 
 = gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { id: 'js-new-access-token-form', class: 'js-requires-input' }, remote: ajax do |f|
-
   = form_errors(token)
 
-  .row
-    .form-group.col
-      .row
-        = f.label :name, s_('AccessTokens|Token name'), class: 'label-bold col-md-12'
-        .col-md-6
-          - resource_type = resource.is_a?(Group) ? "group" : "project"
-          = f.text_field :name, class: 'form-control gl-form-input', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
-        %span.form-text.text-muted.col-md-12#access_token_help_text= s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
+  .form-group
+    = f.label :name, s_('AccessTokens|Token name'), class: 'label-bold'
+    - resource_type = resource.is_a?(Group) ? "group" : "project"
+    = f.text_field :name, class: 'form-control gl-form-input gl-max-w-80', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
+    %span.form-text.text-muted#access_token_help_text= s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
 
-  .row
-    .col
-      .js-access-tokens-expires-at{ data: expires_at_field_data }
-        = f.text_field :expires_at, class: 'gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
+  .js-access-tokens-expires-at{ data: expires_at_field_data }
+    = f.text_field :expires_at, class: 'gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
 
   - if resource
-    .row
-      .form-group.col-md-6
-        = label_tag :access_level, s_("AccessTokens|Select a role"), class: "label-bold"
-        .select-wrapper
-          = select_tag :"#{prefix}[access_level]", options_for_select(access_levels, default_access_level), class: "form-control select-control", data: { qa_selector: 'access_token_access_level' }
-          = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
+    .form-group
+      = label_tag :access_level, s_("AccessTokens|Select a role"), class: "label-bold"
+      .select-wrapper
+        = select_tag :"#{prefix}[access_level]", options_for_select(access_levels, default_access_level), class: "form-control select-control", data: { qa_selector: 'access_token_access_level' }
+        = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
 
   .form-group
     %b{ :'aria-describedby' => 'select_scope_help_text' }

@@ -328,7 +328,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/app/presenters/approval_rule_presenter.rb'
     - 'ee/app/presenters/ci/minutes/usage_presenter.rb'
-    - 'ee/app/presenters/merge_request_approver_presenter.rb'
     - 'ee/app/serializers/dashboard_operations_project_entity.rb'
     - 'ee/app/serializers/ee/member_user_entity.rb'
     - 'ee/app/services/app_sec/dast/pipelines/find_latest_service.rb'

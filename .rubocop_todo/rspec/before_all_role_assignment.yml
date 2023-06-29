@@ -1222,7 +1222,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/draft_notes_spec.rb'
     - 'spec/requests/api/environments_spec.rb'
     - 'spec/requests/api/error_tracking/client_keys_spec.rb'
-    - 'spec/requests/api/error_tracking/project_settings_spec.rb'
     - 'spec/requests/api/files_spec.rb'
     - 'spec/requests/api/freeze_periods_spec.rb'
     - 'spec/requests/api/go_proxy_spec.rb'

@@ -91,7 +91,7 @@ describe('UserNameGroup component', () => {
       });
 
       it('should render status message', () => {
-        expect(findUserStatus().text()).toContain(userMenuMockData.status.message);
+        expect(findUserStatus().html()).toContain(userMenuMockData.status.message_html);
       });
 
       it("sets the tooltip's target to the status container", () => {

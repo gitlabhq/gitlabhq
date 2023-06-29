@@ -57,12 +57,12 @@ async function loadEmojiWithNames() {
 }
 
 export async function loadCustomEmojiWithNames() {
-  if (document.body?.dataset?.group && window.gon?.features?.customEmoji) {
+  if (document.body?.dataset?.groupFullPath && window.gon?.features?.customEmoji) {
     const client = createApolloClient();
     const { data } = await client.query({
       query: customEmojiQuery,
       variables: {
-        groupPath: document.body.dataset.group,
+        groupPath: document.body.dataset.groupFullPath,
       },
     });
 

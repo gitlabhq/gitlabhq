@@ -7,6 +7,9 @@ module Analytics
 
       included do
         before_action :authorize
+        # Defining the before action here, because in the EE module we cannot define a before_action.
+        # Reason: this is a module which is being included into a controller. This module is extended in EE.
+        before_action :authorize_modification, only: %i[create destroy update] # rubocop:disable Rails/LexicallyScopedActionFilter
       end
 
       def index
@@ -24,6 +27,10 @@ module Analytics
 
       def authorize
         authorize_read_cycle_analytics!
+      end
+
+      def authorize_modification
+        # no-op, overridden in EE
       end
     end
   end

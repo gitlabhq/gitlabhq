@@ -167,7 +167,7 @@ job1:
 The order of caches extraction is:
 
 1. Retrieval attempt for `cache:key`
-1. Retrieval attemps for each entry in order in `fallback_keys`
+1. Retrieval attempts for each entry in order in `fallback_keys`
 1. Retrieval attempt for the global fallback key in `CACHE_FALLBACK_KEY`
 
 The cache extraction process stops after the first successful cache is retrieved.

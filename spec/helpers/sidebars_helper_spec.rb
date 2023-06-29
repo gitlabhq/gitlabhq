@@ -106,7 +106,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           customized: user.status&.customized?,
           availability: user.status&.availability.to_s,
           emoji: user.status&.emoji,
-          message: user.status&.message_html&.html_safe,
+          message_html: user.status&.message_html&.html_safe,
+          message: user.status&.message&.html_safe,
           clear_after: nil
         },
         settings: {

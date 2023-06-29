@@ -55,7 +55,14 @@ module API
       end
 
       expose :moved_to_id
-      expose :service_desk_reply_to
+      expose :service_desk_reply_to do |issue|
+        issue.present(
+          current_user: options[:current_user],
+          # We need to pass it explicitly to account for the case where `issue`
+          # is a `WorkItem` which doesn't have a presenter yet.
+          presenter_class: IssuePresenter
+        ).service_desk_reply_to
+      end
     end
   end
 end

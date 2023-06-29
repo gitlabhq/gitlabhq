@@ -504,7 +504,9 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
   end
 
   context 'when user has an unconfirmed email', :js do
-    let(:unconfirmed_user) { create(:user, :unconfirmed) }
+    # Email address contains HTML to ensure email address is displayed in an HTML safe way.
+    let_it_be(:unconfirmed_email) { "#{generate(:email)}<h2>testing<img/src=http://localhost:8000/test.png>" }
+    let_it_be(:unconfirmed_user) { create(:user, :unconfirmed, unconfirmed_email: unconfirmed_email) }
 
     where(:path_helper) do
       [
@@ -524,7 +526,9 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
 
         within_modal do
           expect(page).to have_content("Confirm user #{unconfirmed_user.name}?")
-          expect(page).to have_content('This user has an unconfirmed email address. You may force a confirmation.')
+          expect(page).to have_content(
+            "This user has an unconfirmed email address (#{unconfirmed_email}). You may force a confirmation."
+          )
 
           click_button 'Confirm user'
         end

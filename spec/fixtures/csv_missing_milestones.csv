@@ -1,0 +1,5 @@
+title,description,milestone
+"Issue with missing milestone","",15.10,
+"Issue without milestone","",,
+"Issue with milestone","",10.1,
+"Issue with duplicate milestone","",15.10,

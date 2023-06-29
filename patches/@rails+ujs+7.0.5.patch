@@ -1,0 +1,16 @@
+diff --git a/node_modules/@rails/ujs/lib/assets/compiled/rails-ujs.js b/node_modules/@rails/ujs/lib/assets/compiled/rails-ujs.js
+index d428163..010eaa5 100644
+--- a/node_modules/@rails/ujs/lib/assets/compiled/rails-ujs.js
++++ b/node_modules/@rails/ujs/lib/assets/compiled/rails-ujs.js
+@@ -281,11 +281,6 @@ Released under the MIT license
+             try {
+               response = JSON.parse(response);
+             } catch (error) {}
+-          } else if (type.match(/\b(?:java|ecma)script\b/)) {
+-            script = document.createElement('script');
+-            script.setAttribute('nonce', cspNonce());
+-            script.text = response;
+-            document.head.appendChild(script).parentNode.removeChild(script);
+           } else if (type.match(/\b(xml|html|svg)\b/)) {
+             parser = new DOMParser();
+             type = type.replace(/;.+/, '');

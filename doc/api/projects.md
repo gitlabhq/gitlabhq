@@ -578,6 +578,248 @@ GET /users/:user_id/projects
 ]
 ```
 
+## List projects a user has contributed to
+
+Get a list of visible projects a given user has contributed to.
+
+```plaintext
+GET /users/:user_id/contributed_projects
+```
+
+| Attribute                     | Type    | Required               | Description |
+|-------------------------------|---------|------------------------|-------------|
+| `user_id`                     | string  | **{check-circle}** Yes | The ID or username of the user. |
+| `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
+| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
+| `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/5/contributed_projects"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 4,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+    "default_branch": "master",
+    "visibility": "private",
+    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
+    "web_url": "http://example.com/diaspora/diaspora-client",
+    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "disapora client"
+    ],
+    "topics": [
+      "example",
+      "disapora client"
+    ],
+    "owner": {
+      "id": 3,
+      "name": "Diaspora",
+      "created_at": "2013-09-30T13:46:02Z"
+    },
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "issues_enabled": true,
+    "open_issues_count": 1,
+    "merge_requests_enabled": true,
+    "jobs_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "can_create_merge_request_in": true,
+    "resolve_outdated_diff_discussions": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
+    "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
+    "namespace": {
+      "id": 3,
+      "name": "Diaspora",
+      "path": "diaspora",
+      "kind": "group",
+      "full_path": "diaspora"
+    },
+    "import_status": "none",
+    "archived": false,
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "shared_runners_enabled": true,
+    "group_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_jobs": true,
+    "shared_with_groups": [],
+    "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
+    "request_access_enabled": false,
+    "merge_method": "merge",
+    "squash_option": "default_on",
+    "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
+    "suggestion_commit_message": null,
+    "merge_commit_template": null,
+    "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
+    "statistics": {
+      "commit_count": 37,
+      "storage_size": 1038090,
+      "repository_size": 1038090,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
+      "packages_size": 0,
+      "snippets_size": 0,
+      "uploads_size": 0
+    },
+    "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
+    }
+  },
+  {
+    "id": 6,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+    "default_branch": "master",
+    "visibility": "private",
+    "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
+    "http_url_to_repo": "http://example.com/brightbox/puppet.git",
+    "web_url": "http://example.com/brightbox/puppet",
+    "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
+    "tag_list": [ //deprecated, use `topics` instead
+      "example",
+      "puppet"
+    ],
+    "topics": [
+      "example",
+      "puppet"
+    ],
+    "owner": {
+      "id": 4,
+      "name": "Brightbox",
+      "created_at": "2013-09-30T13:46:02Z"
+    },
+    "name": "Puppet",
+    "name_with_namespace": "Brightbox / Puppet",
+    "path": "puppet",
+    "path_with_namespace": "brightbox/puppet",
+    "issues_enabled": true,
+    "open_issues_count": 1,
+    "merge_requests_enabled": true,
+    "jobs_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "can_create_merge_request_in": true,
+    "resolve_outdated_diff_discussions": false,
+    "container_registry_enabled": false, // deprecated, use container_registry_access_level instead
+    "container_registry_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled",
+    "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
+    "namespace": {
+      "id": 4,
+      "name": "Brightbox",
+      "path": "brightbox",
+      "kind": "group",
+      "full_path": "brightbox"
+    },
+    "import_status": "none",
+    "import_error": null,
+    "permissions": {
+      "project_access": {
+        "access_level": 10,
+        "notification_level": 3
+      },
+      "group_access": {
+        "access_level": 50,
+        "notification_level": 3
+      }
+    },
+    "archived": false,
+    "avatar_url": null,
+    "shared_runners_enabled": true,
+    "group_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_jobs": true,
+    "shared_with_groups": [],
+    "only_allow_merge_if_pipeline_succeeds": false,
+    "allow_merge_on_skipped_pipeline": false,
+    "restrict_user_defined_variables": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
+    "request_access_enabled": false,
+    "merge_method": "merge",
+    "squash_option": "default_on",
+    "auto_devops_enabled": true,
+    "auto_devops_deploy_strategy": "continuous",
+    "repository_storage": "default",
+    "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
+    "mirror": false,
+    "mirror_user_id": 45,
+    "mirror_trigger_builds": false,
+    "only_mirror_protected_branches": false,
+    "mirror_overwrites_diverged_branches": false,
+    "external_authorization_classification_label": null,
+    "packages_enabled": true,
+    "service_desk_enabled": false,
+    "service_desk_address": null,
+    "autoclose_referenced_issues": true,
+    "enforce_auth_checks_on_uploads": true,
+    "suggestion_commit_message": null,
+    "merge_commit_template": null,
+    "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
+    "statistics": {
+      "commit_count": 12,
+      "storage_size": 2066080,
+      "repository_size": 2066080,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
+      "packages_size": 0,
+      "snippets_size": 0,
+      "uploads_size": 0
+    },
+    "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
+    }
+  }
+]
+```
+
 ## List projects starred by a user
 
 > The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.

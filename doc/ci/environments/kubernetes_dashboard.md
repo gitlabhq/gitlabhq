@@ -23,9 +23,10 @@ Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or
 add one when you create an environment.
 
-Prerequisite:
+Prerequisites:
 
 - The agent for Kubernetes must be shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
+- Self-managed only. KAS is running on the GitLab subdomain. For example, `kas.example.com` and `example.com`.
 
 ### The environment already exists
 

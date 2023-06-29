@@ -56,7 +56,7 @@ of the container registry for both GitLab.com and for self-managed users.
 ## Proposal
 
 There are two main components that must be further developed in order for
-self-managed admins to move to the registry database: the deployment environment and 
+self-managed admins to move to the registry database: the deployment environment and
 the registry migration tooling.
 
 For the deployment environments need to document what the user needs to do to set up their
@@ -108,7 +108,7 @@ methods.
 Given that we're not mutating data via object storage as part of the import
 process, we should not need to double-check these drivers or try to predict
 potential errors. Relying on user feedback during the beta to direct any efforts
-we should be making here could prevent us from scheduling unnecessary work. 
+we should be making here could prevent us from scheduling unnecessary work.
 
 #### Arguments in Favor of Structuring Support by Driver
 
@@ -154,7 +154,7 @@ the surrounding process will enable non-expert users to import their registries
 with both minimal risk and with minimal support from GitLab team members.
 Therefore, the most important work remaining is crafting the UX of this tooling
 such that those goals are met. This
-[epic](https://gitlab.com/groups/gitlab-org/-/epics/8602) captures many of the 
+[epic](https://gitlab.com/groups/gitlab-org/-/epics/8602) captures many of the
 proposed improvements.
 
 #### Design
@@ -186,7 +186,7 @@ migration, importing tags requires that the registry be offline or in
 read-only mode. This step does the minimum possible work to achieve fast and
 efficient tag imports and will always be the fastest of the three steps, reducing
 the downtime component to a fraction of the total import time. The user can then
-bring up the registry configured to use the metadata database. After that, the 
+bring up the registry configured to use the metadata database. After that, the
 user is free to run the third step during normal registry operations. This step
 makes any dangling blobs in common storage visible to the database and therefore
 the online garbage collection process.

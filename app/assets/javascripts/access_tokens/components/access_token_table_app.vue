@@ -114,8 +114,7 @@ export default {
 
 <template>
   <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
-    <div>
-      <hr />
+    <div class="gl-pt-6">
       <h5>{{ header }}</h5>
 
       <p v-if="information" data-testid="information-section">
