@@ -135,6 +135,7 @@ class WebHook < ApplicationRecord
 
     return if url_variables_were.blank? || interpolated_url_was == interpolated_url
 
+    self.url_variables = {} if url_variables_were.keys.intersection(url_variables.keys).any?
     self.url_variables = {} if url_changed? && url_variables_were.to_a.intersection(url_variables.to_a).any?
   end
 

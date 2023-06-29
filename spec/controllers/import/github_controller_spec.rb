@@ -395,6 +395,12 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       )
     end
 
+    let(:user) { project.owner }
+
+    before do
+      sign_in(user)
+    end
+
     context 'when import is not finished' do
       it 'return bad_request' do
         get :failures, params: { project_id: project.id }
@@ -434,6 +440,16 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(json_response.first['title']).to eq(issue_title)
       end
     end
+
+    context 'when signed user is not the owner' do
+      let(:user) { create(:user) }
+
+      it 'renders 404' do
+        get :failures, params: { project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe "POST cancel" do
@@ -442,6 +458,12 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         :project, :import_started,
         import_type: 'github', import_url: 'https://fake.url', import_source: 'login/repo'
       )
+    end
+
+    let(:user) { project.owner }
+
+    before do
+      sign_in(user)
     end
 
     context 'when project import was canceled' do
@@ -474,6 +496,16 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['errors']).to eq('The import cannot be canceled because it is finished')
+      end
+    end
+
+    context 'when signed user is not the owner' do
+      let(:user) { create(:user) }
+
+      it 'renders 404' do
+        post :cancel, params: { project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

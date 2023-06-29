@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.1.1 (2023-06-28)
+
+### Security (12 changes)
+
+- [Revert 'security-leaked-ci-job-token-permission-16-1' from '16-1'](gitlab-org/security/gitlab@d2599119b120eab983a1446fc9ed3ca801c88368) ([merge request](gitlab-org/security/gitlab!3374))
+- [Use fully qualified ref when loading code owner file](gitlab-org/security/gitlab@e8ba90bb85de376bb020350c027bb369671c83d6) ([merge request](gitlab-org/security/gitlab!3356))
+- [Maintainer can leak masked webhook secrets by manipulating URL masking](gitlab-org/security/gitlab@2cf91108544e8c30aae6d9b207385c90c299869c) ([merge request](gitlab-org/security/gitlab!3359))
+- [Remove approvals when the only commit gets amended](gitlab-org/security/gitlab@3f81f7bc4236bcc2ed887f40b7a14702d756ca9e) ([merge request](gitlab-org/security/gitlab!3366))
+- [Add authorization validation to GithubController#failures action](gitlab-org/security/gitlab@3c8c305deef9c9bd1194788b40e0d7ae1de45f3b) ([merge request](gitlab-org/security/gitlab!3335))
+- [Fix for fork permissions check in compare controller](gitlab-org/security/gitlab@5b14436f3874de7be62e0f46a25e93a1d8c99975) ([merge request](gitlab-org/security/gitlab!3342))
+- [Webhook token leaked in Sidekiq logs if log format is 'default'](gitlab-org/security/gitlab@d2d76399c880c62d7449cdae6014ee3236bffc0b) ([merge request](gitlab-org/security/gitlab!3345))
+- [Mitigate epic reference filter ReDOS](gitlab-org/security/gitlab@874d5bc2d55e2e1092bf7cc4ebb0e53fc716d850) ([merge request](gitlab-org/security/gitlab!3341))
+- [Increasing security for CI_JOB_TOKEN on public and internal projects](gitlab-org/security/gitlab@c2aa392b932af04e395d67eb06a20b5c768ec683) ([merge request](gitlab-org/security/gitlab!3337))
+- [Adjust access to value stream create, edit and destroy actions](gitlab-org/security/gitlab@8a3645e265c71886951bdc03857837aacb57e558) ([merge request](gitlab-org/security/gitlab!3349))
+- [Sanitize user email addresses in admin confirm user dialog](gitlab-org/security/gitlab@70553e6ca6b3f244df37e306466e2d3b5d54f76b) ([merge request](gitlab-org/security/gitlab!3338))
+- [Obfuscate email of service desk issue creator in issue REST API](gitlab-org/security/gitlab@d0f27b8241ab53bee11f8ce6efb20811690a2d0d) ([merge request](gitlab-org/security/gitlab!3317))
+
 ## 16.1.0 (2023-06-21)
 
 ### Added (224 changes)
