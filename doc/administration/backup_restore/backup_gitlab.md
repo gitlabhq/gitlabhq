@@ -1345,7 +1345,9 @@ runner authentication, which is described in more detail in the following
 sections. After resetting the tokens, you should be able to visit your project
 and the jobs begin running again.
 
-Use the information in the following sections at your own risk.
+WARNING:
+The steps in this section can potentially lead to **data loss** on the above listed items.
+Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
 #### Verify that all values can be decrypted
 
@@ -1620,6 +1622,7 @@ This problem stops the backup script from completing. To fix this problem, you m
 
 WARNING:
 The steps in this section can potentially lead to **data loss**. All steps must be followed strictly in the order given.
+Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
 Truncating filenames to resolve the error involves:
 

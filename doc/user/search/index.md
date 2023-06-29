@@ -135,6 +135,7 @@ and gives you the option to return to the search results page.
 > - [Removed support for partial matches in issue searches](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
 > - Feature flag [`issues_full_text_search` enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.10.
 > - Feature flag [`issues_full_text_search` enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 15.2.
+> - Feature flag [`issues_full_text_search` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 16.2.
 
 You can filter issues and merge requests by specific terms included in titles or descriptions.
 

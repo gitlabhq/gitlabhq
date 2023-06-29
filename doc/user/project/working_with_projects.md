@@ -55,6 +55,10 @@ To explore project topics:
 
 The **Explore topics** page shows a list of topics, sorted by the number of associated projects.
 
+If you want to know when new projects are added to the topic, you can use
+its RSS feed for that, which is the RSS icon on the right of the filter
+bar.
+
 You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
 
 If you're an instance administrator, you can administer all project topics from the

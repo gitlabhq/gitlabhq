@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
 
     before do
       allow(generic_spammable).to receive_messages(
-        spammable_entity_type: 'generic',
+        to_ability_name: 'generic_spammable',
         spammable_text: 'generic spam',
         created_at: generic_created_at,
         updated_at: generic_updated_at,
@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
       generic_pb, _ = described_class.new.send(:build_protobuf, spammable: generic_spammable, user: user, context: cxt, extra_features: {})
 
       expect(generic_pb.text).to eq 'generic spam'
-      expect(generic_pb.type).to eq 'generic'
+      expect(generic_pb.type).to eq 'generic_spammable'
       expect(generic_pb.created_at).to eq timestamp_to_protobuf_timestamp(generic_created_at)
       expect(generic_pb.updated_at).to eq timestamp_to_protobuf_timestamp(generic_updated_at)
       expect(generic_pb.action).to be ::Spamcheck::Action.lookup(::Spamcheck::Action::CREATE)

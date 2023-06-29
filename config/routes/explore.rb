@@ -6,7 +6,7 @@ namespace :explore do
       get :trending
       get :starred
       get :topics
-      get 'topics/:topic_name', action: :topic, as: :topic, constraints: { topic_name: /.+/ }
+      get 'topics/:topic_name', action: :topic, as: :topic, constraints: { format: /(html|atom)/, topic_name: /.+?/ }
     end
   end
 

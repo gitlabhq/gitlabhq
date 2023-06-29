@@ -22,9 +22,11 @@
 %div{ class: container_class }
   .gl-py-5.gl-border-gray-100.gl-border-b-solid.gl-border-b-1
     %h3.gl-m-0= _('Projects with this topic')
-  .top-area.gl-pt-2.gl-pb-2
+  .top-area.gl-pt-2.gl-pb-2.gl-justify-content-space-between
     .nav-controls
       = render 'shared/projects/search_form'
       = render 'filter'
+    = link_to topic_explore_projects_path(@topic.name, rss_url_options), title: s_("Topics|Subscribe to the new projects feed"), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip' do
+      = sprite_icon('rss', css_class: 'gl-icon')
 
   = render 'projects', projects: @projects

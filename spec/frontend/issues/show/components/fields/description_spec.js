@@ -7,11 +7,9 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 describe('Description field component', () => {
   let wrapper;
 
-  const findTextarea = () => wrapper.findComponent({ ref: 'textarea' });
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
-
-  const mountComponent = ({ description = 'test', contentEditorOnIssues = false } = {}) =>
-    shallowMount(DescriptionField, {
+  const mountComponent = ({ description = 'test', contentEditorOnIssues = false } = {}) => {
+    wrapper = shallowMount(DescriptionField, {
       attachTo: document.body,
       propsData: {
         markdownPreviewPath: '/',
@@ -27,89 +25,58 @@ describe('Description field component', () => {
         MarkdownField,
       },
     });
+  };
 
   beforeEach(() => {
     jest.spyOn(eventHub, '$emit');
+
+    mountComponent({ contentEditorOnIssues: true });
   });
 
-  it('renders markdown field with description', () => {
-    wrapper = mountComponent();
+  it('passes feature flag to the MarkdownEditorComponent', () => {
+    expect(findMarkdownEditor().props('enableContentEditor')).toBe(true);
 
-    expect(findTextarea().element.value).toBe('test');
+    mountComponent({ contentEditorOnIssues: false });
+
+    expect(findMarkdownEditor().props('enableContentEditor')).toBe(false);
   });
 
-  it('renders markdown field with a markdown description', () => {
-    const markdown = '**test**';
-
-    wrapper = mountComponent({ description: markdown });
-
-    expect(findTextarea().element.value).toBe(markdown);
-  });
-
-  it('focuses field when mounted', () => {
-    wrapper = mountComponent();
-
-    expect(document.activeElement).toBe(findTextarea().element);
+  it('uses the MarkdownEditor component to edit markdown', () => {
+    expect(findMarkdownEditor().props()).toMatchObject({
+      value: 'test',
+      renderMarkdownPath: '/',
+      autofocus: true,
+      supportsQuickActions: true,
+      markdownDocsPath: '/',
+      enableAutocomplete: true,
+    });
   });
 
   it('triggers update with meta+enter', () => {
-    wrapper = mountComponent();
-
-    findTextarea().trigger('keydown.enter', { metaKey: true });
+    findMarkdownEditor().vm.$emit('keydown', {
+      type: 'keydown',
+      keyCode: 13,
+      metaKey: true,
+    });
 
     expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
   });
 
   it('triggers update with ctrl+enter', () => {
-    wrapper = mountComponent();
-
-    findTextarea().trigger('keydown.enter', { ctrlKey: true });
+    findMarkdownEditor().vm.$emit('keydown', {
+      type: 'keydown',
+      keyCode: 13,
+      ctrlKey: true,
+    });
 
     expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
   });
 
-  describe('when contentEditorOnIssues feature flag is on', () => {
-    beforeEach(() => {
-      wrapper = mountComponent({ contentEditorOnIssues: true });
-    });
+  it('emits input event when MarkdownEditor emits input event', () => {
+    const markdown = 'markdown';
 
-    it('uses the MarkdownEditor component to edit markdown', () => {
-      expect(findMarkdownEditor().props()).toMatchObject({
-        value: 'test',
-        renderMarkdownPath: '/',
-        autofocus: true,
-        supportsQuickActions: true,
-        markdownDocsPath: '/',
-        enableAutocomplete: true,
-      });
-    });
+    findMarkdownEditor().vm.$emit('input', markdown);
 
-    it('triggers update with meta+enter', () => {
-      findMarkdownEditor().vm.$emit('keydown', {
-        type: 'keydown',
-        keyCode: 13,
-        metaKey: true,
-      });
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
-    });
-
-    it('triggers update with ctrl+enter', () => {
-      findMarkdownEditor().vm.$emit('keydown', {
-        type: 'keydown',
-        keyCode: 13,
-        ctrlKey: true,
-      });
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('update.issuable');
-    });
-
-    it('emits input event when MarkdownEditor emits input event', () => {
-      const markdown = 'markdown';
-
-      findMarkdownEditor().vm.$emit('input', markdown);
-
-      expect(wrapper.emitted('input')).toEqual([[markdown]]);
-    });
+    expect(wrapper.emitted('input')).toEqual([[markdown]]);
   });
 });

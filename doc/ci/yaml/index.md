@@ -2902,6 +2902,12 @@ in the project.
 Use `pages` to define a [GitLab Pages](../../user/project/pages/index.md) job that
 uploads static content to GitLab. The content is then published as a website.
 
+You must:
+
+- Define [`artifacts`](#artifacts) with a path to the content directory, which is
+  `public` by default.
+- Use [`publish`](#pagespublish) if want to use a different content directory.
+
 **Keyword type**: Job name.
 
 **Example of `pages`**:
@@ -2910,9 +2916,7 @@ uploads static content to GitLab. The content is then published as a website.
 pages:
   stage: deploy
   script:
-    - mkdir .public
-    - cp -r * .public
-    - mv .public public
+    - mv my-html-content public
   artifacts:
     paths:
       - public
@@ -2921,15 +2925,38 @@ pages:
   environment: production
 ```
 
-This example moves all files from the root of the project to the `public/` directory.
-The `.public` workaround is so `cp` does not also copy `public/` to itself in an infinite loop.
+This example moves all files from a `my-html-content/` directory to the `public/` directory.
+This directory is exported as an artifact and published with GitLab Pages.
 
-**Additional details**:
+#### `pages:publish`
 
-You must:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 
-- Place any static content in a `public/` directory.
-- Define [`artifacts`](#artifacts) with a path to the `public/` directory.
+Use `publish` to configure the content directory of a [`pages` job](#pages).
+
+**Keyword type**: Job keyword. You can use it only as part of a `pages` job.
+
+**Possible inputs**: A path to a directory containing the Pages content.
+
+**Example of `publish`**:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - npx @11ty/eleventy --input=path/to/eleventy/root --output=dist
+  artifacts:
+    paths:
+      - dist
+  publish: dist
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+This example uses [Eleventy](https://www.11ty.dev) to generate a static website and
+output the generated HTML files into a the `dist/` directory. This directory is exported
+as an artifact and published with GitLab Pages.
 
 ### `parallel`
 

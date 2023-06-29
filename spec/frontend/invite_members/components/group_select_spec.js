@@ -1,82 +1,68 @@
-import { GlAvatarLabeled, GlDropdown, GlSearchBoxByType } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import * as groupsApi from '~/api/groups_api';
+import { getGroups } from '~/api/groups_api';
 import GroupSelect from '~/invite_members/components/group_select.vue';
+
+jest.mock('~/api/groups_api');
 
 const group1 = { id: 1, full_name: 'Group One', avatar_url: 'test' };
 const group2 = { id: 2, full_name: 'Group Two', avatar_url: 'test' };
 const allGroups = [group1, group2];
 
-const createComponent = (props = {}) => {
-  return mount(GroupSelect, {
-    propsData: {
-      invalidGroups: [],
-      ...props,
-    },
-  });
-};
-
 describe('GroupSelect', () => {
   let wrapper;
 
-  beforeEach(() => {
-    jest.spyOn(groupsApi, 'getGroups').mockResolvedValue(allGroups);
+  const createComponent = (props = {}) => {
+    wrapper = mount(GroupSelect, {
+      propsData: {
+        selectedGroup: {},
+        invalidGroups: [],
+        ...props,
+      },
+    });
+  };
 
-    wrapper = createComponent();
+  beforeEach(() => {
+    getGroups.mockResolvedValueOnce(allGroups);
   });
 
-  const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownToggle = () => findDropdown().find('button[aria-haspopup="menu"]');
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findListboxToggle = () => findListbox().find('button[aria-haspopup="listbox"]');
   const findAvatarByLabel = (text) =>
     wrapper
       .findAllComponents(GlAvatarLabeled)
       .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.props('label') === text);
 
-  it('renders GlSearchBoxByType with default attributes', () => {
-    expect(findSearchBoxByType().exists()).toBe(true);
-    expect(findSearchBoxByType().vm.$attrs).toMatchObject({
-      placeholder: 'Search groups',
-    });
-  });
-
   describe('when user types in the search input', () => {
-    let resolveApiRequest;
-
-    beforeEach(() => {
-      jest.spyOn(groupsApi, 'getGroups').mockImplementation(
-        () =>
-          new Promise((resolve) => {
-            resolveApiRequest = resolve;
-          }),
-      );
-
-      findSearchBoxByType().vm.$emit('input', group1.name);
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+      getGroups.mockClear();
+      getGroups.mockReturnValueOnce(new Promise(() => {}));
+      findListbox().vm.$emit('search', group1.name);
+      await nextTick();
     });
 
     it('calls the API', () => {
-      resolveApiRequest({ data: allGroups });
-
-      expect(groupsApi.getGroups).toHaveBeenCalledWith(group1.name, {
+      expect(getGroups).toHaveBeenCalledWith(group1.name, {
         exclude_internal: true,
         active: true,
         order_by: 'similarity',
       });
     });
 
-    it('displays loading icon while waiting for API call to resolve', async () => {
-      expect(findSearchBoxByType().props('isLoading')).toBe(true);
-
-      resolveApiRequest({ data: allGroups });
-      await waitForPromises();
-
-      expect(findSearchBoxByType().props('isLoading')).toBe(false);
+    it('displays loading icon while waiting for API call to resolve', () => {
+      expect(findListbox().props('searching')).toBe(true);
     });
   });
 
   describe('avatar label', () => {
-    it('includes the correct attributes with name and avatar_url', () => {
+    it('includes the correct attributes with name and avatar_url', async () => {
+      createComponent();
+      await waitForPromises();
+
       expect(findAvatarByLabel(group1.full_name).attributes()).toMatchObject({
         src: group1.avatar_url,
         'entity-id': `${group1.id}`,
@@ -86,8 +72,9 @@ describe('GroupSelect', () => {
     });
 
     describe('when filtering out the group from results', () => {
-      beforeEach(() => {
-        wrapper = createComponent({ invalidGroups: [group1.id] });
+      beforeEach(async () => {
+        createComponent({ invalidGroups: [group1.id] });
+        await waitForPromises();
       });
 
       it('does not find an invalid group', () => {
@@ -101,16 +88,37 @@ describe('GroupSelect', () => {
   });
 
   describe('when group is selected from the dropdown', () => {
-    beforeEach(() => {
-      findAvatarByLabel(group1.full_name).trigger('click');
+    beforeEach(async () => {
+      createComponent({
+        selectedGroup: {
+          value: group1.id,
+          id: group1.id,
+          name: group1.full_name,
+          path: group1.path,
+          avatarUrl: group1.avatar_url,
+        },
+      });
+      await waitForPromises();
+      findListbox().vm.$emit('select', group1.id);
+      await nextTick();
     });
 
     it('emits `input` event used by `v-model`', () => {
-      expect(wrapper.emitted('input')[0][0].id).toEqual(group1.id);
+      expect(wrapper.emitted('input')).toMatchObject([
+        [
+          {
+            value: group1.id,
+            id: group1.id,
+            name: group1.full_name,
+            path: group1.path,
+            avatarUrl: group1.avatar_url,
+          },
+        ],
+      ]);
     });
 
     it('sets dropdown toggle text to selected item', () => {
-      expect(findDropdownToggle().text()).toBe(group1.full_name);
+      expect(findListboxToggle().text()).toBe(group1.full_name);
     });
   });
 });

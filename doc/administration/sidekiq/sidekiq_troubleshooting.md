@@ -529,6 +529,32 @@ The list of available jobs can be found in the [workers](https://gitlab.com/gitl
 
 For more information about Sidekiq jobs, see the [Sidekiq-cron](https://github.com/sidekiq-cron/sidekiq-cron#work-with-job) documentation.
 
+## Clearing a Sidekiq job deduplication idempotency key
+
+Occasionally, jobs that are expected to run (for example, cron jobs) are observed to not run at all. When checking the logs, there might be instances where jobs are seen to not run with a `"job_status": "deduplicated"`.
+
+This can happen when a job failed and the idempotency key was not cleared properly. For example, [stopping Sidekiq kills any remaining jobs after 25 seconds](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4918).
+
+[By default, the key expires after 6 hours](https://gitlab.com/gitlab-org/gitlab/-/blob/87c92f06eb92716a26679cd339f3787ae7edbdc3/lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb#L23),
+but if you want to clear the idempotency key immediately, follow the following steps (the example provided is for `Geo::VerificationBatchWorker`):
+
+1. Find the worker class and `args` of the job in the Sidekiq logs:
+
+  ```plaintext
+  { ... "class":"Geo::VerificationBatchWorker","args":["container_repository"] ... }
+  ```
+
+1. Start a [Rails console session](../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following snippet:
+
+  ```ruby
+  worker_class = Geo::VerificationBatchWorker
+  args = ["container_repository"]
+  dj = Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new({ 'class' => worker_class.name, 'args' => args }, worker_class.queue)
+  dj.send(:idempotency_key)
+  dj.delete!
+  ```
+
 ## Omnibus GitLab 14.0 and later: remove the `sidekiq-cluster` service
 
 Omnibus GitLab instances that were configured to run `sidekiq-cluster` prior to GitLab 14.0

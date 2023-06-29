@@ -52,6 +52,12 @@ module Gitlab
         response.size
       end
 
+      def repository_info
+        request = Gitaly::RepositoryInfoRequest.new(repository: @gitaly_repo)
+
+        gitaly_client_call(@storage, :repository_service, :repository_info, request, timeout: GitalyClient.long_timeout)
+      end
+
       def get_object_directory_size
         request = Gitaly::GetObjectDirectorySizeRequest.new(repository: @gitaly_repo)
         response = gitaly_client_call(@storage, :repository_service, :get_object_directory_size, request, timeout: GitalyClient.medium_timeout)

@@ -52,7 +52,7 @@ module Features
 
       click_on 'Select a group'
       wait_for_requests
-      click_button name
+      find('[role="option"]', text: name).click
       choose_options(role, expires_at)
 
       submit_invites

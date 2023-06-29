@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::RepositoryService do
+RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gitaly do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository) }
@@ -76,6 +76,21 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
         .and_return(size: 0)
 
       client.repository_size
+    end
+  end
+
+  describe '#repository_info' do
+    it 'sends a repository_info message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:repository_info)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_call_original
+
+      response = client.repository_info
+
+      expect(response.size).to be_an(Integer)
+      expect(response.references).to be_a(Gitaly::RepositoryInfoResponse::ReferencesInfo)
+      expect(response.objects).to be_a(Gitaly::RepositoryInfoResponse::ObjectsInfo)
     end
   end
 

@@ -1,13 +1,11 @@
 <script>
 import { __ } from '~/locale';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateMixin from '../../mixins/update';
 
 export default {
   components: {
-    MarkdownField,
     MarkdownEditor,
   },
   mixins: [updateMixin, glFeaturesFlagMixin()],
@@ -45,6 +43,11 @@ export default {
       },
     };
   },
+  computed: {
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
+    },
+  },
   mounted() {
     this.focus();
   },
@@ -60,44 +63,20 @@ export default {
   <div class="common-note-form">
     <label class="sr-only" for="issue-description">{{ __('Description') }}</label>
     <markdown-editor
-      v-if="glFeatures.contentEditorOnIssues"
+      :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
       class="gl-mt-3"
       :value="value"
       :render-markdown-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
       :form-field-props="formFieldProps"
       :enable-autocomplete="enableAutocomplete"
+      :autocomplete-data-sources="autocompleteDataSources"
       supports-quick-actions
       autofocus
+      data-qa-selector="description_field"
       @input="$emit('input', $event)"
       @keydown.meta.enter="updateIssuable"
       @keydown.ctrl.enter="updateIssuable"
     />
-    <markdown-field
-      v-else
-      class="gl-mt-3"
-      :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="markdownDocsPath"
-      supports-quick-actions
-      :can-attach-file="canAttachFile"
-      :enable-autocomplete="enableAutocomplete"
-      :textarea-value="value"
-    >
-      <template #textarea>
-        <textarea
-          v-bind="formFieldProps"
-          ref="textarea"
-          :value="value"
-          class="note-textarea js-gfm-input js-autosize markdown-area"
-          data-qa-selector="description_field"
-          dir="auto"
-          data-supports-quick-actions="true"
-          @input="$emit('input', $event.target.value)"
-          @keydown.meta.enter="updateIssuable"
-          @keydown.ctrl.enter="updateIssuable"
-        >
-        </textarea>
-      </template>
-    </markdown-field>
   </div>
 </template>
