@@ -1305,7 +1305,7 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
 ```
 
 Example response:
@@ -1334,7 +1334,7 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rota
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gdk.test:3443/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
 ```
 
 Example response:

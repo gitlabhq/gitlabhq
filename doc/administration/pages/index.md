@@ -779,7 +779,7 @@ database encryption. Proceed with caution.
    gitlab_pages['access_control'] = true
    ```
 
-1. Configure [the object storage and migrate pages data to it](#using-object-storage).
+1. Configure [the object storage and migrate pages data to it](#object-storage-settings).
 
 1. [Reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the
    changes to take effect. The `gitlab-secrets.json` file is now updated with the
@@ -853,44 +853,11 @@ This approach had several disadvantages and was replaced with GitLab Pages using
 every time a new domain is requested.
 The domain information is also cached by the Pages daemon to speed up subsequent requests.
 
-From [GitLab 13.3 to GitLab 13.12](#domain-source-configuration-before-140) GitLab Pages supported both ways of obtaining domain information.
-
 Starting from [GitLab 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993) GitLab Pages uses API
 by default and fails to start if it can't connect to it.
 For common issues, see [troubleshooting](troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
-
-### Domain source configuration before 14.0
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) in GitLab 13.3.
-
-WARNING:
-`domain_config_source` parameter is removed and has no effect starting from [GitLab 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993)
-
-From [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) to [GitLab 13.12](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993) GitLab Pages can either use `disk` or `gitlab` domain configuration source.
-
-We highly advise you to use `gitlab` configuration source as it makes transitions to newer versions easier.
-
-To explicitly enable API source:
-
-1. Add the following to your `/etc/gitlab/gitlab.rb` file:
-
-   ```ruby
-   gitlab_pages['domain_config_source'] = "gitlab"
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-Or if you want to use legacy configuration source you can:
-
-1. Add the following to your `/etc/gitlab/gitlab.rb` file:
-
-   ```ruby
-   gitlab_pages['domain_config_source'] = "disk"
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ### GitLab API cache configuration
 
@@ -930,15 +897,9 @@ only when there is an error response from the API, for example a connection time
 - Decreasing `gitlab_retrieval_retries` reduces the number of times a domain's
 configuration is tried to be resolved automatically before reporting an error.
 
-## Using object storage
+## Object storage settings
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5577) in GitLab 13.6.
-
-For more information, see [object storage](../object_storage.md).
-
-### Object storage settings
-
-The following settings are:
+The following [object storage](../object_storage.md) settings are:
 
 - Nested under `pages:` and then `object_store:` on source installations.
 - Prefixed by `pages_object_store_` on Omnibus GitLab installations.
@@ -953,7 +914,7 @@ NOTE:
 If you want to stop using and disconnect the NFS server, you need to
 [explicitly disable local storage](#disable-pages-local-storage), and it's only possible after upgrading to GitLab 13.11.
 
-#### S3-compatible connection settings
+### S3-compatible connection settings
 
 In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
@@ -1013,75 +974,12 @@ In installations from source:
 
 1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)
 
-## ZIP storage
-
-In GitLab 14.0 the underlying storage format of GitLab Pages is changing from
-files stored directly in disk to a single ZIP archive per project.
-
-These ZIP archives can be stored either locally on disk storage or on [object storage](#using-object-storage) if it is configured.
-
-[Starting from GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/245308) ZIP archives are stored every time pages site is updated.
-
-### Migrate legacy storage to ZIP storage
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59003) in GitLab 13.11.
-
-GitLab tries to
-[automatically migrate](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54578)
-the old storage format to the new ZIP-based one when you upgrade to GitLab 13.11 or further.
-However, some projects may fail to be migrated for different reasons.
-To verify that all projects have been migrated successfully, you can manually run the migration:
-
-```shell
-sudo gitlab-rake gitlab:pages:migrate_legacy_storage
-```
-
-It's safe to interrupt this task and run it multiple times.
-
-There are two most common problems this task can report:
-
-- `Missing public directory` error:
-
-  ```txt
-  E, [2021-04-09T13:11:52.534768 #911919] ERROR -- : project_id: 1 /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test failed to be migrated in 0.07 seconds: Archive not created. Missing public directory in /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test
-  ```
-
-  In this case, you should verify that these projects don't have pages deployed, and re-run the migration with an additional flag to mark those projects as not deployed with GitLab Pages:
-
-  ```shell
-  sudo PAGES_MIGRATION_MARK_PROJECTS_AS_NOT_DEPLOYED=true gitlab-rake gitlab:pages:migrate_legacy_storage
-  ```
-
-- File `is invalid` error:
-
-  ```txt
-  E, [2021-04-09T14:43:05.821767 #923322] ERROR -- : project_id: 1 /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test failed to be migrated: /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test/public/link is invalid, input_dir: /home/vlad/gdk/gitlab/shared/pages/gitlab-org/gitlab-test
-  ```
-
-  This error indicates invalid files on disk storage, most commonly symlinks leading outside of the `public` directory.
-  You can manually remove these files, or just ignore them during migration:
-
-  ```shell
-  sudo PAGES_MIGRATION_IGNORE_INVALID_ENTRIES=true gitlab-rake gitlab:pages:migrate_legacy_storage
-  ```
-
-### Rolling back ZIP migration
-
-If you find that migrated data is invalid, you can remove all migrated data by running:
-
-```shell
-sudo gitlab-rake gitlab:pages:clean_migrated_zip_storage
-```
-
-This does not remove any data from the legacy disk storage and the GitLab Pages daemon automatically falls back
-to using that.
-
 ### Migrate Pages deployments to object storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325285) in GitLab 13.11.
+Existing Pages deployment objects (zip archives) can be stored in either:
 
-Existing Pages deployment objects (which store [ZIP archives](#zip-storage)) can similarly be
-migrated to [object storage](#using-object-storage).
+- Local storage
+- [Object storage](../object_storage.md)
 
 Migrate your existing Pages deployments from local storage to object storage:
 
@@ -1121,7 +1019,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
 
-If you use [object storage](#using-object-storage), you can disable local storage to avoid unnecessary disk usage/writes:
+If you use [object storage](#object-storage-settings), you can disable local storage to avoid unnecessary disk usage/writes:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1131,30 +1029,14 @@ If you use [object storage](#using-object-storage), you can disable local storag
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-Starting from GitLab 13.12, this setting also disables the [legacy storage](#migrate-legacy-storage-to-zip-storage), so if you were using NFS to serve Pages, you can completely disconnect from it.
+## ZIP storage
 
-## Prepare GitLab Pages for 14.0
+In GitLab 14.0 the underlying storage format of GitLab Pages changed from
+files stored directly in disk to a single ZIP archive per project.
 
-In GitLab 14.0 a number of breaking changes were introduced which may require some user intervention.
-The steps below describe the best way to migrate without causing any downtime for your GitLab instance.
+These ZIP archives can be stored either locally on disk storage or on [object storage](#object-storage-settings) if it is configured.
 
-A GitLab instance running on a single server typically upgrades to 14.0 smoothly, and there should be minimal issues after the upgrade is complete.
-Regardless, you should follow the migration steps to ensure a successful upgrade.
-For common issues, see [troubleshooting](troubleshooting.md).
-
-If your current GitLab version is lower than 13.12, then you must first update to 13.12.
-Updating directly to 14.0 is [not supported](../../update/index.md#upgrade-paths)
-and may cause downtime for some web-sites hosted on GitLab Pages. After you update to 13.12,
-migrate GitLab Pages to prepare them for GitLab 14.0:
-
-1. Set [`domain_config_source` to `gitlab`](#domain-source-configuration-before-140), which
-is the default starting from GitLab 14.0. Skip this step if you're already running GitLab 14.0 or above.
-1. If you want to store your pages content in [object storage](#using-object-storage), make sure to configure it.
-If you want to store the pages content locally or continue using an NFS server, skip this step.
-1. [Migrate legacy storage to ZIP storage.](#migrate-legacy-storage-to-zip-storage)
-1. If you have configured GitLab to store your pages content in [object storage](#using-object-storage),
-   [migrate Pages deployments to object storage](#migrate-pages-deployments-to-object-storage)
-1. Upgrade GitLab to 14.0.
+[Starting from GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/245308) ZIP archives are stored every time pages site is updated.
 
 ## Backup
 

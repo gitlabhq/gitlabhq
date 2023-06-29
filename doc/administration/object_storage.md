@@ -174,7 +174,7 @@ supported by consolidated form, refer to the following guides:
 | [Packages](packages/index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
-| [Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
+| [Pages content](pages/index.md#object-storage-settings) | **{check-circle}** Yes |
 
 ## Configure the connection settings
 

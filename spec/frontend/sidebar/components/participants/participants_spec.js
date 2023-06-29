@@ -63,6 +63,19 @@ describe('Participants component', () => {
       expect(findParticipantsAuthor()).toHaveLength(numberOfLessParticipants);
     });
 
+    it('participants link has data attributes and class present for popover support', () => {
+      const numberOfLessParticipants = 2;
+      wrapper = mountComponent({ participants, numberOfLessParticipants });
+
+      const participantsLink = wrapper.find('.js-user-link');
+
+      expect(participantsLink.attributes()).toMatchObject({
+        href: `${participant.web_url}`,
+        'data-user-id': `${participant.id}`,
+        'data-username': `${participant.username}`,
+      });
+    });
+
     it('when only showing all participants, each has an avatar', async () => {
       wrapper = mountComponent({ participants, numberOfLessParticipants: 2 });
 

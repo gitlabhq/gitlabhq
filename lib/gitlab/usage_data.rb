@@ -286,15 +286,8 @@ module Gitlab
           response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
           response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
           response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))
-        end.merge(jira_usage, jira_import_usage)
+        end.merge(jira_import_usage)
         # rubocop: enable UsageData/LargeTable:
-      end
-
-      def jira_usage
-        {
-          projects_jira_dvcs_cloud_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled),
-          projects_jira_dvcs_server_active: count(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false))
-        }
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

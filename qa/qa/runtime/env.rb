@@ -253,6 +253,10 @@ module QA
         enabled?(ENV['USE_SELENOID'], default: false)
       end
 
+      def save_all_videos?
+        enabled?(ENV['QA_SAVE_ALL_VIDEOS'], default: false)
+      end
+
       def require_video_variables!
         docs_link = 'https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/running_against_remote_grid.md#testing-with-selenoid'
         use_selenoid? || (raise ArgumentError, "USE_SELENOID is required! See docs: #{docs_link}")

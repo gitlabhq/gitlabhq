@@ -14,17 +14,11 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { uniq } from 'lodash';
 import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
 import { slugify } from '~/lib/utils/text_utility';
-import { s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 
-import {
-  SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN,
-  SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN,
-  SEARCH_DESCRIBED_BY_DEFAULT,
-  SEARCH_DESCRIBED_BY_UPDATED,
-  SEARCH_RESULTS_LOADING,
-} from '~/vue_shared/global_search/constants';
+import { I18N } from '~/vue_shared/global_search/constants';
 
 import { HR_DEFAULT_CLASSES, ONLY_SHOW_MD } from '../../constants';
 import LabelDropdownItems from './label_dropdown_items.vue';
@@ -60,16 +54,7 @@ export default {
       isFocused: false,
     };
   },
-  i18n: {
-    SEARCH_LABELS: s__('GlobalSearch|Search labels'),
-    DROPDOWN_HEADER: s__('GlobalSearch|Label(s)'),
-    AGGREGATIONS_ERROR_MESSAGE: s__('GlobalSearch|Fetching aggregations error.'),
-    SEARCH_DESCRIBED_BY_DEFAULT,
-    SEARCH_RESULTS_LOADING,
-    SEARCH_DESCRIBED_BY_UPDATED,
-    SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN,
-    SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN,
-  },
+  i18n: I18N,
   computed: {
     ...mapState(['useSidebarNavigation', 'searchLabelString', 'query', 'aggregations']),
     ...mapGetters([
@@ -260,7 +245,7 @@ export default {
           :default-index="defaultIndex"
           :enable-cycle="true"
         />
-        <div v-if="!aggregations.error">
+        <div v-if="!aggregations.error && filteredLabels.length > 0">
           <gl-dropdown-section-header v-if="hasSelectedLabels || hasUnselectedLabels">{{
             $options.i18n.DROPDOWN_HEADER
           }}</gl-dropdown-section-header>
@@ -280,7 +265,13 @@ export default {
             </gl-form-checkbox-group>
           </gl-dropdown-form>
         </div>
-        <gl-alert v-else :dismissible="false" variant="danger">
+        <span
+          v-if="!aggregations.error && filteredLabels.length === 0"
+          class="gl-px-3"
+          data-testid="no-labels-found-message"
+          >{{ $options.i18n.NO_LABELS_FOUND }}</span
+        >
+        <gl-alert v-if="aggregations.error" :dismissible="false" variant="danger">
           {{ $options.i18n.AGGREGATIONS_ERROR_MESSAGE }}
         </gl-alert>
         <gl-loading-icon v-if="aggregations.fetching" size="lg" class="my-4" />

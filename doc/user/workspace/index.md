@@ -19,7 +19,7 @@ A workspace is a virtual sandbox environment for your code in GitLab. You can us
 
 Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project. Workspaces use the AMD64 architecture.
 
-For a demo of this feature, see [GitLab Workspaces Demo](https://tech-marketing.gitlab.io/static-demos/workspaces/ws_public.html).
+For a demo of this feature, see [GitLab Workspaces Demo](https://go.gitlab.com/qtu66q).
 
 ## Set up a workspace
 

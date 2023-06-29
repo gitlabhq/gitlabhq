@@ -75,3 +75,23 @@ export const SEARCH_RESULTS_ORDER = [
   HELP_CATEGORY,
 ];
 export const DROPDOWN_ORDER = SEARCH_RESULTS_ORDER;
+
+export const SEARCH_LABELS = s__('GlobalSearch|Search labels');
+
+export const DROPDOWN_HEADER = s__('GlobalSearch|Label(s)');
+
+export const AGGREGATIONS_ERROR_MESSAGE = s__('GlobalSearch|Fetching aggregations error.');
+
+export const NO_LABELS_FOUND = s__('GlobalSearch|No labels found');
+
+export const I18N = {
+  SEARCH_DESCRIBED_BY_DEFAULT,
+  SEARCH_RESULTS_LOADING,
+  SEARCH_DESCRIBED_BY_UPDATED,
+  SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN,
+  SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN,
+  SEARCH_LABELS,
+  DROPDOWN_HEADER,
+  AGGREGATIONS_ERROR_MESSAGE,
+  NO_LABELS_FOUND,
+};

@@ -202,7 +202,8 @@ A maximum of 100,000 users can be deactivated per day.
 
 ### Automatically delete unconfirmed users **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `delete_unconfirmed_users_setting`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `delete_unconfirmed_users_setting`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124982) in GitLab 16.2.
 
 Prerequisites:
 

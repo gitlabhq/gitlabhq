@@ -8603,7 +8603,7 @@ msgstr ""
 msgid "By quarter"
 msgstr ""
 
-msgid "By using a primary email tied to an Enterprise e-mail address, it is understood that this account is an Enterprise User."
+msgid "By using a primary email tied to an Enterprise email address, you acknowledge that this account is an Enterprise User."
 msgstr ""
 
 msgid "By week"
@@ -21020,6 +21020,9 @@ msgid "GlobalSearch|Merge requests assigned to me"
 msgstr ""
 
 msgid "GlobalSearch|Merge requests that I'm a reviewer"
+msgstr ""
+
+msgid "GlobalSearch|No labels found"
 msgstr ""
 
 msgid "GlobalSearch|Project"
@@ -47888,6 +47891,9 @@ msgid "To ensure %{project_link} is unscheduled for deletion, check that activit
 msgstr ""
 
 msgid "To ensure %{project_name} is unscheduled for deletion, check that activity has been logged by GitLab. For example:"
+msgstr ""
+
+msgid "To ensure no loss of access to personal content, only use this account for matters related to %{group_name}."
 msgstr ""
 
 msgid "To ensure no loss of personal content, this account should only be used for matters related to %{group_name}."

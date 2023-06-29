@@ -27,7 +27,7 @@ RSpec.describe 'User sees user popover', :js, feature_category: :groups_and_proj
     end
 
     it 'displays user popover' do
-      find('.js-user-link').hover
+      find('.detail-page-description .js-user-link').hover
 
       expect(page).to have_css(popover_selector, visible: true)
 

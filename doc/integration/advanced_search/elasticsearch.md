@@ -79,10 +79,11 @@ To index Git repository data, GitLab uses an [indexer written in Go](https://git
 
 Depending on your GitLab version, there are different installation procedures for the Go indexer:
 
-- For Omnibus GitLab 11.8 or greater, see [Omnibus GitLab](#omnibus-gitlab).
-- For installations from source or older versions of Omnibus GitLab,
+- For Omnibus GitLab 11.8 and later, see [Omnibus GitLab](#omnibus-gitlab).
+- For installations from source or Omnibus GitLab 11.7 and earlier,
   [install the indexer from source](#from-source).
-- If you are using GitLab Development Kit, see [GDK Elasticsearch how-to](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md).
+- If you're using the GitLab Development Kit, see [Elasticsearch in the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md).
+- If you're running a Helm deployment of GitLab 11.10 and later, [the indexer is already included](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/213).
 
 ### Omnibus GitLab
 

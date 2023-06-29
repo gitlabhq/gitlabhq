@@ -92,6 +92,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
   const findCheckboxFilter = () => wrapper.findAllComponents(LabelDropdownItems);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findNoLabelsFoundMessage = () => wrapper.findComponentByTestId('no-labels-found-message');
 
   describe('Renders correctly closed', () => {
     beforeEach(async () => {
@@ -228,6 +229,33 @@ describe('GlobalSearchSidebarLabelFilter', () => {
     });
   });
 
+  describe('Renders no-labels state correctly', () => {
+    beforeEach(async () => {
+      createComponent();
+      store.commit(REQUEST_AGGREGATIONS);
+      await Vue.nextTick();
+
+      findSearchBox().vm.$emit('focusin');
+      findSearchBox().vm.$emit('input', 'ssssssss');
+    });
+
+    it('renders checkbox filter', () => {
+      expect(findCheckboxFilter().exists()).toBe(false);
+    });
+
+    it("doesn't render alert", () => {
+      expect(findAlert().exists()).toBe(false);
+    });
+
+    it("doesn't render items", () => {
+      expect(findAllSelectedLabelsAbove().exists()).toBe(false);
+    });
+
+    it('renders no labels found text', () => {
+      expect(findNoLabelsFoundMessage().exists()).toBe(true);
+    });
+  });
+
   describe('Renders error state correctly', () => {
     beforeEach(async () => {
       createComponent();
@@ -294,6 +322,8 @@ describe('GlobalSearchSidebarLabelFilter', () => {
     describe('dropdown checkboxes work', () => {
       beforeEach(async () => {
         createComponent();
+        store.commit(RECEIVE_AGGREGATIONS_SUCCESS, MOCK_LABEL_AGGREGATIONS.data);
+        await Vue.nextTick();
 
         await findSearchBox().vm.$emit('focusin');
         await Vue.nextTick();

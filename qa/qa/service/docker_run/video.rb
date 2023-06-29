@@ -73,6 +73,10 @@ module QA
             example.metadata[:file_path].include?("/browser_ui/")
           end
 
+          def save?(example)
+            example.exception || QA::Runtime::Env.save_all_videos?
+          end
+
           private
 
           def configure_rspec
@@ -84,7 +88,7 @@ module QA
               config.append_after do |example|
                 if QA::Service::DockerRun::Video.record?(example)
                   QA::Service::DockerRun::Video.stop_recording
-                  QA::Service::DockerRun::Video.delete_video unless example.exception
+                  QA::Service::DockerRun::Video.delete_video unless QA::Service::DockerRun::Video.save?(example)
                 end
               end
             end
