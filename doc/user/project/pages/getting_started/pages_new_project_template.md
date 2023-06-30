@@ -12,7 +12,7 @@ You can create a new project from a template and run the CI/CD pipeline to gener
 Use a template when you want to test GitLab Pages or start a new project that's already
 configured to generate a Pages site.
 
-1. From the top navigation, select the **+** button and select **New project**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create from Template**.
 1. Next to one of the templates starting with **Pages**, select **Use template**.
 

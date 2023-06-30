@@ -53195,6 +53195,12 @@ msgstr ""
 msgid "Your access request to the %{source_type} has been withdrawn."
 msgstr ""
 
+msgid "Your account has been blocked. Contact %{support} for assistance."
+msgstr ""
+
+msgid "Your account has been blocked. Contact your GitLab administrator for assistance."
+msgstr ""
+
 msgid "Your account has been deactivated"
 msgstr ""
 

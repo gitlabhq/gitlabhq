@@ -129,7 +129,7 @@ We're also not addressing any client-side specific details into the design at th
 
 ## General Considerations
 
-Having addressed the details of the two aformentioned problem-domains, we can model a proposed solution with the following logical structure:
+Having addressed the details of the two aforementioned problem-domains, we can model a proposed solution with the following logical structure:
 
 - Ingestion
   - APIs/SDKs

@@ -38,19 +38,15 @@ visibility setting keep this setting. You can read more about the change in the
 You can create snippets in multiple ways, depending on whether you want to create a personal or project snippet:
 
 1. Select the kind of snippet you want to create:
-   - **To create a personal snippet**: On the
-     [Snippets dashboard](https://gitlab.com/dashboard/snippets), select
-     **New snippet**, or:
-     - *If you're on a project's page,* select the plus icon (**{plus-square-o}**)
-       in the top navigation bar, and then select **New snippet** from the
-       **GitLab** section of the same dropdown list.
-     - *For all other pages,* select the plus icon (**{plus-square-o}**)
-       in the top navigation bar, then select **New snippet** from the dropdown list.
+   - **To create a personal snippet**, do one of the following:
+     - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select
+       **New snippet**.
+     - From a project: On the left sidebar, select **Create new** (**{plus}**). Below **In GitLab**, select **New snippet**.
+     - From any other page: On the left sidebar, select **Create new** (**{plus}**) and then **New snippet**.
      - If you installed the [GitLab Workflow VS Code extension](project/repository/vscode.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
-   - **To create a project snippet**: Go to your project's page. Select the
-     plus icon (**{plus-square-o}**), and then select **New snippet** from the
-     **This project** section of the dropdown list.
+   - **To create a project snippet**: Go to your project's page. Select
+     **Create new** (**{plus}**). Below **In this project**, select **New snippet**.
 1. Add a **Title** and **Description**.
 1. Name your **File** with an appropriate extension, such as `example.rb` or `index.html`.
    Filenames with appropriate extensions display [syntax highlighting](#filenames).

@@ -165,16 +165,6 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
           end
         end
 
-        context 'when ci_jwt_v2_ci_config_ref_uri_claim flag is disabled' do
-          before do
-            stub_feature_flags(ci_jwt_v2_ref_uri_claim: false)
-          end
-
-          it 'is nil' do
-            expect(payload[:ci_config_ref_uri]).to be_nil
-          end
-        end
-
         context 'when config source is not repository' do
           before do
             allow(project_config).to receive(:source).and_return(:auto_devops_source)

@@ -28,7 +28,7 @@ and also Git repository data.
 Each cell has a number of application databases to back up (e.g. `main`, and `ci`).
 
 Additionally, there may be cluster-wide metadata tables (e.g. `users` table)
-which is directly accesible via PostgreSQL.
+which is directly accessible via PostgreSQL.
 
 ## 3. Proposal
 

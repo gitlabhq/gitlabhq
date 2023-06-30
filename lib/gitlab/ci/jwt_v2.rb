@@ -42,17 +42,12 @@ module Gitlab
       end
 
       def custom_claims
-        additional_claims = {
+        super.merge(
           runner_id: runner&.id,
           runner_environment: runner_environment,
-          sha: pipeline.sha
-        }
-
-        if Feature.enabled?(:ci_jwt_v2_ref_uri_claim, pipeline.project)
-          additional_claims[:ci_config_ref_uri] = ci_config_ref_uri
-        end
-
-        super.merge(additional_claims)
+          sha: pipeline.sha,
+          ci_config_ref_uri: ci_config_ref_uri
+        )
       end
 
       def ci_config_ref_uri

@@ -134,7 +134,6 @@ e2e:package-and-test-ee:
   variables:
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
     QA_RUN_TYPE: e2e-package-and-test
-    ALLURE_JOB_NAME: e2e-package-and-test
     PIPELINE_NAME: E2E Omnibus GitLab EE
 
 e2e:package-and-test-ce:
@@ -150,7 +149,6 @@ e2e:package-and-test-ce:
     RELEASE: ${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${CI_COMMIT_SHA}
     GITLAB_QA_IMAGE: ${CI_REGISTRY_IMAGE}/gitlab-ce-qa:${CI_COMMIT_SHA}
     QA_RUN_TYPE: e2e-package-and-test-ce
-    ALLURE_JOB_NAME: e2e-package-and-test-ce
     PIPELINE_NAME: E2E Omnibus GitLab CE
 
 e2e:package-and-test-old-nav:
@@ -160,7 +158,6 @@ e2e:package-and-test-old-nav:
   variables:
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
     QA_RUN_TYPE: e2e-package-and-test-old-nav
-    ALLURE_JOB_NAME: e2e-package-and-test-old-nav
     PIPELINE_NAME: E2E Omnibus Old Navigation
     QA_SUPER_SIDEBAR_ENABLED: "false"
     EXTRA_GITLAB_QA_OPTS: ""
@@ -176,7 +173,6 @@ e2e:package-and-test-nightly:
   variables:
     GITLAB_SEMVER_VERSION: $GITLAB_SEMVER_VERSION
     QA_RUN_TYPE: nightly
-    ALLURE_JOB_NAME: nightly
     PIPELINE_NAME: E2E Omnibus GitLab Nightly
     DYNAMIC_PIPELINE_YML: package-and-test-nightly-pipeline.yml
 
@@ -189,7 +185,6 @@ e2e:test-on-gdk:
     - build-gdk-image
     - e2e-test-pipeline-generate
   variables:
-    ALLURE_JOB_NAME: e2e-test-on-gdk
     QA_RUN_TYPE: e2e-test-on-gdk
     PIPELINE_NAME: E2E GDK
     DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml

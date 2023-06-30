@@ -96,9 +96,11 @@ NOTE:
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
 [GitHub integration](../../../integration/github.md).
 
-1. From the top navigation bar, select **+** and select **New project**.
-1. Select the **Import project** tab and then select **GitHub**.
-1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Import project** and then **GitHub**.
+1. Now you can either:
+   - Add a personal access token and select **Authenticate**.
+   - If GitHub is [configured](../../../integration/github.md) for the instance, select **Authorize with GitHub**.
 1. Select **Authorize GitlabHQ**. You are redirected back to the GitLab Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#select-which-repositories-to-import).
 

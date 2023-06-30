@@ -37,7 +37,7 @@ With the development of the proposed system, we have the following goals:
 
 - Support for long-term storage for Prometheus/OpenTelemetry formatted metrics, ingested via Prometheus remote_write API and queried via Prometheus remote_read API, PromQL or SQL with support for metadata and exemplars.
 
-The aformentioned goals can further be broken down into the following four sub-goals:
+The aforementioned goals can further be broken down into the following four sub-goals:
 
 #### Ingesting data
 

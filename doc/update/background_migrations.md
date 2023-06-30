@@ -25,14 +25,16 @@ that can process jobs in the `background_migration` queue.
 
 ### Pending migrations
 
-**For Omnibus installations:**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
 ```
 
-**For installations from source:**
+:::TabTitle Self-compiled (source)
 
 ```shell
 cd /home/git/gitlab
@@ -40,9 +42,13 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMi
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
 ```
 
+::EndTabs
+
 ### Failed migrations
 
-**For Omnibus installations:**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 For GitLab 14.0-14.9:
 
@@ -56,7 +62,7 @@ For GitLab 14.10 and later:
 sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
-**For installations from source:**
+:::TabTitle Self-compiled (source)
 
 For GitLab 14.0-14.9:
 
@@ -72,6 +78,8 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
+::EndTabs
+
 ## Batched background migrations **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51332) in GitLab 13.11, [behind a feature flag](../user/feature_flags.md), disabled by default.
@@ -80,6 +88,7 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::Ba
 > - Recommended for production use.
 > - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
 
+WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
@@ -107,18 +116,25 @@ All migrations must have a `Finished` status before you upgrade GitLab.
 The status of batched background migrations can also be queried directly in the database.
 
 1. Log into a `psql` prompt according to the directions for your instance's installation method
-(for example, `sudo gitlab-psql` for Omnibus installations).
+(for example, `sudo gitlab-psql` for Linux package installations).
 1. Run the following query in the `psql` session to see details on incomplete batched background migrations:
 
    ```sql
-   select job_class_name, table_name, column_name, job_arguments from batched_background_migrations where status <> 3;
-   ```
+   SELECT
+     job_class_name,
+     table_name,
+     column_name,
+     job_arguments
+   FROM batched_background_migrations
+   WHERE status <> 3;
+    ```
 
 If the migrations are not finished and you try to update to a later version,
 GitLab prompts you with an error:
 
 ```plaintext
-Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+Expected batched background migration for the given configuration to be marked
+as 'finished', but it is 'active':
 ```
 
 If you get this error, [check the batched background migration options](#database-migrations-failing-because-of-batched-background-migration-not-finished) to complete the upgrade.
@@ -180,6 +196,7 @@ Use the following database queries to see the state of the current batched backg
 > - For GitLab self-managed instances, GitLab administrators can opt to
 >   [disable it](#enable-or-disable-automatic-batch-size-optimization).
 
+WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
@@ -211,6 +228,7 @@ Feature.disable(:optimize_batched_migrations)
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/372316) in GitLab 15.11.
 > - Feature flag `batched_migrations_parallel_execution` removed in GitLab 16.1.
 
+WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
@@ -270,7 +288,12 @@ When updating to GitLab 14.2 or later there might be a database migration failin
 StandardError: An error has occurred, all later migrations canceled:
 
 Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
-  {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob", :table_name=>"push_event_payloads", :column_name=>"event_id", :job_arguments=>[["event_id"], ["event_id_convert_to_bigint"]]}
+  {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob",
+   :table_name=>"push_event_payloads",
+   :column_name=>"event_id",
+   :job_arguments=>[["event_id"],
+   ["event_id_convert_to_bigint"]]
+  }
 ```
 
 First, check if you have followed the [version-specific upgrade instructions for 14.2](../update/index.md#1420).
@@ -342,8 +365,14 @@ arguments. For example, if you receive an error similar to this:
 ```plaintext
 StandardError: An error has occurred, all later migrations canceled:
 
-Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
-  {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob", :table_name=>"push_event_payloads", :column_name=>"event_id", :job_arguments=>[["event_id"], ["event_id_convert_to_bigint"]]}
+Expected batched background migration for the given configuration to be marked as
+'finished', but it is 'active':
+  {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob",
+   :table_name=>"push_event_payloads",
+   :column_name=>"event_id",
+   :job_arguments=>[["event_id"],
+   ["event_id_convert_to_bigint"]]
+  }
 ```
 
 Plug the arguments from the error message into the command:
@@ -416,17 +445,19 @@ The following operations can disrupt your GitLab performance. They run a number 
 Run the following check. If it returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
 
 ```shell
-# For Omnibus installations:
+# For Linux package installations:
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 
-# For installations from source:
+# For self-compiled installations:
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 ```
 
 It is safe to re-execute the following commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 # Start the rails console
@@ -438,7 +469,7 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 ```shell
 # Start the rails console
@@ -450,16 +481,14 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
+::EndTabs
+
 ### Background migrations stuck in 'pending' state
 
 WARNING:
 The following operations can disrupt your GitLab performance. They run a number
 of Sidekiq jobs that perform various database or file updates.
 
-- GitLab 13.6 introduced an issue where a background migration named
-  `BackfillJiraTrackerDeploymentType2` can be permanently stuck in a
-  **pending** state across upgrades. To clean up this stuck migration, see the
-  [13.6.0 version-specific instructions](index.md#1360).
 - GitLab 14.2 introduced an issue where a background migration named
   `BackfillDraftStatusOnMergeRequests` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
@@ -490,17 +519,19 @@ it returns non-zero and the count does not decrease over time, follow the rest
 of the steps in this section.
 
 ```shell
-# For Omnibus installations:
+# For Linux package installations:
 sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
 
-# For installations from source:
+# For self-compiled installations:
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
 ```
 
 It is safe to re-attempt these migrations to clear them out from a pending status:
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 # Start the rails console
@@ -514,7 +545,7 @@ Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
 end
 ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 ```shell
 # Start the rails console
@@ -527,3 +558,5 @@ Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
   puts "Result: #{result}"
 end
 ```
+
+::EndTabs

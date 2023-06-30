@@ -186,10 +186,10 @@ export default {
           v-show="search"
           :aria-label="__('Clear search')"
           type="button"
-          class="position-absolute bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
+          class="gl-absolute gl-top-3 bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
           @click="clearSearch"
         >
-          <gl-icon name="close" class="gl-absolute gl-top-3 gl-right-1 tree-list-icon" />
+          <gl-icon name="close" class="gl-top-3 gl-right-1 tree-list-icon" />
         </button>
       </div>
     </div>

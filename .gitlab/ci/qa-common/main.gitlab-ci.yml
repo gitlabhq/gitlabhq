@@ -9,7 +9,6 @@ include:
     ref: 7.2.3
     file:
       - /ci/base.gitlab-ci.yml
-      - /ci/allure-report.yml
       - /ci/knapsack-report.yml
 
 stages:
@@ -85,15 +84,6 @@ stages:
     paths:
       - qa/knapsack/*.json
     expire_in: 1 day
-
-.e2e-test-report:
-  extends:
-    - .generate-allure-report-base
-  stage: report
-  variables:
-    GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
-    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
-    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
 
 .upload-knapsack-report:
   extends:
