@@ -100,7 +100,8 @@
       %tbody
         %tr
           - common_style = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;"
-          - pipeline_link = content_tag(:a, "\##{@pipeline.id}", href: pipeline_url(@pipeline), style: "color:#3777b0;text-decoration:none;").html_safe
+          - pipeline_link_text = sanitize_name(@pipeline.name) || "##{@pipeline.id}"
+          - pipeline_link = content_tag(:a, pipeline_link_text, href: pipeline_url(@pipeline), style: "color:#3777b0;text-decoration:none;").html_safe
           %td{ style: "#{common_style} font-weight:500;vertical-align:baseline;" }
             = s_('Notify|Pipeline %{pipeline_link} triggered by').html_safe % { pipeline_link: pipeline_link }
           - if @pipeline.user

@@ -1,1 +1,1 @@
-<%= render 'notify/successful_pipeline', title: "Pipeline ##{@pipeline.id} has passed!" -%>
+<%= render 'notify/successful_pipeline', title: "Pipeline #{sanitize_name(@pipeline.name) || "##{@pipeline.id}"} has passed!" -%>

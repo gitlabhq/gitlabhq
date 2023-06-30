@@ -24,9 +24,12 @@ Committed by: <%= commit.committer_name %>
 
 <% job_count = @pipeline.total_size -%>
 <% stage_count = @pipeline.stages_count -%>
+
+<% pipeline_link_text = sanitize_name(@pipeline.name) || "##{@pipeline.id}" %>
+
 <% if @pipeline.user -%>
-Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by <%= sanitize_name(@pipeline.user.name) %> ( <%= user_url(@pipeline.user) %> )
+Pipeline <%= pipeline_link_text %> ( <%= pipeline_url(@pipeline) %> ) triggered by <%= sanitize_name(@pipeline.user.name) %> ( <%= user_url(@pipeline.user) %> )
 <% else -%>
-Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
+Pipeline <%= pipeline_link_text %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
 <% end -%>
 successfully completed <%= job_count %> <%= 'job'.pluralize(job_count) %> in <%= stage_count %> <%= 'stage'.pluralize(stage_count) %>.

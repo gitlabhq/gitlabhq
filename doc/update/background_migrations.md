@@ -223,6 +223,43 @@ the number of batched background migrations executed in parallel:
 ApplicationSetting.update_all(database_max_running_batched_background_migrations: 4)
 ```
 
+### Fix and retry failed batched background migrations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67504) in GitLab 14.3.
+
+If you [check the status](#check-the-status-of-batched-background-migrations) of batched background migrations,
+some migrations might display in the **Failed** tab with a **failed** status:
+
+![failed batched background migrations table](img/batched_background_migrations_failed_v14_3.png)
+
+You must resolve all failed batched background migrations to upgrade to a newer
+version of GitLab.
+
+To determine why the batched background migration failed,
+[view the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs) or:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Monitoring > Background Migrations**.
+1. Select the **Failed** tab. This displays a list of failed batched background migrations.
+1. Select the failed **Migration** to see the migration parameters and the jobs that failed.
+1. Under **Failed jobs**, select each **ID** to see why the job failed.
+
+If you are a GitLab customer, consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new)
+to debug why the batched background migrations failed.
+
+To correct the problem, you can retry the failed batched background migrations:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Monitoring > Background Migrations**.
+1. Select the **Failed** tab. This displays a list of failed batched background migrations.
+1. Select a failed batched background migration to retry by clicking on the retry button (**{retry}**).
+
+To monitor the retried batched background migrations, you can
+[check the status of batched background migrations](#check-the-status-of-batched-background-migrations)
+on a regular interval.
+
 ## Troubleshooting
 
 ### Database migrations failing because of batched background migration not finished

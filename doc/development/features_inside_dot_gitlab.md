@@ -16,4 +16,4 @@ When implementing new features, please refer to these existing features to avoid
 - [Route Maps](../ci/review_apps/index.md#route-maps): `.gitlab/route-map.yml`.
 - [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-helm-chart-values): `.gitlab/auto-deploy-values.yaml`.
 - [Insights](../user/project/insights/index.md#configure-project-insights): `.gitlab/insights.yml`.
-- [Service Desk Templates](../user/project/service_desk.md#create-customized-email-templates): `.gitlab/service_desk_templates/`.
+- [Service Desk Templates](../user/project/service_desk.md#customize-emails-sent-to-the-requester): `.gitlab/service_desk_templates/`.

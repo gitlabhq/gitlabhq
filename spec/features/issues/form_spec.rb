@@ -745,7 +745,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     context 'with the visible_label_selection_on_metadata feature flag enabled', :js do
       let(:visible_label_selection_on_metadata) { true }
 
-      it 'creates project label from dropdown' do
+      it 'creates project label from dropdown', flaky: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416585' do
         find('[data-testid="labels-select-dropdown-contents"] button').click
 
         wait_for_all_requests

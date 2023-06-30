@@ -1,4 +1,4 @@
-Pipeline #<%= @pipeline.id %> has failed!
+<%= "Pipeline #{sanitize_name(@pipeline.name) || "##{@pipeline.id}"} has failed!" %>
 
 Project: <%= @project.name %> ( <%= project_url(@project) %> )
 Branch: <%= @pipeline.source_ref %> ( <%= commits_url(@pipeline) %> )
@@ -22,12 +22,14 @@ Committed by: <%= commit.committer_name %>
 <% end -%>
 <% end -%>
 
-<% if @pipeline.user -%>
-Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by <%= sanitize_name(@pipeline.user.name) %> ( <%= user_url(@pipeline.user) %> )
-<% else -%>
-Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
-<% end -%>
-<% failed = @pipeline.latest_statuses.failed -%>
+<% pipeline_link_text = sanitize_name(@pipeline.name) || "##{@pipeline.id}" %>
+
+<% if @pipeline.user %>
+Pipeline <%= pipeline_link_text %> ( <%= pipeline_url(@pipeline) %> ) triggered by <%= sanitize_name(@pipeline.user.name) %> ( <%= user_url(@pipeline.user) %> )
+<% else %>
+Pipeline <%= pipeline_link_text %> ( <%= pipeline_url(@pipeline) %> ) triggered by API
+<% end %>
+<% failed = @pipeline.latest_statuses.failed %>
 had <%= failed.size %> failed <%= 'job'.pluralize(failed.size) %>.
 
 <% failed.each do |build| -%>

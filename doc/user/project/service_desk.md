@@ -81,85 +81,73 @@ To improve your Service Desk project's security, you should:
 - [Enable Akismet](../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
   Unblocked email spam can result in many spam issues being created.
 
-### Create customized email templates
+### Customize emails sent to the requester
 
 > - Moved from GitLab Premium to GitLab Free in 13.2.
 > - `UNSUBSCRIBE_URL`, `SYSTEM_HEADER`, `SYSTEM_FOOTER`, and `ADDITIONAL_TEXT` placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
+> - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
+> - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
 
-An email is sent to the author when:
+An email is sent to the requester when:
 
-- A user submits a new issue using Service Desk.
-- A new note is created on a Service Desk issue.
+- A requester submits a new ticket by emailing Service Desk.
+- A new public comment is added on a Service Desk ticket.
+  - Editing a comment does not trigger a new email to be sent.
 
-You can customize the body of these email messages with templates.
+You can customize the body of these email messages with Service Desk email templates. The templates
+can include [GitLab Flavored Markdown](../markdown.md) and [some HTML tags](../markdown.md#inline-html).
+For example, you can format the emails to include a header and footer in accordance with your
+organization's brand guidelines. You can also include the following placeholders to display dynamic
+content specific to the Service Desk ticket or your GitLab instance.
 
-#### Email header and footer **(FREE SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
-
-Instance administrators can add a small header or footer to the GitLab instance and make them
-visible in the email template. For more information, see
-[System header and footer messages](../admin_area/appearance.md#system-header-and-footer-messages).
+| Placeholder            | `thank_you.md`         | `new_note.md`          | Description
+| ---------------------- | ---------------------- | ---------------------- | -----------
+| `%{ISSUE_ID}`          | **{check-circle}** Yes | **{check-circle}** Yes | Ticket IID.
+| `%{ISSUE_PATH}`        | **{check-circle}** Yes | **{check-circle}** Yes | Project path appended with the ticket IID.
+| `%{ISSUE_URL}`         | **{check-circle}** Yes | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default).
+| `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design.
+| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe URL.
+| `%{NOTE_TEXT}`         | **{dotted-circle}** No | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the requesters may never see the updates on their Service Desk ticket.
 
 #### Thank you email
 
-> - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
-> - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
+When a requester submits an issue through Service Desk, GitLab sends a **thank you email**.
+Without additional configuration, GitLab sends the default thank you email.
 
-When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
+To create a custom thank you email template:
 
-To create a custom email template, in the `.gitlab/service_desk_templates/`
-directory in your repository, create a file named `thank_you.md`.
-[GitLab Flavored Markdown](../markdown.md) and
-[some HTML tags](../markdown.md#inline-html) are supported.
-
-You can use these placeholders to be automatically replaced in each email:
-
-- `%{ISSUE_ID}`: Issue IID.
-- `%{ISSUE_PATH}`: Project path appended with the issue IID.
-- `%{ISSUE_URL}`: URL to the issue. External participants can only view the issue if the project is public
-   and issue is not confidential (Service Desk issues are confidential by default).
-- `%{ISSUE_DESCRIPTION}`: Issue description based on the original email.
-- `%{UNSUBSCRIBE_URL}`: Unsubscribe URL.
-- `%{SYSTEM_HEADER}`: [System header message](../admin_area/appearance.md#system-header-and-footer-messages).
-- `%{SYSTEM_FOOTER}`: [System footer message](../admin_area/appearance.md#system-header-and-footer-messages).
-- `%{ADDITIONAL_TEXT}`: [Custom additional text](../admin_area/settings/email.md#custom-additional-text).
-
-Because Service Desk issues are created as [confidential](issues/confidential_issues.md) (only project members can see them),
-the response email does not contain the issue link.
+1. In the `.gitlab/service_desk_templates/` directory of your repository, create a file named `thank_you.md`.
+1. Populate the Markdown file with text, [GitLab Flavored Markdown](../markdown.md),
+   [some selected HTML tags](../markdown.md#inline-html), and placeholders to customize the reply
+   to Service Desk requesters.
 
 #### New note email
 
-> - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
-> - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
+When a Service Desk ticket has a new public comment, GitLab sends a **new note email**.
+Without additional configuration, GitLab sends the content of the comment.
 
-When a user-submitted issue receives a new comment, GitLab sends a **new note email**.
+To keep your emails on brand, you can create a custom new note email template. To do so:
 
-To create a custom email template, in the `.gitlab/service_desk_templates/`
-directory in your repository, create a file named `new_note.md`.
-[GitLab Flavored Markdown](../markdown.md) and
-[some HTML tags](../markdown.md#inline-html) are supported.
+1. In the `.gitlab/service_desk_templates/` directory in your repository, create a file named `new_note.md`.
+1. Populate the Markdown file with text, [GitLab Flavored Markdown](../markdown.md),
+   [some selected HTML tags](../markdown.md#inline-html), and placeholders to customize the new note
+   email. Be sure to include the `%{NOTE_TEXT}` in the template to make sure the email recipient can
+   read the contents of the comment.
 
-You can use these placeholders to be automatically replaced in each email:
+#### Instance-level email header, footer, and additional text **(FREE SELF)**
 
-- `%{ISSUE_ID}`: Issue IID.
-- `%{ISSUE_PATH}`: Project path appended with the issue IID.
-- `%{ISSUE_URL}`: URL to the issue. External participants can only view the issue if the project is public
-   and issue is not confidential (Service Desk issues are confidential by default).
-- `%{ISSUE_DESCRIPTION}`: Issue description at the time email is generated.
-  If a user has edited the description, it might contain sensitive information that is not intended
-  to be delivered to external participants. Use this placeholder only if you never modify
-  descriptions or your team is aware of the template design.
-- `%{NOTE_TEXT}`: Note text.
-- `%{UNSUBSCRIBE_URL}`: Unsubscribe URL.
-- `%{SYSTEM_HEADER}`: [System header message](../admin_area/appearance.md#system-header-and-footer-messages).
-- `%{SYSTEM_FOOTER}`: [System footer message](../admin_area/appearance.md#system-header-and-footer-messages).
-- `%{ADDITIONAL_TEXT}`: [Custom additional text](../admin_area/settings/email.md#custom-additional-text).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
 
-### Use a custom template for Service Desk issues
+Instance administrators can add a header, footer or additional text to the GitLab instance and apply
+them to all emails sent from GitLab. If you're using a custom `thank_you.md` or `new_note.md`, to include
+this content, add `%{SYSTEM_HEADER}`, `%{SYSTEM_FOOTER}`, or `%{ADDITIONAL_TEXT}` to your templates.
+
+For more information, see [System header and footer messages](../admin_area/appearance.md#system-header-and-footer-messages) and [custom additional text](../admin_area/settings/email.md#custom-additional-text).
+
+### Use a custom template for Service Desk tickets
 
 You can select one [description template](description_templates.md#create-an-issue-template)
-**per project** to be appended to every new Service Desk issue's description.
+**per project** to be appended to every new Service Desk ticket's description.
 
 You can set description templates at various levels:
 

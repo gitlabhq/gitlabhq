@@ -31381,13 +31381,16 @@ msgstr ""
 msgid "Notify|No work items have been imported."
 msgstr ""
 
-msgid "Notify|Pipeline #%{pipeline_id} has failed!"
-msgstr ""
-
 msgid "Notify|Pipeline %{pipeline_link} triggered by"
 msgstr ""
 
-msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
+msgid "Notify|Pipeline %{pipeline_name_or_id} has failed!"
+msgstr ""
+
+msgid "Notify|Pipeline %{pipeline_name_or_id} has passed!"
+msgstr ""
+
+msgid "Notify|Pipeline has been fixed and %{pipeline_name_or_id} has passed!"
 msgstr ""
 
 msgid "Notify|Please check that your service provider supports email subaddressing and that you have set up email forwarding correctly."
