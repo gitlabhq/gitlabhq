@@ -169,7 +169,6 @@ export default {
             v-if="hasReplies"
             :collapsed="!isExpanded"
             :replies="replies"
-            :class="{ 'discussion-toggle-replies': discussion.diff_discussion }"
             @toggle="toggleDiscussion({ discussionId: discussion.id })"
           />
           <template v-if="isExpanded">

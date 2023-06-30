@@ -825,7 +825,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/controllers/projects/repositories_controller_spec.rb'
     - 'spec/controllers/projects/runner_projects_controller_spec.rb'
     - 'spec/controllers/projects/runners_controller_spec.rb'
-    - 'spec/controllers/projects/service_desk_controller_spec.rb'
     - 'spec/controllers/projects/settings/ci_cd_controller_spec.rb'
     - 'spec/controllers/projects/settings/integrations_controller_spec.rb'
     - 'spec/controllers/projects/settings/slacks_controller_spec.rb'

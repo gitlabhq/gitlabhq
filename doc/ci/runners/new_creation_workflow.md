@@ -80,6 +80,21 @@ The `gitlab-runner register` command will stop accepting registration tokens and
 authentication tokens generated in the GitLab runners administration page.
 These authentication tokens are recognizable by their `glrt-` prefix.
 
+When you create a runner in the GitLab UI, you specify configuration values that were previously command-line options
+prompted by the `gitlab-runner register` command.
+These command-line options have been [deprecated](../../update/deprecations.md#registration-tokens-and-server-side-runner-arguments-in-post-apiv4runners-endpoint).
+
+If you specify an authentication token with:
+
+- the `--token` command-line option, the `gitlab-runner register` command does not accept the configuration values.
+- the `--registration-token` command-line option, the `gitlab-runner register` command ignores the configuration values.
+
+Authentication tokens have the prefix, `glrt-`.
+
+To ensure minimal disruption to your automation workflow,
+[legacy-compatible registration processing](https://docs.gitlab.com/runner/register/#legacy-compatible-registration-processing)
+triggers if an authentication token is specified in the legacy parameter `--registration-token`.
+
 Example command for GitLab 15.9:
 
 ```shell

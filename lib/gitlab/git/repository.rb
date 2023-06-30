@@ -337,9 +337,15 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = gitaly_repository_client.repository_size
+        if Feature.enabled?(:use_repository_info_for_repository_size)
+          bytes = gitaly_repository_client.repository_info.size
 
-        (size.to_f / 1024).round(2)
+          (bytes.to_f / 1024 / 1024).round(2)
+        else
+          kilobytes = gitaly_repository_client.repository_size
+
+          (kilobytes.to_f / 1024).round(2)
+        end
       end
 
       # Return git object directory size in bytes

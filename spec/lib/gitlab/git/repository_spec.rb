@@ -285,6 +285,28 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     subject { repository.size }
 
     it { is_expected.to be > 0 }
+    it { is_expected.to be_a(Float) }
+
+    it "uses repository_info for size" do
+      expect(repository.gitaly_repository_client).to receive(:repository_info).and_call_original
+
+      subject
+    end
+
+    context "when use_repository_info_for_repository_size feature flag is disabled" do
+      before do
+        stub_feature_flags(use_repository_info_for_repository_size: false)
+      end
+
+      it { is_expected.to be > 0 }
+      it { is_expected.to be_a(Float) }
+
+      it "uses repository_size for size" do
+        expect(repository.gitaly_repository_client).to receive(:repository_size).and_call_original
+
+        subject
+      end
+    end
   end
 
   describe '#to_s' do

@@ -4,7 +4,7 @@ stage: Manage
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# SCIM API **(PREMIUM SAAS)**
+# SCIM API **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
@@ -76,7 +76,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" --header "<PRIVATE TOKEN>"
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" --header "PRIVATE-TOKEN: <PRIVATE TOKEN>"
 ```
 
 Example response:

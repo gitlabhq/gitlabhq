@@ -270,6 +270,11 @@ table {
   }
 }
 
+.diff-td > .content > .discussion-reply-holder {
+  padding-top: $gl-padding-12;
+  @include gl-bg-gray-10;
+}
+
 .discussion-with-resolve-btn {
   @include media-breakpoint-up(sm) {
     display: flex;

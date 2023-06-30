@@ -3286,7 +3286,6 @@ Layout/LineLength:
     - 'spec/controllers/projects/registry/tags_controller_spec.rb'
     - 'spec/controllers/projects/repositories_controller_spec.rb'
     - 'spec/controllers/projects/runners_controller_spec.rb'
-    - 'spec/controllers/projects/service_desk_controller_spec.rb'
     - 'spec/controllers/projects/settings/ci_cd_controller_spec.rb'
     - 'spec/controllers/projects/settings/operations_controller_spec.rb'
     - 'spec/controllers/projects/settings/repository_controller_spec.rb'

@@ -1769,7 +1769,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/controllers/projects/releases/evidences_controller_spec.rb'
     - 'spec/controllers/projects/releases_controller_spec.rb'
     - 'spec/controllers/projects/security/configuration_controller_spec.rb'
-    - 'spec/controllers/projects/service_desk_controller_spec.rb'
     - 'spec/controllers/projects/service_ping_controller_spec.rb'
     - 'spec/controllers/projects/settings/integration_hook_logs_controller_spec.rb'
     - 'spec/controllers/projects/settings/merge_requests_controller_spec.rb'

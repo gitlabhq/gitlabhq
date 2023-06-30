@@ -1827,3 +1827,30 @@ If the output differs on some hosts, PostgreSQL replication does not work proper
 A full index rebuild is required if the on-disk data is transferred 'at rest' to an operating system with an incompatible locale, or through replication.
 
 This check is also required when using a mixture of GitLab deployments. The locale might be different between an Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services.
+
+## Investigate causes of database replication lag
+
+If the output of `sudo gitlab-rake geo:status` shows that `Database replication lag` remains significantly high over time, the primary node in database replication can be checked to determine the status of lag for
+different parts of the database replication process. These values are known as `write_lag`, `flush_lag`, and `replay_lag`. For more information, see
+[the official PostgreSQL documentation](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-REPLICATION-VIEW).
+
+Run the following command from the primary Geo node's database to provide relevant output:
+
+```shell
+gitlab-psql -xc 'SELECT write_lag,flush_lag,replay_lag FROM pg_stat_replication;'
+
+-[ RECORD 1 ]---------------
+write_lag  | 00:00:00.072392
+flush_lag  | 00:00:00.108168
+replay_lag | 00:00:00.108283
+```
+
+If one or more of these values is significantly high, this could indicate a problem and should be investigated further. When determining the cause, consider that:
+
+- `write_lag` indicates the time since when WAL bytes have been sent by the primary, then received to the secondary, but not yet flushed or applied.
+- A high `write_lag` value may indicate degraded network performance or insufficient network speed between the primary and secondary nodes.
+- A high `flush_lag` value may indicate degraded or sub-optimal disk I/O performance with the secondary node's storage device.
+- A high `replay_lag` value may indicate long running transactions in PostgreSQL, or the saturation of a needed resource like the CPU.
+- The difference in time between `write_lag` and `flush_lag` indicates that WAL bytes have been sent to the underlying storage system, but it has not reported that they were flushed.
+  This data is most likely not fully written to a persistent storage, and likely held in some kind of volatile write cache.
+- The difference between `flush_lag` and `replay_lag` indicates WAL bytes that have been successfully persisted to storage, but could not be replayed by the database system.

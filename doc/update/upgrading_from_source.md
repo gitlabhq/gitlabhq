@@ -394,11 +394,6 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, then congratulations, the upgrade is complete!
 
-### 17. Upgrade the product documentation
-
-This is an optional step. If you [installed the product documentation](../install/installation.md#install-the-product-documentation),
-see how to [upgrade to a later version](../administration/docs_self_host.md#upgrade-the-product-documentation-to-a-later-version).
-
 ## Version specific changes
 
 Upgrading versions might need some manual intervention. For more information,

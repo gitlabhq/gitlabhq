@@ -1153,7 +1153,7 @@ msgstr ""
 msgid "%{statusStart}Dismissed%{statusEnd}: %{dismissalReason} on pipeline %{pipelineLink} at %{projectLink}"
 msgstr ""
 
-msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
+msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically change member roles or remove members from groups."
 msgstr ""
 
 msgid "%{strongStart}%{count}%{strongEnd} commit"
@@ -37806,6 +37806,9 @@ msgid "Read more about GitLab at %{link_to_promo}."
 msgstr ""
 
 msgid "Read more about the %{changes_link_start}changes%{link_end}, the %{vision_link_start}vision%{link_end}, and the %{design_link_start}design%{link_end}."
+msgstr ""
+
+msgid "Read the documentation before applying changes."
 msgstr ""
 
 msgid "Read their documentation."

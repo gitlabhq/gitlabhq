@@ -405,14 +405,19 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
 
 ##### Microsoft Graph
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 > - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
+> - [Introduced for self-compiled (source) installs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116494) in GitLab 15.11.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
 Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 [the same way as for incoming email](../../administration/incoming_email.md#microsoft-graph).
 
-- Example for Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
+   the values you want:
 
   ```ruby
   gitlab_rails['service_desk_email_enabled'] = true
@@ -422,31 +427,198 @@ Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
   gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
   gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
   gitlab_rails['service_desk_email_inbox_options'] = {
-   'tenant_id': '<YOUR-TENANT-ID>',
-   'client_id': '<YOUR-CLIENT-ID>',
-   'client_secret': '<YOUR-CLIENT-SECRET>',
-   'poll_interval': 60  # Optional
+    'tenant_id': '<YOUR-TENANT-ID>',
+    'client_id': '<YOUR-CLIENT-ID>',
+    'client_secret': '<YOUR-CLIENT-SECRET>',
+    'poll_interval': 60  # Optional
   }
   ```
 
+  For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+  configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
+
+  ```ruby
+  gitlab_rails['service_desk_email_inbox_options'] = {
+    'azure_ad_endpoint': 'https://login.microsoftonline.us',
+    'graph_endpoint': 'https://graph.microsoft.us',
+    'tenant_id': '<YOUR-TENANT-ID>',
+    'client_id': '<YOUR-CLIENT-ID>',
+    'client_secret': '<YOUR-CLIENT-SECRET>',
+    'poll_interval': 60  # Optional
+  }
+  ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Create the [Kubernetes Secret containing the OAuth 2.0 application client secret](https://docs.gitlab.com/charts/installation/secrets.html#microsoft-graph-client-secret-for-service-desk-emails):
+
+   ```shell
+   kubectl create secret generic service-desk-email-client-secret --from-literal=secret=<YOUR-CLIENT_SECRET>
+   ```
+
+1. Create the [Kubernetes Secret for the GitLab Service Desk email auth token](https://docs.gitlab.com/charts/installation/secrets.html#gitlab-service-desk-email-auth-token).
+   Replace `<name>` with the name of the [Helm release name](https://helm.sh/docs/intro/using_helm/) for the GitLab installation:
+
+   ```shell
+   kubectl create secret generic <name>-service-desk-email-auth-token --from-literal=authToken=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 32 | base64)
+   ```
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+     serviceDeskEmail:
+       enabled: true
+       address: "project_contact+%{key}@example.onmicrosoft.com"
+       user: "project_contact@example.onmicrosoft.com"
+       mailbox: inbox
+       inboxMethod: microsoft_graph
+       azureAdEndpoint: https://login.microsoftonline.com
+       graphEndpoint: https://graph.microsoft.com
+       tenantId: "YOUR-TENANT-ID"
+       clientId: "YOUR-CLIENT-ID"
+       clientSecret:
+         secret: service-desk-email-client-secret
+         key: secret
+       deliveryMethod: webhook
+       authToken:
+         secret: <name>-service-desk-email-auth-token
+         key: authToken
+   ```
+
+    For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+configure the `azureAdEndpoint` and `graphEndpoint` settings. These fields are case-sensitive:
+
+   ```yaml
+   global:
+     appConfig:
+     serviceDeskEmail:
+       [..]
+       azureAdEndpoint: https://login.microsoftonline.us
+       graphEndpoint: https://graph.microsoft.us
+       [..]
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['service_desk_email_enabled'] = true
+           gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
+           gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
+           gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+           gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+           gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
+           gitlab_rails['service_desk_email_inbox_options'] = {
+             'tenant_id': '<YOUR-TENANT-ID>',
+             'client_id': '<YOUR-CLIENT-ID>',
+             'client_secret': '<YOUR-CLIENT-SECRET>',
+             'poll_interval': 60  # Optional
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
 For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
-configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+configure the `azure_ad_endpoint` and `graph_endpoint` settings:
 
-- Example for Microsoft Cloud for US Government:
+1. Edit `docker-compose.yml`:
 
-```ruby
-gitlab_rails['service_desk_email_inbox_options'] = {
- 'azure_ad_endpoint': 'https://login.microsoftonline.us',
- 'graph_endpoint': 'https://graph.microsoft.us',
- 'tenant_id': '<YOUR-TENANT-ID>',
- 'client_id': '<YOUR-CLIENT-ID>',
- 'client_secret': '<YOUR-CLIENT-SECRET>',
- 'poll_interval': 60  # Optional
-}
-```
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['service_desk_email_enabled'] = true
+           gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
+           gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
+           gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+           gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+           gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
+           gitlab_rails['service_desk_email_inbox_options'] = {
+             'azure_ad_endpoint': 'https://login.microsoftonline.us',
+             'graph_endpoint': 'https://graph.microsoft.us',
+             'tenant_id': '<YOUR-TENANT-ID>',
+             'client_id': '<YOUR-CLIENT-ID>',
+             'client_secret': '<YOUR-CLIENT-SECRET>',
+             'poll_interval': 60  # Optional
+           }
+   ```
 
-The Microsoft Graph API is not yet supported in source installations.
-For more information, see [issue 326169](https://gitlab.com/gitlab-org/gitlab/-/issues/326169).
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+     service_desk_email:
+       enabled: true
+       address: "project_contact+%{key}@example.onmicrosoft.com"
+       user: "project_contact@example.onmicrosoft.com"
+       mailbox: "inbox"
+       delivery_method: webhook
+       log_path: "log/mailroom.log"
+       secret_file: .gitlab-mailroom-secret
+       inbox_method: "microsoft_graph"
+       inbox_options:
+         tenant_id: "<YOUR-TENANT-ID>"
+         client_id: "<YOUR-CLIENT-ID>"
+         client_secret: "<YOUR-CLIENT-SECRET>"
+         poll_interval: 60  # Optional
+   ```
+
+  For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+  configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
+
+   ```yaml
+     service_desk_email:
+       enabled: true
+       address: "project_contact+%{key}@example.onmicrosoft.com"
+       user: "project_contact@example.onmicrosoft.com"
+       mailbox: "inbox"
+       delivery_method: webhook
+       log_path: "log/mailroom.log"
+       secret_file: .gitlab-mailroom-secret
+       inbox_method: "microsoft_graph"
+       inbox_options:
+         azure_ad_endpoint: "https://login.microsoftonline.us"
+         graph_endpoint: "https://graph.microsoft.us"
+         tenant_id: "<YOUR-TENANT-ID>"
+         client_id: "<YOUR-CLIENT-ID>"
+         client_secret: "<YOUR-CLIENT-SECRET>"
+         poll_interval: 60  # Optional
+   ```
+
+::EndTabs
 
 #### Configure a custom email address suffix
 

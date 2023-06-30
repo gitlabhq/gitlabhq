@@ -237,7 +237,8 @@ $tabs-holder-z-index: 250;
 
   // tiny adjustment to vertical align with the note header text
   .discussion-collapsible {
-    margin-left: 1rem;
+    border: 0 !important;
+    margin: 0;
 
     .timeline-icon {
       padding-top: 2px;

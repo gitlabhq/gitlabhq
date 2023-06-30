@@ -282,10 +282,6 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
    docker stack deploy --compose-file docker-compose.yml mystack
    ```
 
-### Install the product documentation
-
-This is an optional step. See how to [self-host the product documentation](../administration/docs_self_host.md#self-host-the-product-documentation-with-docker).
-
 ## Configuration
 
 This container uses the official Omnibus GitLab package, so all configuration
@@ -487,6 +483,12 @@ If, for any reason, you wish to switch back to single database connection:
 sudo docker restart gitlab
 ```
 
+## Recommended next steps
+
+After completing your installation, consider taking the
+[recommended next steps](next_steps.md), including authentication options
+and sign-up restrictions.
+
 ## Upgrade
 
 In most cases, upgrading GitLab is as easy as downloading the newest Docker
@@ -579,11 +581,6 @@ The following steps assume that you are upgrading the same version.
 1. To create a new container with GitLab EE,
    replace `ce` with `ee` in your `docker run` command or `docker-compose.yml` file.
    However, reuse the CE container name, port and file mappings, and version.
-
-### Upgrade the product documentation
-
-This is an optional step. If you [installed the documentation site](#install-the-product-documentation),
-see how to [upgrade to another version](../administration/docs_self_host.md#upgrade-using-docker).
 
 ### Downgrade GitLab
 
