@@ -20,6 +20,10 @@ module QA
           element :issuable_label_dropdown
         end
 
+        view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue' do
+          element :labels_select_dropdown_contents
+        end
+
         view 'app/views/shared/issuable/form/_metadata_issuable_assignee.html.haml' do
           element :assign_to_me_link
         end
@@ -53,7 +57,7 @@ module QA
         def select_label(label)
           click_element :issuable_label_dropdown
 
-          click_link label.title
+          click_on(label.title, match: :prefer_exact)
 
           click_element :issuable_label_dropdown # So that the dropdown goes away(click away action)
         end

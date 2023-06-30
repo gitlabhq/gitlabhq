@@ -15,7 +15,8 @@ import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserNameGroup from './user_name_group.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET = -211;
+const DROPDOWN_X_OFFSET_BASE = -211;
+const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + 32;
 
 export default {
   feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409005',
@@ -47,7 +48,7 @@ export default {
     SafeHtml,
   },
   mixins: [Tracking.mixin()],
-  inject: ['toggleNewNavEndpoint'],
+  inject: ['toggleNewNavEndpoint', 'isImpersonating'],
   props: {
     data: {
       required: true,
@@ -188,6 +189,12 @@ export default {
     showNotificationDot() {
       return this.data.pipeline_minutes?.show_notification_dot;
     },
+    dropdownOffset() {
+      return {
+        mainAxis: DROPDOWN_Y_OFFSET,
+        crossAxis: this.isImpersonating ? DROPDOWN_X_OFFSET_IMPERSONATING : DROPDOWN_X_OFFSET_BASE,
+      };
+    },
   },
   methods: {
     onShow() {
@@ -221,7 +228,6 @@ export default {
       });
     },
   },
-  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
 };
 </script>
 
@@ -229,7 +235,7 @@ export default {
   <div>
     <gl-disclosure-dropdown
       ref="userDropdown"
-      :dropdown-offset="$options.dropdownOffset"
+      :dropdown-offset="dropdownOffset"
       data-testid="user-dropdown"
       data-qa-selector="user_menu"
       :auto-close="false"

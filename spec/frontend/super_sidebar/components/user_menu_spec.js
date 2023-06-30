@@ -20,7 +20,7 @@ describe('UserMenu component', () => {
 
   const closeDropdownSpy = jest.fn();
 
-  const createWrapper = (userDataChanges = {}, stubs = {}) => {
+  const createWrapper = (userDataChanges = {}, stubs = {}, provide = {}) => {
     wrapper = mountExtended(UserMenu, {
       propsData: {
         data: {
@@ -35,6 +35,8 @@ describe('UserMenu component', () => {
       },
       provide: {
         toggleNewNavEndpoint,
+        isImpersonating: false,
+        ...provide,
       },
     });
 
@@ -46,6 +48,15 @@ describe('UserMenu component', () => {
 
     expect(findDropdown().props('dropdownOffset')).toEqual({
       crossAxis: -211,
+      mainAxis: 4,
+    });
+  });
+
+  it('decreases the dropdown offset when impersonating a user', () => {
+    createWrapper(null, null, { isImpersonating: true });
+
+    expect(findDropdown().props('dropdownOffset')).toEqual({
+      crossAxis: -179,
       mainAxis: 4,
     });
   });

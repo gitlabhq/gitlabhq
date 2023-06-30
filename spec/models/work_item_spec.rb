@@ -87,6 +87,14 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#todoable_target_type_name' do
+    it 'returns correct target name' do
+      work_item = build(:work_item)
+
+      expect(work_item.todoable_target_type_name).to contain_exactly('Issue', 'WorkItem')
+    end
+  end
+
   describe '#widgets' do
     subject { build(:work_item).widgets }
 
@@ -176,17 +184,32 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         is_expected.not_to include(:due, :remove_due_date)
       end
     end
+
+    context 'when work item supports the current user todos widget' do
+      it 'returns todos related quick action commands' do
+        is_expected.to include(:todo, :done)
+      end
+    end
+
+    context 'when work item does not support current user todos widget' do
+      let(:work_item) { build(:work_item, :task) }
+
+      before do
+        WorkItems::Type.default_by_type(:task).widget_definitions
+                       .find_by_widget_type(:current_user_todos).update!(disabled: true)
+      end
+
+      it 'omits todos related quick action commands' do
+        is_expected.not_to include(:todo, :done)
+      end
+    end
   end
 
   describe 'transform_quick_action_params' do
+    let(:command_params) { { title: 'bar', assignee_ids: ['foo'] } }
     let(:work_item) { build(:work_item, :task) }
 
-    subject(:transformed_params) do
-      work_item.transform_quick_action_params({
-        title: 'bar',
-        assignee_ids: ['foo']
-      })
-    end
+    subject(:transformed_params) { work_item.transform_quick_action_params(command_params) }
 
     it 'correctly separates widget params from regular params' do
       expect(transformed_params).to eq({
@@ -199,6 +222,30 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
           }
         }
       })
+    end
+
+    context 'with current user todos widget' do
+      let(:command_params) { { title: 'bar', todo_event: param } }
+
+      where(:param, :expected) do
+        'done' | 'mark_as_done'
+        'add'  | 'add'
+      end
+
+      with_them do
+        it 'correctly transform todo_event param' do
+          expect(transformed_params).to eq({
+            common: {
+              title: 'bar'
+            },
+            widgets: {
+              current_user_todos_widget: {
+                action: expected
+              }
+            }
+          })
+        end
+      end
     end
   end
 

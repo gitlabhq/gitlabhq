@@ -155,6 +155,13 @@ describe('Work Item Note', () => {
       expect(findCommentForm().exists()).toBe(false);
       expect(findNoteWrapper().exists()).toBe(true);
     });
+
+    it('should show the awards list when in edit mode', async () => {
+      createComponent({ note: mockWorkItemCommentNote, workItemsMvc2: true });
+      findNoteActions().vm.$emit('startEditing');
+      await nextTick();
+      expect(findAwardsList().exists()).toBe(true);
+    });
   });
 
   describe('when submitting a form to edit a note', () => {

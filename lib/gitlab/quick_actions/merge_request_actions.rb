@@ -202,7 +202,7 @@ module Gitlab
 
         desc do
           if quick_action_target.allows_multiple_reviewers?
-            _('Assign reviewer(s)')
+            _('Assign reviewers')
           else
             _('Assign reviewer')
           end
@@ -244,7 +244,7 @@ module Gitlab
 
         desc do
           if quick_action_target.allows_multiple_reviewers?
-            _('Remove all or specific reviewer(s)')
+            _('Remove all or specific reviewers')
           else
             _('Remove reviewer')
           end

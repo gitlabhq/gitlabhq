@@ -56,7 +56,7 @@ RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, featu
 
           todo = current_user.todos.last
 
-          expect(todo.target).to eq(work_item)
+          expect(todo.target.id).to eq(work_item.id)
           expect(todo).to be_pending
         end
       end

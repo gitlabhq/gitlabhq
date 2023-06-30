@@ -44,7 +44,7 @@ module Gitlab
 
         desc do
           if quick_action_target.allows_multiple_assignees?
-            _('Remove all or specific assignee(s)')
+            _('Remove all or specific assignees')
           else
             _('Remove assignee')
           end

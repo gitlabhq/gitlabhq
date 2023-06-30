@@ -20,6 +20,11 @@ export default {
     GlDropdownItem,
     GlLink,
   },
+  inject: {
+    toggleAttrs: {
+      default: () => ({}),
+    },
+  },
   props: {
     labelsCreateTitle: {
       type: String,
@@ -204,7 +209,7 @@ export default {
     class="gl-w-full"
     block
     data-testid="labels-select-dropdown-contents"
-    data-qa-selector="labels_dropdown_content"
+    :toggle-attrs="toggleAttrs"
     @hide="handleDropdownHide"
     @shown="setFocus"
   >

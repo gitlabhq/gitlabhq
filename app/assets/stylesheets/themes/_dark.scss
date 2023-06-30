@@ -11,6 +11,13 @@ $gray-800: #dcdcde;
 $gray-900: #ececef;
 $gray-950: #fbfafd;
 
+$t-gray-a-02: rgba($gray-10, 0.02);
+$t-gray-a-04: rgba($gray-10, 0.04);
+$t-gray-a-06: rgba($gray-10, 0.06);
+$t-gray-a-08: rgba($gray-10, 0.08);
+$t-gray-a-16: rgba($gray-10, 0.16);
+$t-gray-a-24: rgba($gray-10, 0.24);
+
 $gray-lightest: lighten($gray-10, 1);
 $gray-light: lighten($gray-10, 2);
 $gray-lighter: darken($gray-50, 4);

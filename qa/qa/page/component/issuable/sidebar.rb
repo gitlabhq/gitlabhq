@@ -31,7 +31,7 @@ module QA
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue' do
-              element :labels_dropdown_content
+              element :labels_select_dropdown_contents
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_value.vue' do
@@ -137,7 +137,7 @@ module QA
               click_element(:edit_button)
 
               labels.each do |label|
-                within_element(:labels_dropdown_content) do
+                within_element(:labels_select_dropdown_contents) do
                   fill_element(:dropdown_input_field, label)
                   click_button(text: label)
                 end

@@ -95,6 +95,10 @@ FactoryBot.define do
         status { :failed }
       end
 
+      trait :skipped do
+        status { :skipped }
+      end
+
       trait :unlocked do
         locked { Ci::Pipeline.lockeds[:unlocked] }
       end

@@ -312,7 +312,7 @@ Additionally, the following cloud provider services are validated and supported 
   </tr>
   <tr>
     <td>Redis</td>
-    <td></td>
+    <td>🟢 &nbsp; <a href="https://cloud.google.com/memorystore" target="_blank" rel="noopener noreferrer">Memorystore</a></td>
     <td>🟢 &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
     <td></td>
   </tr>

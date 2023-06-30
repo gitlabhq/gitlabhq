@@ -4242,7 +4242,7 @@ msgstr ""
 msgid "AlertManagement|Alert"
 msgstr ""
 
-msgid "AlertManagement|Alert assignee(s): %{assignees}"
+msgid "AlertManagement|Alert assignees: %{assignees}"
 msgstr ""
 
 msgid "AlertManagement|Alert detail"
@@ -4347,10 +4347,10 @@ msgstr ""
 msgid "AlertManagement|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
 msgstr ""
 
-msgid "AlertManagement|There was an error while updating the assignee(s) list. Please try again."
+msgid "AlertManagement|There was an error while updating the assignees list. Please try again."
 msgstr ""
 
-msgid "AlertManagement|There was an error while updating the assignee(s) of the alert. Please try again."
+msgid "AlertManagement|There was an error while updating the assignees of the alert. Please try again."
 msgstr ""
 
 msgid "AlertManagement|There was an error while updating the status of the alert."
@@ -6366,7 +6366,7 @@ msgstr ""
 msgid "Assign reviewer"
 msgstr ""
 
-msgid "Assign reviewer(s)"
+msgid "Assign reviewers"
 msgstr ""
 
 msgid "Assign severity"
@@ -6423,9 +6423,6 @@ msgid "Assignee has no permissions"
 msgstr ""
 
 msgid "Assignee lists not available with your current license"
-msgstr ""
-
-msgid "Assignee(s)"
 msgstr ""
 
 msgid "Assignees"
@@ -9079,10 +9076,10 @@ msgstr ""
 msgid "Change assignee"
 msgstr ""
 
-msgid "Change assignee(s)"
+msgid "Change assignees"
 msgstr ""
 
-msgid "Change assignee(s)."
+msgid "Change assignees."
 msgstr ""
 
 msgid "Change branches"
@@ -9100,10 +9097,10 @@ msgstr ""
 msgid "Change path"
 msgstr ""
 
-msgid "Change reviewer(s)"
+msgid "Change reviewers"
 msgstr ""
 
-msgid "Change reviewer(s)."
+msgid "Change reviewers."
 msgstr ""
 
 msgid "Change role"
@@ -9175,13 +9172,13 @@ msgstr ""
 msgid "Changed"
 msgstr ""
 
-msgid "Changed assignee(s)."
+msgid "Changed assignees."
 msgstr ""
 
 msgid "Changed merge method to %{merge_method}"
 msgstr ""
 
-msgid "Changed reviewer(s)."
+msgid "Changed reviewers."
 msgstr ""
 
 msgid "Changed squash option to %{squash_option}"
@@ -38235,13 +38232,13 @@ msgstr ""
 msgid "Remove access"
 msgstr ""
 
-msgid "Remove all or specific assignee(s)"
+msgid "Remove all or specific assignees"
 msgstr ""
 
 msgid "Remove all or specific label(s)"
 msgstr ""
 
-msgid "Remove all or specific reviewer(s)"
+msgid "Remove all or specific reviewers"
 msgstr ""
 
 msgid "Remove approvers"
@@ -39328,9 +39325,6 @@ msgid "Reviewer"
 msgid_plural "%d Reviewers"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Reviewer(s)"
-msgstr ""
 
 msgid "Reviewers"
 msgstr ""
@@ -42182,7 +42176,7 @@ msgstr ""
 msgid "Select assignee"
 msgstr ""
 
-msgid "Select assignee(s)"
+msgid "Select assignees"
 msgstr ""
 
 msgid "Select branch"
@@ -42254,7 +42248,7 @@ msgstr ""
 msgid "Select report"
 msgstr ""
 
-msgid "Select reviewer(s)"
+msgid "Select reviewers"
 msgstr ""
 
 msgid "Select severity (optional)"

@@ -383,6 +383,38 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           end
         end
       end
+
+      context 'for current user todos widget' do
+        let_it_be(:user_todo) { create(:todo, target: work_item, user: developer, project: project, state: :pending) }
+        let_it_be(:other_todo) { create(:todo, target: work_item, user: create(:user), project: project, state: :pending) }
+
+        context 'when action is mark_as_done' do
+          let(:widget_params) { { current_user_todos_widget: { action: 'mark_as_done' } } }
+
+          it 'marks current user todo as done' do
+            expect do
+              update_work_item
+              user_todo.reload
+              other_todo.reload
+            end.to change(user_todo, :state).from('pending').to('done').and not_change { other_todo.state }
+          end
+
+          it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+            subject(:execute_service) { update_work_item }
+          end
+        end
+
+        context 'when action is add' do
+          let(:widget_params) { { current_user_todos_widget: { action: 'add' } } }
+
+          it 'adds a ToDo for the work item' do
+            expect do
+              update_work_item
+              work_item.reload
+            end.to change(Todo, :count).by(1)
+          end
+        end
+      end
     end
 
     describe 'label updates' do

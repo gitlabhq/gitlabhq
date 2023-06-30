@@ -6,7 +6,7 @@ module Resolvers
       type Types::Ci::ProjectVariableType.connection_type, null: true
 
       def resolve
-        object.group&.self_and_ancestors&.flat_map(&:variables) || []
+        ::Ci::GroupVariable.for_groups(object.group&.self_and_ancestor_ids) || []
       end
     end
   end

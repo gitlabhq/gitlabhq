@@ -35,6 +35,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   end
 
   describe '#execute' do
+    let_it_be(:work_item) { create(:work_item, :task, project: project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     shared_examples 'reopen command' do
@@ -1369,6 +1370,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'done command' do
+      let(:content) { '/done' }
+      let(:issuable) { work_item }
+    end
+
     it_behaves_like 'subscribe command' do
       let(:content) { '/subscribe' }
       let(:issuable) { issue }
@@ -1587,6 +1593,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       context 'if issuable is an Issue' do
         it_behaves_like 'todo command' do
           let(:issuable) { issue }
+        end
+      end
+
+      context 'if issuable is a work item' do
+        it_behaves_like 'todo command' do
+          let(:issuable) { work_item }
         end
       end
 

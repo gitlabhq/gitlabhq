@@ -201,7 +201,7 @@ GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://c
 ### Data privacy
 
 No new additional data is collected to enable this feature. Private non-public GitLab customer data is
-not used as training data. 
+not used as training data.
 
 Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance)
 
@@ -224,7 +224,7 @@ Code suggestions are routed through Google Vertex AI Codey APIs. Learn more abou
 
 Google Vertex AI Codey APIs are not trained on private non-public GitLab customer or user data.
 
-Google has [shared the following](https://ai.google/discover/foundation-models/) about the data Codey models are trained on: 
+Google has [shared the following](https://ai.google/discover/foundation-models/) about the data Codey models are trained on:
 
 > Codey is our family of foundational coding models built on PaLM 2. Codey was fine-tuned on a large dataset of high quality, permissively licensed code from external sources
 

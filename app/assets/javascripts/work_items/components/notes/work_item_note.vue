@@ -368,6 +368,8 @@ export default {
           :updated-by-path="lastEditedBy.webPath"
           :class="isFirstNote ? 'gl-pl-3' : 'gl-pl-8'"
         />
+      </div>
+      <div class="note-awards" :class="isFirstNote ? '' : 'gl-pl-7'">
         <work-item-note-awards-list
           v-if="glFeatures.workItemsMvc2"
           :note="note"

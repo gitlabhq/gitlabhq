@@ -28,6 +28,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 - `gitlab_geo`: describes all Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`).
 - `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`.
 - `gitlab_internal`: describe all internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`).
+- `gitlab_pm`: describes all tables that store `package_metadata` (it is an alias for `gitlab_main`).
 - `...`: more schemas to be introduced with additional decomposed databases
 
 The usage of schema enforces the base class to be used:
@@ -36,6 +37,7 @@ The usage of schema enforces the base class to be used:
 - `Ci::ApplicationRecord` for `gitlab_ci`
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
+- `PackageMetadata::ApplicationRecord` for `gitlab_pm`
 
 ### The impact of `gitlab_schema`
 
@@ -69,6 +71,10 @@ all decomposed databases.
 
 `gitlab_internal` describes Rails-defined tables (like `schema_migrations` or `ar_internal_metadata`), as well as internal PostgreSQL tables (for example, `pg_attribute`). Its primary purpose is to [support other databases](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85842#note_943453682), like Geo, that
 might be missing some of those application-defined `gitlab_shared` tables (like `loose_foreign_keys_deleted_records`), but are valid Rails databases.
+
+### The special purpose of `gitlab_pm`
+
+`gitlab_pm` stores package metadata describing public repositories. This data is used for the License Compliance and Dependency Scanning product categories and is maintained by the [Composition Analysis Group](https://about.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis). It is an alias for `gitlab_main` intended to make it easier to route to a different database in the future.
 
 ## Migrations
 

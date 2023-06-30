@@ -17,7 +17,7 @@ const generateCollapsedAssigneeTooltip = ({ renderUsers, allUsers, tooltipTitleM
   });
 
   if (!allUsers.length) {
-    return __('Assignee(s)');
+    return __('Assignees');
   }
   if (allUsers.length > names.length) {
     names.push(sprintf(__('+ %{amount} more'), { amount: allUsers.length - names.length }));

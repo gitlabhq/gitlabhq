@@ -28,7 +28,7 @@ This blueprint describes how the association is established and how these domain
 - The proposed architecture can be used in [Organization-level Environment dashboard](https://gitlab.com/gitlab-org/gitlab/-/issues/241506).
 - The cluster resources and events can be visualized per [GitLab Environment](../../../ci/environments/index.md).
   An environment-specific view scoped to the resources managed either directly or indirectly by a deployment commit.
-- Support both [GitOps mode](../../../user/clusters/agent/gitops.md#gitops-configuration-reference) and [CI Access mode](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
+- Support both [GitOps mode](../../../user/clusters/agent/gitops/agent.md#gitops-configuration-reference) and [CI Access mode](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
 
 ### Non-Goals
 
@@ -86,7 +86,7 @@ flowchart LR
 
 - [GitLab Project](../../../user/project/working_with_projects.md) and GitLab Environment have 1-to-many relationship.
 - GitLab Project and Agent have 1-to-many _direct_ relationship. Only one project can own a specific agent.
-- [GitOps mode](../../../user/clusters/agent/gitops.md#gitops-configuration-reference)
+- [GitOps mode](../../../user/clusters/agent/gitops/agent.md#gitops-configuration-reference)
   - GitLab Project and Agent do _NOT_ have many-to-many _indirect_ relationship yet. This will be supported in [Manifest projects outside of the Agent configuration project](https://gitlab.com/groups/gitlab-org/-/epics/7704).
 - [CI Access mode](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent)
   - GitLab Project and Agent have many-to-many _indirect_ relationship. The project owning the agent can [share the access with the other proejcts](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent-to-access-projects-in-your-groups). (NOTE: Technically, only running jobs inside the project are allowed to access the cluster due to job-token authentication.)

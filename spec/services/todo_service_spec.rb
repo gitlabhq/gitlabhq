@@ -717,6 +717,57 @@ RSpec.describe TodoService, feature_category: :team_planning do
     end
   end
 
+  describe 'Work Items' do
+    let_it_be(:work_item) { create(:work_item, :task, project: project, author: author) }
+
+    describe '#mark_todo' do
+      it 'creates a todo from a work item' do
+        service.mark_todo(work_item, author)
+
+        should_create_todo(user: author, target: work_item, action: Todo::MARKED)
+      end
+    end
+
+    describe '#todo_exists?' do
+      it 'returns false when no todo exist for the given work_item' do
+        expect(service.todo_exist?(work_item, author)).to be_falsy
+      end
+
+      it 'returns true when a todo exist for the given work_item' do
+        service.mark_todo(work_item, author)
+
+        expect(service.todo_exist?(work_item, author)).to be_truthy
+      end
+    end
+
+    describe '#resolve_todos_for_target' do
+      it 'marks related pending todos to the target for the user as done' do
+        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: work_item, author: author)
+        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: work_item, author: author)
+
+        service.resolve_todos_for_target(work_item, john_doe)
+
+        expect(first_todo.reload).to be_done
+        expect(second_todo.reload).to be_done
+      end
+
+      describe 'cached counts' do
+        it 'updates when todos change' do
+          create(:todo, :assigned, user: john_doe, project: project, target: work_item, author: author)
+
+          expect(john_doe.todos_done_count).to eq(0)
+          expect(john_doe.todos_pending_count).to eq(1)
+          expect(john_doe).to receive(:update_todos_count_cache).and_call_original
+
+          service.resolve_todos_for_target(work_item, john_doe)
+
+          expect(john_doe.todos_done_count).to eq(1)
+          expect(john_doe.todos_pending_count).to eq(0)
+        end
+      end
+    end
+  end
+
   describe '#reassigned_assignable' do
     let(:described_method) { :reassigned_assignable }
 
