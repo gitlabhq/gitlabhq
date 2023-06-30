@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Bitbucket::Connection do
+RSpec.describe Bitbucket::Connection, feature_category: :integrations do
   let(:token) { 'token' }
 
   before do
@@ -13,6 +13,16 @@ RSpec.describe Bitbucket::Connection do
 
   describe '#get' do
     it 'calls OAuth2::AccessToken::get' do
+      expected_client_options = {
+        site: OmniAuth::Strategies::Bitbucket.default_options[:client_options]['site'],
+        authorize_url: OmniAuth::Strategies::Bitbucket.default_options[:client_options]['authorize_url'],
+        token_url: OmniAuth::Strategies::Bitbucket.default_options[:client_options]['token_url']
+      }
+
+      expect(OAuth2::Client)
+        .to receive(:new)
+        .with(anything, anything, expected_client_options)
+
       expect_next_instance_of(OAuth2::AccessToken) do |instance|
         expect(instance).to receive(:get).and_return(double(parsed: true))
       end
