@@ -274,6 +274,7 @@ query {
         logIdName
         googleProjectIdName
         privateKey
+        clientEmail
       }
     }
   }
@@ -392,7 +393,7 @@ by [listing all the external destinations](#list-streaming-destinations).
 ```graphql
 mutation {
   googleCloudLoggingConfigurationUpdate(
-    input: {id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1", groupPath: "my-group", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events"}
+    input: {id: "gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1", googleProjectIdName: "my-google-project", clientEmail: "my-email@my-google-project.iam.gservice.account.com", privateKey: "YOUR_PRIVATE_KEY", logIdName: "audit-events"}
   ) {
     errors
     googleCloudLoggingConfiguration {
@@ -400,6 +401,7 @@ mutation {
       logIdName
       privateKey
       googleProjectIdName
+      clientEmail
     }
   }
 }

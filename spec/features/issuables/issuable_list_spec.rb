@@ -99,9 +99,7 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
 
     if issuable_type == :issue
       issue = Issue.reorder(:iid).first
-      merge_request = create(:merge_request,
-                              source_project: project,
-                              source_branch: generate(:branch))
+      merge_request = create(:merge_request, source_project: project, source_branch: generate(:branch))
 
       create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
     end

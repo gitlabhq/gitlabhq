@@ -93,7 +93,7 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
   end
 
   it_behaves_like 'for each incident details route',
-      'add, edit, and delete timeline events',
-      tab_text: s_('Incident|Timeline'),
-      tab: 'timeline'
+    'add, edit, and delete timeline events',
+    tab_text: s_('Incident|Timeline'),
+    tab: 'timeline'
 end

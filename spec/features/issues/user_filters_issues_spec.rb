@@ -8,11 +8,13 @@ RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
 
   before do
     %w[foobar barbaz].each do |title|
-      create(:issue,
-             author: user,
-             assignees: [user],
-             project: project,
-             title: title)
+      create(
+        :issue,
+        author: user,
+        assignees: [user],
+        project: project,
+        title: title
+      )
     end
 
     @issue = Issue.find_by(title: 'foobar')

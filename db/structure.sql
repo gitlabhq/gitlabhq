@@ -22337,6 +22337,7 @@ CREATE TABLE scan_result_policies (
     age_operator smallint,
     age_interval smallint,
     vulnerability_attributes jsonb DEFAULT '{}'::jsonb,
+    project_id bigint,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0)))
 );
 
@@ -32812,6 +32813,8 @@ CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources
 
 CREATE INDEX index_scan_result_policies_on_policy_configuration_id ON scan_result_policies USING btree (security_orchestration_policy_configuration_id);
 
+CREATE INDEX index_scan_result_policies_on_project_id ON scan_result_policies USING btree (project_id);
+
 CREATE INDEX index_schema_inconsistencies_on_issue_id ON schema_inconsistencies USING btree (issue_id);
 
 CREATE INDEX index_scim_identities_on_group_id ON scim_identities USING btree (group_id);
@@ -35731,6 +35734,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY protected_branches
     ADD CONSTRAINT fk_7a9c6d93e7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY scan_result_policies
+    ADD CONSTRAINT fk_7aa24439f1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_7ac31eacb9 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
