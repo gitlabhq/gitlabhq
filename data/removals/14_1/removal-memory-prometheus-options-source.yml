@@ -1,9 +1,0 @@
-- title: "Remove support for `prometheus.listen_address` and `prometheus.enable`"
-  removal_date: July 22, 2021
-  removal_milestone: "14.1"
-  reporter: fzimmer
-  breaking_change: false
-  body: |
-    The support for `prometheus.listen_address` and `prometheus.enable` has been removed from `gitlab.yml`. Use `prometheus.enabled` and `prometheus.server_address` to set up Prometheus server that GitLab instance connects to. Refer to [our documentation](https://docs.gitlab.com/ee/install/installation.html#prometheus-server-setup) for details.
-
-    This only affects new installations from source where users might use the old configurations.

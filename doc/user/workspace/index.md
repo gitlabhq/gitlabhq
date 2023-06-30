@@ -66,7 +66,7 @@ You also have access to the terminal and can install any necessary dependencies.
 
 When you delete a project, agent, user, or token associated with a workspace:
 
-- The workspace is deleted from both the user interface and the Kubernetes cluster.
+- The workspace is deleted from the user interface.
 - In the Kubernetes cluster, the running workspace resources become orphaned.
 
 To clean up orphaned resources, an administrator must manually delete the workspace in Kubernetes.

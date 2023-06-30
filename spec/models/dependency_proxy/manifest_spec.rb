@@ -51,7 +51,7 @@ RSpec.describe DependencyProxy::Manifest, type: :model do
     let_it_be(:file_name) { 'foo' }
     let_it_be(:digest) { 'bar' }
 
-    subject { DependencyProxy::Manifest.find_by_file_name_or_digest(file_name: file_name, digest: digest) }
+    subject { described_class.find_by_file_name_or_digest(file_name: file_name, digest: digest) }
 
     context 'no manifest exists' do
       it { is_expected.to be_nil }

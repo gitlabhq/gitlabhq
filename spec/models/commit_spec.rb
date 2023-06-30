@@ -88,7 +88,7 @@ RSpec.describe Commit do
     it 'returns a Commit' do
       commit = described_class.build_from_sidekiq_hash(project, id: '123')
 
-      expect(commit).to be_an_instance_of(Commit)
+      expect(commit).to be_an_instance_of(described_class)
     end
 
     it 'parses date strings into Time instances' do

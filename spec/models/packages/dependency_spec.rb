@@ -27,7 +27,7 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
     let(:chunk_size) { 50 }
     let(:rows_limit) { 50 }
 
-    subject { Packages::Dependency.ids_for_package_names_and_version_patterns(names_and_version_patterns, chunk_size, rows_limit) }
+    subject { described_class.ids_for_package_names_and_version_patterns(names_and_version_patterns, chunk_size, rows_limit) }
 
     it { is_expected.to match_array(expected_ids) }
 
@@ -97,7 +97,7 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
 
     let(:names_and_version_patterns) { build_names_and_version_patterns(package_dependency1, package_dependency2) }
 
-    subject { Packages::Dependency.for_package_names_and_version_patterns(names_and_version_patterns) }
+    subject { described_class.for_package_names_and_version_patterns(names_and_version_patterns) }
 
     it { is_expected.to match_array(expected_array) }
 

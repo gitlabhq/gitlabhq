@@ -257,7 +257,7 @@ RSpec.describe ApplicationRecord do
     end
 
     before do
-      ApplicationRecord.connection.execute(<<~SQL)
+      described_class.connection.execute(<<~SQL)
         create table _test_tests (
           id bigserial primary key not null,
           ignore_me text

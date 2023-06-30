@@ -1,7 +1,0 @@
-- title: "`?w=1` URL parameter to ignore whitespace changes"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: phikai
-  breaking_change: true
-  body: |
-    To create a consistent experience for users based on their preferences, support for toggling whitespace changes via URL parameter has been removed in GitLab 14.0.

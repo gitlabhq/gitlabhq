@@ -1045,11 +1045,8 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
     let(:oldrev) { merge_request.diff_refs.base_sha }
     let(:newrev) { merge_request.diff_refs.head_sha }
     let(:merge_sha) { oldrev }
-    let(:fix_interrupted_mwps) { true }
 
     before do
-      stub_feature_flags(fix_interrupted_mwps: fix_interrupted_mwps)
-
       merge_request.merge_params[:sha] = merge_sha
       merge_request.save!
 
@@ -1069,15 +1066,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       it 'maintains MWPS for merge requests' do
         expect(merge_request.auto_merge_enabled?).to be_truthy
         expect(merge_request.merge_user).to eq(user)
-      end
-
-      context 'when fix_interrupted_mwps ff is disabled' do
-        let(:fix_interrupted_mwps) { false }
-
-        it 'aborts MWPS for merge requests' do
-          expect(merge_request.auto_merge_enabled?).to be_falsey
-          expect(merge_request.merge_user).to be_nil
-        end
       end
     end
   end

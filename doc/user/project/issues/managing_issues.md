@@ -445,9 +445,6 @@ To filter the list of issues:
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
 
-GitLab displays the results on-screen, but you can also
-[retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
-
 ### Filter with the OR operator
 
 > - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.

@@ -1,7 +1,0 @@
-- title: "`FF_SHELL_EXECUTOR_USE_LEGACY_PROCESS_KILL` feature flag"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: deastman
-  breaking_change: true
-  body: |
-    In [GitLab Runner 13.1](https://docs.gitlab.com/runner/executors/shell.html#gitlab-131-and-later), [issue #3376](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3376), we introduced `sigterm` and then `sigkill` to a process in the Shell executor. We also introduced a new feature flag, `FF_SHELL_EXECUTOR_USE_LEGACY_PROCESS_KILL`, so you can use the previous process termination sequence. In GitLab Runner 14.0, [issue #6413](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6413), the feature flag has been removed.

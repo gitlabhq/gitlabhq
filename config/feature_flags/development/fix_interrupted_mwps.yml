@@ -1,8 +1,0 @@
----
-name: fix_interrupted_mwps
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123349
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415032
-milestone: '16.1'
-type: development
-group: group::source code
-default_enabled: false

@@ -177,7 +177,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         let_it_be(:link) { create(:parent_link, work_item: child, work_item_parent: parent) }
 
         it 'does not allow to make child not-confidential' do
-          issue = Issue.find(child.id)
+          issue = described_class.find(child.id)
           issue.confidential = false
 
           expect(issue).not_to be_valid
@@ -186,7 +186,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
 
         it 'allows to make parent not-confidential' do
-          issue = Issue.find(parent.id)
+          issue = described_class.find(parent.id)
           issue.confidential = false
 
           expect(issue).to be_valid
@@ -199,7 +199,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         let_it_be(:link) { create(:parent_link, work_item: child, work_item_parent: parent) }
 
         it 'does not allow to make parent confidential' do
-          issue = Issue.find(parent.id)
+          issue = described_class.find(parent.id)
           issue.confidential = true
 
           expect(issue).not_to be_valid
@@ -208,7 +208,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
 
         it 'allows to make child confidential' do
-          issue = Issue.find(child.id)
+          issue = described_class.find(child.id)
           issue.confidential = true
 
           expect(issue).to be_valid
@@ -2082,7 +2082,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#work_item_type_with_default' do
-    subject { Issue.new.work_item_type_with_default }
+    subject { described_class.new.work_item_type_with_default }
 
     it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
   end

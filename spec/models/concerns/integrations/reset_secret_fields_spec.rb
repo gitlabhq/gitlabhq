@@ -15,5 +15,5 @@ RSpec.describe Integrations::ResetSecretFields do
 
   let(:integration) { described_class.new }
 
-  it_behaves_like Integrations::ResetSecretFields
+  it_behaves_like described_class
 end

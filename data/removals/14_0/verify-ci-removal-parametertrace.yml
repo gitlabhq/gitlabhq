@@ -1,7 +1,0 @@
-- title: "`trace` parameter in `jobs` API"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: jreporter
-  breaking_change: true
-  body: |
-   GitLab Runner was updated in GitLab 13.4 to internally stop passing the `trace` parameter to the `/api/jobs/:id` endpoint. GitLab 14.0 deprecates the `trace` parameter entirely for all other requests of this endpoint. Make sure your [GitLab Runner version matches your GitLab version](https://docs.gitlab.com/runner/#gitlab-runner-versions) to ensure consistent behavior.

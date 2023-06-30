@@ -446,7 +446,7 @@ RSpec.describe Todo do
     end
 
     specify do
-      expect(Todo.count_grouped_by_user_id_and_state).to eq({ [user1.id, "done"] => 1, [user1.id, "pending"] => 2, [user2.id, "pending"] => 1 })
+      expect(described_class.count_grouped_by_user_id_and_state).to eq({ [user1.id, "done"] => 1, [user1.id, "pending"] => 2, [user2.id, "pending"] => 1 })
     end
   end
 

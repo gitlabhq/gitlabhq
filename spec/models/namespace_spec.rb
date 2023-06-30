@@ -376,7 +376,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   describe 'handling STI', :aggregate_failures do
     let(:namespace_type) { nil }
     let(:parent) { nil }
-    let(:namespace) { Namespace.find(create(:namespace, type: namespace_type, parent: parent).id) }
+    let(:namespace) { described_class.find(create(:namespace, type: namespace_type, parent: parent).id) }
 
     context 'creating a Group' do
       let(:namespace_type) { group_sti_name }
@@ -393,7 +393,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:parent) { create(:group) }
 
       it 'is the correct type of namespace' do
-        expect(Namespace.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
+        expect(described_class.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
         expect(namespace.kind).to eq('project')
         expect(namespace.project_namespace?).to be_truthy
       end
@@ -403,7 +403,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:namespace_type) { user_sti_name }
 
       it 'is the correct type of namespace' do
-        expect(Namespace.find(namespace.id)).to be_a(Namespaces::UserNamespace)
+        expect(described_class.find(namespace.id)).to be_a(Namespaces::UserNamespace)
         expect(namespace.kind).to eq('user')
         expect(namespace.user_namespace?).to be_truthy
       end
@@ -422,7 +422,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:namespace_type) { 'nonsense' }
 
       it 'creates a default Namespace' do
-        expect(Namespace.find(namespace.id)).to be_a(Namespace)
+        expect(described_class.find(namespace.id)).to be_a(described_class)
         expect(namespace.kind).to eq('user')
         expect(namespace.user_namespace?).to be_truthy
       end
@@ -588,7 +588,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns value that matches database' do
-        expect(namespace.traversal_ids).to eq Namespace.find(namespace.id).traversal_ids
+        expect(namespace.traversal_ids).to eq described_class.find(namespace.id).traversal_ids
       end
     end
 
@@ -599,7 +599,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns database value' do
-        expect(namespace.traversal_ids).to eq Namespace.find(namespace.id).traversal_ids
+        expect(namespace.traversal_ids).to eq described_class.find(namespace.id).traversal_ids
       end
     end
 

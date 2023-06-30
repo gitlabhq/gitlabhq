@@ -74,7 +74,7 @@ RSpec.describe Ci::Ref do
         it 'returns an existing ci_ref' do
           expect { subject }.not_to change { described_class.count }
 
-          expect(subject).to eq(Ci::Ref.find_by(project_id: project.id, ref_path: expected_ref_path))
+          expect(subject).to eq(described_class.find_by(project_id: project.id, ref_path: expected_ref_path))
         end
       end
 
@@ -84,7 +84,7 @@ RSpec.describe Ci::Ref do
         it 'creates a new ci_ref' do
           expect { subject }.to change { described_class.count }.by(1)
 
-          expect(subject).to eq(Ci::Ref.find_by(project_id: project.id, ref_path: expected_ref_path))
+          expect(subject).to eq(described_class.find_by(project_id: project.id, ref_path: expected_ref_path))
         end
       end
     end

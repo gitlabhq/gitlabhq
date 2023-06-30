@@ -1,8 +1,0 @@
-- title: "Max job log file size of 100 MB"
-  removal_date: August 22, 2021  # day the removal was released
-  removal_milestone: "14.2"
-  reporter: jreporter  # GitLab username of the person reporting the removal
-  breaking_change: false
-  body: |
-    GitLab values efficiency for all users in our wider community of contributors, so we're always working hard to make sure the application performs at a high level with a lovable UX.
-      In GitLab 14.2, we have introduced a [job log file size limit](https://docs.gitlab.com/ee/administration/instance_limits.html#maximum-file-size-for-job-logs), set to 100 megabytes by default. Administrators of self-managed GitLab instances can customize this to any value. All jobs that exceed this limit are dropped and marked as failed, helping prevent performance impacts or over-use of resources. This ensures that everyone using GitLab has the best possible experience.

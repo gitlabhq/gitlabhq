@@ -168,7 +168,7 @@ RSpec.describe AlertManagement::Alert do
       let_it_be(:alert) { triggered_alert }
       let_it_be(:assignee) { create(:user) }
 
-      subject { AlertManagement::Alert.for_assignee_username(assignee_username) }
+      subject { described_class.for_assignee_username(assignee_username) }
 
       before_all do
         alert.update!(assignees: [assignee])
@@ -269,7 +269,7 @@ RSpec.describe AlertManagement::Alert do
       alert.update!(title: 'Title', description: 'Desc', service: 'Service', monitoring_tool: 'Monitor')
     end
 
-    subject { AlertManagement::Alert.search(query) }
+    subject { described_class.search(query) }
 
     context 'does not contain search string' do
       let(:query) { 'something else' }

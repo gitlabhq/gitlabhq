@@ -32,7 +32,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader do
 
     context 'when user is present' do
       before do
-        Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_arg, user).execute
+        described_class.new(projects_arg, user).execute
       end
 
       it 'avoids N+1 queries' do
@@ -61,7 +61,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader do
 
     context 'when user is not present' do
       before do
-        Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_arg, nil).execute
+        described_class.new(projects_arg, nil).execute
       end
 
       it 'does not avoid N+1 queries' do

@@ -1,9 +1,0 @@
-- title: "`CI_PRE_CLONE_SCRIPT` variable on GitLab SaaS Runners has been removed"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
-  announcement_milestone: "15.9"  # (required) The milestone when this feature was deprecated.
-  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
-  breaking_change: true  # (required) Change to false if this is not a breaking change.
-  reporter: DarrenEastman  # (required) GitLab username of the person reporting the removal
-  stage: Verify # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29405 # (required) Link to the deprecation issue in GitLab
-  body: |  # (required) Do not modify this line, instead modify the lines below.
-    In GitLab 16.0 and later, the `CI_PRE_CLONE_SCRIPT` variable option on GitLab SaaS Runners has been removed. The `CI_PRE_CLONE_SCRIPT` variable enabled you to run commands in your CI/CD job before the runner executed `git-init` and `git-fetch`. You should use the `pre_get_sources_script` hook instead. For more information, see the blog post, [Guide to pre_clone_script changes on GitLab SaaS Linux Runners](https://about.gitlab.com/blog/2023/03/27/changes-to-the-preclonescript/).

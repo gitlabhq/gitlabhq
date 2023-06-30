@@ -112,8 +112,8 @@ RSpec.describe PersonalAccessToken, 'TokenAuthenticatable' do
     it 'sets new token' do
       subject
 
-      expect(personal_access_token.token).to eq("#{PersonalAccessToken.token_prefix}#{token_value}")
-      expect(personal_access_token.token_digest).to eq(Gitlab::CryptoHelper.sha256("#{PersonalAccessToken.token_prefix}#{token_value}"))
+      expect(personal_access_token.token).to eq("#{described_class.token_prefix}#{token_value}")
+      expect(personal_access_token.token_digest).to eq(Gitlab::CryptoHelper.sha256("#{described_class.token_prefix}#{token_value}"))
     end
   end
 
@@ -138,7 +138,7 @@ RSpec.describe PersonalAccessToken, 'TokenAuthenticatable' do
   end
 
   describe '.find_by_token' do
-    subject { PersonalAccessToken.find_by_token(token_value) }
+    subject { described_class.find_by_token(token_value) }
 
     it 'finds the token' do
       personal_access_token.save!
@@ -347,7 +347,7 @@ RSpec.describe Ci::Runner, 'TokenAuthenticatable', :freeze_time do
   end
 
   describe '.find_by_token' do
-    subject { Ci::Runner.find_by_token(runner.token) }
+    subject { described_class.find_by_token(runner.token) }
 
     context 'when runner has no token expiration' do
       let(:runner) { non_expirable_runner }

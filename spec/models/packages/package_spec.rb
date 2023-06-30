@@ -1023,22 +1023,22 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     let_it_be(:package4) { create(:package, project: project) }
 
     it 'orders packages by their projects name ascending' do
-      expect(Packages::Package.order_project_name).to eq([package1, package4, package2, package3])
+      expect(described_class.order_project_name).to eq([package1, package4, package2, package3])
     end
 
     it 'orders packages by their projects name descending' do
-      expect(Packages::Package.order_project_name_desc).to eq([package2, package3, package1, package4])
+      expect(described_class.order_project_name_desc).to eq([package2, package3, package1, package4])
     end
 
     shared_examples 'order_project_path scope' do
       it 'orders packages by their projects path asc, then package id asc' do
-        expect(Packages::Package.order_project_path).to eq([package1, package4, package2, package3])
+        expect(described_class.order_project_path).to eq([package1, package4, package2, package3])
       end
     end
 
     shared_examples 'order_project_path_desc scope' do
       it 'orders packages by their projects path desc, then package id desc' do
-        expect(Packages::Package.order_project_path_desc).to eq([package3, package2, package4, package1])
+        expect(described_class.order_project_path_desc).to eq([package3, package2, package4, package1])
       end
     end
 

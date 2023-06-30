@@ -415,8 +415,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'does not create duplicated metrics records when MR is concurrently updated' do
         merge_request.metrics.destroy!
 
-        instance1 = MergeRequest.find(merge_request.id)
-        instance2 = MergeRequest.find(merge_request.id)
+        instance1 = described_class.find(merge_request.id)
+        instance2 = described_class.find(merge_request.id)
 
         instance1.ensure_metrics!
         instance2.ensure_metrics!
@@ -5272,7 +5272,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         environment: envs[2]
       )
 
-      merge_request_relation = MergeRequest.where(id: merge_request.id)
+      merge_request_relation = described_class.where(id: merge_request.id)
       created.link_merge_requests(merge_request_relation)
       success.link_merge_requests(merge_request_relation)
       failed.link_merge_requests(merge_request_relation)

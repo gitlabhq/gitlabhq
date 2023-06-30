@@ -254,18 +254,18 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         ]
       end
 
-      subject { Member.in_hierarchy(project) }
+      subject { described_class.in_hierarchy(project) }
 
       it { is_expected.to contain_exactly(*hierarchy_members) }
 
       context 'with scope prefix' do
-        subject { Member.where.not(source: project).in_hierarchy(subgroup) }
+        subject { described_class.where.not(source: project).in_hierarchy(subgroup) }
 
         it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
       end
 
       context 'with scope suffix' do
-        subject { Member.in_hierarchy(project).where.not(source: project) }
+        subject { described_class.in_hierarchy(project).where.not(source: project) }
 
         it { is_expected.to contain_exactly(root_ancestor_member, subgroup_member, subgroup_project_member) }
       end
@@ -859,7 +859,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       expect(member.invite_accepted_at).to be_nil
       expect(member.invite_token).not_to be_nil
-      expect_any_instance_of(Member).not_to receive(:after_accept_invite)
+      expect_any_instance_of(described_class).not_to receive(:after_accept_invite)
     end
 
     it 'schedules a TasksToBeDone::CreateWorker task' do

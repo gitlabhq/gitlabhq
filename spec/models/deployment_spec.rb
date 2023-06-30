@@ -650,7 +650,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
       context 'when there are no deployments and builds' do
         it do
-          expect(subject_method(environment)).to eq(Deployment.none)
+          expect(subject_method(environment)).to eq(described_class.none)
         end
       end
 
@@ -663,7 +663,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
 
         it do
-          expect(subject_method(environment)).to eq(Deployment.none)
+          expect(subject_method(environment)).to eq(described_class.none)
         end
       end
 

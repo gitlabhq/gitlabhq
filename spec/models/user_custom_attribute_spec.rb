@@ -22,19 +22,19 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
     let(:custom_attribute) { create(:user_custom_attribute, key: 'blocked_at', value: blocked_at, user_id: user.id) }
 
     describe '.by_user_id' do
-      subject { UserCustomAttribute.by_user_id(user.id) }
+      subject { described_class.by_user_id(user.id) }
 
       it { is_expected.to match_array([custom_attribute]) }
     end
 
     describe '.by_updated_at' do
-      subject { UserCustomAttribute.by_updated_at(Date.today.all_day) }
+      subject { described_class.by_updated_at(Date.today.all_day) }
 
       it { is_expected.to match_array([custom_attribute]) }
     end
 
     describe '.by_key' do
-      subject { UserCustomAttribute.by_key('blocked_at') }
+      subject { described_class.by_key('blocked_at') }
 
       it { is_expected.to match_array([custom_attribute]) }
     end
@@ -44,7 +44,7 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
     let_it_be(:user) { create(:user) }
     let(:abuse_report) { create(:abuse_report, user: user) }
 
-    subject { UserCustomAttribute.set_banned_by_abuse_report(abuse_report) }
+    subject { described_class.set_banned_by_abuse_report(abuse_report) }
 
     it 'adds the abuse report ID to user custom attributes' do
       subject
@@ -66,7 +66,7 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
   end
 
   describe '#upsert_custom_attributes' do
-    subject { UserCustomAttribute.upsert_custom_attributes(custom_attributes) }
+    subject { described_class.upsert_custom_attributes(custom_attributes) }
 
     let_it_be_with_reload(:user) { create(:user) }
 

@@ -856,7 +856,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     it 'returns groups without integration' do
-      expect(Group.without_integration(instance_integration)).to contain_exactly(another_group)
+      expect(described_class.without_integration(instance_integration)).to contain_exactly(another_group)
     end
   end
 

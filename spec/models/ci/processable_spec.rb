@@ -7,7 +7,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   describe 'delegations' do
-    subject { Ci::Processable.new }
+    subject { described_class.new }
 
     it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
     it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
@@ -401,7 +401,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     let!(:another_build) { create(:ci_build, project: project) }
 
     before do
-      Ci::Processable.update_all(scheduling_type: nil)
+      described_class.update_all(scheduling_type: nil)
     end
 
     it 'populates scheduling_type of processables' do

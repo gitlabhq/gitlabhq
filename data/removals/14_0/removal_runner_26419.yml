@@ -1,7 +1,0 @@
-- title: "Make `pwsh` the default shell for newly-registered Windows Runners"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: deastman
-  breaking_change: true
-  body: |
-    In GitLab Runner 13.2, PowerShell Core support was added to the Shell executor. In 14.0, PowerShell Core, `pwsh` is now the default shell for newly-registered Windows runners. Windows `CMD` will still be available as a shell option for Windows runners. Refer to [issue #26419](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26419) for details.

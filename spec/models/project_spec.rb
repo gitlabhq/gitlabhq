@@ -342,8 +342,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         context 'when same project is being updated in 2 instances' do
           it 'syncs only changed attributes' do
-            project1 = Project.last
-            project2 = Project.last
+            project1 = described_class.last
+            project2 = described_class.last
 
             project_name = project1.name
             project_path = project1.path
@@ -2382,11 +2382,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:service_desk_setting, project_key: 'key2')
       create(:service_desk_setting)
 
-      expect(Project.with_service_desk_key('key1')).to contain_exactly(project1, project2)
+      expect(described_class.with_service_desk_key('key1')).to contain_exactly(project1, project2)
     end
 
     it 'returns empty if there is no project with the key' do
-      expect(Project.with_service_desk_key('key1')).to be_empty
+      expect(described_class.with_service_desk_key('key1')).to be_empty
     end
   end
 
@@ -2439,7 +2439,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:jira_integration, project: project_3, inherit_from_id: nil)
       create(:integrations_slack, project: project_4, inherit_from_id: nil)
 
-      expect(Project.without_integration(instance_integration)).to contain_exactly(project_4)
+      expect(described_class.without_integration(instance_integration)).to contain_exactly(project_4)
     end
   end
 
@@ -7573,7 +7573,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe 'with_issues_or_mrs_available_for_user' do
     before do
-      Project.delete_all
+      described_class.delete_all
     end
 
     it 'returns correct projects' do

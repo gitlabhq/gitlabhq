@@ -184,7 +184,7 @@ RSpec.describe PagesDeployment, feature_category: :pages do
       # new deployment
       create(:pages_deployment)
 
-      expect(PagesDeployment.older_than(deployment.id)).to eq(old_deployments)
+      expect(described_class.older_than(deployment.id)).to eq(old_deployments)
     end
   end
 end

@@ -1,7 +1,0 @@
-- title: "Introduced limit of 50 tags for jobs"
-  removal_date: September 22nd, 2021
-  removal_milestone: "14.3"
-  reporter: jreporter
-  breaking_change: false
-  body: |
-    GitLab values efficiency and is prioritizing reliability for [GitLab.com in FY22](https://about.gitlab.com/direction/#gitlab-hosted-first). In 14.3, GitLab CI/CD jobs must have less than 50 [tags](https://docs.gitlab.com/ee/ci/yaml/index.html#tags). If a pipeline contains a job with 50 or more tags, you will receive an error and the pipeline will not be created.

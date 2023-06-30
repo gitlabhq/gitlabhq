@@ -33,7 +33,7 @@ RSpec.describe Ci::BuildRunnerSession, model: true, feature_category: :continuou
           session = build_with_local_runner_session_url.reload.runner_session
 
           expect(session.errors).to be_empty
-          expect(session).to be_a(Ci::BuildRunnerSession)
+          expect(session).to be_a(described_class)
           expect(session.url).to eq(url)
         end
       end
@@ -59,7 +59,7 @@ RSpec.describe Ci::BuildRunnerSession, model: true, feature_category: :continuou
       simple_build.save!
 
       session = simple_build.reload.runner_session
-      expect(session).to be_a(Ci::BuildRunnerSession)
+      expect(session).to be_a(described_class)
       expect(session.url).to eq(url)
     end
 

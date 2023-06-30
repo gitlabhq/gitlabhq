@@ -1,8 +1,0 @@
-- title: "Legacy feature flags"
-  reporter: kbychu
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/254324'
-  breaking_change: true
-  body: |
-    Legacy feature flags became read-only in GitLab 13.4. GitLab 14.0 removes support for legacy feature flags, so you must migrate them to the [new version](https://docs.gitlab.com/ee/operations/feature_flags.html). You can do this by first taking a note (screenshot) of the legacy flag, then deleting the flag through the API or UI (you don't need to alter the code), and finally create a new Feature Flag with the same name as the legacy flag you deleted. Also, make sure the strategies and environments match the deleted flag. We created a [video tutorial](https://www.youtube.com/watch?v=CAJY2IGep7Y) to help with this migration.

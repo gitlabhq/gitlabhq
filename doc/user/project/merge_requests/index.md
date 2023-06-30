@@ -111,9 +111,6 @@ To filter the list of merge requests:
 1. Select a **Sort direction**, either **{sort-lowest}** for descending order,
    or **{sort-highest}** for ascending order.
 
-GitLab displays the results on-screen, but you can also
-[retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
-
 ### By environment or deployment date
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.

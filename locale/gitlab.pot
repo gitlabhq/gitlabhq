@@ -3420,18 +3420,6 @@ msgstr ""
 msgid "AdminSettings|Instance runners expiration"
 msgstr ""
 
-msgid "AdminSettings|Jitsu administrator email"
-msgstr ""
-
-msgid "AdminSettings|Jitsu administrator password"
-msgstr ""
-
-msgid "AdminSettings|Jitsu host"
-msgstr ""
-
-msgid "AdminSettings|Jitsu project ID"
-msgstr ""
-
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr ""
 
@@ -3585,9 +3573,6 @@ msgstr ""
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr ""
 
-msgid "AdminSettings|The ID of the project in Jitsu. The project contains all analytics instances."
-msgstr ""
-
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr ""
 
@@ -3595,9 +3580,6 @@ msgid "AdminSettings|The connection string of your product analytics configurato
 msgstr ""
 
 msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
-msgstr ""
-
-msgid "AdminSettings|The host of your Jitsu instance."
 msgstr ""
 
 msgid "AdminSettings|The host of your data collector instance."
@@ -3633,10 +3615,7 @@ msgstr ""
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr ""
 
-msgid "AdminSettings|Used to connect Jitsu to the Clickhouse instance."
-msgstr ""
-
-msgid "AdminSettings|Used to generate short-lived API access tokens."
+msgid "AdminSettings|Used to connect Snowplow to the Clickhouse instance."
 msgstr ""
 
 msgid "AdminSettings|Used to retrieve dashboard data from the Cube instance."
@@ -36229,18 +36208,6 @@ msgstr ""
 msgid "ProjectSettings|Issues"
 msgstr ""
 
-msgid "ProjectSettings|Jitsu administrator email"
-msgstr ""
-
-msgid "ProjectSettings|Jitsu administrator password"
-msgstr ""
-
-msgid "ProjectSettings|Jitsu host"
-msgstr ""
-
-msgid "ProjectSettings|Jitsu project ID"
-msgstr ""
-
 msgid "ProjectSettings|LFS objects from this repository are available to forks. %{linkStart}How do I remove them?%{linkEnd}"
 msgstr ""
 
@@ -36424,9 +36391,6 @@ msgstr ""
 msgid "ProjectSettings|Target project"
 msgstr ""
 
-msgid "ProjectSettings|The ID of the project in Jitsu. The project contains all analytics instances."
-msgstr ""
-
 msgid "ProjectSettings|The URL of your Cube instance."
 msgstr ""
 
@@ -36446,9 +36410,6 @@ msgid "ProjectSettings|The default target project for merge requests created in 
 msgstr ""
 
 msgid "ProjectSettings|The default template will be applied on save."
-msgstr ""
-
-msgid "ProjectSettings|The host of your Jitsu instance."
 msgstr ""
 
 msgid "ProjectSettings|The host of your data collector instance."
@@ -36487,10 +36448,7 @@ msgstr ""
 msgid "ProjectSettings|Used for every new merge request."
 msgstr ""
 
-msgid "ProjectSettings|Used to connect Jitsu to the Clickhouse instance."
-msgstr ""
-
-msgid "ProjectSettings|Used to generate short-lived API access tokens."
+msgid "ProjectSettings|Used to connect Snowplow to the Clickhouse instance."
 msgstr ""
 
 msgid "ProjectSettings|Used to retrieve dashboard data from the Cube instance."

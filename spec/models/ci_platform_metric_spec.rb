@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe CiPlatformMetric, feature_category: :continuous_integration do
   subject { build(:ci_platform_metric) }
 
-  it_behaves_like 'a BulkInsertSafe model', CiPlatformMetric do
+  it_behaves_like 'a BulkInsertSafe model', described_class do
     let(:valid_items_for_bulk_insertion) { build_list(:ci_platform_metric, 10) }
     let(:invalid_items_for_bulk_insertion) { [] } # class does not have any non-constraint validations defined
   end

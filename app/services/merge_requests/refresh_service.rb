@@ -170,8 +170,6 @@ module MergeRequests
     end
 
     def abort_auto_merges?(merge_request)
-      return true unless Feature.enabled?(:fix_interrupted_mwps, @project)
-
       merge_request.merge_params.with_indifferent_access[:sha] != @push.newrev
     end
 

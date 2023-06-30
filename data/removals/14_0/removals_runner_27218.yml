@@ -1,7 +1,0 @@
-- title: "GitLab Runner helper image in GitLab.com Container Registry"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: deastman
-  breaking_change: true
-  body: |
-    In 14.0, we are now pulling the GitLab Runner [helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#helper-image) from the GitLab Container Registry instead of Docker Hub. Refer to [issue #27218](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27218) for details.

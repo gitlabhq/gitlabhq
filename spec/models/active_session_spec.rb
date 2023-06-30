@@ -24,19 +24,19 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
 
   describe '#current?' do
     it 'returns true if the active session matches the current session' do
-      active_session = ActiveSession.new(session_private_id: rack_session.private_id)
+      active_session = described_class.new(session_private_id: rack_session.private_id)
 
       expect(active_session.current?(session)).to be true
     end
 
     it 'returns false if the active session does not match the current session' do
-      active_session = ActiveSession.new(session_id: Rack::Session::SessionId.new('59822c7d9fcdfa03725eff41782ad97d'))
+      active_session = described_class.new(session_id: Rack::Session::SessionId.new('59822c7d9fcdfa03725eff41782ad97d'))
 
       expect(active_session.current?(session)).to be false
     end
 
     it 'returns false if the session id is nil' do
-      active_session = ActiveSession.new(session_id: nil)
+      active_session = described_class.new(session_id: nil)
       session = double(:session, id: nil)
 
       expect(active_session.current?(session)).to be false
@@ -96,7 +96,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           )
         end
 
-        expect(ActiveSession.list(user)).to contain_exactly(session)
+        expect(described_class.list(user)).to contain_exactly(session)
 
         Gitlab::Redis::Sessions.with do |redis|
           expect(redis.sscan_each(lookup_key)).to contain_exactly session_id
@@ -119,7 +119,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
     end
 
     it 'returns an empty array if the user does not have any active session' do
-      expect(ActiveSession.list(user)).to be_empty
+      expect(described_class.list(user)).to be_empty
     end
   end
 
@@ -138,7 +138,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         )
       end
 
-      expect(ActiveSession.list_sessions(user)).to eq [{ _csrf_token: 'abcd' }]
+      expect(described_class.list_sessions(user)).to eq [{ _csrf_token: 'abcd' }]
     end
   end
 
@@ -148,7 +148,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         redis.sadd(lookup_key, %w[a b c])
       end
 
-      expect(ActiveSession.session_ids_for_user(user.id).map(&:to_s)).to match_array(%w[a b c])
+      expect(described_class.session_ids_for_user(user.id).map(&:to_s)).to match_array(%w[a b c])
     end
   end
 
@@ -159,13 +159,13 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         redis.set("session:gitlab:#{rack_session.private_id}", Marshal.dump({ _csrf_token: 'abcd' }))
       end
 
-      expect(ActiveSession.sessions_from_ids([rack_session.private_id])).to eq [{ _csrf_token: 'abcd' }]
+      expect(described_class.sessions_from_ids([rack_session.private_id])).to eq [{ _csrf_token: 'abcd' }]
     end
 
     it 'avoids a redis lookup for an empty array' do
       expect(Gitlab::Redis::Sessions).not_to receive(:with)
 
-      expect(ActiveSession.sessions_from_ids([])).to eq([])
+      expect(described_class.sessions_from_ids([])).to eq([])
     end
 
     it 'uses redis lookup in batches' do
@@ -178,13 +178,13 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       mget_responses = sessions.map { |session| [Marshal.dump(session)] }
       expect(redis).to receive(:mget).twice.times.and_return(*mget_responses)
 
-      expect(ActiveSession.sessions_from_ids([1, 2])).to eql(sessions)
+      expect(described_class.sessions_from_ids([1, 2])).to eql(sessions)
     end
   end
 
   describe '.set' do
     it 'sets a new redis entry for the user session and a lookup entry' do
-      ActiveSession.set(user, request)
+      described_class.set(user, request)
 
       session_id = "2::418729c72310bbf349a032f0bb6e3fce9f5a69df8f000d8ae0ac5d159d8f21ae"
 
@@ -276,10 +276,10 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
     end
 
     context 'destroy called with Rack::Session::SessionId#private_id' do
-      subject { ActiveSession.destroy_session(user, rack_session.private_id) }
+      subject { described_class.destroy_session(user, rack_session.private_id) }
 
       it 'calls .destroy_sessions' do
-        expect(ActiveSession).to(
+        expect(described_class).to(
           receive(:destroy_sessions)
             .with(anything, user, [rack_session.private_id]))
 
@@ -287,7 +287,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       end
 
       context 'ActiveSession with session_private_id' do
-        let(:active_session) { ActiveSession.new(session_private_id: rack_session.private_id) }
+        let(:active_session) { described_class.new(session_private_id: rack_session.private_id) }
         let(:active_session_lookup_key) { rack_session.private_id }
 
         context 'when using old session key serialization' do
@@ -311,7 +311,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
     it 'gracefully handles a nil session ID' do
       expect(described_class).not_to receive(:destroy_sessions)
 
-      ActiveSession.destroy_all_but_current(user, nil)
+      described_class.destroy_all_but_current(user, nil)
     end
 
     shared_examples 'with user sessions' do
@@ -338,15 +338,15 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       end
 
       it 'removes the entry associated with the all user sessions but current' do
-        expect { ActiveSession.destroy_all_but_current(user, request.session) }
+        expect { described_class.destroy_all_but_current(user, request.session) }
           .to(change { ActiveSession.session_ids_for_user(user.id).size }.from(2).to(1))
 
-        expect(ActiveSession.session_ids_for_user(9999).size).to eq(1)
+        expect(described_class.session_ids_for_user(9999).size).to eq(1)
       end
 
       it 'removes the lookup entry of deleted sessions' do
         session_private_id = Rack::Session::SessionId.new(current_session_id).private_id
-        ActiveSession.destroy_all_but_current(user, request.session)
+        described_class.destroy_all_but_current(user, request.session)
 
         Gitlab::Redis::Sessions.with do |redis|
           expect(redis.smembers(lookup_key)).to contain_exactly session_private_id
@@ -361,9 +361,9 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           redis.sadd?(lookup_key, impersonated_session_id)
         end
 
-        expect { ActiveSession.destroy_all_but_current(user, request.session) }.to change { ActiveSession.session_ids_for_user(user.id).size }.from(3).to(2)
+        expect { described_class.destroy_all_but_current(user, request.session) }.to change { ActiveSession.session_ids_for_user(user.id).size }.from(3).to(2)
 
-        expect(ActiveSession.session_ids_for_user(9999).size).to eq(1)
+        expect(described_class.session_ids_for_user(9999).size).to eq(1)
       end
     end
 
@@ -407,7 +407,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
             redis.sadd(lookup_key, [current_session_id, '59822c7d9fcdfa03725eff41782ad97d'])
           end
 
-          ActiveSession.cleanup(user)
+          described_class.cleanup(user)
 
           Gitlab::Redis::Sessions.with do |redis|
             expect(redis.smembers(lookup_key)).to contain_exactly current_session_id
@@ -416,7 +416,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       end
 
       it 'does not bail if there are no lookup entries' do
-        ActiveSession.cleanup(user)
+        described_class.cleanup(user)
       end
 
       context 'cleaning up old sessions' do
@@ -436,7 +436,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         end
 
         it 'removes obsolete active sessions entries' do
-          ActiveSession.cleanup(user)
+          described_class.cleanup(user)
 
           Gitlab::Redis::Sessions.with do |redis|
             sessions = described_class.list(user)
@@ -450,7 +450,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         end
 
         it 'removes obsolete lookup entries' do
-          ActiveSession.cleanup(user)
+          described_class.cleanup(user)
 
           Gitlab::Redis::Sessions.with do |redis|
             lookup_entries = redis.smembers(lookup_key)
@@ -465,7 +465,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
             redis.sadd?(lookup_key, (max_number_of_sessions_plus_two + 1).to_s)
           end
 
-          ActiveSession.cleanup(user)
+          described_class.cleanup(user)
 
           Gitlab::Redis::Sessions.with do |redis|
             lookup_entries = redis.smembers(lookup_key)
@@ -654,7 +654,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
     let(:auth) { double(cookies: {}) }
 
     it 'sets marketing cookie' do
-      ActiveSession.set_active_user_cookie(auth)
+      described_class.set_active_user_cookie(auth)
       expect(auth.cookies[:about_gitlab_active_user][:value]).to be_truthy
     end
   end
@@ -663,11 +663,11 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
     let(:auth) { double(cookies: {}) }
 
     before do
-      ActiveSession.set_active_user_cookie(auth)
+      described_class.set_active_user_cookie(auth)
     end
 
     it 'unsets marketing cookie' do
-      ActiveSession.unset_active_user_cookie(auth)
+      described_class.unset_active_user_cookie(auth)
       expect(auth.cookies[:about_gitlab_active_user]).to be_nil
     end
   end

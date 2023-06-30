@@ -2282,7 +2282,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.keep_artifacts!' do
     let!(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days, pipeline: pipeline) }
     let!(:builds_for_update) do
-      Ci::Build.where(id: create_list(:ci_build, 3, artifacts_expire_at: Time.current + 7.days, pipeline: pipeline).map(&:id))
+      described_class.where(id: create_list(:ci_build, 3, artifacts_expire_at: Time.current + 7.days, pipeline: pipeline).map(&:id))
     end
 
     it 'resets expire_at' do

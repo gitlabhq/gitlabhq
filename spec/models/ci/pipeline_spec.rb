@@ -5346,7 +5346,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'raises an exception' do
         pipeline.save!
 
-        pipeline_id = Ci::Pipeline.where(id: pipeline.id).select(:id).first
+        pipeline_id = described_class.where(id: pipeline.id).select(:id).first
 
         expect { pipeline_id.age_in_minutes }.to raise_error(ArgumentError)
       end

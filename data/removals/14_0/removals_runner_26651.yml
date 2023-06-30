@@ -1,7 +1,0 @@
-- title: "`/usr/lib/gitlab-runner` symlink from package"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: deastman
-  breaking_change: true
-  body: |
-    In GitLab Runner 13.3, a symlink was added from `/user/lib/gitlab-runner/gitlab-runner` to `/usr/bin/gitlab-runner`. In 14.0, the symlink has been removed and the runner is now installed in `/usr/bin/gitlab-runner`. Refer to [issue #26651](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26651) for details.

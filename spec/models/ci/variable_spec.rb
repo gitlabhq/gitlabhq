@@ -21,7 +21,7 @@ RSpec.describe Ci::Variable, feature_category: :secrets_management do
     let!(:matching_variable) { create(:ci_variable, environment_scope: 'production ') }
     let!(:non_matching_variable) { create(:ci_variable, environment_scope: 'staging') }
 
-    subject { Ci::Variable.by_environment_scope('production') }
+    subject { described_class.by_environment_scope('production') }
 
     it { is_expected.to contain_exactly(matching_variable) }
   end

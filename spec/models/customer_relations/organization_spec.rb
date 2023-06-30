@@ -65,7 +65,7 @@ RSpec.describe CustomerRelations::Organization, type: :model do
 
     before do
       old_root_group.update!(parent: new_root_group)
-      CustomerRelations::Organization.move_to_root_group(old_root_group)
+      described_class.move_to_root_group(old_root_group)
     end
 
     it 'moves organizations with unique names and deletes the rest' do

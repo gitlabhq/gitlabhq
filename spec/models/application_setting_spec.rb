@@ -1593,7 +1593,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it 'ignores the plaintext token' do
         subject
 
-        ApplicationSetting.update_all(static_objects_external_storage_auth_token: 'Test')
+        described_class.update_all(static_objects_external_storage_auth_token: 'Test')
 
         setting.reload
         expect(setting[:static_objects_external_storage_auth_token]).to be_nil

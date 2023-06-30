@@ -1,7 +1,0 @@
-- title: "License Compliance"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: nicoleschwartz
-  breaking_change: true
-  body: |
-    In 13.0, we deprecated the License-Management CI template and renamed it License-Scanning. We have been providing backward compatibility by warning users of the old template to switch. Now in 14.0, we are completely removing the License-Management CI template. Read about it in [issue #216261](https://gitlab.com/gitlab-org/gitlab/-/issues/216261) or [this blog post](https://about.gitlab.com/blog/2021/02/08/composition-analysis-14-deprecations-and-removals/).

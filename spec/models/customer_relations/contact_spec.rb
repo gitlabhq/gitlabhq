@@ -127,7 +127,7 @@ RSpec.describe CustomerRelations::Contact, type: :model do
 
     before do
       old_root_group.update!(parent: new_root_group)
-      CustomerRelations::Contact.move_to_root_group(old_root_group)
+      described_class.move_to_root_group(old_root_group)
     end
 
     it 'moves contacts with unique emails and deletes the rest' do

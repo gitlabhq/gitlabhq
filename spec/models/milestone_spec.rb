@@ -146,11 +146,11 @@ RSpec.describe Milestone do
     let_it_be(:milestone) { create(:milestone, project: project) }
 
     it 'returns true for a predefined Milestone ID' do
-      expect(Milestone.predefined_id?(described_class::Upcoming.id)).to be true
+      expect(described_class.predefined_id?(described_class::Upcoming.id)).to be true
     end
 
     it 'returns false for a Milestone ID that is not predefined' do
-      expect(Milestone.predefined_id?(milestone.id)).to be false
+      expect(described_class.predefined_id?(milestone.id)).to be false
     end
   end
 

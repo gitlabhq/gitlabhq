@@ -1,9 +1,0 @@
-- title: "Gitaly nodes in virtual storage"
-  announcement_milestone: "13.12"  # The milestone when this feature was first announced as deprecated.
-  announcement_date: "2021-04-22"
-  removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
-  removal_date: "2022-05-22"  # the date of the milestone release when this feature is planned to be removed
-  breaking_change: true
-  body: |  # Do not modify this line, instead modify the lines below.
-    Configuring the Gitaly nodes directly in the virtual storage's root configuration object has been deprecated in GitLab 13.12 and is no longer supported in GitLab 15.0. You must move the Gitaly nodes under the `'nodes'` key as described in [the Praefect configuration](https://docs.gitlab.com/ee/administration/gitaly/praefect.html#praefect).
-  tiers: [Free, Premium, Ultimate]

@@ -1,7 +1,0 @@
-- title: "Legacy storage"
-  removal_date: "2021-06-22"
-  removal_milestone: "14.0"
-  reporter: fzimmer
-  breaking_change: true
-  body: |
-    As [announced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#planned-removal-of-legacy-storage-in-14.0), [legacy storage](https://docs.gitlab.com/ee/administration/repository_storage_types.html#legacy-storage) has been removed in GitLab 14.0.

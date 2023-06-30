@@ -28,9 +28,9 @@ RSpec.describe MergeRequestAssignee do
 
     context 'in_projects' do
       it 'returns issue assignees for given project' do
-        expect(MergeRequestAssignee.count).to eq 2
+        expect(described_class.count).to eq 2
 
-        assignees = MergeRequestAssignee.in_projects([project])
+        assignees = described_class.in_projects([project])
 
         expect(assignees.count).to eq 1
         expect(assignees.first.user_id).to eq project_merge_request.merge_request_assignees.first.user_id
