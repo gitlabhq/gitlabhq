@@ -355,6 +355,9 @@ oauth:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::OAuth
+    USE_SELENOID: "true"
+    QA_RECORD_VIDEO: "true"
+    QA_REMOTE_GRID: "selenoid:4444"
   rules:
     - !reference [.rules:test:qa-default-branch, rules]
     - if: $QA_SUITES =~ /Test::Integration::OAuth/
@@ -490,6 +493,9 @@ cloud-activation:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
+    USE_SELENOID: "true"
+    QA_RECORD_VIDEO: "true"
+    QA_REMOTE_GRID: "selenoid:4444"
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::CloudActivation/

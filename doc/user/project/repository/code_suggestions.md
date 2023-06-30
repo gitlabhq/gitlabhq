@@ -19,7 +19,6 @@ type: index, reference
 
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
-Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your [feedback](#feedback).
 

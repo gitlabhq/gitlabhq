@@ -157,7 +157,6 @@ using Tomcat or Jetty.
 Prerequisites:
 
 - JRE/JDK version 11 or later.
-- Apache Maven version 3.0.2 or later.
 - (Recommended) Jetty version 11 or later.
 - (Recommended) Tomcat version 10 or later.
 
@@ -167,11 +166,11 @@ PlantUML recommends to install Tomcat 10 or above. The scope of this page only
 includes setting up a basic Tomcat server. For more production-ready configurations,
 see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.html).
 
-1. Install JDK/JRE 11 and Maven:
+1. Install JDK/JRE 11:
 
    ```shell
    sudo apt update
-   sudo apt-get install graphviz default-jdk git-core maven
+   sudo apt-get install graphviz default-jdk git-core
    ```
 
 1. Add a user for Tomcat:
@@ -248,7 +247,7 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
    tcp6       0      0 :::8005                 :::*                    LISTEN      14935/java
    ```
 
-1. Modify your NGINX configuration. The `proxy_pass` port matches the Connector port in the `server.xml`:
+1. Modify your NGINX configuration in `/etc/gitlab/gitlab.rb`. Ensure the `proxy_pass` port matches the Connector port in `server.xml`:
 
    ```shell
    nginx['custom_gitlab_server_config'] = "location /-/plantuml {
@@ -269,19 +268,21 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 
 1. Install PlantUML and copy the `.war` file:
 
+   Use the [latest release](https://github.com/plantuml/plantuml-server/releases) of plantuml-jsp (example: plantuml-jsp-v1.2023.8.war). For context, see [this issue](https://github.com/plantuml/plantuml-server/issues/265).
+
    ```shell
    cd /
-   git clone https://github.com/plantuml/plantuml-server.git
-   cd plantuml-server
-   mvn package
-   cp /plantuml-server/target/plantuml.war  /opt/tomcat/webapps/plantuml.war
-   chown tomcat:tomcat /opt/tomcat/webapps/plantuml.war
-   systemctl restart tomcat
+   wget https://github.com/plantuml/plantuml-server/releases/download/v1.2023.8/plantuml-jsp-v1.2023.8.war
+   sudo cp plantuml-jsp-v1.2023.8.war /opt/tomcat/webapps/plantuml.war
+   sudo chown tomcat:tomcat /opt/tomcat/webapps/plantuml.war
+   sudo systemctl restart tomcat
    ```
 
 The Tomcat service should restart. After the restart is complete, the
 PlantUML integration is ready and listening for requests on port `8005`:
 `http://localhost:8005/plantuml`
+
+To test if the PlantUML server is working, run `curl --location --verbose http://localhost:8005/plantuml/`.
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 
@@ -321,7 +322,7 @@ these steps:
 
 - For PlantUML servers running v1.2020.9 and above, such as [plantuml.com](https://plantuml.com),
   you must set the `PLANTUML_ENCODING` environment variable to enable the `deflate`
-  compression. In Linux package installations, you can set this value in `/etc/gitlab.rb` with
+  compression. In Linux package installations, you can set this value in `/etc/gitlab/gitlab.rb` with
   this command:
 
   ```ruby
@@ -338,6 +339,6 @@ these steps:
     PLANTUML_ENCODING: deflate
   ```
 
-- For GitLab versions 13.1 and later, PlantUML integration now
-  [requires a header prefix in the URL](https://github.com/plantuml/plantuml/issues/117#issuecomment-6235450160)
-  to distinguish different encoding types.
+- `deflate` is the default encoding type for PlantUML. To use a different encoding type, PlantUML integration
+  [requires a header prefix in the URL](https://plantuml.com/text-encoding)
+  to distinguish different encoding types. 

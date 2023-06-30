@@ -767,7 +767,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
 You can set a limit on the maximum number of variables inside of a dotenv artifact.
 This limit is checked every time a dotenv file is exported as an artifact.
 
-Set the limit to `0` to disable it. Defaults to `0` on self-managed instances.
+Set the limit to `0` to disable it. Defaults to `20` on self-managed instances.
 
 To set this limit to `100` on a self-managed instance, run the following command in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

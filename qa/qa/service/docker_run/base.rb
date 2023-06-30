@@ -105,6 +105,15 @@ module QA
 
           Addrinfo.tcp(URI(Runtime::Env.gdk_url).host, nil).ip_address
         end
+
+        # Returns the IP address of the docker host
+        #
+        # @return [String]
+        def host_ip
+          docker_host = shell("docker context inspect --format='{{json .Endpoints.docker.Host}}'").delete('"')
+          ip = Addrinfo.tcp(URI(docker_host).host, nil).ip_address
+          ip == '0.0.0.0' ? '127.0.0.1' : ip
+        end
       end
     end
   end

@@ -38,6 +38,7 @@ module QA
         QA::EE::Resource::VulnerabilityItem
         QA::EE::Resource::ScanResultPolicyProject
         QA::EE::Resource::ScanResultPolicyCommit
+        QA::EE::Resource::InstanceAuditEventExternalDestination
       ].freeze
 
       PROJECT = 'gitlab-qa-resources'

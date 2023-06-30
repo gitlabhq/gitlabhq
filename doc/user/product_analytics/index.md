@@ -246,3 +246,10 @@ POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
 ```
 
 If the request is successful, the returned JSON includes an array of rows of results.
+
+## Troubleshooting
+
+### No events are collected
+
+Check your [instrumentation details](#enable-product-analytics),
+and make sure product analytics is enabled and set up correctly.

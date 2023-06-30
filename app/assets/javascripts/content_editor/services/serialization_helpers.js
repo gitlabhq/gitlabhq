@@ -365,13 +365,6 @@ export function renderPlayable(state, node) {
   renderImage(state, node);
 }
 
-export function renderComment(state, node) {
-  state.write('<!--');
-  state.write(node.textContent);
-  state.write('-->');
-  state.closeBlock(node);
-}
-
 export function renderCodeBlock(state, node) {
   state.write(
     `\`\`\`${

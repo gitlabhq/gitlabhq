@@ -175,3 +175,20 @@ To edit an existing custom dashboard:
 1. Optional. From the **Add visualizations** list on the right, select other visualizations to add to the dashboard.
 1. Optional. In the dashboard, select a panel and drag or resize it how you prefer.
 1. Select **Save**.
+
+## Troubleshooting
+
+### `Something went wrong while loading the dashboard.`
+
+If the dashboard displays a global error message that data could not be loaded, first try reloading the page. If the error persists:
+
+- Check that your configurations match the [JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+- For product analytics, check your [admin and project settings](../product_analytics/index.md#project-level-settings), and make sure they are set up correctly.
+
+### Dashboard panel error
+
+If a dashboard panel displays an error message:
+
+- Check your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization)
+configurations, and make sure they are set up correctly.
+- For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid. 

@@ -32749,6 +32749,18 @@ msgstr ""
 msgid "PackageRegistry|Publish packages if their name or version matches this regex."
 msgstr ""
 
+msgid "PackageRegistry|Published %{date}"
+msgstr ""
+
+msgid "PackageRegistry|Published by %{author}, %{date}"
+msgstr ""
+
+msgid "PackageRegistry|Published to %{projectName} by %{author}, %{date}"
+msgstr ""
+
+msgid "PackageRegistry|Published to %{projectName}, %{date}"
+msgstr ""
+
 msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
 msgstr ""
 

@@ -13,6 +13,8 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # NOTE: When incrementing the major or minor version here, also increment activerecord_version
 # in vendor/gems/attr_encrypted/attr_encrypted.gemspec until we resolve
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
+#
+# See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
 gem 'rails', '~> 7.0.5.1'
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab'

@@ -253,6 +253,22 @@ Returns [`EpicList`](#epiclist).
 | <a id="queryepicboardlistepicfilters"></a>`epicFilters` | [`EpicFilters`](#epicfilters) | Filters applied when getting epic metadata in the epic board list. |
 | <a id="queryepicboardlistid"></a>`id` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the list. |
 
+### `Query.explainVulnerabilityPrompt`
+
+Explain This Vulnerability Prompt for a specified Vulnerability.
+
+WARNING:
+**Introduced** in 16.2.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryexplainvulnerabilitypromptvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Vulnerability to generate a prompt for. |
+
 ### `Query.geoNode`
 
 Find a Geo node.
@@ -15277,6 +15293,15 @@ Representing an event.
 | <a id="eventcreatedat"></a>`createdAt` | [`Time!`](#time) | When this event was created. |
 | <a id="eventid"></a>`id` | [`ID!`](#id) | ID of the event. |
 | <a id="eventupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this event was updated. |
+
+### `ExplainVulnerabilityPrompt`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="explainvulnerabilitypromptpromptwithcode"></a>`promptWithCode` | [`String`](#string) | AI text prompt generated using the vulnerability's information, including the vulnerable code. |
+| <a id="explainvulnerabilitypromptpromptwithoutcode"></a>`promptWithoutCode` | [`String`](#string) | AI text prompt generated using the vulnerability's information, excluding the vulnerable code. |
 
 ### `ExternalAuditEventDestination`
 

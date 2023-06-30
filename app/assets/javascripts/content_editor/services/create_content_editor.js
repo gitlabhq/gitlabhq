@@ -10,7 +10,6 @@ import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
 import ColorChip from '../extensions/color_chip';
-import Comment from '../extensions/comment';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
@@ -112,7 +111,6 @@ export const createContentEditor = ({
     BulletList,
     Code,
     ColorChip,
-    Comment,
     CodeBlockHighlight,
     DescriptionItem,
     DescriptionList,

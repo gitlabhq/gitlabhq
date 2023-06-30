@@ -338,7 +338,7 @@ You can use the `$` character for both variables and paths. For example, if the
 `$DOCKERFILES_DIR` variable exists, its value is used. If it does not exist, the
 `$` is interpreted as being part of a path.
 
-## Reuse rules in different jobs
+### Reuse rules in different jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
 
@@ -369,6 +369,10 @@ job2:
 
 ## Specify when jobs run with `only` and `except`
 
+NOTE:
+`only` and `except` are not being actively developed. [`rules`](#specify-when-jobs-run-with-rules)
+is the preferred keyword to control when to add jobs to pipelines.
+
 You can use [`only`](../yaml/index.md#only--except) and [`except`](../yaml/index.md#only--except)
 to control when to add jobs to pipelines.
 
@@ -377,14 +381,18 @@ to control when to add jobs to pipelines.
 
 ### `only:refs` / `except:refs` examples
 
-`only` or `except` used without `refs` is the same as
-[`only:refs` / `except/refs`](../yaml/index.md#onlyrefs--exceptrefs)
+You can use `only` or `except` with:
 
-In the following example, `job` runs only for:
+- Specific keywords. See the full list in the [`only`/`except` syntax reference](../yaml/index.md#onlyrefs--exceptrefs).
+- Branch names. You should avoid using branches that are named the same as the specific keywords.
+  For example, jobs configured to run for tag pipelines by using the `tags` keyword
+  would also run for a branch named `tags`.
+- Regex patterns to specify a range of branch names.
 
-- Git tags
-- [Triggers](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines)
-- [Scheduled pipelines](../pipelines/schedules.md)
+The following examples omit `refs` because `only` or `except` used without `refs`
+is the same as [`only:refs` / `except/refs`](../yaml/index.md#onlyrefs--exceptrefs).
+
+For example:
 
 ```yaml
 job:
@@ -394,6 +402,12 @@ job:
     - triggers
     - schedules
 ```
+
+In this example, `job` runs only for:
+
+- Git tags
+- [Triggers](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines)
+- [Scheduled pipelines](../pipelines/schedules.md)
 
 To execute jobs only for the parent repository and not forks:
 

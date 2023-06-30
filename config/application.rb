@@ -365,7 +365,6 @@ module Gitlab
     # Import woff2 for fonts
     config.assets.paths << "#{config.root}/node_modules/@gitlab/fonts/"
     config.assets.precompile << "gitlab-sans/*.woff2"
-    config.assets.precompile << "jetbrains-mono/*.woff2"
     config.assets.precompile << "gitlab-mono/*.woff2"
 
     # Import gitlab-svgs directly from vendored directory

@@ -26,6 +26,15 @@ module QA
           raise("Couldn't set application settings #{application_settings.inspect}, code: '#{r.code}', body: #{body}")
         end
 
+        # Get a single application setting
+        #
+        # @param setting [Symbol] the name of the setting to get
+        # @param api_client [Runtime::API::Client] the API client representing the admin user who will get the setting
+        # @return [String]
+        def get_application_setting(setting, api_client: admin_api_client)
+          get_application_settings(api_client: api_client).fetch(setting)
+        end
+
         def get_application_settings(api_client: admin_api_client)
           parse_body(get(Runtime::API::Request.new(api_client, APPLICATION_SETTINGS_PATH).url))
         end

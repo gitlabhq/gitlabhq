@@ -38,6 +38,7 @@ default:
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
   CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
+  CREATE_RAILS_SLOW_TEST_ISSUES: "true"
 
 workflow:
   name: '$PIPELINE_NAME'

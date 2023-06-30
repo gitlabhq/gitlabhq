@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_planning do
+RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_planning, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416414' do
   include BoardHelpers
 
   let_it_be(:user)    { create(:user) }
@@ -25,7 +25,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_plan
     wait_for_requests
   end
 
-  it_behaves_like 'issue boards sidebar', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416414'
+  it_behaves_like 'issue boards sidebar'
 
   def first_card
     find('.board:nth-child(1)').first("[data-testid='board_card']")
