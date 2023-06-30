@@ -211,6 +211,7 @@ RSpec.describe Trigger, feature_category: :tooling do
           context "when set in a file" do
             before do
               allow(File).to receive(:read).and_call_original
+              stub_env(version_file, nil)
             end
 
             it 'includes the version from the file' do

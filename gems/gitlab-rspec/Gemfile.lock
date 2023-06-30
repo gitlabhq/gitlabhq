@@ -168,12 +168,10 @@ DEPENDENCIES
   factory_bot_rails (~> 6.2.0)
   gitlab-rspec!
   gitlab-styles (~> 10.0.0)
-  nokogiri (~> 1.15.2)
-  rspec (~> 3.0)
   rspec-benchmark (~> 0.6.0)
   rspec-parameterized (~> 1.0)
   rspec-rails (~> 6.0.1)
-  rubocop
+  rubocop (~> 1.21)
   rubocop-rspec (~> 2.18.1)
 
 BUNDLED WITH

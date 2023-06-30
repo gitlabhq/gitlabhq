@@ -95,4 +95,18 @@ describe('User Avatar Link Component', () => {
       expect(wrapper.html()).toContain(badge);
     });
   });
+
+  describe('when popover props provided', () => {
+    beforeEach(() => {
+      createWrapper({ popoverUserId: 1, popoverUsername: defaultProps.username });
+    });
+
+    it('should render GlAvatarLink with popover support', () => {
+      expect(wrapper.attributes()).toMatchObject({
+        href: defaultProps.linkHref,
+        'data-user-id': '1',
+        'data-username': `${defaultProps.username}`,
+      });
+    });
+  });
 });

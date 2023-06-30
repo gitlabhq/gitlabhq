@@ -12749,12 +12749,11 @@ Represents the total number of issues and their weights for a particular day.
 
 ##### `CiCatalogResource.versions`
 
-Versions of the catalog resource.
+Versions of the catalog resource. This field can only be resolved for one catalog resource in any single request.
 
 WARNING:
-**Deprecated** in 16.1.
-Causes performance degradation.
-Use: `latest_version`.
+**Introduced** in 16.2.
+This feature is an Experiment. It can be changed or removed at any time.
 
 Returns [`ReleaseConnection`](#releaseconnection).
 
@@ -12908,6 +12907,7 @@ CI/CD variables for a group.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cigroupvariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="cigroupvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
 | <a id="cigroupvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="cigroupvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
@@ -13091,6 +13091,7 @@ CI/CD variables for a project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="ciprojectvariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="ciprojectvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
 | <a id="ciprojectvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="ciprojectvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |

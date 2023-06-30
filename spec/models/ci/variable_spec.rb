@@ -15,6 +15,9 @@ RSpec.describe Ci::Variable, feature_category: :secrets_management do
     it { is_expected.to include_module(Ci::Maskable) }
     it { is_expected.to include_module(HasEnvironmentScope) }
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope).with_message(/\(\w+\) has already been taken/) }
+    it { is_expected.to allow_values('').for(:description) }
+    it { is_expected.to allow_values(nil).for(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(255) }
   end
 
   describe '.by_environment_scope' do

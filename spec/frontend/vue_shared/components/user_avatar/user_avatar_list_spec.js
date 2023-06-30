@@ -14,6 +14,7 @@ const DEFAULT_EMPTY_MESSAGE = 'None';
 const createUser = (id) => ({
   id,
   name: 'Lorem',
+  username: 'lorem.ipsum',
   web_url: `${TEST_HOST}/${id}`,
   avatar_url: `${TEST_HOST}/${id}/avatar`,
 });
@@ -90,6 +91,8 @@ describe('UserAvatarList', () => {
             imgAlt: x.name,
             tooltipText: x.name,
             imgSize: TEST_IMAGE_SIZE,
+            popoverUserId: x.id,
+            popoverUsername: x.username,
           }),
         ),
       );
@@ -107,6 +110,8 @@ describe('UserAvatarList', () => {
             imgAlt: x.name,
             tooltipText: x.name,
             imgSize: TEST_IMAGE_SIZE,
+            popoverUserId: x.id,
+            popoverUsername: x.username,
           }),
         ),
       );

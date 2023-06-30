@@ -155,6 +155,12 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
           expect(note_json[:discussion_line_code]).to be_nil
         end
 
+        it 'sets the correct feature category' do
+          get :index, params: params
+
+          expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
+        end
+
         context 'when user cannot read commit' do
           before do
             allow(Ability).to receive(:allowed?).and_call_original
@@ -167,6 +173,28 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
+      end
+    end
+
+    context 'for a snippet note' do
+      let(:project_snippet) { create(:project_snippet, project: project) }
+      let!(:note) { create(:note_on_project_snippet, project: project, noteable: project_snippet) }
+
+      let(:params) { request_params.merge(target_type: 'project_snippet', target_id: project_snippet.id, html: true) }
+
+      it 'responds with the expected attributes' do
+        get :index, params: params
+
+        expect(note_json[:id]).to eq(note.id)
+        expect(note_json[:discussion_html]).to be_nil
+        expect(note_json[:diff_discussion_html]).to be_nil
+        expect(note_json[:discussion_line_code]).to be_nil
+      end
+
+      it 'sets the correct feature category' do
+        get :index, params: params
+
+        expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
       end
     end
 
@@ -286,6 +314,44 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
           create!
 
           expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('team_planning')
+        end
+      end
+
+      context 'on a commit' do
+        let(:commit_id) { RepoHelpers.sample_commit.id }
+        let(:request_params) do
+          {
+            note: { note: note_text, commit_id: commit_id, noteable_type: 'Commit' },
+            namespace_id: project.namespace,
+            project_id: project,
+            target_type: 'commit',
+            target_id: commit_id
+          }
+        end
+
+        it 'sets the correct feature category' do
+          create!
+
+          expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
+        end
+      end
+
+      context 'on a project snippet' do
+        let(:project_snippet) { create(:project_snippet, project: project) }
+        let(:request_params) do
+          {
+            note: { note: note_text, noteable_id: project_snippet.id, noteable_type: 'ProjectSnippet' },
+            namespace_id: project.namespace,
+            project_id: project,
+            target_type: 'project_snippet',
+            target_id: project_snippet.id
+          }
+        end
+
+        it 'sets the correct feature category' do
+          create!
+
+          expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('source_code_management')
         end
       end
 

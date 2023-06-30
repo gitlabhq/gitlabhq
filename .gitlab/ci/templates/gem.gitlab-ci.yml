@@ -1,0 +1,19 @@
+# The template generates jobs that trigger child pipelines for gems vendored in the main GitLab project under `gems/`.
+#
+# Inputs:
+# - `gem_name`: The name of the gem, i.e. if the gem is located at `gems/gitlab-rspec`, `gem_name` should be set to `gitlab-rspec`.
+spec:
+  inputs:
+    gem_name:
+---
+.gems:rules:$[[inputs.gem_name]]:
+  rules:
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      changes: ["gems/$[[inputs.gem_name]]/**/*"]
+
+gems $[[inputs.gem_name]]:
+  extends: .gems:rules:$[[inputs.gem_name]]
+  needs: []
+  trigger:
+    include: gems/$[[inputs.gem_name]]/.gitlab-ci.yml
+    strategy: depend

@@ -93,7 +93,7 @@ You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gi
    end
    ```
 
-1. Update `gems/gitlab-<name-of-gem>/.rubocop` with:
+1. Update `gems/<name-of-gem>/.rubocop` with:
 
    ```yaml
    inherit_from:
@@ -112,60 +112,28 @@ You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gi
 
 1. Configure CI for a newly added Gem:
 
-   - Add `gems/gitlab-<name-of-gem>/.gitlab-ci.yml`:
+   - Add `gems/<name-of-gem>/.gitlab-ci.yml`:
 
      ```yaml
-     workflow:
-       rules:
-         - if: $CI_MERGE_REQUEST_ID
-
-     rspec:
-       image: "ruby:${RUBY_VERSION}"
-       cache:
-         key: gitlab-<name-of-gem>-${RUBY_VERSION}
-         paths:
-           - gitlab-<name-of-gem>/vendor/ruby
-       before_script:
-         - cd gems/gitlab-<name-of-gem>
-         - ruby -v                                   # Print out ruby version for debugging
-         - gem install bundler --no-document         # Bundler is not installed with the image
-         - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
-         - bundle config set with 'development'
-         - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
-         - bundle config                             # Show bundler configuration
-         - bundle install -j $(nproc)
-       script:
-         - bundle exec rspec
-       parallel:
-         matrix:
-           - RUBY_VERSION: ["2.7", "3.0", "3.1", "3.2"]
-     ```
-
-   - To `.gitlab/ci/rules.gitlab-ci.yml` add:
-
-     ```yaml
-     .gems:rules:gitlab-<name-of-gem>:
-       rules:
-         - <<: *if-merge-request
-           changes: ["gems/gitlab-<name-of-gem>/**/*"]
+     include:
+       - local: gems/gem.gitlab-ci.yml
+         inputs:
+           gem_name: "<name-of-gem>"
      ```
 
    - To `.gitlab/ci/gitlab-gems.gitlab-ci.yml` add:
 
      ```yaml
-     gems gitlab-<name-of-gem>:
-       extends:
-         - .gems:rules:gitlab-<name-of-gem>
-       needs: []
-       trigger:
-         include: gems/gitlab-<name-of-gem>/.gitlab-ci.yml
-         strategy: depend
+     include:
+       - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+         inputs:
+           gem_name: "<name-of-gem>"
      ```
 
 1. Reference Gem in `Gemfile` with:
 
    ```ruby
-   gem 'gitlab-<name-of-gem>', path: 'gems/gitlab-<name-of-gem>'
+   gem '<name-of-gem>', path: 'gems/<name-of-gem>'
    ```
 
 ### Examples of Gem extractions

@@ -3,16 +3,3 @@
 source "https://rubygems.org"
 
 gemspec
-
-gem "rspec", "~> 3.0"
-gem 'nokogiri', '~> 1.15.2'
-
-group :development, :test do
-  gem 'rubocop'
-  gem 'rubocop-rspec', '~> 2.18.1'
-  gem 'factory_bot_rails', '~> 6.2.0'
-  gem 'gitlab-styles', '~> 10.0.0', require: false
-  gem 'rspec-rails', '~> 6.0.1'
-  gem 'rspec-parameterized', '~> 1.0'
-  gem 'rspec-benchmark', '~> 0.6.0'
-end

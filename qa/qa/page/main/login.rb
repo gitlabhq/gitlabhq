@@ -128,8 +128,8 @@ module QA
           '/users/sign_in'
         end
 
-        def has_sign_in_tab?
-          has_element?(:sign_in_tab)
+        def has_sign_in_tab?(wait: Capybara.default_max_wait_time)
+          has_element?(:sign_in_tab, wait: wait)
         end
 
         def has_ldap_tab?
@@ -203,7 +203,6 @@ module QA
 
         def sign_out_and_sign_in_as(user:)
           Menu.perform(&:sign_out_if_signed_in)
-          has_sign_in_tab?
           sign_in_using_credentials(user: user)
         end
 
@@ -225,7 +224,7 @@ module QA
         def sign_in_using_gitlab_credentials(user:, skip_page_validation: false)
           wait_if_retry_later
 
-          switch_to_sign_in_tab if has_sign_in_tab?
+          switch_to_sign_in_tab if has_sign_in_tab?(wait: 0)
           switch_to_standard_tab if has_standard_tab?
 
           fill_in_credential(user)

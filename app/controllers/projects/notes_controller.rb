@@ -19,11 +19,21 @@ class Projects::NotesController < Projects::ApplicationController
 
   override :feature_category
   def feature_category
-    if %w[index create].include?(params[:action]) && params[:target_type] == 'merge_request'
-      return 'code_review_workflow'
+    if %w[index create].include?(params[:action])
+      category = feature_category_override_for_target_type(params[:target_type])
+      return category if category
     end
 
     super
+  end
+
+  def feature_category_override_for_target_type(target_type)
+    case target_type
+    when 'merge_request'
+      'code_review_workflow'
+    when 'commit', 'project_snippet'
+      'source_code_management'
+    end
   end
 
   def delete_attachment

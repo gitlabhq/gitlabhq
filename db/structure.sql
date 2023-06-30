@@ -13338,7 +13338,9 @@ CREATE TABLE ci_group_variables (
     variable_type smallint DEFAULT 1 NOT NULL,
     environment_scope text DEFAULT '*'::text NOT NULL,
     raw boolean DEFAULT false NOT NULL,
-    CONSTRAINT check_dfe009485a CHECK ((char_length(environment_scope) <= 255))
+    description text,
+    CONSTRAINT check_dfe009485a CHECK ((char_length(environment_scope) <= 255)),
+    CONSTRAINT check_e2e50ff879 CHECK ((char_length(description) <= 255))
 );
 
 CREATE SEQUENCE ci_group_variables_id_seq
@@ -14185,7 +14187,9 @@ CREATE TABLE ci_variables (
     environment_scope character varying DEFAULT '*'::character varying NOT NULL,
     masked boolean DEFAULT false NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
-    raw boolean DEFAULT false NOT NULL
+    raw boolean DEFAULT false NOT NULL,
+    description text,
+    CONSTRAINT check_7e46c006aa CHECK ((char_length(description) <= 255))
 );
 
 CREATE SEQUENCE ci_variables_id_seq

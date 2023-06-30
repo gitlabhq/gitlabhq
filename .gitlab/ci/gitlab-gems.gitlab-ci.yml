@@ -1,23 +1,10 @@
-gems activerecord-gitlab:
-  extends:
-    - .gems:rules:activerecord-gitlab
-  needs: []
-  trigger:
-    include: gems/activerecord-gitlab/.gitlab-ci.yml
-    strategy: depend
-
-gems gitlab-rspec:
-  extends:
-    - .gems:rules:gitlab-rspec
-  needs: []
-  trigger:
-    include: gems/gitlab-rspec/.gitlab-ci.yml
-    strategy: depend
-
-gems gitlab-utils:
-  extends:
-    - .gems:rules:gitlab-utils
-  needs: []
-  trigger:
-    include: gems/gitlab-utils/.gitlab-ci.yml
-    strategy: depend
+include:
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "activerecord-gitlab"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-rspec"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-utils"

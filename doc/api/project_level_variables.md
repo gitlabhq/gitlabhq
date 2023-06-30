@@ -32,7 +32,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "protected": false,
         "masked": true,
         "raw": false,
-        "environment_scope": "*"
+        "environment_scope": "*",
+        "description": null
     },
     {
         "variable_type": "env_var",
@@ -41,7 +42,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "protected": false,
         "masked": false,
         "raw": false,
-        "environment_scope": "*"
+        "environment_scope": "*",
+        "description": null
     }
 ]
 ```
@@ -73,7 +75,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "protected": false,
     "masked": true,
     "raw": false,
-    "environment_scope": "*"
+    "environment_scope": "*",
+    "description": null
 }
 ```
 
@@ -97,6 +100,7 @@ POST /projects/:id/variables
 | `masked`            | boolean        | No       | Whether the variable is masked. Default: `false` |
 | `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` | string         | No       | The `environment_scope` of the variable. Default: `*` |
+| `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -111,7 +115,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
     "protected": false,
     "masked": false,
     "raw": false,
-    "environment_scope": "*"
+    "environment_scope": "*",
+    "description": null
 }
 ```
 
@@ -135,6 +140,7 @@ PUT /projects/:id/variables/:key
 | `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
 | `environment_scope` | string         | No       | The `environment_scope` of the variable |
 | `filter`            | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
+| `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -149,7 +155,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
     "protected": true,
     "masked": false,
     "raw": false,
-    "environment_scope": "*"
+    "environment_scope": "*",
+    "description": "null"
 }
 ```
 

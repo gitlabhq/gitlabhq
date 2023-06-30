@@ -59,6 +59,8 @@ module API
         optional :raw, type: String, desc: 'Whether the variable will be expanded'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
         optional :environment_scope, type: String, desc: 'The environment scope of a variable'
+        optional :description, type: String, desc: 'The description of the variable'
+
         use :optional_group_variable_params_ee
       end
       post ':id/variables' do
@@ -94,6 +96,7 @@ module API
         optional :raw, type: String, desc: 'Whether the variable will be expanded'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
         optional :environment_scope, type: String, desc: 'The environment scope of a variable'
+        optional :description, type: String, desc: 'The description of the variable'
 
         use :optional_group_variable_params_ee
       end

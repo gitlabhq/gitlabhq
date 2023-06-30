@@ -342,6 +342,20 @@ settings for the group using either the GitLab UI or GraphQL API.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### OmniAuth Facebook is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.2</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416000).
+</div>
+
+OmniAuth Facebook support will be removed in GitLab 17.0. The last gem release was in 2021 and it is currently unmaintained. The current usage is less than 0.1%. If you use OmniAuth Facebook, switch to a [supported provider](https://docs.gitlab.com/ee/integration/omniauth.html#supported-providers) in advance of support removal.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Package pipelines in API payload is paginated
 
 <div class="deprecation-notes">

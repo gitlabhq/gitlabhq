@@ -18,6 +18,7 @@
 */
 
 import { GlAvatarLink, GlTooltipDirective } from '@gitlab/ui';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import UserAvatarImage from './user_avatar_image.vue';
 
 export default {
@@ -74,6 +75,16 @@ export default {
       required: false,
       default: 'top',
     },
+    popoverUserId: {
+      type: [String, Number],
+      required: false,
+      default: '',
+    },
+    popoverUsername: {
+      type: String,
+      required: false,
+      default: '',
+    },
     username: {
       type: String,
       required: false,
@@ -81,10 +92,17 @@ export default {
     },
   },
   computed: {
+    userId() {
+      return getIdFromGraphQLId(this.popoverUserId);
+    },
     shouldShowUsername() {
       return this.username.length > 0;
     },
     avatarTooltipText() {
+      // Prevent showing tooltip when popoverUserId is present
+      if (this.popoverUserId) {
+        return '';
+      }
       return this.shouldShowUsername ? '' : this.tooltipText;
     },
   },
@@ -92,7 +110,12 @@ export default {
 </script>
 
 <template>
-  <gl-avatar-link :href="linkHref" class="user-avatar-link">
+  <gl-avatar-link
+    :href="linkHref"
+    :data-user-id="userId"
+    :data-username="popoverUsername"
+    class="user-avatar-link js-user-link"
+  >
     <user-avatar-image
       :class="imgCssWrapperClasses"
       :img-src="imgSrc"
