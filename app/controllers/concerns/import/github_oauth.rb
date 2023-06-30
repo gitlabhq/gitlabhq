@@ -47,7 +47,7 @@ module Import
     def oauth_options
       return unless oauth_config
 
-      oauth_config.dig('args', 'client_options').deep_symbolize_keys
+      oauth_config.dig('args', 'client_options').to_h.deep_symbolize_keys
     end
 
     def authorize_url
