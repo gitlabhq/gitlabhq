@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Resolvers::DesignManagement::VersionResolver, feature_category: :shared,
-  flaky: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416627' do
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416627' do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

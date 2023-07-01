@@ -5,6 +5,10 @@ module Gitlab
     module EventDefinitions
       InvalidMetricConfiguration = Class.new(StandardError)
       class << self
+        def clear_events
+          @events = nil
+        end
+
         def load_configurations
           @events = load_metric_definitions
           nil

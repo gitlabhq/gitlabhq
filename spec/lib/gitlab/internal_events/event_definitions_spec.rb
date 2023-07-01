@@ -3,6 +3,10 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :product_analytics do
+  after(:all) do
+    described_class.clear_events
+  end
+
   context 'when using actual metric definitions' do
     it 'they can load' do
       expect { described_class.load_configurations }.not_to raise_error
