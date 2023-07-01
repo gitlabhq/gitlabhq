@@ -251,6 +251,12 @@ describe('Ci Variable Shared Component', () => {
               expect.objectContaining({ search: 'staging' }),
             );
           });
+
+          it('does not show loading icon in table while searching for environments', () => {
+            findCiSettings().vm.$emit('search-environment-scope', 'staging');
+
+            expect(findLoadingIcon().exists()).toBe(false);
+          });
         });
 
         describe('when Limit Environment Scope FF is disabled', () => {

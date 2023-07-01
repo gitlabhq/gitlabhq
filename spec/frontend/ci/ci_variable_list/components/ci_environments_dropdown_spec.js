@@ -1,4 +1,10 @@
-import { GlListboxItem, GlCollapsibleListbox, GlDropdownItem, GlIcon } from '@gitlab/ui';
+import {
+  GlListboxItem,
+  GlCollapsibleListbox,
+  GlDropdownDivider,
+  GlDropdownItem,
+  GlIcon,
+} from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { allEnvironments, ENVIRONMENT_QUERY_LIMIT } from '~/ci/ci_variable_list/constants';
 import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
@@ -19,6 +25,7 @@ describe('Ci environments dropdown', () => {
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findListboxText = () => findListbox().props('toggleText');
   const findCreateWildcardButton = () => wrapper.findComponent(GlDropdownItem);
+  const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
   const findMaxEnvNote = () => wrapper.findByTestId('max-envs-notice');
 
   const createComponent = ({ props = {}, searchTerm = '', enableFeatureFlag = false } = {}) => {
@@ -40,6 +47,10 @@ describe('Ci environments dropdown', () => {
   describe('No environments found', () => {
     beforeEach(() => {
       createComponent({ searchTerm: 'stable' });
+    });
+
+    it('renders dropdown divider', () => {
+      expect(findDropdownDivider().exists()).toBe(true);
     });
 
     it('renders create button with search term if environments do not contain search term', () => {
@@ -125,10 +136,30 @@ describe('Ci environments dropdown', () => {
       createComponent({ enableFeatureFlag: true });
     });
 
+    it('renders dropdown divider', () => {
+      expect(findDropdownDivider().exists()).toBe(true);
+    });
+
     it('renders environments passed down to it', async () => {
       await findListbox().vm.$emit('search', currentEnv);
 
       expect(findAllListboxItems()).toHaveLength(envs.length);
+    });
+
+    it('renders dropdown loading icon while fetch query is loading', () => {
+      createComponent({ enableFeatureFlag: true, props: { areEnvironmentsLoading: true } });
+
+      expect(findListbox().props('loading')).toBe(true);
+      expect(findListbox().props('searching')).toBe(false);
+      expect(findDropdownDivider().exists()).toBe(false);
+    });
+
+    it('renders search loading icon while search query is loading and dropdown is open', async () => {
+      createComponent({ enableFeatureFlag: true, props: { areEnvironmentsLoading: true } });
+      await findListbox().vm.$emit('shown');
+
+      expect(findListbox().props('loading')).toBe(false);
+      expect(findListbox().props('searching')).toBe(true);
     });
 
     it('emits event when searching', async () => {
@@ -138,12 +169,6 @@ describe('Ci environments dropdown', () => {
 
       expect(wrapper.emitted('search-environment-scope')).toHaveLength(2);
       expect(wrapper.emitted('search-environment-scope')[1]).toEqual([currentEnv]);
-    });
-
-    it('renders loading icon while search query is loading', () => {
-      createComponent({ enableFeatureFlag: true, props: { areEnvironmentsLoading: true } });
-
-      expect(findListbox().props('searching')).toBe(true);
     });
 
     it('displays note about max environments shown', () => {

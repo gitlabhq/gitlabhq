@@ -190,12 +190,8 @@ export default {
       return {};
     },
     isLoading() {
-      // TODO: Remove areEnvironmentsLoading and show loading icon in dropdown when
-      // environment query is loading and FF is enabled
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/396990
       return (
         (this.$apollo.queries.ciVariables.loading && this.isInitialLoading) ||
-        this.areEnvironmentsLoading ||
         this.isLoadingMoreItems
       );
     },

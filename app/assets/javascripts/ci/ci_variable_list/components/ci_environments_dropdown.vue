@@ -32,6 +32,7 @@ export default {
   },
   data() {
     return {
+      isDropdownShown: false,
       selectedEnvironment: '',
       searchTerm: '',
     };
@@ -45,6 +46,12 @@ export default {
       return this.environments.filter((environment) => {
         return environment.toLowerCase().includes(lowerCasedSearchTerm);
       });
+    },
+    isDropdownLoading() {
+      return this.areEnvironmentsLoading && this.isEnvScopeLimited && !this.isDropdownShown;
+    },
+    isDropdownSearching() {
+      return this.areEnvironmentsLoading && this.isEnvScopeLimited && this.isDropdownShown;
     },
     isEnvScopeLimited() {
       return this.glFeatures?.ciLimitEnvironmentScope;
@@ -65,15 +72,12 @@ export default {
         text: environment,
       }));
     },
-    shouldShowSearchLoading() {
-      return this.areEnvironmentsLoading && this.isEnvScopeLimited;
-    },
     shouldRenderCreateButton() {
       return this.searchTerm && !this.environments.includes(this.searchTerm);
     },
     shouldRenderDivider() {
       return (
-        (this.isEnvScopeLimited || this.shouldRenderCreateButton) && !this.shouldShowSearchLoading
+        (this.isEnvScopeLimited || this.shouldRenderCreateButton) && !this.areEnvironmentsLoading
       );
     },
     environmentScopeLabel() {
@@ -96,6 +100,9 @@ export default {
       this.$emit('create-environment-scope', this.searchTerm);
       this.selectEnvironment(this.searchTerm);
     },
+    toggleDropdownShown(isShown) {
+      this.isDropdownShown = isShown;
+    },
   },
   ENVIRONMENT_QUERY_LIMIT,
   i18n: {
@@ -111,10 +118,13 @@ export default {
     block
     searchable
     :items="searchedEnvironments"
-    :searching="shouldShowSearchLoading"
+    :loading="isDropdownLoading"
+    :searching="isDropdownSearching"
     :toggle-text="environmentScopeLabel"
     @search="debouncedSearch"
     @select="selectEnvironment"
+    @shown="toggleDropdownShown(true)"
+    @hidden="toggleDropdownShown(false)"
   >
     <template #footer>
       <gl-dropdown-divider v-if="shouldRenderDivider" />
