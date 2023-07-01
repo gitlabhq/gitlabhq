@@ -27,11 +27,11 @@ module Groups
     def update_shared_runners
       case params[:shared_runners_setting]
       when Namespace::SR_DISABLED_AND_UNOVERRIDABLE
-        disable_shared_runners! # also disallows override
+        set_shared_runners_enabled!(false)
       when Namespace::SR_DISABLED_WITH_OVERRIDE, Namespace::SR_DISABLED_AND_OVERRIDABLE
         disable_shared_runners_and_allow_override!
       when Namespace::SR_ENABLED
-        enable_shared_runners! # set both to true
+        set_shared_runners_enabled!(true)
       end
     end
 
@@ -49,19 +49,21 @@ module Groups
       end
     end
 
-    def disable_shared_runners!
+    def set_shared_runners_enabled!(enabled)
       group.update!(
-        shared_runners_enabled: false,
+        shared_runners_enabled: enabled,
         allow_descendants_override_disabled_shared_runners: false)
+
+      return if enabled && Feature.disabled?(:enable_shared_runners_for_descendants, group)
 
       group_ids = group.descendants
       unless group_ids.empty?
         Group.by_id(group_ids).update_all(
-          shared_runners_enabled: false,
+          shared_runners_enabled: enabled,
           allow_descendants_override_disabled_shared_runners: false)
       end
 
-      group.all_projects.update_all(shared_runners_enabled: false)
+      group.all_projects.update_all(shared_runners_enabled: enabled)
     end
 
     def disable_shared_runners_and_allow_override!
@@ -80,10 +82,6 @@ module Groups
       else
         group.update!(allow_descendants_override_disabled_shared_runners: true)
       end
-    end
-
-    def enable_shared_runners!
-      group.update!(shared_runners_enabled: true)
     end
   end
 end
