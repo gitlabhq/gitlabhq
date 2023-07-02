@@ -668,6 +668,15 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.with_user' do
+      it 'returns the member' do
+        not_a_member = create(:user)
+
+        expect(described_class.with_user(@owner_user)).to eq([@owner])
+        expect(described_class.with_user(not_a_member)).to be_empty
+      end
+    end
+
     describe '.active_state' do
       let_it_be(:active_group_member) { create(:group_member, group: group) }
       let_it_be(:active_project_member) { create(:project_member, project: project) }
