@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
-module Ci
-  class PipelineCleanupRefWorker
+module MergeRequests
+  class CleanupRefWorker
     include ApplicationWorker
     include Projects::RemoveRefs
 
     sidekiq_options retry: 3
-    include PipelineQueue
+    loggable_arguments 2
+    feature_category :code_review_workflow
 
     idempotent!
     deduplicate :until_executed, if_deduplicated: :reschedule_once, ttl: 1.minute
-    data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
+    data_consistency :delayed
 
     urgency :low
 
@@ -22,13 +23,12 @@ module Ci
     # Related to:
     # - https://gitlab.com/gitlab-org/gitaly/-/issues/5368
     # - https://gitlab.com/gitlab-org/gitaly/-/issues/5369
-    def perform(pipeline_id)
-      pipeline = Ci::Pipeline.find_by_id(pipeline_id)
-      return unless pipeline
-      return unless pipeline.persistent_ref.should_delete?
+    def perform(merge_request_id, only)
+      merge_request = MergeRequest.find_by_id(merge_request_id)
+      return unless merge_request
 
-      serialized_remove_refs(pipeline.project_id) do
-        pipeline.reset.persistent_ref.delete
+      serialized_remove_refs(merge_request.target_project_id) do
+        merge_request.cleanup_refs(only: only.to_sym)
       end
     end
   end

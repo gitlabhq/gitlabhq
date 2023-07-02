@@ -50,7 +50,7 @@ RSpec.describe Ci::PipelineCleanupRefWorker, :sidekiq_inline, feature_category: 
   end
 
   context 'when max retry attempts reach' do
-    let(:lease_key) { "#{described_class.name.underscore}/#{pipeline.project_id}" }
+    let(:lease_key) { "projects/#{pipeline.project_id}/serialized_remove_refs" }
     let!(:lease) { stub_exclusive_lease_taken(lease_key) }
 
     it 'does not raise error' do

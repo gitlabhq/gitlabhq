@@ -349,6 +349,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MergeRequestMergeabilityCheckWorker' => 3,
         'MergeRequestResetApprovalsWorker' => 3,
         'MergeRequests::CaptureSuggestedReviewersAcceptedWorker' => 3,
+        'MergeRequests::CleanupRefWorker' => 3,
         'MergeRequests::CreatePipelineWorker' => 3,
         'MergeRequests::DeleteSourceBranchWorker' => 3,
         'MergeRequests::FetchSuggestedReviewersWorker' => 3,

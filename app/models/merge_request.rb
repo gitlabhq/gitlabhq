@@ -1528,6 +1528,14 @@ class MergeRequest < ApplicationRecord
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/train"
   end
 
+  def schedule_cleanup_refs(only: :all)
+    if Feature.enabled?(:merge_request_cleanup_ref_worker_async, target_project)
+      MergeRequests::CleanupRefWorker.perform_async(id, only.to_s)
+    else
+      cleanup_refs(only: only)
+    end
+  end
+
   def cleanup_refs(only: :all)
     target_refs = []
     target_refs << ref_path       if %i[all head].include?(only)

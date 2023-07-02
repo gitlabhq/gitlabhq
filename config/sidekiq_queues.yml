@@ -343,6 +343,8 @@
   - 1
 - - merge_requests_capture_suggested_reviewers_accepted
   - 1
+- - merge_requests_cleanup_ref
+  - 1
 - - merge_requests_close_issue
   - 1
 - - merge_requests_create_approval_event

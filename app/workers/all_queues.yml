@@ -2964,6 +2964,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_cleanup_ref
+  :worker_name: MergeRequests::CleanupRefWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_close_issue
   :worker_name: MergeRequests::CloseIssueWorker
   :feature_category: :code_review_workflow

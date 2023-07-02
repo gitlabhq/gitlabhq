@@ -5105,6 +5105,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#schedule_cleanup_refs' do
+    subject { merge_request.schedule_cleanup_refs(only: :train) }
+
+    let(:merge_request) { build(:merge_request, source_project: create(:project, :repository)) }
+
+    it 'does schedule MergeRequests::CleanupRefWorker' do
+      expect(MergeRequests::CleanupRefWorker).to receive(:perform_async).with(merge_request.id, 'train')
+
+      subject
+    end
+
+    context 'when merge_request_cleanup_ref_worker_async is disabled' do
+      before do
+        stub_feature_flags(merge_request_cleanup_ref_worker_async: false)
+      end
+
+      it 'deletes all refs from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.train_ref_path)
+
+        subject
+      end
+    end
+  end
+
   describe '#cleanup_refs' do
     subject { merge_request.cleanup_refs(only: only) }
 
