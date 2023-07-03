@@ -40,14 +40,22 @@ RSpec.describe Banzai::Filter::ImageLinkFilter, feature_category: :team_planning
   end
 
   it 'keep the data-canonical-src' do
-    doc = filter(%q(<img src="http://assets.example.com/6cd/4d7" data-canonical-src="http://example.com/test.png" />), context)
+    doc = filter(
+      %q(<img src="http://assets.example.com/6cd/4d7" data-canonical-src="http://example.com/test.png" />),
+      context
+    )
 
     expect(doc.at_css('img')['src']).to eq doc.at_css('a')['href']
     expect(doc.at_css('img')['data-canonical-src']).to eq doc.at_css('a')['data-canonical-src']
   end
 
   it 'moves the data-diagram* attributes' do
-    doc = filter(%q(<img class="plantuml" src="http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw==">), context)
+    # rubocop:disable Layout/LineLength
+    doc = filter(
+      %q(<img class="plantuml" src="http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw==">),
+      context
+    )
+    # rubocop:enable Layout/LineLength
 
     expect(doc.at_css('a')['data-diagram']).to eq "plantuml"
     expect(doc.at_css('a')['data-diagram-src']).to eq "data:text/plain;base64,Qm9iIC0+IFNhcmEgOiBIZWxsbw=="

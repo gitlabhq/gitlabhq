@@ -93,7 +93,7 @@ to access it. In this case, you can use an SSH key pair.
      # - git config --global user.name "User name"
    ```
 
-   The [`before_script`](../yaml/index.md#before_script) can be set globally
+   The [`before_script`](../yaml/index.md#before_script) can be set as a default
    or per-job.
 
 1. Make sure the private server's [SSH host keys are verified](#verifying-the-ssh-host-keys).

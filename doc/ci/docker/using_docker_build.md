@@ -61,8 +61,9 @@ the Docker commands, but needs permission to do so.
 1. In GitLab, add `docker info` to `.gitlab-ci.yml` to verify that Docker is working:
 
    ```yaml
-   before_script:
-     - docker info
+   default:
+     before_script:
+       - docker info
 
    build_image:
      script:
@@ -155,7 +156,12 @@ To use Docker-in-Docker with TLS enabled:
    `docker:20.10.16-dind` service:
 
    ```yaml
-   image: docker:20.10.16
+   default:
+     image: docker:20.10.16
+     services:
+       - docker:20.10.16-dind
+     before_script:
+       - docker info
 
    variables:
      # When you use the dind service, you must instruct Docker to talk with
@@ -173,12 +179,6 @@ To use Docker-in-Docker with TLS enabled:
      # `/certs/client` to share between the service and job
      # container, thanks to volume mount from config.toml
      DOCKER_TLS_CERTDIR: "/certs"
-
-   services:
-     - docker:20.10.16-dind
-
-   before_script:
-     - docker info
 
    build:
      stage: build
@@ -215,7 +215,12 @@ You can now use `docker` in the job script. You should include the
 `docker:20.10.16-dind` service:
 
 ```yaml
-image: docker:20.10.16
+default:
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker info
 
 variables:
   # When using dind service, you must instruct docker to talk with the
@@ -234,12 +239,6 @@ variables:
   #
   # This instructs Docker not to start over TLS.
   DOCKER_TLS_CERTDIR: ""
-
-services:
-  - docker:20.10.16-dind
-
-before_script:
-  - docker info
 
 build:
   stage: build
@@ -280,7 +279,12 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
    `docker:20.10.16-dind` service:
 
    ```yaml
-   image: docker:20.10.16
+   default:
+     image: docker:20.10.16
+     services:
+       - docker:20.10.16-dind
+     before_script:
+       - docker info
 
    variables:
      # When using dind service, you must instruct Docker to talk with
@@ -306,12 +310,6 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
      # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4125
      DOCKER_TLS_VERIFY: 1
      DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
-
-   services:
-     - docker:20.10.16-dind
-
-   before_script:
-     - docker info
 
    build:
      stage: build
@@ -703,10 +701,10 @@ This issue can occur when the service's image name
 [includes a registry hostname](../../ci/services/index.md#available-settings-for-services). For example:
 
 ```yaml
-image: docker:20.10.16
-
-services:
-  - registry.hub.docker.com/library/docker:20.10.16-dind
+default:
+  image: docker:20.10.16
+  services:
+    - registry.hub.docker.com/library/docker:20.10.16-dind
 ```
 
 A service's hostname is [derived from the full image name](../../ci/services/index.md#accessing-the-services).
@@ -714,11 +712,11 @@ However, the shorter service hostname `docker` is expected.
 To allow service resolution and access, add an explicit alias for the service name `docker`:
 
 ```yaml
-image: docker:20.10.16
-
-services:
-  - name: registry.hub.docker.com/library/docker:20.10.16-dind
-    alias: docker
+default:
+  image: docker:20.10.16
+  services:
+    - name: registry.hub.docker.com/library/docker:20.10.16-dind
+      alias: docker
 ```
 
 ### Error: `Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password`

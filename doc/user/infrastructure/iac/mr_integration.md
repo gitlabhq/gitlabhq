@@ -95,18 +95,16 @@ To manually configure a GitLab Terraform Report artifact:
 ```yaml
 default:
   image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
-
   cache:
     key: example-production
     paths:
       - ${TF_ROOT}/.terraform
+  before_script:
+    - cd ${TF_ROOT}
 
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}/environments/example/production
   TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/example-production
-
-before_script:
-  - cd ${TF_ROOT}
 
 stages:
   - prepare
@@ -161,7 +159,6 @@ default:
     entrypoint:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-
   cache:
     paths:
       - .terraform

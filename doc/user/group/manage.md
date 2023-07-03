@@ -434,11 +434,8 @@ for the ability to set merge request approval rules for groups is tracked in
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
-Due to high demand, this feature may have unscheduled downtime and Code Suggestions in IDEs may be delayed.
-Code Suggestions may produce
-[low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality).
 Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations).
-We look forward to hearing your feedback.
+We look forward to hearing your [feedback](../project/repository/code_suggestions.md#feedback).
 
 You can give all users in a group and its subgroups access to [Code Suggestions](../project/repository/code_suggestions.md).
 

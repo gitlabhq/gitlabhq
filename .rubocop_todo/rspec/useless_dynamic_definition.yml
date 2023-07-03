@@ -1,0 +1,12 @@
+---
+RSpec/UselessDynamicDefinition:
+  Details: grace period
+  Exclude:
+    - 'ee/spec/factories/ci/builds.rb'
+    - 'ee/spec/factories/ci/job_artifacts.rb'
+    - 'ee/spec/factories/ci/pipelines.rb'
+    - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/count_security_scans_metric_spec.rb'
+    - 'ee/spec/support/shared_examples/lib/gitlab/elastic/search_results_shared_examples.rb'
+    - 'spec/models/ci/resource_group_spec.rb'
+    - 'spec/services/packages/nuget/update_package_from_metadata_service_spec.rb'
+    - 'spec/support/helpers/cycle_analytics_helpers/test_generation.rb'

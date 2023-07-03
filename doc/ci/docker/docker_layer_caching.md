@@ -28,18 +28,17 @@ with the `--cache-from` argument must be pulled
 This example `.gitlab-ci.yml` file shows how to use Docker caching:
 
 ```yaml
-image: docker:20.10.16
-
-services:
-  - docker:20.10.16-dind
+default:
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 variables:
   # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
   DOCKER_HOST: tcp://docker:2376
   DOCKER_TLS_CERTDIR: "/certs"
-
-before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
@@ -50,7 +49,7 @@ build:
     - docker push $CI_REGISTRY_IMAGE:latest
 ```
 
-In the `script` section for the `build` stage:
+In the `script` section for the `build` job:
 
 1. The first command tries to pull the image from the registry so that it can be
    used as a cache for the `docker build` command.

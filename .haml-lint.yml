@@ -120,6 +120,7 @@ linters:
       - Layout/SpaceInsideStringInterpolation
       - Layout/TrailingEmptyLines
       - Lint/AmbiguousOperatorPrecedence
+      - Lint/AssignmentInCondition
       - Lint/LiteralInInterpolation
       - Lint/ParenthesesAsGroupedExpression
       - Lint/SafeNavigationConsistency
@@ -130,13 +131,14 @@ linters:
       - Performance/RedundantMatch
       - Performance/StringReplacement
       - Rails/LinkToBlank
+      - Rails/OutputSafety
       - Rails/RequestReferer
       - Style/ColonMethodCall
       - Style/ConditionalAssignment
       - Style/FormatString
       - Style/HashSyntax
-      - Style/IfInsideElse
       - Style/IdenticalConditionalBranches
+      - Style/IfInsideElse
       - Style/NegatedIf
       - Style/NestedTernaryOperator
       - Style/RedundantInterpolation

@@ -57,15 +57,14 @@ Below is a sample `.gitlab-ci.yml` file that shows how to start using the runner
   tags:
     - shared-windows
     - windows-1809
+  before_script:
+    - Set-Variable -Name "time" -Value (date -Format "%H:%m")
+    - echo ${time}
+    - echo "started by ${GITLAB_USER_NAME}"
 
 stages:
   - build
   - test
-
-before_script:
- - Set-Variable -Name "time" -Value (date -Format "%H:%m")
- - echo ${time}
- - echo "started by ${GITLAB_USER_NAME}"
 
 build:
   extends:

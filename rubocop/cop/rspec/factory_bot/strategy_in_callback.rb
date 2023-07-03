@@ -7,7 +7,7 @@ module RuboCop
     module RSpec
       module FactoryBot
         class StrategyInCallback < RuboCop::Cop::Base
-          include RuboCop::RSpec::FactoryBot::Language
+          include RuboCop::FactoryBot::Language
 
           MSG = 'Prefer inline `association` over `%{type}`. ' \
             'See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories'

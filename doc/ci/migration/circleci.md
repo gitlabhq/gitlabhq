@@ -249,18 +249,14 @@ jobs:
 Example of the same pipeline using `cache` in GitLab CI/CD:
 
 ```yaml
-image: node:latest
-
-# Cache modules in between jobs
-cache:
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - .npm/
-
-before_script:
-  - npm ci --cache .npm --prefer-offline
-
 test_async:
+  image: node:latest
+  cache:  # Cache modules in between jobs
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline
   script:
     - node ./specs/start.js ./specs/async.spec.js
 ```

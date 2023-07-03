@@ -19,7 +19,6 @@ type: index, reference
 
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
-Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your [feedback](#feedback).
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
@@ -41,8 +40,6 @@ Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://
 Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
 
 ## Supported languages
-
-Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality).
 
 The best results from Code Suggestions are expected [for languages the Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_coding_languages) directly support:
 
@@ -182,9 +179,7 @@ Suggestions are best when writing new code. Editing existing functions or 'fill 
 GitLab is making improvements to the Code Suggestions to improve the quality. AI is non-deterministic, so you may not get the same suggestion every time with the same input.
 
 This feature is currently in [Beta](../../../policy/experiment-beta-support.md#beta).
-Code Suggestions depends on both Google Vertex AI Codey APIs and the GitLab Code Suggestions service. We expect a
-high demand for this Beta feature, which may cause degraded performance or unexpected downtime
-of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to
+Code Suggestions depends on both Google Vertex AI Codey APIs and the GitLab Code Suggestions service. We have built this feature to gracefully degrade and have controls in place to allow us to
 mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
 
 ## Code Suggestions data usage

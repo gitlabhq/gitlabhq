@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 Rails/FilePath:
   Exclude:
     - 'app/controllers/help_controller.rb'
@@ -12,7 +13,6 @@ Rails/FilePath:
     - 'config/initializers/1_settings.rb'
     - 'config/initializers/7_prometheus_metrics.rb'
     - 'config/initializers/lograge.rb'
-    - 'config/initializers_before_autoloader/001_fast_gettext.rb'
     - 'ee/app/helpers/ee/application_helper.rb'
     - 'ee/app/services/security/security_orchestration_policies/project_create_service.rb'
     - 'ee/lib/ee/feature/definition.rb'
@@ -57,7 +57,6 @@ Rails/FilePath:
     - 'lib/system_check/app/systemd_unit_files_or_init_script_up_to_date_check.rb'
     - 'lib/system_check/app/uploads_directory_exists_check.rb'
     - 'lib/system_check/incoming_email/imap_authentication_check.rb'
-    - 'lib/tasks/gitlab/db.rake'
     - 'lib/tasks/gitlab/metrics_exporter.rake'
     - 'lib/tasks/gitlab/usage_data.rake'
     - 'lib/tasks/tanuki_emoji.rake'
@@ -66,10 +65,8 @@ Rails/FilePath:
     - 'spec/config/object_store_settings_spec.rb'
     - 'spec/db/development/add_security_training_providers_spec.rb'
     - 'spec/db/development/create_base_work_item_types_spec.rb'
-    - 'spec/db/development/import_common_metrics_spec.rb'
     - 'spec/db/production/add_security_training_providers_spec.rb'
     - 'spec/db/production/create_base_work_item_types_spec.rb'
-    - 'spec/db/production/import_common_metrics_spec.rb'
     - 'spec/db/schema_spec.rb'
     - 'spec/factories/design_management/designs.rb'
     - 'spec/factories/design_management/versions.rb'
@@ -109,6 +106,7 @@ Rails/FilePath:
     - 'spec/lib/gitlab/mail_room/mail_room_spec.rb'
     - 'spec/lib/gitlab/metrics/dashboard/finder_spec.rb'
     - 'spec/lib/gitlab/middleware/multipart/handler_spec.rb'
+    - 'spec/lib/gitlab/multi_destination_logger_spec.rb'
     - 'spec/lib/gitlab/project_transfer_spec.rb'
     - 'spec/lib/gitlab/sanitizers/svg_spec.rb'
     - 'spec/metrics_server/metrics_server_spec.rb'

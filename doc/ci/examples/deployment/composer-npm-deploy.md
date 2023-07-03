@@ -131,28 +131,26 @@ Since this was a WordPress project, it includes real code snippets. Some further
 Our final `.gitlab-ci.yml` looks like this:
 
 ```yaml
-image: tetraweb/php
-
-before_script:
-  - apt-get update
-  - apt-get install zip unzip
-  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  - php composer-setup.php
-  - php -r "unlink('composer-setup.php');"
-  - php composer.phar install
-  - npm install
-  - npm run deploy
-  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-  - mkdir -p ~/.ssh
-  - eval $(ssh-agent -s)
-  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
 stage_deploy:
+  image: tetraweb/php
   artifacts:
     paths:
       - build/
   only:
     - dev
+  before_script:
+    - apt-get update
+    - apt-get install zip unzip
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php composer-setup.php
+    - php -r "unlink('composer-setup.php');"
+    - php composer.phar install
+    - npm install
+    - npm run deploy
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval $(ssh-agent -s)
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - ssh-add <(echo "$STAGING_PRIVATE_KEY")
     - ssh -p22 server_user@server_host "mkdir htdocs/wp-content/themes/_tmp"
