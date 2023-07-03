@@ -56,7 +56,6 @@ import {
   LOAD_SINGLE_DIFF_FAILED,
   BUILDING_YOUR_MR,
   SOMETHING_WENT_WRONG,
-  SAVING_THE_COMMENT_FAILD,
   ERROR_LOADING_FULL_DIFF,
   ERROR_DISMISSING_SUGESTION_POPOVER,
 } from '../i18n';
@@ -626,12 +625,7 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
       if (formData.positionType === FILE_DIFF_POSITION_TYPE) {
         dispatch('toggleFileCommentForm', formData.diffFile.file_path);
       }
-    })
-    .catch(() =>
-      createAlert({
-        message: SAVING_THE_COMMENT_FAILD,
-      }),
-    );
+    });
 };
 
 export const toggleTreeOpen = ({ commit }, path) => {

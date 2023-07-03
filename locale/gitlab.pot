@@ -4818,12 +4818,6 @@ msgstr ""
 msgid "An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present."
 msgstr ""
 
-msgid "An error occurred adding a draft to the thread."
-msgstr ""
-
-msgid "An error occurred adding a new draft."
-msgstr ""
-
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -28684,9 +28678,6 @@ msgstr ""
 msgid "MergeRequestDiffs|Select comment starting line"
 msgstr ""
 
-msgid "MergeRequests|An error occurred while saving the draft comment."
-msgstr ""
-
 msgid "MergeRequests|Can't perform this action automatically. It may have already been done, or a more recent commit may have updated some of this content. Please perform this action locally."
 msgstr ""
 
@@ -28714,9 +28705,6 @@ msgstr ""
 msgid "MergeRequests|Reference copied"
 msgstr ""
 
-msgid "MergeRequests|Saving the comment failed"
-msgstr ""
-
 msgid "MergeRequests|Squashing failed: Squash the commits locally, resolve any conflicts, then push the branch."
 msgstr ""
 
@@ -28739,6 +28727,9 @@ msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
 msgid "MergeRequests|View replaced file @ %{commitId}"
+msgstr ""
+
+msgid "MergeRequests|Your comment could not be submitted because %{reason}."
 msgstr ""
 
 msgid "MergeRequests|commented on commit %{commitLink}"

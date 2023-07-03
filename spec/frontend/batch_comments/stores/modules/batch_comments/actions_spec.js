@@ -44,15 +44,15 @@ describe('Batch comments store actions', () => {
     });
 
     it('does not commit ADD_NEW_DRAFT if errors returned', () => {
+      const commit = jest.fn();
+
       mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-      return testAction(
-        actions.addDraftToDiscussion,
-        { endpoint: TEST_HOST, data: 'test' },
-        null,
-        [],
-        [],
-      );
+      return actions
+        .addDraftToDiscussion({ commit }, { endpoint: TEST_HOST, data: 'test' })
+        .catch(() => {
+          expect(commit).not.toHaveBeenCalledWith('ADD_NEW_DRAFT', expect.anything());
+        });
     });
   });
 
@@ -84,15 +84,13 @@ describe('Batch comments store actions', () => {
     });
 
     it('does not commit ADD_NEW_DRAFT if errors returned', () => {
+      const commit = jest.fn();
+
       mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-      return testAction(
-        actions.createNewDraft,
-        { endpoint: TEST_HOST, data: 'test' },
-        null,
-        [],
-        [],
-      );
+      return actions.createNewDraft({ commit }, { endpoint: TEST_HOST, data: 'test' }).catch(() => {
+        expect(commit).not.toHaveBeenCalledWith('ADD_NEW_DRAFT', expect.anything());
+      });
     });
   });
 

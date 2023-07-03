@@ -25,7 +25,7 @@ import {
   FILE_DIFF_POSITION_TYPE,
 } from '../constants';
 import eventHub from '../event_hub';
-import { DIFF_FILE, GENERIC_ERROR, CONFLICT_TEXT } from '../i18n';
+import { DIFF_FILE, SOMETHING_WENT_WRONG, CONFLICT_TEXT } from '../i18n';
 import { collapsedType, getShortShaFromFile } from '../utils/diff_file';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffFileHeader from './diff_file_header.vue';
@@ -104,7 +104,7 @@ export default {
   },
   i18n: {
     ...DIFF_FILE,
-    genericError: GENERIC_ERROR,
+    genericError: SOMETHING_WENT_WRONG,
   },
   computed: {
     ...mapState('diffs', [

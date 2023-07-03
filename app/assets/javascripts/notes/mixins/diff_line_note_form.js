@@ -7,8 +7,9 @@ import {
 } from '~/diffs/constants';
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
-import { s__ } from '~/locale';
+import { sprintf } from '~/locale';
 import { formatLineRange } from '~/notes/components/multiline_comment_utils';
+import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 
 export default {
   computed: {
@@ -24,7 +25,7 @@ export default {
   methods: {
     ...mapActions('diffs', ['cancelCommentForm', 'toggleFileCommentForm']),
     ...mapActions('batchComments', ['addDraftToReview', 'saveDraft', 'insertDraftIntoDrafts']),
-    addReplyToReview(noteText, isResolving) {
+    addReplyToReview(noteText, isResolving, parentElement, errorCallback) {
       const postData = getDraftReplyFormData({
         in_reply_to_discussion_id: this.discussion.reply_id,
         target_type: this.getNoteableData.targetType,
@@ -39,19 +40,26 @@ export default {
         postData.note_project_id = this.discussion.project_id;
       }
 
-      this.isReplying = false;
-
       this.saveDraft(postData)
         .then(() => {
+          this.isReplying = false;
           this.handleClearForm(this.discussion.line_code);
         })
-        .catch(() => {
+        .catch((response) => {
+          const reason = response?.data?.errors;
+          const errorMessage = reason
+            ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+            : SOMETHING_WENT_WRONG;
+
           createAlert({
-            message: s__('MergeRequests|An error occurred while saving the draft comment.'),
+            message: errorMessage,
+            parent: parentElement,
           });
+
+          errorCallback();
         });
     },
-    addToReview(note, positionType = null) {
+    addToReview(note, positionType = null, parentElement, errorCallback) {
       const lineRange =
         (this.line && this.commentLineStart && formatLineRange(this.commentLineStart, this.line)) ||
         {};
@@ -88,10 +96,18 @@ export default {
             this.toggleFileCommentForm(diffFile.file_path);
           }
         })
-        .catch(() => {
+        .catch((response) => {
+          const reason = response?.data?.errors;
+          const errorMessage = reason
+            ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+            : SOMETHING_WENT_WRONG;
+
           createAlert({
-            message: s__('MergeRequests|An error occurred while saving the draft comment.'),
+            message: errorMessage,
+            parent: parentElement,
           });
+
+          errorCallback();
         });
     },
     handleClearForm(lineCode) {

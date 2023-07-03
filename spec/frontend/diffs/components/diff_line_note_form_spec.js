@@ -1,15 +1,20 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
+import { sprintf } from '~/locale';
+import { createAlert } from '~/alert';
 import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import store from '~/mr_notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { noteableDataMock } from 'jest/notes/mock_data';
+import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
+jest.mock('~/alert');
 
 describe('DiffLineNoteForm', () => {
   let wrapper;
@@ -17,6 +22,8 @@ describe('DiffLineNoteForm', () => {
   let diffLines;
 
   beforeEach(() => {
+    store.reset();
+
     diffFile = getDiffFileMock();
     diffLines = diffFile.highlighted_diff_lines;
 
@@ -212,6 +219,39 @@ describe('DiffLineNoteForm', () => {
       expect(store.dispatch).toHaveBeenCalledWith('diffs/cancelCommentForm', {
         lineCode: diffLines[1].line_code,
         fileHash: diffFile.file_hash,
+      });
+    });
+
+    describe('when note-form emits `handleFormUpdate`', () => {
+      const noteStub = 'invalid note';
+      const parentElement = null;
+      const errorCallback = jest.fn();
+
+      describe.each`
+        scenario                  | serverError                      | message
+        ${'with server error'}    | ${{ data: { errors: 'error' } }} | ${SAVING_THE_COMMENT_FAILED}
+        ${'without server error'} | ${null}                          | ${SOMETHING_WENT_WRONG}
+      `('$scenario', ({ serverError, message }) => {
+        beforeEach(async () => {
+          store.dispatch.mockRejectedValue({ response: serverError });
+
+          createComponent();
+
+          await findNoteForm().vm.$emit('handleFormUpdate', noteStub, parentElement, errorCallback);
+
+          await waitForPromises();
+        });
+
+        it(`renders ${serverError ? 'server' : 'generic'} error message`, () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: sprintf(message, { reason: serverError?.data?.errors }),
+            parent: parentElement,
+          });
+        });
+
+        it('calls errorCallback', () => {
+          expect(errorCallback).toHaveBeenCalled();
+        });
       });
     });
   });

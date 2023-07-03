@@ -18,10 +18,8 @@ export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
       commit(types.ADD_NEW_DRAFT, res);
       return res;
     })
-    .catch(() => {
-      createAlert({
-        message: __('An error occurred adding a draft to the thread.'),
-      });
+    .catch((e) => {
+      throw e.response;
     });
 
 export const createNewDraft = ({ commit, dispatch }, { endpoint, data }) =>
@@ -37,10 +35,8 @@ export const createNewDraft = ({ commit, dispatch }, { endpoint, data }) =>
 
       return res;
     })
-    .catch(() => {
-      createAlert({
-        message: __('An error occurred adding a new draft.'),
-      });
+    .catch((e) => {
+      throw e.response;
     });
 
 export const deleteDraft = ({ commit, getters }, draft) =>

@@ -27,6 +27,11 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     draft_note = create_service.execute
 
+    if draft_note.errors.present?
+      render json: { errors: draft_note.errors.full_messages.to_sentence }, status: :unprocessable_entity
+      return
+    end
+
     prepare_notes_for_rendering(draft_note)
 
     render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)

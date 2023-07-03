@@ -1,6 +1,5 @@
 import { __, s__ } from '~/locale';
 
-export const GENERIC_ERROR = __('Something went wrong on our end. Please try again!');
 export const LOAD_SINGLE_DIFF_FAILED = s__(
   "MergeRequest|Can't fetch the diff needed to update this view. Please reload this page.",
 );
@@ -63,7 +62,9 @@ export const BUILDING_YOUR_MR = __(
   'Building your merge request… This page will update when the build is complete.',
 );
 export const SOMETHING_WENT_WRONG = __('Something went wrong on our end. Please try again!');
-export const SAVING_THE_COMMENT_FAILD = s__('MergeRequests|Saving the comment failed');
+export const SAVING_THE_COMMENT_FAILED = s__(
+  'MergeRequests|Your comment could not be submitted because %{reason}.',
+);
 export const ERROR_LOADING_FULL_DIFF = s__(
   'MergeRequest|Error loading full diff. Please try again.',
 );

@@ -271,7 +271,9 @@ describe('issue_note_form component', () => {
 
         await nextTick();
 
-        expect(wrapper.emitted('handleFormUpdateAddToReview')).toEqual([['Foo', false]]);
+        expect(wrapper.emitted('handleFormUpdateAddToReview')).toStrictEqual([
+          ['Foo', false, wrapper.vm.$refs.editNoteForm, expect.any(Function)],
+        ]);
       });
     });
   });

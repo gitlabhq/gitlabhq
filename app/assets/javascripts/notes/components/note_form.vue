@@ -318,7 +318,15 @@ export default {
         (!this.discussionResolved && this.isResolving);
       this.isSubmitting = true;
 
-      this.$emit('handleFormUpdateAddToReview', this.updatedNoteBody, shouldResolve);
+      this.$emit(
+        'handleFormUpdateAddToReview',
+        this.updatedNoteBody,
+        shouldResolve,
+        this.$refs.editNoteForm,
+        () => {
+          this.isSubmitting = false;
+        },
+      );
     },
     hasEmailParticipants() {
       return this.getNoteableData.issue_email_participants?.length;

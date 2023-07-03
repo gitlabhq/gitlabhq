@@ -1,6 +1,8 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { sprintf } from '~/locale';
+import { createAlert } from '~/alert';
 import { mapParallel } from 'ee_else_ce/diffs/components/diff_row_utils';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
@@ -13,6 +15,7 @@ import NoteForm from '~/notes/components/note_form.vue';
 import eventHub from '~/notes/event_hub';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
+import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '../i18n';
 import { getDiffMode } from '../store/utils';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffView from './diff_view.vue';
@@ -103,7 +106,7 @@ export default {
   },
   methods: {
     ...mapActions('diffs', ['saveDiffDiscussion', 'closeDiffFileCommentForm']),
-    handleSaveNote(note) {
+    handleSaveNote(note, parentElement, errorCallback) {
       this.saveDiffDiscussion({
         note,
         formData: {
@@ -116,6 +119,18 @@ export default {
           width: this.diffFileCommentForm.width,
           height: this.diffFileCommentForm.height,
         },
+      }).catch((e) => {
+        const reason = e.response?.data?.errors;
+        const errorMessage = reason
+          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+          : SOMETHING_WENT_WRONG;
+
+        createAlert({
+          message: errorMessage,
+          parent: parentElement,
+        });
+
+        errorCallback();
       });
     },
   },
