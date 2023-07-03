@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::Call do
+RSpec.describe Gitlab::GitalyClient::Call, feature_category: :gitaly do
   describe '#call', :request_store do
     let(:client) { Gitlab::GitalyClient }
     let(:storage) { 'default' }
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::GitalyClient::Call do
         expect_call_details_to_match
       end
 
-      context 'when err' do
+      context 'when the call raises an standard error' do
         before do
           allow(client).to receive(:execute).and_raise(StandardError)
         end
@@ -60,6 +60,25 @@ RSpec.describe Gitlab::GitalyClient::Call do
 
           expect(client.query_time).to be > 0
           expect_call_details_to_match
+        end
+      end
+
+      context 'when the call raises a BadStatus error' do
+        before do
+          allow(client).to receive(:execute).and_raise(GRPC::Unavailable)
+        end
+
+        it 'attaches gitaly metadata' do
+          expect { subject }.to raise_error do |err|
+            expect(err.metadata).to eql(
+              gitaly_error_metadata: {
+                storage: storage,
+                address: client.address(storage),
+                service: service,
+                rpc: rpc
+              }
+            )
+          end
         end
       end
     end
@@ -103,7 +122,7 @@ RSpec.describe Gitlab::GitalyClient::Call do
           expect_call_details_to_match(duration_higher_than: 0.1)
         end
 
-        context 'when err' do
+        context 'when the call raises an standard error' do
           let(:response) do
             Enumerator.new do |yielder|
               sleep 0.2
@@ -117,6 +136,28 @@ RSpec.describe Gitlab::GitalyClient::Call do
 
             expect(client.query_time).to be > 0.2
             expect_call_details_to_match(duration_higher_than: 0.2)
+          end
+        end
+
+        context 'when the call raises a BadStatus error' do
+          let(:response) do
+            Enumerator.new do |yielder|
+              yielder << 1
+              raise GRPC::Unavailable
+            end
+          end
+
+          it 'attaches gitaly metadata' do
+            expect { subject.to_a }.to raise_error do |err|
+              expect(err.metadata).to eql(
+                gitaly_error_metadata: {
+                  storage: storage,
+                  address: client.address(storage),
+                  service: service,
+                  rpc: rpc
+                }
+              )
+            end
           end
         end
       end

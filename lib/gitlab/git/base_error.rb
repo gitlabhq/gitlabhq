@@ -4,6 +4,7 @@ require 'grpc'
 module Gitlab
   module Git
     class BaseError < StandardError
+      METADATA_KEY = :gitaly_error_metadata
       DEBUG_ERROR_STRING_REGEX = /(.*?) debug_error_string:.*$/m.freeze
       GRPC_CODES = {
         '0' => 'ok',
@@ -25,12 +26,15 @@ module Gitlab
         '16' => 'unauthenticated'
       }.freeze
 
-      attr_reader :status, :code, :service
+      attr_reader :status, :code, :service, :metadata
 
       def initialize(msg = nil)
         super && return if msg.nil?
 
-        set_grpc_error_code(msg) if msg.is_a?(::GRPC::BadStatus)
+        if msg.is_a?(::GRPC::BadStatus)
+          set_grpc_error_code(msg)
+          set_grpc_error_metadata(msg)
+        end
 
         super(build_raw_message(msg))
       end
@@ -45,6 +49,10 @@ module Gitlab
         @status = grpc_error.code
         @code = GRPC_CODES[@status.to_s]
         @service = 'git'
+      end
+
+      def set_grpc_error_metadata(grpc_error)
+        @metadata = grpc_error.metadata.fetch(METADATA_KEY, {}).clone
       end
     end
   end

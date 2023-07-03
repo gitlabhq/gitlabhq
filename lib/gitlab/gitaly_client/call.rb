@@ -32,6 +32,8 @@ module Gitlab
         end
       rescue StandardError => err
         store_timings
+        set_gitaly_error_metadata(err) if err.is_a?(::GRPC::BadStatus)
+
         raise err
       end
 
@@ -44,6 +46,9 @@ module Gitlab
 
             yielder.yield(value)
           end
+        rescue ::GRPC::BadStatus => err
+          set_gitaly_error_metadata(err)
+          raise err
         ensure
           store_timings
         end
@@ -72,6 +77,15 @@ module Gitlab
           rpc: @rpc,
           backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller)
         )
+      end
+
+      def set_gitaly_error_metadata(err)
+        err.metadata[::Gitlab::Git::BaseError::METADATA_KEY] = {
+          storage: @storage,
+          address: ::Gitlab::GitalyClient.address(@storage),
+          service: @service,
+          rpc: @rpc
+        }
       end
     end
   end
