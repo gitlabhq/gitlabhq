@@ -97,7 +97,7 @@ module Gitlab
             local connection = ARGV[i]
             local current_offset = cookie.offsets[connection]
             local new_offset = tonumber(ARGV[i+1])
-            if not current_offset or current_offset < new_offset then
+            if not current_offset or (new_offset and current_offset < new_offset) then
               cookie.offsets[connection] = new_offset
               cookie.wal_locations[connection] = ARGV[i+2]
             end

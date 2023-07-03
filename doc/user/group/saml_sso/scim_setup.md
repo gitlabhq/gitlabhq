@@ -38,7 +38,6 @@ You can configure one of the following as an identity provider:
 
 - [Azure Active Directory](#configure-azure-active-directory).
 - [Okta](#configure-okta).
-- [OneLogin](#configure-onelogin).
 
 NOTE:
 Other providers can work with GitLab but they have not been tested and are not supported.
@@ -158,15 +157,6 @@ To configure Okta for SCIM:
 1. Select the **Enable** checkbox for both **Create Users** and **Deactivate Users**.
 1. Select **Save**.
 1. Assign users in the **Assignments** tab. Assigned users are created and managed in your GitLab group.
-
-### Configure OneLogin
-
-Prerequisites:
-
-- [GitLab is configured](#configure-gitlab).
-
-OneLogin provides a **GitLab (SaaS)** app in their catalog, which includes a SCIM integration. Contact OneLogin if you
-encounter issues.
 
 ## User access
 

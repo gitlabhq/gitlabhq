@@ -1745,7 +1745,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/controllers/projects/find_file_controller_spec.rb'
     - 'spec/controllers/projects/graphs_controller_spec.rb'
     - 'spec/controllers/projects/import/jira_controller_spec.rb'
-    - 'spec/controllers/projects/incidents_controller_spec.rb'
     - 'spec/controllers/projects/issue_links_controller_spec.rb'
     - 'spec/controllers/projects/mattermosts_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests/conflicts_controller_spec.rb'

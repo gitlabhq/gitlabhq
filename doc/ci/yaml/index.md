@@ -2988,6 +2988,11 @@ This example creates 5 jobs that run in parallel, named `test 1/5` to `test 5/5`
 
 - Every parallel job has a `CI_NODE_INDEX` and `CI_NODE_TOTAL`
   [predefined CI/CD variable](../variables/index.md#predefined-cicd-variables) set.
+- A pipeline with jobs that use `parallel` might:
+  - Create more jobs running in parallel than available runners. Excess jobs are queued
+    and marked `pending` while waiting for an available runner.
+  - Create too many jobs, and the pipeline fails with a `job_activity_limit_exceeded` error.
+    The maximum number of jobs that can exist in active pipelines is [limited at the instance-level](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines).
 
 **Related topics**:
 

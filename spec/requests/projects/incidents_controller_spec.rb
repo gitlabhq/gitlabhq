@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IncidentsController do
+RSpec.describe Projects::IncidentsController, feature_category: :incident_management do
   let_it_be_with_refind(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
@@ -33,7 +33,7 @@ RSpec.describe Projects::IncidentsController do
 
   describe 'GET #index' do
     def make_request
-      get :index, params: project_params
+      get project_incidents_path(project)
     end
 
     let(:user) { developer }
@@ -65,7 +65,7 @@ RSpec.describe Projects::IncidentsController do
 
   describe 'GET #show' do
     def make_request
-      get :show, params: project_params(id: resource)
+      get incident_project_issues_path(project, resource)
     end
 
     let_it_be(:resource) { create(:incident, project: project) }
@@ -112,11 +112,5 @@ RSpec.describe Projects::IncidentsController do
 
       it_behaves_like 'login required'
     end
-  end
-
-  private
-
-  def project_params(opts = {})
-    opts.reverse_merge(namespace_id: project.namespace, project_id: project)
   end
 end

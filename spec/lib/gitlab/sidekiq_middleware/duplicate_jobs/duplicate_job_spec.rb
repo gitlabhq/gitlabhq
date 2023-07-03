@@ -241,6 +241,24 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
             expect(cookie['offsets']).to eq({ 'c1' => 1, 'c2' => 2, 'c3' => 3 })
           end
         end
+
+        context 'when a WAL location is nil with existing offsets' do
+          let(:existing_cookie) do
+            {
+              'offsets' => { 'main' => 8, 'ci' => 5 },
+              'wal_locations' => { 'main' => 'loc1old', 'ci' => 'loc2old' }
+            }
+          end
+
+          let(:argv) { ['main', 9, 'loc1', 'ci', nil, 'loc2'] }
+
+          it 'only updates the main connection' do
+            subject
+
+            expect(cookie['wal_locations']).to eq({ 'main' => 'loc1', 'ci' => 'loc2old' })
+            expect(cookie['offsets']).to eq({ 'main' => 9, 'ci' => 5 })
+          end
+        end
       end
     end
 
