@@ -1,6 +1,13 @@
 import mermaid from 'mermaid';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { resetServiceWorkersPublicPath } from '~/lib/utils/webpack';
 
+const resetWebpackPublicPath = () => {
+  window.gon = { relative_url_root: getParameterByName('relativeRootPath') };
+  resetServiceWorkersPublicPath();
+};
+
+resetWebpackPublicPath();
 const setIframeRenderedSize = (h, w) => {
   const { origin } = window.location;
   window.parent.postMessage({ h, w }, origin);

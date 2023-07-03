@@ -9,7 +9,7 @@ import renderMermaid, {
 
 describe('Mermaid diagrams renderer', () => {
   // Finders
-  const findMermaidIframes = () => document.querySelectorAll('iframe[src="/-/sandbox/mermaid"]');
+  const findMermaidIframes = () => document.querySelectorAll('iframe[src*="/-/sandbox/mermaid"]');
   const findDangerousMermaidAlert = () =>
     createWrapper(document.querySelector('[data-testid="alert-warning"]'));
 
