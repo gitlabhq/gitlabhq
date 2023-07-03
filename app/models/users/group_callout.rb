@@ -17,19 +17,19 @@ module Users
       preview_user_over_limit_free_plan_alert: 7, # EE-only
       user_reached_limit_free_plan_alert: 8, # EE-only
       free_group_limited_alert: 9, # EE-only
-      namespace_storage_limit_banner_info_threshold: 10, # EE-only
-      namespace_storage_limit_banner_warning_threshold: 11, # EE-only
-      namespace_storage_limit_banner_alert_threshold: 12, # EE-only
-      namespace_storage_limit_banner_error_threshold: 13, # EE-only
+      # 10 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
+      namespace_storage_limit_alert_warning_threshold: 11, # EE-only
+      namespace_storage_limit_alert_alert_threshold: 12, # EE-only
+      namespace_storage_limit_alert_error_threshold: 13, # EE-only
       usage_quota_trial_alert: 14, # EE-only
       preview_usage_quota_free_plan_alert: 15, # EE-only
       enforcement_at_limit_alert: 16, # EE-only
       web_hook_disabled: 17, # EE-only
       unlimited_members_during_trial_alert: 18, # EE-only
-      repository_storage_limit_banner_info_threshold: 19, # EE-only
-      repository_storage_limit_banner_warning_threshold: 20, # EE-only
-      repository_storage_limit_banner_alert_threshold: 21, # EE-only
-      repository_storage_limit_banner_error_threshold: 22, # EE-only
+      # 19 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
+      project_repository_limit_alert_warning_threshold: 20, # EE-only
+      project_repository_limit_alert_alert_threshold: 21, # EE-only
+      project_repository_limit_alert_error_threshold: 22, # EE-only
       namespace_over_storage_users_combined_alert: 23 # EE-only
     }
 

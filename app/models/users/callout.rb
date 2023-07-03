@@ -55,10 +55,10 @@ module Users
       submit_license_usage_data_banner: 52, # EE-only
       personal_project_limitations_banner: 53, # EE-only
       mr_experience_survey: 54,
-      namespace_storage_limit_banner_info_threshold: 55, # EE-only
-      namespace_storage_limit_banner_warning_threshold: 56, # EE-only
-      namespace_storage_limit_banner_alert_threshold: 57, # EE-only
-      namespace_storage_limit_banner_error_threshold: 58, # EE-only
+      # 55 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
+      namespace_storage_limit_alert_warning_threshold: 56, # EE-only
+      namespace_storage_limit_alert_alert_threshold: 57, # EE-only
+      namespace_storage_limit_alert_error_threshold: 58, # EE-only
       project_quality_summary_feedback: 59, # EE-only
       merge_request_settings_moved_callout: 60,
       new_top_level_group_alert: 61,
@@ -66,10 +66,10 @@ module Users
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
       branch_rules_info_callout: 65,
       create_runner_workflow_banner: 66,
-      repository_storage_limit_banner_info_threshold: 67, # EE-only
-      repository_storage_limit_banner_warning_threshold: 68, # EE-only
-      repository_storage_limit_banner_alert_threshold: 69, # EE-only
-      repository_storage_limit_banner_error_threshold: 70, # EE-only
+      # 67 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
+      project_repository_limit_alert_warning_threshold: 68, # EE-only
+      project_repository_limit_alert_alert_threshold: 69, # EE-only
+      project_repository_limit_alert_error_threshold: 70, # EE-only
       new_navigation_callout: 71,
       code_suggestions_third_party_callout: 72, # EE-only
       namespace_over_storage_users_combined_alert: 73 # EE-only

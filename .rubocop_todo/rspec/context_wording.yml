@@ -183,7 +183,6 @@ RSpec/ContextWording:
     - 'ee/spec/finders/ee/clusters/agents/authorizations/ci_access/finder_spec.rb'
     - 'ee/spec/finders/ee/clusters/agents_finder_spec.rb'
     - 'ee/spec/finders/ee/group_members_finder_spec.rb'
-    - 'ee/spec/finders/ee/namespaces/projects_finder_spec.rb'
     - 'ee/spec/finders/ee/projects_finder_spec.rb'
     - 'ee/spec/finders/ee/user_recent_events_finder_spec.rb'
     - 'ee/spec/finders/epics_finder_spec.rb'
