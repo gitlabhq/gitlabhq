@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.1.2 (2023-07-04)
+
+### Fixed (4 changes)
+
+- [Set a min-height for wiki list items](gitlab-org/security/gitlab@5a360319844f0d8712452c831e13e5e3f82907d8)
+- [Fix GitHub Importer](gitlab-org/security/gitlab@258050534701a14f66a6339b918ed35b1dad5dba)
+- [Fix Bitbucket Cloud Importer](gitlab-org/security/gitlab@f21e3a29d0911c40dca10d54b37fd4f00bd3c4bf)
+- [Fix CSP is set in Environment page incorrectly](gitlab-org/security/gitlab@88ca9f97abd5b575dd8de5d755a04df0dde38e9d)
+
+### Security (1 change)
+
+- [Add authorization to the subscriptions group controller](gitlab-org/security/gitlab@5d3f7e618dde34926916f474d0190b681936073b) ([merge request](gitlab-org/security/gitlab!3379))
+
 ## 16.1.1 (2023-06-28)
 
 ### Security (12 changes)
