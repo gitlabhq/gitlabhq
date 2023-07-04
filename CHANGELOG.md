@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.11 (2023-07-04)
+
+### Security (1 change)
+
+- [Add authorization to the subscriptions group controller](gitlab-org/security/gitlab@a6cb78e56a0e6b08ee7bbabd1687fb43a9f8703b) ([merge request](gitlab-org/security/gitlab!3381))
+
 ## 15.11.10 (2023-06-28)
 
 ### Security (10 changes)
