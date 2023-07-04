@@ -22,6 +22,7 @@ import {
   removeItemFromList,
   updateEpicsCount,
   updateIssueCountAndWeight,
+  setError,
 } from '../graphql/cache_updates';
 import { shouldCloneCard, moveItemVariables } from '../boards_util';
 import eventHub from '../eventhub';
@@ -33,7 +34,7 @@ export default {
   name: 'BoardList',
   i18n: {
     loading: __('Loading'),
-    loadingMoreboardItems: __('Loading more'),
+    loadingMoreBoardItems: __('Loading more'),
     showingAllIssues: __('Showing all issues'),
     showingAllEpics: __('Showing all epics'),
   },
@@ -83,6 +84,7 @@ export default {
       isLoadingMore: false,
       toListId: null,
       toList: {},
+      addItemToListInProgress: false,
     };
   },
   apollo: {
@@ -213,7 +215,8 @@ export default {
       return !this.disabled;
     },
     treeRootWrapper() {
-      return this.canMoveIssue && !this.listsFlags[this.list.id]?.addItemToListInProgress
+      return this.canMoveIssue &&
+        (!this.listsFlags[this.list.id]?.addItemToListInProgress || this.addItemToListInProgress)
         ? Draggable
         : 'ul';
     },
@@ -468,14 +471,14 @@ export default {
 
       this.updateCountAndWeight({ fromListId, toListId, issuable, cache });
     },
-    updateCountAndWeight({ fromListId, toListId, issuable, isAddingIssue, cache }) {
+    updateCountAndWeight({ fromListId, toListId, issuable, isAddingItem, cache }) {
       if (!this.isEpicBoard) {
         updateIssueCountAndWeight({
           fromListId,
           toListId,
           filterParams: this.filterParams,
           issuable,
-          shouldClone: isAddingIssue || this.shouldCloneCard,
+          shouldClone: isAddingItem || this.shouldCloneCard,
           cache,
         });
       } else {
@@ -486,7 +489,7 @@ export default {
           fromListId,
           filterParams,
           issuable,
-          shouldClone: this.shouldCloneCard,
+          shouldClone: isAddingItem || this.shouldCloneCard,
           cache,
         });
       }
@@ -538,6 +541,59 @@ export default {
         },
       });
     },
+    async addListItem(input) {
+      this.toggleForm();
+      this.addItemToListInProgress = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: listIssuablesQueries[this.issuableType].createMutation,
+          variables: {
+            input: this.isEpicBoard ? input : { ...input, moveAfterId: this.boardListItems[0]?.id },
+            withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
+          },
+          update: (cache, { data: { createIssuable } }) => {
+            const { issuable } = createIssuable;
+            addItemToList({
+              query: listIssuablesQueries[this.issuableType].query,
+              variables: { ...this.listQueryVariables, id: this.currentList.id },
+              issuable,
+              newIndex: 0,
+              boardType: this.boardType,
+              issuableType: this.issuableType,
+              cache,
+            });
+            this.updateCountAndWeight({
+              fromListId: null,
+              toListId: this.list.id,
+              issuable,
+              isAddingItem: true,
+              cache,
+            });
+          },
+          optimisticResponse: {
+            createIssuable: {
+              errors: [],
+              issuable: {
+                ...listIssuablesQueries[this.issuableType].optimisticResponse,
+                title: input.title,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        setError({
+          message: sprintf(
+            __('An error occurred while creating the %{issuableType}. Please try again.'),
+            {
+              issuableType: this.isEpicBoard ? 'epic' : 'issue',
+            },
+          ),
+          error,
+        });
+      } finally {
+        this.addItemToListInProgress = false;
+      }
+    },
   },
 };
 </script>
@@ -556,8 +612,18 @@ export default {
     >
       <gl-loading-icon size="sm" />
     </div>
-    <board-new-issue v-if="issueCreateFormVisible" :list="list" />
-    <board-new-epic v-if="epicCreateFormVisible" :list="list" />
+    <board-new-issue
+      v-if="issueCreateFormVisible"
+      :list="list"
+      :board-id="boardId"
+      @addNewIssue="addListItem"
+    />
+    <board-new-epic
+      v-if="epicCreateFormVisible"
+      :list="list"
+      :board-id="boardId"
+      @addNewEpic="addListItem"
+    />
     <component
       :is="treeRootWrapper"
       v-show="!loading"
@@ -610,7 +676,7 @@ export default {
           <gl-loading-icon
             v-if="loadingMore"
             size="sm"
-            :label="$options.i18n.loadingMoreboardItems"
+            :label="$options.i18n.loadingMoreBoardItems"
           />
           <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
           <span v-else>{{ paginatedIssueText }}</span>

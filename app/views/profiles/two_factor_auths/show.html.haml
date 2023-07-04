@@ -101,7 +101,7 @@
                     - else
                       %span.gl-text-gray-500
                         = _("no name set")
-                  %td= registration[:created_at].to_date.to_s(:medium)
+                  %td= registration[:created_at].to_date.to_fs(:medium)
                   %td
                     = render Pajamas::ButtonComponent.new(variant: :danger,
                       href: registration[:delete_path],

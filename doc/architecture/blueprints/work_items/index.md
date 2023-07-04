@@ -30,11 +30,17 @@ Base type for issue, requirement, test case, incident and task (this list is pla
 
 A set of predefined types for different categories of work items. Currently, the available types are:
 
-- Issue
-- Incident
-- Test case
-- Requirement
-- Task
+- [Incident](/ee/operations/incident_management/incidents.md)
+- [Test case](/ee/ci/test_cases/index.md)
+- [Requirement](/ee/user/project/requirements/index.md)
+- [Task](/ee/user/tasks.md)
+- [OKRs](/ee/user/okrs.md)
+
+Work is underway to convert existing objects to Work Item Types or add new ones:
+
+- [Issue](https://gitlab.com/groups/gitlab-org/-/epics/9584)
+- [Epic](https://gitlab.com/groups/gitlab-org/-/epics/9290)
+- [Ticket](https://gitlab.com/groups/gitlab-org/-/epics/10419)
 
 #### Work Item properties
 
@@ -58,7 +64,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 ### Work Item widget types (updating)
 
 | widget type  | feature flag  |
-|---|---|---|
+|---|---|
 | assignees  | |
 | description | |
 | hierarchy | |

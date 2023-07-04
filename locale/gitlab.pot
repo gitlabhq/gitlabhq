@@ -4857,6 +4857,9 @@ msgstr ""
 msgid "An error occurred while checking group path. Please refresh and try again."
 msgstr ""
 
+msgid "An error occurred while creating the %{issuableType}. Please try again."
+msgstr ""
+
 msgid "An error occurred while decoding the file."
 msgstr ""
 
@@ -7765,6 +7768,9 @@ msgid "Boards|An error occurred while creating the issue. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while creating the list. Please try again."
+msgstr ""
+
+msgid "Boards|An error occurred while fetching board. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while fetching child groups. Please try again."

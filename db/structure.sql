@@ -36336,6 +36336,9 @@ ALTER TABLE ONLY ml_candidate_metrics
 ALTER TABLE ONLY ml_candidate_params
     ADD CONSTRAINT fk_ml_candidate_params_on_candidate_id FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_candidates
+    ADD CONSTRAINT fk_ml_candidates_on_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_path_locks_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -36530,9 +36533,6 @@ ALTER TABLE ONLY vulnerability_user_mentions
 
 ALTER TABLE ONLY packages_debian_file_metadata
     ADD CONSTRAINT fk_rails_1ae85be112 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ml_candidates
-    ADD CONSTRAINT fk_rails_1b37441fe5 FOREIGN KEY (user_id) REFERENCES users(id);
 
 ALTER TABLE ONLY issuable_slas
     ADD CONSTRAINT fk_rails_1b8768cd63 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

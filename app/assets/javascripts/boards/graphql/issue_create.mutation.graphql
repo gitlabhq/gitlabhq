@@ -1,8 +1,8 @@
 #import "ee_else_ce/boards/graphql/issue.fragment.graphql"
 
 mutation CreateIssue($input: CreateIssueInput!) {
-  createIssue(input: $input) {
-    issue {
+  createIssuable: createIssue(input: $input) {
+    issuable: issue {
       ...Issue
     }
     errors

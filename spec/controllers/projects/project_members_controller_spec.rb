@@ -320,7 +320,7 @@ RSpec.describe Projects::ProjectMembersController do
           it 'returns correct json response' do
             expect(json_response).to eq({
               "expires_soon" => false,
-              "expires_at_formatted" => expiry_date.to_time.in_time_zone.to_s(:medium)
+              "expires_at_formatted" => expiry_date.to_time.in_time_zone.to_fs(:medium)
             })
           end
         end

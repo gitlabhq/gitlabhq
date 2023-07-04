@@ -82,7 +82,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           click_button _('Save changes')
 
           page.within '.issuable-sidebar' do
-            expect(page).to have_content date.to_s(:medium)
+            expect(page).to have_content date.to_fs(:medium)
           end
         end
 

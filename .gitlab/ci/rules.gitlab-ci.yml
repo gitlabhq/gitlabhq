@@ -2369,11 +2369,9 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
       variables: *review-change-pattern
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
@@ -2391,7 +2389,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual

@@ -16,7 +16,7 @@ module MembershipActions
     member_data = if member.expires?
                     {
                       expires_soon: member.expires_soon?,
-                      expires_at_formatted: member.expires_at.to_time.in_time_zone.to_s(:medium)
+                      expires_at_formatted: member.expires_at.to_time.in_time_zone.to_fs(:medium)
                     }
                   else
                     {}

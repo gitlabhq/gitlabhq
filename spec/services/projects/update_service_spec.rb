@@ -690,7 +690,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
             attributes_for(
               :prometheus_integration,
               project: project,
-              properties: { api_url: nil, manual_configuration: "1" }
+              properties: { api_url: 'invalid-url', manual_configuration: "1" }
             )
           end
 

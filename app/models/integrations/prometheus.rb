@@ -15,7 +15,7 @@ module Integrations
       title: 'API URL',
       placeholder: -> { s_('PrometheusService|https://prometheus.example.com/') },
       help: -> { s_('PrometheusService|The Prometheus API base URL.') },
-      required: true
+      required: false
 
     field :google_iap_audience_client_id,
       title: 'Google IAP Audience Client ID',
@@ -34,8 +34,8 @@ module Integrations
     # to allow localhost URLs when the following conditions are true:
     # 1. api_url is the internal Prometheus URL.
     with_options presence: true do
-      validates :api_url, public_url: true, if: ->(object) { object.manual_configuration? && !object.allow_local_api_url? }
-      validates :api_url, url: true, if: ->(object) { object.manual_configuration? && object.allow_local_api_url? }
+      validates :api_url, public_url: true, if: ->(object) { object.api_url.present? && object.manual_configuration? && !object.allow_local_api_url? }
+      validates :api_url, url: true, if: ->(object) { object.api_url.present? && object.manual_configuration? && object.allow_local_api_url? }
     end
 
     before_save :synchronize_service_state

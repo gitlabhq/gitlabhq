@@ -6,7 +6,8 @@ RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
-  let(:args) { { project_path: project.full_path, active: true, api_url: 'http://prometheus.com/' } }
+  let(:api_url) { 'http://prometheus.com/' }
+  let(:args) { { project_path: project.full_path, active: true, api_url: api_url } }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_project) }
 
@@ -29,6 +30,14 @@ RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create do
         end
       end
 
+      context 'when api_url is nil' do
+        let(:api_url) { nil }
+
+        it 'creates the integration' do
+          expect { resolve }.to change(::Alerting::ProjectAlertingSetting, :count).by(1)
+        end
+      end
+
       context 'when UpdateService responds with success' do
         it 'returns the integration with no errors' do
           expect(resolve).to eq(
@@ -38,7 +47,7 @@ RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create do
         end
 
         it 'creates a corresponding token' do
-          expect { resolve }.to change(::Alerting::ProjectAlertingSetting, :count).by(1)
+          expect { resolve }.to change(::Integrations::Prometheus, :count).by(1)
         end
       end
 

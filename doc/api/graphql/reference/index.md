@@ -5416,7 +5416,7 @@ Input type: `PrometheusIntegrationCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationprometheusintegrationcreateactive"></a>`active` | [`Boolean!`](#boolean) | Whether the integration is receiving alerts. |
-| <a id="mutationprometheusintegrationcreateapiurl"></a>`apiUrl` | [`String!`](#string) | Endpoint at which Prometheus can be queried. |
+| <a id="mutationprometheusintegrationcreateapiurl"></a>`apiUrl` | [`String`](#string) | Endpoint at which Prometheus can be queried. |
 | <a id="mutationprometheusintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprometheusintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the integration in. |
 

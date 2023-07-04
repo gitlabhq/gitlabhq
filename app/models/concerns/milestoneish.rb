@@ -90,9 +90,9 @@ module Milestoneish
   def expires_at
     if due_date
       if due_date.past?
-        "expired on #{due_date.to_s(:medium)}"
+        "expired on #{due_date.to_fs(:medium)}"
       else
-        "expires on #{due_date.to_s(:medium)}"
+        "expires on #{due_date.to_fs(:medium)}"
       end
     end
   end

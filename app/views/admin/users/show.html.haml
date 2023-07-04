@@ -86,12 +86,12 @@
           %li
             %span.light= _('Member since:')
             %strong
-              = @user.created_at.to_s(:medium)
+              = @user.created_at.to_fs(:medium)
           - if @user.confirmed_at
             %li
               %span.light= _('Confirmed at:')
               %strong
-                = @user.confirmed_at.to_s(:medium)
+                = @user.confirmed_at.to_fs(:medium)
           - else
             %li
               %span.ligh= _('Confirmed:')
@@ -106,7 +106,7 @@
           %li
             %span.light= _('Current sign-in at:')
             %strong
-              = @user.current_sign_in_at&.to_s(:medium) || _('never')
+              = @user.current_sign_in_at&.to_fs(:medium) || _('never')
 
           %li
             %span.light= _('Last sign-in IP:')
@@ -116,7 +116,7 @@
           %li
             %span.light= _('Last sign-in at:')
             %strong
-              = @user.last_sign_in_at&.to_s(:medium) || _('never')
+              = @user.last_sign_in_at&.to_fs(:medium) || _('never')
 
           %li
             %span.light= _('Sign-in count:')

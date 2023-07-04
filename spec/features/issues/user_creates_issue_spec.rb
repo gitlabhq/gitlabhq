@@ -159,7 +159,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         click_button 'Create issue'
 
         page.within '.issuable-sidebar' do
-          expect(page).to have_content date.to_s(:medium)
+          expect(page).to have_content date.to_fs(:medium)
         end
       end
     end

@@ -90,6 +90,9 @@ For more information, see the [Atlassian documentation](https://confluence.atlas
 
 ### Use a prefix
 
+You can define a prefix for GitLab to match Jira issue keys. For example, if your Jira issue ID is `ALPHA-1`
+and you've set a `JIRA#` prefix, GitLab matches `JIRA#ALPHA-1` rather than `ALPHA-1`.
+
 To define a prefix for Jira issue keys:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.

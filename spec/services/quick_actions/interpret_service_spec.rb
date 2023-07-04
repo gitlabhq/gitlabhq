@@ -302,7 +302,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'returns due_date message: Date.new(2016, 8, 28) if content contains /due 2016-08-28' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Set the due date to #{expected_date.to_s(:medium)}.")
+        expect(message).to eq("Set the due date to #{expected_date.to_fs(:medium)}.")
       end
     end
 

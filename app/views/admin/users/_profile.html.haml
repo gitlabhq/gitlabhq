@@ -5,7 +5,7 @@
     %ul.content-list
       %li
         %span.light= _('Member since')
-        %strong= user.created_at.to_s(:medium)
+        %strong= user.created_at.to_fs(:medium)
       - unless user.public_email.blank?
         %li
           %span.light= _('E-mail:')

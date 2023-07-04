@@ -50,7 +50,7 @@ module IssuablesHelper
   def due_date_with_remaining_days(due_date, start_date = nil)
     return unless due_date
 
-    "#{due_date.to_s(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
+    "#{due_date.to_fs(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
   end
 
   def multi_label_name(current_labels, default_label)

@@ -16,7 +16,7 @@
           %tr
             %td= token.name
             %td= token.username
-            %td= token.created_at.to_date.to_s(:medium)
+            %td= token.created_at.to_date.to_fs(:medium)
             %td
               - if token.expires?
                 %span{ class: ('text-warning' if token.expires_soon?) }

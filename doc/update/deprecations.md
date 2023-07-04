@@ -144,6 +144,21 @@ In GitLab 11.11 the Windows Batch executor, the CMD shell was deprecated in GitL
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecate `CiRunner` GraphQL fields duplicated in `CiRunnerManager`
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.2</span>
+- End of Support: GitLab <span class="milestone">17.0</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/41518).
+</div>
+
+These fields (`architectureName`, `ipAddress`, `platformName`, `revision`, `version`) are now deprecated from the [GraphQL `CiRunner`](https://docs.gitlab.com/ee/api/graphql/reference/#cirunner) type as they are duplicated with the introduction of runner managers grouped within a runner configuration.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Deprecate `message` field from Vulnerability Management features
 
 <div class="deprecation-notes">
