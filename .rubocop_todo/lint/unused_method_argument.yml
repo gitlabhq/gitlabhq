@@ -479,7 +479,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/graphql/calls_gitaly/field_extension.rb'
     - 'lib/gitlab/graphql/connection_redaction.rb'
     - 'lib/gitlab/graphql/extensions/externally_paginated_array_extension.rb'
-    - 'lib/gitlab/graphql/generic_tracing.rb'
     - 'lib/gitlab/graphql/lazy.rb'
     - 'lib/gitlab/graphql/project/dast_profile_connection_extension.rb'
     - 'lib/gitlab/graphql/query_analyzers/ast/logger_analyzer.rb'

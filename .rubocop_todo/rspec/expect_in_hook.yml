@@ -230,7 +230,6 @@ RSpec/ExpectInHook:
     - 'spec/lib/gitlab/github_import/parallel_scheduling_spec.rb'
     - 'spec/lib/gitlab/github_import/user_finder_spec.rb'
     - 'spec/lib/gitlab/gpg_spec.rb'
-    - 'spec/lib/gitlab/graphql/generic_tracing_spec.rb'
     - 'spec/lib/gitlab/health_checks/gitaly_check_spec.rb'
     - 'spec/lib/gitlab/health_checks/probes/collection_spec.rb'
     - 'spec/lib/gitlab/health_checks/puma_check_spec.rb'

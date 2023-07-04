@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DatabaseEventTracking, :snowplow do
+RSpec.describe DatabaseEventTracking, :snowplow, feature_category: :service_ping do
   before do
     allow(Gitlab::Tracking).to receive(:database_event).and_call_original
   end
@@ -28,18 +28,6 @@ RSpec.describe DatabaseEventTracking, :snowplow do
       expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
       create_test_class_record
-    end
-  end
-
-  context 'if product_intelligence_database_event_tracking FF is off' do
-    before do
-      stub_feature_flags(product_intelligence_database_event_tracking: false)
-    end
-
-    it 'does not track the event' do
-      create_test_class_record
-
-      expect_no_snowplow_event(tracking_method: :database_event)
     end
   end
 

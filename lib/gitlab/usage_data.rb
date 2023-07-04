@@ -364,7 +364,11 @@ module Gitlab
           group_clusters_disabled: clusters_user_distinct_count(::Clusters::Cluster.disabled.group_type, time_period),
           group_clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled.group_type, time_period),
           project_clusters_disabled: clusters_user_distinct_count(::Clusters::Cluster.disabled.project_type, time_period),
-          project_clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled.project_type, time_period)
+          project_clusters_enabled: clusters_user_distinct_count(::Clusters::Cluster.enabled.project_type, time_period),
+          # These two `projects_slack_x` metrics are owned by the Manage stage, but are in this method as their key paths can't change.
+          # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123442#note_1427961339.
+          projects_slack_notifications_active: distinct_count(::Project.with_slack_integration.where(time_period), :creator_id),
+          projects_slack_slash_active: distinct_count(::Project.with_slack_slash_commands_integration.where(time_period), :creator_id)
         }
       end
       # rubocop: enable UsageData/LargeTable

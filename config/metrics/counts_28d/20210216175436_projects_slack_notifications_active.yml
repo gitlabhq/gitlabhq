@@ -1,0 +1,21 @@
+---
+data_category: optional
+key_path: usage_activity_by_stage_monthly.configure.projects_slack_notifications_active
+description: Unique projects created in the past 28 days that have Slack notifications
+  enabled
+product_section: dev
+product_stage: manage
+product_group: integrations
+value_type: number
+status: active
+time_frame: 28d
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "<13.9"

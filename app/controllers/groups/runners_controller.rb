@@ -16,11 +16,9 @@ class Groups::RunnersController < Groups::ApplicationController
     Gitlab::Tracking.event(self.class.name, 'index', user: current_user, namespace: @group)
   end
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
@@ -30,8 +28,7 @@ class Groups::RunnersController < Groups::ApplicationController
     end
   end
 
-  def new
-  end
+  def new; end
 
   def register
     render_404 unless runner.registration_available?

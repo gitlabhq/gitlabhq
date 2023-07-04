@@ -217,3 +217,13 @@ ping-appsec-for-sast-findings:
   script:
     - apk add jq curl
     - scripts/process_custom_semgrep_results.sh
+
+trigger-depsaster:
+  extends: .static-analysis:rules:trigger-depsaster
+  stage: lint
+  variables:
+    MERGE_REQUEST_PROJECT_ID: $CI_MERGE_REQUEST_PROJECT_ID
+    MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
+  trigger:
+    project: "gitlab-com/gl-security/appsec/tooling/depsaster"
+  allow_failure: true

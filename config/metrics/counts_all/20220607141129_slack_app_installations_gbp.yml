@@ -1,0 +1,21 @@
+---
+key_path: counts.slack_app_installations_gbp
+description: Count of Slack app installations using the new GBP version
+product_section: dev
+product_stage: manage
+product_group: integrations
+value_type: number
+status: active
+milestone: "15.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89130
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: CountSlackAppInstallationsGbpMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

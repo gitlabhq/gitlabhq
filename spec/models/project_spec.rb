@@ -2170,6 +2170,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_slack_integration' do
+    it 'returns projects with both active and inactive slack integrations' do
+      create(:project)
+      with_active_slack = create(:integrations_slack).project
+      with_disabled_slack = create(:integrations_slack, active: false).project
+
+      expect(described_class.with_slack_integration).to contain_exactly(
+        with_active_slack,
+        with_disabled_slack
+      )
+    end
+  end
+
+  describe '.with_slack_slash_commands_integration' do
+    it 'returns projects with both active and inactive slack slash commands integrations' do
+      create(:project)
+      with_active_slash_commands = create(:slack_slash_commands_integration).project
+      with_disabled_slash_commands = create(:slack_slash_commands_integration, active: false).project
+
+      expect(described_class.with_slack_slash_commands_integration).to contain_exactly(
+        with_active_slash_commands,
+        with_disabled_slash_commands
+      )
+    end
+  end
+
   describe '.cached_count', :use_clean_rails_memory_store_caching do
     let(:group)     { create(:group, :public) }
     let!(:project1) { create(:project, :public, group: group) }

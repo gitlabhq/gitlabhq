@@ -140,7 +140,6 @@ Lint/RedundantCopDisableDirective:
     - 'ee/lib/ee/gitlab/background_migration/migrate_shared_vulnerability_scanners.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_vulnerabilities_feedback_to_vulnerabilities_state_transition.rb'
     - 'ee/lib/ee/gitlab/background_migration/purge_stale_security_scans.rb'
-    - 'ee/lib/ee/gitlab/usage_data.rb'
     - 'ee/lib/gitlab/analytics/type_of_work/tasks_by_type.rb'
     - 'ee/lib/gitlab/elastic/bool_expr.rb'
     - 'ee/lib/gitlab/spdx/license.rb'

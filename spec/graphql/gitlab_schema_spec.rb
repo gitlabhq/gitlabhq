@@ -12,10 +12,6 @@ RSpec.describe GitlabSchema do
     expect(tracers).to include(BatchLoader::GraphQL)
   end
 
-  it 'enables the generic instrumenter' do
-    expect(tracers).to include(instance_of(::Gitlab::Graphql::GenericTracing))
-  end
-
   it 'has the base mutation' do
     expect(described_class.mutation).to eq(::Types::MutationType)
   end

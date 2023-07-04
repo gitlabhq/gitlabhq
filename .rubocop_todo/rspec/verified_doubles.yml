@@ -578,7 +578,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/grape_logging/loggers/urgency_logger_spec.rb'
     - 'spec/lib/gitlab/graphql/authorize/object_authorization_spec.rb'
     - 'spec/lib/gitlab/graphql/batch_key_spec.rb'
-    - 'spec/lib/gitlab/graphql/generic_tracing_spec.rb'
     - 'spec/lib/gitlab/graphql/lazy_spec.rb'
     - 'spec/lib/gitlab/graphql/loaders/issuable_loader_spec.rb'
     - 'spec/lib/gitlab/graphql/present/field_extension_spec.rb'

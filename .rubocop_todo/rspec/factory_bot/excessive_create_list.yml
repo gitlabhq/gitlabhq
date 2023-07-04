@@ -3,11 +3,7 @@ RSpec/FactoryBot/ExcessiveCreateList:
   Details: grace period
   Exclude:
     - 'ee/spec/controllers/groups/hooks_controller_spec.rb'
-    - 'ee/spec/controllers/projects/vulnerability_feedback_controller_spec.rb'
     - 'ee/spec/features/search/elastic/global_search_spec.rb'
-    - 'ee/spec/frontend/fixtures/on_demand_dast_scans.rb'
-    - 'ee/spec/graphql/types/dast_scanner_profile_type_spec.rb'
-    - 'ee/spec/graphql/types/dast_site_profile_type_spec.rb'
     - 'ee/spec/models/audit_events/external_audit_event_destination_spec.rb'
     - 'ee/spec/models/audit_events/instance_external_audit_event_destination_spec.rb'
     - 'ee/spec/models/license_spec.rb'

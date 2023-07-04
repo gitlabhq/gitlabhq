@@ -935,6 +935,10 @@ Migration/BackgroundMigrationBaseClass:
 BackgroundMigration/AvoidSilentRescueExceptions:
   Enabled: false
 
+Migration/AvoidFinalizeBackgroundMigration:
+  Include:
+    - 'db/post_migrate/*.rb'
+
 Style/ClassAndModuleChildren:
   Enabled: true
 

@@ -15,9 +15,6 @@ class GitlabSchema < GraphQL::Schema
   use Gitlab::Graphql::Tracers::MetricsTracer
   use Gitlab::Graphql::Tracers::LoggerTracer
 
-  # TODO: Old tracer which will be removed eventually
-  #       See https://gitlab.com/gitlab-org/gitlab/-/issues/345396
-  use Gitlab::Graphql::GenericTracing
   use Gitlab::Graphql::Tracers::TimerTracer
 
   use Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing

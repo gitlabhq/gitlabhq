@@ -26,7 +26,7 @@ For results about an investigation conducted into an unexpected drop in Service 
 
 ### Troubleshoot VersionApp layer
 
-Check if the [export jobs](https://gitlab.com/gitlab-services/version-gitlab-com#data-export-using-pipeline-schedules) are successful.
+Check if the [export jobs](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/tree/main/#data-export-using-pipeline-schedules) are successful.
 
 Check [Service Ping errors](https://app.periscopedata.com/app/gitlab/968489?widget=14609989&udv=0) in the [Service Ping Health Dashboard](https://app.periscopedata.com/app/gitlab/968489).
 

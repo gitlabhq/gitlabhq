@@ -12,8 +12,7 @@ class Projects::RunnersController < Projects::ApplicationController
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-runners-settings')
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if Ci::Runners::UpdateRunnerService.new(@runner).execute(runner_params).success?
@@ -23,8 +22,7 @@ class Projects::RunnersController < Projects::ApplicationController
     end
   end
 
-  def new
-  end
+  def new; end
 
   def register
     render_404 unless runner.registration_available?
@@ -54,8 +52,7 @@ class Projects::RunnersController < Projects::ApplicationController
     end
   end
 
-  def show
-  end
+  def show; end
 
   def toggle_shared_runners
     update_params = { shared_runners_enabled: !project.shared_runners_enabled }

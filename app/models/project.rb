@@ -692,6 +692,10 @@ class Project < ApplicationRecord
   scope :with_integration, -> (integration_class) { joins(:integrations).merge(integration_class.all) }
   scope :with_active_integration, -> (integration_class) { with_integration(integration_class).merge(integration_class.active) }
   scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
+  # .with_slack_integration can generate poorly performing queries. It is intended only for UsagePing.
+  scope :with_slack_integration, -> { joins(:slack_integration) }
+  # .with_slack_slash_commands_integration can generate poorly performing queries. It is intended only for UsagePing.
+  scope :with_slack_slash_commands_integration, -> { joins(:slack_slash_commands_integration) }
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.

@@ -2,7 +2,7 @@
 # Conditions #
 ##############
 .if-not-canonical-namespace: &if-not-canonical-namespace
-  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/'
+  if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org|-cn)?($|\/)/'
 
 .if-not-ee: &if-not-ee
   # Only consider FOSS not EE
@@ -51,7 +51,7 @@
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/'
 
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
 .if-merge-request-labels-run-in-ruby2: &if-merge-request-labels-run-in-ruby2
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby2/'
@@ -2103,6 +2103,17 @@
       changes: [".gitlab/ci/static-analysis.gitlab-ci.yml"]
     - <<: *if-merge-request
       changes: *static-analysis-patterns
+
+.static-analysis:rules:trigger-depsaster:
+  rules:
+    - if: $ENABLE_DEPSASTER != 'true'
+      when: never
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request
+      changes: ["**/Gemfile.checksum"]
 
 .semgrep-appsec-custom-rules:rules:
   rules:

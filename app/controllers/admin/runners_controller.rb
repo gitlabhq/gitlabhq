@@ -8,18 +8,15 @@ class Admin::RunnersController < Admin::ApplicationController
   feature_category :runner
   urgency :low
 
-  def index
-  end
+  def index; end
 
-  def show
-  end
+  def show; end
 
   def edit
     assign_projects
   end
 
-  def new
-  end
+  def new; end
 
   def register
     render_404 unless runner.registration_available?

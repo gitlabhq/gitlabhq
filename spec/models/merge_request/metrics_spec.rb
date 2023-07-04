@@ -94,7 +94,7 @@ RSpec.describe MergeRequest::Metrics do
     end
   end
 
-  it_behaves_like 'database events tracking batch 2' do
+  it_behaves_like 'database events tracking', feature_category: :service_ping do
     let(:merge_request) { create(:merge_request) }
 
     let(:record) { merge_request.metrics }

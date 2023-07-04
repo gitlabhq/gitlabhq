@@ -51,6 +51,7 @@ review-build-cng:
     on_stop: trigger-review-stop
 
 review-deploy:
+  timeout: 45min
   extends:
     - .review-workflow-base
     - .review:rules:review-deploy
@@ -115,6 +116,7 @@ review-deploy-sample-projects:
 
 .review-stop-base:
   extends: .review-workflow-base
+  timeout: 15min
   environment:
     action: stop
   variables:

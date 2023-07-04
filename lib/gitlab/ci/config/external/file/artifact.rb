@@ -19,12 +19,15 @@ module Gitlab
             end
 
             def content
-              strong_memoize(:content) do
-                Gitlab::Ci::ArtifactFileReader.new(artifact_job).read(location)
-              rescue Gitlab::Ci::ArtifactFileReader::Error => error
-                errors.push(error.message) # TODO this memoizes the error message as a content!
-              end
+              return unless context.parent_pipeline.present?
+
+              Gitlab::Ci::ArtifactFileReader.new(artifact_job).read(location)
+            rescue Gitlab::Ci::ArtifactFileReader::Error => error
+              errors.push(error.message)
+
+              nil
             end
+            strong_memoize_attr :content
 
             def metadata
               super.merge(
