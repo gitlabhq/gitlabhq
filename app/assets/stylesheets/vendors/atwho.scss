@@ -6,6 +6,7 @@
   @include gl-border-b-solid;
   @include gl-border-b-gray-100;
   @include gl-rounded-lg;
+  @include gl-shadow-md;
 
   .name,
   small.aliases,
@@ -49,10 +50,12 @@
   // TODO: fallback to global style
   .atwho-view-ul {
     @include gl-p-2;
+    max-height: $gl-max-dropdown-max-height;
 
     li {
       @include gl-px-3;
-      @include gl-py-2;
+      padding-top: $gl-padding-6;
+      padding-bottom: $gl-padding-6;
       border: 0;
       @include gl-rounded-base;
 
@@ -73,14 +76,24 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
+      }
 
-        .center {
-          line-height: 14px;
-        }
+      .center {
+        line-height: 14px;
       }
 
       strong {
         color: $gl-text-color;
+      }
+
+      gl-emoji {
+        @include gl-mr-2;
+      }
+
+      .dropdown-label-box {
+        position: relative;
+        top: -1px;
+        @include gl-mr-2;
       }
     }
   }

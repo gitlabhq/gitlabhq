@@ -40,18 +40,18 @@ For configuration removals, see the [Omnibus deprecation policy](../../administr
 
 For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).
 
-## Update the deprecations documentation pages
+## Update the deprecations and removals documentation
 
-The [deprecations](../../update/deprecations.md)
+The [deprecations and removals](../../update/deprecations.md)
 documentation is generated from the YAML files located in
-[`gitlab/data/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data).
+[`gitlab/data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
 
-To update the deprecations page when an entry is added,
+To update the deprecations and removals page when a YAML file is added,
 edited, or removed:
 
 1. From the command line, navigate to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 1. Create, edit, or remove the YAML file under [`data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
-1. Compile the deprecation documentation:
+1. Compile the deprecations and removals documentation:
 
    ```shell
    bin/rake gitlab:docs:compile_deprecations
@@ -64,13 +64,13 @@ edited, or removed:
    ```
 
 1. Commit the updated documentation and push the changes.
-1. Create a merge request using the [Deprecations](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Deprecations.md)
+1. Create a merge request using the [Deprecations and Removals](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Deprecations.md)
    template.
 
 Related Handbook pages:
 
 - <https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes>
-- <https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-docs>
+- <https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-page>
 
 ## Update the related documentation
 

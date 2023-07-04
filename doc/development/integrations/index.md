@@ -310,7 +310,7 @@ see the [feature deprecation guidelines](../../development/deprecation_guideline
 You must announce any deprecation [no later than the third milestone preceding intended removal](../../development/deprecation_guidelines/index.md#when-can-a-feature-be-deprecated).
 To deprecate an integration:
 
-- [Add a deprecation entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-documentation-pages).
+- [Add a deprecation entry](../../development/deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation).
 - [Mark the integration documentation as deprecated](../../development/documentation/versions.md#deprecate-a-page-or-topic).
 - Optional. To prevent any new project-level records from
   being created, add the integration to `Project#disabled_integrations` (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114835)).

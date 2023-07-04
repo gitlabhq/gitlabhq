@@ -866,7 +866,7 @@ describe('GfmAutoComplete', () => {
       it('should return a correct template', () => {
         const actual = GfmAutoComplete.Emoji.templateFunction(mockItem);
         const glEmojiTag = `<gl-emoji data-name="${mockItem.emoji.name}"></gl-emoji>`;
-        const expected = `<li>${mockItem.fieldValue} ${glEmojiTag}</li>`;
+        const expected = `<li>${glEmojiTag} ${mockItem.fieldValue}</li>`;
 
         expect(actual).toBe(expected);
       });

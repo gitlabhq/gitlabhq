@@ -26,7 +26,6 @@ RSpec.describe Abuse::TrustScore, feature_category: :instance_resiliency do
 
     before do
       allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('123abc')
-      stub_const('Abuse::TrustScore::MAX_EVENTS', 2)
     end
 
     context 'if correlation ID is nil' do
@@ -40,17 +39,6 @@ RSpec.describe Abuse::TrustScore, feature_category: :instance_resiliency do
 
       it 'does not change the correlation id' do
         expect(subject.correlation_id_value).to eq('already-set')
-      end
-    end
-
-    context 'if max events is exceeded' do
-      it 'removes the oldest events' do
-        first = create(:abuse_trust_score, user: user)
-        create(:abuse_trust_score, user: user)
-        create(:abuse_trust_score, user: user)
-
-        expect(user.abuse_trust_scores.count).to eq(2)
-        expect(described_class.find_by_id(first.id)).to eq(nil)
       end
     end
   end

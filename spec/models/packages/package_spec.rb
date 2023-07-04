@@ -1014,6 +1014,32 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '.select_only_first_by_name' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package1) { create(:package, name: 'p1', created_at: 1000, project: project) }
+    let_it_be(:package2) { create(:package, name: 'p1', created_at: 1001, project: project) }
+    let_it_be(:package3) { create(:package, name: 'p2', project: project) }
+
+    subject { described_class.order_name_desc_version_desc.select_only_first_by_name }
+
+    it 'returns only the most recent package by name' do
+      is_expected.to eq([package3, package2])
+    end
+  end
+
+  describe '.order_name_desc_version_desc' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package1) { create(:package, name: 'p1', created_at: 1000, project: project) }
+    let_it_be(:package2) { create(:package, name: 'p1', created_at: 1001, project: project) }
+    let_it_be(:package3) { create(:package, name: 'p2', project: project) }
+
+    subject { described_class.order_name_desc_version_desc }
+
+    it 'sorts packages by name desc and created desc' do
+      is_expected.to eq([package3, package2, package1])
+    end
+  end
+
   context 'sorting' do
     let_it_be(:project) { create(:project, name: 'aaa') }
     let_it_be(:project2) { create(:project, name: 'bbb') }

@@ -5,9 +5,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 toc: false
 ---
 
-# Deprecations by version
+# Deprecations and removals by version
 
-These GitLab features are deprecated and no longer recommended for use.
+The following GitLab features are deprecated and no longer recommended for use.
 Each deprecated feature will be removed in a future release.
 Some features cause breaking changes when they are removed.
 
@@ -24,8 +24,10 @@ and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) depreca
 <!--
 DO NOT EDIT THIS PAGE DIRECTLY
 
-This page is automatically generated from the YAML files in `/data/deprecations` by the rake task
-located at `lib/tasks/gitlab/docs/compile_deprecations.rake`.
+This page is automatically generated from the template located at
+`data/deprecations/templates/_deprecation_template.md.erb`, using
+the YAML files in `/data/deprecations` by the rake task
+located at `lib/tasks/gitlab/docs/compile_deprecations.rake`,
 
 For deprecation authors (usually Product Managers and Engineering Managers):
 

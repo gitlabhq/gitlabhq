@@ -1,9 +1,11 @@
 import { GlModal } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import RunnerDeleteModal from '~/ci/runner/components/runner_delete_modal.vue';
 
 describe('RunnerDeleteModal', () => {
   let wrapper;
+  const hideModalSpy = jest.fn();
 
   const findGlModal = () => wrapper.findComponent(GlModal);
 
@@ -16,6 +18,11 @@ describe('RunnerDeleteModal', () => {
       },
       attrs: {
         modalId: 'delete-runner-modal-99',
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: { hide: hideModalSpy },
+        }),
       },
     });
   };
@@ -67,14 +74,9 @@ describe('RunnerDeleteModal', () => {
   });
 
   describe('When modal is confirmed by the user', () => {
-    let hideModalSpy;
-
-    beforeEach(() => {
-      createComponent({}, mount);
-      hideModalSpy = jest.spyOn(wrapper.vm.$refs.modal, 'hide').mockImplementation(() => {});
-    });
-
     it('Modal gets hidden', () => {
+      createComponent({}, mount);
+
       expect(hideModalSpy).toHaveBeenCalledTimes(0);
 
       findGlModal().vm.$emit('primary');

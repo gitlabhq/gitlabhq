@@ -149,6 +149,10 @@
 
   .gl-search-box-by-type button.gl-clear-icon-button:hover {
     @include gl-bg-transparent;
+
+    &:focus {
+      @include gl-focus($inset: true);
+    }
   }
 
   .issuable-move-button:not(.disabled):hover {

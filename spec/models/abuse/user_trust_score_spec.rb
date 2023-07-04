@@ -110,4 +110,21 @@ RSpec.describe Abuse::UserTrustScore, feature_category: :instance_resiliency do
       end
     end
   end
+
+  describe '#remove_old_scores' do
+    context 'if max events is exceeded' do
+      before do
+        stub_const('Abuse::UserTrustScore::MAX_EVENTS', 2)
+      end
+
+      it 'removes the oldest events' do
+        first = create(:abuse_trust_score, user: user1)
+        create(:abuse_trust_score, user: user1)
+        create(:abuse_trust_score, user: user1)
+
+        expect(user1.abuse_trust_scores.count).to eq(2)
+        expect(Abuse::TrustScore.find_by_id(first.id)).to eq(nil)
+      end
+    end
+  end
 end

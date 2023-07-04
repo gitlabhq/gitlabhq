@@ -2,12 +2,15 @@
 
 module Abuse
   class UserTrustScore
+    MAX_EVENTS = 100
+    SPAMCHECK_HAM_THRESHOLD = 0.5
+
     def initialize(user)
       @user = user
     end
 
     def spammer?
-      spam_score > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
+      spam_score > SPAMCHECK_HAM_THRESHOLD
     end
 
     def spam_score
@@ -28,6 +31,17 @@ module Abuse
 
     def trust_scores_for_source(source)
       user_scores.where(source: source)
+    end
+
+    def remove_old_scores(source)
+      count = trust_scores_for_source(source).count
+      return unless count > MAX_EVENTS
+
+      Abuse::TrustScore.delete(
+        trust_scores_for_source(source)
+        .order_created_at_asc
+        .limit(count - MAX_EVENTS)
+      )
     end
 
     private
