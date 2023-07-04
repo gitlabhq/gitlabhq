@@ -46,7 +46,6 @@ RSpec/DescribedClass:
     - 'spec/config/settings_spec.rb'
     - 'spec/controllers/repositories/git_http_controller_spec.rb'
     - 'spec/experiments/application_experiment_spec.rb'
-    - 'spec/experiments/concerns/project_commit_count_spec.rb'
     - 'spec/frontend/fixtures/timezones.rb'
     - 'spec/graphql/gitlab_schema_spec.rb'
     - 'spec/graphql/graphql_triggers_spec.rb'

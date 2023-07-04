@@ -31,7 +31,10 @@ describe('HighlightMixin', () => {
 
     const dummyComponent = {
       mixins: [highlightMixin],
-      inject: { highlightWorker: { default: workerMock } },
+      inject: {
+        highlightWorker: { default: workerMock },
+        glFeatures: { default: { highlightJsWorker: true } },
+      },
       template: '<div>{{chunks[0]?.highlightedContent}}</div>',
       created() {
         this.initHighlightWorker({ rawTextBlob, simpleViewer, language });

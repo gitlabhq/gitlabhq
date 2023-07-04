@@ -152,6 +152,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
         ...inject,
         glFeatures: {
           highlightJs,
+          highlightJsWorker: false,
         },
       },
     }),
@@ -405,7 +406,7 @@ describe('Blob content viewer component', () => {
 
       await waitForPromises();
 
-      expect(loadViewer).toHaveBeenCalledWith(viewer, false);
+      expect(loadViewer).toHaveBeenCalledWith(viewer, false, false, 'javascript');
       expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
     });
   });

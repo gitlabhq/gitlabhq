@@ -1,4 +1,3 @@
-import { nextTick } from 'vue';
 import {
   LEGACY_FALLBACKS,
   EVENT_ACTION,
@@ -39,7 +38,7 @@ export default {
       this?.onError();
     },
     initHighlightWorker({ rawTextBlob, language, simpleViewer }) {
-      if (simpleViewer?.fileType !== TEXT_FILE_TYPE) return;
+      if (simpleViewer?.fileType !== TEXT_FILE_TYPE || !this.glFeatures.highlightJsWorker) return;
 
       if (this.isUnsupportedLanguage(language)) {
         this.handleUnsupportedLanguage(language);
@@ -97,7 +96,7 @@ export default {
       }
 
       // Line numbers in the DOM needs to update first based on changes made to `chunks`.
-      await nextTick();
+      await this.$nextTick();
 
       const lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
       lineHighlighter.highlightHash(hash);

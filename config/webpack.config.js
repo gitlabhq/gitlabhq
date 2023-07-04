@@ -371,6 +371,20 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /_worker\.js$/,
+        resourceQuery: /worker/,
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {
+              name: '[name].[contenthash:8].worker.js',
+              inline: IS_DEV_SERVER,
+            },
+          },
+          'babel-loader',
+        ],
+      },
+      {
         test: /mermaid\/.*\.js?$/,
         include: /node_modules/,
         loader: 'babel-loader',
@@ -437,20 +451,6 @@ module.exports = {
         test: /\.(gif|png|mp4)$/,
         loader: 'url-loader',
         options: { limit: 2048 },
-      },
-      {
-        test: /_worker\.js$/,
-        resourceQuery: /worker/,
-        use: [
-          {
-            loader: 'worker-loader',
-            options: {
-              name: '[name].[contenthash:8].worker.js',
-              inline: IS_DEV_SERVER,
-            },
-          },
-          'babel-loader',
-        ],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf)$/,

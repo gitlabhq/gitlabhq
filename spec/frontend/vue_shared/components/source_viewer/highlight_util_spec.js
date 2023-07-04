@@ -1,10 +1,11 @@
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
 import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
 import { highlight } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
 import { LINES_PER_CHUNK, NEWLINE } from '~/vue_shared/components/source_viewer/constants';
 
-jest.mock('highlight.js', () => ({
+jest.mock('highlight.js/lib/core', () => ({
   highlight: jest.fn().mockReturnValue({ value: 'highlighted content' }),
+  registerLanguage: jest.fn(),
 }));
 
 jest.mock('~/vue_shared/components/source_viewer/plugins/index', () => ({
@@ -14,10 +15,14 @@ jest.mock('~/vue_shared/components/source_viewer/plugins/index', () => ({
 const fileType = 'text';
 const rawContent = 'function test() { return true }; \n // newline';
 const highlightedContent = 'highlighted content';
-const language = 'javascript';
+const language = 'json';
 
 describe('Highlight utility', () => {
   beforeEach(() => highlight(fileType, rawContent, language));
+
+  it('registers the language', () => {
+    expect(hljs.registerLanguage).toHaveBeenCalledWith(language, expect.any(Function));
+  });
 
   it('registers the plugins', () => {
     expect(registerPlugins).toHaveBeenCalled();

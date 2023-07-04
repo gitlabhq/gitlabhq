@@ -7904,6 +7904,9 @@ msgstr ""
 msgid "Board|Loading epics"
 msgstr ""
 
+msgid "Bold (%{modifierKey}B)"
+msgstr ""
+
 msgid "Bold text"
 msgstr ""
 
@@ -24345,7 +24348,7 @@ msgstr ""
 msgid "Insert comment template"
 msgstr ""
 
-msgid "Insert link"
+msgid "Insert link (%{modifierKey}K)"
 msgstr ""
 
 msgid "Insert or edit diagram"
@@ -25454,6 +25457,9 @@ msgid "It seems that there is currently no available data for code coverage"
 msgstr ""
 
 msgid "It's you"
+msgstr ""
+
+msgid "Italic (%{modifierKey}I)"
 msgstr ""
 
 msgid "Italic text"
@@ -27836,6 +27842,9 @@ msgid "MarkdownEditor|Add italic text (%{modifierKey}I)"
 msgstr ""
 
 msgid "MarkdownEditor|Add italic text (%{modifier_key}I)"
+msgstr ""
+
+msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}%{shiftKey}X)"
 msgstr ""
 
 msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)"
@@ -44394,7 +44403,7 @@ msgstr ""
 msgid "Store your files, plan your work, collaborate on code, and more."
 msgstr ""
 
-msgid "Strikethrough"
+msgid "Strikethrough (%{modifierKey}%{shiftKey}X)"
 msgstr ""
 
 msgid "Strikethrough text"

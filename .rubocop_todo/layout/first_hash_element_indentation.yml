@@ -9,7 +9,6 @@ Layout/FirstHashElementIndentation:
     - 'app/controllers/projects/badges_controller.rb'
     - 'app/controllers/projects/merge_requests_controller.rb'
     - 'app/controllers/repositories/lfs_locks_api_controller.rb'
-    - 'app/experiments/concerns/project_commit_count.rb'
     - 'app/graphql/mutations/notes/create/diff_note.rb'
     - 'app/graphql/mutations/notes/create/image_diff_note.rb'
     - 'app/graphql/mutations/notes/create/note.rb'

@@ -4,7 +4,6 @@ Lint/EmptyBlock:
     - 'app/controllers/groups/boards_controller.rb'
     - 'app/controllers/projects/boards_controller.rb'
     - 'app/controllers/projects/pipelines_controller.rb'
-    - 'app/experiments/logged_out_marketing_header_experiment.rb'
     - 'config/application.rb'
     - 'ee/app/controllers/projects/learn_gitlab_controller.rb'
     - 'ee/spec/factories/incident_management/escalation_rules.rb'

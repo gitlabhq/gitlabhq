@@ -19,9 +19,6 @@ export default {
     SafeHtml,
   },
   mixins: [Tracking.mixin()],
-  inject: {
-    highlightWorker: { default: null },
-  },
   props: {
     blob: {
       type: Object,

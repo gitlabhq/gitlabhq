@@ -31,11 +31,12 @@ describe('content_editor/components/formatting_toolbar', () => {
   describe.each`
     testId            | controlProps
     ${'text-styles'}  | ${{}}
-    ${'bold'}         | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold text', editorCommand: 'toggleBold' }}
-    ${'italic'}       | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic text', editorCommand: 'toggleItalic' }}
-    ${'strike'}       | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough', editorCommand: 'toggleStrike' }}
+    ${'bold'}         | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold (Ctrl+B)', editorCommand: 'toggleBold' }}
+    ${'italic'}       | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic (Ctrl+I)', editorCommand: 'toggleItalic' }}
+    ${'strike'}       | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough (Ctrl+Shift+X)', editorCommand: 'toggleStrike' }}
     ${'blockquote'}   | ${{ contentType: 'blockquote', iconName: 'quote', label: 'Insert a quote', editorCommand: 'toggleBlockquote' }}
     ${'code'}         | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode' }}
+    ${'link'}         | ${{ contentType: 'link', iconName: 'link', label: 'Insert link (Ctrl+K)', editorCommand: 'editLink' }}
     ${'link'}         | ${{}}
     ${'bullet-list'}  | ${{ contentType: 'bulletList', iconName: 'list-bulleted', label: 'Add a bullet list', editorCommand: 'toggleBulletList' }}
     ${'ordered-list'} | ${{ contentType: 'orderedList', iconName: 'list-numbered', label: 'Add a numbered list', editorCommand: 'toggleOrderedList' }}
@@ -67,6 +68,24 @@ describe('content_editor/components/formatting_toolbar', () => {
         property: contentType,
         value,
       });
+    });
+  });
+
+  describe('MacOS shortcuts', () => {
+    beforeEach(() => {
+      window.gl = { client: { isMac: true } };
+
+      buildWrapper();
+    });
+
+    it.each`
+      testId      | label
+      ${'bold'}   | ${'Bold (⌘B)'}
+      ${'italic'} | ${'Italic (⌘I)'}
+      ${'strike'} | ${'Strikethrough (⌘⇧X)'}
+      ${'link'}   | ${'Insert link (⌘K)'}
+    `('shows label $label for $testId', ({ testId, label }) => {
+      expect(wrapper.findByTestId(testId).props('label')).toBe(label);
     });
   });
 

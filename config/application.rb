@@ -18,10 +18,7 @@ Bundler.require(*Rails.groups)
 
 module Gitlab
   class Application < Rails::Application
-    config.load_defaults 6.1
-
-    config.active_support.hash_digest_class = ::OpenSSL::Digest::SHA256
-
+    config.load_defaults 7.0
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
     #
@@ -30,6 +27,30 @@ module Gitlab
     # https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
     #
     # To switch a setting to the new default value, we just need to delete the specific line here.
+
+    # Rails 7.0
+    config.action_controller.raise_on_open_redirects = false
+    config.action_controller.wrap_parameters_by_default = false
+    config.action_dispatch.default_headers = { "X-Frame-Options" => "SAMEORIGIN",
+      "X-XSS-Protection" => "1; mode=block",
+      "X-Content-Type-Options" => "nosniff",
+      "X-Download-Options" => "noopen",
+      "X-Permitted-Cross-Domain-Policies" => "none",
+      "Referrer-Policy" => "strict-origin-when-cross-origin" }
+
+    config.action_dispatch.return_only_request_media_type_on_content_type = true
+    config.action_mailer.smtp_timeout = nil # New default is 5
+    config.action_view.button_to_generates_button_tag = nil # New default is true
+    config.active_record.automatic_scope_inversing = nil # New default is true
+    config.active_record.verify_foreign_keys_for_fixtures = nil # New default is true
+    config.active_record.partial_inserts = true # New default is false
+    config.active_support.cache_format_version = nil # New default is 7.0
+    config.active_support.disable_to_s_conversion = false # New default is true
+    config.active_support.executor_around_test_case = nil # New default is true
+    config.active_support.isolation_level = nil # New default is thread
+    config.active_support.key_generator_hash_digest_class = nil # New default is OpenSSL::Digest::SHA256
+    config.active_support.remove_deprecated_time_with_zone_name = nil # New default is true
+    config.active_support.use_rfc4122_namespaced_uuids = nil # New default is true
 
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax

@@ -97,10 +97,12 @@ export default {
     },
   },
   data() {
+    const modifierKey = getModifierKey();
     return {
       tag: '> ',
       suggestPopoverVisible: false,
-      modifierKey: getModifierKey(),
+      modifierKey,
+      shiftKey: modifierKey === '⌘' ? '⇧' : 'Shift+',
     };
   },
   computed: {
@@ -346,8 +348,9 @@ export default {
             tag="~~"
             :button-title="
               /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-              sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
-                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}%{shiftKey}X)'), {
+                modifierKey,
+                shiftKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
               })
             "
             :shortcuts="$options.shortcuts.strikethrough"

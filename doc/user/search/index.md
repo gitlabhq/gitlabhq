@@ -99,6 +99,32 @@ To filter code search results by one or more languages:
 1. On the code search page, on the left sidebar, select one or more languages.
 1. On the left sidebar, select **Apply**.
 
+## Exclude search results
+
+### From archived projects
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
+
+Archived projects are included in search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
+
+To include archived projects with `search_projects_hide_archived` enabled, you must add the parameter `include_archived=true` to the URL.
+
+### From issues in archived projects
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124846) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. On GitLab.com, this feature is not available.
+
+Issues in archived projects are included in search results by default. To exclude issues in archived projects, ensure the `search_issues_hide_archived_projects` flag is enabled.
+
+To include issues in archived projects with `search_issues_hide_archived_projects` enabled, you must add the parameter `include_archived=true` to the URL.
+
 ## Search for a project by full path
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
@@ -111,18 +137,6 @@ For example:
 
 - `gitlab-org/gitlab` searches for the `gitlab` project in the `gitlab-org` namespace.
 - `gitlab-org/` displays autocomplete suggestions for projects that belong to the `gitlab-org` namespace.
-
-### Exclude archived projects from project search results
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
-
-Archived projects are included in project search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
-
-To include archived projects with `search_projects_hide_archived` enabled, you must add the parameter `include_archived=true` to the URL.
 
 ## Search for a commit SHA
 

@@ -1,0 +1,8 @@
+---
+name: highlight_js_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124276
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415755
+milestone: '16.2'
+type: development
+group: group::source code
+default_enabled: false

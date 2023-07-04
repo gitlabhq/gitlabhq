@@ -18,6 +18,7 @@ import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_util
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -78,6 +79,7 @@ if (viewBlobEl) {
     router,
     apolloProvider,
     provide: {
+      highlightWorker: gon.features.highlightJsWorker ? new HighlightWorker() : null,
       targetBranch,
       originalBranch,
       resourceId,

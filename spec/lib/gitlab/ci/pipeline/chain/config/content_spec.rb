@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content, feature_category: :
 
         expect(pipeline.config_source).to eq 'bridge_source'
         expect(command.config_content).to eq 'the-yaml'
-        expect(command.pipeline_config.internal_include_prepended?).to eq(false)
+        expect(command.pipeline_config.internal_include_prepended?).to eq(true)
       end
     end
 

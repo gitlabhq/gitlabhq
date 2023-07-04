@@ -260,7 +260,6 @@ RSpec/VerifiedDoubles:
     - 'spec/controllers/projects/snippets_controller_spec.rb'
     - 'spec/controllers/sessions_controller_spec.rb'
     - 'spec/dependencies/omniauth_saml_spec.rb'
-    - 'spec/experiments/concerns/project_commit_count_spec.rb'
     - 'spec/factories/ci/job_artifacts.rb'
     - 'spec/features/admin/admin_system_info_spec.rb'
     - 'spec/features/clusters/create_agent_spec.rb'

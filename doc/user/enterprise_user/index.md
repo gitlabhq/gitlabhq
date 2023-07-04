@@ -10,7 +10,7 @@ type: reference
 Enterprise users have user accounts that are administered by an organization that
 has purchased a [GitLab subscription](../../subscriptions/index.md).
 
-Enterprise users are identified by the [**Enterprise** badge](../project/badges.md)
+Enterprise users are identified by the **Enterprise** badge
 next to their names on the [Members list](../group/index.md#filter-and-sort-members-in-a-group).
 
 ## Provision an enterprise user

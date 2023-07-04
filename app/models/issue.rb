@@ -204,24 +204,17 @@ class Issue < ApplicationRecord
   scope :with_issue_type, ->(types) {
     types = Array(types)
 
-    if Feature.enabled?(:issue_type_uses_work_item_types_table)
-      # Using != 1 since we also want the guard clause to handle empty arrays
-      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+    # Using != 1 since we also want the guard clause to handle empty arrays
+    return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
 
-      where(
-        '"issues"."work_item_type_id" = (?)',
-        WorkItems::Type.by_type(types.first).select(:id).limit(1)
-      )
-    else
-      where(issue_type: types)
-    end
+    # This optimization helps the planer use the correct indexes when filtering by a single type
+    where(
+      '"issues"."work_item_type_id" = (?)',
+      WorkItems::Type.by_type(types.first).select(:id).limit(1)
+    )
   }
   scope :without_issue_type, ->(types) {
-    if Feature.enabled?(:issue_type_uses_work_item_types_table)
-      joins(:work_item_type).where.not(work_item_types: { base_type: types })
-    else
-      where.not(issue_type: types)
-    end
+    joins(:work_item_type).where.not(work_item_types: { base_type: types })
   }
 
   scope :public_only, -> { where(confidential: false) }
@@ -756,11 +749,7 @@ class Issue < ApplicationRecord
   end
 
   def issue_type
-    if ::Feature.enabled?(:issue_type_uses_work_item_types_table)
-      work_item_type_with_default.base_type
-    else
-      super
-    end
+    work_item_type_with_default.base_type
   end
 
   def unsubscribe_email_participant(email)

@@ -62,16 +62,21 @@ module SimpleCovEnv
 
       add_group 'Channels',     'app/channels' # Matches EE files as well
       add_group 'Components',   'app/components' # Matches EE files as well
+      add_group 'Config',       %w[/config /ee/config]
       add_group 'Controllers',  'app/controllers' # Matches EE files as well
+      add_group 'Elastic migrations', 'ee/elastic'
+      add_group 'Enums',        'app/enums' # Matches EE files as well
       add_group 'Events',       'app/events' # Matches EE files as well
       add_group 'Experiments',  'app/experiments' # Matches EE files as well
       add_group 'Finders',      'app/finders' # Matches EE files as well
+      add_group 'Fixtures',     'db/fixtures' # Matches EE files as well
       add_group 'GraphQL',      'app/graphql' # Matches EE files as well
       add_group 'Helpers',      'app/helpers' # Matches EE files as well
       add_group 'Mailers',      'app/mailers' # Matches EE files as well
       add_group 'Models',       'app/models' # Matches EE files as well
       add_group 'Policies',     'app/policies' # Matches EE files as well
       add_group 'Presenters',   'app/presenters' # Matches EE files as well
+      add_group 'Replicators',  'app/replicators' # Matches EE files as well
       add_group 'Serializers',  'app/serializers' # Matches EE files as well
       add_group 'Services',     'app/services' # Matches EE files as well
       add_group 'Uploaders',    'app/uploaders' # Matches EE files as well
@@ -79,9 +84,9 @@ module SimpleCovEnv
       add_group 'Views',        'app/views' # Matches EE files as well
       add_group 'Workers',      'app/workers' # Matches EE files as well
       add_group 'Initializers', %w[config/initializers config/initializers_before_autoloader] # Matches EE files as well
-      add_group 'Migrations',   %w[db/migrate db/optional_migrations db/post_migrate] # Matches EE files as well
+      add_group 'Migrations',   %w[db/migrate db/optional_migrations db/post_migrate db/geo/migrate db/geo/post_migrate] # Matches EE files as well
       add_group 'Libraries',    %w[/lib /ee/lib]
-      add_group 'Tooling',      %w[/haml_lint /rubocop /tooling]
+      add_group 'Tooling',      %w[/haml_lint /rubocop /scripts /tooling]
 
       merge_timeout 365 * 24 * 3600
     end

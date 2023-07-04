@@ -72,6 +72,39 @@ describe('Markdown field header component', () => {
       });
     });
 
+    it('renders correct title on non MacOS systems', () => {
+      window.gl = {
+        client: {
+          isMac: false,
+        },
+      };
+
+      createWrapper();
+
+      const buttons = [
+        'Insert suggestion',
+        'Add bold text (Ctrl+B)',
+        'Add italic text (Ctrl+I)',
+        'Add strikethrough text (Ctrl+Shift+X)',
+        'Insert a quote',
+        'Insert code',
+        'Add a link (Ctrl+K)',
+        'Add a bullet list',
+        'Add a numbered list',
+        'Add a checklist',
+        'Indent line (Ctrl+])',
+        'Outdent line (Ctrl+[)',
+        'Add a collapsible section',
+        'Add a table',
+        'Go full screen',
+      ];
+      const elements = findToolbarButtons();
+
+      elements.wrappers.forEach((buttonEl, index) => {
+        expect(buttonEl.props('buttonTitle')).toBe(buttons[index]);
+      });
+    });
+
     it('renders "Attach a file or image" button using gl-button', () => {
       const button = wrapper.findByTestId('button-attach-file');
 

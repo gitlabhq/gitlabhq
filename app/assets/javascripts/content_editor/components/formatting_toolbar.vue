@@ -1,5 +1,7 @@
 <script>
 import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
+import { __, sprintf } from '~/locale';
+import { getModifierKey } from '~/constants';
 import trackUIControl from '../services/track_ui_control';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarAttachmentButton from './toolbar_attachment_button.vue';
@@ -32,6 +34,27 @@ export default {
       required: false,
     },
   },
+  data() {
+    const modifierKey = getModifierKey();
+    const shiftKey = modifierKey === '⌘' ? '⇧' : 'Shift+';
+
+    return {
+      i18n: {
+        bold: sprintf(__('Bold (%{modifierKey}B)'), { modifierKey }),
+        italic: sprintf(__('Italic (%{modifierKey}I)'), { modifierKey }),
+        strike: sprintf(__('Strikethrough (%{modifierKey}%{shiftKey}X)'), {
+          modifierKey,
+          shiftKey,
+        }),
+        quote: __('Insert a quote'),
+        code: __('Code'),
+        link: sprintf(__('Insert link (%{modifierKey}K)'), { modifierKey }),
+        bulletList: __('Add a bullet list'),
+        numberedList: __('Add a numbered list'),
+        taskList: __('Add a checklist'),
+      },
+    };
+  },
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
       trackUIControl({ property: contentType, value });
@@ -58,7 +81,7 @@ export default {
           content-type="bold"
           icon-name="bold"
           editor-command="toggleBold"
-          :label="__('Bold text')"
+          :label="i18n.bold"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -66,7 +89,7 @@ export default {
           content-type="italic"
           icon-name="italic"
           editor-command="toggleItalic"
-          :label="__('Italic text')"
+          :label="i18n.italic"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -74,7 +97,7 @@ export default {
           content-type="strike"
           icon-name="strikethrough"
           editor-command="toggleStrike"
-          :label="__('Strikethrough')"
+          :label="i18n.strike"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -82,7 +105,7 @@ export default {
           content-type="blockquote"
           icon-name="quote"
           editor-command="toggleBlockquote"
-          :label="__('Insert a quote')"
+          :label="i18n.quote"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -90,7 +113,7 @@ export default {
           content-type="code"
           icon-name="code"
           editor-command="toggleCode"
-          :label="__('Code')"
+          :label="i18n.code"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -98,7 +121,7 @@ export default {
           content-type="link"
           icon-name="link"
           editor-command="editLink"
-          :label="__('Insert link')"
+          :label="i18n.link"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -107,7 +130,7 @@ export default {
           icon-name="list-bulleted"
           class="gl-display-none gl-sm-display-inline"
           editor-command="toggleBulletList"
-          :label="__('Add a bullet list')"
+          :label="i18n.bulletList"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -116,7 +139,7 @@ export default {
           icon-name="list-numbered"
           class="gl-display-none gl-sm-display-inline"
           editor-command="toggleOrderedList"
-          :label="__('Add a numbered list')"
+          :label="i18n.numberedList"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
@@ -125,7 +148,7 @@ export default {
           icon-name="list-task"
           class="gl-display-none gl-sm-display-inline"
           editor-command="toggleTaskList"
-          :label="__('Add a checklist')"
+          :label="i18n.taskList"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />

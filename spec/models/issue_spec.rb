@@ -467,18 +467,6 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(described_class.with_issue_type([]).to_sql).to include('WHERE 1=0')
       end
     end
-
-    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
-      before do
-        stub_feature_flags(issue_type_uses_work_item_types_table: false)
-      end
-
-      it 'uses the issue_type column for filtering' do
-        expect do
-          described_class.with_issue_type(:issue).to_a
-        end.to make_queries_matching(/"issues"\."issue_type" = 0/)
-      end
-    end
   end
 
   describe '.without_issue_type' do
@@ -505,18 +493,6 @@ RSpec.describe Issue, feature_category: :team_planning do
           \sWHERE\s"work_item_types"\."base_type"\s!=\s0
         }x
       )
-    end
-
-    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
-      before do
-        stub_feature_flags(issue_type_uses_work_item_types_table: false)
-      end
-
-      it 'uses the issue_type column for filtering' do
-        expect do
-          described_class.without_issue_type(:issue).to_a
-        end.to make_queries_matching(/"issues"\."issue_type" != 0/)
-      end
     end
   end
 
@@ -1879,39 +1855,17 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#issue_type' do
     let_it_be(:issue) { create(:issue) }
 
-    context 'when the issue_type_uses_work_item_types_table feature flag is enabled' do
-      it 'gets the type field from the work_item_types table' do
-        expect(issue).to receive_message_chain(:work_item_type, :base_type)
+    it 'gets the type field from the work_item_types table' do
+      expect(issue).to receive_message_chain(:work_item_type, :base_type)
 
-        issue.issue_type
-      end
-
-      context 'when the issue is not persisted' do
-        it 'uses the default work item type' do
-          non_persisted_issue = build(:issue, work_item_type: nil)
-
-          expect(non_persisted_issue.issue_type).to eq(described_class::DEFAULT_ISSUE_TYPE.to_s)
-        end
-      end
+      issue.issue_type
     end
 
-    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
-      before do
-        stub_feature_flags(issue_type_uses_work_item_types_table: false)
-      end
+    context 'when the issue is not persisted' do
+      it 'uses the default work item type' do
+        non_persisted_issue = build(:issue, work_item_type: nil)
 
-      it 'does not get the value from the work_item_types table' do
-        expect(issue).not_to receive(:work_item_type)
-
-        issue.issue_type
-      end
-
-      context 'when the issue is not persisted' do
-        it 'uses the default work item type' do
-          non_persisted_issue = build(:issue, work_item_type: nil)
-
-          expect(non_persisted_issue.issue_type).to eq(described_class::DEFAULT_ISSUE_TYPE.to_s)
-        end
+        expect(non_persisted_issue.issue_type).to eq(described_class::DEFAULT_ISSUE_TYPE.to_s)
       end
     end
   end
