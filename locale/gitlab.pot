@@ -6585,7 +6585,7 @@ msgstr ""
 msgid "AuditStreams|Event filtering (optional)"
 msgstr ""
 
-msgid "AuditStreams|Filter by stream event"
+msgid "AuditStreams|Filter by audit event type"
 msgstr ""
 
 msgid "AuditStreams|Header"
@@ -46297,6 +46297,9 @@ msgid "The selected image is too large."
 msgstr ""
 
 msgid "The snippet can be accessed without any authentication."
+msgstr ""
+
+msgid "The snippet can be accessed without any authentication. To embed snippets, a project must be public."
 msgstr ""
 
 msgid "The snippet is visible only to me."

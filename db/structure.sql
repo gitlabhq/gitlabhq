@@ -18220,6 +18220,27 @@ CREATE SEQUENCE merge_request_predictions_merge_request_id_seq
 
 ALTER SEQUENCE merge_request_predictions_merge_request_id_seq OWNED BY merge_request_predictions.merge_request_id;
 
+CREATE TABLE merge_request_review_llm_summaries (
+    id bigint NOT NULL,
+    user_id bigint,
+    review_id bigint NOT NULL,
+    merge_request_diff_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    provider smallint NOT NULL,
+    content text NOT NULL,
+    CONSTRAINT check_72802358e9 CHECK ((char_length(content) <= 2056))
+);
+
+CREATE SEQUENCE merge_request_review_llm_summaries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_review_llm_summaries_id_seq OWNED BY merge_request_review_llm_summaries.id;
+
 CREATE TABLE merge_request_reviewers (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -25548,6 +25569,8 @@ ALTER TABLE ONLY merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('merg
 
 ALTER TABLE ONLY merge_request_predictions ALTER COLUMN merge_request_id SET DEFAULT nextval('merge_request_predictions_merge_request_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_review_llm_summaries ALTER COLUMN id SET DEFAULT nextval('merge_request_review_llm_summaries_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_reviewers ALTER COLUMN id SET DEFAULT nextval('merge_request_reviewers_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_user_mentions ALTER COLUMN id SET DEFAULT nextval('merge_request_user_mentions_id_seq'::regclass);
@@ -27743,6 +27766,9 @@ ALTER TABLE ONLY merge_request_metrics
 
 ALTER TABLE ONLY merge_request_predictions
     ADD CONSTRAINT merge_request_predictions_pkey PRIMARY KEY (merge_request_id);
+
+ALTER TABLE ONLY merge_request_review_llm_summaries
+    ADD CONSTRAINT merge_request_review_llm_summaries_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT merge_request_reviewers_pkey PRIMARY KEY (id);
@@ -31789,6 +31815,12 @@ CREATE INDEX index_merge_request_metrics_on_pipeline_id ON merge_request_metrics
 
 CREATE INDEX index_merge_request_metrics_on_target_project_id ON merge_request_metrics USING btree (target_project_id);
 
+CREATE INDEX index_merge_request_review_llm_summaries_on_mr_diff_id ON merge_request_review_llm_summaries USING btree (merge_request_diff_id);
+
+CREATE INDEX index_merge_request_review_llm_summaries_on_review_id ON merge_request_review_llm_summaries USING btree (review_id);
+
+CREATE INDEX index_merge_request_review_llm_summaries_on_user_id ON merge_request_review_llm_summaries USING btree (user_id);
+
 CREATE UNIQUE INDEX index_merge_request_reviewers_on_merge_request_id_and_user_id ON merge_request_reviewers USING btree (merge_request_id, user_id);
 
 CREATE INDEX index_merge_request_reviewers_on_user_id ON merge_request_reviewers USING btree (user_id);
@@ -32338,8 +32370,6 @@ CREATE INDEX index_pm_package_version_licenses_on_pm_license_id ON pm_package_ve
 CREATE INDEX index_pm_package_version_licenses_on_pm_package_version_id ON pm_package_version_licenses USING btree (pm_package_version_id);
 
 CREATE INDEX index_pm_package_versions_on_pm_package_id ON pm_package_versions USING btree (pm_package_id);
-
-CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON pool_repositories USING btree (disk_path);
 
 CREATE INDEX index_pool_repositories_on_shard_id ON pool_repositories USING btree (shard_id);
 
@@ -33694,6 +33724,8 @@ CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_re
 CREATE UNIQUE INDEX unique_organizations_on_path ON organizations USING btree (path);
 
 CREATE UNIQUE INDEX unique_packages_project_id_and_name_and_version_when_debian ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 9) AND (status <> 4));
+
+CREATE UNIQUE INDEX unique_pool_repositories_on_disk_path_and_shard_id ON pool_repositories USING btree (disk_path, shard_id);
 
 CREATE UNIQUE INDEX unique_postgres_async_fk_validations_name_and_table_name ON postgres_async_foreign_key_validations USING btree (name, table_name);
 
@@ -35644,6 +35676,9 @@ ALTER TABLE ONLY user_achievements
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6149611a04 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY merge_request_review_llm_summaries
+    ADD CONSTRAINT fk_6154a9cb89 FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY work_item_widget_definitions
     ADD CONSTRAINT fk_61bfa96db5 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
 
@@ -35826,6 +35861,9 @@ ALTER TABLE ONLY releases
 
 ALTER TABLE ONLY protected_tags
     ADD CONSTRAINT fk_8e4af87648 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_review_llm_summaries
+    ADD CONSTRAINT fk_8ec009c6ab FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
@@ -36117,6 +36155,9 @@ ALTER TABLE ONLY custom_emoji
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_d06d023c30 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_review_llm_summaries
+    ADD CONSTRAINT fk_d07eeb6392 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_mirror_data
     ADD CONSTRAINT fk_d1aad367d7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

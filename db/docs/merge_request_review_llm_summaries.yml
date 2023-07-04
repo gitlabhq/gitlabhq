@@ -1,0 +1,11 @@
+---
+table_name: merge_request_review_llm_summaries
+classes:
+- MergeRequest::ReviewLlmSummary
+feature_categories:
+- code_review_workflow
+description: This is the table that stores information about the review summaries
+  produced from different LLM's.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124402
+milestone: '16.2'
+gitlab_schema: gitlab_main

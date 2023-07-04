@@ -289,7 +289,7 @@ To update a streaming destination's event filters:
 1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream URL to expand.
-1. Select **Filter by stream event**.
+1. Locate the **Filter by audit event type** dropdown.
 1. Select the dropdown list and select or clear the required event types.
 1. Select **Save** to update the event filters.
 

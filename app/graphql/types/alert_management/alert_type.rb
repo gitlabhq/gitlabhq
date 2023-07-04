@@ -111,13 +111,6 @@ module Types
             null: true,
             description: 'Assignees of the alert.'
 
-      field :metrics_dashboard_url,
-            GraphQL::Types::String,
-            null: true,
-            description: 'URL for metrics embed for the alert.',
-            deprecated: { reason: 'Returns no data. Underlying feature was removed in 16.0',
-                          milestone: '16.0' }
-
       field :runbook,
             GraphQL::Types::String,
             null: true,
@@ -143,12 +136,6 @@ module Types
             method: :details_url,
             null: false,
             description: 'URL of the alert.'
-
-      def metrics_dashboard_url
-        return if Feature.enabled?(:remove_monitor_metrics)
-
-        object.metrics_dashboard_url
-      end
     end
   end
 end

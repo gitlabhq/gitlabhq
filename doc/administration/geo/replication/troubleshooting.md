@@ -622,7 +622,7 @@ This happens on wrongly-formatted addresses in `postgresql['md5_auth_cidr_addres
 ```
 
 To fix this, update the IP addresses in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (that is, `1.2.3.4/32`).
+to respect the CIDR format (for example, `10.0.0.1/32`).
 
 ### Message: `LOG:  invalid IP mask "md5": Name or service not known`
 
@@ -634,7 +634,7 @@ This happens when you have added IP addresses without a subnet mask in `postgres
 ```
 
 To fix this, add the subnet mask in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
-to respect the CIDR format (that is, `1.2.3.4/32`).
+to respect the CIDR format (for example, `10.0.0.1/32`).
 
 ### Message: `Found data in the gitlabhq_production database!` when running `gitlab-ctl replicate-geo-database`
 
@@ -1295,7 +1295,7 @@ When [Geo proxying for secondary sites](../secondary_proxy/index.md) is enabled,
 Check the NGINX logs for errors similar to this example:
 
 ```plaintext
-2022/01/26 00:02:13 [error] 26641#0: *829148 upstream sent too big header while reading response header from upstream, client: 1.2.3.4, server: geo.staging.gitlab.com, request: "POST /users/sign_in HTTP/2.0", upstream: "http://unix:/var/opt/gitlab/gitlab-workhorse/sockets/socket:/users/sign_in", host: "geo.staging.gitlab.com", referrer: "https://geo.staging.gitlab.com/users/sign_in"
+2022/01/26 00:02:13 [error] 26641#0: *829148 upstream sent too big header while reading response header from upstream, client: 10.0.2.2, server: geo.staging.gitlab.com, request: "POST /users/sign_in HTTP/2.0", upstream: "http://unix:/var/opt/gitlab/gitlab-workhorse/sockets/socket:/users/sign_in", host: "geo.staging.gitlab.com", referrer: "https://geo.staging.gitlab.com/users/sign_in"
 ```
 
 To resolve this issue:
@@ -1345,15 +1345,8 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 - Unique to the primary site.
 - Accessible from all secondary sites.
 
-1. Enter the [Rails console](../../operations/rails_console.md) on the primary site.
-
-1. Run the following, replacing `https://unique.url.for.primary.site` with your specific internal URL.
-   For example, depending on your network configuration, you could use an IP address, like
-   `http://1.2.3.4`.
-
-   ```ruby
-   GeoNode.where(primary: true).first.update!(internal_url: "https://unique.url.for.primary.site")
-   ```
+1. Visit the primary site.
+1. [Set up the internal URLs](../../../user/admin_area/geo_sites.md#set-up-the-internal-urls).
 
 ### Secondary site returns `Received HTTP code 403 from proxy after CONNECT`
 

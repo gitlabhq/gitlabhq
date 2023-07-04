@@ -96,29 +96,6 @@ module Gitlab
         def plain_gitlab_fingerprint
           [starts_at_raw, title, full_query].join('/')
         end
-
-        # Formatted for parsing by JS
-        def alert_embed_window_params
-          {
-            start: (starts_at - METRIC_TIME_WINDOW).utc.strftime('%FT%TZ'),
-            end: (starts_at + METRIC_TIME_WINDOW).utc.strftime('%FT%TZ')
-          }
-        end
-
-        def dashboard_json
-          {
-            panel_groups: [{
-              panels: [{
-                type: 'area-chart',
-                title: title,
-                y_label: gitlab_y_label,
-                metrics: [{
-                  query_range: full_query
-                }]
-              }]
-            }]
-          }.to_json
-        end
       end
     end
   end

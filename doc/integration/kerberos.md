@@ -442,7 +442,7 @@ above error message.
 
 To fix this, ensure that the forward and reverse DNS for your GitLab server
 match. So for instance, if you access GitLab as `gitlab.example.com`, resolving
-to IP address `1.2.3.4`, then `4.3.2.1.in-addr.arpa` must be a `PTR` record for
+to IP address `10.0.2.2`, then `2.2.0.10.in-addr.arpa` must be a `PTR` record for
 `gitlab.example.com`.
 
 #### Missing Kerberos libraries on browser or client machine

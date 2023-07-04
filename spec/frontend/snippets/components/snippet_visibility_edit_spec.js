@@ -134,6 +134,17 @@ describe('Snippet Visibility Edit component', () => {
           description: SNIPPET_VISIBILITY.private.description_project,
         });
       });
+
+      it('when project snippet, renders special public description', () => {
+        createComponent({ propsData: { isProjectSnippet: true }, deep: true });
+
+        expect(findRadiosData()[2]).toEqual({
+          value: VISIBILITY_LEVEL_PUBLIC_STRING,
+          icon: SNIPPET_VISIBILITY.public.icon,
+          text: SNIPPET_VISIBILITY.public.label,
+          description: SNIPPET_VISIBILITY.public.description_project,
+        });
+      });
     });
   });
 

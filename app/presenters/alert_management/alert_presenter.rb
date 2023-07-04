@@ -10,7 +10,7 @@ module AlertManagement
     MARKDOWN_LINE_BREAK = "  \n"
     HORIZONTAL_LINE = "\n\n---\n\n"
 
-    delegate :metrics_dashboard_url, :runbook, to: :parsed_payload
+    delegate :runbook, to: :parsed_payload
 
     def initialize(alert, **attributes)
       super
@@ -60,8 +60,7 @@ module AlertManagement
 
     def issue_summary_markdown
       <<~MARKDOWN.chomp
-        #{metadata_list}
-        #{metric_embed_for_alert}
+        #{metadata_list}\n
       MARKDOWN
     end
 
@@ -78,10 +77,6 @@ module AlertManagement
       metadata << list_item('GitLab alert', details_url) if details_url.present?
 
       metadata.join(MARKDOWN_LINE_BREAK)
-    end
-
-    def metric_embed_for_alert
-      "\n[](#{metrics_dashboard_url})" if metrics_dashboard_url
     end
 
     def list_item(key, value)

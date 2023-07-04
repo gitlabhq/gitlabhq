@@ -156,7 +156,7 @@ trusted network (ideally, from the private server itself):
 ssh-keyscan example.com
 
 ## Or use an IP
-ssh-keyscan 1.2.3.4
+ssh-keyscan 10.0.2.2
 ```
 
 Create a new [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)

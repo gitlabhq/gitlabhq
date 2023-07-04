@@ -295,6 +295,7 @@ the configuration below accordingly.
 
 PlantUML has features that allow fetching network resources. If you self-host the
 PlantUML server, put network controls in place to isolate it.
+For example, make use of PlantUML's [security profiles](https://plantuml.com/security).
 
 ```plaintext
 @startuml

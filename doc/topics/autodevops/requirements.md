@@ -71,17 +71,17 @@ Auto DevOps requires a wildcard DNS `A` record that matches the base domains. Fo
 a base domain of `example.com`, you'd need a DNS entry like:
 
 ```plaintext
-*.example.com   3600     A     1.2.3.4
+*.example.com   3600     A     10.0.2.2
 ```
 
-In this case, the deployed applications are served from `example.com`, and `1.2.3.4`
+In this case, the deployed applications are served from `example.com`, and `10.0.2.2`
 is the IP address of your load balancer, generally NGINX ([see requirements](requirements.md)).
 Setting up the DNS record is beyond the scope of this document; check with your
 DNS provider for information.
 
 Alternatively, you can use free public services like [nip.io](https://nip.io)
 which provide automatic wildcard DNS without any configuration. For [nip.io](https://nip.io),
-set the Auto DevOps base domain to `1.2.3.4.nip.io`.
+set the Auto DevOps base domain to `10.0.2.2.nip.io`.
 
 After completing setup, all requests hit the load balancer, which routes requests
 to the Kubernetes pods running your application.
