@@ -15527,9 +15527,6 @@ msgstr ""
 msgid "DeploymentApprovals|Set how approval rules are applied to deployments in protected environments."
 msgstr ""
 
-msgid "DeploymentApprovals|When a pipeline runs, deployment jobs will automatically be approved in the pipeline if the triggerer is allowed to approve."
-msgstr ""
-
 msgid "DeploymentApproval| Current approvals: %{current}"
 msgstr ""
 

@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'application'
+}
+
+repositories {
+    maven {
+        url "<%= gitlab_address_with_port %>/api/v4/projects/<%= project.id %>/packages/maven"
+        name "GitLab"
+        credentials(HttpHeaderCredentials) {
+            name = '<%= maven_header_name %>'
+            value = project.property('Token')
+        }
+        authentication {
+            header(HttpHeaderAuthentication)
+        }
+    }
+}
+
+dependencies {
+    implementation group: '<%= group_id %>', name: '<%= artifact_id %>', version: '<%= package_version %>'
+    testImplementation 'junit:junit:4.12'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId '<%= group_id %>'
+            artifactId '<%= artifact_id %>'
+            version '<%= package_version %>'
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "<%= gitlab_address_with_port %>/api/v4/projects/<%= project.id %>/packages/maven"
+            credentials(HttpHeaderCredentials) {
+                name = '<%= maven_header_name %>'
+                value = project.property('Token')
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+    }
+}
+
+application {
+    mainClassName = 'gradle_maven_app.App'
+}

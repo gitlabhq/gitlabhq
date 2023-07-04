@@ -757,8 +757,8 @@ For more information, see the [GitLab API user method documentation](https://pyt
 You can configure OIDC group membership to:
 
 - Require users to be members of a certain group.
-- Assign users [external roles](../../user/admin_area/external_users.md), or as
-  administrators based on group membership.
+- Assign users [external](../../user/admin_area/external_users.md), administrator or
+  [auditor](../auditor_users.md) roles based on group membership.
 
 GitLab checks these groups on each sign in and updates user attributes as necessary.
 This feature **does not** allow you to automatically add users to GitLab
@@ -912,6 +912,83 @@ For self-compiled installations:
              gitlab: {
                groups_attribute: "groups",
                external_groups: ["Freelancer"]
+             }
+           }
+         }
+       }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
+
+### Auditor groups **(PREMIUM SELF)**
+
+Your IdP must pass group information to GitLab in the OIDC response. To use this
+response to assign users as auditors based on group membership, configure GitLab to identify:
+
+- Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
+- Which group memberships grant the user auditor access, using the `auditor_groups`
+  setting.
+
+For Linux package installations:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "openid_connect",
+       label: "Provider name",
+       args: {
+         name: "openid_connect",
+         scope: ["openid","profile","email","groups"],
+         response_type: "code",
+         issuer: "<your_oidc_url>",
+         discovery: true,
+         client_auth_method: "query",
+         uid_field: "<uid_field>",
+         client_options: {
+           identifier: "<your_oidc_client_id>",
+           secret: "<your_oidc_client_secret>",
+           redirect_uri: "<your_gitlab_url>/users/auth/openid_connect/callback",
+           gitlab: {
+             groups_attribute: "groups",
+             auditor_groups: ["Auditor"]
+           }
+         }
+       }
+     }
+   ]
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
+   for the changes to take effect.
+
+For self-compiled installations:
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+        - { name: 'openid_connect',
+            label: 'Provider name',
+         args: {
+           name: 'openid_connect',
+           scope: ['openid','profile','email','groups'],
+           response_type: 'code',
+           issuer: '<your_oidc_url>',
+           discovery: true,
+           client_auth_method: 'query',
+           uid_field: '<uid_field>',
+           client_options: {
+             identifier: '<your_oidc_client_id>',
+             secret: '<your_oidc_client_secret>',
+             redirect_uri: '<your_gitlab_url>/users/auth/openid_connect/callback',
+             gitlab: {
+               groups_attribute: "groups",
+               auditor_groups: ["Auditor"]
              }
            }
          }
