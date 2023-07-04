@@ -69,6 +69,13 @@ module QA
         "#{api_get_path}/related_merge_requests"
       end
 
+      # Close issue
+      #
+      # @return [void]
+      def close
+        api_put_to(api_put_path, state_event: "close")
+      end
+
       def set_issue_assignees(assignee_ids:)
         put_body = { assignee_ids: assignee_ids }
         response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body

@@ -449,6 +449,8 @@ pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inhe
 
    ```yaml
    build_artifacts:
+     rules:
+       - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
      stage: build
      script:
        - echo "This is a test artifact!" >> artifact.txt
@@ -457,6 +459,8 @@ pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inhe
          - artifact.txt
 
    upstream_job:
+     rules:
+       - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
      variables:
        UPSTREAM_REF: $CI_MERGE_REQUEST_REF_PATH
      trigger:

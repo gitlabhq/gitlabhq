@@ -1519,8 +1519,8 @@ lost data can be manually replaced.
 
 #### Fix integrations and webhooks
 
-If you've lost your secrets, the [integrations settings pages](../../user/project/integrations/index.md)
-and [webhooks settings pages](../../user/project/integrations/webhooks.md) are probably displaying `500` error messages.
+If you've lost your secrets, the [integrations settings](../../user/project/integrations/index.md)
+and [webhooks settings](../../user/project/integrations/webhooks.md) pages might display `500` error messages. Lost secrets might also produce `500` errors when you try to access a repository in a project with a previously configured integration or webhook.
 
 The fix is to truncate the affected tables (those containing encrypted columns).
 This deletes all your configured integrations, webhooks, and related metadata.
@@ -1556,7 +1556,7 @@ You should verify that the secrets are the root cause before deleting any data.
 
    ```sql
    -- truncate web_hooks table
-   TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs;
+   TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs CASCADE;
    ```
 
 ### Container Registry push failures after restoring from a backup

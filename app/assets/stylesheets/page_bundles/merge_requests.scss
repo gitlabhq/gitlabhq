@@ -226,7 +226,7 @@ $tabs-holder-z-index: 250;
     clear: left;
 
     .note-body {
-      padding: 0 0 $gl-padding-8;
+      padding: 0 $gl-padding-8 $gl-padding-8 $gl-padding-32;
     }
   }
 

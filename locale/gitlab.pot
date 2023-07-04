@@ -4203,9 +4203,6 @@ msgstr ""
 msgid "After a successful password update you will be redirected to login screen."
 msgstr ""
 
-msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
-msgstr ""
-
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr ""
 
@@ -6592,6 +6589,9 @@ msgid "AuditStreams|Header"
 msgstr ""
 
 msgid "AuditStreams|Maximum of %{number} HTTP headers has been reached."
+msgstr ""
+
+msgid "AuditStreams|No header created yet."
 msgstr ""
 
 msgid "AuditStreams|Remove custom header"
@@ -9118,7 +9118,10 @@ msgstr ""
 msgid "Change your password"
 msgstr ""
 
-msgid "Change your password or recover your current one"
+msgid "Change your password or recover your current one."
+msgstr ""
+
+msgid "Change your password."
 msgstr ""
 
 msgid "ChangeReviewer|All reviewers were removed."
