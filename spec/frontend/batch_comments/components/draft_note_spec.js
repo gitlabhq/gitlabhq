@@ -41,8 +41,10 @@ describe('Batch comments draft note component', () => {
       },
     });
 
-    jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation();
+    jest.spyOn(store, 'dispatch').mockImplementation();
   };
+
+  const findNoteableNote = () => wrapper.findComponent(NoteableNote);
 
   beforeEach(() => {
     store = createStore();
@@ -53,18 +55,14 @@ describe('Batch comments draft note component', () => {
     createComponent();
     expect(wrapper.findComponent(GlBadge).exists()).toBe(true);
 
-    const note = wrapper.findComponent(NoteableNote);
-
-    expect(note.exists()).toBe(true);
-    expect(note.props().note).toEqual(draft);
+    expect(findNoteableNote().exists()).toBe(true);
+    expect(findNoteableNote().props('note')).toEqual(draft);
   });
 
   describe('update', () => {
     it('dispatches updateDraft', async () => {
       createComponent();
-      const note = wrapper.findComponent(NoteableNote);
-
-      note.vm.$emit('handleEdit');
+      findNoteableNote().vm.$emit('handleEdit');
 
       await nextTick();
       const formData = {
@@ -73,12 +71,9 @@ describe('Batch comments draft note component', () => {
         resolveDiscussion: false,
       };
 
-      note.vm.$emit('handleUpdateNote', formData);
+      findNoteableNote().vm.$emit('handleUpdateNote', formData);
 
-      expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith(
-        'batchComments/updateDraft',
-        formData,
-      );
+      expect(store.dispatch).toHaveBeenCalledWith('batchComments/updateDraft', formData);
     });
   });
 
@@ -87,18 +82,15 @@ describe('Batch comments draft note component', () => {
       createComponent();
       jest.spyOn(window, 'confirm').mockImplementation(() => true);
 
-      const note = wrapper.findComponent(NoteableNote);
+      findNoteableNote().vm.$emit('handleDeleteNote', draft);
 
-      note.vm.$emit('handleDeleteNote', draft);
-
-      expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('batchComments/deleteDraft', draft);
+      expect(store.dispatch).toHaveBeenCalledWith('batchComments/deleteDraft', draft);
     });
   });
 
   describe('quick actions', () => {
     it('renders referenced commands', async () => {
-      createComponent();
-      wrapper.setProps({
+      createComponent({
         draft: {
           ...draft,
           references: {
@@ -116,22 +108,27 @@ describe('Batch comments draft note component', () => {
   });
 
   describe('multiline comments', () => {
-    describe.each`
-      desc                          | props                 | event           | expectedCalls
-      ${'with `draft.position`'}    | ${draftWithLineRange} | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
-      ${'with `draft.position`'}    | ${draftWithLineRange} | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
-      ${'without `draft.position`'} | ${{}}                 | ${'mouseenter'} | ${[]}
-      ${'without `draft.position`'} | ${{}}                 | ${'mouseleave'} | ${[]}
-    `('$desc', ({ props, event, expectedCalls }) => {
-      beforeEach(() => {
-        createComponent({ draft: { ...draft, ...props } });
-        jest.spyOn(store, 'dispatch');
-      });
+    it(`calls store with draft.position with mouseenter`, () => {
+      createComponent({ draft: { ...draft, ...draftWithLineRange } });
+      findNoteableNote().trigger('mouseenter');
 
-      it(`calls store ${expectedCalls.length} times on ${event}`, () => {
-        wrapper.element.dispatchEvent(new MouseEvent(event, { bubbles: true }));
-        expect(store.dispatch.mock.calls).toEqual(expectedCalls);
-      });
+      expect(store.dispatch).toHaveBeenCalledWith('setSelectedCommentPositionHover', LINE_RANGE);
+    });
+
+    it(`calls store with draft.position and mouseleave`, () => {
+      createComponent({ draft: { ...draft, ...draftWithLineRange } });
+      findNoteableNote().trigger('mouseleave');
+
+      expect(store.dispatch).toHaveBeenCalledWith('setSelectedCommentPositionHover');
+    });
+
+    it(`does not call store without draft position`, () => {
+      createComponent({ draft });
+
+      findNoteableNote().trigger('mouseenter');
+      findNoteableNote().trigger('mouseleave');
+
+      expect(store.dispatch).not.toHaveBeenCalled();
     });
   });
 });
