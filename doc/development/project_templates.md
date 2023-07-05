@@ -19,8 +19,8 @@ To make the project template available when creating a new project, the vendorin
 
 1. Create a working template ([example](https://gitlab.com/gitlab-org/project-templates/dotnetcore))
    - 2 types of built-in templates are available within GitLab:
-     - **Normal templates**: Available in GitLab Core, Starter and above (this is the most common type of built-in template).
-       - To contribute a normal template:
+     - **Standard templates**: Available in GitLab Core, Starter and above (this is the most common type of built-in template).
+       - To contribute a standard template:
          - Add details of the template in the `localized_templates_table` method in `gitlab/lib/gitlab/project_template.rb`,
          - Add details of the template in `spec/lib/gitlab/project_template_spec.rb`, in the test for the `all` method, and
          - Add details of the template in `gitlab/app/assets/javascripts/projects/default_project_templates.js`.

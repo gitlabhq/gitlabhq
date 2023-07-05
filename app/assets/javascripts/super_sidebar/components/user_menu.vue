@@ -90,7 +90,7 @@ export default {
         text: this.$options.i18n.editProfile,
         href: this.data.settings.profile_path,
         extraAttrs: {
-          'data-qa-selector': 'edit_profile_link',
+          'data-testid': 'edit_profile_link',
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_edit_profile',
         },
@@ -150,7 +150,7 @@ export default {
             href: this.data.sign_out_link,
             extraAttrs: {
               'data-method': 'post',
-              'data-qa-selector': 'sign_out_link',
+              'data-testid': 'sign_out_link',
               class: 'sign-out-link',
             },
           },
@@ -237,7 +237,6 @@ export default {
       ref="userDropdown"
       :dropdown-offset="dropdownOffset"
       data-testid="user-dropdown"
-      data-qa-selector="user_menu"
       :auto-close="false"
       @shown="onShow"
     >
@@ -249,7 +248,7 @@ export default {
             :entity-name="data.name"
             :src="data.avatar_url"
             aria-hidden="true"
-            data-qa-selector="user_avatar_content"
+            data-testid="user_avatar_content"
           />
           <span
             v-if="showNotificationDot"

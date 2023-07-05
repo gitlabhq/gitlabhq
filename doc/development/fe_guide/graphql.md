@@ -591,8 +591,7 @@ pageInfo {
 
 Here:
 
-- `startCursor` and `endCursor` display the cursor of the first and last items
-  respectively.
+- `startCursor` displays the cursor of the first items and `endCursor` displays the cursor of the last items.
 - `hasPreviousPage` and `hasNextPage` allow us to check if there are more pages
   available before or after the current page.
 

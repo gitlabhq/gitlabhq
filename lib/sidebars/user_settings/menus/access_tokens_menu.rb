@@ -31,7 +31,7 @@ module Sidebars
 
         override :extra_container_html_options
         def extra_container_html_options
-          { 'data-qa-selector': 'access_token_link' }
+          { 'data-testid': 'access_token_link' }
         end
       end
     end

@@ -56,7 +56,7 @@ identical to) the fork networks that get formed when users fork
 projects.
 
 At the Git level, pool repositories are created and managed using Gitaly
-RPC calls. Just like with normal repositories, the authority on which
+RPC calls. Just like with typical repositories, the authority on which
 pool repositories exist, and which repositories borrow from them, lies
 at the Rails application level in SQL.
 
@@ -144,7 +144,7 @@ are as follows:
 
 ### Consequences
 
-- If a normal Project participating in a pool gets moved to another
+- If a typical Project participating in a pool gets moved to another
   Gitaly storage shard, its "belongs to PoolRepository" relation will
   be broken. Because of the way moving repositories between shard is
   implemented, we get a fresh self-contained copy

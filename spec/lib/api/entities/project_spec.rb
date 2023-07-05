@@ -8,7 +8,7 @@ RSpec.describe ::API::Entities::Project do
   let(:options) { { current_user: current_user } }
 
   let(:entity) do
-    ::API::Entities::Project.new(project, options)
+    described_class.new(project, options)
   end
 
   subject(:json) { entity.as_json }

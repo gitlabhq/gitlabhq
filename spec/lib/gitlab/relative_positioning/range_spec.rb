@@ -27,19 +27,19 @@ RSpec.describe Gitlab::RelativePositioning::Range do
 
     it 'constructs a closed range when both termini are provided' do
       range = Gitlab::RelativePositioning.range(item_a, item_b)
-      expect(range).to be_a_kind_of(Gitlab::RelativePositioning::Range)
+      expect(range).to be_a_kind_of(described_class)
       expect(range).to be_a_kind_of(Gitlab::RelativePositioning::ClosedRange)
     end
 
     it 'constructs a starting-from range when only the LHS is provided' do
       range = Gitlab::RelativePositioning.range(item_a, nil)
-      expect(range).to be_a_kind_of(Gitlab::RelativePositioning::Range)
+      expect(range).to be_a_kind_of(described_class)
       expect(range).to be_a_kind_of(Gitlab::RelativePositioning::StartingFrom)
     end
 
     it 'constructs an ending-at range when only the RHS is provided' do
       range = Gitlab::RelativePositioning.range(nil, item_b)
-      expect(range).to be_a_kind_of(Gitlab::RelativePositioning::Range)
+      expect(range).to be_a_kind_of(described_class)
       expect(range).to be_a_kind_of(Gitlab::RelativePositioning::EndingAt)
     end
   end

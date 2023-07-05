@@ -35,7 +35,7 @@ export default {
   <gl-nav class="navbar-sub-nav">
     <gl-nav-item-dropdown
       v-gl-tooltip.bottom="navData.menuTooltip"
-      data-qa-selector="navbar_dropdown"
+      data-testid="navbar_dropdown"
       data-qa-title="Menu"
       menu-class="gl-mt-3! gl-max-w-none! gl-max-h-none! gl-sm-w-auto! js-top-nav-dropdown-menu"
       toggle-class="top-nav-toggle js-top-nav-dropdown-toggle gl-px-3!"

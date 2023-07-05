@@ -22,7 +22,7 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
     let(:options) { base_opts.merge(extra_opts) }
     let(:updater) { user }
 
-    let(:service) { Snippets::UpdateService.new(project: project, current_user: updater, params: options, perform_spam_check: true) }
+    let(:service) { described_class.new(project: project, current_user: updater, params: options, perform_spam_check: true) }
 
     subject { service.execute(snippet) }
 

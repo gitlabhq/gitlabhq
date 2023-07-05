@@ -238,10 +238,10 @@ This shortcut is available when viewing a [wiki page](project/wiki/index.md):
 |-------------------|-----------------|
 | <kbd>e</kbd>      | Edit wiki page. |
 
-### Content editor
+### Rich text editor
 
 These shortcuts are available when editing a file with the
-[Content Editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/):
+[rich text editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/):
 
 | macOS shortcut | Windows shortcut | Description |
 |----------------|------------------|-------------|
@@ -261,6 +261,7 @@ These shortcuts are available when editing a file with the
 | <kbd>Command</kbd> + <kbd>i</kbd> | <kbd>Control</kbd> + <kbd>i</kbd>   | Italic |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd>  | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd>   | Strikethrough |
 | <kbd>Command</kbd> + <kbd>e</kbd> | <kbd>Control</kbd> + <kbd>e</kbd>   | Code |
+| <kbd>Command</kbd> + <kbd>k</kbd> | <kbd>Control</kbd> + <kbd>k</kbd>   | Insert a link |
 | <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | Apply normal text style |
 | <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>1</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>1</kbd> | Apply heading style 1 |
 | <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>2</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>2</kbd> | Apply heading style 2 |

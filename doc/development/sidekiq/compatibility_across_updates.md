@@ -205,6 +205,6 @@ end
 
 ```
 
-You must rename the queue in a post-deployment migration not in a normal
+You must rename the queue in a post-deployment migration not in a standard
 migration. Otherwise, it runs too early, before all the workers that
 schedule these jobs have stopped running. See also [other examples](../database/post_deployment_migrations.md#use-cases).

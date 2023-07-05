@@ -6,7 +6,7 @@ require 'spec_helper'
 # Checks whether there are new attributes in models that are currently being exported as part of the
 # project Import/Export feature.
 # If there are new attributes, these will have to either be added to this spec in case we want them
-# to be included as part of the export, or blacklist them using the import_export.yml configuration file.
+# to be included as part of the export, or add them to excluded_attributes in the import_export.yml configuration file.
 # Likewise, new models added to import_export.yml, will need to be added with their correspondent attributes
 # to this spec.
 RSpec.describe 'Import/Export attribute configuration', feature_category: :importers do

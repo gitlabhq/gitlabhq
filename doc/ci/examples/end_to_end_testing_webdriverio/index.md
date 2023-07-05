@@ -152,10 +152,10 @@ For the scope of this article, we've defined an additional [CI/CD stage](../../y
 [Docker image](../../docker/using_docker_images.md). However, WebdriverIO fires up actual browsers
 to interact with your application, so we need to install and run them.
 Furthermore, WebdriverIO uses Selenium as a common interface to control different browsers,
-so we need to install and run Selenium as well. Luckily, the Selenium project provides the Docker images
+so we need to install and run Selenium as well. Luckily, the Selenium project provides the Docker images for Firefox
 [standalone-firefox](https://hub.docker.com/r/selenium/standalone-firefox/) and
-[standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome/) that provide just that for
-Firefox and Chrome, respectively. (Since Safari and Internet Explorer/Edge are not open source and
+and for Chrome [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome/). 
+(Since Safari and Internet Explorer/Edge are not open source and
 not available for Linux, we are unfortunately unable to use those in GitLab CI/CD).
 
 GitLab CI/CD makes it a breeze to link these images to our `confidence-check` jobs using the

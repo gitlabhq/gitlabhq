@@ -109,7 +109,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           header: top_nav_localized_headers[:switch_to],
           active: nav == 'project' || active_nav_link?(path: %w[root#index projects#trending projects#starred dashboard/projects#index]),
-          data: { track_label: "projects_dropdown", track_action: "click_dropdown", track_property: "navigation_top", qa_selector: "projects_dropdown" },
+          data: { track_label: "projects_dropdown", track_action: "click_dropdown", track_property: "navigation_top", testid: "projects_dropdown" },
           view: PROJECTS_VIEW,
           shortcut_href: dashboard_projects_path,
           **projects_menu_item_attrs
@@ -123,7 +123,7 @@ module Nav
         builder.add_primary_menu_item_with_shortcut(
           header: top_nav_localized_headers[:switch_to],
           active: nav == 'group' || active_nav_link?(path: %w[dashboard/groups explore/groups]),
-          data: { track_label: "groups_dropdown", track_action: "click_dropdown", track_property: "navigation_top", qa_selector: "groups_dropdown" },
+          data: { track_label: "groups_dropdown", track_action: "click_dropdown", track_property: "navigation_top", testid: "groups_dropdown" },
           view: GROUPS_VIEW,
           shortcut_href: dashboard_groups_path,
           **groups_menu_item_attrs
@@ -195,7 +195,7 @@ module Nav
           active: active_nav_link?(controller: 'admin/dashboard'),
           icon: 'admin',
           href: admin_root_path,
-          data: { qa_selector: 'admin_area_link', **menu_data_tracking_attrs(title) }
+          data: { testid: 'admin_area_link', **menu_data_tracking_attrs(title) }
         )
       end
 
@@ -218,7 +218,7 @@ module Nav
             active: active_nav_link?(controller: 'admin/sessions'),
             icon: 'lock',
             href: new_admin_session_path,
-            data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+            data: { testid: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
           )
         end
       end
@@ -316,7 +316,7 @@ module Nav
         id: 'your',
         title: title,
         href: dashboard_projects_path,
-        data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+        data: { testid: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
       )
     end
 
@@ -330,7 +330,7 @@ module Nav
         id: 'your',
         title: title,
         href: dashboard_groups_path,
-        data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+        data: { testid: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
       )
       builder.build
     end

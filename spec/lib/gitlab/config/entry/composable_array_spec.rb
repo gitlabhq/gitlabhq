@@ -47,13 +47,13 @@ RSpec.describe Gitlab::Config::Entry::ComposableArray, :aggregate_failures do
       expect(entry[0].description).to eq('node definition')
       expect(entry[0].key).to eq('node')
       expect(entry[0].metadata).to eq({})
-      expect(entry[0].parent.class).to eq(Gitlab::Config::Entry::ComposableArray)
+      expect(entry[0].parent.class).to eq(described_class)
       expect(entry[0].value).to eq(DATABASE_SECRET: 'passw0rd')
       expect(entry[1]).to be_a(Gitlab::Config::Entry::Node)
       expect(entry[1].description).to eq('node definition')
       expect(entry[1].key).to eq('node')
       expect(entry[1].metadata).to eq({})
-      expect(entry[1].parent.class).to eq(Gitlab::Config::Entry::ComposableArray)
+      expect(entry[1].parent.class).to eq(described_class)
       expect(entry[1].value).to eq(API_TOKEN: 'passw0rd2')
     end
 

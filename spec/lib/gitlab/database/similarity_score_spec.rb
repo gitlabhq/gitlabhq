@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Database::SimilarityScore do
   end
 
   let(:order_expression) do
-    Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [{ column: Arel.sql('path') }]).to_sql
+    described_class.build_expression(search: search, rules: [{ column: Arel.sql('path') }]).to_sql
   end
 
   subject { query_result.take(3).map { |row| row['path'] } }
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Database::SimilarityScore do
       let(:search) { 'text' }
 
       let(:order_expression) do
-        Gitlab::Database::SimilarityScore.build_expression(search: search, rules: []).to_sql
+        described_class.build_expression(search: search, rules: []).to_sql
       end
 
       it 'orders by a constant 0 value' do
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Database::SimilarityScore do
 
   describe 'score multiplier' do
     let(:order_expression) do
-      Gitlab::Database::SimilarityScore.build_expression(search: search, rules:
+      described_class.build_expression(search: search, rules:
         [
           { column: Arel.sql('path'), multiplier: 1 },
           { column: Arel.sql('name'), multiplier: 0.8 }
@@ -94,13 +94,13 @@ RSpec.describe Gitlab::Database::SimilarityScore do
 
   describe 'annotation' do
     it 'annotates the generated SQL expression' do
-      expression = Gitlab::Database::SimilarityScore.build_expression(search: 'test', rules:
+      expression = described_class.build_expression(search: 'test', rules:
         [
           { column: Arel.sql('path'), multiplier: 1 },
           { column: Arel.sql('name'), multiplier: 0.8 }
         ])
 
-      expect(Gitlab::Database::SimilarityScore).to be_order_by_similarity(expression)
+      expect(described_class).to be_order_by_similarity(expression)
     end
   end
 end

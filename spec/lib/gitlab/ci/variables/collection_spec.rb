@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_man
 
     context 'when given an unrecognized type' do
       it 'raises error' do
-        expect { Gitlab::Ci::Variables::Collection.fabricate(1) }.to raise_error(ArgumentError)
+        expect { described_class.fabricate(1) }.to raise_error(ArgumentError)
       end
     end
   end
@@ -179,7 +179,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_man
   end
 
   describe '#[]' do
-    subject { Gitlab::Ci::Variables::Collection.new(variables)[var_name] }
+    subject { described_class.new(variables)[var_name] }
 
     shared_examples 'an array access operator' do
       context 'for a non-existent variable name' do
@@ -626,7 +626,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_man
     end
 
     let(:errors) { 'circular variable reference detected' }
-    let(:collection) { Gitlab::Ci::Variables::Collection.new(variables, errors) }
+    let(:collection) { described_class.new(variables, errors) }
 
     subject(:result) { collection.to_s }
 

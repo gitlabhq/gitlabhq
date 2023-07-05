@@ -44,6 +44,7 @@ tree:
       - :zoom_meetings
       - :sentry_issue
       - :award_emoji
+      - :work_item_type
     - snippets:
       - :award_emoji
       - notes:
@@ -771,6 +772,8 @@ included_attributes:
     - :source_commit
     - :close_after_error_tracking_resolve
     - :close_auto_resolve_prometheus_alert
+  work_item_type:
+    - :base_type
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -1101,6 +1104,15 @@ excluded_attributes:
     - :roll_over
     - :description
     - :sequence
+  work_item_type:
+    - :id
+    - :cached_markdown_version
+    - :name
+    - :description
+    - :description_html
+    - :icon_name
+    - :namespace_id
+    - :updated_at
 
 methods:
   project:

@@ -221,7 +221,7 @@ implemented in the same file.
 After the route has been added, you must add an additional `/authorize` version of the upload endpoint to your API file.
 [This example](https://gitlab.com/gitlab-org/gitlab/-/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/maven_packages.rb#L164)
 shows the additional endpoint added for Maven. The `/authorize` endpoint verifies and authorizes the request from workhorse,
-then the normal upload endpoint is implemented below, consuming the metadata that Workhorse provides to
+then the typical upload endpoint is implemented below, consuming the metadata that Workhorse provides to
 create the package record. Workhorse provides a variety of file metadata such as type, size, and different checksum formats.
 
 For testing purposes, you may want to [enable object storage](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md)

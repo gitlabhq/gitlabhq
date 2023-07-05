@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin do
         def use_transaction?(migration)
           receiver.use_transaction?(migration)
         end
-      end.prepend(Gitlab::Database::Migrations::LockRetryMixin::ActiveRecordMigratorLockRetries)
+      end.prepend(described_class)
     end
 
     subject { class_def.new(receiver) }

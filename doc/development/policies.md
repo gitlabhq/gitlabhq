@@ -104,8 +104,9 @@ An example debug output would look as follows:
 
 Each line represents a rule that was evaluated. There are a few things to note:
 
-1. The `-` or `+` symbol indicates whether the rule block was evaluated to be
-   `false` or `true`, respectively.
+1. The `-` symbol indicates the rule block was evaluated to be
+   `false`. A `+` symbol indicates the rule block was evaluated to be
+   `true`.
 1. The number inside the brackets indicates the score.
 1. The last part of the line (for example, `@john : Issue/1`) shows the username
    and subject for that rule.

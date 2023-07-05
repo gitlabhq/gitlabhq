@@ -31,7 +31,7 @@ While on CloudWatch dashboard set time range to last 4 weeks, to get better pict
 
 ### Troubleshooting GitLab application layer
 
-Drop occurring at application layer can be symptom of some issue, but it might be also a result of normal application lifecycle, intended changes done to analytics instrumentation or experiments tracking
+Drop occurring at application layer can be symptom of some issue, but it might be also a result of typical application lifecycle, intended changes done to analytics instrumentation or experiments tracking
 or even a result of a public holiday in some regions of the world with a larger user-base. To verify if there is an underlying problem to solve, you can check following things:
 
 1. Check `about.gitlab.com` website traffic on [Google Analytics](https://analytics.google.com/analytics/web/) to verify if some public holiday might impact overall use of GitLab system

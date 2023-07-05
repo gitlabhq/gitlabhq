@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::RedisHll do
                                                               .and_return(5)
       end
 
-      expect(Gitlab::Usage::Metrics::Aggregates::Sources::RedisHll).to receive(:calculate_metrics_union)
+      expect(described_class).to receive(:calculate_metrics_union)
                                                               .with(metric_names: event_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at)
                                                               .and_return(2)
 
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::RedisHll do
     end
 
     it 'raises error if union is < 0' do
-      allow(Gitlab::Usage::Metrics::Aggregates::Sources::RedisHll).to receive(:calculate_metrics_union).and_raise(Gitlab::Usage::Metrics::Aggregates::Sources::UnionNotAvailable)
+      allow(described_class).to receive(:calculate_metrics_union).and_raise(Gitlab::Usage::Metrics::Aggregates::Sources::UnionNotAvailable)
 
       expect { calculate_metrics_intersections }.to raise_error(Gitlab::Usage::Metrics::Aggregates::Sources::UnionNotAvailable)
     end

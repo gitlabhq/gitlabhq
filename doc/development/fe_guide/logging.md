@@ -22,7 +22,7 @@ Whenever a `catch(e)` exists, and `e` is something unexpected, log the details.
 
 ### What makes an error unexpected?
 
-Sometimes a caught exception can be part of normal operations. For instance, third-party
+Sometimes a caught exception can be part of standard operations. For instance, third-party
 libraries might throw an exception based on certain inputs. If we can gracefully
 handle these exceptions, then they are expected. Don't log them noisily.
 For example:
@@ -50,7 +50,7 @@ try {
 
 We have a helpful `~/lib/logger` module which encapsulates how we can
 consistently log runtime errors in GitLab. Import `logError` from this
-module, and use it as you normally would `console.error`. Pass the actual `Error`
+module, and use it as you typically would `console.error`. Pass the actual `Error`
 object, so the stack trace and other details can be captured in the log:
 
 ```javascript

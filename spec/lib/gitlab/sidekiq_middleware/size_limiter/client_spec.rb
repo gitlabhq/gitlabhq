@@ -51,7 +51,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Client, :clean_gitlab_red
     context 'when the validator validates the job suscessfully' do
       before do
         # Do nothing
-        allow(Gitlab::SidekiqMiddleware::SizeLimiter::Client).to receive(:validate!)
+        allow(described_class).to receive(:validate!)
       end
 
       it 'raises an exception when scheduling job with #perform_at' do

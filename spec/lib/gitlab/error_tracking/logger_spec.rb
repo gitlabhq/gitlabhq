@@ -13,7 +13,7 @@ RSpec.describe Gitlab::ErrorTracking::Logger do
         expect(log_formatter).to receive(:generate_log).with(exception, payload).and_return(log_entry)
       end
 
-      expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(log_entry)
+      expect(described_class).to receive(:error).with(log_entry)
 
       described_class.capture_exception(exception, **payload)
     end

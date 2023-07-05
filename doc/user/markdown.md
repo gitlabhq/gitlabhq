@@ -569,13 +569,13 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
-the Markdown editor and the content editor.
+the plain text editor and the rich text editor.
 
 For more information, see [Diagrams.net](../administration/integration/diagrams_net.md).
 
-##### Markdown editor
+##### Plain text editor
 
-To create a diagram in the Markdown editor:
+To create a diagram in the plain text editor:
 
 1. In the editor's toolbar, select **Insert or edit diagram** (**{diagram}**).
 1. Use the diagrams.net editor to create the diagram.
@@ -583,20 +583,20 @@ To create a diagram in the Markdown editor:
 
 A Markdown image reference to the diagram is inserted in the wiki content.
 
-To edit a diagram in the Markdown editor:
+To edit a diagram in the plain text editor:
 
-1. Place the Markdown editor's text field cursor in a Markdown image reference
+1. Place the plain text editor's text field cursor in a Markdown image reference
 that contains the diagram.
-1. Select **Insert or edit diagram** (**{diagram}**) in the Markdown editor.
+1. Select **Insert or edit diagram** (**{diagram}**) in the plain text editor.
 1. Use the diagrams.net editor to edit the diagram.
 1. Select **Save & exit**.
 
 A Markdown image reference to the diagram is inserted in the wiki content,
 replacing the previous diagram.
 
-##### Content editor
+##### Rich text editor
 
-To create a diagram in the content editor:
+To create a diagram in the rich text editor:
 
 1. In the editor's toolbar, select **More options** (**{plus}**).
 1. In the dropdown list, select **Create or edit diagram**.
@@ -605,7 +605,7 @@ To create a diagram in the content editor:
 
 The diagram as visualized in the diagrams.net editor is inserted in the wiki content.
 
-To edit a diagram in the content editor:
+To edit a diagram in the rich text editor:
 
 1. Select the diagram that you want to edit.
 1. In the floating toolbar, select **Edit diagram** (**{diagram}**).

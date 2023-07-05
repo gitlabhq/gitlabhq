@@ -56,7 +56,7 @@ RSpec.describe Gitlab::EncryptedConfiguration do
 
     describe '#write' do
       it 'encrypts the file using the provided key' do
-        encryptor = ActiveSupport::MessageEncryptor.new(Gitlab::EncryptedConfiguration.generate_key(credentials_key), cipher: 'aes-256-gcm')
+        encryptor = ActiveSupport::MessageEncryptor.new(described_class.generate_key(credentials_key), cipher: 'aes-256-gcm')
         config = described_class.new(content_path: credentials_config_path, base_key: credentials_key)
 
         config.write('sample-content')
@@ -122,7 +122,7 @@ RSpec.describe Gitlab::EncryptedConfiguration do
           original_key_encryptor = encryptor(credential_key_original) # can read with the initial key
           latest_key_encryptor = encryptor(credential_key_latest) # can read with the new key
           both_key_encryptor = encryptor(credential_key_latest) # can read with either key
-          both_key_encryptor.rotate(Gitlab::EncryptedConfiguration.generate_key(credential_key_original))
+          both_key_encryptor.rotate(described_class.generate_key(credential_key_original))
 
           expect(original_key_encryptor.decrypt_and_verify(File.read(config_path_original))).to eq('sample-content1')
           expect(both_key_encryptor.decrypt_and_verify(File.read(config_path_original))).to eq('sample-content1')

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GraphqlHelpers do
-  include GraphqlHelpers
+  include described_class
 
   # Normalize irrelevant whitespace to make comparison easier
   def norm(query)

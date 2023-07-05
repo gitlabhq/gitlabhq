@@ -130,7 +130,6 @@ export default {
         v-gl-tooltip.bottom.hover.html="searchTooltip"
         v-gl-modal="$options.SEARCH_MODAL_ID"
         data-testid="super-sidebar-search-button"
-        data-qa-selector="global_search_button"
         icon="search"
         :aria-label="$options.i18n.search"
         category="tertiary"
@@ -150,7 +149,6 @@ export default {
         category="tertiary"
         data-method="delete"
         data-testid="stop-impersonation-btn"
-        data-qa-selector="stop_impersonation_link"
       />
     </div>
     <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">
@@ -189,7 +187,7 @@ export default {
         :count="userCounts.todos"
         :href="sidebarData.todos_dashboard_path"
         :label="$options.i18n.todoList"
-        data-qa-selector="todos_shortcut_button"
+        data-testid="todos_shortcut_button"
         data-track-action="click_link"
         data-track-label="todos_link"
         data-track-property="nav_core_menu"

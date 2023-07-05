@@ -6,7 +6,7 @@ require 'tsort'
 
 RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
   describe '#initialize with non-Collection value' do
-    subject { Gitlab::Ci::Variables::Collection::Sort.new([]) }
+    subject { described_class.new([]) }
 
     it 'raises ArgumentError' do
       expect { subject }.to raise_error(ArgumentError, /Collection object was expected/)
@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
 
       let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
 
-      subject { Gitlab::Ci::Variables::Collection::Sort.new(collection).tsort }
+      subject { described_class.new(collection).tsort }
 
       it 'raises TSort::Cyclic' do
         expect { subject }.to raise_error(TSort::Cyclic)

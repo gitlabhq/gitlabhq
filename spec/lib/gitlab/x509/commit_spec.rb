@@ -6,7 +6,7 @@ RSpec.describe Gitlab::X509::Commit do
   let(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
   let(:project) { create(:project, :repository, path: X509Helpers::User1.path, creator: user) }
   let(:commit) { project.commit_by(oid: commit_sha ) }
-  let(:signature) { Gitlab::X509::Commit.new(commit).signature }
+  let(:signature) { described_class.new(commit).signature }
   let(:store) { OpenSSL::X509::Store.new }
   let(:certificate) { OpenSSL::X509::Certificate.new(X509Helpers::User1.trust_cert) }
 

@@ -72,6 +72,10 @@ issues:
 - issuable_resource_links
 work_item_type:
 - issues
+- namespace
+- work_items
+- widget_definitions
+- enabled_widget_definitions
 events:
 - author
 - project

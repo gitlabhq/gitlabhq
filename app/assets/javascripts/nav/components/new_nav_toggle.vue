@@ -92,7 +92,7 @@ export default {
         :value="isEnabled"
         :label="$options.i18n.toggleLabel"
         label-position="hidden"
-        data-qa-selector="new_navigation_toggle"
+        data-testid="new_navigation_toggle"
       />
     </div>
   </li>

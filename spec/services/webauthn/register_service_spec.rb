@@ -16,7 +16,7 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
       webauthn_credential = WebAuthn::Credential.from_create(create_result)
 
       params = { device_response: create_result.to_json, name: 'abc' }
-      service = Webauthn::RegisterService.new(user, params, challenge)
+      service = described_class.new(user, params, challenge)
 
       registration = service.execute
       expect(registration.credential_xid).to eq(Base64.strict_encode64(webauthn_credential.raw_id))
@@ -27,7 +27,7 @@ RSpec.describe Webauthn::RegisterService, feature_category: :system_access do
       create_result = client.create(challenge: Base64.strict_encode64(SecureRandom.random_bytes(16))) # rubocop:disable Rails/SaveBang
 
       params = { device_response: create_result.to_json, name: 'abc' }
-      service = Webauthn::RegisterService.new(user, params, challenge)
+      service = described_class.new(user, params, challenge)
 
       registration = service.execute
       expect(registration.errors.size).to eq(1)

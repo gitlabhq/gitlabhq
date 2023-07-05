@@ -333,7 +333,7 @@ XSS issues are commonly classified in three categories, by their delivery method
 
 ### Impact
 
-The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform any same action the victim would normally be able to do through a browser. The attacker would also have the ability to:
+The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform any same action the victim would typically be able to do through a browser. The attacker would also have the ability to:
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [log victim keystrokes](https://youtu.be/2VFavqfDS6w?t=1367)
 - launch a network scan from the victim's browser
@@ -524,7 +524,7 @@ of these behaviors.
 
 The Ruby method [`Pathname.join`](https://ruby-doc.org/stdlib-2.7.4/libdoc/pathname/rdoc/Pathname.html#method-i-join)
 joins path names. Using methods in a specific way can result in a path name typically prohibited in
-normal use. In the examples below, we see attempts to access `/etc/passwd`, which is a sensitive file:
+typical use. In the examples below, we see attempts to access `/etc/passwd`, which is a sensitive file:
 
 ```ruby
 require 'pathname'

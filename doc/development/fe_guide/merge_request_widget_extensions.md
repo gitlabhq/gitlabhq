@@ -261,8 +261,10 @@ important not to alter the status code and headers.
 
 If `fetchCollapsedData()` or `fetchFullData()` methods throw an error:
 
-- The loading state of the extension is updated to `LOADING_STATES.collapsedError`
-  and `LOADING_STATES.expandedError` respectively.
+- The loading state of the extension is updated to `LOADING_STATES.collapsedError` if
+  `fetchCollapsedData()` method throws an error.
+- The loading state of the extension is updated to `LOADING_STATES.expandedError` if
+  `fetchFullData()` method throws an error.
 - The extensions header displays an error icon and updates the text to be either:
   - The text defined in `$options.i18n.error`.
   - "Failed to load" if `$options.i18n.error` is not defined.

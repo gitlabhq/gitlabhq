@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :dependency_proxy do
   let_it_be(:user) { create(:user) }
 
-  let(:service) { Auth::DependencyProxyAuthenticationService.new(nil, user) }
+  let(:service) { described_class.new(nil, user) }
 
   before do
     stub_config(dependency_proxy: { enabled: true })

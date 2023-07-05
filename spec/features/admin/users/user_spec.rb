@@ -260,7 +260,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
         it 'logs in as the user when impersonate is clicked' do
           subject
 
-          find('[data-testid="user-menu"]').click
+          find('[data-testid="user-dropdown"]').click
 
           expect(page.find(:css, '[data-testid="user-profile-link"]')['data-user']).to eql(another_user.username)
         end
@@ -317,7 +317,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
         it 'logs out of impersonated user back to original user' do
           subject
 
-          find('[data-testid="user-menu"]').click
+          find('[data-testid="user-dropdown"]').click
 
           expect(page.find(:css, '[data-testid="user-profile-link"]')['data-user']).to eq(current_user.username)
         end

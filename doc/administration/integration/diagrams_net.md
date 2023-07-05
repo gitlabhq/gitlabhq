@@ -8,7 +8,7 @@ type: reference, howto
 # Diagrams.net **(FREE)**
 
 With the [diagrams.net](https://www.diagrams.net/) integration, you can create and embed SVG diagrams in wikis.
-The diagram editor is available in both the Markdown editor and the content editor.
+The diagram editor is available in both the plain text editor and the rich text editor.
 
 On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
 

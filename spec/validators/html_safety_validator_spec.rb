@@ -13,7 +13,7 @@ RSpec.describe HtmlSafetyValidator do
   it 'adds an error when a script is included in the name' do
     validate('My group <script>evil_script</script>')
 
-    expect(group.errors[:name]).to eq([HtmlSafetyValidator.error_message])
+    expect(group.errors[:name]).to eq([described_class.error_message])
   end
 
   it 'does not add an error when an ampersand is included in the name' do

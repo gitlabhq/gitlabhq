@@ -275,7 +275,6 @@ export default {
           v-model="searchText"
           role="searchbox"
           data-testid="global-search-input"
-          data-qa-selector="global_search_input"
           autocomplete="off"
           :placeholder="searchPlaceholder"
           :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"

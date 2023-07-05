@@ -9,7 +9,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::AfterUpdateServic
   let_it_be(:issue, reload: true) { escalation_status.issue }
   let_it_be(:project) { issue.project }
 
-  let(:service) { IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(issue, current_user) }
+  let(:service) { described_class.new(issue, current_user) }
 
   subject(:result) do
     issue.update!(incident_management_issuable_escalation_status_attributes: update_params)

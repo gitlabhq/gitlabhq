@@ -33,7 +33,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'handles sticking when a user could be found' do
-      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
+      allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       expect(ApplicationRecord.sticking)
         .to receive(:stick_or_unstick_request).with(any_args, :user, 42)
@@ -44,7 +44,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'does not handle sticking if no user could be found' do
-      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(nil)
+      allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(nil)
 
       expect(ApplicationRecord.sticking)
         .not_to receive(:stick_or_unstick_request)
@@ -55,7 +55,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'returns the user if one could be found' do
-      allow_any_instance_of(API::Helpers).to receive(:initial_current_user).and_return(user)
+      allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       get 'user'
 

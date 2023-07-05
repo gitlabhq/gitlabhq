@@ -420,7 +420,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           commits = described_class.batch_by_oid(repository, oids)
 
           expect(commits.count).to eq(2)
-          expect(commits).to all( be_a(Gitlab::Git::Commit) )
+          expect(commits).to all( be_a(described_class) )
           expect(commits.first.sha).to eq(SeedRepo::Commit::ID)
           expect(commits.second.sha).to eq(SeedRepo::FirstCommit::ID)
         end

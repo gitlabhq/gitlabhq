@@ -1084,3 +1084,5 @@ ApprovalProjectRulesProtectedBranch:
   - protected_branch_id
   - approval_project_rule_id
   - branch_name
+WorkItems::Type:
+  - base_type

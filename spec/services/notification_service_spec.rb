@@ -532,7 +532,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
         end
 
-        let(:subject) { NotificationService.new }
+        let(:subject) { described_class.new }
         let(:mailer) { double(deliver_later: true) }
         let(:issue) { create(:issue, author: User.support_bot) }
         let(:project) { issue.project }
@@ -3889,7 +3889,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     let(:note) { create(:note, noteable: issue, project: project) }
     let(:member) { create(:user) }
 
-    subject { NotificationService.new }
+    subject { described_class.new }
 
     before do
       project.add_maintainer(member)

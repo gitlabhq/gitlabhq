@@ -44,7 +44,7 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
   end
 
   def invite_members_from_menu
-    find('[data-testid="new-dropdown"]').click
+    find('[data-testid="new-menu-toggle"]').click
 
     click_link('Invite members')
   end

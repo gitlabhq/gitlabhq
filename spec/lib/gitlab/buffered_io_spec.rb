@@ -12,7 +12,7 @@ RSpec.describe Gitlab::BufferedIo do
     end
 
     subject(:readuntil) do
-      Gitlab::BufferedIo.new(mock_io).readuntil('a', false, start_time)
+      described_class.new(mock_io).readuntil('a', false, start_time)
     end
 
     it 'does not raise a timeout error' do
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::BufferedIo do
 
       context 'when not passing start_time' do
         subject(:readuntil) do
-          Gitlab::BufferedIo.new(mock_io).readuntil('a', false)
+          described_class.new(mock_io).readuntil('a', false)
         end
 
         it 'raises a timeout error' do

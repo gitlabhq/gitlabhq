@@ -10,5 +10,5 @@
     - if show_super_sidebar?
       = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle-expand super-sidebar-toggle gl-ml-n3 gl-mr-2', title: _('Expand sidebar'), aria: { controls: 'super-sidebar', expanded: 'false', label: _('Navigation sidebar') } })
     - elsif defined?(@left_sidebar)
-      = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'toggle-mobile-nav gl-ml-n3 gl-mr-2', data: { qa_selector: 'toggle_mobile_nav_button' }, aria: { label: _('Open sidebar') } })
+      = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'toggle-mobile-nav gl-ml-n3 gl-mr-2', data: { testid: 'toggle_mobile_nav_button' }, aria: { label: _('Open sidebar') } })
     = render "layouts/nav/breadcrumbs/breadcrumbs"

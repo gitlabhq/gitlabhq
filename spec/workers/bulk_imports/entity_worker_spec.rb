@@ -17,7 +17,7 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
   let(:job_args) { entity.id }
 
   it 'updates pipeline trackers to enqueued state when selected' do
-    worker = BulkImports::EntityWorker.new
+    worker = described_class.new
 
     next_tracker = worker.send(:next_pipeline_trackers_for, entity.id).first
 

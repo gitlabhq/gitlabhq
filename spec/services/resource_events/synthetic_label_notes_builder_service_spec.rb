@@ -13,7 +13,7 @@ RSpec.describe ResourceEvents::SyntheticLabelNotesBuilderService, feature_catego
     let_it_be(:event3) { create(:resource_label_event, issue: issue) }
 
     it 'returns the expected synthetic notes' do
-      notes = ResourceEvents::SyntheticLabelNotesBuilderService.new(issue, user).execute
+      notes = described_class.new(issue, user).execute
 
       expect(notes.size).to eq(3)
     end

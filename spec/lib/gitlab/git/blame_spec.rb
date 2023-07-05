@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Git::Blame do
   let(:path) { 'CONTRIBUTING.md' }
   let(:range) { nil }
 
-  subject(:blame) { Gitlab::Git::Blame.new(repository, sha, path, range: range) }
+  subject(:blame) { described_class.new(repository, sha, path, range: range) }
 
   let(:result) do
     [].tap do |data|

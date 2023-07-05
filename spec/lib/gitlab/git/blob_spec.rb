@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Git::Blob do
   let_it_be(:repository) { project.repository.raw }
 
   describe 'initialize' do
-    let(:blob) { Gitlab::Git::Blob.new(name: 'test') }
+    let(:blob) { described_class.new(name: 'test') }
 
     it 'handles nil data' do
       expect(described_class).not_to receive(:gitlab_blob_size)
@@ -20,14 +20,14 @@ RSpec.describe Gitlab::Git::Blob do
     it 'records blob size' do
       expect(described_class).to receive(:gitlab_blob_size).and_call_original
 
-      Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abcd')
+      described_class.new(name: 'test', size: 4, data: 'abcd')
     end
 
     context 'when untruncated' do
       it 'attempts to record gitlab_blob_truncated_false' do
         expect(described_class).to receive(:gitlab_blob_truncated_false).and_call_original
 
-        Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abcd')
+        described_class.new(name: 'test', size: 4, data: 'abcd')
       end
     end
 
@@ -35,32 +35,32 @@ RSpec.describe Gitlab::Git::Blob do
       it 'attempts to record gitlab_blob_truncated_true' do
         expect(described_class).to receive(:gitlab_blob_truncated_true).and_call_original
 
-        Gitlab::Git::Blob.new(name: 'test', size: 40, data: 'abcd')
+        described_class.new(name: 'test', size: 40, data: 'abcd')
       end
     end
   end
 
   shared_examples '.find' do
     context 'nil path' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], nil) }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], nil) }
 
       it { expect(blob).to eq(nil) }
     end
 
     context 'utf-8 branch' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, 'Ääh-test-utf-8', "files/ruby/popen.rb") }
+      let(:blob) { described_class.find(repository, 'Ääh-test-utf-8', "files/ruby/popen.rb") }
 
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
     end
 
     context 'blank path' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], '') }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], '') }
 
       it { expect(blob).to eq(nil) }
     end
 
     context 'file in subdir' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "files/ruby/popen.rb") }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "files/ruby/popen.rb") }
 
       it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
       it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'file in root' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], ".gitignore") }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], ".gitignore") }
 
       it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
       it { expect(blob.name).to eq(".gitignore") }
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'file in root with leading slash' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "/.gitignore") }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "/.gitignore") }
 
       it { expect(blob.id).to eq("dfaa3f97ca337e20154a98ac9d0be76ddd1fcc82") }
       it { expect(blob.name).to eq(".gitignore") }
@@ -97,13 +97,13 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'non-exist file' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "missing.rb") }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "missing.rb") }
 
       it { expect(blob).to be_nil }
     end
 
     context 'six submodule' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], 'six') }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], 'six') }
 
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
       it { expect(blob.data).to eq('') }
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'large file' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], 'files/images/6049019_460s.jpg') }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], 'files/images/6049019_460s.jpg') }
       let(:blob_size) { 111803 }
       let(:stub_limit) { 1000 }
 
@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Git::Blob do
       end
 
       it 'marks the blob as binary' do
-        expect(Gitlab::Git::Blob).to receive(:new)
+        expect(described_class).to receive(:new)
           .with(hash_including(binary: true))
           .and_call_original
 
@@ -167,8 +167,8 @@ RSpec.describe Gitlab::Git::Blob do
   end
 
   describe '.raw' do
-    let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
-    let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
+    let(:raw_blob) { described_class.raw(repository, SeedRepo::RubyBlob::ID) }
+    let(:bad_blob) { described_class.raw(repository, SeedRepo::BigCommit::ID) }
 
     it { expect(raw_blob.id).to eq(SeedRepo::RubyBlob::ID) }
     it { expect(raw_blob.data[0..10]).to eq("require \'fi") }
@@ -305,7 +305,7 @@ RSpec.describe Gitlab::Git::Blob do
 
   describe '.batch_lfs_pointers' do
     let(:non_lfs_blob) do
-      Gitlab::Git::Blob.find(
+      described_class.find(
         repository,
         'master',
         'README.md'
@@ -313,7 +313,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     let(:lfs_blob) do
-      Gitlab::Git::Blob.find(
+      described_class.find(
         repository,
         TestEnv::BRANCH_SHA['master'],
         'files/lfs/lfs_object.iso'
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::Git::Blob do
       blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id])
 
       expect(blobs.count).to eq(1)
-      expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      expect(blobs).to all( be_a(described_class) )
       expect(blobs).to be_an(Array)
     end
 
@@ -332,7 +332,7 @@ RSpec.describe Gitlab::Git::Blob do
       blobs = described_class.batch_lfs_pointers(repository, [lfs_blob.id].lazy)
 
       expect(blobs.count).to eq(1)
-      expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+      expect(blobs).to all( be_a(described_class) )
     end
 
     it 'handles empty list of IDs gracefully' do
@@ -361,7 +361,7 @@ RSpec.describe Gitlab::Git::Blob do
 
   describe 'encoding', :aggregate_failures do
     context 'file with russian text' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/russian.rb") }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/russian.rb") }
 
       it 'has the correct blob attributes' do
         expect(blob.name).to eq("russian.rb")
@@ -375,7 +375,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'file with Japanese text' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/テスト.txt") }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/テスト.txt") }
 
       it 'has the correct blob attributes' do
         expect(blob.name).to eq("テスト.txt")
@@ -387,7 +387,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'file with ISO-8859 text' do
-      let(:blob) { Gitlab::Git::Blob.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/iso8859.txt") }
+      let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], "encoding/iso8859.txt") }
 
       it 'has the correct blob attributes' do
         expect(blob.name).to eq("iso8859.txt")
@@ -402,7 +402,7 @@ RSpec.describe Gitlab::Git::Blob do
   describe 'mode' do
     context 'file regular' do
       let(:blob) do
-        Gitlab::Git::Blob.find(
+        described_class.find(
           repository,
           TestEnv::BRANCH_SHA['master'],
           'files/ruby/regex.rb'
@@ -417,7 +417,7 @@ RSpec.describe Gitlab::Git::Blob do
 
     context 'file binary' do
       let(:blob) do
-        Gitlab::Git::Blob.find(
+        described_class.find(
           repository,
           TestEnv::BRANCH_SHA['with-executables'],
           'files/executables/ls'
@@ -432,7 +432,7 @@ RSpec.describe Gitlab::Git::Blob do
 
     context 'file symlink to regular' do
       let(:blob) do
-        Gitlab::Git::Blob.find(
+        described_class.find(
           repository,
           '88ce9520c07b7067f589b7f83a30b6250883115c',
           'symlink'
@@ -449,7 +449,7 @@ RSpec.describe Gitlab::Git::Blob do
   describe 'lfs_pointers' do
     context 'file a valid lfs pointer' do
       let(:blob) do
-        Gitlab::Git::Blob.find(
+        described_class.find(
           repository,
           TestEnv::BRANCH_SHA['png-lfs'],
           'files/images/emoji.png'
@@ -469,7 +469,7 @@ RSpec.describe Gitlab::Git::Blob do
 
   describe '#load_all_data!' do
     let(:full_data) { 'abcd' }
-    let(:blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abc') }
+    let(:blob) { described_class.new(name: 'test', size: 4, data: 'abc') }
 
     subject { blob.load_all_data!(repository) }
 
@@ -483,7 +483,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'with a fully loaded blob' do
-      let(:blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: full_data) }
+      let(:blob) { described_class.new(name: 'test', size: 4, data: full_data) }
 
       it "doesn't perform any loading" do
         expect(repository.gitaly_blob_client).not_to receive(:get_blob)
@@ -497,7 +497,7 @@ RSpec.describe Gitlab::Git::Blob do
 
   describe '#truncated?' do
     context 'when blob.size is nil' do
-      let(:nil_size_blob) { Gitlab::Git::Blob.new(name: 'test', data: 'abcd') }
+      let(:nil_size_blob) { described_class.new(name: 'test', data: 'abcd') }
 
       it 'returns false' do
         expect(nil_size_blob.truncated?).to be_falsey
@@ -505,7 +505,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'when blob.data is missing' do
-      let(:nil_data_blob) { Gitlab::Git::Blob.new(name: 'test', size: 4) }
+      let(:nil_data_blob) { described_class.new(name: 'test', size: 4) }
 
       it 'returns false' do
         expect(nil_data_blob.truncated?).to be_falsey
@@ -513,7 +513,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'when the blob is truncated' do
-      let(:truncated_blob) { Gitlab::Git::Blob.new(name: 'test', size: 40, data: 'abcd') }
+      let(:truncated_blob) { described_class.new(name: 'test', size: 40, data: 'abcd') }
 
       it 'returns true' do
         expect(truncated_blob.truncated?).to be_truthy
@@ -521,7 +521,7 @@ RSpec.describe Gitlab::Git::Blob do
     end
 
     context 'when the blob is untruncated' do
-      let(:untruncated_blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: 'abcd') }
+      let(:untruncated_blob) { described_class.new(name: 'test', size: 4, data: 'abcd') }
 
       it 'returns false' do
         expect(untruncated_blob.truncated?).to be_falsey
@@ -547,7 +547,7 @@ RSpec.describe Gitlab::Git::Blob do
     context 'when the encoding cannot be detected' do
       it 'successfully splits the data' do
         data = "test\nblob"
-        blob = Gitlab::Git::Blob.new(name: 'test', size: data.bytesize, data: data)
+        blob = described_class.new(name: 'test', size: data.bytesize, data: data)
         expect(blob).to receive(:ruby_encoding) { nil }
 
         expect(blob.lines).to eq(data.split("\n"))

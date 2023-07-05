@@ -108,8 +108,8 @@ How we implement [keyboard shortcuts](keyboard_shortcuts.md) that can be customi
 
 ## Editors
 
-GitLab text editing experiences are provided by the [Source Editor](source_editor.md) and
-the [Content Editor](content_editor.md).
+GitLab text editing experiences are provided by the [source editor](source_editor.md) and
+the [rich text editor](content_editor.md).
 
 ## Frontend FAQ
 

@@ -61,7 +61,7 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
   end
 
   context 'with load balancing enabled' do
-    let(:service) { UserProjectAccessChangedService.new([1, 2]) }
+    let(:service) { described_class.new([1, 2]) }
 
     before do
       expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
@@ -81,7 +81,7 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
         service.execute
       end
 
-      service = UserProjectAccessChangedService.new([1, 2, 3, 4, 5])
+      service = described_class.new([1, 2, 3, 4, 5])
 
       allow(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
                                             .with([[1], [2], [3], [4], [5]])

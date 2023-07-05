@@ -24,6 +24,7 @@ module Gitlab
           return if group_relation_without_group?
           return find_diff_commit_user if diff_commit_user?
           return find_diff_commit if diff_commit?
+          return find_work_item_type if work_item_type?
 
           super
         end
@@ -142,6 +143,10 @@ module Gitlab
           klass == MergeRequestDiffCommit
         end
 
+        def work_item_type?
+          klass == ::WorkItems::Type
+        end
+
         # If an existing group milestone used the IID
         # claim the IID back and set the group milestone to use one available
         # This is necessary to fix situations like the following:
@@ -165,6 +170,18 @@ module Gitlab
 
         def group_level_object?
           epic?
+        end
+
+        def find_work_item_type
+          base_type = @attributes['base_type']
+
+          find_with_cache([::WorkItems::Type, base_type]) do
+            if ::WorkItems::Type.base_types.key?(base_type)
+              ::WorkItems::Type.default_by_type(base_type)
+            else
+              ::WorkItems::Type.default_issue_type
+            end
+          end
         end
       end
     end

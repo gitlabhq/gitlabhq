@@ -125,7 +125,7 @@ Work Items main goal is to enhance the planning toolset to become the most popul
 
 ### Scalability
 
-Currently, different entities like issues, epics, merge requests etc share many similar features but these features are implemented separately for every entity type. This makes implementing new features or refactoring existing ones problematic: for example, if we plan to add new feature to issues and incidents, we would need to implement it separately on issue and incident types respectively. With work items, any new feature is implemented via widgets for all existing types which makes the architecture more scalable.
+Currently, different entities like issues, epics, merge requests etc share many similar features but these features are implemented separately for every entity type. This makes implementing new features or refactoring existing ones problematic: for example, if we plan to add new feature to issues and incidents, we would need to implement it separately on issue and incident types. With work items, any new feature is implemented via widgets for all existing types which makes the architecture more scalable.
 
 ### Flexibility
 

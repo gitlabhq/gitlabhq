@@ -108,7 +108,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
             .to receive(:track_description_edit_action).once.with(user: user)
 
-          MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request2)
+          described_class.new(project: project, current_user: user, params: opts).execute(merge_request2)
         end
 
         it 'tracks Draft marking' do
@@ -117,7 +117,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
           opts[:title] = "Draft: #{opts[:title]}"
 
-          MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request2)
+          described_class.new(project: project, current_user: user, params: opts).execute(merge_request2)
         end
 
         it 'tracks Draft un-marking' do
@@ -126,7 +126,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
           opts[:title] = "Non-draft/wip title string"
 
-          MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(draft_merge_request)
+          described_class.new(project: project, current_user: user, params: opts).execute(draft_merge_request)
         end
 
         context 'when MR is locked' do
@@ -137,7 +137,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
               opts[:discussion_locked] = true
 
-              MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+              described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
             end
           end
 
@@ -148,7 +148,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
               opts[:discussion_locked] = false
 
-              MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+              described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
             end
           end
         end
@@ -163,7 +163,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
               opts[:discussion_locked] = false
 
-              MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+              described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
             end
           end
 
@@ -174,7 +174,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
               opts[:discussion_locked] = true
 
-              MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+              described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
             end
           end
         end
@@ -193,7 +193,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             spent_at: Date.parse('2021-02-24')
           }
 
-          MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+          described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
         end
 
         it 'tracks milestone change' do
@@ -202,7 +202,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
           opts[:milestone_id] = milestone.id
 
-          MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+          described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
         end
 
         it 'track labels change' do
@@ -211,7 +211,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
           opts[:label_ids] = [label2.id]
 
-          MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+          described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
         end
 
         context 'reviewers' do
@@ -222,7 +222,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
               opts[:reviewers] = [user2]
 
-              MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+              described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
             end
           end
 
@@ -233,7 +233,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
               opts[:reviewers] = merge_request.reviewers
 
-              MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request)
+              described_class.new(project: project, current_user: user, params: opts).execute(merge_request)
             end
           end
         end
@@ -449,7 +449,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:milestone) { create(:milestone, project: project) }
       let(:req_opts) { { source_branch: 'feature', target_branch: 'master' } }
 
-      subject { MergeRequests::UpdateService.new(project: project, current_user: user, params: opts).execute(merge_request) }
+      subject { described_class.new(project: project, current_user: user, params: opts).execute(merge_request) }
 
       context 'when mentionable attributes change' do
         let(:opts) { { description: "Description with #{user.to_reference}" }.merge(req_opts) }

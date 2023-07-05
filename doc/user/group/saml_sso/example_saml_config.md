@@ -55,8 +55,13 @@ Attribute mapping:
 
 ![Azure Group Claims](img/azure_configure_group_claim.png)
 
-NOTE:
-Using the **Group ID** source attribute requires users to enter the group ID or object ID when configuring SAML group links. If available, use the **sAMAccountName** source attribute for the friendly group name instead.
+Using the **Group ID** source attribute requires users to enter the group ID or object ID when configuring SAML group links.
+
+If available, you can add user-friendly group names instead. When setting up Azure group claims:
+
+1. Select the **sAMAccountName** source attribute.
+1. Enter a group name. You can specify a name up to 256 characters long.
+1. To ensure the attribute is part of the assertion, select **Emit group names for cloud-only groups**.
 
 [Azure AD limits the number of groups that can be sent in a SAML response to 150](https://support.esri.com/en-us/knowledge-base/000022190). If a user is a member of more than 150 groups, Azure does not include that user's group claim in the SAML response.
 
