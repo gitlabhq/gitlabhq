@@ -789,7 +789,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/controllers/import/manifest_controller_spec.rb'
     - 'spec/controllers/profiles/notifications_controller_spec.rb'
     - 'spec/controllers/profiles/slacks_controller_spec.rb'
-    - 'spec/controllers/projects/alert_management_controller_spec.rb'
     - 'spec/controllers/projects/analytics/cycle_analytics/stages_controller_spec.rb'
     - 'spec/controllers/projects/analytics/cycle_analytics/summary_controller_spec.rb'
     - 'spec/controllers/projects/analytics/cycle_analytics/value_streams_controller_spec.rb'
