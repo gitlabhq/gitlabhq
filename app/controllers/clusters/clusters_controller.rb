@@ -2,7 +2,6 @@
 
 class Clusters::ClustersController < Clusters::BaseController
   include RoutableActions
-  include MetricsDashboard
 
   before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache]
   before_action :user_cluster, only: [:connect]

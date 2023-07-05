@@ -36,4 +36,18 @@ RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integ
       end.not_to raise_error
     end
   end
+
+  context 'when the Gitlab::SilentMode is enabled' do
+    before do
+      allow(Gitlab::SilentMode).to receive(:enabled?).and_return(true)
+    end
+
+    it 'completes silently and does not log an error' do
+      expect(Gitlab::IntegrationsLogger).not_to receive(:error)
+
+      expect do
+        worker.perform(non_existing_record_id, {})
+      end.not_to raise_error
+    end
+  end
 end

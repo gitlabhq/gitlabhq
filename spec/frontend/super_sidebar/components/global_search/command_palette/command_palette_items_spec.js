@@ -10,6 +10,7 @@ import {
   USER_HANDLE,
   PATH_HANDLE,
   SEARCH_SCOPE,
+  MAX_ROWS,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   commandMapper,
@@ -164,7 +165,26 @@ describe('CommandPaletteItems', () => {
       expect(findLoader().exists()).toBe(true);
     });
 
-    it('should render returned items', async () => {
+    it(`should render all items when returned number of items is less than ${MAX_ROWS}`, async () => {
+      const numberOfItems = MAX_ROWS - 1;
+      const items = FILES.slice(0, numberOfItems).map(fileMapper.bind(null, projectBlobPath));
+      mockAxios.onGet().replyOnce(HTTP_STATUS_OK, FILES.slice(0, numberOfItems));
+      jest.spyOn(fuzzaldrinPlus, 'filter').mockReturnValue(items);
+
+      const searchQuery = 'gitlab-ci.yml';
+      createComponent({ handle: PATH_HANDLE, searchQuery });
+
+      await waitForPromises();
+
+      expect(findGroups().at(0).props('group')).toMatchObject({
+        name: PATH_GROUP_TITLE,
+        items: items.slice(0, MAX_ROWS),
+      });
+
+      expect(findItems()).toHaveLength(numberOfItems);
+    });
+
+    it(`should render first ${MAX_ROWS} returned items when number of returned items exceeds ${MAX_ROWS}`, async () => {
       const items = FILES.map(fileMapper.bind(null, projectBlobPath));
       mockAxios.onGet().replyOnce(HTTP_STATUS_OK, FILES);
       jest.spyOn(fuzzaldrinPlus, 'filter').mockReturnValue(items);
@@ -174,10 +194,10 @@ describe('CommandPaletteItems', () => {
 
       await waitForPromises();
 
-      expect(findItems()).toHaveLength(items.length);
+      expect(findItems()).toHaveLength(MAX_ROWS);
       expect(findGroups().at(0).props('group')).toMatchObject({
         name: PATH_GROUP_TITLE,
-        items,
+        items: items.slice(0, MAX_ROWS),
       });
     });
 

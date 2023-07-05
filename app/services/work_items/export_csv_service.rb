@@ -28,7 +28,7 @@ module WorkItems
         'Type' => ->(work_item) { work_item.work_item_type.name },
         'Author' => 'author_name',
         'Author Username' => ->(work_item) { work_item.author.username },
-        'Created At (UTC)' => ->(work_item) { work_item.created_at.to_s(:csv) }
+        'Created At (UTC)' => ->(work_item) { work_item.created_at.to_fs(:csv) }
       }
     end
 

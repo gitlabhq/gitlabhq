@@ -5,8 +5,11 @@ module QA
     module User
       class Show < Page::Base
         view 'app/views/users/show.html.haml' do
-          element :follow_user_link
           element :following_tab
+        end
+
+        view 'app/views/users/_follow_user.html.haml' do
+          element :follow_user_link
         end
 
         view 'app/views/shared/users/_user.html.haml' do

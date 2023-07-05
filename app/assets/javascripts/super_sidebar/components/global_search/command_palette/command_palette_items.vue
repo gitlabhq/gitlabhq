@@ -2,6 +2,7 @@
 import { debounce } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { GlDisclosureDropdownGroup, GlLoadingIcon } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { getFormattedItem } from '../utils';
@@ -16,6 +17,7 @@ import {
   PAGES_GROUP_TITLE,
   PATH_GROUP_TITLE,
   GROUP_TITLES,
+  MAX_ROWS,
 } from './constants';
 import SearchItem from './search_item.vue';
 import { commandMapper, linksReducer, autocompleteQuery, fileMapper } from './utils';
@@ -50,9 +52,25 @@ export default {
   },
   data: () => ({
     groups: [],
-    error: null,
     loading: false,
     projectFiles: [],
+    debouncedSearch: debounce(function debouncedSearch() {
+      switch (this.handle) {
+        case COMMAND_HANDLE:
+          this.getCommandsAndPages();
+          break;
+        case USER_HANDLE:
+        case PROJECT_HANDLE:
+        case ISSUE_HANDLE:
+          this.getScopedItems();
+          break;
+        case PATH_HANDLE:
+          this.getProjectFiles();
+          break;
+        default:
+          break;
+      }
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
   }),
   computed: {
     isCommandMode() {
@@ -96,29 +114,15 @@ export default {
     },
     filteredProjectFiles() {
       if (!this.searchQuery) {
-        return this.projectFiles;
+        return this.projectFiles.slice(0, MAX_ROWS);
       }
-      return this.filterBySearchQuery(this.projectFiles, 'text');
+      return this.filterBySearchQuery(this.projectFiles, 'text').slice(0, MAX_ROWS);
     },
   },
   watch: {
     searchQuery: {
       handler() {
-        switch (this.handle) {
-          case COMMAND_HANDLE:
-            this.getCommandsAndPages();
-            break;
-          case USER_HANDLE:
-          case PROJECT_HANDLE:
-          case ISSUE_HANDLE:
-            this.getScopedItems();
-            break;
-          case PATH_HANDLE:
-            this.getProjectFiles();
-            break;
-          default:
-            break;
-        }
+        this.debouncedSearch();
       },
       immediate: true,
     },
@@ -127,68 +131,15 @@ export default {
     filterBySearchQuery(items, key = 'keywords') {
       return fuzzaldrinPlus.filter(items, this.searchQuery, { key });
     },
-    getCommandsAndPages() {
-      if (!this.searchQuery) {
-        this.groups = [...this.commands];
-        return;
-      }
-      const matchedLinks = this.filterBySearchQuery(this.links);
-
-      if (this.filteredCommands.length || matchedLinks.length) {
-        this.groups = [];
-      }
-
-      if (this.filteredCommands.length) {
-        this.groups = [...this.filteredCommands];
-      }
-
-      if (matchedLinks.length) {
-        this.groups.push({
-          name: PAGES_GROUP_TITLE,
-          items: matchedLinks,
-        });
-      }
-    },
-    getScopedItems: debounce(function debouncedSearch() {
-      if (this.searchQuery && this.searchQuery.length < 3) return null;
-
-      this.loading = true;
-
-      return axios
-        .get(
-          autocompleteQuery({
-            path: this.autocompletePath,
-            searchTerm: this.searchTerm,
-            handle: this.handle,
-            projectId: this.searchContext.project?.id,
-          }),
-        )
-        .then(({ data }) => {
-          this.groups = this.getGroups(data);
-        })
-        .catch((error) => {
-          this.error = error;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
-    getGroups(data) {
-      return [
-        {
-          name: GROUP_TITLES[this.handle],
-          items: data.map(getFormattedItem),
-        },
-      ];
-    },
     async getProjectFiles() {
       if (!this.projectFiles.length) {
         this.loading = true;
+
         try {
           const response = await axios.get(this.projectFilesPath);
           this.projectFiles = response?.data.map(fileMapper.bind(null, this.projectBlobPath));
         } catch (error) {
-          this.error = error;
+          Sentry.captureException(error);
         } finally {
           this.loading = false;
         }
@@ -201,30 +152,74 @@ export default {
         },
       ];
     },
+    getCommandsAndPages() {
+      if (!this.searchQuery) {
+        this.groups = [...this.commands];
+        return;
+      }
+
+      this.groups = [...this.filteredCommands];
+
+      const matchedLinks = this.filterBySearchQuery(this.links);
+
+      if (matchedLinks.length) {
+        this.groups.push({
+          name: PAGES_GROUP_TITLE,
+          items: matchedLinks,
+        });
+      }
+    },
+    async getScopedItems() {
+      if (this.searchQuery && this.searchQuery.length < 3) return;
+
+      this.loading = true;
+
+      try {
+        const response = await axios.get(
+          autocompleteQuery({
+            path: this.autocompletePath,
+            searchTerm: this.searchTerm,
+            handle: this.handle,
+            projectId: this.searchContext.project?.id,
+          }),
+        );
+
+        this.groups = [
+          {
+            name: GROUP_TITLES[this.handle],
+            items: response.data.map(getFormattedItem),
+          },
+        ];
+      } catch (error) {
+        Sentry.captureException(error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <ul class="gl-p-0 gl-m-0 gl-list-style-none">
+  <div>
     <gl-loading-icon v-if="loading" size="lg" class="gl-my-5" />
 
-    <template v-else-if="hasResults">
+    <ul v-else-if="hasResults" class="gl-p-0 gl-m-0 gl-list-style-none">
       <gl-disclosure-dropdown-group
         v-for="(group, index) in groups"
         :key="index"
         :group="group"
         bordered
-        class="{'gl-mt-0!': index===0}"
+        :class="{ 'gl-mt-0!': index === 0 }"
       >
         <template #list-item="{ item }">
           <search-item :item="item" :search-query="searchQuery" />
         </template>
       </gl-disclosure-dropdown-group>
-    </template>
+    </ul>
 
     <div v-else-if="hasSearchQuery && !hasResults" class="gl-text-gray-700 gl-pl-5 gl-py-3">
       {{ __('No results found') }}
     </div>
-  </ul>
+  </div>
 </template>

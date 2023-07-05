@@ -98,7 +98,7 @@ module Gitlab
             hash[column_definition.attribute_name] = if field_value.is_a?(Time)
                                                        # use :inspect formatter to provide specific timezone info
                                                        # eg 2022-07-05 21:57:56.041499000 +0800
-                                                       field_value.to_s(:inspect)
+                                                       field_value.to_fs(:inspect)
                                                      elsif field_value.nil?
                                                        nil
                                                      elsif lower_named_function?(column_definition)

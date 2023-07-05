@@ -45,8 +45,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsTo
 
   context 'for 28d time frame' do
     let(:expected_value) { 8 }
-    let(:start) { 30.days.ago.to_s(:db) }
-    let(:finish) { 2.days.ago.to_s(:db) }
+    let(:start) { 30.days.ago.to_fs(:db) }
+    let(:finish) { 2.days.ago.to_fs(:db) }
     let(:expected_query) do
       "SELECT (SELECT COUNT(\"projects\".\"id\") FROM \"projects\" WHERE \"projects\".\"import_type\""\
       " IN ('gitlab_project', 'gitlab', 'github', 'bitbucket', 'bitbucket_server', 'gitea', 'git', 'manifest',"\

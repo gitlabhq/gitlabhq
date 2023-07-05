@@ -384,8 +384,8 @@ to control when to add jobs to pipelines.
 You can use `only` or `except` with:
 
 - Specific keywords. See the full list in the [`only`/`except` syntax reference](../yaml/index.md#onlyrefs--exceptrefs).
-- Branch names. You should avoid using branches that are named the same as the specific keywords.
-  For example, jobs configured to run for tag pipelines by using the `tags` keyword
+- Branch names. Avoid branch names that are exactly the same as a specific keyword.
+  For example, jobs configured to run for the `tags` keyword (tag pipelines)
   would also run for a branch named `tags`.
 - Regex patterns to specify a range of branch names.
 

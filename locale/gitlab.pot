@@ -49643,6 +49643,9 @@ msgstr ""
 msgid "UserProfile|Copy user ID"
 msgstr ""
 
+msgid "UserProfile|Copy user ID: %{id}"
+msgstr ""
+
 msgid "UserProfile|Edit profile"
 msgstr ""
 
@@ -49722,6 +49725,9 @@ msgid "UserProfile|This user isn't following other users."
 msgstr ""
 
 msgid "UserProfile|Unconfirmed user"
+msgstr ""
+
+msgid "UserProfile|User ID copied to clipboard"
 msgstr ""
 
 msgid "UserProfile|User ID: %{id}"

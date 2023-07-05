@@ -71,6 +71,10 @@ Incoming emails still raise issues, but the users who sent the emails to [Servic
 
 Triggering webhook tests via the UI results in HTTP status 500 responses.
 
+### Integrations
+
+Executable [integrations](../../user/project/integrations/index.md) are suppressed.
+
 ### Outbound emails
 
 Outbound emails are suppressed.

@@ -48,3 +48,5 @@ export const GROUP_TITLES = {
   [ISSUE_HANDLE]: ISSUE_GROUP_TITLE,
   [PATH_HANDLE]: PATH_GROUP_TITLE,
 };
+
+export const MAX_ROWS = 20;

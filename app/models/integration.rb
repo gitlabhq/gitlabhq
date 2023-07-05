@@ -586,6 +586,7 @@ class Integration < ApplicationRecord
   end
 
   def async_execute(data)
+    return if ::Gitlab::SilentMode.enabled?
     return unless supported_events.include?(data[:object_kind])
 
     Integrations::ExecuteWorker.perform_async(id, data)

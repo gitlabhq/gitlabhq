@@ -4,6 +4,7 @@ module Gitlab
   module ManifestImport
     class Metadata
       EXPIRY_TIME = 1.week
+      KEY_PREFIX = 'manifest_import:metadata:user'
 
       attr_reader :user, :fallback
 
@@ -13,6 +14,15 @@ module Gitlab
       end
 
       def save(repositories, group_id)
+        if Feature.enabled?(:manifest_import_use_hash_tagged_key)
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.multi do |multi|
+              multi.set(hashtag_key_for('repositories'), Gitlab::Json.dump(repositories), ex: EXPIRY_TIME)
+              multi.set(hashtag_key_for('group_id'), group_id, ex: EXPIRY_TIME)
+            end
+          end
+        end
+
         Gitlab::Redis::SharedState.with do |redis|
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
             redis.multi do |multi|
@@ -37,13 +47,21 @@ module Gitlab
 
       private
 
+      def hashtag_key_for(field)
+        "#{KEY_PREFIX}:{#{user.id}}:#{field}"
+      end
+
       def key_for(field)
-        "manifest_import:metadata:user:#{user.id}:#{field}"
+        "#{KEY_PREFIX}:#{user.id}:#{field}"
       end
 
       def redis_get(field)
         Gitlab::Redis::SharedState.with do |redis|
-          redis.get(key_for(field))
+          if Feature.enabled?(:manifest_import_use_hash_tagged_key)
+            redis.get(hashtag_key_for(field)) || redis.get(key_for(field))
+          else
+            redis.get(key_for(field))
+          end
         end
       end
     end

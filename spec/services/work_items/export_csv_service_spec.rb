@@ -61,7 +61,7 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
   end
 
   specify 'created_at' do
-    expect(csv[0]['Created At (UTC)']).to eq(work_item_1.created_at.to_s(:csv))
+    expect(csv[0]['Created At (UTC)']).to eq(work_item_1.created_at.to_fs(:csv))
   end
 
   specify 'description' do

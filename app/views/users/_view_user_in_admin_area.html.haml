@@ -1,0 +1,4 @@
+- if current_user && current_user.admin?
+  = render Pajamas::ButtonComponent.new(href: [:admin, @user],
+    icon: 'user',
+    button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|View user in admin area'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } })

@@ -1,0 +1,11 @@
+- link_classes = "flex-grow-1 gl-display-inline-block"
+
+- if current_user&.following_users_allowed?(@user)
+  - if current_user.following?(@user)
+    = form_tag user_unfollow_path(@user, :json), class: link_classes do
+      = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-w-full', data: { track_action: 'click_button', track_label: 'unfollow_from_profile' } }) do
+        = _('Unfollow')
+  - else
+    = form_tag user_follow_path(@user, :json), class: link_classes do
+      = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { qa_selector: 'follow_user_link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
+        = _('Follow')

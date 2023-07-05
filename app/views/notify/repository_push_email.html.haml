@@ -19,7 +19,7 @@
       %li
         %strong= link_to(commit.short_id, project_commit_url(@message.project, commit))
         %div
-          = html_escape(s_('Notify|%{committed_by_start} by %{author_name} %{committed_by_end} %{committed_at_start} at %{committed_date} %{committed_at_end}')) % {committed_by_start: '<span>'.html_safe, author_name: commit.author_name, committed_by_end: '</span>'.html_safe, committed_at_start: '<i>'.html_safe, committed_date: commit.committed_date.to_s(:iso8601), committed_at_end: '</i>'.html_safe}
+          = html_escape(s_('Notify|%{committed_by_start} by %{author_name} %{committed_by_end} %{committed_at_start} at %{committed_date} %{committed_at_end}')) % {committed_by_start: '<span>'.html_safe, author_name: commit.author_name, committed_by_end: '</span>'.html_safe, committed_at_start: '<i>'.html_safe, committed_date: commit.committed_date.to_fs(:iso8601), committed_at_end: '</i>'.html_safe}
         %pre.commit-message
           = commit.safe_message
 

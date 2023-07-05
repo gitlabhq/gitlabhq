@@ -31,14 +31,42 @@ However, at GitLab, we [give agency](https://about.gitlab.com/handbook/values/#g
 
 ## When can a feature be removed/changed?
 
-Generally, feature or configuration can be removed/changed only on major release.
-It also should be [deprecated in advance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+Features or configuration can only be removed/changed in a major release.
+
+They must be [deprecated in advance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
 
 For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../documentation/restful_api_styleguide.md#deprecations) guidelines.
 
 For configuration removals, see the [Omnibus deprecation policy](../../administration/package_information/deprecation_policy.md).
 
 For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).
+
+## Requesting a breaking change in a minor release
+
+GitLab self-managed packages are semantically versioned and follow our [maintenance policy](../../policy/maintenance.md). This process applies to features and APIs that are generally available, not beta or experimental.
+
+This maintenance policy is in place to allow our customers to prepare for disruptive changes by establishing a clear and predictable pattern that is widely used in the software industry. For many of our customers, GitLab is a business-critical application and surprising changes can cause damages and erode trust. 
+
+Introducing breaking changes in minor releases is against policy because it can disrupt our customers and introduces an element of randomness that requires customers to check for breaking changes every minor release to ensure that their business is not impacted. This does not align with our goal [to make it as easy as possible for customers to do business with GitLab](https://about.gitlab.com/company/yearlies/#fy24-yearlies) and is strongly discouraged.
+
+Breaking changes are deployed to GitLab.com after they are merged into the codebase and do not respect the minor release cadence. Special care must be taken to inform the [Customer Support](https://about.gitlab.com/handbook/support/) and [Customer Success](https://about.gitlab.com/handbook/customer-success/) teams so that we can offer fast resolution to any customers that may be impacted by unexpected breaking changes.
+
+Breaking our own policies, in particular shipping breaking changes in minor releases, is only reserved for situations in which GitLab establishes that delaying a breaking change would overall have a significantly more negative impact to customers than shipping it in a minor release. The most important lens for evaluating if an exception is granted is customer results.
+
+Introducing a breaking change in a minor release requires a PM and EM to follow the process below to request an exception:
+
+1. Open a new issue in the [product issue tracker using the Breaking Change Exception template](https://gitlab.com/gitlab-com/Product/-/issues/new?issuable_template=Breaking-Change-Exception)
+1. Title should follow the format `Breaking change exception: Description`
+1. Provide an impact assessment for the breaking change
+   1. How many customers are impacted?
+   1. Can we get the same outcome without a breaking-change? (i.e. no removal)
+   1. Can the breaking-change wait till the next major release, or the next scheduled upgrade stop, for example [Database scenarios](../database/required_stops.md))?
+   1. What is the alternative for customers to do the same job the change will break?
+   1. How difficult is it for customers to migrate to the alternative? Is there a migration plan?
+1. Provide a communication plan and establish a clear timeline, including the targeted minor release.
+1. Notify Support and Customer Success so they can share information with relevant customers.
+1. Obtain approval from the VP of Development, VP of Product Management, and VP of Customer Support for this area
+1. Obtain approval from the CPO and CTO
 
 ## Update the deprecations and removals documentation
 

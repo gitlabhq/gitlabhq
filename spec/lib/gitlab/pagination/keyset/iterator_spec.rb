@@ -87,7 +87,7 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
         time = Time.current
 
         iterator.each_batch(of: 2) do |relation|
-          Issue.connection.execute("UPDATE issues SET updated_at = '#{time.to_s(:inspect)}' WHERE id IN (#{relation.reselect(:id).to_sql})")
+          Issue.connection.execute("UPDATE issues SET updated_at = '#{time.to_fs(:inspect)}' WHERE id IN (#{relation.reselect(:id).to_sql})")
         end
 
         expect(Issue.pluck(:updated_at)).to all(be_within(5.seconds).of(time))

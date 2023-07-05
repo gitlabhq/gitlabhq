@@ -12,7 +12,7 @@ module UsersHelper
     # The user.status can be nil when the user has no status, so we need to protect against that case.
     # iso8601 is the official RFC supported format for frontend parsing of date:
     # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date
-    user.status&.clear_status_at&.to_s(:iso8601)
+    user.status&.clear_status_at&.to_fs(:iso8601)
   end
 
   def user_link(user)

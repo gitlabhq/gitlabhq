@@ -13,6 +13,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
   before do
     sign_in(reporter1)
     stub_feature_flags(moved_mr_sidebar: false)
+    stub_feature_flags(user_profile_overflow_menu_vue: false)
   end
 
   describe 'report abuse to administrator' do
@@ -121,6 +122,10 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
       it_behaves_like 'reports the user with an abuse category'
     end
   end
+
+  # TODO: implement tests before the FF "user_profile_overflow_menu_vue" is turned on
+  # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122971
+  # Related Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/416983
 
   private
 

@@ -1,0 +1,5 @@
+- verified_gpg_keys = @user.gpg_keys.select(&:verified?)
+- if verified_gpg_keys.any?
+  = render Pajamas::ButtonComponent.new(href: user_gpg_keys_path,
+    icon: 'key',
+    button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: n_('View public GPG key', 'View public GPG keys', verified_gpg_keys.length), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})

@@ -103,7 +103,7 @@ module Gitlab
             end
           end
 
-          redis.call("set", KEYS[1], cmsgpack.pack(cookie), "ex", redis.call("ttl", KEYS[1]))
+          redis.call("set", KEYS[1], cmsgpack.pack(cookie), "keepttl")
         LUA
 
         def latest_wal_locations
@@ -147,10 +147,7 @@ module Gitlab
           end
           local cookie = cmsgpack.unpack(cookie_msgpack)
           cookie.deduplicated = "1"
-          local ttl = redis.call("ttl", KEYS[1])
-          if ttl > 0 then
-            redis.call("set", KEYS[1], cmsgpack.pack(cookie), "ex", ttl)
-          end
+          redis.call("set", KEYS[1], cmsgpack.pack(cookie), "keepttl")
         LUA
 
         def should_reschedule?

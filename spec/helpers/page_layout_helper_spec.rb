@@ -270,7 +270,7 @@ RSpec.describe PageLayoutHelper do
 
       it 'merges the status properties with the defaults' do
         is_expected.to eq({
-          current_clear_status_after: time.to_s(:iso8601),
+          current_clear_status_after: time.to_fs(:iso8601),
           current_availability: 'busy',
           current_emoji: 'basketball',
           current_message: 'Some message',

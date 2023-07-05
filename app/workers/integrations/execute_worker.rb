@@ -13,6 +13,8 @@ module Integrations
     worker_has_external_dependencies!
 
     def perform(hook_id, data)
+      return if ::Gitlab::SilentMode.enabled?
+
       data = data.with_indifferent_access
       integration = Integration.find_by_id(hook_id)
       return unless integration

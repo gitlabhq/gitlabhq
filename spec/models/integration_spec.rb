@@ -1362,5 +1362,17 @@ RSpec.describe Integration, feature_category: :integrations do
         async_execute
       end
     end
+
+    context 'when the Gitlab::SilentMode is enabled' do
+      before do
+        allow(Gitlab::SilentMode).to receive(:enabled?).and_return(true)
+      end
+
+      it 'does not queue a worker' do
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+    end
   end
 end

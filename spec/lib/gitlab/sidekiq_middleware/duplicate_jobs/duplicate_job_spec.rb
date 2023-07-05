@@ -226,6 +226,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
           expect(redis_ttl(cookie_key)).to be_within(1).of(expected_ttl)
         end
 
+        it 'does not try to set an invalid ttl at the end of expiry' do
+          with_redis { |r| r.expire(cookie_key, 1) }
+
+          sleep 0.5 # sleep 500ms to redis would round the remaining ttl to 0
+
+          expect { subject }.not_to raise_error
+        end
+
         context 'and low offsets' do
           let(:existing_cookie) do
             {

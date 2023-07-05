@@ -127,6 +127,20 @@ To grant a public deploy key access to a project:
    1. In the key's row, select **Edit** (**{pencil}**).
    1. Select the **Grant write permissions to this key** checkbox.
 
+### Edit project access permissions of a deploy key
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To edit the project access permissions of a deploy key:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Repository**.
+1. Expand **Deploy keys**.
+1. In the key's row, select **Edit** (**{pencil}**).
+1. Select or clear the **Grant write permissions to this key** checkbox.
+
 ## Revoke project access of a deploy key
 
 To revoke a deploy key's access to a project, you can disable it. Any service that relies on
@@ -158,8 +172,10 @@ What happens to the deploy key when it is disabled depends on the following:
 There are a few scenarios where a deploy key fails to push to a
 [protected branch](../protected_branches.md).
 
-- The owner associated to a deploy key does not have access to the protected branch.
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
+- The owner associated to a deploy key has [project membership permissions](../../../user/permissions.md#project-members-permissions) lower than required to **View project code**.
+- The deploy key does not have [read-write permissions for the project](#edit-project-access-permissions-of-a-deploy-key).
+- The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).
 - **No one** is selected in [the **Allowed to push and merge** section](../protected_branches.md#add-protection-to-existing-branches) of the protected branch.
 
 All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.

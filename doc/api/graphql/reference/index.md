@@ -10083,29 +10083,6 @@ The edge type for [`MergeRequestReviewer`](#mergerequestreviewer).
 | <a id="mergerequestrevieweredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mergerequestrevieweredgenode"></a>`node` | [`MergeRequestReviewer`](#mergerequestreviewer) | The item at the end of the edge. |
 
-#### `MetricsDashboardAnnotationConnection`
-
-The connection type for [`MetricsDashboardAnnotation`](#metricsdashboardannotation).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="metricsdashboardannotationconnectionedges"></a>`edges` | [`[MetricsDashboardAnnotationEdge]`](#metricsdashboardannotationedge) | A list of edges. |
-| <a id="metricsdashboardannotationconnectionnodes"></a>`nodes` | [`[MetricsDashboardAnnotation]`](#metricsdashboardannotation) | A list of nodes. |
-| <a id="metricsdashboardannotationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `MetricsDashboardAnnotationEdge`
-
-The edge type for [`MetricsDashboardAnnotation`](#metricsdashboardannotation).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="metricsdashboardannotationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="metricsdashboardannotationedgenode"></a>`node` | [`MetricsDashboardAnnotation`](#metricsdashboardannotation) | The item at the end of the edge. |
-
 #### `MilestoneConnection`
 
 The connection type for [`Milestone`](#milestone).
@@ -14825,22 +14802,6 @@ Returns [`Deployment`](#deployment).
 | ---- | ---- | ----------- |
 | <a id="environmentlastdeploymentstatus"></a>`status` | [`DeploymentStatus!`](#deploymentstatus) | Status of the Deployment. |
 
-##### `Environment.metricsDashboard`
-
-Metrics dashboard schema for the environment.
-
-WARNING:
-**Deprecated** in 16.0.
-Returns no data. Underlying feature was removed in 16.0.
-
-Returns [`MetricsDashboard`](#metricsdashboard).
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="environmentmetricsdashboardpath"></a>`path` | [`String!`](#string) | Path to a file which defines a metrics dashboard eg: `"config/prometheus/common_metrics.yml"`. |
-
 ### `EnvironmentPermissions`
 
 #### Fields
@@ -18970,34 +18931,6 @@ Represents a metric image upload.
 | <a id="metricimageid"></a>`id` | [`ID!`](#id) | ID of the metric upload. |
 | <a id="metricimageiid"></a>`iid` | [`ID!`](#id) | Internal ID of the metric upload. |
 | <a id="metricimageurl"></a>`url` | [`String!`](#string) | URL of the metric source. |
-
-### `MetricsDashboard`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="metricsdashboardpath"></a>`path` | [`String`](#string) | Path to a file with the dashboard definition. |
-| <a id="metricsdashboardschemavalidationwarnings"></a>`schemaValidationWarnings` | [`[String!]`](#string) | Dashboard schema validation warnings. |
-
-#### Fields with arguments
-
-##### `MetricsDashboard.annotations`
-
-Annotations added to the dashboard.
-
-Returns [`MetricsDashboardAnnotationConnection`](#metricsdashboardannotationconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="metricsdashboardannotationsfrom"></a>`from` | [`Time!`](#time) | Timestamp marking date and time from which annotations need to be fetched. |
-| <a id="metricsdashboardannotationsto"></a>`to` | [`Time`](#time) | Timestamp marking date and time to which annotations need to be fetched. |
 
 ### `MetricsDashboardAnnotation`
 

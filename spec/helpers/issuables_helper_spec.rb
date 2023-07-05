@@ -666,9 +666,11 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
   describe '#sidebar_milestone_tooltip_label' do
     it 'escapes HTML in the milestone title' do
-      milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;')
+      milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;', due_date: Date.new(2022, 6, 26))
 
-      expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq('&lt;img onerror=alert(1)&gt;<br/>Milestone')
+      expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq(
+        '&lt;img onerror=alert(1)&gt;<br/>Jun 26, 2022 (<strong>Past due</strong>)'
+      )
     end
   end
 
