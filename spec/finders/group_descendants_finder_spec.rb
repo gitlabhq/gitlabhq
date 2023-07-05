@@ -276,14 +276,6 @@ RSpec.describe GroupDescendantsFinder do
         end
 
         it_behaves_like 'filter examples'
-
-        context 'when feature flag :linear_group_descendants_finder_upto is disabled' do
-          before do
-            stub_feature_flags(linear_group_descendants_finder_upto: false)
-          end
-
-          it_behaves_like 'filter examples'
-        end
       end
     end
   end

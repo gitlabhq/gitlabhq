@@ -342,7 +342,7 @@ kbd kbd {
   display: inline-flex;
   border-width: 1px;
   border-style: solid;
-  border-color: rgba(31, 30, 36, 0.08);
+  border-color: rgba(251, 250, 253, 0.08);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -1139,7 +1139,7 @@ kbd {
   font-weight: 600;
 }
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: rgba(31, 30, 36, 0.08);
+  background-color: rgba(251, 250, 253, 0.08);
 }
 .nav-sidebar ul {
   padding-left: 0;
@@ -1500,7 +1500,7 @@ kbd {
   bottom: var(--system-footer-height);
   left: 0;
   background-color: var(--gray-10, #1f1e24);
-  border-right: 1px solid rgba(31, 30, 36, 0.08);
+  border-right: 1px solid rgba(251, 250, 253, 0.08);
   transform: translate3d(0, 0, 0);
   width: 256px;
   z-index: 600;

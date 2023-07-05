@@ -239,6 +239,16 @@ reports are available to download. To download a report, select
 
 ![Security widget](img/security_widget_v13_7.png)
 
+Security scans produce at least one of these [CI `artifacts:reports` types](../../ci/yaml/artifacts_reports.md):
+
+- `artifacts:reports:api_fuzzing`
+- `artifacts:reports:container_scanning`
+- `artifacts:reports:coverage_fuzzing`
+- `artifacts:reports:dast`
+- `artifacts:reports:dependency_scanning`
+- `artifacts:reports:sast`
+- `artifacts:reports:secret_detection`
+
 ### Ultimate
 
 A merge request contains a security widget which displays a summary of the _new_ results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the commit when the feature branch was created from the target branch.
@@ -249,7 +259,7 @@ The merge request security widget displays only a subset of the vulnerabilities 
 
 From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type.
 
-The widget only displays the first 25 findings of each type, sorted by severity. To see all
+For each security report type, the widget displays the first 25 added and 25 fixed findings, sorted by severity. To see all
 findings, select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
 
 ![Security scanning results in a merge request](img/mr_security_scanning_results_v14_3.png)
