@@ -43,10 +43,7 @@
                       %div= uri
                   %td= application.access_tokens.count
                   %td.gl-display-flex
-                    = link_to edit_application_url.call(application), class: "gl-button btn btn-default btn-icon gl-mr-3" do
-                      %span.sr-only
-                        = _('Edit')
-                      = sprite_icon('pencil')
+                    = link_button_to nil, edit_application_url.call(application), class: 'gl-mr-3', icon: 'pencil', 'aria-label': _('Edit')
                     = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
       - else
         .settings-message

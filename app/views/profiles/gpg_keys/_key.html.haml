@@ -19,9 +19,6 @@
   .float-right
     %span.key-created-at
       = html_escape(s_('Profiles|Created %{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at) }
-    = link_to profile_gpg_key_path(key), data: { confirm: _('Are you sure? Removing this GPG key does not affect already signed commits.') }, method: :delete, class: "gl-button btn btn-icon btn-danger gl-ml-3" do
-      %span.sr-only= _('Remove')
-      = sprite_icon('remove')
-    = link_to revoke_profile_gpg_key_path(key), data: { confirm: _('Are you sure? All commits that were signed with this GPG key will be unverified.') }, method: :put, class: "gl-button btn btn-danger gl-ml-3" do
-      %span.sr-only= _('Revoke')
+    = link_button_to nil, profile_gpg_key_path(key), data: { confirm: _('Are you sure? Removing this GPG key does not affect already signed commits.') }, method: :delete, class: 'gl-ml-3', variant: :danger, icon: 'remove', 'aria-label': _('Remove')
+    = link_button_to revoke_profile_gpg_key_path(key), data: { confirm: _('Are you sure? All commits that were signed with this GPG key will be unverified.') }, method: :put, class: 'gl-ml-3', variant: :danger, 'aria-label': _('Revoke') do
       = _('Revoke')

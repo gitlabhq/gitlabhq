@@ -220,6 +220,15 @@ export default {
     enableContentEditor() {
       return Boolean(this.glFeatures.contentEditorOnIssues);
     },
+    codeSuggestionsConfig() {
+      return {
+        canSuggest: this.canSuggest,
+        line: this.line,
+        lines: this.lines,
+        showPopover: this.showSuggestPopover,
+        diffFile: this.diffFile,
+      };
+    },
   },
   watch: {
     noteBody() {
@@ -356,14 +365,11 @@ export default {
           :value="updatedNoteBody"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"
-          :line="line"
-          :lines="lines"
-          :can-suggest="canSuggest"
+          :code-suggestions-config="codeSuggestionsConfig"
           :add-spacing-classes="false"
           :help-page-path="helpPagePath"
           :note="discussionNote"
           :form-field-props="formFieldProps"
-          :show-suggest-popover="showSuggestPopover"
           :autosave-key="autosaveKey"
           :autocomplete-data-sources="autocompleteDataSources"
           :disabled="isSubmitting"

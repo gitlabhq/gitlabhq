@@ -154,17 +154,21 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   it('passes down any additional props to markdown field component', () => {
-    const propsData = {
+    const codeSuggestionsConfig = {
       line: { text: 'hello world', richText: 'hello world' },
       lines: [{ text: 'hello world', richText: 'hello world' }],
       canSuggest: true,
     };
 
     buildWrapper({
-      propsData: { ...propsData, myCustomProp: 'myCustomValue', 'data-testid': 'custom id' },
+      propsData: {
+        codeSuggestionsConfig,
+        myCustomProp: 'myCustomValue',
+        'data-testid': 'custom id',
+      },
     });
 
-    expect(findMarkdownField().props()).toMatchObject(propsData);
+    expect(findMarkdownField().props()).toMatchObject(codeSuggestionsConfig);
     expect(findMarkdownField().vm.$attrs).toMatchObject({
       myCustomProp: 'myCustomValue',
 

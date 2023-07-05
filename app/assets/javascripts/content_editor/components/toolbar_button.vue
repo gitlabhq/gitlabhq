@@ -49,6 +49,11 @@ export default {
       required: false,
       default: 'small',
     },
+    showActiveState: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -78,7 +83,7 @@ export default {
       :variant="variant"
       :category="category"
       :size="size"
-      :class="{ 'gl-bg-gray-100!': isActive }"
+      :class="{ 'gl-bg-gray-100!': showActiveState && isActive }"
       :aria-label="label"
       :title="label"
       :icon="iconName"

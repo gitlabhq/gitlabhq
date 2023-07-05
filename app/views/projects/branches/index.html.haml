@@ -23,11 +23,11 @@
     }
 
     - if can_view_branch_rules?
-      = link_to project_settings_repository_path(@project, anchor: 'js-branch-rules'), class: 'gl-button btn btn-default' do
+      = link_button_to project_settings_repository_path(@project, anchor: 'js-branch-rules') do
         = s_('Branches|View branch rules')
 
     - if can_push_code?
-      = link_to new_project_branch_path(@project), class: 'gl-button btn btn-confirm' do
+      = link_button_to new_project_branch_path(@project), variant: :confirm do
         = s_('Branches|New branch')
       .js-delete-merged-branches.gl-w-7{ data: {
           default_branch: @project.repository.root_ref,

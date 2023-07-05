@@ -43,7 +43,14 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [boardCardInner],
-  inject: ['rootPath', 'scopedLabelsAvailable', 'isEpicBoard', 'issuableType', 'isGroupBoard'],
+  inject: [
+    'rootPath',
+    'scopedLabelsAvailable',
+    'isEpicBoard',
+    'issuableType',
+    'isGroupBoard',
+    'isApolloBoard',
+  ],
   props: {
     item: {
       type: Object,
@@ -204,7 +211,9 @@ export default {
         updateHistory({
           url: `${filterPath}${filter}`,
         });
-        this.performSearch();
+        if (!this.isApolloBoard) {
+          this.performSearch();
+        }
         eventHub.$emit('updateTokens');
       }
     },

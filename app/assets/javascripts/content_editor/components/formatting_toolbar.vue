@@ -21,6 +21,7 @@ export default {
   inject: {
     newCommentTemplatePath: { default: null },
     tiptapEditor: { default: null },
+    contentEditor: { default: null },
   },
   props: {
     supportsQuickActions: {
@@ -55,6 +56,11 @@ export default {
       },
     };
   },
+  computed: {
+    codeSuggestionsEnabled() {
+      return this.contentEditor.codeSuggestionsConfig?.canSuggest;
+    },
+  },
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
       trackUIControl({ property: contentType, value });
@@ -74,6 +80,16 @@ export default {
       <div class="gl-py-2 gl-display-flex gl-flex-wrap">
         <toolbar-text-style-dropdown
           data-testid="text-styles"
+          @execute="trackToolbarControlExecution"
+        />
+        <toolbar-button
+          v-if="codeSuggestionsEnabled"
+          data-testid="code-suggestion"
+          content-type="codeSuggestion"
+          icon-name="doc-code"
+          editor-command="insertCodeSuggestion"
+          :label="__('Insert suggestion')"
+          :show-active-state="false"
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button

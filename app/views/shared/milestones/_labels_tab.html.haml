@@ -8,7 +8,7 @@
         = markdown_field(label, :description)
 
       .float-right.d-none.d-lg-block
-        = link_to milestones_issues_path(options.merge(state: 'opened')), class: 'btn gl-button btn-default-tertiary' do
-          - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), _('open issue')
-        = link_to milestones_issues_path(options.merge(state: 'closed')), class: 'btn gl-button btn-default-tertiary' do
-          - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), _('closed issue')
+        = link_button_to milestones_issues_path(options.merge(state: 'opened')), category: :tertiary do
+          = n_('open issue', 'open issues', milestone_issues_by_label_count(@milestone, label, state: :opened))
+        = link_button_to milestones_issues_path(options.merge(state: 'closed')), category: :tertiary do
+          = n_('closed issue', 'closed issues', milestone_issues_by_label_count(@milestone, label, state: :closed))

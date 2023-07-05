@@ -83,6 +83,11 @@ export default {
       required: false,
       default: false,
     },
+    codeSuggestionsConfig: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     editable: {
       type: Boolean,
       required: false,
@@ -137,6 +142,7 @@ export default {
       editable,
       enableAutocomplete,
       autocompleteDataSources,
+      codeSuggestionsConfig,
     } = this;
 
     // This is a non-reactive attribute intentionally since this is a complex object.
@@ -148,6 +154,7 @@ export default {
       drawioEnabled,
       enableAutocomplete,
       autocompleteDataSources,
+      codeSuggestionsConfig,
       tiptapOptions: {
         autofocus,
         editable,

@@ -180,68 +180,6 @@ Some basic knowledge of Ruby is very useful. Try
 [this 30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction.
 Rails experience is helpful but not essential.
 
-### Troubleshooting Rails Runner
-
-The `gitlab-rails` command executes Rails Runner using a non-root account and group, by default: `git:git`.
-
-If the non-root account cannot find the Ruby script filename passed to `gitlab-rails runner`
-you may get a syntax error, not an error that the file couldn't be accessed.
-
-A common reason for this is that the script has been put in the root account's home directory.
-
-`runner` tries to parse the path and file parameter as Ruby code.
-
-For example:
-
-```plaintext
-[root ~]# echo 'puts "hello world"' > ./helloworld.rb
-[root ~]# sudo gitlab-rails runner ./helloworld.rb
-Please specify a valid ruby command or the path of a script to run.
-Run 'rails runner -h' for help.
-
-/opt/gitlab/..../runner_command.rb:45: syntax error, unexpected '.'
-./helloworld.rb
-^
-[root ~]# sudo gitlab-rails runner /root/helloworld.rb
-Please specify a valid ruby command or the path of a script to run.
-Run 'rails runner -h' for help.
-
-/opt/gitlab/..../runner_command.rb:45: unknown regexp options - hllwrld
-[root ~]# mv ~/helloworld.rb /tmp
-[root ~]# sudo gitlab-rails runner /tmp/helloworld.rb
-hello world
-```
-
-A meaningful error should be generated if the directory can be accessed, but the file cannot:
-
-```plaintext
-[root ~]# chmod 400 /tmp/helloworld.rb
-[root ~]# sudo gitlab-rails runner /tmp/helloworld.rb
-Traceback (most recent call last):
-      [traceback removed]
-/opt/gitlab/..../runner_command.rb:42:in `load': cannot load such file -- /tmp/helloworld.rb (LoadError)
-```
-
-In case you encounter a similar error to this:
-
-```plaintext
-[root ~]# sudo gitlab-rails runner helloworld.rb
-Please specify a valid ruby command or the path of a script to run.
-Run 'rails runner -h' for help.
-
-undefined local variable or method `helloworld' for main:Object
-```
-
-You can either move the file to the `/tmp` directory or create a new directory owned by the user `git` and save the script in that directory as illustrated below:
-
-```shell
-sudo mkdir /scripts
-sudo mv /script_path/helloworld.rb /scripts
-sudo chown -R git:git /scripts
-sudo chmod 700 /scripts
-sudo gitlab-rails runner /scripts/helloworld.rb
-```
-
 ## Find specific methods for an object
 
 ```ruby
@@ -755,4 +693,85 @@ project.irb
 # Notice new context
 irb(#<Project>)> web_url
 # => "https://gitlab-example/root/discard"
+```
+
+## Troubleshooting
+
+### Rails Runner `syntax error`
+
+The `gitlab-rails` command executes Rails Runner using a non-root account and group, by default: `git:git`.
+
+If the non-root account cannot find the Ruby script filename passed to `gitlab-rails runner`
+you may get a syntax error, not an error that the file couldn't be accessed.
+
+A common reason for this is that the script has been put in the root account's home directory.
+
+`runner` tries to parse the path and file parameter as Ruby code.
+
+For example:
+
+```plaintext
+[root ~]# echo 'puts "hello world"' > ./helloworld.rb
+[root ~]# sudo gitlab-rails runner ./helloworld.rb
+Please specify a valid ruby command or the path of a script to run.
+Run 'rails runner -h' for help.
+
+/opt/gitlab/..../runner_command.rb:45: syntax error, unexpected '.'
+./helloworld.rb
+^
+[root ~]# sudo gitlab-rails runner /root/helloworld.rb
+Please specify a valid ruby command or the path of a script to run.
+Run 'rails runner -h' for help.
+
+/opt/gitlab/..../runner_command.rb:45: unknown regexp options - hllwrld
+[root ~]# mv ~/helloworld.rb /tmp
+[root ~]# sudo gitlab-rails runner /tmp/helloworld.rb
+hello world
+```
+
+A meaningful error should be generated if the directory can be accessed, but the file cannot:
+
+```plaintext
+[root ~]# chmod 400 /tmp/helloworld.rb
+[root ~]# sudo gitlab-rails runner /tmp/helloworld.rb
+Traceback (most recent call last):
+      [traceback removed]
+/opt/gitlab/..../runner_command.rb:42:in `load': cannot load such file -- /tmp/helloworld.rb (LoadError)
+```
+
+In case you encounter a similar error to this:
+
+```plaintext
+[root ~]# sudo gitlab-rails runner helloworld.rb
+Please specify a valid ruby command or the path of a script to run.
+Run 'rails runner -h' for help.
+
+undefined local variable or method `helloworld' for main:Object
+```
+
+You can either move the file to the `/tmp` directory or create a new directory owned by the user `git` and save the script in that directory as illustrated below:
+
+```shell
+sudo mkdir /scripts
+sudo mv /script_path/helloworld.rb /scripts
+sudo chown -R git:git /scripts
+sudo chmod 700 /scripts
+sudo gitlab-rails runner /scripts/helloworld.rb
+```
+
+### Filtered console output
+
+Some output in the console might be filtered by default to prevent leaks of certain values
+like variables, logs, or secrets. This output displays as `[FILTERED]`. For example:
+
+```plain_text
+> Plan.default.actual_limits
+=> ci_instance_level_variables: "[FILTERED]",
+```
+
+To work around the filtering, read the values directly from the object. For example:
+
+```plain_text
+> Plan.default.limits.ci_instance_level_variables
+=> 25
 ```

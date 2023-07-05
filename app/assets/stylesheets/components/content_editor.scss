@@ -15,7 +15,11 @@
   a.ProseMirror-selectednode,
   span.ProseMirror-selectednode {
     background-color: $blue-100;
-    box-shadow: 0 2px 0 $blue-100,  0 -2px 0 $blue-100;
+    box-shadow: 0 2px 0 $blue-100, 0 -2px 0 $blue-100;
+  }
+
+  pre > code {
+    background-color: transparent;
   }
 
   td,
@@ -123,6 +127,82 @@
     }
   }
 
+  .suggestion-added,
+  .suggestion-deleted,
+  .suggestion-added-input {
+    white-space: pre-wrap;
+
+    > code {
+      white-space: pre-wrap;
+      padding: 0;
+      display: flex;
+    }
+  }
+
+  .suggestion-added-input {
+    > code {
+      display: block;
+      margin-left: 120px;
+      background-color: transparent !important;
+    }
+  }
+
+  .suggestion-added,
+  .suggestion-deleted {
+    background-color: $line-added;
+    width: 100%;
+
+    > code {
+      border-left: 100px solid $line-number-new;
+      padding-left: 20px;
+      border-radius: 0;
+      background-color: inherit !important;
+    }
+
+    > code::before {
+      content: attr(data-line-number);
+      position: absolute;
+      width: 100px;
+      margin-left: -120px;
+      text-align: right;
+      padding-right: 10px;
+      padding-left: 10px;
+
+      @include gl-text-secondary;
+    }
+
+    > code::after {
+      content: '+';
+      position: absolute;
+      margin-left: -20px;
+      width: 20px;
+      text-align: center;
+
+      @include gl-text-secondary;
+    }
+  }
+
+  .suggestion-added > code {
+    color: rgba($white, 0);
+  }
+
+  .suggestion-deleted {
+    background-color: $line-removed;
+    cursor: not-allowed;
+
+    > code {
+      border-color: $line-number-old;
+    }
+
+    > code::before {
+      padding-right: 60px;
+    }
+
+    > code::after {
+      content: '-';
+    }
+  }
+
   .dl-content {
     width: 100%;
 
@@ -175,6 +255,23 @@
     &.gl-new-dropdown-item {
       padding-left: $gl-spacing-scale-2;
       padding-right: $gl-spacing-scale-2;
+    }
+  }
+}
+
+.gl-dark .ProseMirror {
+  .suggestion-added-input,
+  .suggestion-deleted {
+    > code {
+      color: $gray-50;
+    }
+  }
+
+  .suggestion-deleted,
+  .suggestion-added {
+    > code::before,
+    > code::after {
+      color: $gray-400;
     }
   }
 }

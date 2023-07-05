@@ -4,7 +4,9 @@ import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import BoardApp from '~/boards/components/board_app.vue';
+import eventHub from '~/boards/eventhub';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import { rawIssue, boardListsQueryResponse } from '../mock_data';
@@ -92,6 +94,15 @@ describe('BoardApp', () => {
       await nextTick();
 
       expect(wrapper.classes()).not.toContain('is-compact');
+    });
+
+    it('refetches lists when updateBoard event is received', async () => {
+      jest.spyOn(eventHub, '$on').mockImplementation(() => {});
+
+      createComponent({ isApolloBoard: true });
+      await waitForPromises();
+
+      expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
     });
   });
 });

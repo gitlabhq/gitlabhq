@@ -1053,3 +1053,103 @@ The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-fil
 
 - Each namespace (such as a group or a project) can have a maximum of 50 value streams.
 - Each value stream can have a maximum of 15 stages.
+
+## List all instance limits
+
+To list all instance limit values, run the following from the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits
+```
+
+Sample output:
+
+```ruby
+id: 1,
+plan_id: 1,
+ci_pipeline_size: 0,
+ci_active_jobs: 0,
+project_hooks: 100,
+group_hooks: 50,
+ci_project_subscriptions: 3,
+ci_pipeline_schedules: 10,
+offset_pagination_limit: 50000,
+ci_instance_level_variables: "[FILTERED]",
+storage_size_limit: 0,
+ci_max_artifact_size_lsif: 100,
+ci_max_artifact_size_archive: 0,
+ci_max_artifact_size_metadata: 0,
+ci_max_artifact_size_trace: "[FILTERED]",
+ci_max_artifact_size_junit: 0,
+ci_max_artifact_size_sast: 0,
+ci_max_artifact_size_dependency_scanning: 350,
+ci_max_artifact_size_container_scanning: 150,
+ci_max_artifact_size_dast: 0,
+ci_max_artifact_size_codequality: 0,
+ci_max_artifact_size_license_management: 0,
+ci_max_artifact_size_license_scanning: 100,
+ci_max_artifact_size_performance: 0,
+ci_max_artifact_size_metrics: 0,
+ci_max_artifact_size_metrics_referee: 0,
+ci_max_artifact_size_network_referee: 0,
+ci_max_artifact_size_dotenv: 0,
+ci_max_artifact_size_cobertura: 0,
+ci_max_artifact_size_terraform: 5,
+ci_max_artifact_size_accessibility: 0,
+ci_max_artifact_size_cluster_applications: 0,
+ci_max_artifact_size_secret_detection: "[FILTERED]",
+ci_max_artifact_size_requirements: 0,
+ci_max_artifact_size_coverage_fuzzing: 0,
+ci_max_artifact_size_browser_performance: 0,
+ci_max_artifact_size_load_performance: 0,
+ci_needs_size_limit: 2,
+conan_max_file_size: 3221225472,
+maven_max_file_size: 3221225472,
+npm_max_file_size: 524288000,
+nuget_max_file_size: 524288000,
+pypi_max_file_size: 3221225472,
+generic_packages_max_file_size: 5368709120,
+golang_max_file_size: 104857600,
+debian_max_file_size: 3221225472,
+project_feature_flags: 200,
+ci_max_artifact_size_api_fuzzing: 0,
+ci_pipeline_deployments: 500,
+pull_mirror_interval_seconds: 300,
+daily_invites: 0,
+rubygems_max_file_size: 3221225472,
+terraform_module_max_file_size: 1073741824,
+helm_max_file_size: 5242880,
+ci_registered_group_runners: 1000,
+ci_registered_project_runners: 1000,
+ci_daily_pipeline_schedule_triggers: 0,
+ci_max_artifact_size_cluster_image_scanning: 0,
+ci_jobs_trace_size_limit: "[FILTERED]",
+pages_file_entries: 200000,
+dast_profile_schedules: 1,
+external_audit_event_destinations: 5,
+dotenv_variables: "[FILTERED]",
+dotenv_size: 5120,
+pipeline_triggers: 25000,
+project_ci_secure_files: 100,
+repository_size: 0,
+security_policy_scan_execution_schedules: 0,
+web_hook_calls_mid: 0,
+web_hook_calls_low: 0,
+project_ci_variables: "[FILTERED]",
+group_ci_variables: "[FILTERED]",
+ci_max_artifact_size_cyclonedx: 1,
+rpm_max_file_size: 5368709120,
+pipeline_hierarchy_size: 1000,
+ci_max_artifact_size_requirements_v2: 0,
+enforcement_limit: 0,
+notification_limit: 0,
+dashboard_limit_enabled_at: nil,
+web_hook_calls: 0,
+project_access_token_limit: 0,
+google_cloud_logging_configurations: 5,
+ml_model_max_file_size: 10737418240,
+limits_history: {}
+```
+
+Some limit values display as `[FILTERED]` in the list due to
+[filtering in the Rails console](operations/rails_console.md#filtered-console-output).

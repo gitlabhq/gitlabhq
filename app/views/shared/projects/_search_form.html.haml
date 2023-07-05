@@ -51,5 +51,5 @@
     .gl-display-flex.gl-w-full.gl-md-w-auto{ class: 'gl-m-0!' }
       .js-namespace-select{ data: { field_name: 'namespace_id', selected_id: namespace&.id, selected_text: selected_text, update_location: 'true' } }
 
-    = link_to new_project_path, class: 'gl-button btn btn-confirm gl-display-inline gl-mb-0!' do
+    = link_button_to new_project_path, class: 'gl-display-inline gl-mb-0!', variant: :confirm do
       = _('New Project')

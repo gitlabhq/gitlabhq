@@ -74,14 +74,7 @@ module QA
         end
       end
 
-      it(
-        'merges when pipeline succeeds',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347842',
-        quarantine: {
-          type: :flaky,
-          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/346425"
-        }
-      ) do
+      it 'merges when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347842' do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add .gitlab-ci.yml'

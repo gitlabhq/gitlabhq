@@ -42,8 +42,7 @@
               %span.light= _('Secondary email:')
               %strong
                 = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-              = link_to remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: "btn btn-sm btn-danger gl-button btn-icon float-right", title: _('Remove secondary email'), id: "remove_email_#{email.id}" do
-                = sprite_icon('close', size: 16, css_class: 'gl-icon')
+              = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'float-right', title: _('Remove secondary email'), id: "remove_email_#{email.id}", variant: :danger, size: :small, icon: 'close'
           %li
             %span.light ID:
             %strong{ data: { qa_selector: 'user_id_content' } }

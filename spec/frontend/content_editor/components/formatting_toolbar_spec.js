@@ -13,7 +13,13 @@ describe('content_editor/components/formatting_toolbar', () => {
   let wrapper;
   let trackingSpy;
 
-  const buildWrapper = ({ props = {}, provide = {} } = {}) => {
+  const contentEditor = {
+    codeSuggestionsConfig: {
+      canSuggest: true,
+    },
+  };
+
+  const buildWrapper = ({ props = {}, provide = { contentEditor } } = {}) => {
     wrapper = shallowMountExtended(FormattingToolbar, {
       stubs: {
         GlTabs,
@@ -29,21 +35,22 @@ describe('content_editor/components/formatting_toolbar', () => {
   });
 
   describe.each`
-    testId            | controlProps
-    ${'text-styles'}  | ${{}}
-    ${'bold'}         | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold (Ctrl+B)', editorCommand: 'toggleBold' }}
-    ${'italic'}       | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic (Ctrl+I)', editorCommand: 'toggleItalic' }}
-    ${'strike'}       | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough (Ctrl+Shift+X)', editorCommand: 'toggleStrike' }}
-    ${'blockquote'}   | ${{ contentType: 'blockquote', iconName: 'quote', label: 'Insert a quote', editorCommand: 'toggleBlockquote' }}
-    ${'code'}         | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode' }}
-    ${'link'}         | ${{ contentType: 'link', iconName: 'link', label: 'Insert link (Ctrl+K)', editorCommand: 'editLink' }}
-    ${'link'}         | ${{}}
-    ${'bullet-list'}  | ${{ contentType: 'bulletList', iconName: 'list-bulleted', label: 'Add a bullet list', editorCommand: 'toggleBulletList' }}
-    ${'ordered-list'} | ${{ contentType: 'orderedList', iconName: 'list-numbered', label: 'Add a numbered list', editorCommand: 'toggleOrderedList' }}
-    ${'task-list'}    | ${{ contentType: 'taskList', iconName: 'list-task', label: 'Add a checklist', editorCommand: 'toggleTaskList' }}
-    ${'attachment'}   | ${{}}
-    ${'table'}        | ${{}}
-    ${'more'}         | ${{}}
+    testId               | controlProps
+    ${'text-styles'}     | ${{}}
+    ${'bold'}            | ${{ contentType: 'bold', iconName: 'bold', label: 'Bold (Ctrl+B)', editorCommand: 'toggleBold' }}
+    ${'italic'}          | ${{ contentType: 'italic', iconName: 'italic', label: 'Italic (Ctrl+I)', editorCommand: 'toggleItalic' }}
+    ${'strike'}          | ${{ contentType: 'strike', iconName: 'strikethrough', label: 'Strikethrough (Ctrl+Shift+X)', editorCommand: 'toggleStrike' }}
+    ${'blockquote'}      | ${{ contentType: 'blockquote', iconName: 'quote', label: 'Insert a quote', editorCommand: 'toggleBlockquote' }}
+    ${'code'}            | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode' }}
+    ${'link'}            | ${{ contentType: 'link', iconName: 'link', label: 'Insert link (Ctrl+K)', editorCommand: 'editLink' }}
+    ${'link'}            | ${{}}
+    ${'bullet-list'}     | ${{ contentType: 'bulletList', iconName: 'list-bulleted', label: 'Add a bullet list', editorCommand: 'toggleBulletList' }}
+    ${'ordered-list'}    | ${{ contentType: 'orderedList', iconName: 'list-numbered', label: 'Add a numbered list', editorCommand: 'toggleOrderedList' }}
+    ${'task-list'}       | ${{ contentType: 'taskList', iconName: 'list-task', label: 'Add a checklist', editorCommand: 'toggleTaskList' }}
+    ${'code-suggestion'} | ${{ contentType: 'codeSuggestion', iconName: 'doc-code', label: 'Insert suggestion', editorCommand: 'insertCodeSuggestion' }}
+    ${'attachment'}      | ${{}}
+    ${'table'}           | ${{}}
+    ${'more'}            | ${{}}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {
     beforeEach(() => {
       buildWrapper();
@@ -104,6 +111,7 @@ describe('content_editor/components/formatting_toolbar', () => {
       buildWrapper({
         provide: {
           tiptapEditor,
+          contentEditor,
           newCommentTemplatePath: 'some/path',
         },
       });
@@ -123,5 +131,17 @@ describe('content_editor/components/formatting_toolbar', () => {
 
       expect(wrapper.findComponent(CommentTemplatesDropdown).exists()).toBe(false);
     });
+  });
+
+  it('hides code suggestions icon if the user cannot make suggestions', () => {
+    buildWrapper({
+      provide: {
+        contentEditor: {
+          codeSuggestionsConfig: { canSuggest: false },
+        },
+      },
+    });
+
+    expect(wrapper.findByTestId('code-suggestion').exists()).toBe(false);
   });
 });

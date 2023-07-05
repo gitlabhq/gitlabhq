@@ -8,6 +8,7 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import CodeSuggestion from '../extensions/code_suggestion';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
@@ -133,6 +134,7 @@ const defaultSerializerConfig = {
     [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
     [Diagram.name]: preserveUnchanged(renderCodeBlock),
+    [CodeSuggestion.name]: preserveUnchanged(renderCodeBlock),
     [DrawioDiagram.name]: preserveUnchanged({
       render: renderImage,
       inline: true,

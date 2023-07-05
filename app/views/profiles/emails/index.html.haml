@@ -61,6 +61,4 @@
                 - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
                 = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-default'
 
-              = link_to profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, class: 'gl-button btn btn-sm btn-danger' do
-                %span.sr-only= _('Remove')
-                = sprite_icon('remove')
+              = link_button_to nil, profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, variant: :danger, size: :small, icon: 'remove', 'aria-label': _('Remove')

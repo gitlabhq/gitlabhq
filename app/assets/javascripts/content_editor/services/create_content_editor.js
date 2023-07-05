@@ -9,6 +9,7 @@ import Bold from '../extensions/bold';
 import BulletList from '../extensions/bullet_list';
 import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
+import CodeSuggestion from '../extensions/code_suggestion';
 import ColorChip from '../extensions/color_chip';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
@@ -89,6 +90,7 @@ export const createContentEditor = ({
   drawioEnabled = false,
   enableAutocomplete,
   autocompleteDataSources = {},
+  codeSuggestionsConfig = {},
 } = {}) => {
   if (!isFunction(renderMarkdown)) {
     throw new Error(PROVIDE_SERIALIZER_OR_RENDERER_ERROR);
@@ -112,6 +114,7 @@ export const createContentEditor = ({
     Code,
     ColorChip,
     CodeBlockHighlight,
+    CodeSuggestion.configure({ config: codeSuggestionsConfig }),
     DescriptionItem,
     DescriptionList,
     Details,
@@ -179,5 +182,6 @@ export const createContentEditor = ({
     deserializer,
     assetResolver,
     drawioEnabled,
+    codeSuggestionsConfig,
   });
 };

@@ -14675,6 +14675,12 @@ msgstr ""
 msgid "Decrease"
 msgstr ""
 
+msgid "Decrement suggestion line end"
+msgstr ""
+
+msgid "Decrement suggestion line start"
+msgstr ""
+
 msgid "Default - Never run"
 msgstr ""
 
@@ -16464,6 +16470,9 @@ msgid "Download PDF"
 msgstr ""
 
 msgid "Download artifacts"
+msgstr ""
+
+msgid "Download artifacts archive"
 msgstr ""
 
 msgid "Download codes"
@@ -19714,6 +19723,9 @@ msgid "From %{providerTitle}"
 msgstr ""
 
 msgid "From issue creation until deploy to production"
+msgstr ""
+
+msgid "From line %{line1} to %{line2}"
 msgstr ""
 
 msgid "From merge request merge until deploy to production"
@@ -24167,6 +24179,12 @@ msgid "Incomplete"
 msgstr ""
 
 msgid "Increase"
+msgstr ""
+
+msgid "Increment suggestion line end"
+msgstr ""
+
+msgid "Increment suggestion line start"
 msgstr ""
 
 msgid "Incubation|%{featureName} is in incubating phase"
@@ -53867,7 +53885,9 @@ msgid "closed %{timeago}"
 msgstr ""
 
 msgid "closed issue"
-msgstr ""
+msgid_plural "closed issues"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "collect usage information"
 msgstr ""
@@ -54925,7 +54945,9 @@ msgid "only supports valid HTTP(S) URLs"
 msgstr ""
 
 msgid "open issue"
-msgstr ""
+msgid_plural "open issues"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "or"
 msgstr ""

@@ -637,8 +637,8 @@ and [using the OverlayFS storage driver](https://docs.docker.com/storage/storage
 To build Docker images without enabling privileged mode on the runner, you can
 use one of these alternatives:
 
-- [`kaniko`](using_kaniko.md)
-- [`buildah`](https://github.com/containers/buildah)
+- [`kaniko`](using_kaniko.md).
+- [`buildah`](https://github.com/containers/buildah). There is a [known issue](https://github.com/containers/buildah/issues/4049) with running as non-root, you might need this [workaround](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#configure-setfcap) if you are using OpenShift Runner.
 
 For example, with `buildah`:
 

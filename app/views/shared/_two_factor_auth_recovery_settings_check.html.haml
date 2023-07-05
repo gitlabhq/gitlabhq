@@ -8,5 +8,5 @@
     = s_('Profiles|Ensure you have two-factor authentication recovery codes stored in a safe place.')
     = link_to _('Learn more.'), help_page_path('user/profile/account/two_factor_authentication', anchor: 'recovery-codes'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_actions do
-    = link_to profile_two_factor_auth_path, class: 'deferred-link btn gl-alert-action btn-confirm btn-md gl-button' do
+    = link_button_to profile_two_factor_auth_path, class: 'deferred-link gl-alert-action', variant: :confirm do
       = s_('Profiles|Manage two-factor authentication')

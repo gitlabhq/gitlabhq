@@ -89,6 +89,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters([
       'convertedDisscussionIds',
       'getNoteableData',
@@ -96,6 +97,10 @@ export default {
       'showJumpToNextDiscussion',
       'getUserData',
     ]),
+    diffFile() {
+      if (!this.discussion.diff_file) return null;
+      return this.getDiffFileByHash(this.discussion.diff_file.file_hash);
+    },
     currentUser() {
       return this.getUserData;
     },
@@ -348,6 +353,7 @@ export default {
                     v-if="isReplying"
                     ref="noteForm"
                     :discussion="discussion"
+                    :diff-file="diffFile"
                     :line="diffLine"
                     :save-button-title="saveButtonTitle"
                     :autosave-key="autosaveKey"

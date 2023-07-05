@@ -1,6 +1,14 @@
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
-  constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub, drawioEnabled }) {
+  constructor({
+    tiptapEditor,
+    serializer,
+    deserializer,
+    assetResolver,
+    eventHub,
+    drawioEnabled,
+    codeSuggestionsConfig,
+  }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
     this._deserializer = deserializer;
@@ -8,9 +16,13 @@ export class ContentEditor {
     this._assetResolver = assetResolver;
     this._pristineDoc = null;
 
+    this.codeSuggestionsConfig = codeSuggestionsConfig;
     this.drawioEnabled = drawioEnabled;
   }
 
+  /**
+   * @type {import('@tiptap/core').Editor}
+   */
   get tiptapEditor() {
     return this._tiptapEditor;
   }

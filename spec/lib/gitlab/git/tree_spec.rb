@@ -160,6 +160,15 @@ RSpec.describe Gitlab::Git::Tree do
           expect(cursor.next_cursor).to be_present
         end
       end
+
+      context 'and invalid reference is used' do
+        it 'returns no entries and nil cursor' do
+          allow(repository.gitaly_commit_client).to receive(:tree_entries).and_raise(Gitlab::Git::Index::IndexError)
+
+          expect(entries.count).to eq(0)
+          expect(cursor).to be_nil
+        end
+      end
     end
   end
 

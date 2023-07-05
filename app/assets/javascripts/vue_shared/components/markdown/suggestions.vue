@@ -40,7 +40,8 @@ export default {
     },
     defaultCommitMessage: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     suggestionsCount: {
       type: Number,
@@ -124,7 +125,7 @@ export default {
           suggestion,
           batchSuggestionsInfo,
           helpPagePath,
-          defaultCommitMessage,
+          defaultCommitMessage: defaultCommitMessage || '',
           suggestionsCount,
           failedToLoadMetadata,
         },

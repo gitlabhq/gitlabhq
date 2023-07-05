@@ -461,132 +461,95 @@ The DAST job does not require the project's repository to be present when runnin
 
 ## On-demand scans
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.2.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/218465) in GitLab 13.3.
-> - The saved scans feature was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5100) in GitLab 13.9.
-> - The option to select a branch was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4847) in GitLab 13.10.
-> - DAST branch selection [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/322672) in GitLab 13.11.
-> - Auditing for DAST profile management was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
+> Auditing for DAST profile management [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
-the scan. You must either start it manually, or schedule it to run.
-
-An on-demand DAST scan:
-
-- Can run a specific combination of a [site profile](#site-profile) and a
-  [scanner profile](#scanner-profile).
-- Is associated with your project's default branch.
-- Is saved on creation so it can be run later.
+the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,
+a [site profile](#site-profile) defines **what** is to be scanned, and a
+[scanner profile](#scanner-profile) defines **how** the application is to be scanned.
 
 An on-demand scan can be run in active or passive mode:
 
-- _Passive mode_ is the default and runs a ZAP Baseline Scan.
-- _Active mode_ runs a ZAP Full Scan which is potentially harmful to the site being scanned. To
-  minimize the risk of accidental damage, running an active scan requires a [validated site profile](#site-profile-validation).
+- **Passive mode**: The default mode, which runs a ZAP Baseline Scan.
+- **Active mode**: Runs a ZAP Full Scan which is potentially harmful to the site being scanned. To
+  minimize the risk of accidental damage, running an active scan requires a
+  [validated site profile](#site-profile-validation).
 
 ### View on-demand DAST scans
 
-To view on-demand scans, from your project's home page, go to **Security & Compliance > On-demand
-scans** in the left sidebar.
+To view on-demand scans:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. Select **Secure > On-demand scans**.
 
 On-demand scans are grouped by their status. The scan library contains all available on-demand
 scans.
-
-From the **On-demand scans** page you can:
-
-- [Run](#run-an-on-demand-dast-scan) an on-demand scan.
-- View the results of an on-demand scan.
-- Cancel (**{cancel}**) a pending or running on-demand scan.
-- Retry (**{retry}**) a scan that failed, or succeeded with warnings.
-- [Edit](#edit-an-on-demand-scan) (**{pencil}**) an on-demand scan's settings.
-- [Delete](#delete-an-on-demand-scan) an on-demand scan.
 
 ### Run an on-demand DAST scan
 
 Prerequisites:
 
 - You must have permission to run an on-demand DAST scan against a protected branch. The default
-  branch is automatically protected. For more information, read
+  branch is automatically protected. For more information, see
   [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
-- A [scanner profile](#create-a-scanner-profile).
-- A [site profile](#create-a-site-profile).
-- If you are running an active scan the site profile must have been [validated](#validate-a-site-profile).
 
-You can run an on-demand scan immediately, once at a scheduled date and time or at a specified
-frequency:
-
-- Every day
-- Every week
-- Every month
-- Every 3 months
-- Every 6 months
-- Every year
-
-To run an on-demand scan immediately, either:
-
-- [Create and run an on-demand scan immediately](#create-and-run-an-on-demand-scan-immediately).
-- [Run a previously saved on-demand scan](#run-a-saved-on-demand-scan).
-
-To run an on-demand scan either at a scheduled date or frequency, read
-[Schedule an on-demand scan](#schedule-an-on-demand-scan).
-
-#### Create and run an on-demand scan immediately
-
-1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left
-   sidebar.
-1. Select **New scan**.
-1. Complete the **Scan name** and **Description** fields.
-1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown list.
-1. In **Scanner profile**, select a scanner profile from the dropdown list.
-1. In **Site profile**, select a site profile from the dropdown list.
-1. To run the on-demand scan immediately, select **Save and run scan**. Otherwise, select
-   **Save scan** to [run](#run-a-saved-on-demand-scan) it later.
-
-The on-demand DAST scan runs and the project's dashboard shows the results.
-
-#### Run a saved on-demand scan
-
-To run a saved on-demand scan:
+To run an existing on-demand scan:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
 
-   If the branch saved in the scan no longer exists, you must first
-   [edit the scan](#edit-an-on-demand-scan), select a new branch, and save the edited scan.
+   If the branch saved in the scan no longer exists, you must:
+   
+   1. [Edit the scan](#edit-an-on-demand-scan).
+   1. Select a new branch.
+   1. Save the edited scan.
 
 The on-demand DAST scan runs, and the project's dashboard shows the results.
 
-#### Schedule an on-demand scan
+#### Create an on-demand scan
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3. [Deployed behind the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md), disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
 > - [Feature flag `dast_on_demand_scans_scheduler` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.5.
 
-To schedule a scan:
+After you create an on-demand scan, you can:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+- Run it immediately.
+- Save it to be run in the future.
+- Schedule it to be run at a specified schedule.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Secure > On-demand scans**.
 1. Select **New scan**.
-1. Complete the **Scan name** and **Description** text boxes.
-1. In GitLab 13.10 and later, from the **Branch** dropdown list, select the desired branch.
-1. In the **Scanner profile** section, from the dropdown list, select a scanner profile.
-1. In the **Site profile** section, from the dropdown list, select a site profile.
-1. Select **Schedule scan**.
-1. In the **Start time** section, select a time zone, date, and time.
-1. From the **Repeats** dropdown list, select your desired frequency:
-    - To run the scan once, select **Never**.
-    - For a recurring scan, select any other option.
-1. To run the on-demand scan immediately, select **Save and run scan**. To [run](#run-a-saved-on-demand-scan) it according to the schedule you set, select
-   **Save scan**.
+1. Complete the **Scan name** and **Description** fields.
+1. In the **Branch** dropdown list, select the desired branch.
+1. Select **Select scanner profile** or **Change scanner profile** to open the drawer, and either:
+   - Select a scanner profile from the drawer, **or**
+   - Select **New profile**, create a [scanner profile](#scanner-profile), then select **Save profile**.
+1. Select **Select site profile** or **Change site profile** to open the drawer, and either:
+   - Select a site profile from the **Site profile library** drawer, or
+   - Select **New profile** create a [site profile](#site-profile), then select **Save profile**.
+1. To run the on-demand scan:
+
+   - Immediately, select **Save and run scan**.
+   - In the future, select **Save scan**.
+   - On a schedule:
+
+     - Turn on the **Enable scan schedule** toggle.
+     - Complete the schedule fields.
+     - Select **Save scan**.
+
+The on-demand DAST scan runs as specified and the project's dashboard shows the results.
 
 ### View details of an on-demand scan
 
 To view details of an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > On-demand scans**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 
@@ -594,17 +557,19 @@ To view details of an on-demand scan:
 
 To edit an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > On-demand scans**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
-1. Edit the form.
+1. Edit the saved scan's details.
 1. Select **Save scan**.
 
 ### Delete an on-demand scan
 
 To delete an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > On-demand scans**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
 1. On the confirmation dialog, select **Delete**.
@@ -645,66 +610,63 @@ This data can only be read and decrypted with a valid secrets file.
 
 ### Site profile validation
 
-> - Site profile validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233020) in GitLab 13.8.
-> - Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
+> Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
 
 Site profile validation reduces the risk of running an active scan against the wrong website. A site
-must be validated before an active scan can run against it. The site validation methods are as
-follows:
+must be validated before an active scan can run against it. Each of the site validation methods are
+equivalent in functionality, so use whichever is most suitable:
 
-- _Text file validation_ requires a text file be uploaded to the target site. The text file is
+- **Text file validation**: Requires a text file be uploaded to the target site. The text file is
   allocated a name and content that is unique to the project. The validation process checks the
   file's content.
-- _Header validation_ requires the header `Gitlab-On-Demand-DAST` be added to the target site,
+- **Header validation**: Requires the header `Gitlab-On-Demand-DAST` be added to the target site,
   with a value unique to the project. The validation process checks that the header is present, and
   checks its value.
-- _Meta tag validation_ requires the meta tag named `gitlab-dast-validation` be added to the target site,
-  with a value unique to the project. Make sure it's added to the `<head>` section of the page. The validation process checks that the meta tag is present, and
-  checks its value.
-
-All these methods are equivalent in functionality. Use whichever is feasible.
-
-In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/324990), site profile
-validation happens in a CI job using the [GitLab Runner](../../../ci/runners/index.md).
+- **Meta tag validation**: Requires the meta tag named `gitlab-dast-validation` be added to the
+  target site, with a value unique to the project. Make sure it's added to the `<head>` section of
+  the page. The validation process checks that the meta tag is present, and checks its value.
 
 ### Create a site profile
 
 To create a site profile:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. Select **Manage** in the **DAST Profiles** row.
-1. Select **New > Site Profile**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
+1. Select **New > Site profile**.
 1. Complete the fields then select **Save profile**.
 
-The site profile is created.
+The site profile is saved, for use in an on-demand scan.
 
 ### Edit a site profile
 
-If a site profile is linked to a security policy, a user cannot edit the profile from this page. See
-[Scan execution policies](../policies/scan-execution-policies.md)
-for more information.
+NOTE:
+If a site profile is linked to a security policy, you cannot edit the profile from this page. See
+[Scan execution policies](../policies/scan-execution-policies.md) for more information.
 
 When a validated site profile's file, header, or meta tag is edited, the site's
 [validation status](#site-profile-validation) is revoked.
 
 To edit a site profile:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. In the **DAST Profiles** row select **Manage**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
 1. Edit the fields then select **Save profile**.
 
 ### Delete a site profile
 
+NOTE:
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
-See [Scan execution policies](../policies/scan-execution-policies.md)
-for more information.
+See [Scan execution policies](../policies/scan-execution-policies.md) for more information.
 
 To delete a site profile:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. In the **DAST Profiles** row select **Manage**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
 1. In the profile's row, select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
 1. Select **Delete** to confirm the deletion.
@@ -766,8 +728,9 @@ have their validation status revoked.
 
 To revoke a site profile's validation status:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. In the **DAST Profiles** row select **Manage**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Beside the validated profile, select **Revoke validation**.
 
 The site profile's validation status is revoked.
@@ -818,9 +781,6 @@ app.get('/dast-website-target', function(req, res) {
 
 ## Scanner profile
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222767) in GitLab 13.4.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/225804) in GitLab 13.5: scan mode, AJAX spider, debug messages.
-
 A scanner profile defines the configuration details of a security scanner. A scanner profile can be
 referenced in `.gitlab-ci.yml` and on-demand scans.
 
@@ -839,38 +799,41 @@ A scanner profile contains:
 
 To create a scanner profile:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. In the **DAST Profiles** row, select **Manage**.
-1. Select **New > Scanner Profile**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
+1. Select **New > Scanner profile**.
 1. Complete the form. For details of each field, see [Scanner profile](#scanner-profile).
 1. Select **Save profile**.
 
 ### Edit a scanner profile
 
-If a scanner profile is linked to a security policy, a user cannot edit the profile from this page.
-See [Scan execution policies](../policies/scan-execution-policies.md)
-for more information.
+NOTE:
+If a scanner profile is linked to a security policy, you cannot edit the profile from this page.
+For more information, see [Scan execution policies](../policies/scan-execution-policies.md).
 
 To edit a scanner profile:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. In the **DAST Profiles** row, select **Manage**.
-1. Select the **Scanner Profiles** tab.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
+1. Select the **Scanner profiles** tab.
 1. In the scanner's row, select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
 1. Edit the form.
 1. Select **Save profile**.
 
 ### Delete a scanner profile
 
+NOTE:
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this
-page. See [Scan execution policies](../policies/scan-execution-policies.md)
-for more information.
+page. For more information, see [Scan execution policies](../policies/scan-execution-policies.md).
 
 To delete a scanner profile:
 
-1. From your project's home page, go to **Security & Compliance > Configuration**.
-1. In the **DAST Profiles** row, select **Manage**.
-1. Select the **Scanner Profiles** tab.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
+1. Select the **Scanner profiles** tab.
 1. In the scanner's row, select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
 1. Select **Delete**.
 

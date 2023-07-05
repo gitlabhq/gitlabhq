@@ -1,6 +1,6 @@
 - if @page&.persisted?
-  = link_to wiki_page_path(@wiki, @page, action: :history), class: "btn gl-button btn-default", role: "button", data: { qa_selector: 'page_history_button' } do
+  = link_button_to wiki_page_path(@wiki, @page, action: :history), role: "button", data: { qa_selector: 'page_history_button' } do
     = s_("Wiki|Page history")
   - if can?(current_user, :create_wiki, @wiki.container)
-    = link_to wiki_path(@wiki, action: :new), class: "btn gl-button btn-confirm-secondary", role: "button", data: { qa_selector: 'new_page_button' } do
+    = link_button_to wiki_path(@wiki, action: :new), role: "button", data: { qa_selector: 'new_page_button' }, variant: :confirm, category: :secondary do
       = s_("Wiki|New page")

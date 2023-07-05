@@ -13,13 +13,13 @@
 %hr
 
 .no-repo-actions
-  = link_to project_repository_path(@project), method: :post, class: 'btn gl-button btn-confirm' do
-    #{ _('Create empty repository') }
+  = link_button_to project_repository_path(@project), method: :post, variant: :confirm do
+    = _('Create empty repository')
 
   %strong.gl-ml-3.gl-mr-3 or
 
-  = link_to new_project_import_path(@project), class: 'btn gl-button btn-default' do
-    #{ _('Import repository') }
+  = link_button_to new_project_import_path(@project) do
+    = _('Import repository')
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20

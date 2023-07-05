@@ -223,4 +223,123 @@ RSpec.describe ButtonHelper do
       end
     end
   end
+
+  describe '#link_button_to', feature_category: :design_system do
+    let(:content) { 'Button content' }
+    let(:href) { '#' }
+    let(:options) { {} }
+
+    RSpec.shared_examples 'basic behavior' do
+      it 'renders a basic link button' do
+        expect(subject.name).to eq('a')
+        expect(subject.classes).to include(*%w[gl-button btn btn-md btn-default])
+        expect(subject.attr('href')).to eq(href)
+        expect(subject.content.strip).to eq(content)
+      end
+
+      describe 'variant option' do
+        let(:options) { { variant: :danger } }
+
+        it 'renders the variant class' do
+          expect(subject.classes).to include('btn-danger')
+        end
+      end
+
+      describe 'category option' do
+        let(:options) { { category: :tertiary } }
+
+        it 'renders the category class' do
+          expect(subject.classes).to include('btn-default-tertiary')
+        end
+      end
+
+      describe 'size option' do
+        let(:options) { { size: :small } }
+
+        it 'renders the small class' do
+          expect(subject.classes).to include('btn-sm')
+        end
+      end
+
+      describe 'block option' do
+        let(:options) { { block: true } }
+
+        it 'renders the block class' do
+          expect(subject.classes).to include('btn-block')
+        end
+      end
+
+      describe 'selected option' do
+        let(:options) { { selected: true } }
+
+        it 'renders the selected class' do
+          expect(subject.classes).to include('selected')
+        end
+      end
+
+      describe 'target option' do
+        let(:options) { { target: '_blank' } }
+
+        it 'renders the target attribute' do
+          expect(subject.attr('target')).to eq('_blank')
+        end
+      end
+
+      describe 'method option' do
+        let(:options) { { method: :post } }
+
+        it 'renders the data-method attribute' do
+          expect(subject.attr('data-method')).to eq('post')
+        end
+      end
+
+      describe 'icon option' do
+        let(:options) { { icon: 'remove' } }
+
+        it 'renders the icon' do
+          icon = subject.at_css('svg.gl-icon')
+          expect(icon.attr('data-testid')).to eq('remove-icon')
+        end
+      end
+
+      describe 'icon only' do
+        let(:content) { nil }
+        let(:options) { { icon: 'remove' } }
+
+        it 'renders the icon-only class' do
+          expect(subject.classes).to include('btn-icon')
+        end
+      end
+
+      describe 'arbitrary html options' do
+        let(:content) { nil }
+        let(:options) { { data: { foo: true }, aria: { labelledby: 'foo' } } }
+
+        it 'renders the attributes' do
+          expect(subject.attr('data-foo')).to eq('true')
+          expect(subject.attr('aria-labelledby')).to eq('foo')
+        end
+      end
+    end
+
+    describe 'without block' do
+      subject do
+        tag = helper.link_button_to content, href, options
+        Nokogiri::HTML.fragment(tag).first_element_child
+      end
+
+      include_examples 'basic behavior'
+    end
+
+    describe 'with block' do
+      subject do
+        tag = helper.link_button_to href, options do
+          content
+        end
+        Nokogiri::HTML.fragment(tag).first_element_child
+      end
+
+      include_examples 'basic behavior'
+    end
+  end
 end

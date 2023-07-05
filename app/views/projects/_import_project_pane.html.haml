@@ -43,9 +43,7 @@
 
       - if gitea_import_enabled?
         %div
-          = link_to new_import_gitea_path(namespace_id: namespace_id), class: 'gl-button btn-default btn import_gitea js-import-project-btn', data: { platform: 'gitea', **tracking_attrs_data(track_label, 'click_button', 'gitea') } do
-            .gl-button-icon
-              = custom_icon('gitea_logo')
+          = render Pajamas::ButtonComponent.new(href: new_import_gitea_path(namespace_id: namespace_id), icon: 'gitea', button_options: { class: 'import_gitea js-import-project-btn', data: { platform: 'gitea', **tracking_attrs_data(track_label, 'click_button', 'gitea') } }) do
             Gitea
 
       - if git_import_enabled?

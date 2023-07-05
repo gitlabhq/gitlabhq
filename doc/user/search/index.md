@@ -88,8 +88,6 @@ where the results were found.
 1. From the code search result, hover over the line number.
 1. On the left, select **View blame**.
 
-![code search results](img/code_search_git_blame_v15_1.png)
-
 ### Filter code search results by language
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
@@ -149,14 +147,10 @@ To search for a commit SHA:
 If a single result is returned, GitLab redirects to the commit result
 and gives you the option to return to the search results page.
 
-![project SHA search redirect](img/project_search_sha_redirect.png)
-
 ## Search for specific terms
 
-> - [Removed support for partial matches in issue searches](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
-> - Feature flag [`issues_full_text_search` enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.10.
-> - Feature flag [`issues_full_text_search` enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 15.2.
-> - Feature flag [`issues_full_text_search` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 16.2.
+> - [Support for partial matches in issue search](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) removed in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
 
 You can filter issues and merge requests by specific terms included in titles or descriptions.
 
@@ -207,13 +201,6 @@ In the search box, you can view autocomplete suggestions for:
 
 ## Search settings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8 [with a flag](../../administration/feature_flags.md) named `search_settings_in_page`. Disabled by default.
-> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/4842) to Group, Administrator, and User settings in GitLab 13.9.
-> - [Feature flag `search_settings_in_page` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
-
 You can search inside a Project, Group, Administrator, or User's settings by entering
 a search term in the search box located at the top of the page. The search results
 appear highlighted in the sections that match the search term.
-
-![Search project settings](img/project_search_general_settings_v13_8.png)
