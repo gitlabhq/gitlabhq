@@ -33,7 +33,7 @@ GitLab code search functionality today is backed by Elasticsearch.
 Elasticsearch has proven useful for other types of search (issues, merge
 requests, comments and so-on) but is by design not a good choice for code
 search where users expect matches to be precise (ie. no false positives) and
-flexible (e.g. support
+flexible (for example, support
 [substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234)
 and
 [regexes](https://gitlab.com/gitlab-org/gitlab/-/issues/4175)). We have

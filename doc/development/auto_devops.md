@@ -41,7 +41,7 @@ Some jobs use images that are built from external projects:
   [`auto-deploy-app`](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) is used to deploy.
 
 There are extra variables that get passed to the CI jobs when Auto
-DevOps is enabled that are not present in a normal CI job. These can be
+DevOps is enabled that are not present in a typical CI job. These can be
 found in
 [`ProjectAutoDevops`](https://gitlab.com/gitlab-org/gitlab/-/blob/bf69484afa94e091c3e1383945f60dbe4e8681af/app/models/project_auto_devops.rb).
 

@@ -12931,7 +12931,8 @@ ALTER SEQUENCE bulk_imports_id_seq OWNED BY bulk_imports.id;
 CREATE TABLE catalog_resources (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE catalog_resources_id_seq
@@ -23632,7 +23633,6 @@ CREATE TABLE user_details (
     password_last_changed_at timestamp with time zone DEFAULT now() NOT NULL,
     onboarding_step_url text,
     discord text DEFAULT ''::text NOT NULL,
-    provisioned_by_group_at timestamp with time zone,
     enterprise_group_id bigint,
     enterprise_group_associated_at timestamp with time zone,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
@@ -33657,8 +33657,6 @@ CREATE INDEX tmp_idx_packages_on_project_id_when_npm_not_pending_destruction ON 
 CREATE INDEX tmp_idx_vuln_reads_where_dismissal_reason_null ON vulnerability_reads USING btree (id) WHERE ((state = 2) AND (dismissal_reason IS NULL));
 
 CREATE INDEX tmp_idx_vulnerability_occurrences_on_id_where_report_type_7_99 ON vulnerability_occurrences USING btree (id) WHERE (report_type = ANY (ARRAY[7, 99]));
-
-CREATE INDEX tmp_idx_vulns_on_converted_uuid ON vulnerability_occurrences USING btree (id, uuid) WHERE (uuid_convert_string_to_uuid = '00000000-0000-0000-0000-000000000000'::uuid);
 
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 

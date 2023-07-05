@@ -178,6 +178,7 @@ export default {
 </script>
 <template>
   <div class="top-bar gl-display-flex gl-justify-content-space-between">
+    <slot name="drawers"></slot>
     <!-- truncate information -->
     <div
       class="truncated-info gl-display-none gl-sm-display-flex gl-flex-wrap gl-align-items-center"
@@ -197,6 +198,7 @@ export default {
     <!-- eo truncate information -->
 
     <div class="controllers">
+      <slot name="controllers"> </slot>
       <gl-search-box-by-click
         v-model="searchTerm"
         class="gl-mr-3"

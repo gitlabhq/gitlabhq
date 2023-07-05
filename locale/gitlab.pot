@@ -12623,13 +12623,34 @@ msgstr ""
 msgid "ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
+msgid "ContributionEvent|Deleted branch %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Deleted tag %{refLink} in %{resourceParentLink}."
+msgstr ""
+
 msgid "ContributionEvent|Joined project %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Left project %{resourceParentLink}."
 msgstr ""
 
+msgid "ContributionEvent|Pushed a new branch %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Pushed a new tag %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Pushed to branch %{refLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Pushed to tag %{refLink} in %{resourceParentLink}."
+msgstr ""
+
 msgid "ContributionEvent|Removed due to membership expiration from %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|…and %{count} more commits. %{linkStart}Compare%{linkEnd}."
 msgstr ""
 
 msgid "Contributions for %{calendar_date}"
@@ -19788,6 +19809,9 @@ msgstr ""
 msgid "Generate project access tokens scoped to this project for your applications that need access to the GitLab API."
 msgstr ""
 
+msgid "Generate root cause analysis"
+msgstr ""
+
 msgid "Generate site and private keys at"
 msgstr ""
 
@@ -26201,6 +26225,9 @@ msgstr ""
 msgid "Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens."
 msgstr ""
 
+msgid "Jobs|Root cause analysis"
+msgstr ""
+
 msgid "Jobs|There was a problem fetching the failed jobs."
 msgstr ""
 
@@ -29368,6 +29395,9 @@ msgstr ""
 msgid "MlExperimentTracking|Model experiments"
 msgstr ""
 
+msgid "MlExperimentTracking|Model registry"
+msgstr ""
+
 msgid "MlExperimentTracking|Name"
 msgstr ""
 
@@ -29402,6 +29432,9 @@ msgid "Modal|Close"
 msgstr ""
 
 msgid "Model experiments"
+msgstr ""
+
+msgid "ModelRegistry|Model registry"
 msgstr ""
 
 msgid "Modified"
@@ -39160,6 +39193,12 @@ msgstr ""
 msgid "Rollout of free user limits within GitLab.com. Do not edit these values unless approval has been given via %{link_start}this issue%{link_end}."
 msgstr ""
 
+msgid "Root cause analysis"
+msgstr ""
+
+msgid "Root cause analysis is a feature that analyzes your logs to determine why a job may have failed and the potential ways to fix it. To generate this analysis, we may share information in your job logs with %{linkStart}Third-Party AI providers%{linkEnd}. Before initiating this analysis, please do not include in your logs any information that could impact the security or privacy of your account."
+msgstr ""
+
 msgid "Ruby"
 msgstr ""
 
@@ -46640,6 +46679,9 @@ msgstr ""
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
 msgstr ""
 
+msgid "This commit was created in the GitLab UI, and signed with a GitLab-verified signature."
+msgstr ""
+
 msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
 msgstr ""
 
@@ -49092,6 +49134,9 @@ msgstr ""
 msgid "UsageQuota|Pipelines"
 msgstr ""
 
+msgid "UsageQuota|Project storage included in %{planName} subscription"
+msgstr ""
+
 msgid "UsageQuota|Recalculate repository usage"
 msgstr ""
 
@@ -51298,6 +51343,9 @@ msgid "What is listed here?"
 msgstr ""
 
 msgid "What is repository mirroring?"
+msgstr ""
+
+msgid "What is root cause analysis?"
 msgstr ""
 
 msgid "What is squashing?"

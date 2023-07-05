@@ -531,14 +531,24 @@ module Gitlab
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
         response = gitaly_client_call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
 
-        signatures = Hash.new { |h, k| h[k] = [+''.b, +''.b] }
+        signatures = Hash.new do |h, k|
+          h[k] = {
+            signature: +''.b,
+            signed_text: +''.b,
+            signer: :SIGNER_UNSPECIFIED
+          }
+        end
+
         current_commit_id = nil
 
         response.each do |message|
           current_commit_id = message.commit_id if message.commit_id.present?
 
-          signatures[current_commit_id].first << message.signature
-          signatures[current_commit_id].last << message.signed_text
+          signatures[current_commit_id][:signature] << message.signature
+          signatures[current_commit_id][:signed_text] << message.signed_text
+
+          # The actual value is send once. All the other chunks send SIGNER_UNSPECIFIED
+          signatures[current_commit_id][:signer] = message.signer unless message.signer == :SIGNER_UNSPECIFIED
         end
 
         signatures

@@ -21,7 +21,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :push_job_log_jump_to_failures, only: [:show]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
-
+  before_action :push_ai_build_failure_cause, only: [:show]
   layout 'project'
 
   feature_category :continuous_integration
@@ -257,5 +257,9 @@ class Projects::JobsController < Projects::ApplicationController
 
   def push_job_log_jump_to_failures
     push_frontend_feature_flag(:job_log_jump_to_failures, @project)
+  end
+
+  def push_ai_build_failure_cause
+    push_frontend_feature_flag(:ai_build_failure_cause, @project)
   end
 end

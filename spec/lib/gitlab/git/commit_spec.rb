@@ -476,7 +476,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         let(:commit_id) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
         it 'returns signature and signed text' do
-          signature, signed_text = subject
+          signature, signed_text, signer = subject.values_at(:signature, :signed_text, :signer)
 
           expected_signature = <<~SIGNATURE
             -----BEGIN PGP SIGNATURE-----
@@ -509,6 +509,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
 
           expect(signed_text).to eq(expected_signed_text)
           expect(signed_text).to be_a_binary_string
+          expect(signer).to eq(:SIGNER_USER)
         end
       end
 

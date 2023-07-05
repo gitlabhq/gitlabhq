@@ -30,7 +30,6 @@ module Gitlab
 
     # Rails 7.0
     config.action_controller.raise_on_open_redirects = false
-    config.action_controller.wrap_parameters_by_default = false
     config.action_dispatch.default_headers = { "X-Frame-Options" => "SAMEORIGIN",
       "X-XSS-Protection" => "1; mode=block",
       "X-Content-Type-Options" => "nosniff",

@@ -8,9 +8,6 @@ module Projects
 
       def index
         @models = ::Projects::Ml::ModelFinder.new(@project).execute
-
-        # TODO: Frontend rendering being added with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124833
-        render html: ::Ml::ModelsIndexPresenter.new(@models).present
       end
 
       private

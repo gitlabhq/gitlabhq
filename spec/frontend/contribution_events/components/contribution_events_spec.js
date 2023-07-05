@@ -1,11 +1,11 @@
-import events from 'test_fixtures/controller/users/activity.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import ContributionEventApproved from '~/contribution_events/components/contribution_event/contribution_event_approved.vue';
 import ContributionEventExpired from '~/contribution_events/components/contribution_event/contribution_event_expired.vue';
 import ContributionEventJoined from '~/contribution_events/components/contribution_event/contribution_event_joined.vue';
 import ContributionEventLeft from '~/contribution_events/components/contribution_event/contribution_event_left.vue';
-import { eventApproved, eventExpired, eventJoined, eventLeft } from '../utils';
+import ContributionEventPushed from '~/contribution_events/components/contribution_event/contribution_event_pushed.vue';
+import { eventApproved, eventExpired, eventJoined, eventLeft, eventPushedBranch } from '../utils';
 
 describe('ContributionEvents', () => {
   let wrapper;
@@ -13,7 +13,7 @@ describe('ContributionEvents', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(ContributionEvents, {
       propsData: {
-        events,
+        events: [eventApproved(), eventExpired(), eventJoined(), eventLeft(), eventPushedBranch()],
       },
     });
   };
@@ -24,6 +24,7 @@ describe('ContributionEvents', () => {
     ${ContributionEventExpired}  | ${eventExpired()}
     ${ContributionEventJoined}   | ${eventJoined()}
     ${ContributionEventLeft}     | ${eventLeft()}
+    ${ContributionEventPushed}   | ${eventPushedBranch()}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

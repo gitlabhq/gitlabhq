@@ -1038,4 +1038,38 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
   end
+
+  describe '#get_commit_signatures' do
+    let(:project) { create(:project, :test_repo) }
+
+    it 'returns commit signatures for specified commit ids', :aggregate_failures do
+      without_signature = "e63f41fe459e62e1228fcef60d7189127aeba95a" # has no signature
+
+      signed_by_user = [
+        "a17a9f66543673edf0a3d1c6b93bdda3fe600f32", # has signature
+        "7b5160f9bb23a3d58a0accdbe89da13b96b1ece9"  # SSH signature
+      ]
+
+      large_signed_text = "8cf8e80a5a0546e391823c250f2b26b9cf15ce88" # has signature and commit message > 4MB
+
+      signatures = client.get_commit_signatures(
+        [without_signature, large_signed_text, *signed_by_user]
+      )
+
+      expect(signatures.keys).to match_array([large_signed_text, *signed_by_user])
+
+      [large_signed_text, *signed_by_user].each do |commit_id|
+        expect(signatures[commit_id][:signature]).to be_present
+        expect(signatures[commit_id][:signer]).to eq(:SIGNER_USER)
+      end
+
+      signed_by_user.each do |commit_id|
+        commit = project.commit(commit_id)
+        expect(signatures[commit_id][:signed_text]).to include(commit.message)
+        expect(signatures[commit_id][:signed_text]).to include(commit.description)
+      end
+
+      expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
+    end
+  end
 end

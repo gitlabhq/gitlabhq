@@ -52,7 +52,7 @@ The aforementioned goals can further be broken down into the following four sub-
 NOTE:
 Although remote_write_sender does not test the correctness of a remote write receiver itself as is our case, it does bring some inspiration to implement/develop one within the scope of this project.
 
-- We aim to also ensure compatibility for special Prometheus data types, e.g. Prometheus histogram(s), summary(s).
+- We aim to also ensure compatibility for special Prometheus data types, for example, Prometheus histogram(s), summary(s).
 
 #### Reading data
 
@@ -82,13 +82,13 @@ Worth noting that we intend to model exemplars the same way we’re modeling met
 
 ## Proposal
 
-We intend to use GitLab Observability Backend as a framework for the Metrics implementation so that its lifecycle is also managed via already existing Kubernetes controllers e.g. scheduler, tenant-operator.
+We intend to use GitLab Observability Backend as a framework for the Metrics implementation so that its lifecycle is also managed via already existing Kubernetes controllers for example, scheduler, tenant-operator.
 
 ![Architecture](supported-deployments.png)
 
 From a development perspective, what’s been marked as our “Application Server” above needs to be developed as a part of this proposal while the remaining peripheral components either already exist or can be provisioned via existing code in `scheduler`/`tenant-operator`.
 
-**On the write path**, we expect to receive incoming data via `HTTP`/`gRPC` `Ingress` similar to what we do for our existing services, e.g. errortracking, tracing.
+**On the write path**, we expect to receive incoming data via `HTTP`/`gRPC` `Ingress` similar to what we do for our existing services, for example, errortracking, tracing.
 
 NOTE:
 Additionally, since we intend to ingest data via Prometheus `remote_write` API, the received data will be Protobuf-encoded, Snappy-compressed. All received data therefore needs to be decompressed & decoded to turn it into a set of `prompb.TimeSeries` objects, which the rest of our components interact with.
@@ -546,7 +546,7 @@ value:     0
 
 On the read path, we first query all timeseries identifiers by searching for the labels under consideration. Once we have all the `series_id`(s), we then look up all corresponding samples between the query start timestamp and end timestamp.
 
-For e.g.
+For example:
 
 ```plaintext
 kernel{service_environment=~"prod.*", measurement="boot_time"}

@@ -5,11 +5,13 @@ import {
   EVENT_TYPE_EXPIRED,
   EVENT_TYPE_JOINED,
   EVENT_TYPE_LEFT,
+  EVENT_TYPE_PUSHED,
 } from '../constants';
 import ContributionEventApproved from './contribution_event/contribution_event_approved.vue';
 import ContributionEventExpired from './contribution_event/contribution_event_expired.vue';
 import ContributionEventJoined from './contribution_event/contribution_event_joined.vue';
 import ContributionEventLeft from './contribution_event/contribution_event_left.vue';
+import ContributionEventPushed from './contribution_event/contribution_event_pushed.vue';
 
 export default {
   props: {
@@ -115,6 +117,9 @@ export default {
 
         case EVENT_TYPE_LEFT:
           return ContributionEventLeft;
+
+        case EVENT_TYPE_PUSHED:
+          return ContributionEventPushed;
 
         default:
           return EmptyComponent;

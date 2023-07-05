@@ -59,7 +59,8 @@ module Types
             deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
             description: 'IP address of the runner.'
       field :job_count, GraphQL::Types::Int, null: true,
-                                             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
+            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist).",
+            resolver: ::Resolvers::Ci::RunnerJobCountResolver
       field :job_execution_status,
             Types::Ci::RunnerJobExecutionStatusEnum,
             null: true,
@@ -124,28 +125,6 @@ module Types
 
       def maintenance_note_html_resolver
         ::MarkupHelper.markdown(object.maintenance_note, context.to_h.dup)
-      end
-
-      def job_count
-        BatchLoader::GraphQL.for(runner.id).batch(key: :job_count) do |runner_ids, loader, _args|
-          # rubocop: disable CodeReuse/ActiveRecord
-          # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
-          builds_tbl = ::Ci::Build.arel_table
-          runners_tbl = ::Ci::Runner.arel_table
-          lateral_query = ::Ci::Build.select(1)
-                                     .where(builds_tbl['runner_id'].eq(runners_tbl['id']))
-                                     .limit(JOB_COUNT_LIMIT + 1)
-          counts = ::Ci::Runner.joins("JOIN LATERAL (#{lateral_query.to_sql}) builds_with_limit ON true")
-                               .id_in(runner_ids)
-                               .select(:id, Arel.star.count.as('count'))
-                               .group(:id)
-                               .index_by(&:id)
-          # rubocop: enable CodeReuse/ActiveRecord
-
-          runner_ids.each do |runner_id|
-            loader.call(runner_id, counts[runner_id]&.count || 0)
-          end
-        end
       end
 
       def admin_url

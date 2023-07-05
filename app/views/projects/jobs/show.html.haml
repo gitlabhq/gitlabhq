@@ -7,4 +7,4 @@
 
 = render_if_exists "shared/shared_runners_minutes_limit_flash_message"
 
-#js-job-page{ data: jobs_data }
+#js-job-page{ data: jobs_data(@project, @build) }

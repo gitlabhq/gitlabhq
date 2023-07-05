@@ -117,7 +117,7 @@ On average, we can say the following:
 
 From the list, it's apparent that the number of `issues` records has
 the largest impact on the performance.
-As per normal usage, we can say that the number of issue records grows
+As per typical usage, we can say that the number of issue records grows
 at a faster rate than the `namespaces` and the `projects` records.
 
 This problem affects most of our group-level features where records are listed

@@ -190,7 +190,7 @@ information. For example:
     by one of the Cells, and the results of that can be cached. We also need to implement
     a mechanism for negative cache and cache eviction.
 
-1. **GraphQL and other ambigious endpoints.**
+1. **GraphQL and other ambiguous endpoints.**
 
     Most endpoints have a unique sharding key: the organization, which directly
     or indirectly (via a group or project) can be used to classify endpoints.

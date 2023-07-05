@@ -163,7 +163,7 @@ Sometimes it's necessary to test locally what the frontend production build woul
 The production build takes a few minutes to be completed. Any code changes at this point are
 displayed only after executing the item 3 above again.
 
-To return to the normal development mode:
+To return to the standard development mode:
 
 1. Open `gitlab.yaml` located in your `gitlab` installation folder, scroll down to the `webpack` section and change back `dev_server` to `enabled: true`.
 1. Run `yarn clean` to remove the production assets and free some space (optional).

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Gpg::Commit do
+RSpec.describe Gitlab::Gpg::Commit, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
 
   let(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
@@ -12,15 +12,17 @@ RSpec.describe Gitlab::Gpg::Commit do
   let(:user) { create(:user, email: user_email) }
   let(:commit) { create(:commit, project: project, sha: commit_sha, committer_email: committer_email) }
   let(:crypto) { instance_double(GPGME::Crypto) }
+  let(:signer) { :SIGNER_USER }
   let(:mock_signature_data?) { true }
   # gpg_keys must be pre-loaded so that they can be found during signature verification.
   let!(:gpg_key) { create(:gpg_key, key: public_key, user: user) }
 
   let(:signature_data) do
-    [
-      GpgHelpers::User1.signed_commit_signature,
-      GpgHelpers::User1.signed_commit_base_data
-    ]
+    {
+      signature: GpgHelpers::User1.signed_commit_signature,
+      signed_text: GpgHelpers::User1.signed_commit_base_data,
+      signer: signer
+    }
   end
 
   before do
@@ -55,11 +57,12 @@ RSpec.describe Gitlab::Gpg::Commit do
 
     context 'invalid signature' do
       let(:signature_data) do
-        [
+        {
           # Corrupt the key
-          GpgHelpers::User1.signed_commit_signature.tr('=', 'a'),
-          GpgHelpers::User1.signed_commit_base_data
-        ]
+          signature: GpgHelpers::User1.signed_commit_signature.tr('=', 'a'),
+          signed_text: GpgHelpers::User1.signed_commit_base_data,
+          signer: signer
+        }
       end
 
       it 'returns nil' do
@@ -185,10 +188,11 @@ RSpec.describe Gitlab::Gpg::Commit do
           end
 
           let(:signature_data) do
-            [
-              GpgHelpers::User3.signed_commit_signature,
-              GpgHelpers::User3.signed_commit_base_data
-            ]
+            {
+              signature: GpgHelpers::User3.signed_commit_signature,
+              signed_text: GpgHelpers::User3.signed_commit_base_data,
+              signer: signer
+            }
           end
 
           it 'returns a valid signature' do
@@ -338,6 +342,25 @@ RSpec.describe Gitlab::Gpg::Commit do
 
         expect(recorder.count).to eq(1)
       end
+    end
+
+    context 'when signature created by GitLab' do
+      let(:signer) { :SIGNER_SYSTEM }
+      let(:gpg_key) { nil }
+
+      it 'returns a valid signature' do
+        expect(described_class.new(commit).signature).to have_attributes(
+          commit_sha: commit_sha,
+          project: project,
+          gpg_key: nil,
+          gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+          gpg_key_user_name: nil,
+          gpg_key_user_email: nil,
+          verification_status: 'verified_system'
+        )
+      end
+
+      it_behaves_like 'returns the cached signature on second call'
     end
   end
 

@@ -51,7 +51,7 @@ These gems as still part of the monorepo.
 
 From the research in [Proposal: split GitLab monolith into components](https://gitlab.com/gitlab-org/gitlab/-/issues/365293)
 it seems that following [product categories](https://about.gitlab.com/handbook/product/categories/#hierarchy), as a guideline,
-would be much better than translating organization structure into folder structure (e.g. `app/modules/verify/pipeline-execution/...`).
+would be much better than translating organization structure into folder structure (for example, `app/modules/verify/pipeline-execution/...`).
 
 However, this guideline alone is not sufficient and we need a more specific strategy:
 
@@ -78,7 +78,7 @@ Start with listing all the Ruby files in a spreadsheet and categorize them into 
 Some of them are already pretty explicit like Ci::, Packages::, etc. Components should follow our
 [existing naming guide](../../../development/software_design.md#use-namespaces-to-define-bounded-contexts).
 
-This could be a short-lived Working Group with representative members of each DevOps stage (e.g. Senior+ engineers).
+This could be a short-lived Working Group with representative members of each DevOps stage (for example, Senior+ engineers).
 The WG would help defining high-level components and will be the DRIs for driving the changes in their respective DevOps stage.
 
 ### 3. Publish the list of bounded contexts
@@ -107,13 +107,13 @@ With this static list we could:
 ## Glossary
 
 - `modules` are Ruby modules and can be used to nest code hierarchically.
-- `namespaces` are unique hierarchies of Ruby constants. E.g. `Ci::` but also `Ci::JobArtifacts::` or `Ci::Pipeline::Chain::`.
+- `namespaces` are unique hierarchies of Ruby constants. For example, `Ci::` but also `Ci::JobArtifacts::` or `Ci::Pipeline::Chain::`.
 - `packages` are Packwerk packages to group together related functionalities. These packages can be big or small depending on the design and architecture. Inside a package all constants (classes and modules) have the same namespace. For example:
   - In a package `ci`, all the classes would be nested under `Ci::` namespace. There can be also nested namespaces like `Ci::PipelineProcessing::`.
   - In a package `ci-pipeline_creation` all classes are nested under `Ci::PipelineCreation`, like `Ci::PipelineCreation::Chain::Command`.
   - In a package `ci` a class named `MergeRequests::UpdateHeadPipelineService` would not be allowed because it would not match the package's namespace.
   - This can be enforced easily with [Packwerk's based Rubocop Cops](https://github.com/rubyatscale/rubocop-packs/blob/main/lib/rubocop/cop/packs/root_namespace_is_pack_name.rb).
 - `bounded context` is a top-level Packwerk package that represents a macro aspect of the domain. For example: `Ci::`, `MergeRequests::`, `Packages::`, etc.
-  - A bounded context is represented by a single Ruby module/namespace. E.g. `Ci::` and not `Ci::JobArtifacts::`.
+  - A bounded context is represented by a single Ruby module/namespace. For example, `Ci::` and not `Ci::JobArtifacts::`.
   - A bounded context can be made of 1 or multiple Packwerk packages. Nested packages would be recommended if the domain is quite complex and we want to enforce privacy among all the implementation details. For example: `Ci::PipelineProcessing::` and `Ci::PipelineCreation::` could be separate packages of the same bounded context and expose their public API while keeping implementation details private.
   - A new bounded context like `RemoteDevelopment::` can be represented a single package while large and complex bounded contexts like `Ci::` would need to be organized into smaller/nested packages.

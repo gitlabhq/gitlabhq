@@ -13160,7 +13160,6 @@ CI/CD variables for a project.
 | <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
 | <a id="cirunneripaddress"></a>`ipAddress` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
-| <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |
 | <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
@@ -13185,6 +13184,18 @@ CI/CD variables for a project.
 | <a id="cirunnerversion"></a>`version` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
 
 #### Fields with arguments
+
+##### `CiRunner.jobCount`
+
+Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist).
+
+Returns [`Int`](#int).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnerjobcountstatuses"></a>`statuses` **{warning-solid}** | [`[CiJobStatus!]`](#cijobstatus) | **Introduced** in 16.2. This feature is an Experiment. It can be changed or removed at any time. Filter jobs by status. |
 
 ##### `CiRunner.jobs`
 
@@ -26727,6 +26738,7 @@ Verification status of a GPG or X.509 signature for a commit.
 | <a id="verificationstatusunverified"></a>`UNVERIFIED` | unverified verification status. |
 | <a id="verificationstatusunverified_key"></a>`UNVERIFIED_KEY` | unverified_key verification status. |
 | <a id="verificationstatusverified"></a>`VERIFIED` | verified verification status. |
+| <a id="verificationstatusverified_system"></a>`VERIFIED_SYSTEM` | verified_system verification status. |
 
 ### `VisibilityLevelsEnum`
 

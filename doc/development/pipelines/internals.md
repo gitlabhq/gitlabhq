@@ -20,13 +20,32 @@ Pipelines are always created for the following scenarios:
 
 Pipeline creation is also affected by the following CI/CD variables:
 
-- If `$FORCE_GITLAB_CI` is set, pipelines are created.
+- If `$FORCE_GITLAB_CI` is set, pipelines are created. Not recommended to use.
+  See [Avoid `$FORCE_GITLAB_CI`](#avoid-force_gitlab_ci).
 - If `$GITLAB_INTERNAL` is not set, pipelines are not created.
 
 No pipeline is created in any other cases (for example, when pushing a branch with no
 MR for it).
 
 The source of truth for these workflow rules is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+
+### Avoid `$FORCE_GITLAB_CI`
+
+The pipeline is very complex and we need to clearly understand the kind of
+pipeline we want to trigger. We need to know which jobs we should run and
+which ones we shouldn't.
+
+If we use `$FORCE_GITLAB_CI` to force trigger a pipeline,
+we don't really know what kind of pipeline it is. The result can be that we don't
+run the jobs we want, or we run too many jobs we don't care about.
+
+Some more context and background can be found at:
+[Avoid blanket changes to avoid unexpected run](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102881)
+
+Here's a list of where we're using this right now, and should try to move away
+from using `$FORCE_GITLAB_CI`.
+
+- [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html)
 
 ## Default image
 

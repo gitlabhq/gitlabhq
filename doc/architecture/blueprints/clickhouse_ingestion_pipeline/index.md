@@ -208,7 +208,7 @@ Gitlab::Database::Writer.config do |config|
   # then backend-specific configurations hereafter
   #
   config.url = 'tcp://user:pwd@localhost:9000/database'
-  # e.g. a serializer helps define how data travels over the wire
+  # for example, a serializer helps define how data travels over the wire
   config.json_serializer = ClickHouse::Serializer::JsonSerializer
   # ...
 end

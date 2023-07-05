@@ -26,8 +26,7 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
       response
     end
 
-    # TODO: being removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124833
-    xit 'renders the template' do
+    it 'renders the template' do
       expect(index_request).to render_template('projects/ml/models/index')
     end
 

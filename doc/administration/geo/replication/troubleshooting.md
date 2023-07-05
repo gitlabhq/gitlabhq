@@ -1679,7 +1679,7 @@ Repository check failures on a Geo secondary site do not necessarily imply a rep
 
 1. Find affected repositories as mentioned below, as well as their [logged errors](../../repository_checks.md#what-to-do-if-a-check-failed).
 1. Try to diagnose specific `git fsck` errors. The range of possible errors is wide, try putting them into search engines.
-1. Test normal functions of the affected repositories. Pull from the secondary, view the files.
+1. Test typical functions of the affected repositories. Pull from the secondary, view the files.
 1. Check if the primary site's copy of the repository has an identical `git fsck` error. If you are planning a failover, then consider prioritizing that the secondary site has the same information that the primary site has. Ensure you have a backup of the primary, and follow [planned failover guidelines](../disaster_recovery/planned_failover.md).
 1. Push to the primary and check if the change gets replicated to the secondary site.
 1. If replication is not automatically working, try to manually sync the repository.

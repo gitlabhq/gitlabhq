@@ -11,7 +11,7 @@ When you are using the GitLab agent for Kubernetes, you might experience issues 
 You can start by viewing the service logs:
 
 ```shell
-kubectl logs -f -l=app=gitlab-agent -n gitlab-agent
+kubectl logs -f -l=app.kubernetes.io/name=gitlab-agent -n gitlab-agent
 ```
 
 If you are a GitLab administrator, you can also view the [GitLab agent server logs](../../../administration/clusters/kas.md#troubleshooting).

@@ -1,0 +1,5 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+AllCops:
+  NewCops: enable

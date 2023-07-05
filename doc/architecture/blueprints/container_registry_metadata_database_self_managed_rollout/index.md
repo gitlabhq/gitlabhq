@@ -180,14 +180,14 @@ is complete and the registry is ready to make full use of the metadata database.
 For users with large registries and who are interested in the minimum possible
 downtime, each step can be ran independently when the tool is passed the appropriate
 flag. The user will first run the pre-import step while the registry is
-performing its normal workload. Once that has completed, and the user is ready
+performing its usual workload. Once that has completed, and the user is ready
 to stop writes to the registry, the tag import step can be ran. As with the GitLab.com
 migration, importing tags requires that the registry be offline or in
 read-only mode. This step does the minimum possible work to achieve fast and
 efficient tag imports and will always be the fastest of the three steps, reducing
 the downtime component to a fraction of the total import time. The user can then
 bring up the registry configured to use the metadata database. After that, the
-user is free to run the third step during normal registry operations. This step
+user is free to run the third step during standard registry operations. This step
 makes any dangling blobs in common storage visible to the database and therefore
 the online garbage collection process.
 

@@ -81,7 +81,7 @@ One data ingestion pipeline will be deployed for each top level GitLab namespace
 
 - Beyond rate limits, resource limits can be enforced per user such that no user can steal more system resources (memory, cpu) than allocated.
 - Fine grained control of horizontal scaling for each user pipeline by adding more OTEL Collector instances
-- Manage the users tenant in accordance to GitLab subscription tier, e.g. quota, throughput, cold storage, shard to different databases
+- Manage the users tenant in accordance to GitLab subscription tier, for example, quota, throughput, cold storage, shard to different databases
 - Reduced complexity and enhanced security in the pipeline by leveraging off the shelf components like the [OpenTelemetry Collector](https://opentelemetry.io/docs/concepts/components/#collector) where data within that collector belongs to no more than a single user/customer.
 
 A pipeline is only deployed for the user upon enabling observability in the project settings, in the same way a user can enable error tracking for their project. When observability is enabled for any project in the users namespace, a pipeline will be deployed. This deployment is automated by our Kubernetes scheduler-operator and tenant-operator. Provisioning is currently managed through the iframe, but a preferred method would be to provision using a RESTful API. The GitLab UI would have a section in project settings that allow a user to "enable observability", much like they do for error tracking today.

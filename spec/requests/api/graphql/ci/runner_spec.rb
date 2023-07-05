@@ -272,12 +272,13 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       let_it_be(:build1) { create(:ci_build, :running, runner: active_project_runner, pipeline: pipeline1) }
       let_it_be(:build2) { create(:ci_build, :running, runner: active_project_runner, pipeline: pipeline2) }
 
-      let(:runner_query_fragment) { 'id jobCount' }
       let(:query) do
         %(
           query {
-            runner1: runner(id: "#{active_project_runner.to_global_id}") { #{runner_query_fragment} }
-            runner2: runner(id: "#{inactive_instance_runner.to_global_id}") { #{runner_query_fragment} }
+            runner1: runner(id: "#{active_project_runner.to_global_id}") { id jobCount(statuses: [RUNNING]) }
+            runner2: runner(id: "#{active_project_runner.to_global_id}") { id jobCount(statuses: FAILED) }
+            runner3: runner(id: "#{active_project_runner.to_global_id}") { id jobCount }
+            runner4: runner(id: "#{inactive_instance_runner.to_global_id}") { id jobCount }
           }
         )
       end
@@ -287,7 +288,9 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
         expect(graphql_data).to match a_hash_including(
           'runner1' => a_graphql_entity_for(active_project_runner, job_count: 2),
-          'runner2' => a_graphql_entity_for(inactive_instance_runner, job_count: 0)
+          'runner2' => a_graphql_entity_for(active_project_runner, job_count: 0),
+          'runner3' => a_graphql_entity_for(active_project_runner, job_count: 2),
+          'runner4' => a_graphql_entity_for(inactive_instance_runner, job_count: 0)
         )
       end
 
@@ -301,7 +304,9 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
           expect(graphql_data).to match a_hash_including(
             'runner1' => a_graphql_entity_for(active_project_runner, job_count: 1),
-            'runner2' => a_graphql_entity_for(inactive_instance_runner, job_count: 0)
+            'runner2' => a_graphql_entity_for(active_project_runner, job_count: 0),
+            'runner3' => a_graphql_entity_for(active_project_runner, job_count: 1),
+            'runner4' => a_graphql_entity_for(inactive_instance_runner, job_count: 0)
           )
         end
       end

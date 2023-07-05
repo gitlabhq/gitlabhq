@@ -81,7 +81,7 @@ If you want to [contribute to GitLab](https://about.gitlab.com/community/contrib
 `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners, dedicated for GitLab projects and related community forks.
 
 These runners are backed by the same machine type as our `small` runners.
-Unlike the normal SaaS runners on Linux, each virtual machine is re-used up to 40 times.
+Unlike the most commonly used SaaS runners on Linux, each virtual machine is re-used up to 40 times.
 
 As we want to encourage people to contribute, these runners are free of charge.
 

@@ -304,6 +304,10 @@ Keyset pagination supports only `order_by=id`. Other sorting options aren't avai
 Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
 
+Prerequisite:
+
+- To view [certain attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/520776fa8e5a11b8275b7c597d75246fcfc74c89/lib/api/entities/project.rb#L109-130), you must be an administrator or have the Owner role for the project.
+
 NOTE:
 Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
 

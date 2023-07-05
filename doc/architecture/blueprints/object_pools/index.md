@@ -805,10 +805,10 @@ pools as it will always match the contents of the upstream repository.
 
 It has a number of downsides though:
 
-- Normal repositories can now have different states, where some of the
+- Repositories can now have different states, where some of the
   repositories are allowed to prune objects and others aren't. This introduces a
   source of uncertainty and makes it easy to accidentally delete objects in a
-  normal repository and thus corrupt its forks.
+ repository and thus corrupt its forks.
 
 - When upstream repositories go private we must stop updating objects which are
   supposed to be deduplicated across members of the fork network. This means

@@ -1,0 +1,5 @@
+- title = _('Verified commit')
+- description = _('This commit was created in the GitLab UI, and signed with a GitLab-verified signature.')
+- locals = { signature: signature, title: title, description: description, label: _('Verified'), variant: 'success' }
+
+= render partial: 'projects/commit/signature_badge', locals: locals

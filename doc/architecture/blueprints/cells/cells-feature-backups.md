@@ -25,9 +25,9 @@ and also Git repository data.
 
 ## 2. Data flow
 
-Each cell has a number of application databases to back up (e.g. `main`, and `ci`).
+Each cell has a number of application databases to back up (for example, `main`, and `ci`).
 
-Additionally, there may be cluster-wide metadata tables (e.g. `users` table)
+Additionally, there may be cluster-wide metadata tables (for example, `users` table)
 which is directly accessible via PostgreSQL.
 
 ## 3. Proposal
