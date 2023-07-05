@@ -193,10 +193,13 @@
   - "lib/gitlab/setup_helper.rb"
 
 .workhorse-patterns: &workhorse-patterns
+  - ".gitlab/ci/workhorse.gitlab-ci.yml"
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
-  - ".gitlab/ci/workhorse.gitlab-ci.yml"
+  - "scripts/gitaly-test-build"
+  - "scripts/gitaly-test-spawn"
   - "spec/support/gitlab-git-test.git/**/*"
+  - "spec/support/helpers/gitaly_setup.rb"
 
 .yaml-lint-patterns: &yaml-lint-patterns
   - "**/*.{yml,yaml}{,.*}"

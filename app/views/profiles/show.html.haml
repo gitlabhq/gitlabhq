@@ -8,24 +8,25 @@
   .js-user-profile
 - else
   = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
-    .js-search-settings-section.gl-pb-6
-      .profile-settings-sidebar
-        %h4.gl-my-0
-          = s_("Profiles|Public avatar")
-        %p.gl-text-secondary
-          - if @user.avatar?
-            - if gravatar_enabled?
-              = s_("Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
-            - else
-              = s_("Profiles|You can change your avatar here")
+    .settings-section.js-search-settings-section
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0
+            = s_("Profiles|Public avatar")
+      %p.gl-text-secondary
+        - if @user.avatar?
+          - if gravatar_enabled?
+            = s_("Profiles|You can change your avatar here or remove the current avatar to revert to %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
           - else
-            - if gravatar_enabled?
-              = s_("Profiles|You can upload your avatar here or change it at %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
-            - else
-              = s_("Profiles|You can upload your avatar here")
-          - if current_appearance&.profile_image_guidelines?
-            .md
-              = brand_profile_image_guidelines
+            = s_("Profiles|You can change your avatar here")
+        - else
+          - if gravatar_enabled?
+            = s_("Profiles|You can upload your avatar here or change it at %{gravatar_link}").html_safe % { gravatar_link: gravatar_link }
+          - else
+            = s_("Profiles|You can upload your avatar here")
+        - if current_appearance&.profile_image_guidelines?
+          .md
+            = brand_profile_image_guidelines
       .avatar-image
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = render Pajamas::AvatarComponent.new(@user, size: 96, alt: "", class: 'gl-float-left gl-mr-5')
@@ -43,11 +44,13 @@
           button_options: { class: 'gl-mt-3', data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") } },
           method: :delete) do
           = s_("Profiles|Remove avatar")
+      .gl-pb-8
 
-    .js-search-settings-section.gl-border-t.gl-py-6
-      .profile-settings-sidebar
-        %h4.gl-my-0= s_("Profiles|Current status")
-        %p.gl-text-secondary= s_("Profiles|This emoji and message will appear on your profile and throughout the interface.")
+    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0= s_("Profiles|Current status")
+      %p.gl-text-secondary= s_("Profiles|This emoji and message will appear on your profile and throughout the interface.")
       .gl-max-w-80
         #js-user-profile-set-status-form
           = f.fields_for :status, @user.status do |status_form|
@@ -57,22 +60,26 @@
             = status_form.hidden_field :clear_status_after,
               value: user_clear_status_at(@user),
               data: { js_name: 'clearStatusAfter' }
+      .gl-pb-7
 
-    .user-time-preferences.js-search-settings-section.gl-border-t.gl-py-6
-      .profile-settings-sidebar
-        %h4.gl-my-0= s_("Profiles|Time settings")
-        %p.gl-text-secondary= s_("Profiles|Set your local time zone.")
+    .settings-section.user-time-preferences.js-search-settings-section.gl-border-t.gl-pt-6
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0= s_("Profiles|Time settings")
+      %p.gl-text-secondary= s_("Profiles|Set your local time zone.")
       = f.label :user_timezone, _("Time zone")
       .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
+      .gl-pb-7
 
-    .js-search-settings-section.gl-border-t.gl-py-6
-      .profile-settings-sidebar
-        %h4.gl-my-0
-          = s_("Profiles|Main settings")
-        %p.gl-text-secondary
-          = s_("Profiles|This information will appear on your profile.")
-          - if current_user.ldap_user?
-            = s_("Profiles|Some options are unavailable for LDAP accounts")
+    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
+      .settings-sticky-header
+        .settings-sticky-header-inner
+          %h4.gl-my-0
+            = s_("Profiles|Main settings")
+      %p.gl-text-secondary
+        = s_("Profiles|This information will appear on your profile.")
+        - if current_user.ldap_user?
+          = s_("Profiles|Some options are unavailable for LDAP accounts")
       .form-group.gl-form-group.rspec-full-name.gl-max-w-80
         = render 'profiles/name', form: f, user: @user
       .form-group.gl-form-group.gl-md-form-input-lg
@@ -161,7 +168,9 @@
             = s_("Profiles|Achievements")
           = f.gitlab_ui_checkbox_component :achievements_enabled,
             s_('Profiles|Display achievements on your profile')
-    .js-hide-when-nothing-matches-search.gl-border-t.gl-py-6
+      .gl-pb-7
+
+    .js-hide-when-nothing-matches-search.settings-sticky-footer
       = f.submit s_("Profiles|Update profile settings"), class: 'gl-mr-3 js-password-prompt-btn', pajamas_button: true
       = render Pajamas::ButtonComponent.new(href: user_path(current_user)) do
         = s_('TagsPage|Cancel')

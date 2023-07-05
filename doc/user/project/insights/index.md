@@ -28,6 +28,13 @@ To view project insights:
 1. Select **Analyze > Insights**.
 1. To view a report, select the **Select report** dropdown list.
 
+### Access Insights reports with deep links
+
+You can direct users to a specific report in Insights by using the deep-linked URL.
+
+To create a deep link, append the report key to the end of the Insights report URL.
+For example, a GitLab report with the key `bugsCharts` has the deep link URL `https://gitlab.com/gitlab-org/gitlab/insights/#/bugsCharts`.
+
 ## Configure project insights
 
 Prerequisites:

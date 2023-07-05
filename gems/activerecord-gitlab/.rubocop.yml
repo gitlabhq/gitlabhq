@@ -1,15 +1,6 @@
 inherit_from:
-  - ../../.rubocop.yml
+  - ../config/rubocop.yml
 
-CodeReuse/ActiveRecord:
+# FIXME
+Gitlab/RSpec/AvoidSetup:
   Enabled: false
-
-Rails/ApplicationRecord:
-  Enabled: false
-
-AllCops:
-  TargetRubyVersion: 2.7
-
-Naming/FileName:
-  Exclude:
-    - spec/**/*.rb

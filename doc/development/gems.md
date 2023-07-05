@@ -97,17 +97,7 @@ You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gi
 
    ```yaml
    inherit_from:
-     - ../../.rubocop.yml
-
-   CodeReuse/ActiveRecord:
-     Enabled: false
-
-   AllCops:
-     TargetRubyVersion: 3.0
-
-   Naming/FileName:
-     Exclude:
-       - spec/**/*.rb
+     - ../config/rubocop.yml
    ```
 
 1. Configure CI for a newly added Gem:

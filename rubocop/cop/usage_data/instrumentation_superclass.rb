@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../usage_data_helpers'
+
 module RuboCop
   module Cop
     module UsageData
@@ -17,6 +19,8 @@ module RuboCop
       #    # ...
       #  end
       class InstrumentationSuperclass < RuboCop::Cop::Base
+        include UsageDataHelpers
+
         MSG = "Instrumentation classes should subclass one of the following: %{allowed_classes}."
 
         BASE_PATTERN = "(const nil? !#allowed_class?)"
@@ -32,12 +36,16 @@ module RuboCop
         PATTERN
 
         def on_class(node)
+          return unless in_instrumentation_file?(node)
+
           class_definition(node) do
             register_offense(node.children[1])
           end
         end
 
         def on_send(node)
+          return unless in_instrumentation_file?(node)
+
           class_new_definition(node) do
             register_offense(node.children.last)
           end

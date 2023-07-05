@@ -150,7 +150,6 @@ notify-slack:
   variables:
     QA_RSPEC_XML_FILE_PATTERN: ${CI_PROJECT_DIR}/qa/tmp/rspec-*.xml
     RUN_WITH_BUNDLE: "true"
-    ALLURE_JOB_NAME: $QA_RUN_TYPE
   when: on_failure
 
 export-test-metrics:

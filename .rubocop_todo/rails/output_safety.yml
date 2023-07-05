@@ -147,7 +147,6 @@ Rails/OutputSafety:
     - 'lib/gitlab/observability.rb'
     - 'lib/gitlab/other_markup.rb'
     - 'lib/gitlab/string_range_marker.rb'
-    - 'lib/gitlab/utils.rb'
     - 'spec/helpers/application_helper_spec.rb'
     - 'spec/helpers/notify_helper_spec.rb'
     - 'spec/helpers/profiles_helper_spec.rb'

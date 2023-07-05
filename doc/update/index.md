@@ -360,6 +360,33 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
   1. [Re-run database migrations](../administration/raketasks/maintenance.md#run-incomplete-database-migrations).
 
+- You might also encounter the following error while upgrading to GitLab 15.10 or later:
+
+  ```shell
+  "exception.class": "ActiveRecord::StatementInvalid",
+  "exception.message": "PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...COALESCE(\"lock_version\", 0) + 1 WHERE \"ci_builds\".\"\" IN (SEL...\n
+  ```
+
+  This error is caused by a [batched background migration introduced in GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81410)
+  not being finalized before upgrading to GitLab 15.10 or later. To resolve this error, it is safe to [mark the migration as complete](background_migrations.md#mark-a-batched-migration-finished):
+
+  ```ruby
+  # Start the rails console
+
+  connection = Ci::ApplicationRecord.connection
+
+  Gitlab::Database::SharedModel.using_connection(connection) do
+    migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+      Gitlab::Database.gitlab_schemas_for_connection(connection), 'NullifyOrphanRunnerIdOnCiBuilds', :ci_builds, :id, [])
+
+    # mark all jobs completed
+    migration.batched_jobs.update_all(status: Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states[:succeeded].value)
+    migration.update_attribute(:status, Gitlab::Database::BackgroundMigration::BatchedMigration.state_machine.states[:finished].value)
+  end
+  ```
+
+For more information, see [issue 415724](https://gitlab.com/gitlab-org/gitlab/-/issues/415724).
+
 ### 15.9.0
 
 - **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:

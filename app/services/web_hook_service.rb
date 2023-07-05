@@ -189,6 +189,7 @@ class WebHookService
         'Content-Type' => 'application/json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}",
         Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name),
+        Gitlab::WebHooks::GITLAB_UUID_HEADER => SecureRandom.uuid,
         Gitlab::WebHooks::GITLAB_INSTANCE_HEADER => Gitlab.config.gitlab.base_url
       }
 

@@ -138,6 +138,7 @@ stages:
     STATUS_SYM: ☠️
     STATUS: failed
     TYPE: "($QA_RUN_TYPE) "
+    ALLURE_JOB_NAME: $QA_RUN_TYPE
   when: always
   script:
     - |

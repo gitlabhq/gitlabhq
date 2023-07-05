@@ -326,6 +326,7 @@ gem 'sassc-rails', '~> 2.1.0'
 gem 'autoprefixer-rails', '10.2.5.1'
 gem 'terser', '1.0.2'
 
+gem 'click_house-client', path: 'gems/click_house-client', require: 'click_house/client'
 gem 'addressable', '~> 2.8'
 gem 'tanuki_emoji', '~> 0.6'
 gem 'gon', '~> 6.4.0'

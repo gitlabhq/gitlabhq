@@ -36,7 +36,7 @@ module StubENV
   end
 
   def env_stubbed?
-    ENV[STUBBED_KEY]
+    ENV.fetch(STUBBED_KEY, false)
   end
 
   def init_stub

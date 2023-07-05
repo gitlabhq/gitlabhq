@@ -25,10 +25,11 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rake", "~> 13.0"
 
   spec.add_development_dependency "factory_bot_rails", "~> 6.2.0"
-  spec.add_development_dependency "gitlab-styles", "~> 10.0.0"
+  spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_development_dependency "rspec", "~> 3.12"
   spec.add_development_dependency "rspec-benchmark", "~> 0.6.0"
   spec.add_development_dependency "rspec-parameterized", "~> 1.0"
   spec.add_development_dependency "rspec-rails", "~> 6.0.1"
-  spec.add_development_dependency "rubocop", "~> 1.21"
-  spec.add_development_dependency "rubocop-rspec", "~> 2.18.1"
+  spec.add_development_dependency "rubocop", "~> 1.50"
+  spec.add_development_dependency "rubocop-rspec", "~> 2.22"
 end

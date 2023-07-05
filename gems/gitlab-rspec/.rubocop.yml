@@ -1,14 +1,2 @@
 inherit_from:
-  - ../../.rubocop.yml
-
-CodeReuse/ActiveRecord:
-  Enabled: false
-
-AllCops:
-  TargetRubyVersion: 3.0
-
-Naming/FileName:
-  Exclude:
-    - spec/**/*.rb
-    - lib/gitlab/rspec.rb
-    - lib/gitlab/rspec/all.rb
+  - ../config/rubocop.yml

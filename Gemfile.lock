@@ -5,6 +5,14 @@ PATH
       activerecord (>= 6.1.7.3)
 
 PATH
+  remote: gems/click_house-client
+  specs:
+    click_house-client (0.1.0)
+      activesupport (< 8)
+      addressable (~> 2.8)
+      json (~> 2.6.3)
+
+PATH
   remote: gems/gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
@@ -1736,6 +1744,7 @@ DEPENDENCIES
   carrierwave (~> 1.3)
   charlock_holmes (~> 0.7.7)
   circuitbox (= 2.0.0)
+  click_house-client!
   cloud_profiler_agent (~> 0.0.0)!
   commonmarker (~> 0.23.9)
   concurrent-ruby (~> 1.1)

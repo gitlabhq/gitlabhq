@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../usage_data_helpers'
+
 module RuboCop
   module Cop
     module UsageData
@@ -12,6 +14,8 @@ module RuboCop
       # histogram(Issue, buckets: 1..100)
       # histogram(User.active, buckets: 1..100)
       class HistogramWithLargeTable < RuboCop::Cop::Base
+        include UsageDataHelpers
+
         MSG = 'Avoid histogram method on %{model_name}'
 
         # Match one level const as Issue, Gitlab
@@ -31,6 +35,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless in_usage_data_file?(node)
+
           one_level_matches = one_level_node(node)
           two_level_matches = two_level_node(node)
 

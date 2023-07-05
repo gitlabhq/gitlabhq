@@ -597,6 +597,7 @@ export function compositionEndNoteText() {
 
 export function updateTextForToolbarBtn($toolbarBtn) {
   const $textArea = $toolbarBtn.closest('.md-area').find('textarea');
+  if (!$textArea.length) return;
 
   switch ($toolbarBtn.data('mdCommand')) {
     case 'indentLines':

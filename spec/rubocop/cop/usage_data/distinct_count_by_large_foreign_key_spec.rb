@@ -13,33 +13,45 @@ RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
                         })
   end
 
-  context 'when counting by disallowed key' do
-    it 'registers an offense' do
-      expect_offense(<<~CODE)
-        distinct_count(Issue, :creator_id)
-        ^^^^^^^^^^^^^^ #{msg}
-      CODE
+  context 'in an usage data file' do
+    before do
+      allow(cop).to receive(:in_usage_data_file?).and_return(true)
     end
 
-    it 'does not register an offense when batch is false' do
-      expect_no_offenses('distinct_count(Issue, :creator_id, batch: false)')
+    context 'when counting by disallowed key' do
+      it 'registers an offense' do
+        expect_offense(<<~CODE)
+          distinct_count(Issue, :creator_id)
+          ^^^^^^^^^^^^^^ #{msg}
+        CODE
+      end
+
+      it 'does not register an offense when batch is false' do
+        expect_no_offenses('distinct_count(Issue, :creator_id, batch: false)')
+      end
+
+      it 'registers an offense when batch is true' do
+        expect_offense(<<~CODE)
+          distinct_count(Issue, :creator_id, batch: true)
+          ^^^^^^^^^^^^^^ #{msg}
+        CODE
+      end
     end
 
-    it 'registers an offense when batch is true' do
-      expect_offense(<<~CODE)
-        distinct_count(Issue, :creator_id, batch: true)
-        ^^^^^^^^^^^^^^ #{msg}
-      CODE
+    context 'when calling by allowed key' do
+      it 'does not register an offense with symbol' do
+        expect_no_offenses('distinct_count(Issue, :author_id)')
+      end
+
+      it 'does not register an offense with string' do
+        expect_no_offenses("distinct_count(Issue, 'merge_requests.target_project_id')")
+      end
     end
   end
 
-  context 'when calling by allowed key' do
-    it 'does not register an offense with symbol' do
-      expect_no_offenses('distinct_count(Issue, :author_id)')
-    end
-
-    it 'does not register an offense with string' do
-      expect_no_offenses("distinct_count(Issue, 'merge_requests.target_project_id')")
+  context 'when outside of an usage data file' do
+    it 'does not register an offense' do
+      expect_no_offenses('distinct_count(Issue, :creator_id)')
     end
   end
 end

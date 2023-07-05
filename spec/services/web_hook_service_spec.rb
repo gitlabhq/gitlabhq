@@ -69,20 +69,23 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
   end
 
   describe '#execute' do
-    let!(:uuid) { SecureRandom.uuid }
+    let(:uuid) { SecureRandom.uuid }
+    let!(:recursion_uuid) { SecureRandom.uuid }
     let(:headers) do
       {
         'Content-Type' => 'application/json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}",
+        'X-Gitlab-Webhook-UUID' => uuid,
         'X-Gitlab-Event' => 'Push Hook',
-        'X-Gitlab-Event-UUID' => uuid,
+        'X-Gitlab-Event-UUID' => recursion_uuid,
         'X-Gitlab-Instance' => Gitlab.config.gitlab.base_url
       }
     end
 
     before do
-      # Set a stable value for the `X-Gitlab-Event-UUID` header.
-      Gitlab::WebHooks::RecursionDetection.set_request_uuid(uuid)
+      # Set stable values for the `X-Gitlab-Webhook-UUID` and `X-Gitlab-Event-UUID` headers.
+      allow(SecureRandom).to receive(:uuid).and_return(uuid)
+      Gitlab::WebHooks::RecursionDetection.set_request_uuid(recursion_uuid)
     end
 
     context 'when there is an interpolation error' do

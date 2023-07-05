@@ -644,22 +644,14 @@ describe('DiffFileHeader component', () => {
     );
   });
 
-  it.each`
-    commentOnFiles | exists   | existsText
-    ${false}       | ${false} | ${'does not'}
-    ${true}        | ${true}  | ${'does'}
-  `(
-    '$existsText render comment on files button when commentOnFiles is $commentOnFiles',
-    ({ commentOnFiles, exists }) => {
-      window.gon = { current_user_id: 1 };
-      createComponent({
-        props: {
-          addMergeRequestButtons: true,
-        },
-        options: { provide: { glFeatures: { commentOnFiles } } },
-      });
+  it('should render the comment on files button', () => {
+    window.gon = { current_user_id: 1 };
+    createComponent({
+      props: {
+        addMergeRequestButtons: true,
+      },
+    });
 
-      expect(wrapper.find('[data-testid="comment-files-button"]').exists()).toEqual(exists);
-    },
-  );
+    expect(wrapper.find('[data-testid="comment-files-button"]').exists()).toEqual(true);
+  });
 });

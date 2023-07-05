@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
+import { addMarkdownListeners, removeMarkdownListeners } from '~/lib/utils/text_markdown';
 import { __ } from '~/locale';
 
 // MarkdownPreview
@@ -128,6 +129,8 @@ $(document).on('markdown-preview:show', (e, $form) => {
     return;
   }
 
+  removeMarkdownListeners($form);
+
   lastTextareaPreviewed = $form.find('textarea.markdown-area');
   lastTextareaHeight = lastTextareaPreviewed.height();
 
@@ -165,6 +168,7 @@ $(document).on('markdown-preview:hide', (e, $form) => {
   $form.find('.haml-markdown-button, .js-zen-enter').removeClass('gl-display-none!');
 
   markdownPreview.hideReferencedCommands($form);
+  addMarkdownListeners($form);
 });
 
 $(document).on('markdown-preview:toggle', (e, keyboardEvent) => {

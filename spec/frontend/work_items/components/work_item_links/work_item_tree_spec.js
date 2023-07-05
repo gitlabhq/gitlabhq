@@ -1,12 +1,10 @@
 import { nextTick } from 'vue';
-
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import OkrActionsSplitButton from '~/work_items/components/work_item_links/okr_actions_split_button.vue';
-
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
@@ -42,9 +40,8 @@ describe('WorkItemTree', () => {
         children,
         canUpdate,
       },
+      stubs: { WidgetWrapper },
     });
-
-    wrapper.vm.$refs.wrapper.show = jest.fn();
   };
 
   it('displays Add button', () => {

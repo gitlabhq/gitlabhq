@@ -1,26 +1,5 @@
 inherit_from:
-  - ../../.rubocop.yml
-
-CodeReuse/ActiveRecord:
-  Enabled: false
-
-Gitlab/DocUrl:
-  Enabled: false
-
-Gitlab/NamespacedClass:
-  Enabled: false
-
-AllCops:
-  TargetRubyVersion: 3.0
-
-Naming/FileName:
-  Exclude:
-    - spec/**/*.rb
-    - lib/gitlab/utils/all.rb
-
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - spec/**/*.rb
+  - ../config/rubocop.yml
 
 RSpec/InstanceVariable:
   Exclude:
@@ -29,3 +8,24 @@ RSpec/InstanceVariable:
 Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - spec/**/*.rb
+
+# We use EnforcedStyle of comparison here due to it being better
+# performing code as seen in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36221#note_375659681
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+# FIXME
+Gitlab/RSpec/AvoidSetup:
+  Enabled: false
+
+# FIXME: When enabled, there's a spec failure in ee/spec/requests/api/graphql/mutations/merge_requests/update_approval_rule_spec.rb:51,
+# due to the `default_value` of `remove_hidden_groups` set to `[]`, most probably instead of `false`, in ee/app/graphql/mutations/merge_requests/update_approval_rule.rb.
+# The problem is that `Object#=~` exists (even though it's deprecated), hence calling it on an `Array` doesn't blow up, but `Array#match?` doesn't exist.
+Performance/RegexpMatch:
+  Exclude:
+    - lib/gitlab/utils.rb
+
+Rails/OutputSafety:
+  Details: grace period
+  Exclude:
+    - 'lib/gitlab/utils.rb'

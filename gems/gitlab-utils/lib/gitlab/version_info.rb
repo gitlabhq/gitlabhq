@@ -12,13 +12,16 @@ module Gitlab
     MAX_VERSION_LENGTH = 128
 
     def self.parse(str, parse_suffix: false)
-      if str.is_a?(self)
-        str
-      elsif str && str.length <= MAX_VERSION_LENGTH && m = str.match(VERSION_REGEX)
-        VersionInfo.new(m[1].to_i, m[2].to_i, m[3].to_i, parse_suffix ? m.post_match : nil)
-      else
-        VersionInfo.new
+      return str if str.is_a?(self)
+
+      if str && str.length <= MAX_VERSION_LENGTH
+        match = str.match(VERSION_REGEX)
+        if match
+          return VersionInfo.new(match[1].to_i, match[2].to_i, match[3].to_i, parse_suffix ? match.post_match : nil)
+        end
       end
+
+      VersionInfo.new
     end
 
     def initialize(major = 0, minor = 0, patch = 0, suffix = nil) # rubocop:disable Metrics/ParameterLists
@@ -71,7 +74,7 @@ module Gitlab
 
     def suffix
       @suffix ||= @suffix_s.strip.gsub('-', '.pre.').scan(/\d+|[a-z]+/i).map do |s|
-        /^\d+$/ =~ s ? s.to_i : s
+        /^\d+$/.match?(s) ? s.to_i : s
       end.freeze
     end
 

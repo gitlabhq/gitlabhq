@@ -1,8 +1,5 @@
 UsageData/LargeTable:
   Enabled: true
-  Include:
-    - 'lib/gitlab/usage_data.rb'
-    - 'ee/lib/ee/gitlab/usage_data.rb'
   NonRelatedClasses:
     - :ActionMailer::Base
     - :Date
@@ -41,9 +38,6 @@ UsageData/LargeTable:
     - :maximum
 UsageData/HistogramWithLargeTable:
   Enabled: true
-  Include:
-    - 'lib/gitlab/usage_data.rb'
-    - 'ee/lib/ee/gitlab/usage_data.rb'
   HighTrafficModels: &high_traffic_models # models for all high traffic tables in Migration/UpdateLargeTable
     - 'AuditEvent'
     - 'CommitStatus'
@@ -98,9 +92,6 @@ UsageData/HistogramWithLargeTable:
     - 'WebHookLog'
 UsageData/DistinctCountByLargeForeignKey:
   Enabled: true
-  Include:
-    - 'lib/gitlab/usage_data.rb'
-    - 'ee/lib/ee/gitlab/usage_data.rb'
   AllowedForeignKeys:
     - 'agent_id'
     - 'author_id'
@@ -116,8 +107,6 @@ UsageData/DistinctCountByLargeForeignKey:
     - 'requirement_id'
 UsageData/InstrumentationSuperclass:
   Enabled: true
-  Include:
-    - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
   AllowedClasses:
     - :DatabaseMetric
     - :GenericMetric

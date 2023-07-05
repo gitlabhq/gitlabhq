@@ -139,6 +139,9 @@ manual_authentication:
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.
 
+If you previously used `CI_JOB_JWT` to fetch secrets from Vault, learn how to switch
+to ID tokens with the [Update HashiCorp Vault configuration to use ID Tokens](convert-to-id-tokens.md) tutorial.
+
 ### Configure automatic ID Token authentication
 
 If one ID token is defined, the `secrets` keyword automatically uses it to authenticate with Vault. For example:

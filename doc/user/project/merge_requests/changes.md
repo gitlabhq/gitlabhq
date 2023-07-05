@@ -146,11 +146,8 @@ per conflicted file on the merge request diff:
 
 ## Add a comment to a merge request file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123515) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `comment_on_files`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To disable it, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `comment_on_files`.
-On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123515) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `comment_on_files`. Enabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125130) in GitLab 16.2.
 
 You can add comments to a merge request diff file. These comments persist across
 rebases and file changes.

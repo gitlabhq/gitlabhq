@@ -19,6 +19,7 @@ in the following table.
 | Scope | Description |
 | ----- | ----------- |
 | `api` | Allows read-write access to the repository files. |
+| `read_api` | Allows read access to the repository files. |
 | `read_repository` | Allows read-access to the repository files. |
 
 ## Get file from repository

@@ -194,9 +194,8 @@ export default {
     },
     showFileDiscussions() {
       return (
-        this.glFeatures.commentOnFiles &&
         !this.file.viewer?.manuallyCollapsed &&
-        (this.fileDiscussions.length || this.file.drafts.length || this.file.hasCommentForm)
+        (this.fileDiscussions.length || this.file.drafts?.length || this.file.hasCommentForm)
       );
     },
     diffFileHash() {

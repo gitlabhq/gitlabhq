@@ -148,6 +148,9 @@ Getting help has never been easier. If you have a question about how the GitLab 
 
 To give feedback, select the **Give Feedback** link.
 
+NOTE:
+Only the last 50 messages in the chat history are retained. The chat history expires 3 days after last use.
+
 ### Summarize merge request changes **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10400) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).

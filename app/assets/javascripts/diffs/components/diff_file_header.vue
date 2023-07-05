@@ -212,7 +212,7 @@ export default {
       return this.expanded ? __('Hide file contents') : __('Show file contents');
     },
     showCommentButton() {
-      return this.getNoteableData.current_user.can_create_note && this.glFeatures.commentOnFiles;
+      return this.getNoteableData.current_user.can_create_note;
     },
   },
   watch: {

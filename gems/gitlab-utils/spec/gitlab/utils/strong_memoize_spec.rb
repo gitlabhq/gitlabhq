@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable GitlabSecurity/PublicSend
-
 require 'spec_helper'
 require 'active_support/testing/time_helpers'
 
@@ -23,7 +21,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
       end
 
       def method_name
-        strong_memoize(:method_name) do # rubocop: disable Gitlab/StrongMemoizeAttr
+        strong_memoize(:method_name) do # rubocop:disable Gitlab/StrongMemoizeAttr
           trace << value
           value
         end
@@ -111,12 +109,12 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
         it_behaves_like 'caching the value'
 
         it 'raises exception for invalid type as key' do
-          expect { object.strong_memoize(10) { 20 } }.to raise_error /Invalid type of '10'/
+          expect { object.strong_memoize(10) { 20 } }.to raise_error(/Invalid type of '10'/)
         end
 
         it 'raises exception for invalid characters in key' do
           expect { object.strong_memoize(:enabled?) { 20 } }
-            .to raise_error /is not allowed as an instance variable name/
+            .to raise_error(/is not allowed as an instance variable name/)
         end
       end
     end
@@ -129,7 +127,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
       end
 
       [:method_name, "method_name"].each do |argument|
-        context "for #{argument.class}" do
+        context "when argument is a #{argument.class}" do
           it 'does allocate exactly one string when fetching value' do
             expect do
               object.strong_memoize(argument) { 10 }
@@ -157,12 +155,12 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
         it_behaves_like 'caching the value'
 
         it 'raises exception for invalid type as key' do
-          expect { object.strong_memoize_with_expiration(10, 1) { 20 } }.to raise_error /Invalid type of '10'/
+          expect { object.strong_memoize_with_expiration(10, 1) { 20 } }.to raise_error(/Invalid type of '10'/)
         end
 
         it 'raises exception for invalid characters in key' do
           expect { object.strong_memoize_with_expiration(:enabled?, 1) { 20 } }
-            .to raise_error /is not allowed as an instance variable name/
+            .to raise_error(/is not allowed as an instance variable name/)
         end
       end
     end
@@ -217,19 +215,19 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
 
   describe '#strong_memoized?' do
     shared_examples 'memoization check' do |method_name|
-      context "for #{method_name}" do
+      context "when method is :#{method_name}" do
         let(:value) { :anything }
 
         subject { object.strong_memoized?(method_name) }
 
         it 'returns false if the value is uncached' do
-          is_expected.to be(false)
+          expect(subject).to be(false)
         end
 
         it 'returns true if the value is cached' do
           object.public_send(method_name)
 
-          is_expected.to be(true)
+          expect(subject).to be(true)
         end
       end
     end
@@ -309,7 +307,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
       subject { klass.strong_memoize_attr(:nonexistent_method) }
 
       it 'fails when strong-memoizing a nonexistent method' do
-        expect { subject }.to raise_error(NameError, %r{undefined method `nonexistent_method' for class})
+        expect { subject }.to raise_error(NameError, /undefined method `nonexistent_method' for class/)
       end
     end
 
@@ -355,7 +353,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
 
       it { is_expected.to eq(output) }
 
-      if params[:valid]
+      if params[:valid] # rubocop:disable RSpec/AvoidConditionalStatements
         it 'is a valid ivar name' do
           expect { instance_variable_defined?(ivar) }.not_to raise_error
         end
@@ -368,5 +366,3 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
     end
   end
 end
-
-# rubocop:enable GitlabSecurity/PublicSend

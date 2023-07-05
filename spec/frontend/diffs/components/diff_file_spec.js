@@ -572,7 +572,6 @@ describe('DiffFile', () => {
 
         ({ wrapper, store } = createComponent({
           file,
-          options: { provide: { glFeatures: { commentOnFiles: true } } },
         }));
 
         expect(wrapper.find('[data-testid="file-discussions"]').exists()).toEqual(exists);
@@ -593,7 +592,6 @@ describe('DiffFile', () => {
 
         ({ wrapper, store } = createComponent({
           file,
-          options: { provide: { glFeatures: { commentOnFiles: true } } },
         }));
 
         expect(wrapper.find('[data-testid="file-note-form"]').exists()).toEqual(exists);
@@ -612,7 +610,6 @@ describe('DiffFile', () => {
 
       ({ wrapper, store } = createComponent({
         file,
-        options: { provide: { glFeatures: { commentOnFiles: true } } },
       }));
 
       expect(wrapper.find('[data-testid="diff-file-discussions"]').exists()).toEqual(exists);

@@ -9934,6 +9934,29 @@ The connection type for [`MergeRequest`](#mergerequest).
 | <a id="mergerequestconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 | <a id="mergerequestconnectiontotaltimetomerge"></a>`totalTimeToMerge` | [`Float`](#float) | Total sum of time to merge, in seconds, for the collection of merge requests. |
 
+#### `MergeRequestDiffConnection`
+
+The connection type for [`MergeRequestDiff`](#mergerequestdiff).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestdiffconnectionedges"></a>`edges` | [`[MergeRequestDiffEdge]`](#mergerequestdiffedge) | A list of edges. |
+| <a id="mergerequestdiffconnectionnodes"></a>`nodes` | [`[MergeRequestDiff]`](#mergerequestdiff) | A list of nodes. |
+| <a id="mergerequestdiffconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeRequestDiffEdge`
+
+The edge type for [`MergeRequestDiff`](#mergerequestdiff).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestdiffedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergerequestdiffedgenode"></a>`node` | [`MergeRequestDiff`](#mergerequestdiff) | The item at the end of the edge. |
+
 #### `MergeRequestDiffLlmSummaryConnection`
 
 The connection type for [`MergeRequestDiffLlmSummary`](#mergerequestdiffllmsummary).
@@ -10013,6 +10036,29 @@ The edge type for [`MergeRequestParticipant`](#mergerequestparticipant).
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mergerequestparticipantedgenode"></a>`node` | [`MergeRequestParticipant`](#mergerequestparticipant) | The item at the end of the edge. |
+
+#### `MergeRequestReviewLlmSummaryConnection`
+
+The connection type for [`MergeRequestReviewLlmSummary`](#mergerequestreviewllmsummary).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewllmsummaryconnectionedges"></a>`edges` | [`[MergeRequestReviewLlmSummaryEdge]`](#mergerequestreviewllmsummaryedge) | A list of edges. |
+| <a id="mergerequestreviewllmsummaryconnectionnodes"></a>`nodes` | [`[MergeRequestReviewLlmSummary]`](#mergerequestreviewllmsummary) | A list of nodes. |
+| <a id="mergerequestreviewllmsummaryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeRequestReviewLlmSummaryEdge`
+
+The edge type for [`MergeRequestReviewLlmSummary`](#mergerequestreviewllmsummary).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewllmsummaryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergerequestreviewllmsummaryedgenode"></a>`node` | [`MergeRequestReviewLlmSummary`](#mergerequestreviewllmsummary) | The item at the end of the edge. |
 
 #### `MergeRequestReviewerConnection`
 
@@ -17575,6 +17621,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmergecommitsha"></a>`mergeCommitSha` | [`String`](#string) | SHA of the merge request commit (set once merged). |
 | <a id="mergerequestmergeerror"></a>`mergeError` | [`String`](#string) | Error message due to a merge error. |
 | <a id="mergerequestmergeongoing"></a>`mergeOngoing` | [`Boolean!`](#boolean) | Indicates if a merge is currently occurring. |
+| <a id="mergerequestmergerequestdiffs"></a>`mergeRequestDiffs` **{warning-solid}** | [`MergeRequestDiffConnection`](#mergerequestdiffconnection) | **Introduced** in 16.2. This feature is an Experiment. It can be changed or removed at any time. Diff versions of a merge request. |
 | <a id="mergerequestmergestatus"></a>`mergeStatus` **{warning-solid}** | [`String`](#string) | **Deprecated** in 14.0. This was renamed. Use: [`MergeRequest.mergeStatusEnum`](#mergerequestmergestatusenum). |
 | <a id="mergerequestmergestatusenum"></a>`mergeStatusEnum` | [`MergeStatus`](#mergestatus) | Merge status of the merge request. |
 | <a id="mergerequestmergetrainscount"></a>`mergeTrainsCount` | [`Int`](#int) | Number of merge requests in the merge train. |
@@ -18267,6 +18314,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="mergerequestauthorworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
 | <a id="mergerequestauthorworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
 
+### `MergeRequestDiff`
+
+A diff version of a merge request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestdiffcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the diff was created. |
+| <a id="mergerequestdiffdiffllmsummary"></a>`diffLlmSummary` | [`MergeRequestDiffLlmSummary`](#mergerequestdiffllmsummary) | Diff summary generated by AI. |
+| <a id="mergerequestdiffreviewllmsummaries"></a>`reviewLlmSummaries` | [`MergeRequestReviewLlmSummaryConnection`](#mergerequestreviewllmsummaryconnection) | Review summaries generated by AI. (see [Connections](#connections)) |
+| <a id="mergerequestdiffupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the diff was updated. |
+
 ### `MergeRequestDiffLlmSummary`
 
 A diff summary generated by AI.
@@ -18594,6 +18654,22 @@ Check permissions for the current user on a merge request.
 | <a id="mergerequestpermissionsremovesourcebranch"></a>`removeSourceBranch` | [`Boolean!`](#boolean) | Indicates the user can perform `remove_source_branch` on this resource. |
 | <a id="mergerequestpermissionsrevertoncurrentmergerequest"></a>`revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `revert_on_current_merge_request` on this resource. |
 | <a id="mergerequestpermissionsupdatemergerequest"></a>`updateMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `update_merge_request` on this resource. |
+
+### `MergeRequestReviewLlmSummary`
+
+A review summary generated by AI.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestreviewllmsummarycontent"></a>`content` | [`String!`](#string) | Content of the review summary. |
+| <a id="mergerequestreviewllmsummarycreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the review summary was created. |
+| <a id="mergerequestreviewllmsummarymergerequestdiffid"></a>`mergeRequestDiffId` | [`ID!`](#id) | ID of the Merge Request diff associated with the review summary. |
+| <a id="mergerequestreviewllmsummaryprovider"></a>`provider` | [`String!`](#string) | AI provider that generated the summary. |
+| <a id="mergerequestreviewllmsummaryreviewer"></a>`reviewer` | [`UserCore`](#usercore) | User who authored the review associated with the review summary. |
+| <a id="mergerequestreviewllmsummaryupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the review summary was updated. |
+| <a id="mergerequestreviewllmsummaryuser"></a>`user` | [`UserCore`](#usercore) | User associated with the review summary. |
 
 ### `MergeRequestReviewer`
 
