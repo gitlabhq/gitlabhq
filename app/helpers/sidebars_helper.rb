@@ -23,6 +23,10 @@ module SidebarsHelper
     end
   end
 
+  def organization_sidebar_context(organization, user, **args)
+    Sidebars::Context.new(container: organization, current_user: user, **args)
+  end
+
   def project_sidebar_context(project, user, current_ref, ref_type: nil, **args)
     context_data = project_sidebar_context_data(project, user, current_ref, ref_type: ref_type)
     Sidebars::Projects::Context.new(**context_data, **args)
@@ -95,7 +99,7 @@ module SidebarsHelper
 
   def super_sidebar_nav_panel(
     nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil,
-    viewed_user: nil)
+    viewed_user: nil, organization: nil)
     context_adds = { route_is_active: method(:active_nav_link?), is_super_sidebar: true }
     case nav
     when 'project'
@@ -117,6 +121,9 @@ module SidebarsHelper
       Sidebars::Search::Panel.new(context)
     when 'admin'
       Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+    when 'organization'
+      context = organization_sidebar_context(organization, user, **context_adds)
+      Sidebars::Organizations::SuperSidebarPanel.new(context)
     else
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)

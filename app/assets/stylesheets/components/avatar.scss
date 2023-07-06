@@ -189,3 +189,18 @@ $avatar-sizes: (
 .avatar-counter {
   @include avatar-counter();
 }
+
+.user-popover {
+  // GlAvatarLabeled doesn't expose any prop to override internal classes
+
+  // Max width of popover container is set by gl-max-w-48
+  // so we need to ensure that name/username/status container doesn't overflow
+  .gl-avatar-labeled-labels {
+    max-width: px-to-rem(290px);
+  }
+
+  .gl-avatar-labeled-label,
+  .gl-avatar-labeled-sublabel {
+    @include gl-text-truncate();
+  }
+}

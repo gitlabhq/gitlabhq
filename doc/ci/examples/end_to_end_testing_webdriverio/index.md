@@ -219,22 +219,27 @@ on GitLab CI/CD!
 To recap, our `.gitlab-ci.yml` configuration file looks something like this:
 
 ```yaml
-image: node:8.10
+default:
+  image: node:8.10
+
 stages:
   - deploy
   - confidence-check
+
 deploy_terraform:
   stage: deploy
   script:
     # Your Review App deployment scripts - for a working example please check https://gitlab.com/Flockademic/Flockademic/blob/5a45f1c2412e93810fab50e2dab8949e2d0633c7/.gitlab-ci.yml#L315
     - echo
   environment: production
+
 e2e:firefox:
   stage: confidence-check
   services:
     - selenium/standalone-firefox
   script:
     - npm run confidence-check --host=selenium__standalone-firefox
+
 e2e:chrome:
   stage: confidence-check
   services:

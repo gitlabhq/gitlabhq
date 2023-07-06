@@ -129,7 +129,8 @@ Content of `.gitlab-ci.yml`:
 ```yaml
 include: 'https://company.com/autodevops-template.yml'
 
-image: alpine:latest
+default:
+  image: alpine:latest
 
 variables:
   POSTGRES_USER: root

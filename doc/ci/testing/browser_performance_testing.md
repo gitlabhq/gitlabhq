@@ -133,9 +133,9 @@ be extended for dynamic environments, but a few extra steps are required:
 1. In the `review` job:
     1. Generate a URL list file with the dynamic URL.
     1. Save the file as an artifact, for example with `echo $CI_ENVIRONMENT_URL > environment_url.txt`
-    in your job's `script`.
+       in your job's `script`.
     1. Pass the list as the URL environment variable (which can be a URL or a file containing URLs)
-    to the `browser_performance` job.
+       to the `browser_performance` job.
 1. You can now run the sitespeed.io container against the desired hostname and
    paths.
 
@@ -160,10 +160,10 @@ review:
   artifacts:
     paths:
       - environment_url.txt
-  only:
-    - branches
-  except:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - if: $CI_COMMIT_BRANCH
 
 browser_performance:
   dependencies:

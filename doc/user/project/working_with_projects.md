@@ -44,7 +44,21 @@ For users without permission to view the project's code, the landing page shows:
 To access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
 
-## Explore topics
+## Organizing projects with topics
+
+Topics are labels that you can assign to projects to help you organize and find them.
+A topic is typically a short name that describes the content or purpose of a project.
+You can assign a topic to several projects.
+
+For example, you can create and assign the topics `python` and `hackathon` to all projects that use Python and are intended for Hackathon contributions.
+
+Topics assigned to a project are listed in the **Project overview**, below the project name and activity information.
+
+Only users with access to the project can see the topics assigned to that project,
+but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
+Do not include sensitive information in the name of a topic.
+
+### Explore topics
 
 To explore project topics:
 
@@ -53,15 +67,57 @@ To explore project topics:
 1. On the left sidebar, select **Topics**.
 1. To view projects associated with a topic, select a topic.
 
-The **Explore topics** page shows a list of topics, sorted by the number of associated projects.
+The **Explore topics** page shows a list of projects with this topic.
 
-If you want to know when new projects are added to the topic, you can use
-its RSS feed for that, which is the RSS icon on the right of the filter
-bar.
+### Filter and sort topics
+
+You can filter the list of projects that have a certain topic by:
+
+- Name
+- Language
+- Owner
+- Archive status
+- Visibility
+
+You can sort the projects by:
+
+- Date created
+- Date updated
+- Name
+- Number of stars
+
+### Subscribe to a topic
+
+If you want to know when new projects are added to a topic, you can use its RSS feed.
+
+You can do this either from the **Explore topics** page or a project with topics.
+
+To subscribe to a topic:
+
+- From the **Explore topics** page:
+
+  1. On the left sidebar, expand the top-most chevron ({**chevron-down**}).
+  1. Select **Explore**.
+  1. Select **Topics**.
+  1. Select the topic you want to subscribe to.
+  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
+
+- From a project:
+
+  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. In the **Project overview** page, from the **Topics** list select the topic you want to subscribe to.
+  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
+
+The results are displayed as an RSS feed in Atom format.
+The URL of the result contains a feed token and the list of projects that have the topic. You can add this URL to your feed reader.
+
+### Assign a topic to a project
 
 You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
 
-If you're an instance administrator, you can administer all project topics from the
+### Administer topics
+
+Instance administrators can administer all project topics from the
 [Admin Area's Topics page](../admin_area/index.md#administering-topics).
 
 ## Star a project

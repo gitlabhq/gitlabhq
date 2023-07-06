@@ -198,56 +198,6 @@ module QA
         destination_storage[:type] == :praefect ? verify_storage_move_to_praefect(repo_path, destination_storage[:name]) : verify_storage_move_to_gitaly(repo_path, destination_storage[:name])
       end
 
-      def praefect_dataloss_information(project_id)
-        dataloss_info = []
-        cmd = "docker exec #{@praefect} praefect -config /var/opt/gitlab/praefect/config.toml dataloss --partially-unavailable=true"
-        shell(cmd) { |line| dataloss_info << line.strip }
-
-        # Expected will have a record for each repository in the storage, in the following format
-        #   @hashed/bc/52/bc52dd634277c4a34a2d6210994a9a5e2ab6d33bb4a3a8963410e00ca6c15a02.git:
-        #     Primary: gitaly1
-        #       In-Sync Storages:
-        #         gitaly1, assigned host
-        #         gitaly3, assigned host
-        #       Outdated Storages:
-        #         gitaly2 is behind by 1 change or less, assigned host
-        #
-        # Alternatively, if all repositories are in sync, a concise message is returned
-        #   Virtual storage: default
-        #     All repositories are fully available on all assigned storages!
-
-        # extract the relevant project under test info if it is identified
-        start_index = dataloss_info.index { |line| line.include?("#{Digest::SHA256.hexdigest(project_id.to_s)}.git") }
-        unless start_index.nil?
-          dataloss_info = dataloss_info[start_index, 7]
-        end
-
-        dataloss_info&.each { |info| QA::Runtime::Logger.debug(info) }
-        dataloss_info
-      end
-
-      def wait_for_project_synced_across_all_storages(project_id)
-        Support::Retrier.retry_until(max_duration: 60) do
-          praefect_dataloss_information(project_id).include?('All repositories are fully available on all assigned storages!')
-        end
-      end
-
-      def accept_dataloss_for_project(project_id, authoritative_storage)
-        repository_hash = "#{Digest::SHA256.hexdigest(project_id.to_s)}"
-        repository = "@hashed/#{repository_hash[0, 2]}/#{repository_hash[2, 2]}/#{repository_hash}.git"
-
-        cmd = %{
-          docker exec #{@praefect} \
-          praefect \
-            -config /var/opt/gitlab/praefect/config.toml \
-            accept-dataloss \
-            --virtual-storage=default \
-            --repository=#{repository} \
-            --authoritative-storage=#{authoritative_storage}
-        }
-        shell(cmd)
-      end
-
       def wait_for_health_check_all_nodes
         gitaly_nodes.each { |node| wait_for_gitaly_health_check(node) }
       end
@@ -308,27 +258,6 @@ module QA
 
       def wait_for_replication(project_id)
         Support::Waiter.wait_until(sleep_interval: 1) { replication_queue_incomplete_count == 0 && replicated?(project_id) }
-      end
-
-      def wait_for_replication_to_node(project_id, node)
-        Support::Waiter.wait_until(sleep_interval: 1) do
-          result = []
-          shell sql_to_docker_exec_cmd(%{
-            select * from replication_queue
-            where state = 'ready'
-              and job ->> 'change' = 'update'
-              and job ->> 'target_node_storage' = '#{node}'
-              and job ->> 'relative_path' = '#{Digest::SHA256.hexdigest(project_id.to_s)}.git';
-          }) do |line|
-            result << line.strip
-            QA::Runtime::Logger.debug(line.strip)
-          end
-          # The result should look like this when all items are replicated
-          #    id | state | created_at | updated_at | attempt | lock_id | job | meta
-          #   ----+-------+------------+------------+---------+---------+-----+------
-          #   (0 rows)
-          result[2] == '(0 rows)'
-        end
       end
 
       def replication_pending?

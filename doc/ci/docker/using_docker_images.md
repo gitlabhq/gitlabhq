@@ -74,10 +74,8 @@ services that you want to use during runtime:
 ```yaml
 default:
   image: ruby:2.6
-
   services:
     - postgres:11.7
-
   before_script:
     - bundle install
 

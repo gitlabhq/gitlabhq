@@ -184,6 +184,11 @@ msgid_plural "%d assigned issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d author"
+msgid_plural "%d authors"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -15121,6 +15126,12 @@ msgid "Dependencies|%d vulnerability detected"
 msgid_plural "Dependencies|%d vulnerabilities detected"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Dependencies|%{locationCount} locations"
+msgstr ""
+
+msgid "Dependencies|%{projectCount} projects"
+msgstr ""
 
 msgid "Dependencies|%{remainingLicensesCount} more"
 msgstr ""
@@ -32062,6 +32073,12 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
+msgid "Organization|Organization navigation"
+msgstr ""
+
+msgid "Organization|Organization overview"
+msgstr ""
+
 msgid "Orphaned member"
 msgstr ""
 
@@ -45175,7 +45192,7 @@ msgstr ""
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
-msgid "TanukiBot|Ask GitLab Chat"
+msgid "TanukiBot|Ask GitLab Duo"
 msgstr ""
 
 msgid "TanukiBot|Ask a question about GitLab"

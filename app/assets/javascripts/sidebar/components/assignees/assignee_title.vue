@@ -1,14 +1,12 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'AssigneeTitle',
   components: {
     GlLoadingIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     loading: {
       type: Boolean,
@@ -22,11 +20,6 @@ export default {
     editable: {
       type: Boolean,
       required: true,
-    },
-    showToggle: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     changing: {
       type: Boolean,

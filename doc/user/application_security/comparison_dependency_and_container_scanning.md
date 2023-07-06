@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning compared to Container Scanning
 
-GitLab offers both Dependency Scanning and Container Scanning to ensure coverage for all of these
+GitLab offers both [Dependency Scanning](dependency_scanning/index.md) and
+[Container Scanning](container_scanning/index.md) to ensure coverage for all of these
 dependency types. To cover as much of your risk area as possible, we encourage you to use all of our
 security scanning tools:
 

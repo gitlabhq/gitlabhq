@@ -64,7 +64,7 @@ To enable Service Desk in your project:
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
 1. Optional. Complete the fields.
-   - [Add a suffix](#configure-a-custom-email-address-suffix) to your Service Desk email address.
+   - [Add a suffix](#configure-a-suffix-for-service-desk-alias-email) to your Service Desk email address.
    - If the list below **Template to append to all Service Desk issues** is empty, create a
      [description template](description_templates.md) in your repository.
 1. Select **Save changes**.
@@ -192,27 +192,26 @@ To edit the custom email display name:
 1. Below **Email display name**, enter a new name.
 1. Select **Save changes**.
 
-### Use a custom email address **(FREE SELF)**
+### Use an additional Service Desk alias email **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
-You can use a custom email address with Service Desk.
+You can use an additional alias email address for Service Desk on an instance level.
 
 To do this, you must configure
-a [custom mailbox](#configure-a-custom-mailbox). You can also configure a
-[custom suffix](#configure-a-custom-email-address-suffix).
+a [`service_desk_email`](#configure-service-desk-alias-email) in the instance configuration. You can also configure a
+[custom suffix](#configure-a-suffix-for-service-desk-alias-email) that replaces the default `-issue-` portion on the sub-addressing part.
 
-#### Configure a custom mailbox
+#### Configure Service Desk alias email
 
 NOTE:
-On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, you can still configure the
-[custom suffix](#configure-a-custom-email-address-suffix) in project settings.
+On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address. You can still configure the
+[custom suffix](#configure-a-suffix-for-service-desk-alias-email) in project settings.
 
 Service Desk uses the [incoming email](../../administration/incoming_email.md)
-configuration by default. However, by using the `service_desk_email` configuration,
-you can customize the mailbox used by Service Desk. This allows you to have
-a separate email address for Service Desk by also configuring a [custom suffix](#configure-a-custom-email-address-suffix)
+configuration by default. However, to have a separate email address for Service Desk,
+configure `service_desk_email` with a [custom suffix](#configure-a-suffix-for-service-desk-alias-email)
 in project settings.
 
 Prerequisites:
@@ -408,7 +407,7 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
 > - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 > - [Introduced for self-compiled (source) installs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116494) in GitLab 15.11.
 
-Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
+`service_desk_email` can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
 Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 [the same way as for incoming email](../../administration/incoming_email.md#microsoft-graph).
 
@@ -620,7 +619,7 @@ configure the `azure_ad_endpoint` and `graph_endpoint` settings:
 
 ::EndTabs
 
-#### Configure a custom email address suffix
+#### Configure a suffix for Service Desk alias email
 
 You can set a custom suffix in your project's Service Desk settings.
 
@@ -631,7 +630,7 @@ When configured, the custom suffix creates a new Service Desk email address, con
 
 Prerequisites:
 
-- You must have configured a [custom mailbox](#configure-a-custom-mailbox).
+- You must have configured a [Service Desk alias email](#configure-service-desk-alias-email).
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.

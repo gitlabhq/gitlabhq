@@ -121,7 +121,7 @@ Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
 
 ### Work around for when a pipeline is started by a Project access token user
 
-When a pipeline is started by a Project access token user (e.g. the `release-tools approver bot` user which
+When a pipeline is started by a Project access token user (for example, the `release-tools approver bot` user which
 automatically updates the Gitaly version used in the main project),
 [the Dependency proxy isn't accessible](https://gitlab.com/gitlab-org/gitlab/-/issues/332411#note_1130388163)
 and the job fails at the `Preparing the "docker+machine" executor` step.
@@ -243,7 +243,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 - If you need to **extend a hash**, you should use `extends`
 - If you need to **extend an array**, you'll need to use `!reference`, or `YAML anchors` as last resort
-- For more complex cases (e.g. extend hash inside array, extend array inside hash, ...), you'll have to use `!reference` or `YAML anchors`
+- For more complex cases (for example, extend hash inside array, extend array inside hash, ...), you'll have to use `!reference` or `YAML anchors`
 
 #### What can `extends` and `YAML anchors` do?
 

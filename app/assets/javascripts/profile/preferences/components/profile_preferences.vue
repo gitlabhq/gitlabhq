@@ -114,7 +114,7 @@ export default {
     <div v-if="integrationViews.length" class="col-sm-12">
       <hr data-testid="profile-preferences-integrations-rule" />
     </div>
-    <div v-if="integrationViews.length" class="col-lg-4 profile-settings-sidebar">
+    <div v-if="integrationViews.length" class="col-lg-4">
       <h4 class="gl-mt-0" data-testid="profile-preferences-integrations-heading">
         {{ $options.i18n.integrations }}
       </h4>

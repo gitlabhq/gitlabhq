@@ -213,7 +213,9 @@ To lock a file:
 
 If you do not have permission to lock the file, the button is not enabled.
 
-To view the user who locked the file (if it was not you), hover over the button.
+To view the user who locked a directory (if it was not you), hover over the button. Reinstatement of
+similar functionality for locked files is discussed in
+[issue 376222](https://gitlab.com/gitlab-org/gitlab/-/issues/376222).
 
 ### View and remove existing locks
 

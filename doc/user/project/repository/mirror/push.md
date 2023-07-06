@@ -77,8 +77,12 @@ through the [remote mirrors API](../../../../api/remote_mirrors.md).
 
 To configure a mirror from GitLab to GitHub:
 
-1. Create a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-   with `public_repo` selected.
+1. Create a [GitHub fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens)
+   with at least read and write permissions on the [repository contents](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-contents). If your
+   repository contains a `.github/workflows` directory, you must also grant
+   read and write access for the [Workflows](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-workflows).
+   For a more fine-grained access, you can configure your token to only apply
+   to the specific repository.
 1. Enter a **Git repository URL** with this format, changing the variables as needed:
 
    ```plaintext

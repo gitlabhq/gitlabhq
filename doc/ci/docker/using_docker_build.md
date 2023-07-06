@@ -556,10 +556,10 @@ You do not need to include the `docker:20.10.16-dind` service, like you do when
 you use the Docker-in-Docker executor:
 
 ```yaml
-image: docker:20.10.16
-
-before_script:
-  - docker info
+default:
+  image: docker:20.10.16
+  before_script:
+    - docker info
 
 build:
   stage: build

@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import Breadcrumbs from '~/repository/components/breadcrumbs.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
@@ -11,6 +11,7 @@ import permissionsQuery from 'shared_queries/repository/permissions.query.graphq
 import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 
 import createApolloProvider from 'helpers/mock_apollo_helper';
+import { __ } from '~/locale';
 
 const defaultMockRoute = {
   name: 'blobPath',
@@ -61,6 +62,7 @@ describe('Repository breadcrumbs component', () => {
       },
       stubs: {
         RouterLink: RouterLinkStub,
+        GlDisclosureDropdown,
       },
       mocks: {
         $route: {
@@ -71,7 +73,8 @@ describe('Repository breadcrumbs component', () => {
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
   const findNewDirectoryModal = () => wrapper.findComponent(NewDirectoryModal);
   const findRouterLink = () => wrapper.findAllComponents(RouterLinkStub);
@@ -146,7 +149,11 @@ describe('Repository breadcrumbs component', () => {
   `(
     'does render add to tree dropdown $isRendered when route is $routeName',
     ({ routeName, isRendered }) => {
-      factory('app/assets/javascripts.js', { canCollaborate: true }, { name: routeName });
+      factory(
+        'app/assets/javascripts.js',
+        { canCollaborate: true, canEditTree: true },
+        { name: routeName },
+      );
       expect(findDropdown().exists()).toBe(isRendered);
     },
   );
@@ -156,7 +163,7 @@ describe('Repository breadcrumbs component', () => {
       createPermissionsQueryResponse({ forkProject: true, createMergeRequestIn: true }),
     );
 
-    factory('/', { canCollaborate: true });
+    factory('/', { canCollaborate: true, canEditTree: true });
     await nextTick();
 
     expect(findDropdown().exists()).toBe(true);
@@ -191,6 +198,34 @@ describe('Repository breadcrumbs component', () => {
 
       expect(findNewDirectoryModal().exists()).toBe(true);
       expect(findNewDirectoryModal().props('path')).toBe('root/master/some_dir');
+    });
+  });
+
+  describe('"this repository" dropdown group', () => {
+    it('renders when user has pushCode permissions', async () => {
+      permissionsQuerySpy.mockResolvedValue(
+        createPermissionsQueryResponse({
+          pushCode: true,
+        }),
+      );
+
+      factory('/', { canCollaborate: true });
+      await waitForPromises();
+
+      expect(findDropdownGroup().props('group').name).toBe(__('This repository'));
+    });
+
+    it('does not render when user does not have pushCode permissions', async () => {
+      permissionsQuerySpy.mockResolvedValue(
+        createPermissionsQueryResponse({
+          pushCode: false,
+        }),
+      );
+
+      factory('/', { canCollaborate: true });
+      await waitForPromises();
+
+      expect(findDropdownGroup().exists()).toBe(false);
     });
   });
 });

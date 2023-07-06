@@ -1,17 +1,16 @@
 - @force_desktop_expanded_sidebar = true
 
 .js-search-settings-section
-  .profile-settings-sidebar
-    %h4.gl-my-0
-      = page_title
-    %p.gl-text-secondary
-      - if oauth_applications_enabled
-        - if oauth_authorized_applications_enabled
-          = _("Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account.")
-        - else
-          = _("Manage applications that use GitLab as an OAuth provider.")
+  %h4.gl-my-0
+    = page_title
+  %p.gl-text-secondary
+    - if oauth_applications_enabled
+      - if oauth_authorized_applications_enabled
+        = _("Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account.")
       - else
-        = _("Manage applications that you've authorized to use your account.")
+        = _("Manage applications that use GitLab as an OAuth provider.")
+    - else
+      = _("Manage applications that you've authorized to use your account.")
   - if oauth_applications_enabled
     %h5.gl-mt-0
       = _('Add new application')

@@ -481,10 +481,10 @@ In order to build and test our app with GitLab CI/CD, we need a file called `.gi
 Our `.gitlab-ci.yml` file will look like this:
 
 ```yaml
-image: registry.gitlab.com/<USERNAME>/laravel-sample:latest
-
-services:
-  - mysql:5.7
+default:
+  image: registry.gitlab.com/<USERNAME>/laravel-sample:latest
+  services:
+    - mysql:5.7
 
 variables:
   MYSQL_DATABASE: homestead
@@ -513,14 +513,13 @@ deploy_production:
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
     - ~/.composer/vendor/bin/envoy run deploy --commit="$CI_COMMIT_SHA"
   environment:
     name: production
     url: http://192.168.1.1
   when: manual
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 ```
 
 That's a lot to take in, isn't it? Let's run through it step by step.
@@ -533,10 +532,10 @@ The `services` keyword defines additional images [that are linked to the main im
 Here we use the container image we created before as our main image and also use MySQL 5.7 as a service.
 
 ```yaml
-image: registry.gitlab.com/<USERNAME>/laravel-sample:latest
-
-services:
-  - mysql:5.7
+default:
+  image: registry.gitlab.com/<USERNAME>/laravel-sample:latest
+  services:
+    - mysql:5.7
 
 ...
 ```
@@ -592,7 +591,7 @@ If the SSH keys have added successfully, we can run Envoy.
 As mentioned before, GitLab supports [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) methods as well.
 The [environment](../../yaml/index.md#environment) keyword tells GitLab that this job deploys to the `production` environment.
 The `url` keyword is used to generate a link to our application on the GitLab Environments page.
-The `only` keyword tells GitLab CI/CD that the job should be executed only when the pipeline is building the `main` branch.
+The `rules:if` keyword tells GitLab CI/CD that the job should be executed only when the pipeline is building the `main` branch.
 Lastly, `when: manual` is used to turn the job from running automatically to a manual action.
 
 ```yaml
@@ -604,16 +603,14 @@ deploy_production:
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
     # Run Envoy
     - ~/.composer/vendor/bin/envoy run deploy
-
   environment:
     name: production
     url: http://192.168.1.1
   when: manual
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 ```
 
 You may also want to add another job for [staging environment](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/), to final test your application before deploying to production.

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-resources :organizations, only: [], param: :organization_path, controller: 'organizations/organizations' do
+resources :organizations, only: [:show], param: :organization_path, controller: 'organizations/organizations' do
   member do
-    get :directory
+    get :groups_and_projects
   end
 end

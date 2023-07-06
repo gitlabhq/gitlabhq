@@ -43,6 +43,9 @@ To assign topics to a project:
 If you're an instance administrator, you can administer all project topics from the
 [Admin Area's Topics page](../../admin_area/index.md#administering-topics).
 
+NOTE:
+The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
+
 ## Add a compliance framework to a project **(PREMIUM)**
 
 You can
@@ -110,6 +113,23 @@ When you disable a feature, the following additional features are also disabled:
 
 - Metrics dashboard access requires reading project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
+
+### Manage project access through LDAP groups
+
+You can [use LDAP to manage group membership](../../group/access_and_permissions.md#manage-group-memberships-via-ldap).
+
+You cannot use LDAP groups to manage project access, but you can use the following
+workaround.
+
+Prerequisites:
+
+- You must [integrate LDAP with GitLab](../../../administration/auth/ldap/index.md).
+- You must be an administrator.
+
+1. [Create a group](../../group/index.md#create-a-group) to track membership of your project.
+1. [Set up LDAP synchronization](../../../administration/auth/ldap/ldap_synchronization.md) for that group.
+1. To use LDAP groups to manage access to a project, [add the LDAP-synchronized group as a member](../members/index.md#add-groups-to-a-project)
+   to the project.
 
 ## Disable CVE identifier request in issues **(FREE SAAS)**
 

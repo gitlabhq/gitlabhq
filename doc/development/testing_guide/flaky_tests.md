@@ -63,7 +63,7 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
   `master` if the order of tests changes.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91016/diffs): A test asserts
   that trying to find a record with an nonexistent ID returns an error message. The test uses an
-  hardcoded ID that's supposed to not exist (e.g. `42`). If the test is run early in the test
+  hardcoded ID that's supposed to not exist (for example, `42`). If the test is run early in the test
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
   start to fail.

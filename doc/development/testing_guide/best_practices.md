@@ -158,7 +158,7 @@ We should reduce test dependencies, and avoiding
 capabilities also reduces the amount of set-up needed.
 
 `:js` is particularly important to avoid. This must only be used if the feature
-test requires JavaScript reactivity in the browser (e.g. clicking a Vue.js component). Using a headless
+test requires JavaScript reactivity in the browser (for example, clicking a Vue.js component). Using a headless
 browser is much slower than parsing the HTML response from the app.
 
 #### Profiling: see where your test spend its time
@@ -190,7 +190,7 @@ speedscope tmp/<your-json-report>.json
 
 Below are some useful tips to interpret and navigate the flamegraph:
 
-- There are [several views available](https://github.com/jlfwong/speedscope#views) for the flamegraph. `Left Heavy` is particularly useful when there are a lot of function calls (e.g. feature specs).
+- There are [several views available](https://github.com/jlfwong/speedscope#views) for the flamegraph. `Left Heavy` is particularly useful when there are a lot of function calls (for example, feature specs).
 - You can zoom in or out! See [the navigation documentation](https://github.com/jlfwong/speedscope#navigation)
 - If you are working on a slow feature test, search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
 
@@ -413,7 +413,7 @@ Refrain from using this stub helper if the test code relies on persisting
 
 We can use the `rspec_profiling` gem to diagnose, for instance, the number of SQL queries we're making when running a test.
 
-This could be caused by some application side SQL queries **triggered by a test that could mock parts that are not under test** (e.g. [!123810](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123810)).
+This could be caused by some application side SQL queries **triggered by a test that could mock parts that are not under test** (for example, [!123810](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123810)).
 
 [See the instructions in the performance docs](../performance.md#rspec-profiling).
 

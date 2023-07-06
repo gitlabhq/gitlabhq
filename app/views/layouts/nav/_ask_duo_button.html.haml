@@ -1,0 +1,13 @@
+- if Gitlab.ee? && ::Gitlab::Llm::TanukiBot.show_breadcrumbs_entry_point_for?(user: current_user)
+  - label = s_('TanukiBot|Ask GitLab Duo')
+  = render Pajamas::ButtonComponent.new(variant: :confirm,
+    category: :secondary,
+    icon: 'tanuki-ai',
+    size: 'small',
+    button_options: { class: 'js-tanuki-bot-chat-toggle gl-ml-3 gl-display-none gl-md-display-inline', data: { track_action: 'click_button', track_label: 'tanuki_bot_breadcrumbs_button' }, aria: { label: label }}) do
+    = label
+  = render Pajamas::ButtonComponent.new(variant: :confirm,
+    category: :secondary,
+    icon: 'tanuki-ai',
+    size: 'small',
+    button_options: { class: 'js-tanuki-bot-chat-toggle has-tooltip gl-ml-3 gl-md-display-none', title: label, data: { track_action: 'click_button', track_label: 'tanuki_bot_breadcrumbs_button', placement: 'left' }, aria: { label: label }})

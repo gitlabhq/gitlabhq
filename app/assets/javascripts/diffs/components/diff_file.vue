@@ -25,7 +25,7 @@ import {
   FILE_DIFF_POSITION_TYPE,
 } from '../constants';
 import eventHub from '../event_hub';
-import { DIFF_FILE, SOMETHING_WENT_WRONG, CONFLICT_TEXT } from '../i18n';
+import { DIFF_FILE, SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED, CONFLICT_TEXT } from '../i18n';
 import { collapsedType, getShortShaFromFile } from '../utils/diff_file';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffFileHeader from './diff_file_header.vue';
@@ -344,7 +344,7 @@ export default {
     hideForkMessage() {
       this.idState.forkMessageVisible = false;
     },
-    handleSaveNote(note) {
+    handleSaveNote(note, parentElement, errorCallback) {
       this.saveDiffDiscussion({
         note,
         formData: {
@@ -353,7 +353,22 @@ export default {
           diffFile: this.file,
           positionType: FILE_DIFF_POSITION_TYPE,
         },
+      }).catch((e) => {
+        const reason = e.response?.data?.errors;
+        const errorMessage = reason
+          ? sprintf(SAVING_THE_COMMENT_FAILED, { reason })
+          : SOMETHING_WENT_WRONG;
+
+        createAlert({
+          message: errorMessage,
+          parent: parentElement,
+        });
+
+        errorCallback();
       });
+    },
+    handleSaveDraftNote(note, _, parentElement, errorCallback) {
+      this.addToReview(note, this.$options.FILE_DIFF_POSITION_TYPE, parentElement, errorCallback);
     },
   },
   CONFLICT_TEXT,
@@ -484,9 +499,7 @@ export default {
               class="gl-py-3 gl-px-5"
               data-testid="file-note-form"
               @handleFormUpdate="handleSaveNote"
-              @handleFormUpdateAddToReview="
-                (note) => addToReview(note, $options.FILE_DIFF_POSITION_TYPE)
-              "
+              @handleFormUpdateAddToReview="handleSaveDraftNote"
               @cancelForm="toggleFileCommentForm(file.file_path)"
             />
           </div>

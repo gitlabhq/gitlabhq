@@ -225,7 +225,7 @@ export default {
       </div>
     </div>
     <h5>{{ $options.translations.addTokenHeader }}</h5>
-    <p class="profile-settings-content">
+    <p>
       <gl-sprintf
         :message="$options.translations.addTokenDescription"
         :placeholders="placeholders.link"

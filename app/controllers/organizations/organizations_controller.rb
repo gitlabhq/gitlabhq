@@ -6,6 +6,8 @@ module Organizations
 
     before_action { authorize_action!(:admin_organization) }
 
-    def directory; end
+    def show; end
+
+    def groups_and_projects; end
   end
 end

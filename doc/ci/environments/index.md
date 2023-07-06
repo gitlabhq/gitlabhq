@@ -159,10 +159,10 @@ deploy_review_app:
   environment:
     name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-  only:
-    - branches
-  except:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: never
+    - if: $CI_COMMIT_BRANCH
 ```
 
 #### Set a dynamic environment URL

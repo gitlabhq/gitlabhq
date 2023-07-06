@@ -66,7 +66,8 @@ stages:
   - test
   - deploy
 
-image: alpine
+default:
+  image: alpine
 
 build_a:
   stage: build
@@ -132,7 +133,8 @@ stages:
   - test
   - deploy
 
-image: alpine
+default:
+  image: alpine
 
 build_a:
   stage: build
@@ -251,7 +253,8 @@ stages:
   - test
   - deploy
 
-image: alpine
+default:
+  image: alpine
 
 build_a:
   stage: build
@@ -281,7 +284,8 @@ stages:
   - test
   - deploy
 
-image: alpine
+default:
+  image: alpine
 
 build_b:
   stage: build

@@ -145,13 +145,11 @@ default:
   image:
     name: ruby:2.6
     entrypoint: ["/bin/bash"]
-
   services:
     - name: my-postgres:11.7
       alias: db-postgres
       entrypoint: ["/usr/local/bin/db-postgres"]
       command: ["start"]
-
   before_script:
     - bundle install
 
@@ -411,7 +409,7 @@ To enable service logging, add the `CI_DEBUG_SERVICES` variable to the project's
 
 ```yaml
 variables:
-    CI_DEBUG_SERVICES: "true"
+  CI_DEBUG_SERVICES: "true"
 ```
 
 Accepted values are:

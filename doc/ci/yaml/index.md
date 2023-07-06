@@ -3158,8 +3158,7 @@ CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitl
 To create a release when a new tag is added to the project:
 
 - Use the `$CI_COMMIT_TAG` CI/CD variable as the `tag_name`.
-- Use [`rules:if`](#rulesif) or [`only: tags`](#onlyrefs--exceptrefs) to configure
-  the job to run only for new tags.
+- Use [`rules:if`](#rulesif) to configure the job to run only for new tags.
 
 ```yaml
 job:
@@ -3171,7 +3170,7 @@ job:
     - if: $CI_COMMIT_TAG
 ```
 
-To create a release and a new tag at the same time, your [`rules`](#rules) or [`only`](#only--except)
+To create a release and a new tag at the same time, your [`rules`](#rules)
 should **not** configure the job to run only for new tags. A semantic versioning example:
 
 ```yaml

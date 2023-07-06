@@ -69,8 +69,8 @@ staging:
     - apt-get install -y ruby-dev
     - gem install dpl
     - dpl heroku api --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   environment: staging
 ```
 
@@ -93,8 +93,8 @@ staging:
   script:
     - gem install dpl
     - dpl heroku api --app=my-app-staging --api_key=$HEROKU_STAGING_API_KEY
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   environment: staging
 
 production:
@@ -102,8 +102,8 @@ production:
   script:
     - gem install dpl
     - dpl heroku api --app=my-app-production --api_key=$HEROKU_PRODUCTION_API_KEY
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
   environment: production
 ```
 

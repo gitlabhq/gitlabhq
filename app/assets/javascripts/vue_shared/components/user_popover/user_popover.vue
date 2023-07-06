@@ -181,7 +181,7 @@ export default {
 <template>
   <!-- Delayed so not every mouseover triggers Popover -->
   <gl-popover
-    :css-classes="['gl-max-w-48']"
+    :css-classes="['user-popover', 'gl-max-w-48', 'gl-overflow-hidden']"
     :show="show"
     :target="target"
     :delay="$options.USER_POPOVER_DELAY"
@@ -204,6 +204,7 @@ export default {
         :src="user.avatarUrl"
         :label="user.name"
         :sub-label="username"
+        class="gl-w-full"
       >
         <template v-if="isBlocked">
           <span class="gl-mt-4 gl-font-style-italic">{{ $options.I18N_USER_BLOCKED }}</span>

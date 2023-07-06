@@ -147,7 +147,7 @@ Updating CA certificates...
 Runtime platform                                    arch=amd64 os=linux pid=7 revision=1b659122 version=12.8.0
 Running in system-mode.
 
-Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
+Please enter the gitlab-ci coordinator URL (for example, https://gitlab.com/):
 https://my-host.internal
 Please enter the gitlab-ci token for this runner:
 XXXXXXXXXXX
@@ -158,7 +158,7 @@ Please enter the gitlab-ci tags for this runner (comma separated):
 Registering runner... succeeded                     runner=FSMwkvLZ
 Please enter the executor: custom, docker, virtualbox, kubernetes, docker+machine, docker-ssh+machine, docker-ssh, parallels, shell, ssh:
 docker
-Please enter the default Docker image (e.g. ruby:2.6):
+Please enter the default Docker image (for example, ruby:2.6):
 ruby:2.6
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```

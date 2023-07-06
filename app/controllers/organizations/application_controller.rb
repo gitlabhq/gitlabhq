@@ -4,6 +4,8 @@ module Organizations
   class ApplicationController < ::ApplicationController
     before_action :organization
 
+    layout 'organization'
+
     private
 
     def organization
