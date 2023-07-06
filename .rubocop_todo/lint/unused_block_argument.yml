@@ -115,7 +115,6 @@ Lint/UnusedBlockArgument:
     - 'ee/lib/gitlab/insights/reducers/count_per_label_reducer.rb'
     - 'ee/lib/gitlab/proxy.rb'
     - 'ee/lib/tasks/contracts/merge_requests.rake'
-    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/lib/tasks/gitlab/indexer.rake'
     - 'ee/lib/tasks/gitlab/seed/insights.rake'
     - 'ee/spec/elastic/migrate/20220118150500_delete_orphaned_commits_spec.rb'

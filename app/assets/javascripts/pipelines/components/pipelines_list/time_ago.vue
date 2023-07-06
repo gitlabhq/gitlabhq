@@ -14,11 +14,6 @@ export default {
       type: Object,
       required: true,
     },
-    displayCalendarIcon: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     fontSize: {
       type: String,
       required: false,
@@ -50,13 +45,7 @@ export default {
     </p>
 
     <p v-if="finishedTime" class="finished-at gl-display-inline-flex gl-align-items-center">
-      <gl-icon
-        v-if="displayCalendarIcon"
-        name="calendar"
-        class="gl-mr-2"
-        :size="12"
-        data-testid="calendar-icon"
-      />
+      <gl-icon name="calendar" class="gl-mr-2" :size="12" data-testid="calendar-icon" />
 
       <time
         v-gl-tooltip

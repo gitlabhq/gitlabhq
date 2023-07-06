@@ -141,7 +141,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
           visit project_pipeline_path(project, finished_pipeline)
 
           within '[data-testid="pipeline-details-header"]' do
-            expect(page).to have_selector('[data-testid="pipeline-time-ago"]')
+            expect(page).to have_selector('[data-testid="pipeline-finished-time-ago"]')
           end
         end
       end
@@ -151,7 +151,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
           visit_pipeline
 
           within '[data-testid="pipeline-details-header"]' do
-            expect(page).not_to have_selector('[data-testid="pipeline-time-ago"]')
+            expect(page).not_to have_selector('[data-testid="pipeline-finished-time-ago"]')
           end
         end
       end

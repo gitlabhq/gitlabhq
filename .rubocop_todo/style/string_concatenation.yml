@@ -54,7 +54,6 @@ Style/StringConcatenation:
     - 'ee/lib/gitlab/elastic/search_results.rb'
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/omni_auth/strategies/kerberos.rb'
-    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/lib/tasks/gitlab/license.rake'
     - 'ee/spec/features/boards/boards_spec.rb'
     - 'ee/spec/features/projects/pipelines/pipeline_spec.rb'

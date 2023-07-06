@@ -1278,7 +1278,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/services/vulnerabilities/user_notes_count_service_spec.rb'
     - 'ee/spec/services/vulnerability_feedback/create_service_spec.rb'
     - 'ee/spec/services/vulnerability_merge_request_links/create_service_spec.rb'
-    - 'ee/spec/tasks/gitlab/elastic_rake_spec.rb'
     - 'lib/api/access_requests.rb'
     - 'lib/api/admin/plan_limits.rb'
     - 'lib/api/alert_management_alerts.rb'

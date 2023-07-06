@@ -15,7 +15,7 @@ options:
   - g_project_management_issue_created
 events:
   - name: g_project_management_issue_created
-    unique: user_id
+    unique: user.id
 distribution:
 - ce
 - ee

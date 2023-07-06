@@ -96,13 +96,6 @@ module Namespaces
         traversal_ids.present?
       end
 
-      def use_traversal_ids_for_self_and_hierarchy?
-        return false unless use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids_for_self_and_hierarchy, root_ancestor)
-
-        traversal_ids.present?
-      end
-
       def use_traversal_ids_for_ancestors?
         return false unless use_traversal_ids?
         return false unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor)
@@ -150,7 +143,7 @@ module Namespaces
       end
 
       def self_and_hierarchy
-        return super unless use_traversal_ids_for_self_and_hierarchy?
+        return super unless use_traversal_ids?
 
         self_and_descendants.or(ancestors)
       end

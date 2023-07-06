@@ -3,7 +3,8 @@
 module Gitlab
   module InternalEvents
     UnknownEventError = Class.new(StandardError)
-    MissingPropertyError = Class.new(StandardError)
+    InvalidPropertyError = Class.new(StandardError)
+    InvalidMethodError = Class.new(StandardError)
 
     class << self
       include Gitlab::Tracking::Helpers
@@ -11,23 +12,28 @@ module Gitlab
       def track_event(event_name, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
-        unique_key = EventDefinitions.unique_property(event_name)
+        unique_property = EventDefinitions.unique_property(event_name)
+        unique_method = :id
 
-        unless kwargs.has_key?(unique_key)
-          raise MissingPropertyError, "#{event_name} should be triggered with a '#{unique_key}' property"
+        unless kwargs.has_key?(unique_property)
+          raise InvalidPropertyError, "#{event_name} should be triggered with a named parameter '#{unique_property}'."
         end
 
-        UsageDataCounters::HLLRedisCounter.track_event(event_name, values: kwargs[unique_key])
+        unless kwargs[unique_property].respond_to?(unique_method)
+          raise InvalidMethodError, "'#{unique_property}' should have a '#{unique_method}' method."
+        end
 
-        user_id = kwargs[:user_id]
-        project_id = kwargs[:project_id]
-        namespace_id = kwargs[:namespace_id]
+        unique_value = kwargs[unique_property].public_send(unique_method) # rubocop:disable GitlabSecurity/PublicSend
 
-        namespace = Namespace.find(namespace_id) if namespace_id
+        UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value)
+
+        user = kwargs[:user]
+        project = kwargs[:project]
+        namespace = kwargs[:namespace]
 
         standard_context = Tracking::StandardContext.new(
-          project_id: project_id,
-          user_id: user_id,
+          project_id: project&.id,
+          user_id: user&.id,
           namespace_id: namespace&.id,
           plan_name: namespace&.actual_plan_name
         ).to_context

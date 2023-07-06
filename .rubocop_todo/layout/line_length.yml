@@ -1305,7 +1305,6 @@ Layout/LineLength:
     - 'ee/lib/system_check/geo/geo_database_configured_check.rb'
     - 'ee/lib/tasks/geo.rake'
     - 'ee/lib/tasks/geo/git.rake'
-    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/lib/tasks/gitlab/elastic/test.rake'
     - 'ee/lib/tasks/gitlab/seed/metrics.rake'
     - 'ee/lib/world.rb'

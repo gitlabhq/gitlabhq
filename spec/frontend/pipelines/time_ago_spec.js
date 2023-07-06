@@ -65,21 +65,10 @@ describe('Timeago component', () => {
       expect(time.exists()).toBe(true);
     });
 
-    it('should display calendar icon by default', () => {
+    it('should display calendar icon', () => {
       createComponent({ duration: 0, finished_at: '2017-04-26T12:40:23.277Z' });
 
       expect(findCalendarIcon().exists()).toBe(true);
-    });
-
-    it('should hide calendar icon if correct prop is passed', () => {
-      createComponent(
-        { duration: 0, finished_at: '2017-04-26T12:40:23.277Z' },
-        {
-          displayCalendarIcon: false,
-        },
-      );
-
-      expect(findCalendarIcon().exists()).toBe(false);
     });
   });
 

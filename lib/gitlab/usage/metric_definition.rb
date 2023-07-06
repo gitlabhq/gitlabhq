@@ -48,7 +48,7 @@ module Gitlab
 
       def validate!
         unless skip_validation?
-          self.class.schemer.validate(attributes.stringify_keys).each do |error|
+          self.class.schemer.validate(attributes.deep_stringify_keys).each do |error|
             error_message = <<~ERROR_MSG
               Error type: #{error['type']}
               Data: #{error['data']}

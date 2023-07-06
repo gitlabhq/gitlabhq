@@ -15,7 +15,7 @@ options:
   - i_code_review_user_create_mr
 events:
   - name: i_code_review_user_create_mr
-    unique: user_id
+    unique: user.id
 distribution:
 - ce
 - ee

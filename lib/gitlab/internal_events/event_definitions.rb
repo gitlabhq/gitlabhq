@@ -4,7 +4,10 @@ module Gitlab
   module InternalEvents
     module EventDefinitions
       InvalidMetricConfiguration = Class.new(StandardError)
+
       class << self
+        VALID_UNIQUE_VALUES = %w[user.id project.id namespace.id].freeze
+
         def clear_events
           @events = nil
         end
@@ -15,7 +18,15 @@ module Gitlab
         end
 
         def unique_property(event_name)
-          events[event_name] || raise(InvalidMetricConfiguration, "Unique property not defined for #{event_name}")
+          unique_value = events[event_name]&.to_s
+
+          raise(InvalidMetricConfiguration, "Unique property not defined for #{event_name}") unless unique_value
+
+          unless VALID_UNIQUE_VALUES.include?(unique_value)
+            raise(InvalidMetricConfiguration, "Invalid unique value '#{unique_value}' for #{event_name}")
+          end
+
+          unique_value.split('.').first.to_sym
         end
 
         def known_event?(event_name)

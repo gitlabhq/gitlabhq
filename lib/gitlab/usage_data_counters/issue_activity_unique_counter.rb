@@ -208,9 +208,9 @@ module Gitlab
 
           Gitlab::InternalEvents.track_event(
             event_name,
-            user_id: author.id,
-            project_id: project&.id,
-            namespace_id: namespace&.id
+            user: author,
+            project: project,
+            namespace: namespace
           )
         end
 

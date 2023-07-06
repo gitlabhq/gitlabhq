@@ -2,11 +2,13 @@
 
 module Database
   module MigrationTestingHelpers
-    def define_background_migration(name)
-      klass = Class.new do
+    def define_background_migration(name, with_base_class: false, scoping: nil)
+      klass = Class.new(with_base_class ? Gitlab::BackgroundMigration::BatchedMigrationJob : Object) do
         # Can't simply def perform here as we won't have access to the block,
         # similarly can't define_method(:perform, &block) here as it would change the block receiver
         define_method(:perform) { |*args| yield(*args) }
+
+        scope_to(scoping) if scoping
       end
       stub_const("Gitlab::BackgroundMigration::#{name}", klass)
       klass

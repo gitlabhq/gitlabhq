@@ -25,7 +25,6 @@ Naming/HeredocDelimiterNaming:
     - 'ee/spec/services/security/security_orchestration_policies/create_pipeline_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/policy_commit_service_spec.rb'
     - 'ee/spec/support/helpers/ee/ldap_helpers.rb'
-    - 'ee/spec/tasks/gitlab/elastic_rake_spec.rb'
     - 'lib/api/metadata.rb'
     - 'lib/backup/helper.rb'
     - 'lib/feature/shared.rb'

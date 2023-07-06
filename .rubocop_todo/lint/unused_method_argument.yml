@@ -316,7 +316,6 @@ Lint/UnusedMethodArgument:
     - 'ee/lib/gitlab/package_metadata/connector/gcp.rb'
     - 'ee/lib/gitlab/package_metadata/connector/offline.rb'
     - 'ee/lib/gitlab/zoekt/search_results.rb'
-    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
     - 'ee/spec/features/groups/group_roadmap_spec.rb'
     - 'ee/spec/graphql/ee/resolvers/namespace_projects_resolver_spec.rb'

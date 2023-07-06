@@ -29,20 +29,38 @@ RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :prod
     end
 
     describe ".unique_property" do
-      context 'when event does have unique property', :aggregate_failures do
-        let(:events1) { { 'event1' => :user_id } }
-        let(:events2) { { 'event2' => :project_id } }
+      context 'when event has valid unique value with a period', :aggregate_failures do
+        let(:events1) { { 'event1' => :'user.id' } }
+        let(:events2) { { 'event2' => :'project.id' } }
 
         it 'is returned' do
-          expect(described_class.unique_property('event1')).to eq(:user_id)
-          expect(described_class.unique_property('event2')).to eq(:project_id)
+          expect(described_class.unique_property('event1')).to eq(:user)
+          expect(described_class.unique_property('event2')).to eq(:project)
+        end
+      end
+
+      context 'when event has no periods in unique property', :aggregate_failures do
+        let(:events1) { { 'event1' => :plan_id } }
+
+        it 'fails' do
+          expect { described_class.unique_property('event1') }
+            .to raise_error(described_class::InvalidMetricConfiguration, /Invalid unique value/)
+        end
+      end
+
+      context 'when event has more than one period in unique property' do
+        let(:events1) { { 'event1' => :'project.namespace.id' } }
+
+        it 'fails' do
+          expect { described_class.unique_property('event1') }
+            .to raise_error(described_class::InvalidMetricConfiguration, /Invalid unique value/)
         end
       end
 
       context 'when event does not have unique property' do
-        it 'unique_property fails' do
+        it 'unique fails' do
           expect { described_class.unique_property('event1') }
-            .to raise_error(described_class::InvalidMetricConfiguration)
+            .to raise_error(described_class::InvalidMetricConfiguration, /Unique property not defined for/)
         end
       end
     end

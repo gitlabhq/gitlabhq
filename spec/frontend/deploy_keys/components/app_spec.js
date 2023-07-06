@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import deployKeysApp from '~/deploy_keys/components/app.vue';
 import ConfirmModal from '~/deploy_keys/components/confirm_modal.vue';
+import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import eventHub from '~/deploy_keys/eventhub';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -39,6 +40,7 @@ describe('Deploy keys app component', () => {
   const findLoadingIcon = () => wrapper.find('.gl-spinner');
   const findKeyPanels = () => wrapper.findAll('.deploy-keys .gl-tabs-nav li');
   const findModal = () => wrapper.findComponent(ConfirmModal);
+  const findNavigationTabs = () => wrapper.findComponent(NavigationTabs);
 
   it('renders loading icon while waiting for request', async () => {
     mock.onGet(TEST_ENDPOINT).reply(() => new Promise());
@@ -74,55 +76,61 @@ describe('Deploy keys app component', () => {
     });
   });
 
-  it('re-fetches deploy keys when enabling a key', async () => {
-    const key = data.public_keys[0];
-    await mountComponent();
-    jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
-    jest.spyOn(wrapper.vm.service, 'enableKey').mockImplementation(() => Promise.resolve());
-
-    eventHub.$emit('enable.key', key);
-
-    await nextTick();
-    expect(wrapper.vm.service.enableKey).toHaveBeenCalledWith(key.id);
-    expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
-  });
-
-  it('re-fetches deploy keys when disabling a key', async () => {
-    const key = data.public_keys[0];
-    await mountComponent();
-    jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
-    jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
-
-    eventHub.$emit('disable.key', key, () => {});
-
-    await nextTick();
-    expect(findModal().props('visible')).toBe(true);
-    findModal().vm.$emit('remove');
-
-    await nextTick();
-    expect(wrapper.vm.service.disableKey).toHaveBeenCalledWith(key.id);
-    expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
-  });
-
-  it('calls disableKey when removing a key', async () => {
-    const key = data.public_keys[0];
-    await mountComponent();
-    jest.spyOn(wrapper.vm.service, 'getKeys').mockImplementation(() => {});
-    jest.spyOn(wrapper.vm.service, 'disableKey').mockImplementation(() => Promise.resolve());
-
-    eventHub.$emit('remove.key', key, () => {});
-
-    await nextTick();
-    expect(findModal().props('visible')).toBe(true);
-    findModal().vm.$emit('remove');
-
-    await nextTick();
-    expect(wrapper.vm.service.disableKey).toHaveBeenCalledWith(key.id);
-    expect(wrapper.vm.service.getKeys).toHaveBeenCalled();
-  });
-
   it('hasKeys returns true when there are keys', async () => {
     await mountComponent();
-    expect(wrapper.vm.hasKeys).toEqual(3);
+
+    expect(findNavigationTabs().exists()).toBe(true);
+    expect(findLoadingIcon().exists()).toBe(false);
+  });
+
+  describe('enabling and disabling keys', () => {
+    const key = data.public_keys[0];
+    let getMethodMock;
+    let putMethodMock;
+
+    const removeKey = async (keyEvent) => {
+      eventHub.$emit(keyEvent, key, () => {});
+
+      await nextTick();
+      expect(findModal().props('visible')).toBe(true);
+      findModal().vm.$emit('remove');
+    };
+
+    beforeEach(() => {
+      getMethodMock = jest.spyOn(axios, 'get');
+      putMethodMock = jest.spyOn(axios, 'put');
+    });
+
+    afterEach(() => {
+      getMethodMock.mockClear();
+      putMethodMock.mockClear();
+    });
+
+    it('re-fetches deploy keys when enabling a key', async () => {
+      await mountComponent();
+
+      eventHub.$emit('enable.key', key);
+
+      expect(putMethodMock).toHaveBeenCalledWith(`${TEST_ENDPOINT}/${key.id}/enable`);
+      expect(getMethodMock).toHaveBeenCalled();
+    });
+
+    it('re-fetches deploy keys when disabling a key', async () => {
+      await mountComponent();
+
+      await removeKey('disable.key');
+
+      expect(putMethodMock).toHaveBeenCalledWith(`${TEST_ENDPOINT}/${key.id}/disable`);
+      expect(getMethodMock).toHaveBeenCalled();
+    });
+
+    it('calls disableKey when removing a key', async () => {
+      await mountComponent();
+
+      await removeKey('remove.key');
+
+      expect(putMethodMock).toHaveBeenCalledWith(`${TEST_ENDPOINT}/${key.id}/disable`);
+      expect(getMethodMock).toHaveBeenCalled();
+    });
   });
 });

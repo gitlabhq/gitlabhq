@@ -26,8 +26,8 @@ module Gitlab
         end
       end.freeze
 
-      NEGATIVE_ANSWERS = %w[no n].freeze
-      POSITIVE_ANSWERS = %w[yes y].freeze
+      NEGATIVE_ANSWERS = %w[no n No NO N].freeze
+      POSITIVE_ANSWERS = %w[yes y Yes YES Y].freeze
       TOP_LEVEL_DIR = 'config'
       TOP_LEVEL_DIR_EE = 'ee'
       DESCRIPTION_MIN_LENGTH = 50
@@ -81,7 +81,7 @@ module Gitlab
         type: :string,
         optional: false,
         desc: 'Name of the event that this metric counts'
-      class_option :unique_on,
+      class_option :unique,
         type: :string,
         optional: false,
         desc: 'Name of the event property that this metric counts'
@@ -185,7 +185,7 @@ module Gitlab
       end
 
       def key_path(time_frame)
-        "count_distinct_#{options[:unique_on]}_from_#{event}_#{time_frame}"
+        "count_distinct_#{options[:unique]}_from_#{event}_#{time_frame}"
       end
 
       def metric_file_path(time_frame)
@@ -204,7 +204,7 @@ module Gitlab
 
         validate_tiers!
 
-        %i[unique_on event mr section stage group].each do |option|
+        %i[unique event mr section stage group].each do |option|
           raise "The option: --#{option} is  missing" unless options.key? option
         end
 
