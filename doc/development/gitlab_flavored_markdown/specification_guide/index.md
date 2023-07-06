@@ -133,10 +133,10 @@ The following taxonomy chart shows the taxonomy and terminology of the various s
 
 ```mermaid
 graph TD
-CM[CommonMark - spec.txt - e.g. headings] --- GFMS[GFM Specification - spec.txt - e.g. strikethrough extension]
-GFMS --- GLFM[GLFM Specification - e.g. color chips]
-GFMS --- GFMI[GFM internal extensions - e.g. GitHub-specific references]
-GLFM --- GLFS[GLFM internal extensions - e.g. GitLab-specific references]
+CM[CommonMark - spec.txt - for example, headings] --- GFMS[GFM Specification - spec.txt - for example, strikethrough extension]
+GFMS --- GLFM[GLFM Specification - for example, color chips]
+GFMS --- GFMI[GFM internal extensions - for example, GitHub-specific references]
+GLFM --- GLFS[GLFM internal extensions - for example, GitLab-specific references]
 ```
 
 ##### Official specifications

@@ -179,7 +179,7 @@ request that has an optional parameter:
 optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The user ids for this rule'
 ```
 
-Normally, a request to PUT `/test?user_ids` would cause Grape to pass
+Usually, a request to PUT `/test?user_ids` would cause Grape to pass
 `params` of `{ user_ids: nil }`.
 
 This may introduce errors with endpoints that expect a blank array and

@@ -2067,6 +2067,13 @@ class User < ApplicationRecord
     super
   end
 
+  # override, from Devise
+  def unlock_access!(unlocked_by: self)
+    audit_unlock_access(author: unlocked_by)
+
+    super()
+  end
+
   # Determine the maximum access level for a group of projects in bulk.
   #
   # Returns a Hash mapping project ID -> maximum access level.
@@ -2593,6 +2600,9 @@ class User < ApplicationRecord
 
   # method overriden in EE
   def audit_lock_access; end
+
+  # method overriden in EE
+  def audit_unlock_access(author: self); end
 end
 
 User.prepend_mod_with('User')

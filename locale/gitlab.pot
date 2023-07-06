@@ -4463,9 +4463,6 @@ msgstr ""
 msgid "AlertSettings|Prometheus"
 msgstr ""
 
-msgid "AlertSettings|Prometheus API base URL"
-msgstr ""
-
 msgid "AlertSettings|Reset Key"
 msgstr ""
 
@@ -4500,9 +4497,6 @@ msgid "AlertSettings|The form has unsaved changes. How would you like to proceed
 msgstr ""
 
 msgid "AlertSettings|To create a custom mapping, enter an example payload from your monitoring tool, in JSON format. Select the \"Parse payload fields\" button to continue."
-msgstr ""
-
-msgid "AlertSettings|URL cannot be blank and must start with http: or https:."
 msgstr ""
 
 msgid "AlertSettings|Use the URL and authorization key below to configure how Prometheus sends alerts to GitLab. Review the %{linkStart}GitLab documentation%{linkEnd} to learn how to configure your endpoint."
@@ -15217,6 +15211,9 @@ msgstr ""
 msgid "Dependency list"
 msgstr ""
 
+msgid "DependencyProxy|%{docLinkStart}See the documentation%{docLinkEnd} for other ways to store Docker images in Dependency Proxy cache."
+msgstr ""
+
 msgid "DependencyProxy|All items in the cache are scheduled for removal."
 msgstr ""
 
@@ -15233,6 +15230,9 @@ msgid "DependencyProxy|Configure in settings"
 msgstr ""
 
 msgid "DependencyProxy|Contains %{count} blobs of images (%{size})"
+msgstr ""
+
+msgid "DependencyProxy|Copy example"
 msgstr ""
 
 msgid "DependencyProxy|Copy image path"
@@ -15259,6 +15259,9 @@ msgstr ""
 msgid "DependencyProxy|Image list"
 msgstr ""
 
+msgid "DependencyProxy|Pull image by digest example"
+msgstr ""
+
 msgid "DependencyProxy|Scheduled for deletion"
 msgstr ""
 
@@ -15266,6 +15269,9 @@ msgid "DependencyProxy|There are no images in the cache"
 msgstr ""
 
 msgid "DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}"
+msgstr ""
+
+msgid "DependencyProxy|To store docker images in Dependency Proxy cache, pull an image by tag in your %{codeStart}.gitlab-ci.yml%{codeEnd} file. In this example, the image is %{codeStart}alpine:latest%{codeEnd}"
 msgstr ""
 
 msgid "DependencyProxy|When enabled, images older than 90 days will be removed from the cache."
@@ -40936,7 +40942,7 @@ msgstr ""
 msgid "SecurityApprovals|Learn more about Coverage-Check"
 msgstr ""
 
-msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more.%{linkEnd}"
+msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
@@ -42349,6 +42355,12 @@ msgid "ServiceDesk|Your users can send emails to this address:"
 msgstr ""
 
 msgid "ServicePing|Service ping is off"
+msgstr ""
+
+msgid "ServicePing|This can be changed at any time in %{link_start}your settings%{link_end}."
+msgstr ""
+
+msgid "ServicePing|To help improve GitLab, we would like to periodically %{link_start}collect usage information%{link_end}."
 msgstr ""
 
 msgid "ServicePing|To view instance-level analytics, ask an admin to turn on %{docLinkStart}service ping%{docLinkEnd}."
@@ -47759,9 +47771,6 @@ msgstr ""
 msgid "To go to GitLab Pages, on the left sidebar, select %{pages_link}."
 msgstr ""
 
-msgid "To help improve GitLab, we would like to periodically %{docs_link}. This can be changed at any time in %{settings_link}."
-msgstr ""
-
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
@@ -48483,12 +48492,6 @@ msgid "Type to search"
 msgstr ""
 
 msgid "URL"
-msgstr ""
-
-msgid "URL cannot be blank"
-msgstr ""
-
-msgid "URL is invalid"
 msgstr ""
 
 msgid "URL is required"
@@ -54005,9 +54008,6 @@ msgid_plural "closed issues"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "collect usage information"
-msgstr ""
-
 msgid "comment"
 msgstr ""
 
@@ -55573,9 +55573,6 @@ msgid "your GitLab instance"
 msgstr ""
 
 msgid "your group (%{group_name})"
-msgstr ""
-
-msgid "your settings"
 msgstr ""
 
 msgid "yyyy-mm-dd"

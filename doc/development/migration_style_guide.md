@@ -229,13 +229,13 @@ end
 Migrations like this are inherently risky and [additional actions](database_review.md#preparation-when-adding-data-migrations)
 are required when preparing the migration for review.
 
-## Atomicity
+## Atomicity and transaction
 
-By default, migrations are single transaction. That is, a transaction is opened
+By default, migrations are a single transaction: it's opened
 at the beginning of the migration, and committed after all steps are processed.
 
 Running migrations in a single transaction makes sure that if one of the steps fails,
-none of the steps are executed, leaving the database in valid state.
+none of the steps are executed, leaving the database in a valid state.
 Therefore, either:
 
 - Put all migrations in one single-transaction migration.
@@ -243,10 +243,140 @@ Therefore, either:
   for the steps that cannot be done in a single transaction.
 
 For example, if you create an empty table and need to build an index for it,
-it is recommended to use a regular single-transaction migration and the default
+you should use a regular single-transaction migration and the default
 rails schema statement: [`add_index`](https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index).
-This is a blocking operation, but it doesn't cause problems because the table is not yet used,
+This operation is a blocking operation, but it doesn't cause problems because the table is not yet used,
 and therefore it does not have any records yet.
+
+NOTE:
+Subtransactions are [disallowed](https://about.gitlab.com/blog/2021/09/29/why-we-spent-the-last-month-eliminating-postgresql-subtransactions/) in general.
+Use multiple, separate transactions
+if needed as described in [Heavy operations in a single transaction](#heavy-operations-in-a-single-transaction).
+
+### Heavy operations in a single transaction
+
+When using a single-transaction migration, a transaction holds a database connection
+for the duration of the migration, so you must make sure the actions in the migration
+do not take too much time.
+In general, transactions must [execute quickly](database/transaction_guidelines.md#transaction-speed).
+To that end, observe [the maximum query time limit](database/query_performance.md#timing-guidelines-for-queries)
+for each query run in the migration.
+
+If your single-transaction migration takes long to finish, you have several options.
+In all cases, remember to select the appropriate migration type
+depending on [how long a migration takes](#how-long-a-migration-should-take)
+
+- Split the migration into **multiple single-transaction migrations**.
+
+- Use **multiple transactions** by [using `disable_ddl_transaction!`](#disable-transaction-wrapped-migration).
+
+- Keep using a single-transaction migration after **adjusting statement and lock timeout settings**.
+  If your heavy workload must use the guarantees of a transaction,
+  you should check your migration can execute without hitting the timeout limits.
+  The same advice applies to both single-transaction migrations and individual transactions.
+
+  - Statement timeout: the statement timeout is configured to be `15s` for GitLab.com's production database
+    but creating an index often takes more than 15 seconds.
+    When you use the existing helpers including `add_concurrent_index`,
+    they automatically turn off the statement timeout as needed.
+    In rare cases, you might need to set the timeout limit yourself by [using `disable_statement_timeout`](#temporarily-turn-off-the-statement-timeout-limit).
+  - Lock timeout: if your migration must execute as a transaction but can possibly time out while
+    acquiring a lock, [use `enable_lock_retries!`](#usage-with-transactional-migrations).
+
+NOTE:
+To run migrations, we directly connect to the primary database, bypassing PgBouncer
+to control settings like `statement_timeout` and `lock_wait_timeout`.
+
+#### Temporarily turn off the statement timeout limit
+
+The migration helper `disable_statement_timeout` enables you to
+temporarily set the statement timeout to `0` per transaction or per connection.
+
+- You use the per-connection option when your statement does not support
+  running inside an explicit transaction, like `CREATE INDEX CONCURRENTLY`.
+
+- If your statement does support an explicit transaction block,
+  like `ALTER TABLE ... VALIDATE CONSTRAINT`,
+  the per-transaction option should be used.
+
+Using `disable_statement_timeout` is rarely needed, because
+the most migration helpers already use them internally when needed.
+For example, creating an index usually takes more than 15 seconds,
+which is the default statement timeout configured for GitLab.com's production database.
+The helper `add_concurrent_index` creates an index inside the block
+passed to `disable_statement_timeout` to disable the statement timeout per connection.
+
+If you are writing raw SQL statements in a migration,
+you may need to manually use `disable_statement_timeout`.
+Consult the database reviewers and maintainers when you do.
+
+### Disable transaction-wrapped migration
+
+You can opt out of running your migration as a single transaction by using
+`disable_ddl_transaction!`, an ActiveRecord method.
+The method might be called in other database systems, with different results.
+At GitLab we exclusively use PostgreSQL.
+You should always read `disable_ddl_transaction!` as meaning:
+
+"Do not execute this migration in a single PostgreSQL transaction. I'll open PostgreSQL transaction(s) only _when_ and _if_ I need them."
+
+NOTE:
+Even if you don't use an explicit PostgreSQL transaction `.transaction` (or `BEGIN; COMMIT;`),
+every SQL statement is still executed as a transaction.
+See [the PostgreSQL documentation on transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html).
+
+NOTE:
+In GitLab, we've sometimes referred to
+the migrations that used `disable_ddl_transaction!` as non-transactional migrations.
+It just meant the migrations were not executed as _single_ transactions.
+
+When should you use `disable_ddl_transaction!`? In most cases,
+the existing RuboCop rules or migration helpers can detect if you should be
+using `disable_ddl_transaction!`.
+Skip `disable_ddl_transaction!` if you are unsure whether to use it or not in your migration,
+and let the RuboCop rules and database reviews guide you.
+
+Use `disable_ddl_transaction!` when PostgreSQL requires an operation to be executed outside an explicit transaction.
+
+- The most prominent example of such operation is the command `CREATE INDEX CONCURRENTLY`.
+  PostgreSQL allows the blocking version (`CREATE INDEX`) to be run inside a transaction.
+  Unlike `CREATE INDEX`, `CREATE INDEX CONCURRENTLY` must be performed outside a transaction.
+  Therefore, even though a migration may run just one statement `CREATE INDEX CONCURRENTLY`,
+  you should disable `disable_ddl_transaction!`.
+  It's also the reason why the use of the helper `add_concurrent_index` requires `disable_ddl_transaction!`
+  `CREATE INDEX CONCURRENTLY` is more of the exception than the rule.
+
+Use `disable_ddl_transaction!` when you need to run multiple transactions in a migration for any reason.
+Most of the time you would be using multiple transactions to avoid [running one slow transaction](#heavy-operations-in-a-single-transaction).
+
+- For example, when you insert, update, or delete (DML) a large amount of data,
+  you should [perform them in batches](database/iterating_tables_in_batches.md#eachbatch-in-data-migrations).
+  Should you need to group operations for each batch,
+  you can explicitly open a transaction block when processing a batch.
+  Consider using a [batched background migration](database/batched_background_migrations.md) for
+  any reasonably large workload.
+
+Use `disable_ddl_transaction!` when migration helpers require them.
+Various migration helpers need to run with `disable_ddl_transaction!`
+because they require a precise control on when and how to open transactions.
+
+- A foreign key _can_ be added inside a transaction, unlike `CREATE INDEX CONCURRENTLY`.
+  However, PostgreSQL does not provide an option similar to `CREATE INDEX CONCURRENTLY`.
+  The helper [`add_concurrent_foreign_key`](database/foreign_keys.md#adding-foreign-keys-in-migrations)
+  instead opens its own transactions to lock the source and target table
+  in a manner that minimizes locking while adding and validating the foreign key.
+- As advised earlier, skip `disable_ddl_transaction!` if you are unsure
+  and see if any RuboCop check is violated.
+
+Use `disable_ddl_transaction!` when your migration does not actually touch PostgreSQL databases
+or does touch _multiple_ PostgreSQL databases.
+
+- For example, your migration might target a Redis server. As a rule,
+  you cannot [interact with an external service](database/transaction_guidelines.md#dangerous-example-third-party-api-calls)
+  inside a PostgreSQL transaction.
+- A transaction is used for a single database connection.
+  If your migrations are targeting multiple databases, such as both `ci` and `main` database,
+  follow [Migrations for multiple databases](database/migrations_for_multiple_databases.md).
 
 ## Naming conventions
 
@@ -289,19 +419,6 @@ minimum acceptable timestamp would be 20230424000000.
 #### Best practice
 
 While the above should be considered a hard rule, it is a best practice to try to keep migration timestamps to within three weeks of the date it is anticipated that the migration will be merged upstream, regardless of how much time has elapsed since the last hard stop.
-
-## Heavy operations in a single transaction
-
-When using a single-transaction migration, a transaction holds a database connection
-for the duration of the migration, so you must make sure the actions in the migration
-do not take too much time: GitLab.com's production database has a `15s` timeout, so
-in general, the cumulative execution time in a migration should aim to fit comfortably
-in that limit. Singular query timings should fit within the [standard limit](database/query_performance.md#timing-guidelines-for-queries)
-
-In case you need to insert, update, or delete a significant amount of data, you:
-
-- Must disable the single transaction with `disable_ddl_transaction!`.
-- Should consider doing it in a [batched background migration](database/batched_background_migrations.md).
 
 ## Migration helpers and versioning
 
@@ -609,6 +726,71 @@ like a standard migration invocation.
 
 The migration might fail if there is a very long running transaction (40+ minutes)
 accessing the `users` table.
+
+#### Lock-retry methodology at the SQL level
+
+In this section, we provide a simplified SQL example that demonstrates the use of `lock_timeout`.
+You can follow along by running the given snippets in multiple `psql` sessions.
+
+When altering a table to add a column,
+`AccessExclusiveLock`, which conflicts with most lock types, is required on the table.
+If the target table is a very busy one, the transaction adding the column
+may fail to acquire `AccessExclusiveLock` in a timely fashion.
+
+Suppose a transaction is attempting to insert a row into a table:
+
+```sql
+-- Transaction 1
+BEGIN;
+INSERT INTO my_notes (id) VALUES (1);
+```
+
+At this point Transaction 1 acquired `RowExclusiveLock` on `my_notes`.
+Transaction 1 could still execute more statements prior to committing or aborting.
+There could be other similar, concurrent transactions that touch `my_notes`.
+
+Suppose a transactional migration is attempting to add a column to the table
+without using any lock retry helper:
+
+```sql
+-- Transaction 2
+BEGIN;
+ALTER TABLE my_notes ADD COLUMN title text;
+```
+
+Transaction 2 is now blocked because it cannot acquire
+`AccessExclusiveLock` on `my_notes` table
+as Transaction 1 is still executing and holding the `RowExclusiveLock`
+on `my_notes`.
+
+A more pernicious effect is blocking the transactions that would
+normally not conflict with Transaction 1 because Transaction 2
+is queueing to acquire `AccessExclusiveLock`.
+In a normal situation, if another transaction attempted to read from and write
+to the same table `my_notes` at the same time as Transaction 1,
+the transaction would go through
+since the locks needed for reading and writing would not
+conflict with `RowExclusiveLock` held by Transaction 1.
+However, when the request to acquire `AccessExclusiveLock` is queued,
+the subsequent requests for conflicting locks on the table would block although
+they could be executed concurrently alongside Transaction 1.
+
+If we used `with_lock_retries`, Transaction 2 would instead quickly
+timeout after failing to acquire the lock within the specified time period
+and allow other transactions to proceed:
+
+```sql
+-- Transaction 2 (version with with lock timeout)
+BEGIN;
+SET LOCAL lock_timeout to '100ms'; -- added by the lock retry helper.
+ALTER TABLE my_notes ADD COLUMN title text;
+```
+
+The lock retry helper would repeatedly try the same transaction
+at different time intervals until it succeeded.
+
+Note that `SET LOCAL` scopes the parameter (`lock_timeout`) change to
+the transaction.
 
 ## Removing indexes
 

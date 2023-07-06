@@ -215,10 +215,6 @@ To close an issue, you can either:
   1. Select **Plan > Issues**, then select your issue to view it.
   1. At the top of the issue, select **Close issue**.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action at the top of an issue, your project or instance might have
-enabled a feature flag for [moved actions](../merge_requests/index.md#move-sidebar-actions).
-
 ### Reopen a closed issue
 
 Prerequisites:

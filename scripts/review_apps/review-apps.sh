@@ -229,11 +229,11 @@ function download_chart() {
   else
     echoinfo "Downloading the GitLab chart..." true
 
-    curl --location -o gitlab.tar.bz2 "https://gitlab.com/gitlab-org/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
+    curl --location -o gitlab.tar.bz2 "${GITLAB_HELM_CHART_PROJECT_URL}/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
     tar -xjf gitlab.tar.bz2
 
     echoinfo "Adding the gitlab repo to Helm..."
-    helm repo add gitlab https://charts.gitlab.io
+    helm repo add gitlab "${GITLAB_HELM_REPO_URL}"
 
     echoinfo "Building the gitlab chart's dependencies..."
     helm dependency build "gitlab-${GITLAB_HELM_CHART_REF}"
@@ -261,19 +261,20 @@ function deploy() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
   local base_config_file_ref="${CI_DEFAULT_BRANCH}"
+
   if [[ "$(base_config_changed)" == "true" ]]; then base_config_file_ref="${CI_COMMIT_SHA}"; fi
-  local base_config_file="https://gitlab.com/gitlab-org/gitlab/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
+  local base_config_file="${GITLAB_REPO_URL}/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
 
   echoinfo "Deploying ${release} to ${CI_ENVIRONMENT_URL} ..." true
 
-  IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
-  gitlab_toolbox_image_repository="${IMAGE_REPOSITORY}/gitlab-toolbox-ee"
-  gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-ee"
-  gitlab_webservice_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-ee"
+  IMAGE_REPOSITORY="${GITLAB_IMAGE_REPOSITORY}"
+  gitlab_toolbox_image_repository="${IMAGE_REPOSITORY}/gitlab-toolbox-${GITLAB_IMAGE_SUFFIX}"
+  gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-${GITLAB_IMAGE_SUFFIX}"
+  gitlab_webservice_image_repository="${IMAGE_REPOSITORY}/gitlab-webservice-${GITLAB_IMAGE_SUFFIX}"
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
   gitaly_image_tag=$(parse_gitaly_image_tag)
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
-  gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-ee"
+  gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${GITLAB_IMAGE_SUFFIX}"
   sentry_enabled="false"
 
   if [ -n "${REVIEW_APPS_SENTRY_DSN}" ]; then
@@ -394,7 +395,8 @@ function verify_deploy() {
 
   mkdir -p curl-logs/
 
-  for i in {1..60}; do # try for 5 minutes
+  local max_try_times=${GITLAB_VERIFY_DEPLOY_TIMEOUT_MINUTES} * 60 / 5
+  for i in {1..max_try_times}; do # try for GITLAB_VERIFY_DEPLOY_TIMEOUT_MINUTES minutes, default 5 minutes
     local now=$(date '+%H:%M:%S')
     echo "[${now}] Verifying deployment at ${CI_ENVIRONMENT_URL}/users/sign_in"
     log_name="curl-logs/${now}.log"

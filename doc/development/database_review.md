@@ -244,7 +244,7 @@ Include in the MR description:
   - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - If a single `update` is below than `1s` the query can be placed
       directly in a regular migration (inside `db/migrate`).
-  - Background migrations are normally used, but not limited to:
+  - Background migrations are usually used, but not limited to:
     - Migrating data in larger tables.
     - Making numerous SQL queries per record in a dataset.
   - Review queries (for example, make sure batch sizes are fine)

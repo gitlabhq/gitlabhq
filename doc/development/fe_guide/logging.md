@@ -36,7 +36,7 @@ try {
 } catch (e) {
   if (e instanceof FooSyntaxError) {
     // To handle a `FooSyntaxError`, we just need to instruct the user to change their input.
-    // This isn't unexpected, and is part of normal operations.
+    // This isn't unexpected, and is part of standard operations.
     setUserMessage(`Try writing better code. ${e.message}`);
   } else {
     // We're not sure what `e` is, so something unexpected and bad happened...

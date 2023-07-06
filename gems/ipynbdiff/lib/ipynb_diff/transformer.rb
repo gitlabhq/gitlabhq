@@ -1,19 +1,18 @@
 # frozen_string_literal: true
 
-module IpynbDiff
-  require 'oj'
+require 'json'
+require 'yaml'
+require 'ipynb_diff/output_transformer'
+require 'ipynb_diff/symbolized_markdown_helper'
+require 'ipynb_diff/symbol_map'
+require 'ipynb_diff/transformed_notebook'
+require 'oj'
 
-  class InvalidNotebookError < StandardError
-  end
+module IpynbDiff
+  InvalidNotebookError = Class.new(StandardError)
 
   # Returns a markdown version of the Jupyter Notebook
   class Transformer
-    require 'json'
-    require 'yaml'
-    require 'output_transformer'
-    require 'symbolized_markdown_helper'
-    require 'symbol_map'
-    require 'transformed_notebook'
     include SymbolizedMarkdownHelper
 
     @include_frontmatter = true
@@ -60,10 +59,10 @@ module IpynbDiff
       type = cell['cell_type'] || 'raw'
 
       [
-        _(symbol, %(%% Cell type:#{type} id:#{cell['id']} tags:#{tags&.join(',')})),
-        _,
+        ___(symbol, %(%% Cell type:#{type} id:#{cell['id']} tags:#{tags&.join(',')})),
+        ___,
         rows,
-        _
+        ___
       ]
     end
 
@@ -73,9 +72,9 @@ module IpynbDiff
 
     def transform_code_cell(cell, notebook, symbol)
       [
-        _(symbol / 'source', %(``` #{notebook.dig('metadata', 'kernelspec', 'language') || ''})),
+        ___(symbol / 'source', %(``` #{notebook.dig('metadata', 'kernelspec', 'language') || ''})),
         symbolize_array(symbol / 'source', cell['source'], &:rstrip),
-        _(nil, '```'),
+        ___(nil, '```'),
         transform_outputs(cell['outputs'], symbol)
       ]
     end
@@ -84,10 +83,10 @@ module IpynbDiff
       transformed = outputs.map
                            .with_index { |output, i| @out_transformer.transform(output, symbol / ['outputs', i]) }
                            .compact
-                           .map { |el| [_, el] }
+                           .map { |el| [___, el] }
 
       [
-        transformed.empty? ? [] : [_, _(symbol / 'outputs', '%% Output')],
+        transformed.empty? ? [] : [___, ___(symbol / 'outputs', '%% Output')],
         transformed
       ]
     end
@@ -106,7 +105,7 @@ module IpynbDiff
         }
       }.to_yaml
 
-      as_yaml.split("\n").map { |l| _(nil, l) }.append(_(nil, '---'), _)
+      as_yaml.split("\n").map { |l| ___(nil, l) }.append(___(nil, '---'), ___)
     end
   end
 end

@@ -27,7 +27,6 @@ module QA
             alert.add_new_integration
             alert.select_prometheus
             alert.activate_integration
-            alert.fill_in_prometheus_url
             alert.save_and_create_alert
           end
         end

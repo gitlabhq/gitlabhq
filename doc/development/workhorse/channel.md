@@ -37,7 +37,7 @@ Sec-WebSocket-Protocol: terminal.gitlab.com
 ```
 
 At this point, the connection is still HTTP, so this is a request.
-The server can send a normal HTTP response, such as `404 Not Found` or
+The server can send a standard HTTP response, such as `404 Not Found` or
 `500 Internal Server Error`.
 
 If the server decides to permit the upgrade, it sends a HTTP
@@ -116,7 +116,7 @@ contain ANSI terminal control codes, and may be in any encoding.
 ## Workhorse to GitLab
 
 Using the terminal as an example, before upgrading the browser,
-Workhorse sends a normal HTTP request to GitLab on a URL like
+Workhorse sends a standard HTTP request to GitLab on a URL like
 `https://gitlab.com/group/project/environments/1/terminal.ws/authorize`.
 This returns a JSON response containing details of where the
 terminal can be found, and how to connect it. In particular,

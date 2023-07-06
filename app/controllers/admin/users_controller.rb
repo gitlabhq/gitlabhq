@@ -159,7 +159,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def unlock
-    if update_user(&:unlock_access!)
+    if unlock_user
       redirect_back_or_admin_user(notice: _("Successfully unlocked"))
     else
       redirect_back_or_admin_user(alert: _("Error occurred. User was not unlocked"))
@@ -400,6 +400,11 @@ class Admin::UsersController < Admin::ApplicationController
     else
       _("You cannot impersonate a user who cannot log in")
     end
+  end
+
+  # method overriden in EE
+  def unlock_user
+    update_user(&:unlock_access!)
   end
 end
 

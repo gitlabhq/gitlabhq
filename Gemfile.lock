@@ -35,6 +35,13 @@ PATH
       rake (~> 13.0)
 
 PATH
+  remote: gems/ipynbdiff
+  specs:
+    ipynbdiff (0.4.7)
+      diffy (~> 3.4)
+      oj (~> 3.13.16)
+
+PATH
   remote: vendor/gems/attr_encrypted
   specs:
     attr_encrypted (3.2.4)
@@ -67,13 +74,6 @@ PATH
   specs:
     error_tracking_open_api (1.0.0)
       typhoeus (~> 1.0, >= 1.0.1)
-
-PATH
-  remote: vendor/gems/ipynbdiff
-  specs:
-    ipynbdiff (0.4.7)
-      diffy (~> 3.4)
-      oj (~> 3.13.16)
 
 PATH
   remote: vendor/gems/mail-smtp_pool

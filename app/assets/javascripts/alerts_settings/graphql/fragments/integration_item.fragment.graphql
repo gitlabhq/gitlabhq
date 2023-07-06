@@ -5,5 +5,4 @@ fragment IntegrationItem on AlertManagementIntegration {
   name
   url
   token
-  apiUrl
 }

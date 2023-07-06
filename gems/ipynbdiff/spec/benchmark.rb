@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'ipynbdiff'
 require 'benchmark'
 require 'benchmark/memory'
 require_relative 'test_helper'
 
+# rubocop:disable Layout/LineLength
 large_cell = '{
   "cell_type": "code",
   "execution_count": 9,
@@ -26,6 +29,7 @@ large_cell = '{
     "do_plot(is_sin = False)"
   ]
 },'
+# rubocop:enable Layout/LineLength
 
 base = '{
  "cells": [

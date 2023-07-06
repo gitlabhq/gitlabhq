@@ -232,7 +232,7 @@ These examples use regex (regular expressions) string boundary characters to mat
 the beginning of a string (`^`), and its end (`$`). They also include instances
 where either the directory path or the filename can include `.` or `/`. Both of
 these special regex characters must be escaped with a backslash `\\` if you want
-to use them as normal characters in a match condition.
+to use them as standard characters in a match condition.
 
 - **Prevent pushing `.exe` files to any location in the repository** - This regex
   matches any filename that contains `.exe` at the end:

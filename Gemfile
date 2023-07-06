@@ -593,7 +593,7 @@ gem 'ipaddress', '~> 0.8.3'
 
 gem 'parslet', '~> 1.8'
 
-gem 'ipynbdiff', path: 'vendor/gems/ipynbdiff'
+gem 'ipynbdiff', path: 'gems/ipynbdiff', require: 'ipynb_diff'
 
 gem 'ed25519', '~> 1.3.0'
 

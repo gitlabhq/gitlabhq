@@ -186,7 +186,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 
 - [3K AutoScale from 25% GPT Test Results](https://gitlab.com/guided-explorations/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/3K/3k-QuickStart-AutoScale-ARM-RDS-Cache_v13-12-3-ee_2021-07-23_194200/3k-QuickStart-AutoScale-ARM-RDS-Cache_v13-12-3-ee_2021-07-23_194200_results.txt)
 
-  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven my normal production workloads.
+  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven by standard production workloads.
 
 **Deploy Now**
 
@@ -240,7 +240,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 
 - [5K AutoScale from 25% GPT Test Results](https://gitlab.com/guided-explorations/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/5K/5k-QuickStart-AutoScale-From-25Percent-ARM-RDS-Redis_v13-12-3-ee_2021-07-24_102717/5k-QuickStart-AutoScale-From-25Percent-ARM-RDS-Redis_v13-12-3-ee_2021-07-24_102717_results.txt)
 
-  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven my normal production workloads.
+  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven by standard production workloads.
 
 **Deploy Now**
 
@@ -294,7 +294,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 
 - [10K Elastic Auto Scale GPT Test Results](https://gitlab.com/guided-explorations/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/10K/GL-CloudNative-10k-AutoScaling-Test_v13-12-3-ee_2021-07-09_115139/GL-CloudNative-10k-AutoScaling-Test_v13-12-3-ee_2021-07-09_115139_results.txt)
 
-  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven my normal production workloads.
+  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven by standard production workloads.
 
 **Deploy Now**
 
@@ -347,7 +347,7 @@ If EKS node autoscaling is employed, it is likely that your average loading will
 
 - [50K Elastic Auto Scale GPT Test Results](https://gitlab.com/guided-explorations/aws/implementation-patterns/gitlab-cloud-native-hybrid-on-eks/-/blob/master/gitlab-alliances-testing/50K/50k-AutoScale-Test_v13-12-3-ee_2021-08-13_192633/50k-AutoScale-Test_v13-12-3-ee_2021-08-13_192633.txt)
 
-  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven my normal production workloads.
+  Elastic Auto Scale GPT Test Results start with an idle scaled cluster and then start the standard GPT test to determine if the EKS Auto Scaler performs well enough to keep up with performance test demands. In general this is substantially harder ramping than the scaling required when the ramping is driven by standard production workloads.
 
 **Deploy Now**
 

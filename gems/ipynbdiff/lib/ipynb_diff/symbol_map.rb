@@ -36,6 +36,7 @@ module IpynbDiff
   # .obj1.2.obj3.obj4  -> 9
   #
   class SymbolMap
+    # rubocop:disable Lint/UnusedMethodArgument
     class << self
       def handler
         @handler ||= SymbolMap.new
@@ -87,7 +88,7 @@ module IpynbDiff
       if key.nil? # value in an array
         if @current_path.empty?
           @current_path = ['']
-          return nil
+          return
         end
 
         symbol = @current_array_index.last
@@ -103,5 +104,6 @@ module IpynbDiff
       @symbols = {}
       @current_array_index = []
     end
+    # rubocop:enable Lint/UnusedMethodArgument
   end
 end

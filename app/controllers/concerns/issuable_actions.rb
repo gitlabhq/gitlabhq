@@ -12,6 +12,7 @@ module IssuableActions
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :check_destroy_confirmation!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
+    before_action :set_application_context!, only: :show
   end
 
   def show
@@ -224,6 +225,10 @@ module IssuableActions
 
   def authorize_update_issuable!
     render_404 unless can?(current_user, :"update_#{resource_name}", issuable)
+  end
+
+  def set_application_context!
+    # no-op. The logic is defined in EE module.
   end
 
   def bulk_update_params

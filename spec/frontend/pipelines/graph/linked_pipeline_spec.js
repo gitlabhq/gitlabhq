@@ -10,7 +10,7 @@ import { ACTION_FAILURE, UPSTREAM, DOWNSTREAM } from '~/pipelines/components/gra
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
 import CancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
-import CiStatus from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import mockPipeline from './linked_pipelines_mock_data';
 
 describe('Linked pipeline', () => {
@@ -87,7 +87,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should render an svg within the status container', () => {
-      const pipelineStatusElement = wrapper.findComponent(CiStatus);
+      const pipelineStatusElement = wrapper.findComponent(CiIcon);
 
       expect(pipelineStatusElement.find('svg').exists()).toBe(true);
     });
@@ -97,7 +97,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should have a ci-status child component', () => {
-      expect(wrapper.findComponent(CiStatus).exists()).toBe(true);
+      expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
     });
 
     it('should render the pipeline id', () => {

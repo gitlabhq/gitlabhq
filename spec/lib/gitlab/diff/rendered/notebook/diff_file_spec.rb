@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
+RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile, feature_category: :mlops do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }

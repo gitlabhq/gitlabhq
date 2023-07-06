@@ -1,59 +1,55 @@
 # frozen_string_literal: true
 
-require 'ipynbdiff'
-require 'rspec'
-require 'rspec-parameterized'
-
-BASE_PATH = File.join(File.expand_path(File.dirname(__FILE__)),  'testdata')
+require_relative 'test_helper'
 
 describe IpynbDiff do
   def diff_signs(diff)
-    diff.to_s(:text).scan(/.*\n/).map { |l| l[0] }.join('')
+    diff.to_s(:text).scan(/.*\n/).map { |l| l[0] }.join('') # rubocop:disable Rails/Pluck
   end
 
-  describe 'diff' do
-    let(:from_path) { File.join(BASE_PATH, 'from.ipynb') }
-    let(:to_path) { File.join(BASE_PATH,'to.ipynb') }
+  describe '.diff' do
+    let(:from_path) { FROM_PATH }
+    let(:to_path) { TO_PATH }
     let(:from) { File.read(from_path) }
     let(:to) { File.read(to_path) }
     let(:include_frontmatter) { false }
     let(:hide_images) { false }
 
-    subject { IpynbDiff.diff(from, to, include_frontmatter: include_frontmatter, hide_images: hide_images) }
+    subject { described_class.diff(from, to, include_frontmatter: include_frontmatter, hide_images: hide_images) }
 
     context 'if preprocessing is active' do
       it 'html tables are stripped' do
-        is_expected.to_not include('<td>')
+        is_expected.not_to include('<td>')
       end
     end
 
     context 'when to is nil' do
       let(:to) { nil }
-      let(:from_path) { File.join(BASE_PATH, 'only_md', 'input.ipynb') }
+      let(:from_path) { test_case_input_path('only_md') }
 
       it 'all lines are removals' do
         expect(diff_signs(subject)).to eq('-----')
       end
     end
 
-    context 'when to is nil' do
+    context 'when from is nil' do
       let(:from) { nil }
-      let(:to_path) { File.join(BASE_PATH, 'only_md', 'input.ipynb') }
+      let(:to_path) { test_case_input_path('only_md') }
 
       it 'all lines are additions' do
         expect(diff_signs(subject)).to eq('+++++')
       end
     end
 
-    context 'When include_frontmatter is true' do
+    context 'when include_frontmatter is true' do
       let(:include_frontmatter) { true }
 
-      it 'should show changes metadata in the metadata' do
+      it 'shows changes metadata in the metadata' do
         expect(subject.to_s(:text)).to include('+    display_name: New Python 3 (ipykernel)')
       end
     end
 
-    context 'When hide_images is true' do
+    context 'when hide_images is true' do
       let(:hide_images) { true }
 
       it 'hides images' do
@@ -61,9 +57,9 @@ describe IpynbDiff do
       end
     end
 
-    context 'When include_frontmatter is false' do
-      it 'should drop metadata from the diff' do
-        expect(subject.to_s(:text)).to_not include('+    display_name: New Python 3 (ipykernel)')
+    context 'when include_frontmatter is false' do
+      it 'drops metadata from the diff' do
+        expect(subject.to_s(:text)).not_to include('+    display_name: New Python 3 (ipykernel)')
       end
     end
 
@@ -83,40 +79,47 @@ describe IpynbDiff do
     end
   end
 
-  describe 'transform' do
-    [nil, 'a', '{"metadata":[]}'].each do |invalid_nb|
-      context "when json is invalid (#{invalid_nb || 'nil'})" do
-        it 'is nil' do
-          expect(IpynbDiff.transform(invalid_nb)).to be_nil
-        end
+  describe '.transform' do
+    let(:notebook) { FROM_IPYNB }
+    let(:include_frontmatter) { false }
+    let(:hide_images) { false }
+
+    subject do
+      described_class.transform(notebook,
+        include_frontmatter: include_frontmatter,
+        hide_images: hide_images)
+    end
+
+    describe 'error cases' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:ctx, :notebook) do
+        'notebook is nil' | nil
+        'notebook is invalid' | 'a'
+        'notebook does not have cell' | '{"metadata":[]}'
+      end
+
+      with_them do
+        it { is_expected.to be_nil }
       end
     end
 
-    context 'options' do
-      let(:include_frontmatter) { false }
-      let(:hide_images) { false }
-
-      subject do
-        IpynbDiff.transform(File.read(File.join(BASE_PATH, 'from.ipynb')),
-                            include_frontmatter: include_frontmatter,
-                            hide_images: hide_images)
+    describe 'options' do
+      context 'when include_frontmatter is false' do
+        it { is_expected.not_to include('display_name: Python 3 (ipykernel)') }
       end
 
-      context 'include_frontmatter is false' do
-        it { is_expected.to_not include('display_name: Python 3 (ipykernel)') }
-      end
-
-      context 'include_frontmatter is true' do
+      context 'when include_frontmatter is true' do
         let(:include_frontmatter) { true }
 
         it { is_expected.to include('display_name: Python 3 (ipykernel)') }
       end
 
-      context 'hide_images is false' do
+      context 'when hide_images is false' do
         it { is_expected.not_to include('[Hidden Image Output]') }
       end
 
-      context 'hide_images is true' do
+      context 'when hide_images is true' do
         let(:hide_images) { true }
 
         it { is_expected.to include('    [Hidden Image Output]') }

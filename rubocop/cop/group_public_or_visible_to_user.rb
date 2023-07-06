@@ -2,7 +2,7 @@
 #
 module RuboCop
   module Cop
-    # Cop that blacklists the usage of Group.public_or_visible_to_user
+    # Cop that denylists the usage of Group.public_or_visible_to_user
     class GroupPublicOrVisibleToUser < RuboCop::Cop::Base
       MSG = '`Group.public_or_visible_to_user` should be used with extreme care. ' \
         'Please ensure that you are not using it on its own and that the amount ' \

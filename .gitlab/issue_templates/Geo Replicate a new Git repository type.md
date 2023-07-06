@@ -146,11 +146,14 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
     enable_lock_retries!
 
     def up
-      create_table :cool_widget_states, id: false do |t|
+      create_table :cool_widget_states do |t|
         t.datetime_with_timezone :verification_started_at
         t.datetime_with_timezone :verification_retry_at
         t.datetime_with_timezone :verified_at
-        t.references :cool_widget, primary_key: true, default: nil, index: false, foreign_key: { on_delete: :cascade }
+        t.references :cool_widget,
+          null: false,
+          index: { unique: true },
+          foreign_key: { on_delete: :cascade }
         t.integer :verification_state, default: 0, limit: 2, null: false
         t.integer :verification_retry_count, default: 0, limit: 2, null: false
         t.binary :verification_checksum, using: 'verification_checksum::bytea'
@@ -290,6 +293,11 @@ That's all of the required database changes.
         #   replicables.
         #
         # Search the codebase for examples, and consult a Geo expert if needed.
+      end
+
+      override :verification_state_model_key
+      def verification_state_model_key
+        :cool_widget_id
       end
 
       override :verification_state_table_class

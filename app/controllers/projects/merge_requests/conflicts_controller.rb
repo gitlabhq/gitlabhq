@@ -75,6 +75,8 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
 
   private
 
+  alias_method :issuable, :merge_request
+
   def authorize_can_resolve_conflicts!
     @conflicts_list = ::MergeRequests::Conflicts::ListService.new(@merge_request)
 

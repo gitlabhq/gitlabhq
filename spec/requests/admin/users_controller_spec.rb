@@ -6,12 +6,12 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
 
+  before do
+    sign_in(admin)
+  end
+
   describe 'PUT #block' do
     context 'when request format is :json' do
-      before do
-        sign_in(admin)
-      end
-
       subject(:request) { put block_admin_user_path(user, format: :json) }
 
       context 'when user was blocked' do
@@ -37,6 +37,18 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
           expect(json_response).to include('error' => 'Error occurred. User was not blocked')
         end
       end
+    end
+  end
+
+  describe 'PUT #unlock' do
+    before do
+      user.lock_access!
+    end
+
+    subject(:request) { put unlock_admin_user_path(user) }
+
+    it 'unlocks the user' do
+      expect { request }.to change { user.reload.access_locked? }.from(true).to(false)
     end
   end
 end

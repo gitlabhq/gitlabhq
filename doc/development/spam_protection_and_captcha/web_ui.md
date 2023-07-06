@@ -48,11 +48,11 @@ However, even though the actual handling of the request interception and
 modal is transparent, without any mandatory changes to the involved JavaScript or Vue components
 for the form or page, changes in request or error handling may be required. Changes are needed
 because the existing behavior may not work correctly: for example, if a failed or cancelled
-CAPTCHA display interrupts the normal request flow or UI updates.
+CAPTCHA display interrupts the standard request flow or UI updates.
 Careful exploratory testing of all scenarios is important to uncover any potential
 problems.
 
-This sequence diagram illustrates the normal CAPTCHA flow for JavaScript XHR/Fetch requests
+This sequence diagram illustrates the standard CAPTCHA flow for JavaScript XHR/Fetch requests
 on the frontend:
 
 ```mermaid
@@ -73,7 +73,7 @@ sequenceDiagram
 ```
 
 The backend is also cleanly abstracted via mixin modules and helper methods. The three main
-changes required to the relevant backend controller actions (normally just `create`/`update`) are:
+changes required to the relevant backend controller actions (typically just `create`/`update`) are:
 
 1. Pass `perform_spam_check: true` to the Update Service class constructor.
    It is set to `true` by default in the Create Service.
@@ -86,7 +86,7 @@ changes required to the relevant backend controller actions (normally just `crea
     1. Checking if there the model contains an error, and the `needs_recaptcha` flag is true.
        - If yes: Add the appropriate spam or CAPTCHA fields to the JSON response, and return
          a `409 - Conflict` HTTP status code.
-       - If no (if CAPTCHA is disabled or if no spam was detected): The normal request return
+       - If no (if CAPTCHA is disabled or if no spam was detected): The standard request return
          logic passed in the block is run.
 
 Thanks to the abstractions, it's more straightforward to implement than it is to explain it.

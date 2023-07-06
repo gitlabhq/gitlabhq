@@ -13,7 +13,7 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
-import CiStatus from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from './constants';
 
@@ -22,7 +22,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CiStatus,
+    CiIcon,
     GlBadge,
     GlButton,
     GlLink,
@@ -240,7 +240,7 @@ export default {
     </gl-tooltip>
     <div class="gl-bg-white gl-border gl-p-3 gl-rounded-lg gl-w-full" :class="cardClasses">
       <div class="gl-display-flex gl-gap-x-3">
-        <ci-status v-if="!pipelineIsLoading" :status="pipelineStatus" :size="24" css-classes="" />
+        <ci-icon v-if="!pipelineIsLoading" :status="pipelineStatus" :size="24" />
         <div v-else class="gl-pr-3"><gl-loading-icon size="sm" inline /></div>
         <div
           class="gl-display-flex gl-downstream-pipeline-job-width gl-flex-direction-column gl-line-height-normal"

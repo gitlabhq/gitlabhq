@@ -31,7 +31,7 @@ to write such end-to-end tests, and how to set up GitLab CI/CD to automatically 
 against your new code, on a branch-by-branch basis. For the scope of this article, we will walk you
 through the process of setting up GitLab CI/CD for end-to-end testing JavaScript-based applications
 with WebdriverIO, but the general strategy should carry over to other languages.
-We assume you are familiar with GitLab, [GitLab CI/CD](../../index.md), [Review Apps](../../review_apps/index.md), and running your app locally, e.g., on `localhost:8000`.
+We assume you are familiar with GitLab, [GitLab CI/CD](../../index.md), [Review Apps](../../review_apps/index.md), and running your app locally, for example, on `localhost:8000`.
 
 ## What to test
 
@@ -45,7 +45,7 @@ infrastructure is up and running, and that your units of code work well together
 
 ## Selenium and WebdriverIO
 
-[Selenium](https://www.selenium.dev/) is a piece of software that can control web browsers, e.g., to make them
+[Selenium](https://www.selenium.dev/) is a piece of software that can control web browsers, for example, to make them
 visit a specific URL or interact with elements on the page. It can be programmatically controlled
 from a variety of programming languages. In this article we're going to be using the
 [WebdriverIO](http://v4.webdriver.io/) JavaScript bindings, but the general concept should carry over
@@ -115,7 +115,7 @@ easiest way to get started is to start with
 provides an overview of all available options. The two options that are going to be most relevant now are the
 `specs` option, which is an array of paths to your tests, and the `baseUrl` option, which points to where your app is
 running. And finally, we will need to tell WebdriverIO in which browsers we would like to run our
-tests. This can be configured through the `capabilities` option, which is an array of browser names (e.g.
+tests. This can be configured through the `capabilities` option, which is an array of browser names (for example,
 `firefox` or `chrome`). It is recommended to install
 [selenium-assistant](https://googlechromelabs.github.io/selenium-assistant/) to detect all installed
 browsers:
@@ -130,7 +130,7 @@ But of course, a simple configuration of `config.capabilities = ['firefox']` wou
 
 If you've installed WebdriverIO as a dependency
 (`npm install --save-dev webdriverio`), you can add a line to the `scripts` property in your
-`package.json` that runs `wdio` with the path to your configuration file as value, e.g.:
+`package.json` that runs `wdio` with the path to your configuration file as value, for example:
 
 ```javascript
   "confidence-check": "wdio wdio.conf.js",

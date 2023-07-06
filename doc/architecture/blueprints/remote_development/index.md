@@ -215,7 +215,7 @@ end note
 note top of "Load Balancer IP"
   For local development,
   it includes all local loopback interfaces
-  e.g. 127.0.0.1, 172.16.123.1, 192.168.0.1, etc.
+  for example, 127.0.0.1, 172.16.123.1, 192.168.0.1, etc.
 end note
 
 @enduml
@@ -439,7 +439,7 @@ Stopped -up-> Starting : status=Starting
 
 Terminated: Workspace has been deleted
 
-Failed: Workspace is not ready due to\nvarious reasons(e.g. crashing container)
+Failed: Workspace is not ready due to\nvarious reasons(for example, crashing container)
 Failed -up-> Starting : status=Starting\n(container\nnot crashing)
 Failed -right-> Stopped : status=Stopped
 Failed -down-> Terminated : status=Terminated

@@ -6,7 +6,6 @@ import {
   GlFormGroup,
   GlModal,
   GlSprintf,
-  GlEmptyState,
 } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -78,7 +77,6 @@ describe('DependencyProxyApp', () => {
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
   const findProxyCountText = () => wrapper.findByTestId('proxy-count');
   const findManifestList = () => wrapper.findComponent(ManifestsList);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findClearCacheDropdownList = () => wrapper.findComponent(GlDropdown);
   const findClearCacheModal = () => wrapper.findComponent(GlModal);
   const findClearCacheAlert = () => wrapper.findComponent(GlAlert);
@@ -120,11 +118,15 @@ describe('DependencyProxyApp', () => {
           expect(findFormGroup().attributes('label')).toBe(
             DependencyProxyApp.i18n.proxyImagePrefix,
           );
+          expect(findFormGroup().attributes('labelfor')).toBe('proxy-url');
         });
 
         it('renders a form input group', () => {
           expect(findFormInputGroup().exists()).toBe(true);
+          expect(findFormInputGroup().attributes('id')).toBe('proxy-url');
           expect(findFormInputGroup().props('value')).toBe(proxyData().dependencyProxyImagePrefix);
+          expect(findFormInputGroup().attributes('readonly')).toBeDefined();
+          expect(findFormInputGroup().props('selectOnClick')).toBe(true);
         });
 
         it('form input group has a clipboard button', () => {
@@ -175,23 +177,12 @@ describe('DependencyProxyApp', () => {
               return waitForPromises();
             });
 
-            it('shows the empty state message', () => {
-              expect(findEmptyState().props()).toMatchObject({
-                svgPath: provideDefaults.noManifestsIllustration,
-                title: DependencyProxyApp.i18n.noManifestTitle,
-              });
-            });
-
-            it('hides the list', () => {
-              expect(findManifestList().exists()).toBe(false);
+            it('renders the list', () => {
+              expect(findManifestList().exists()).toBe(true);
             });
           });
 
           describe('when there are manifests', () => {
-            it('hides the empty state message', () => {
-              expect(findEmptyState().exists()).toBe(false);
-            });
-
             it('shows list', () => {
               expect(findManifestList().props()).toMatchObject({
                 dependencyProxyImagePrefix: proxyData().dependencyProxyImagePrefix,

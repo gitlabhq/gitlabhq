@@ -149,7 +149,7 @@ created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/g
 `worker` feature flags are used for controlling Sidekiq workers behavior, such as deferring Sidekiq jobs.
 
 `worker` feature flags likely do not have any YAML definition as the name could be dynamically generated using
-the worker name itself, e.g. `run_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
+the worker name itself, for example, `run_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
 flags can be found in [deferring Sidekiq jobs](#deferring-sidekiq-jobs).
 
 ## Feature flag definition and validation
@@ -348,7 +348,7 @@ Use the `push_frontend_feature_flag` method which is available to all controller
 
 ```ruby
 before_action do
-  # Prefer to scope it per project or user e.g.
+  # Prefer to scope it per project or user, for example
   push_frontend_feature_flag(:vim_bindings, project)
 end
 

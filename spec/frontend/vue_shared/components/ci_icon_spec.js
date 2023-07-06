@@ -1,6 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import ciIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('CI Icon component', () => {
   let wrapper;
@@ -8,7 +8,7 @@ describe('CI Icon component', () => {
   const findIconWrapper = () => wrapper.find('[data-testid="ci-icon-wrapper"]');
 
   it('should render a span element with an svg', () => {
-    wrapper = shallowMount(ciIcon, {
+    wrapper = shallowMount(CiIcon, {
       propsData: {
         status: {
           icon: 'status_success',
@@ -26,7 +26,7 @@ describe('CI Icon component', () => {
       ${true}  | ${'active'}
       ${false} | ${'active'}
     `('active should be $isActive', ({ isActive, cssClass }) => {
-      wrapper = shallowMount(ciIcon, {
+      wrapper = shallowMount(CiIcon, {
         propsData: {
           status: {
             icon: 'status_success',
@@ -49,7 +49,7 @@ describe('CI Icon component', () => {
       ${true}       | ${'interactive'}
       ${false}      | ${'interactive'}
     `('interactive should be $isInteractive', ({ isInteractive, cssClass }) => {
-      wrapper = shallowMount(ciIcon, {
+      wrapper = shallowMount(CiIcon, {
         propsData: {
           status: {
             icon: 'status_success',
@@ -79,7 +79,7 @@ describe('CI Icon component', () => {
       ${'status_canceled'} | ${'canceled'} | ${'ci-status-icon-canceled'}
       ${'status_manual'}   | ${'manual'}   | ${'ci-status-icon-manual'}
     `('should render a $group status', ({ icon, group, cssClass }) => {
-      wrapper = shallowMount(ciIcon, {
+      wrapper = shallowMount(CiIcon, {
         propsData: {
           status: {
             icon,

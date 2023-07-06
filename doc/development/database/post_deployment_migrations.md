@@ -33,7 +33,7 @@ release managers through the
 
 Say you're using Chef for deploying new versions of GitLab and you'd like to run
 post deployment migrations after deploying a new version. Let's assume you
-normally use the command `chef-client` to do so. To make use of this feature
+usually use the command `chef-client` to do so. To make use of this feature
 you'd have to run this command as follows:
 
 ```shell
@@ -63,7 +63,7 @@ behave exactly like regular Rails migrations.
 Post deployment migrations can be used to perform migrations that mutate state
 that an existing version of GitLab depends on. For example, say you want to
 remove a column from a table. This requires downtime as a GitLab instance
-depends on this column being present while it's running. Normally you'd follow
+depends on this column being present while it's running. Usually you'd follow
 these steps in such a case:
 
 1. Stop the GitLab instance

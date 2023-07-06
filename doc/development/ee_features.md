@@ -222,7 +222,7 @@ This also applies to views.
 
 #### Testing EE-only backend features
 
-To test an EE class that doesn't exist in CE, create the spec file as you normally
+To test an EE class that doesn't exist in CE, create the spec file as you usually
 would in the `ee/spec` directory, but without the second `ee/` subdirectory.
 For example, a class `ee/app/models/vulnerability.rb` would have its tests in `ee/spec/models/vulnerability_spec.rb`.
 
@@ -303,7 +303,7 @@ This is also not just applied to models. Here's a list of other examples:
 #### Testing EE features based on CE features
 
 To test an `EE` namespaced module that extends a CE class with EE features,
-create the spec file as you normally would in the `ee/spec` directory, including the second `ee/` subdirectory.
+create the spec file as you usually would in the `ee/spec` directory, including the second `ee/` subdirectory.
 For example, an extension `ee/app/models/ee/user.rb` would have its tests in `ee/spec/models/ee/user_spec.rb`.
 
 In the `RSpec.describe` call, use the CE class name where the EE module would be used.
@@ -713,7 +713,7 @@ end
 ### Code in `lib/`
 
 Place EE-specific logic in the top-level `EE` module namespace. Namespace the
-class beneath the `EE` module just as you would normally.
+class beneath the `EE` module as you usually would.
 
 For example, if CE has LDAP classes in `lib/gitlab/ldap/` then you would place
 EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
@@ -870,7 +870,7 @@ end
 
 #### EE-specific behavior
 
-Sometimes we need EE-specific behavior in some of the APIs. Normally we could
+Sometimes we need EE-specific behavior in some of the APIs. Usually we could
 use EE methods to override CE methods, however API routes are not methods and
 therefore cannot be overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE

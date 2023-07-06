@@ -30,9 +30,7 @@ describe('JobContainerItem', () => {
     });
 
     it('displays a status icon', () => {
-      const ciIcon = findCiIconComponent();
-
-      expect(ciIcon.props('status')).toBe(job.status);
+      expect(findCiIconComponent().props('status')).toBe(job.status);
     });
 
     it('displays the job name', () => {

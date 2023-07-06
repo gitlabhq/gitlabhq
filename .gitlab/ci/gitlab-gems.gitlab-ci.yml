@@ -14,3 +14,6 @@ include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-schema-validation"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-ipynbdiff"

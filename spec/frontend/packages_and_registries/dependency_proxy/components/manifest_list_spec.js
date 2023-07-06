@@ -1,6 +1,7 @@
 import { GlKeysetPagination, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ManifestRow from '~/packages_and_registries/dependency_proxy/components/manifest_row.vue';
+import ManifestsEmptyState from '~/packages_and_registries/dependency_proxy/components/manifests_empty_state.vue';
 import Component from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
 import {
   proxyData,
@@ -24,6 +25,7 @@ describe('Manifests List', () => {
     });
   };
 
+  const findEmptyState = () => wrapper.findComponent(ManifestsEmptyState);
   const findRows = () => wrapper.findAllComponents(ManifestRow);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findMainArea = () => wrapper.findByTestId('main-area');
@@ -38,7 +40,13 @@ describe('Manifests List', () => {
   it('shows a row for every manifest', () => {
     createComponent();
 
-    expect(findRows().length).toBe(defaultProps.manifests.length);
+    expect(findRows()).toHaveLength(defaultProps.manifests.length);
+  });
+
+  it('does not show the empty state component', () => {
+    createComponent();
+
+    expect(findEmptyState().exists()).toBe(false);
   });
 
   it('binds a manifest to each row', () => {
@@ -65,6 +73,20 @@ describe('Manifests List', () => {
 
       expect(findSkeletonLoader().exists()).toBe(expectLoader);
       expect(findMainArea().exists()).toBe(expectContent);
+    });
+  });
+
+  describe('when there are no manifests', () => {
+    beforeEach(() => {
+      createComponent({ ...defaultProps, manifests: [], pagination: {} });
+    });
+
+    it('shows the empty state component', () => {
+      expect(findEmptyState().exists()).toBe(true);
+    });
+
+    it('hides the list', () => {
+      expect(findRows()).toHaveLength(0);
     });
   });
 

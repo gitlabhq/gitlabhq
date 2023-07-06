@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+require 'ipynb_diff/symbolized_markdown_helper'
+
 module IpynbDiff
   # Transforms Jupyter output data into markdown
   class OutputTransformer
-    require 'symbolized_markdown_helper'
     include SymbolizedMarkdownHelper
 
     HIDDEN_IMAGE_OUTPUT = '    [Hidden Image Output]'
@@ -32,7 +33,7 @@ module IpynbDiff
     def transform_error(traceback, symbol)
       traceback.map.with_index do |t, idx|
         t.split("\n").map do |l|
-          _(symbol / idx, l.gsub(/\[[0-9][0-9;]*m/, '').sub("\u001B", '    ').gsub(/\u001B/, '').rstrip)
+          ___(symbol / idx, l.gsub(/\[[0-9][0-9;]*m/, '').sub("\u001B", '    ').delete("\u001B").rstrip)
         end
       end
     end
@@ -47,22 +48,22 @@ module IpynbDiff
       new_symbol = symbol_prefix / output_type
       case output_type
       when 'image/png', 'image/jpeg'
-        transform_image(output_type + ';base64', output_element, new_symbol)
+        transform_image("#{output_type};base64", output_element, new_symbol)
       when 'image/svg+xml'
-        transform_image(output_type + ';utf8', output_element, new_symbol)
+        transform_image("#{output_type};utf8", output_element, new_symbol)
       when 'text/markdown', 'text/latex', 'text/plain', 'text'
         transform_text(output_element, new_symbol)
       end
     end
 
     def transform_image(image_type, image_content, symbol)
-      return _(nil, HIDDEN_IMAGE_OUTPUT) if @hide_images
+      return ___(nil, HIDDEN_IMAGE_OUTPUT) if @hide_images
 
       lines = image_content.is_a?(Array) ? image_content : [image_content]
 
       single_line = lines.map(&:strip).join.gsub(/\s+/, ' ')
 
-      _(symbol, "    ![](data:#{image_type},#{single_line})")
+      ___(symbol, "    ![](data:#{image_type},#{single_line})")
     end
 
     def transform_text(text_content, symbol)

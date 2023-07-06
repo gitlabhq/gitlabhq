@@ -1,0 +1,11 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+CodeReuse/ActiveRecord:
+  Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - spec/**/*.rb
+    - lib/gitlab/rspec.rb
+    - lib/gitlab/rspec/all.rb

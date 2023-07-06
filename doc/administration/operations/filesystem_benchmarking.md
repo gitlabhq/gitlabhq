@@ -11,7 +11,7 @@ especially for actions that read or write to Git repositories. This information
 helps benchmark file system performance against known good and bad real-world
 systems.
 
-Normally when talking about file system performance the biggest concern is
+When talking about file system performance the biggest concern is
 with Network File Systems (NFS). However, even some local disks can have slow
 I/O. The information on this page can be used for either scenario.
 

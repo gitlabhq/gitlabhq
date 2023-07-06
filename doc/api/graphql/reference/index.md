@@ -1045,6 +1045,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationadminsidekiqqueuesdeletejobsairesource"></a>`aiResource` | [`String`](#string) | Delete jobs matching ai_resource in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactsize"></a>`artifactSize` | [`String`](#string) | Delete jobs matching artifact_size in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactusedcdn"></a>`artifactUsedCdn` | [`String`](#string) | Delete jobs matching artifact_used_cdn in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactsdependenciescount"></a>`artifactsDependenciesCount` | [`String`](#string) | Delete jobs matching artifacts_dependencies_count in the context metadata. |

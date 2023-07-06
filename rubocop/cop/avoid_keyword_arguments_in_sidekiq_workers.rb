@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Cop that blacklists keyword arguments usage in Sidekiq workers
+    # Cop that denylists keyword arguments usage in Sidekiq workers
     class AvoidKeywordArgumentsInSidekiqWorkers < RuboCop::Cop::Base
       MSG = "Do not use keyword arguments in Sidekiq workers. " \
         "For details, check https://github.com/mperham/sidekiq/issues/2372"

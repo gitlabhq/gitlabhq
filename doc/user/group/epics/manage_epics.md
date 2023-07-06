@@ -161,10 +161,6 @@ Prerequisites:
 
 To close an epic, at the top of an epic, select **Close epic**.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action at the top of an epic, your project or instance might have
-enabled a feature flag for [moved actions](../../project/merge_requests/index.md#move-sidebar-actions)
-
 You can also use the `/close` [quick action](../../project/quick_actions.md).
 
 ## Reopen a closed epic

@@ -540,7 +540,7 @@ describe('when logged in', () => {
 
 ### Ensuring that tests are isolated
 
-Tests are normally architected in a pattern which requires a recurring setup of the component under test. This is often achieved by making use of the `beforeEach` hook.
+Tests are typically architected in a pattern which requires a recurring setup of the component under test. This is often achieved by making use of the `beforeEach` hook.
 
 Example
 
@@ -1225,7 +1225,7 @@ You can download any older version of Firefox from the releases FTP server, <htt
 1. Rename the application to something like `Firefox_Old`.
 1. Move the application to the `Applications` folder.
 1. Open up a terminal and run `/Applications/Firefox_Old.app/Contents/MacOS/firefox-bin -profilemanager` to create a new profile specific to that Firefox version.
-1. Once the profile has been created, quit the app, and run it again like normal. You now have a working older Firefox version.
+1. Once the profile has been created, quit the app, and run it again like usual. You now have a working older Firefox version.
 
 ## Snapshots
 
@@ -1742,7 +1742,7 @@ If you are stubbing an `ee` feature flag, then use:
 
 You can run your spec with the prefix `WEBDRIVER_HEADLESS=0` to open an actual browser. However, the specs goes though the commands quickly and leaves you no time to look around.
 
-To avoid this problem, you can write `binding.pry` on the line where you want Capybara to stop execution. You are then inside the browser with normal usage. To understand why you cannot find certain elements, you can:
+To avoid this problem, you can write `binding.pry` on the line where you want Capybara to stop execution. You are then inside the browser with standard usage. To understand why you cannot find certain elements, you can:
 
 - Select elements.
 - Use the console and network tab.
