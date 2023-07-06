@@ -717,10 +717,10 @@ When disabled, feature flags with the format of `run_sidekiq_jobs_{WorkerName}` 
 by scheduling the job at a later time. This feature flag is enabled by default for all workers.
 Deferring jobs can be useful during an incident where contentious behavior from
 worker instances are saturating infrastructure resources (such as database and database connection pool).
-The implementation can be found at [DeferJobs Sidekiq server middleware](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/sidekiq_middleware/defer_jobs.rb).
+The implementation can be found at [SkipJobs Sidekiq server middleware](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/sidekiq_middleware/skip_jobs.rb).
 
 NOTE:
-Jobs are deferred indefinitely as long as the feature flag is disabled. It is important to enable the
+Jobs are deferred indefinitely as long as the feature flag is disabled. It is important to remove the
 feature flag after the worker is deemed safe to continue processing.
 
 When set to false, 100% of the jobs are deferred. When you want processing to resume, you can
@@ -737,5 +737,23 @@ use a **percentage of time** rollout. For example:
 /chatops run feature set run_sidekiq_jobs_SlowRunningWorker 50
 
 # back to running all jobs normally
-/chatops run feature set run_sidekiq_jobs_SlowRunningWorker true
+/chatops run feature delete run_sidekiq_jobs_SlowRunningWorker
 ```
+
+### Dropping Sidekiq jobs
+
+Instead of [deferring jobs](#deferring-sidekiq-jobs), jobs can be entirely dropped by enabling the feature flag
+`drop_sidekiq_jobs_{WorkerName}`. Use this feature flag when you are certain the jobs are safe to be dropped, i.e.
+the jobs do not need to be processed in the future.
+
+```shell
+# drop all the jobs
+/chatops run feature set drop_sidekiq_jobs_SlowRunningWorker true
+
+# process jobs normally
+/chatops run feature delete drop_sidekiq_jobs_SlowRunningWorker
+```
+
+NOTE:
+Dropping feature flag (`drop_sidekiq_jobs_{WorkerName}`) takes precedence over deferring feature flag (`run_sidekiq_jobs_{WorkerName}`),
+i.e. when `drop_sidekiq_jobs` is enabled and `run_sidekiq_jobs` is disabled, jobs are entirely dropped.

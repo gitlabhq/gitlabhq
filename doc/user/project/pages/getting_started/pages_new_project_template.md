@@ -23,10 +23,8 @@ configured to generate a Pages site.
    and select **Run pipeline** to trigger GitLab CI/CD to build and deploy your
    site.
 
-When the pipeline is finished, go to **Settings > Pages** to find the link to
+When the pipeline is finished, go to **Deploy > Pages** to find the link to
 your Pages website.
-If this path is not visible, select **Deployments > Pages**.
-[This location is part of an experiment](../index.md#menu-position-test).
 
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.

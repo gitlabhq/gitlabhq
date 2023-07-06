@@ -7,12 +7,10 @@
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
-- if Feature.enabled?(:show_pages_in_deployments_menu, current_user, type: :experiment)
-  = render Pajamas::AlertComponent.new(variant: :info,
-      title: _('GitLab Pages has moved'),
-      alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-    - c.with_body do
-      = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deployments > Pages', project_pages_path(@project)).html_safe}
+= render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
+    alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
+  - c.with_body do
+    = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deploy > Pages', project_pages_path(@project)).html_safe}
 
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header

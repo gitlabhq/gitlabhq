@@ -134,7 +134,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           k8s_api_proxy_requests_unique_users_via_ci_access: [10, 999, 777, 10],
           k8s_api_proxy_requests_unique_agents_via_ci_access: [10, 999, 777, 10],
           k8s_api_proxy_requests_unique_users_via_user_access: [10, 999, 777, 10],
-          k8s_api_proxy_requests_unique_agents_via_user_access: [10, 999, 777, 10]
+          k8s_api_proxy_requests_unique_agents_via_user_access: [10, 999, 777, 10],
+          flux_git_push_notified_unique_projects: [10, 999, 777, 10]
         }
         expected_counters = {
           kubernetes_agent_gitops_sync: request_count * counters[:gitops_sync],

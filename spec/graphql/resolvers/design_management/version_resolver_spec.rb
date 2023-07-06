@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::DesignManagement::VersionResolver, feature_category: :shared,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416627' do
+RSpec.describe Resolvers::DesignManagement::VersionResolver, feature_category: :shared do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

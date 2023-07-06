@@ -40,4 +40,3 @@ Graphql/ResourceNotAvailableError:
     - 'ee/app/graphql/mutations/projects/set_locked.rb'
     - 'ee/app/graphql/resolvers/incident_management/oncall_shifts_resolver.rb'
     - 'ee/app/graphql/resolvers/product_analytics/visualization_resolver.rb'
-    - 'ee/app/graphql/resolvers/remote_development/workspaces_resolver.rb'

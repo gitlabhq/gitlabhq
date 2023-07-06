@@ -78,6 +78,8 @@ module Gitlab
 
         job_status = if job_exception
                        'fail'
+                     elsif job['dropped']
+                       'dropped'
                      elsif job['deferred']
                        'deferred'
                      else

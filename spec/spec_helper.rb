@@ -436,7 +436,7 @@ RSpec.configure do |config|
       Gitlab::SidekiqMiddleware.server_configurator(
         metrics: false, # The metrics don't go anywhere in tests
         arguments_logger: false, # We're not logging the regular messages for inline jobs
-        defer_jobs: false # We're not deferring jobs for inline tests
+        skip_jobs: false # We're not skipping jobs for inline tests
       ).call(chain)
       chain.add DisableQueryLimit
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore

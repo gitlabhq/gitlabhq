@@ -71,7 +71,7 @@ export default {
   <component :is="tag">
     <hr v-if="separated" aria-hidden="true" class="gl-mx-4 gl-my-2" />
     <button
-      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-line-height-normal gl-mb-2 gl-py-3 gl-px-0 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
+      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-2 gl-py-2 gl-px-3 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
       data-qa-selector="menu_section_button"
       :data-qa-section-name="item.title"
@@ -84,17 +84,17 @@ export default {
         aria-hidden="true"
         style="width: 3px; border-radius: 3px; margin-right: 1px"
       ></span>
-      <span class="gl-flex-shrink-0 gl-w-6 gl-mx-3">
+      <span class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
         <slot name="icon">
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2 item-icon" />
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-m-auto item-icon" />
         </slot>
       </span>
 
-      <span class="gl-pr-3 gl-text-gray-900 gl-truncate-end">
+      <span class="gl-flex-grow-1 gl-text-gray-900 gl-truncate-end">
         {{ item.title }}
       </span>
 
-      <span class="gl-flex-grow-1 gl-text-right gl-mr-3 gl-text-gray-400">
+      <span class="gl-text-right gl-text-gray-400">
         <gl-icon :name="collapseIcon" />
       </span>
     </button>

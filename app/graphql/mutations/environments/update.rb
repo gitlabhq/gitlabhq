@@ -28,6 +28,11 @@ module Mutations
         required: false,
         description: 'Cluster agent of the environment.'
 
+      argument :kubernetes_namespace,
+        GraphQL::Types::String,
+        required: false,
+        description: 'Kubernetes namespace of the environment.'
+
       field :environment,
         Types::EnvironmentType,
         null: true,

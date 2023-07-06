@@ -15,8 +15,6 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :groups_and_pr
   before do
     sign_in(user)
 
-    stub_feature_flags(show_pages_in_deployments_menu: false)
-
     stub_config(registry: { enabled: false })
     stub_feature_flags(harbor_registry_integration: false)
     stub_feature_flags(ml_experiment_tracking: false)
@@ -53,8 +51,8 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :groups_and_pr
       stub_config(pages: { enabled: true })
 
       insert_after_sub_nav_item(
-        _('Packages and registries'),
-        within: _('Settings'),
+        _('Releases'),
+        within: _('Deployments'),
         new_sub_nav_item_name: _('Pages')
       )
 

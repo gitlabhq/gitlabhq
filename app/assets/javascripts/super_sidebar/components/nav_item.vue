@@ -102,18 +102,14 @@ export default {
     },
     computedLinkClasses() {
       return {
-        'gl-py-2': this.isPinnable,
-        'gl-py-3': !this.isPinnable,
-        'gl-mx-2': this.isSubitem,
+        'gl-px-2 gl-mx-2 gl-line-height-normal': this.isSubitem,
+        'gl-px-3': !this.isSubitem,
         [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
     },
     navItemLinkComponent() {
       return this.item.to ? NavItemRouterLink : NavItemLink;
-    },
-    iconClasses() {
-      return this.isSubitem === true ? 'gl-ml-2 gl-mr-4' : 'gl-w-6 gl-mx-3';
     },
   },
 };
@@ -125,7 +121,7 @@ export default {
       :is="navItemLinkComponent"
       #default="{ isActive }"
       v-bind="linkProps"
-      class="nav-item-link gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus"
+      class="nav-item-link gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus"
       :class="computedLinkClasses"
       data-qa-selector="nav_item_link"
       data-testid="nav-item-link"
@@ -137,13 +133,13 @@ export default {
         style="width: 3px; border-radius: 3px; margin-right: 1px"
         data-testid="active-indicator"
       ></div>
-      <div :class="iconClasses" class="gl-flex-shrink-0">
+      <div class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
         <slot name="icon">
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2 item-icon" />
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-m-auto item-icon" />
           <gl-icon
             v-else-if="isInPinnedSection"
             name="grip"
-            class="gl-text-gray-400 gl-ml-2 draggable-icon"
+            class="gl-m-auto gl-text-gray-400 draggable-icon"
           />
         </slot>
       </div>
@@ -154,7 +150,7 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasPill || isPinnable" class="gl-text-right gl-mr-3 gl-relative">
+      <span v-if="hasPill || isPinnable" class="gl-text-right gl-relative">
         <gl-badge
           v-if="hasPill"
           size="sm"

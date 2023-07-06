@@ -64,7 +64,8 @@ module API
           events = params[:unique_counters]&.slice(
             :agent_users_using_ci_tunnel,
             :k8s_api_proxy_requests_unique_users_via_ci_access, :k8s_api_proxy_requests_unique_agents_via_ci_access,
-            :k8s_api_proxy_requests_unique_users_via_user_access, :k8s_api_proxy_requests_unique_agents_via_user_access
+            :k8s_api_proxy_requests_unique_users_via_user_access, :k8s_api_proxy_requests_unique_agents_via_user_access,
+            :flux_git_push_notified_unique_projects
           )
 
           events&.each do |event, entity_ids|
@@ -220,6 +221,7 @@ module API
               optional :k8s_api_proxy_requests_unique_agents_via_ci_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `ci_access`'
               optional :k8s_api_proxy_requests_unique_users_via_user_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via `user_access`'
               optional :k8s_api_proxy_requests_unique_agents_via_user_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `user_access`'
+              optional :flux_git_push_notified_unique_projects, type: Array[Integer], desc: 'An array of projects that have been notified to reconcile their Flux workloads'
             end
           end
           post '/', feature_category: :deployment_management do

@@ -33,6 +33,9 @@ module Types
     field :external_url, GraphQL::Types::String, null: true,
                                                  description: 'External URL of the environment.'
 
+    field :kubernetes_namespace, GraphQL::Types::String, null: true,
+                                                 description: 'Kubernetes namespace of the environment.'
+
     field :created_at, Types::TimeType,
       description: 'When the environment was created.'
 

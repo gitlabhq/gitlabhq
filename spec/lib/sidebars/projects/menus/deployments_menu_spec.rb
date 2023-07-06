@@ -68,5 +68,31 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu, feature_category: :na
 
       it_behaves_like 'access rights checks'
     end
+
+    describe 'Pages' do
+      let(:item_id) { :pages }
+
+      before do
+        allow(project).to receive(:pages_available?).and_return(pages_enabled)
+      end
+
+      describe 'when pages are enabled' do
+        let(:pages_enabled) { true }
+
+        it { is_expected.not_to be_nil }
+
+        describe 'when the user does not have access' do
+          let(:user) { nil }
+
+          it { is_expected.to be_nil }
+        end
+      end
+
+      describe 'when pages are not enabled' do
+        let(:pages_enabled) { false }
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 end

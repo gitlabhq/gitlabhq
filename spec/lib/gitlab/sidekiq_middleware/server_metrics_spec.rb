@@ -400,7 +400,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         Gitlab::SidekiqMiddleware.server_configurator(
           metrics: true,
           arguments_logger: false,
-          defer_jobs: false
+          skip_jobs: false
         ).call(chain)
 
         Sidekiq::Testing.inline! { example.run }

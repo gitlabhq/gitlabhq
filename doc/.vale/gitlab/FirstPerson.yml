@@ -11,6 +11,3 @@ ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 tokens:
   - '\bI[ ,;:?!"]|\bI\x27.{1,2}'
-  - me
-  - myself
-  - mine

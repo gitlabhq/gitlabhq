@@ -24,10 +24,8 @@ To fork a sample project and create a Pages website:
    GitLab CI/CD builds and deploys your site.
 
 The site can take approximately 30 minutes to deploy.
-When the pipeline is finished, go to **Settings > Pages** to find the link to
+When the pipeline is finished, go to **Deploy > Pages** to find the link to
 your Pages website.
-If this path is not visible, select **Deployments > Pages**.
-[This location is part of an experiment](../index.md#menu-position-test).
 
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.

@@ -15682,7 +15682,9 @@ CREATE TABLE environments (
     auto_delete_at timestamp with time zone,
     tier smallint,
     merge_request_id bigint,
-    cluster_agent_id bigint
+    cluster_agent_id bigint,
+    kubernetes_namespace text,
+    CONSTRAINT check_b5373a1804 CHECK ((char_length(kubernetes_namespace) <= 63))
 );
 
 CREATE SEQUENCE environments_id_seq

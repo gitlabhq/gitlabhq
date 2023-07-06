@@ -1,9 +1,5 @@
-- if Feature.enabled?(:show_pages_in_deployments_menu, current_user, type: :experiment)
-  - @breadcrumb_link = project_pages_path(@project)
-  - breadcrumb_title s_('GitLabPages|Pages')
-  - page_title s_('GitLabPages|Pages')
-- else
-  %section.js-search-settings-section
+- @breadcrumb_link = project_pages_path(@project)
+- page_title s_('GitLabPages|Pages')
 
 - if Feature.enabled?(:use_pipeline_wizard_for_pages, @project.group)
   #js-pages{ data: @pipeline_wizard_data }

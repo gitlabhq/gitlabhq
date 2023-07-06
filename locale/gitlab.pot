@@ -4596,6 +4596,9 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
+msgid "All default branches"
+msgstr ""
+
 msgid "All eligible users"
 msgstr ""
 

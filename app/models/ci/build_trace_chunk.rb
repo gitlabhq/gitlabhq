@@ -166,7 +166,7 @@ module Ci
         raise FailedToPersistDataError, 'Modifed build trace chunk detected' if has_changes_to_save?
 
         self.class.with_read_consistency(build) do
-          reset.then(&:unsafe_persist_data!)
+          reset.unsafe_persist_data!
         end
       end
     rescue FailedToObtainLockError

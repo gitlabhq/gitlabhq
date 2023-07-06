@@ -19,13 +19,7 @@ export default {
 
 <template>
   <ul class="gl-p-0 gl-list-style-none">
-    <nav-item
-      v-for="item in items"
-      :key="item.id"
-      :item="item"
-      :link-classes="{ 'gl-py-2!': true }"
-      is-subitem
-    >
+    <nav-item v-for="item in items" :key="item.id" :item="item" is-subitem>
       <template #icon>
         <project-avatar
           :project-id="item.id"
@@ -33,7 +27,6 @@ export default {
           :project-avatar-url="item.avatar"
           :size="24"
           aria-hidden="true"
-          class="gl-mr-n2"
         />
       </template>
       <template #actions>
