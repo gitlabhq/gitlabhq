@@ -1,12 +1,12 @@
 import { sprintf } from '~/locale';
-import { getErrorMessages } from '~/notes/utils';
+import { createNoteErrorMessages, updateNoteErrorMessage } from '~/notes/utils';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY, HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
-import { COMMENT_FORM } from '~/notes/i18n';
+import { COMMENT_FORM, UPDATE_COMMENT_FORM } from '~/notes/i18n';
 
-describe('getErrorMessages', () => {
+describe('createNoteErrorMessages', () => {
   describe('when http status is not HTTP_STATUS_UNPROCESSABLE_ENTITY', () => {
     it('returns generic error', () => {
-      const errorMessages = getErrorMessages(
+      const errorMessages = createNoteErrorMessages(
         { errors: ['unknown error'] },
         HTTP_STATUS_BAD_REQUEST,
       );
@@ -17,7 +17,7 @@ describe('getErrorMessages', () => {
 
   describe('when http status is HTTP_STATUS_UNPROCESSABLE_ENTITY', () => {
     it('returns all errors', () => {
-      const errorMessages = getErrorMessages(
+      const errorMessages = createNoteErrorMessages(
         { errors: 'error 1 and error 2' },
         HTTP_STATUS_UNPROCESSABLE_ENTITY,
       );
@@ -29,7 +29,7 @@ describe('getErrorMessages', () => {
 
     describe('when response contains commands_only errors', () => {
       it('only returns commands_only errors', () => {
-        const errorMessages = getErrorMessages(
+        const errorMessages = createNoteErrorMessages(
           {
             errors: {
               commands_only: ['commands_only error 1', 'commands_only error 2'],
@@ -41,6 +41,25 @@ describe('getErrorMessages', () => {
 
         expect(errorMessages).toStrictEqual(['commands_only error 1', 'commands_only error 2']);
       });
+    });
+  });
+});
+
+describe('updateNoteErrorMessage', () => {
+  describe('with server error', () => {
+    it('returns error message with server error', () => {
+      const error = 'error 1 and error 2';
+      const errorMessage = updateNoteErrorMessage({ response: { data: { errors: error } } });
+
+      expect(errorMessage).toEqual(sprintf(UPDATE_COMMENT_FORM.error, { reason: error }));
+    });
+  });
+
+  describe('without server error', () => {
+    it('returns generic error message', () => {
+      const errorMessage = updateNoteErrorMessage(null);
+
+      expect(errorMessage).toEqual(UPDATE_COMMENT_FORM.defaultError);
     });
   });
 });

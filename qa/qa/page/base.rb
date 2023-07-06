@@ -4,6 +4,11 @@ require 'capybara/dsl'
 
 module QA
   module Page
+    # Page base class
+    #
+    # @!method self.perform
+    #   Perform action on the page
+    #   @yieldparam [self] instance of page object
     class Base
       # Generic matcher for common css selectors like:
       # - class name '.someclass'

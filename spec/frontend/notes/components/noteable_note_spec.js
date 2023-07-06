@@ -385,10 +385,24 @@ describe('issue_note', () => {
 
     afterEach(() => updateNote.mockReset());
 
-    it('responds to handleFormUpdate', () => {
+    it('emits handleUpdateNote', () => {
+      const updatedNote = { ...note, note_html: `<p dir="auto">${params.noteText}</p>\n` };
+
       findNoteBody().vm.$emit('handleFormUpdate', params);
 
       expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
+
+      expect(wrapper.emitted('handleUpdateNote')[0]).toEqual([
+        {
+          note: updatedNote,
+          noteText: params.noteText,
+          resolveDiscussion: params.resolveDiscussion,
+          position: {},
+          flashContainer: wrapper.vm.$el,
+          callback: expect.any(Function),
+          errorCallback: expect.any(Function),
+        },
+      ]);
     });
 
     it('updates note content', async () => {

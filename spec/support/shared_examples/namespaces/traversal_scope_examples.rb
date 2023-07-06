@@ -70,10 +70,9 @@ RSpec.shared_examples 'namespace traversal scopes' do
   end
 
   describe '.roots' do
-    context "use_traversal_ids_roots feature flag is true" do
+    context "use_traversal_ids feature flag is true" do
       before do
         stub_feature_flags(use_traversal_ids: true)
-        stub_feature_flags(use_traversal_ids_roots: true)
       end
 
       it_behaves_like '.roots'
@@ -83,9 +82,9 @@ RSpec.shared_examples 'namespace traversal scopes' do
       end
     end
 
-    context "use_traversal_ids_roots feature flag is false" do
+    context "use_traversal_ids feature flag is false" do
       before do
-        stub_feature_flags(use_traversal_ids_roots: false)
+        stub_feature_flags(use_traversal_ids: false)
       end
 
       it_behaves_like '.roots'

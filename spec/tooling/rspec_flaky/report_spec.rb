@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 require 'tempfile'
-
-require_relative '../../support/time_travel'
+require 'gitlab/rspec/all'
 
 require_relative '../../../tooling/rspec_flaky/report'
 

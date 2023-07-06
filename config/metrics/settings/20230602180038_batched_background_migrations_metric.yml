@@ -1,0 +1,24 @@
+---
+key_path: batched_background_migrations_metric
+name: "batched_background_migrations"
+description: "Tracks the execution time of batched background migrations"
+product_section: enablement
+product_stage: data_stores
+product_group: database
+value_type: object
+status: active
+milestone: "16.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122510
+time_frame: 7d
+data_source: database
+data_category: optional
+instrumentation_class: BatchedBackgroundMigrationsMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+value_json_schema: "config/metrics/objects_schemas/batched_background_migrations_metric.json"

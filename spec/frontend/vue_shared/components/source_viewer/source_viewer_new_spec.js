@@ -3,9 +3,11 @@ import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer_ne
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk_new.vue';
 import { EVENT_ACTION, EVENT_LABEL_VIEWER } from '~/vue_shared/components/source_viewer/constants';
 import Tracking from '~/tracking';
+import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import { BLOB_DATA_MOCK, CHUNK_1, CHUNK_2, LANGUAGE_MOCK } from './mock_data';
 
+jest.mock('~/blob/line_highlighter');
 jest.mock('~/blob/blob_links_tracking');
 
 describe('Source Viewer component', () => {
@@ -23,6 +25,10 @@ describe('Source Viewer component', () => {
   beforeEach(() => {
     jest.spyOn(Tracking, 'event');
     return createComponent();
+  });
+
+  it('instantiates the lineHighlighter class', () => {
+    expect(LineHighlighter).toHaveBeenCalled();
   });
 
   describe('event tracking', () => {

@@ -282,7 +282,7 @@ The Tomcat service should restart. After the restart is complete, the
 PlantUML integration is ready and listening for requests on port `8005`:
 `http://localhost:8005/plantuml`
 
-To test if the PlantUML server is working, run `curl --location --verbose http://localhost:8005/plantuml/`.
+To test if the PlantUML server is working, run `curl --location --verbose "http://localhost:8005/plantuml/"`.
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 
@@ -342,4 +342,4 @@ these steps:
 
 - `deflate` is the default encoding type for PlantUML. To use a different encoding type, PlantUML integration
   [requires a header prefix in the URL](https://plantuml.com/text-encoding)
-  to distinguish different encoding types. 
+  to distinguish different encoding types.

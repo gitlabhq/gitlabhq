@@ -159,12 +159,13 @@ export default {
         return this.queryData?.environments?.query || {};
       },
       skip() {
-        return !this.queryData?.environments?.query;
+        return !this.hasEnvScopeQuery;
       },
       variables() {
         return {
+          first: ENVIRONMENT_QUERY_LIMIT,
           fullPath: this.fullPath,
-          ...this.environmentQueryVariables,
+          search: '',
         };
       },
       update(data) {
@@ -179,15 +180,8 @@ export default {
     areEnvironmentsLoading() {
       return this.$apollo.queries.environments.loading;
     },
-    environmentQueryVariables() {
-      if (this.glFeatures?.ciLimitEnvironmentScope) {
-        return {
-          first: ENVIRONMENT_QUERY_LIMIT,
-          search: '',
-        };
-      }
-
-      return {};
+    hasEnvScopeQuery() {
+      return Boolean(this.queryData?.environments?.query);
     },
     isLoading() {
       return (
@@ -244,9 +238,7 @@ export default {
       this.variableMutation(UPDATE_MUTATION_ACTION, variable);
     },
     async searchEnvironmentScope(searchTerm) {
-      if (this.glFeatures?.ciLimitEnvironmentScope) {
-        this.$apollo.queries.environments.refetch({ search: searchTerm });
-      }
+      this.$apollo.queries.environments.refetch({ search: searchTerm });
     },
     async variableMutation(mutationAction, variable) {
       try {
@@ -292,6 +284,7 @@ export default {
     :are-scoped-variables-available="areScopedVariablesAvailable"
     :entity="entity"
     :environments="environments"
+    :has-env-scope-query="hasEnvScopeQuery"
     :hide-environment-scope="hideEnvironmentScope"
     :is-loading="isLoading"
     :max-variable-limit="maxVariableLimit"

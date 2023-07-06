@@ -1,0 +1,94 @@
+.gl-new-card {
+  @include gl-mt-5;
+  @include gl-bg-gray-10;
+  @include gl-border-1;
+  @include gl-border-solid;
+  @include gl-border-gray-100;
+  @include gl-rounded-base;
+
+  &-header {
+    @include gl-pl-5;
+    @include gl-pr-4;
+    @include gl-py-4;
+    @include gl-display-flex;
+    @include gl-justify-content-space-between;
+    @include gl-bg-white;
+    @include gl-border-b-1;
+    @include gl-border-b-solid;
+    @include gl-border-b-gray-100;
+    @include gl-rounded-top-base;
+  }
+
+  &[aria-expanded=false] &-header {
+    @include gl-border-bottom-0;
+    @include gl-rounded-base;
+  }
+
+  &-title-wrapper {
+    @include gl-display-flex;
+    @include gl-flex-grow-1;
+  }
+
+  &-title {
+    @include gl-font-base;
+    @include gl-font-weight-bold;
+    @include gl-relative;
+    @include gl-m-0;
+    @include gl-line-height-24;
+  }
+
+  &-title-lg {
+    @include gl-font-lg;
+  }
+
+  &-count {
+    @include gl-mx-3;
+    @include gl-font-base;
+    @include gl-font-weight-bold;
+    @include gl-text-gray-500;
+  }
+
+  &-description {
+    @include gl-text-gray-500;
+    @include gl-mt-1;
+  }
+
+  &-toggle {
+    @include gl-pl-3;
+    @include gl-ml-3;
+    @include gl-border-l-1;
+    @include gl-border-l-solid;
+    @include gl-border-l-gray-100;
+  }
+
+  &-body {
+    @include gl-rounded-bottom-base;
+    @include gl-px-3;
+    @include gl-py-0;
+  }
+
+  &-content {
+    @include gl-px-2;
+    @include gl-py-3;
+  }
+
+  &-empty {
+    @include gl-p-2;
+    @include gl-mb-0;
+    @include gl-text-gray-500;
+  }
+
+  &-footer {
+    @include gl-bg-white;
+  }
+
+  &-add-form {
+    @include gl-p-4;
+    @include gl-my-2;
+    @include gl-bg-white;
+    @include gl-border-1;
+    @include gl-border-solid;
+    @include gl-border-gray-100;
+    @include gl-rounded-base;
+  }
+}

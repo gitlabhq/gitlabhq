@@ -96,13 +96,6 @@ module Namespaces
         traversal_ids.present?
       end
 
-      def use_traversal_ids_for_ancestors?
-        return false unless use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors, root_ancestor)
-
-        traversal_ids.present?
-      end
-
       def use_traversal_ids_for_ancestors_upto?
         return false unless use_traversal_ids?
         return false unless Feature.enabled?(:use_traversal_ids_for_ancestors_upto, root_ancestor)
@@ -149,7 +142,7 @@ module Namespaces
       end
 
       def ancestors(hierarchy_order: nil)
-        return super unless use_traversal_ids_for_ancestors?
+        return super unless use_traversal_ids?
 
         return self.class.none if parent_id.blank?
 
@@ -157,7 +150,7 @@ module Namespaces
       end
 
       def ancestor_ids(hierarchy_order: nil)
-        return super unless use_traversal_ids_for_ancestors?
+        return super unless use_traversal_ids?
 
         hierarchy_order == :desc ? traversal_ids[0..-2] : traversal_ids[0..-2].reverse
       end
@@ -191,7 +184,7 @@ module Namespaces
       end
 
       def self_and_ancestors(hierarchy_order: nil)
-        return super unless use_traversal_ids_for_ancestors?
+        return super unless use_traversal_ids?
 
         return self.class.where(id: id) if parent_id.blank?
 
@@ -199,7 +192,7 @@ module Namespaces
       end
 
       def self_and_ancestor_ids(hierarchy_order: nil)
-        return super unless use_traversal_ids_for_ancestors?
+        return super unless use_traversal_ids?
 
         hierarchy_order == :desc ? traversal_ids : traversal_ids.reverse
       end

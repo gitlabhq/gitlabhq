@@ -347,7 +347,8 @@ export default {
 
 <template>
   <gl-form
-    class="gl-bg-white gl-mt-1 gl-mb-3 gl-p-4 gl-border gl-border-gray-100 gl-rounded-base"
+    class="gl-new-card-add-form"
+    data-testid="add-item-form"
     @submit.prevent="addOrCreateMethod"
   >
     <gl-alert v-if="error" variant="danger" class="gl-mb-3" @dismiss="unsetError">

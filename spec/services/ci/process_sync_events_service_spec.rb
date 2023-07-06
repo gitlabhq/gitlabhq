@@ -145,9 +145,9 @@ RSpec.describe Ci::ProcessSyncEventsService, feature_category: :continuous_integ
         end
       end
 
-      context 'when the FFs use_traversal_ids and use_traversal_ids_for_ancestors are disabled' do
+      context 'when the use_traversal_ids FF is disabled' do
         before do
-          stub_feature_flags(use_traversal_ids: false, use_traversal_ids_for_ancestors: false)
+          stub_feature_flags(use_traversal_ids: false)
         end
 
         it_behaves_like 'event consuming'

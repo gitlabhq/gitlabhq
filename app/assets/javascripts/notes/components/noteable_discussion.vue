@@ -15,7 +15,7 @@ import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secr
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import { getErrorMessages } from '../utils';
+import { createNoteErrorMessages } from '../utils';
 import DiffDiscussionHeader from './diff_discussion_header.vue';
 import DiffWithNote from './diff_with_note.vue';
 import DiscussionActions from './discussion_actions.vue';
@@ -275,7 +275,7 @@ export default {
         });
     },
     handleSaveError({ response }) {
-      const errorMessage = getErrorMessages(response.data, response.status)[0];
+      const errorMessage = createNoteErrorMessages(response.data, response.status)[0];
 
       createAlert({
         message: errorMessage,

@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe 'time travel' do
+  before(:all) do
+    @original_time_zone = Time.zone
+    Time.zone = 'Eastern Time (US & Canada)'
+  end
+
+  after(:all) do
+    Time.zone = @original_time_zone
+  end
+
   describe ':freeze_time' do
     it 'freezes time around a spec example', :freeze_time do
       expect { sleep 0.1 }.not_to change { Time.now.to_f }

@@ -112,7 +112,7 @@ mutation achievementsCreate($file: Upload!) {
 To supply the avatar file, call the mutation using `curl`:
 
 ```shell
-curl 'https://gitlab.com/api/graphql' \
+curl "https://gitlab.com/api/graphql" \
   -H "Authorization: Bearer <your-pat-token>" \
   -H "Content-Type: multipart/form-data" \
   -F operations='{ "query": "mutation ($file: Upload!) { achievementsCreate(input: { namespaceId: \"gid://gitlab/Namespace/<namespace-id>\", name: \"<name>\", description: \"<description>\", avatar: $file }) { achievement { id name description avatarUrl } } }", "variables": { "file": null } }' \ 

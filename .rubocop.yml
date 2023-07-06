@@ -490,11 +490,6 @@ Cop/InjectEnterpriseEditionModule:
 Style/ReturnNil:
   Enabled: true
 
-# It isn't always safe to replace `=~` with `.match?`, especially when there are
-# nil values on the left hand side
-Performance/RegexpMatch:
-  Enabled: false
-
 Cop/ActiveRecordAssociationReload:
   Enabled: true
   Exclude:

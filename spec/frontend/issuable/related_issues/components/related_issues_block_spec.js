@@ -76,7 +76,7 @@ describe('RelatedIssuesBlock', () => {
           helpPath: '/help/user/project/issues/related_issues',
         });
 
-        expect(wrapper.find('.card-title').text()).toContain(titleText);
+        expect(wrapper.findByTestId('card-title').text()).toContain(titleText);
         expect(findIssueCountBadgeAddButton().attributes('aria-label')).toBe(addButtonText);
       },
     );
@@ -99,7 +99,7 @@ describe('RelatedIssuesBlock', () => {
         slots: { 'header-text': headerText },
       });
 
-      expect(wrapper.find('.card-title').html()).toContain(headerText);
+      expect(wrapper.findByTestId('card-title').html()).toContain(headerText);
     });
   });
 

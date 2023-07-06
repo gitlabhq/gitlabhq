@@ -316,8 +316,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   context 'when use_traversal_ids* are disabled' do
     before do
       stub_feature_flags(
-        use_traversal_ids: false,
-        use_traversal_ids_for_ancestors: false
+        use_traversal_ids: false
       )
     end
 

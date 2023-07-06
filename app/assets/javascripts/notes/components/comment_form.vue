@@ -20,7 +20,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import { COMMENT_FORM } from '../i18n';
-import { getErrorMessages } from '../utils';
+import { createNoteErrorMessages } from '../utils';
 
 import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
@@ -216,7 +216,7 @@ export default {
       'toggleIssueLocalState',
     ]),
     handleSaveError({ data, status }) {
-      this.errors = getErrorMessages(data, status);
+      this.errors = createNoteErrorMessages(data, status);
     },
     handleSaveDraft() {
       this.handleSave({ isDraft: true });

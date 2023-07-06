@@ -17,8 +17,7 @@ import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secr
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
-import { renderMarkdown } from '../utils';
-import { UPDATE_COMMENT_FORM } from '../i18n';
+import { renderMarkdown, updateNoteErrorMessage } from '../utils';
 import {
   getStartLineNumber,
   getEndLineNumber,
@@ -316,7 +315,9 @@ export default {
         noteText,
         resolveDiscussion,
         position,
+        flashContainer: this.$el,
         callback: () => this.updateSuccess(),
+        errorCallback: () => callback(),
       });
 
       if (this.isDraft) return;
@@ -369,14 +370,8 @@ export default {
         });
     },
     handleUpdateError(e) {
-      const serverErrorMessage = e?.response?.data?.errors;
-
-      const alertMessage = serverErrorMessage
-        ? sprintf(UPDATE_COMMENT_FORM.error, { reason: serverErrorMessage.toLowerCase() }, false)
-        : UPDATE_COMMENT_FORM.defaultError;
-
       createAlert({
-        message: alertMessage,
+        message: updateNoteErrorMessage(e),
         parent: this.$el,
       });
     },

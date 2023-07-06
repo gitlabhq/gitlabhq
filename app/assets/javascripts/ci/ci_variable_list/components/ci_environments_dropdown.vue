@@ -24,6 +24,10 @@ export default {
       type: Array,
       required: true,
     },
+    hasEnvScopeQuery: {
+      type: Boolean,
+      required: true,
+    },
     selectedEnvironmentScope: {
       type: String,
       required: false,
@@ -48,22 +52,19 @@ export default {
       });
     },
     isDropdownLoading() {
-      return this.areEnvironmentsLoading && this.isEnvScopeLimited && !this.isDropdownShown;
+      return this.areEnvironmentsLoading && this.hasEnvScopeQuery && !this.isDropdownShown;
     },
     isDropdownSearching() {
-      return this.areEnvironmentsLoading && this.isEnvScopeLimited && this.isDropdownShown;
-    },
-    isEnvScopeLimited() {
-      return this.glFeatures?.ciLimitEnvironmentScope;
+      return this.areEnvironmentsLoading && this.hasEnvScopeQuery && this.isDropdownShown;
     },
     searchedEnvironments() {
-      // If FF is enabled, search query will be fired so this component will already
-      // receive filtered environments during the refetch.
-      // If FF is disabled, search the existing list of environments in the frontend
-      let filtered = this.isEnvScopeLimited ? this.environments : this.filteredEnvironments;
+      // If hasEnvScopeQuery (applies only to projects for now), search query will be fired so this
+      // component will already receive filtered environments during the refetch.
+      // Otherwise (applies to groups), search the existing list of environments in the frontend
+      let filtered = this.hasEnvScopeQuery ? this.environments : this.filteredEnvironments;
 
       // If there is no search term, make sure to include *
-      if (this.isEnvScopeLimited && !this.searchTerm) {
+      if (this.hasEnvScopeQuery && !this.searchTerm) {
         filtered = uniq([...filtered, '*']);
       }
 
@@ -77,7 +78,7 @@ export default {
     },
     shouldRenderDivider() {
       return (
-        (this.isEnvScopeLimited || this.shouldRenderCreateButton) && !this.areEnvironmentsLoading
+        (this.hasEnvScopeQuery || this.shouldRenderCreateButton) && !this.areEnvironmentsLoading
       );
     },
     environmentScopeLabel() {
@@ -88,7 +89,7 @@ export default {
     debouncedSearch: debounce(function debouncedSearch(searchTerm) {
       const newSearchTerm = searchTerm.trim();
       this.searchTerm = newSearchTerm;
-      if (this.isEnvScopeLimited) {
+      if (this.hasEnvScopeQuery) {
         this.$emit('search-environment-scope', newSearchTerm);
       }
     }, 500),
@@ -128,7 +129,7 @@ export default {
   >
     <template #footer>
       <gl-dropdown-divider v-if="shouldRenderDivider" />
-      <div v-if="isEnvScopeLimited" data-testid="max-envs-notice">
+      <div v-if="hasEnvScopeQuery" data-testid="max-envs-notice">
         <gl-dropdown-item class="gl-list-style-none" disabled>
           <gl-sprintf :message="$options.i18n.maxEnvsNote" class="gl-font-sm">
             <template #limit>

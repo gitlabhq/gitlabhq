@@ -431,6 +431,11 @@ If you're experiencing this error, ensure there is connectivity between the
 client machine and the Kerberos server - this is a prerequisite! Traffic may be
 blocked by a firewall, or the DNS records may be incorrect.
 
+#### `GitLab DNS record is a CNAME record` error
+
+Kerberos fails with this error when GitLab is referenced with a `CNAME` record.
+To resolve this issue, ensure the DNS record for GitLab is an `A` record.
+
 #### Mismatched forward and reverse DNS records for GitLab instance hostname
 
 Another failure mode occurs when the forward and reverse DNS records for the

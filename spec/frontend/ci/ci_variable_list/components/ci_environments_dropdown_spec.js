@@ -16,6 +16,7 @@ describe('Ci environments dropdown', () => {
   const defaultProps = {
     areEnvironmentsLoading: false,
     environments: envs,
+    hasEnvScopeQuery: false,
     selectedEnvironmentScope: '',
   };
 
@@ -28,16 +29,11 @@ describe('Ci environments dropdown', () => {
   const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
   const findMaxEnvNote = () => wrapper.findByTestId('max-envs-notice');
 
-  const createComponent = ({ props = {}, searchTerm = '', enableFeatureFlag = false } = {}) => {
+  const createComponent = ({ props = {}, searchTerm = '' } = {}) => {
     wrapper = mountExtended(CiEnvironmentsDropdown, {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          ciLimitEnvironmentScope: enableFeatureFlag,
-        },
       },
     });
 
@@ -62,14 +58,14 @@ describe('Ci environments dropdown', () => {
 
   describe('Search term is empty', () => {
     describe.each`
-      featureFlag | flagStatus    | defaultEnvStatus      | firstItemValue | envIndices
-      ${true}     | ${'enabled'}  | ${'prepends'}         | ${'*'}         | ${[1, 2, 3]}
-      ${false}    | ${'disabled'} | ${'does not prepend'} | ${envs[0]}     | ${[0, 1, 2]}
+      hasEnvScopeQuery | status              | defaultEnvStatus      | firstItemValue | envIndices
+      ${true}          | ${'exists'}         | ${'prepends'}         | ${'*'}         | ${[1, 2, 3]}
+      ${false}         | ${'does not exist'} | ${'does not prepend'} | ${envs[0]}     | ${[0, 1, 2]}
     `(
-      'when ciLimitEnvironmentScope feature flag is $flagStatus',
-      ({ featureFlag, defaultEnvStatus, firstItemValue, envIndices }) => {
+      'when query for fetching environment scope $status',
+      ({ defaultEnvStatus, firstItemValue, hasEnvScopeQuery, envIndices }) => {
         beforeEach(() => {
-          createComponent({ props: { environments: envs }, enableFeatureFlag: featureFlag });
+          createComponent({ props: { environments: envs, hasEnvScopeQuery } });
         });
 
         it(`${defaultEnvStatus} * in listbox`, () => {
@@ -102,7 +98,7 @@ describe('Ci environments dropdown', () => {
     });
   });
 
-  describe('When ciLimitEnvironmentScope feature flag is disabled', () => {
+  describe('when environments are not fetched via graphql', () => {
     const currentEnv = envs[2];
 
     beforeEach(() => {
@@ -129,11 +125,11 @@ describe('Ci environments dropdown', () => {
     });
   });
 
-  describe('When ciLimitEnvironmentScope feature flag is enabled', () => {
+  describe('when fetching environments via graphql', () => {
     const currentEnv = envs[2];
 
     beforeEach(() => {
-      createComponent({ enableFeatureFlag: true });
+      createComponent({ props: { hasEnvScopeQuery: true } });
     });
 
     it('renders dropdown divider', () => {
@@ -147,7 +143,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('renders dropdown loading icon while fetch query is loading', () => {
-      createComponent({ enableFeatureFlag: true, props: { areEnvironmentsLoading: true } });
+      createComponent({ props: { areEnvironmentsLoading: true, hasEnvScopeQuery: true } });
 
       expect(findListbox().props('loading')).toBe(true);
       expect(findListbox().props('searching')).toBe(false);
@@ -155,7 +151,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('renders search loading icon while search query is loading and dropdown is open', async () => {
-      createComponent({ enableFeatureFlag: true, props: { areEnvironmentsLoading: true } });
+      createComponent({ props: { areEnvironmentsLoading: true, hasEnvScopeQuery: true } });
       await findListbox().vm.$emit('shown');
 
       expect(findListbox().props('loading')).toBe(false);

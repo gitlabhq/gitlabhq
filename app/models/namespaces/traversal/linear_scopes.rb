@@ -18,7 +18,7 @@ module Namespaces
         end
 
         def roots
-          return super unless use_traversal_ids_roots?
+          return super unless use_traversal_ids?
 
           root_ids = all.select("#{quoted_table_name}.traversal_ids[1]").distinct
           unscoped.where(id: root_ids)
@@ -76,11 +76,6 @@ module Namespaces
 
         def use_traversal_ids?
           Feature.enabled?(:use_traversal_ids)
-        end
-
-        def use_traversal_ids_roots?
-          Feature.enabled?(:use_traversal_ids_roots) &&
-          use_traversal_ids?
         end
 
         def use_traversal_ids_for_descendants_scopes?

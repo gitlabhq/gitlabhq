@@ -38,11 +38,12 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def update
-    draft_note.update!(draft_note_params)
-
-    prepare_notes_for_rendering(draft_note)
-
-    render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+    if draft_note.update(draft_note_params)
+      prepare_notes_for_rendering(draft_note)
+      render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+    else
+      render json: { errors: draft_note.errors.full_messages.to_sentence }, status: :unprocessable_entity
+    end
   end
 
   def destroy

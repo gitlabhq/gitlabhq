@@ -133,7 +133,7 @@ the team is happy to review and improve upon your content. Review the
 [Documentation guidelines](index.md) before you begin your first documentation MR.
 
 Maintaining a knowledge base separate from the documentation would
-be against the documentation-first methodology, because the content would overlap with
+be against the documentation-first methodology because the content would overlap with
 the documentation.
 
 ## Writing for localization
@@ -826,7 +826,7 @@ For example:
 You can expand on this text by using phrases like
 `For more information about this feature, see...`
 
-Do not to use the following constructions:
+Do not use the following constructions:
 
 - `Learn more about...`
 - `To read more...`.
@@ -883,7 +883,7 @@ If you must use one of these links:
 
 - If the link is to a confidential issue, mention that the issue is visible only to GitLab team members, as in the first example.
 - If the link requires a specific role or permissions, mention that information, as in the second example.
-- Put the link in backticks, so that it does not cause link checkers to fail.
+- Put the link in backticks so that it does not cause link checkers to fail.
 
 Examples:
 
@@ -914,7 +914,7 @@ document to ensure it links to the most recent version of the file.
 
 ## Navigation
 
-When documenting how to navigate through the GitLab UI:
+When documenting how to navigate the GitLab UI:
 
 - Always use location, then action.
   - From the **Visibility** dropdown list (location), select **Public** (action).

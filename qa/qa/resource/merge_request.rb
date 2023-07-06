@@ -45,7 +45,7 @@ module QA
           resource.project = project
           resource.api_client = api_client
           resource.commit_message = 'This is a test commit'
-          resource.add_files([{ 'file_path': "file-#{SecureRandom.hex(8)}.txt", 'content': 'MR init' }])
+          resource.add_files([{ file_path: "file-#{SecureRandom.hex(8)}.txt", content: 'MR init' }])
           resource.branch = target_branch
 
           resource.start_branch = project.default_branch if target_branch != project.default_branch
@@ -60,7 +60,7 @@ module QA
           resource.branch = source_branch
           resource.start_branch = target_branch
 
-          files = [{ 'file_path': file_name, 'content': file_content }]
+          files = [{ file_path: file_name, content: file_content }]
           update_existing_file ? resource.update_files(files) : resource.add_files(files)
         end
       end
@@ -139,7 +139,8 @@ module QA
           source_branch: source_branch,
           target_branch: target_branch,
           title: title,
-          reviewer_ids: reviewer_ids
+          reviewer_ids: reviewer_ids,
+          labels: labels.join(",")
         }
       end
 
