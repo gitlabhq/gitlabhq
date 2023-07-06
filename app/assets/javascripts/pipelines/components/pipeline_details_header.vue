@@ -408,13 +408,13 @@ export default {
       data-qa-selector="pipeline_details_header"
     >
       <div>
-        <h3 v-if="name" class="gl-mt-0 gl-mb-2" data-testid="pipeline-name">{{ name }}</h3>
-        <h3 v-else class="gl-mt-0 gl-mb-2" data-testid="pipeline-commit-title">
+        <h3 v-if="name" class="gl-mt-0 gl-mb-3" data-testid="pipeline-name">{{ name }}</h3>
+        <h3 v-else class="gl-mt-0 gl-mb-3" data-testid="pipeline-commit-title">
           {{ commitTitle }}
         </h3>
         <div>
           <ci-badge-link :status="detailedStatus" />
-          <div class="gl-ml-2 gl-mb-2 gl-display-inline-block gl-h-6">
+          <div class="gl-ml-2 gl-mb-3 gl-display-inline-block gl-h-6">
             <gl-link
               v-if="user"
               :href="user.webUrl"
@@ -453,7 +453,7 @@ export default {
             </span>
           </div>
         </div>
-        <div v-safe-html="refText" class="gl-mb-2" data-testid="pipeline-ref-text"></div>
+        <div v-safe-html="refText" class="gl-mb-3" data-testid="pipeline-ref-text"></div>
         <div>
           <gl-badge
             v-if="badges.schedule"

@@ -18,6 +18,10 @@ import RelatedIssuesBlock from '~/related_issues/components/related_issues_block
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 
 jest.mock('~/alert');
+// TODO: This suite is flaky with the default timeout, so
+// double it. Improve the test or component to avoid this.
+// See https://gitlab.com/gitlab-org/gitlab/-/issues/417175.
+jest.setTimeout(10_000);
 
 describe('RelatedIssuesRoot', () => {
   let wrapper;

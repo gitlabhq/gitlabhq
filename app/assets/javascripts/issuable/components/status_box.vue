@@ -135,7 +135,7 @@ export default {
 
 <template>
   <gl-badge
-    class="issuable-status-badge gl-mr-3"
+    class="issuable-status-badge gl-mr-3 gl-align-self-center"
     :class="badgeClass"
     :variant="badgeVariant"
     :aria-label="badgeText"

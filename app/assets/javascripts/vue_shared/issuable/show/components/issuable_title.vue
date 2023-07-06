@@ -81,9 +81,12 @@ export default {
           data-testid="header"
         >
           <div
-            class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
+            class="issue-sticky-header-text gl-display-flex gl-align-items-baseline gl-mx-auto gl-px-5"
           >
-            <gl-badge class="gl-white-space-nowrap gl-mr-3" :variant="badgeVariant">
+            <gl-badge
+              class="gl-white-space-nowrap gl-mr-3 gl-align-self-center"
+              :variant="badgeVariant"
+            >
               <gl-icon v-if="statusIcon" class="gl-sm-display-none" :name="statusIcon" />
               <span class="gl-display-none gl-sm-display-block">
                 <slot name="status-badge"></slot>
