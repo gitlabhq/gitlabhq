@@ -161,7 +161,7 @@ More details in this [blog](https://about.gitlab.com/blog/2023/06/01/extending-c
 Prerequisites:
 
 - For self-managed GitLab, Code Suggestions must be enabled [for the instance](#enable-code-suggestions-on-self-managed-gitlab).
-- Code Suggestions must be enabled [for the top-level group](../../group/manage.md#enable-code-suggestions) and [for your user account](#enable-code-suggestions-for-an-individual-user).
+- For GitLab SaaS, Code Suggestions must be enabled [for the top-level group](../../group/manage.md#enable-code-suggestions) and [for your user account](#enable-code-suggestions-for-an-individual-user).
 - To use VS Code, ensure you have installed [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
 - To use Microsoft Visual Studio, ensure you have installed [the Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 

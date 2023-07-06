@@ -8,7 +8,7 @@ module Gitlab
     class Receiver
       include Gitlab::Utils::StrongMemoize
 
-      RECEIVED_HEADER_REGEX = /for\s+\<(.+)\>/.freeze
+      RECEIVED_HEADER_REGEX = /for\s+\<([^<]+)\>/.freeze
 
       # Errors that are purely from users and not anything we can control
       USER_ERRORS = [

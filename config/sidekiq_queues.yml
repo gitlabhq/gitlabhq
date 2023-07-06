@@ -137,6 +137,10 @@
   - 1
 - - compliance_management_merge_requests_compliance_violations
   - 1
+- - compliance_management_standards_gitlab_prevent_approval_by_author
+  - 1
+- - compliance_management_standards_gitlab_prevent_approval_by_author_group
+  - 1
 - - compliance_management_update_default_framework
   - 1
 - - container_repository

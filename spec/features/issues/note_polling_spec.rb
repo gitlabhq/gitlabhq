@@ -59,7 +59,10 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
 
         update_note(existing_note, updated_text)
 
+        expect(page).to have_selector(".alert")
+
         find("#note_#{existing_note.id} .note-edit-cancel").click
+        click_button('Cancel editing')
 
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
       end

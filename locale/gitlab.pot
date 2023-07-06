@@ -5428,6 +5428,9 @@ msgstr ""
 msgid "Anonymous"
 msgstr ""
 
+msgid "Anonymous user"
+msgstr ""
+
 msgid "Another issue tracker is already in use. Only one issue tracker service can be active at a time"
 msgstr ""
 
@@ -6561,6 +6564,9 @@ msgstr ""
 msgid "AuditStreams|Cancel editing"
 msgstr ""
 
+msgid "AuditStreams|Client Email"
+msgstr ""
+
 msgid "AuditStreams|Custom HTTP headers (optional)"
 msgstr ""
 
@@ -6585,13 +6591,28 @@ msgstr ""
 msgid "AuditStreams|Filter by audit event type"
 msgstr ""
 
+msgid "AuditStreams|Google Cloud Logging"
+msgstr ""
+
+msgid "AuditStreams|HTTP endpoint"
+msgstr ""
+
 msgid "AuditStreams|Header"
+msgstr ""
+
+msgid "AuditStreams|Log ID"
 msgstr ""
 
 msgid "AuditStreams|Maximum of %{number} HTTP headers has been reached."
 msgstr ""
 
 msgid "AuditStreams|No header created yet."
+msgstr ""
+
+msgid "AuditStreams|Private key"
+msgstr ""
+
+msgid "AuditStreams|Project ID"
 msgstr ""
 
 msgid "AuditStreams|Remove custom header"
@@ -6630,6 +6651,9 @@ msgstr ""
 msgid "AuditStreams|Verification token"
 msgstr ""
 
+msgid "AuditStreams|audit-events"
+msgstr ""
+
 msgid "AuditStreams|ex: 1000"
 msgstr ""
 
@@ -6637,6 +6661,12 @@ msgid "AuditStreams|ex: limitation"
 msgstr ""
 
 msgid "AuditStreams|filtered"
+msgstr ""
+
+msgid "AuditStreams|my-email@my-google-project.iam.gservice.account.com"
+msgstr ""
+
+msgid "AuditStreams|my-google-project"
 msgstr ""
 
 msgid "Aug"

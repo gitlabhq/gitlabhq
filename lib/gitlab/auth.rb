@@ -237,6 +237,10 @@ module Gitlab
         user.can?(:read_project, project)
       end
 
+      def bot_user_can_read_project?(user, project)
+        (user.project_bot? || user.security_policy_bot?) && can_read_project?(user, project)
+      end
+
       def valid_oauth_token?(token)
         token && token.accessible? && valid_scoped_token?(token, Doorkeeper.configuration.scopes)
       end
@@ -318,7 +322,7 @@ module Gitlab
         return unless build.project.builds_enabled?
 
         if build.user
-          return unless build.user.can_log_in_with_non_expired_password? || (build.user.project_bot? && can_read_project?(build.user, build.project))
+          return unless build.user.can_log_in_with_non_expired_password? || bot_user_can_read_project?(build.user, build.project)
 
           # If user is assigned to build, use restricted credentials of user
           Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)

@@ -24,10 +24,16 @@ module QA
             end
 
             authorize_app
+
+            confirm_account_recovery_settings
           end
 
           def authorize_app
             click_on 'Authorize' if has_button?('Authorize')
+          end
+
+          def confirm_account_recovery_settings
+            click_on 'Confirm' if has_button?('Confirm')
           end
         end
       end
