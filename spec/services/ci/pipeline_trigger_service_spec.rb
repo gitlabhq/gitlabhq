@@ -23,8 +23,8 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
     shared_examples 'detecting an unprocessable pipeline trigger' do
       context 'when the pipeline was not created successfully' do
         let(:fail_pipeline) do
-          receive(:execute).and_wrap_original do |original, *args|
-            response = original.call(*args)
+          receive(:execute).and_wrap_original do |original, *args, **kwargs|
+            response = original.call(*args, **kwargs)
             pipeline = response.payload
             pipeline.update!(failure_reason: 'unknown_failure')
 

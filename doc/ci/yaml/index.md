@@ -3740,7 +3740,8 @@ If the rule matches, then the job is a manual job with `allow_failure: true`.
 
 #### `rules:needs`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31581) in GitLab 16.0 [with a flag](../../user/feature_flags.md) named `introduce_rules_with_needs`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31581) in GitLab 16.0 [with a flag](../../user/feature_flags.md) named `introduce_rules_with_needs`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/408871) in GitLab 16.2. Feature flag `introduce_rules_with_needs` removed.
 
 Use `needs` in rules to update a job's [`needs`](#needs) for specific conditions. When a condition matches a rule, the job's `needs` configuration is completely replaced with the `needs` in the rule.
 

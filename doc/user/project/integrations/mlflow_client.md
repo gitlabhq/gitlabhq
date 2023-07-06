@@ -33,7 +33,7 @@ To enable MLflow client integration:
    This can be your local environment, CI pipeline, or remote host. For example:
 
    ```shell
-   export MLFLOW_TRACKING_URI="http://<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"
+   export MLFLOW_TRACKING_URI="<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"
    export MLFLOW_TRACKING_TOKEN="<your_access_token>"
    ```
 

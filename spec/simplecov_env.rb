@@ -70,7 +70,6 @@ module SimpleCovEnv
       add_group 'Fixtures',           %r{^/(ee/)?db/fixtures}
       add_group 'GraphQL',            %r{^/(ee/)?app/graphql}
       add_group 'Helpers',            %r{^/(ee/)?app/helpers}
-      add_group 'Initializers',       %r{^/(ee/)?config/(initializers|initializers_before_autoloader)}
       add_group 'Libraries',          %r{^/(ee/)?lib}
       add_group 'Mailers',            %r{^/(ee/)?app/mailers}
       add_group 'Metrics server',     %r{^/(ee/)?metrics_server}

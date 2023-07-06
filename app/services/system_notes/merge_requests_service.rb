@@ -181,3 +181,5 @@ module SystemNotes
     end
   end
 end
+
+SystemNotes::MergeRequestsService.prepend_mod_with('SystemNotes::MergeRequestsService')

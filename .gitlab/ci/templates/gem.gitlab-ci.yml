@@ -2,18 +2,26 @@
 #
 # Inputs:
 # - `gem_name`: The name of the gem, i.e. if the gem is located at `gems/gitlab-rspec`, `gem_name` should be set to `gitlab-rspec`.
+# - `gem_path_prefix`: The prefix of the gem path, i.e. if the gem is located at `vendor/gems/gitlab-rspec`, `gem_path_prefix` should be set to `vendor/gems/`. Defaults to `gems/`.
 spec:
   inputs:
     gem_name:
+    gem_path_prefix:
+      default: "gems/"
 ---
 .gems:rules:$[[inputs.gem_name]]:
   rules:
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
-      changes: ["gems/$[[inputs.gem_name]]/**/*"]
+      changes:
+        - "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/**/*"
+        - ".gitlab/ci/templates/gem.gitlab-ci.yml"
+        - "gems/gem.gitlab-ci.yml"
 
 gems $[[inputs.gem_name]]:
-  extends: .gems:rules:$[[inputs.gem_name]]
+  extends: ".gems:rules:$[[inputs.gem_name]]"
   needs: []
   trigger:
-    include: gems/$[[inputs.gem_name]]/.gitlab-ci.yml
+    include: "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.gitlab-ci.yml"
     strategy: depend
+  inherit:
+    variables: false

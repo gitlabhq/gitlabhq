@@ -18,7 +18,7 @@ module Gitlab
       SIDEKIQ_QUEUE_DURATION_BUCKETS = [10, 60].freeze
 
       # These labels from Gitlab::SidekiqMiddleware::MetricsHelper are included in SLI metrics
-      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency].freeze
+      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency, :external_dependencies].freeze
 
       class << self
         include ::Gitlab::SidekiqMiddleware::MetricsHelper

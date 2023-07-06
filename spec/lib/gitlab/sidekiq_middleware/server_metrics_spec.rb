@@ -72,12 +72,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
                 {
                   worker: 'MergeWorker',
                   urgency: 'high',
-                  feature_category: 'source_code_management'
+                  feature_category: 'source_code_management',
+                  external_dependencies: 'no'
                 },
                 {
                   worker: 'Ci::BuildFinishedWorker',
                   urgency: 'high',
-                  feature_category: 'continuous_integration'
+                  feature_category: 'continuous_integration',
+                  external_dependencies: 'no'
                 }
               ])
 
@@ -162,10 +164,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           expect(sidekiq_mem_total_bytes).to receive(:set).with(labels_with_job_status, mem_total_bytes)
           expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_apdex).with(labels.slice(:worker,
             :feature_category,
-            :urgency), monotonic_time_duration)
+            :urgency,
+            :external_dependencies), monotonic_time_duration)
           expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_error).with(labels.slice(:worker,
             :feature_category,
-            :urgency), false)
+            :urgency,
+            :external_dependencies), false)
 
           subject.call(worker, job, :test) { nil }
         end
@@ -221,7 +225,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
             expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_apdex)
             expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_error).with(labels.slice(:worker,
               :feature_category,
-              :urgency), true)
+              :urgency,
+              :external_dependencies), true)
 
             expect { subject.call(worker, job, :test) { raise StandardError, "Failed" } }.to raise_error(StandardError, "Failed")
           end

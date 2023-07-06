@@ -657,6 +657,19 @@ module API
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
     end
 
+    def track_event(event_name, user_id:, namespace_id: nil, project_id: nil)
+      return unless user_id.present?
+
+      Gitlab::InternalEvents.track_event(
+        event_name,
+        user_id: user_id,
+        namespace_id: namespace_id,
+        project_id: project_id
+      )
+    rescue StandardError => error
+      Gitlab::AppLogger.warn("Internal Event tracking event failed for event: #{event_name}, message: #{error.message}")
+    end
+
     def order_by_similarity?(allow_unauthorized: true)
       params[:order_by] == 'similarity' && params[:search].present? && (allow_unauthorized || current_user.present?)
     end

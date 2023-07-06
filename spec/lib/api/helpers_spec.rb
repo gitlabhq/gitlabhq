@@ -609,6 +609,39 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
   end
 
+  describe '#track_event' do
+    let(:user_id) { 345 }
+    let(:namespace_id) { 12 }
+    let(:project_id) { 56 }
+    let(:event_name) { 'i_compliance_dashboard' }
+    let(:unknown_event) { 'unknown' }
+
+    it 'tracks internal event' do
+      expect(Gitlab::InternalEvents).to receive(:track_event).with(
+        event_name,
+        user_id: user_id,
+        namespace_id: namespace_id,
+        project_id: project_id
+      )
+
+      helper.track_event(event_name, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
+    end
+
+    it 'logs an exception for unknown event' do
+      expect(Gitlab::AppLogger).to receive(:warn).with(
+        "Internal Event tracking event failed for event: #{unknown_event}, message: Unknown event: #{unknown_event}"
+      )
+
+      helper.track_event(unknown_event, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
+    end
+
+    it 'does not track event for nil user_id' do
+      expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+      helper.track_event(unknown_event, user_id: nil, namespace_id: namespace_id, project_id: project_id)
+    end
+  end
+
   shared_examples '#order_options_with_tie_breaker' do
     subject { Class.new.include(described_class).new.order_options_with_tie_breaker }
 

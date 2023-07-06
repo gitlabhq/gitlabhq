@@ -1,71 +1,54 @@
-workflow:
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
-
-default:
-  image: ruby:3.0
-
-before_script:
-  - cd vendor/gems/sidekiq-reliable-fetch
-  - ruby -v
-  - which ruby
-  - gem install bundler
-  - bundle config set --local path 'vendor'      # Install dependencies into ./vendor/ruby
-  - bundle config set with 'development'         # This is set to 'deployment' otherwise
-  - bundle config set --local frozen 'true'      # Disallow Gemfile.lock changes on CI
-  - bundle config                                # Show bundler configuration
-  - bundle install --jobs $(nproc) "${FLAGS[@]}"
-
-variables:
-  REDIS_URL: "redis://redis"
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "sidekiq-reliable-fetch"
+      gem_path_prefix: "vendor/gems/"
 
 rspec:
-  stage: test
-  coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
-  script:
-    - bundle exec rspec
+  extends:
+    - .with_redis
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["3.0", "3.1"] # 3.2 isn't supported yet
+
+.with_redis:
   services:
     - redis:alpine
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
+  variables:
+    REDIS_URL: "redis://redis"
 
-.integration:
-  stage: test
+.reliability:
+  extends:
+    - .with_redis
+    - .ruby_matrix
   script:
     - cd tests/reliability
     - bundle exec ruby reliability_test.rb
-  services:
-    - redis:alpine
 
 integration_semi:
-  extends: .integration
+  extends: .reliability
   variables:
     JOB_FETCHER: semi
 
 integration_reliable:
-  extends: .integration
+  extends: .reliability
   variables:
     JOB_FETCHER: reliable
 
-kill_interruption:
-  stage: test
+.interruption:
+  extends:
+    - .with_redis
+    - .ruby_matrix
   script:
     - cd tests/interruption
-    - bundle exec ruby test_kill_signal.rb
-  services:
-    - redis:alpine
+    - bundle exec ruby "test_${SIGNAL}_signal.rb"
+
+kill_interruption:
+  extends: .interruption
+  variables:
+    SIGNAL: kill
 
 term_interruption:
-  stage: test
-  script:
-    - cd tests/interruption
-    - bundle exec ruby test_term_signal.rb
-  services:
-    - redis:alpine
-
-# rubocop:
-#   script:
-#     - bundle exec rubocop
+  extends: .interruption
+  variables:
+    SIGNAL: term

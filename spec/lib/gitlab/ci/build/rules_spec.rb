@@ -244,59 +244,6 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
                         when: 'never' }]))
         }
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(introduce_rules_with_needs: false)
-        end
-
-        context 'with needs' do
-          context 'when single need is specified' do
-            let(:rule_list) do
-              [{ if: '$VAR == null', needs: [{ name: 'test', artifacts: true, optional: false }] }]
-            end
-
-            it {
-              is_expected.to eq(described_class::Result.new(when: 'on_success'))
-            }
-          end
-
-          context 'when multiple needs are specified' do
-            let(:rule_list) do
-              [{ if: '$VAR == null',
-                 needs: [{ name: 'test', artifacts: true, optional: false },
-                   { name: 'rspec', artifacts: true, optional: false }] }]
-            end
-
-            it {
-              is_expected.to eq(described_class::Result.new(when: 'on_success'))
-            }
-          end
-
-          context 'when there are no needs specified' do
-            let(:rule_list) { [{ if: '$VAR == null' }] }
-
-            it {
-              is_expected.to eq(described_class::Result.new(when: 'on_success'))
-            }
-          end
-
-          context 'when need is specified with additional attibutes' do
-            let(:rule_list) do
-              [{ if: '$VAR == null', needs:  [{
-                artifacts: false,
-                name: 'test',
-                optional: true,
-                when: 'never'
-              }] }]
-            end
-
-            it {
-              is_expected.to eq(described_class::Result.new(when: 'on_success'))
-            }
-          end
-        end
-      end
     end
 
     context 'with variables' do

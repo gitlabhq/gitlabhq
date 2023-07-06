@@ -53,6 +53,38 @@ module API
         status :ok
       end
 
+      desc 'Track gitlab internal events' do
+        detail 'This feature was introduced in GitLab 16.2.'
+        success code: 200
+        failure [
+          { code: 403, message: 'Invalid CSRF token is provided' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[usage_data]
+      end
+      params do
+        requires :event, type: String, desc: 'The event name that should be tracked',
+          documentation: { example: 'i_quickactions_page' }
+        optional :namespace_id, type: Integer, desc: 'Namespace ID',
+          documentation: { example: 1234 }
+        optional :project_id, type: Integer, desc: 'Project ID',
+          documentation: { example: 1234 }
+      end
+      post 'track_event', urgency: :low do
+        event_name = params[:event]
+        namespace_id = params[:namespace_id]
+        project_id = params[:project_id]
+
+        track_event(
+          event_name,
+          user_id: current_user.id,
+          namespace_id: namespace_id,
+          project_id: project_id
+        )
+
+        status :ok
+      end
+
       desc 'Get a list of all metric definitions' do
         detail 'This feature was introduced in GitLab 13.11.'
         success code: 200
