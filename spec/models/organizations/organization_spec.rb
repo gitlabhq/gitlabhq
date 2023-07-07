@@ -148,4 +148,18 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       expect(organization.to_param).to eq('org_path')
     end
   end
+
+  context 'on deleting organizations via SQL' do
+    it 'does not allow to delete default organization' do
+      expect { default_organization.delete }.to raise_error(
+        ActiveRecord::StatementInvalid, /Deletion of the default Organization is not allowed/
+      )
+    end
+
+    it 'allows to delete any other organization' do
+      organization.delete
+
+      expect(described_class.where(id: organization)).not_to exist
+    end
+  end
 end

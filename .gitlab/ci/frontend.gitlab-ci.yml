@@ -371,28 +371,6 @@ bundle-size-review:
     paths:
       - bundle-size-review/
 
-.startup-css-check-base:
-  extends:
-    - .frontend-test-base
-  script:
-    - run_timed_command "yarn generate:startup_css"
-    - yarn check:startup_css
-
-startup-css-check:
-  extends:
-    - .startup-css-check-base
-    - .frontend:rules:default-frontend-jobs
-  needs: ["compile-test-assets", "rspec-all frontend_fixture"]
-
-startup-css-check as-if-foss:
-  extends:
-    - .startup-css-check-base
-    - .as-if-foss
-    - .frontend:rules:default-frontend-jobs-as-if-foss
-  needs:
-    - job: "compile-test-assets as-if-foss"
-    - job: "rspec-all frontend_fixture as-if-foss"
-
 .compile-storybook-base:
   extends:
     - .frontend-test-base

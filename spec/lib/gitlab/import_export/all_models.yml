@@ -814,6 +814,7 @@ project:
 - design_management_repository_state
 - compliance_standards_adherence
 - scan_result_policy_reads
+- project_state
 award_emoji:
 - awardable
 - user

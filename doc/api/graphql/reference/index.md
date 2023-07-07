@@ -10666,6 +10666,29 @@ The edge type for [`ProjectMember`](#projectmember).
 | <a id="projectmemberedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectmemberedgenode"></a>`node` | [`ProjectMember`](#projectmember) | The item at the end of the edge. |
 
+#### `ProjectRepositoryRegistryConnection`
+
+The connection type for [`ProjectRepositoryRegistry`](#projectrepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectrepositoryregistryconnectionedges"></a>`edges` | [`[ProjectRepositoryRegistryEdge]`](#projectrepositoryregistryedge) | A list of edges. |
+| <a id="projectrepositoryregistryconnectionnodes"></a>`nodes` | [`[ProjectRepositoryRegistry]`](#projectrepositoryregistry) | A list of nodes. |
+| <a id="projectrepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectRepositoryRegistryEdge`
+
+The edge type for [`ProjectRepositoryRegistry`](#projectrepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectrepositoryregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectrepositoryregistryedgenode"></a>`node` | [`ProjectRepositoryRegistry`](#projectrepositoryregistry) | The item at the end of the edge. |
+
 #### `ProjectWikiRepositoryRegistryConnection`
 
 The connection type for [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry).
@@ -15683,6 +15706,29 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodepipelineartifactregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
 | <a id="geonodepipelineartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepipelineartifactregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
+##### `GeoNode.projectRepositoryRegistries`
+
+Find Project registries on this Geo node. Ignored if `geo_project_repository_replication` feature flag is disabled.
+
+WARNING:
+**Introduced** in 16.2.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`ProjectRepositoryRegistryConnection`](#projectrepositoryregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodeprojectrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeprojectrepositoryregistrieskeyword"></a>`keyword` | [`String`](#string) | Filters registries by their attributes using a keyword. |
+| <a id="geonodeprojectrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonodeprojectrepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
 ##### `GeoNode.projectWikiRepositoryRegistries`
 
@@ -21542,6 +21588,25 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | Indicates the user can perform `update_wiki` on this resource. |
 | <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | Indicates the user can perform `upload_file` on this resource. |
 
+### `ProjectRepositoryRegistry`
+
+Represents the Geo replication and verification state of a project repository.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectRepositoryRegistry was created. |
+| <a id="projectrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryprojectid"></a>`projectId` | [`ID!`](#id) | ID of the Project. |
+| <a id="projectrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ProjectRepositoryRegistry is resynced. |
+| <a id="projectrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ProjectRepositoryRegistry is reverified. |
+| <a id="projectrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ProjectRepositoryRegistry. |
+
 ### `ProjectSecurityPolicySource`
 
 Represents the source of a security policy belonging to a project.
@@ -25498,6 +25563,7 @@ Geo registry class.
 | <a id="georegistryclasspackage_file_registry"></a>`PACKAGE_FILE_REGISTRY` | Geo::PackageFileRegistry registry class. |
 | <a id="georegistryclasspages_deployment_registry"></a>`PAGES_DEPLOYMENT_REGISTRY` | Geo::PagesDeploymentRegistry registry class. |
 | <a id="georegistryclasspipeline_artifact_registry"></a>`PIPELINE_ARTIFACT_REGISTRY` | Geo::PipelineArtifactRegistry registry class. |
+| <a id="georegistryclassproject_repository_registry"></a>`PROJECT_REPOSITORY_REGISTRY` | Geo::ProjectRepositoryRegistry registry class. |
 | <a id="georegistryclassproject_wiki_repository_registry"></a>`PROJECT_WIKI_REPOSITORY_REGISTRY` | Geo::ProjectWikiRepositoryRegistry registry class. |
 | <a id="georegistryclasssnippet_repository_registry"></a>`SNIPPET_REPOSITORY_REGISTRY` | Geo::SnippetRepositoryRegistry registry class. |
 | <a id="georegistryclassterraform_state_version_registry"></a>`TERRAFORM_STATE_VERSION_REGISTRY` | Geo::TerraformStateVersionRegistry registry class. |

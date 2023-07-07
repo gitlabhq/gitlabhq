@@ -1,110 +1,73 @@
-import Vue from 'vue';
 import { GlButton } from '@gitlab/ui';
-import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import runnerDeleteMutation from '~/ci/runner/graphql/shared/runner_delete.mutation.graphql';
-import waitForPromises from 'helpers/wait_for_promises';
-import { captureException } from '~/ci/runner/sentry_utils';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { createAlert } from '~/alert';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { I18N_DELETE_RUNNER } from '~/ci/runner/constants';
 
 import RunnerDeleteButton from '~/ci/runner/components/runner_delete_button.vue';
-import RunnerDeleteModal from '~/ci/runner/components/runner_delete_modal.vue';
+import RunnerDeleteAction from '~/ci/runner/components/runner_delete_action.vue';
 import { allRunnersData } from '../mock_data';
 
 const mockRunner = allRunnersData.data.runners.nodes[0];
-const mockRunnerId = getIdFromGraphQLId(mockRunner.id);
-const mockRunnerName = `#${mockRunnerId} (${mockRunner.shortSha})`;
-
-Vue.use(VueApollo);
 
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
 describe('RunnerDeleteButton', () => {
   let wrapper;
-  let apolloProvider;
-  let apolloCache;
-  let runnerDeleteHandler;
 
   const findBtn = () => wrapper.findComponent(GlButton);
-  const findModal = () => wrapper.findComponent(RunnerDeleteModal);
-
   const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
-  const getModal = () => getBinding(findBtn().element, 'gl-modal').value;
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
-    const { runner, ...propsData } = props;
-
-    wrapper = mountFn(RunnerDeleteButton, {
+  const createComponent = ({ props = {}, loading, onClick = jest.fn() } = {}) => {
+    wrapper = shallowMountExtended(RunnerDeleteButton, {
       propsData: {
-        runner: {
-          // We need typename so that cache.identify works
-          // eslint-disable-next-line no-underscore-dangle
-          __typename: mockRunner.__typename,
-          id: mockRunner.id,
-          shortSha: mockRunner.shortSha,
-          ...runner,
-        },
-        ...propsData,
+        runner: mockRunner,
+        ...props,
       },
-      apolloProvider,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
-        GlModal: createMockDirective('gl-modal'),
+      },
+      stubs: {
+        RunnerDeleteAction: stubComponent(RunnerDeleteAction, {
+          render() {
+            return this.$scopedSlots.default({
+              loading,
+              onClick,
+            });
+          },
+        }),
       },
     });
-  };
-
-  const clickOkAndWait = async () => {
-    findModal().vm.$emit('primary');
-    await waitForPromises();
   };
 
   beforeEach(() => {
-    runnerDeleteHandler = jest.fn().mockImplementation(() => {
-      return Promise.resolve({
-        data: {
-          runnerDelete: {
-            errors: [],
-          },
-        },
-      });
-    });
-    apolloProvider = createMockApollo([[runnerDeleteMutation, runnerDeleteHandler]]);
-    apolloCache = apolloProvider.defaultClient.cache;
-
-    jest.spyOn(apolloCache, 'evict');
-    jest.spyOn(apolloCache, 'gc');
-
     createComponent();
   });
 
-  it('Displays a delete button without an icon', () => {
+  it('Displays a delete button without a icon or tooltip', () => {
     expect(findBtn().props()).toMatchObject({
       loading: false,
       icon: '',
     });
     expect(findBtn().classes('btn-icon')).toBe(false);
     expect(findBtn().text()).toBe(I18N_DELETE_RUNNER);
-  });
 
-  it('Displays a modal with the runner name', () => {
-    expect(findModal().props('runnerName')).toBe(mockRunnerName);
+    expect(getTooltip()).toBe('');
   });
 
   it('Does not have tabindex when button is enabled', () => {
     expect(wrapper.attributes('tabindex')).toBeUndefined();
   });
 
-  it('Displays a modal when clicked', () => {
-    const modalId = `delete-runner-modal-${mockRunnerId}`;
+  it('Triggers delete when clicked', () => {
+    const mockOnClick = jest.fn();
 
-    expect(getModal()).toBe(modalId);
-    expect(findModal().attributes('modal-id')).toBe(modalId);
+    createComponent({ onClick: mockOnClick });
+    expect(mockOnClick).not.toHaveBeenCalled();
+
+    findBtn().vm.$emit('click');
+    expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
 
   it('Does not display redundant text for screen readers', () => {
@@ -117,135 +80,41 @@ describe('RunnerDeleteButton', () => {
     expect(findBtn().props('category')).toBe('secondary');
   });
 
-  describe(`Before the delete button is clicked`, () => {
-    it('The mutation has not been called', () => {
-      expect(runnerDeleteHandler).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  describe('Immediately after the delete button is clicked', () => {
+  describe('When loading result', () => {
     beforeEach(() => {
-      findModal().vm.$emit('primary');
+      createComponent({ loading: true });
     });
 
     it('The button has a loading state', () => {
       expect(findBtn().props('loading')).toBe(true);
     });
+  });
 
-    it('The stale tooltip is removed', () => {
-      expect(getTooltip()).toBe('');
+  describe('When done after deleting', () => {
+    const doneEvent = { message: 'done!' };
+
+    beforeEach(() => {
+      wrapper.findComponent(RunnerDeleteAction).vm.$emit('done', doneEvent);
+    });
+
+    it('emits deleted event', () => {
+      expect(wrapper.emitted('deleted')).toEqual([[doneEvent]]);
     });
   });
 
-  describe('After clicking on the delete button', () => {
-    beforeEach(async () => {
-      await clickOkAndWait();
-    });
-
-    it('The mutation to delete is called', () => {
-      expect(runnerDeleteHandler).toHaveBeenCalledTimes(1);
-      expect(runnerDeleteHandler).toHaveBeenCalledWith({
-        input: {
-          id: mockRunner.id,
-        },
-      });
-    });
-
-    it('The user can be notified with an event', () => {
-      const deleted = wrapper.emitted('deleted');
-
-      expect(deleted).toHaveLength(1);
-      expect(deleted[0][0].message).toMatch(`#${mockRunnerId}`);
-      expect(deleted[0][0].message).toMatch(`${mockRunner.shortSha}`);
-    });
-
-    it('evicts runner from apollo cache', () => {
-      expect(apolloCache.evict).toHaveBeenCalledWith({
-        id: apolloCache.identify(mockRunner),
-      });
-      expect(apolloCache.gc).toHaveBeenCalled();
-    });
-  });
-
-  describe('When update fails', () => {
-    describe('On a network error', () => {
-      const mockErrorMsg = 'Update error!';
-
-      beforeEach(async () => {
-        runnerDeleteHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
-
-        await clickOkAndWait();
-      });
-
-      it('error is reported to sentry', () => {
-        expect(captureException).toHaveBeenCalledWith({
-          error: new Error(mockErrorMsg),
-          component: 'RunnerDeleteButton',
-        });
-      });
-
-      it('error is shown to the user', () => {
-        expect(createAlert).toHaveBeenCalledTimes(1);
-        expect(createAlert).toHaveBeenCalledWith({
-          title: expect.stringContaining(mockRunnerName),
-          message: mockErrorMsg,
-        });
-      });
-    });
-
-    describe('On a validation error', () => {
-      const mockErrorMsg = 'Runner not found!';
-      const mockErrorMsg2 = 'User not allowed!';
-
-      beforeEach(async () => {
-        runnerDeleteHandler.mockResolvedValueOnce({
-          data: {
-            runnerDelete: {
-              errors: [mockErrorMsg, mockErrorMsg2],
-            },
-          },
-        });
-
-        await clickOkAndWait();
-      });
-
-      it('error is reported to sentry', () => {
-        expect(captureException).toHaveBeenCalledWith({
-          error: new Error(`${mockErrorMsg} ${mockErrorMsg2}`),
-          component: 'RunnerDeleteButton',
-        });
-      });
-
-      it('error is shown to the user', () => {
-        expect(createAlert).toHaveBeenCalledTimes(1);
-        expect(createAlert).toHaveBeenCalledWith({
-          title: expect.stringContaining(mockRunnerName),
-          message: `${mockErrorMsg} ${mockErrorMsg2}`,
-        });
-      });
-
-      it('does not evict runner from apollo cache', () => {
-        expect(apolloCache.evict).not.toHaveBeenCalled();
-        expect(apolloCache.gc).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('When displaying a compact button for an active runner', () => {
+  describe('When displaying a compact button', () => {
     beforeEach(() => {
       createComponent({
-        props: {
-          runner: {
-            paused: false,
-          },
-          compact: true,
-        },
-        mountFn: mountExtended,
+        props: { compact: true },
       });
     });
 
     it('Displays no text', () => {
       expect(findBtn().text()).toBe('');
+    });
+
+    it('Displays "x" icon', () => {
+      expect(findBtn().props('icon')).toBe('close');
       expect(findBtn().classes('btn-icon')).toBe(true);
     });
 
@@ -254,13 +123,12 @@ describe('RunnerDeleteButton', () => {
       expect(getTooltip()).toBe(I18N_DELETE_RUNNER);
     });
 
-    describe('Immediately after the button is clicked', () => {
+    describe('When loading result', () => {
       beforeEach(() => {
-        findModal().vm.$emit('primary');
-      });
-
-      it('The button has a loading state', () => {
-        expect(findBtn().props('loading')).toBe(true);
+        createComponent({
+          props: { compact: true },
+          loading: true,
+        });
       });
 
       it('The stale tooltip is removed', () => {

@@ -1,15 +1,14 @@
 import { GlModal } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import RunnerDeleteModal from '~/ci/runner/components/runner_delete_modal.vue';
 
 describe('RunnerDeleteModal', () => {
   let wrapper;
-  const hideModalSpy = jest.fn();
 
   const findGlModal = () => wrapper.findComponent(GlModal);
 
-  const createComponent = ({ props = {} } = {}, mountFn = shallowMount) => {
+  const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMount) => {
     wrapper = mountFn(RunnerDeleteModal, {
       attachTo: document.body,
       propsData: {
@@ -19,11 +18,7 @@ describe('RunnerDeleteModal', () => {
       attrs: {
         modalId: 'delete-runner-modal-99',
       },
-      stubs: {
-        GlModal: stubComponent(GlModal, {
-          methods: { hide: hideModalSpy },
-        }),
-      },
+      ...options,
     });
   };
 
@@ -73,10 +68,35 @@ describe('RunnerDeleteModal', () => {
     });
   });
 
-  describe('When modal is confirmed by the user', () => {
-    it('Modal gets hidden', () => {
-      createComponent({}, mount);
+  describe('Modal API', () => {
+    let hideModalSpy;
+    let showModalSpy;
 
+    beforeEach(() => {
+      hideModalSpy = jest.fn();
+      showModalSpy = jest.fn();
+
+      createComponent({
+        stubs: {
+          GlModal: stubComponent(GlModal, {
+            methods: {
+              hide: hideModalSpy,
+              show: showModalSpy,
+            },
+          }),
+        },
+      });
+    });
+
+    it('When "show" method is called, modal is shown', () => {
+      expect(showModalSpy).toHaveBeenCalledTimes(0);
+
+      wrapper.vm.show();
+
+      expect(showModalSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('When confirmed, modal gets hidden', () => {
       expect(hideModalSpy).toHaveBeenCalledTimes(0);
 
       findGlModal().vm.$emit('primary');

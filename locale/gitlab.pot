@@ -47848,6 +47848,9 @@ msgstr ""
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
 msgstr ""
 
+msgid "To set up this feature, contact your administrator."
+msgstr ""
+
 msgid "To set up this integration:"
 msgstr ""
 

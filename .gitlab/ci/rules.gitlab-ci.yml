@@ -312,9 +312,6 @@
 .lib-gitlab-patterns: &lib-gitlab-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*"
 
-.startup-css-patterns: &startup-css-patterns
-  - "{,ee/,jh/}app/assets/stylesheets/startup/**/*"
-
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
   - "{,jh/}Gemfile{,.lock}"
@@ -1182,8 +1179,6 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
-      changes: *startup-css-patterns
-    - <<: *if-default-refs
       changes: *workhorse-patterns
 
 .frontend:rules:default-frontend-jobs:
@@ -1204,8 +1199,6 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request
-      changes: *startup-css-patterns
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 

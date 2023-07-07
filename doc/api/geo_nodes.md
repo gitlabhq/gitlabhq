@@ -560,7 +560,19 @@ Example response:
     "design_management_repositories_verified_count": 5,
     "design_management_repositories_verification_failed_count": 5,
     "design_management_repositories_synced_in_percentage": "100.00%",
-    "design_management_repositories_verified_in_percentage": "100.00%"
+    "design_management_repositories_verified_in_percentage": "100.00%",
+    "project_repositories_count": 5,
+    "project_repositories_checksum_total_count": 5,
+    "project_repositories_checksummed_count": 5,
+    "project_repositories_checksum_failed_count": 0,
+    "project_repositories_synced_count": 5,
+    "project_repositories_failed_count": 0,
+    "project_repositories_registry_count": 5,
+    "project_repositories_verification_total_count": 5,
+    "project_repositories_verified_count": 5,
+    "project_repositories_verification_failed_count": 0,
+    "project_repositories_synced_in_percentage": "100.00%",
+    "project_repositories_verified_in_percentage": "100.00%"
   },
   {
     "geo_node_id": 2,
@@ -775,7 +787,19 @@ Example response:
     "dependency_proxy_manifests_verified_count": 5,
     "dependency_proxy_manifests_verification_failed_count": 5,
     "dependency_proxy_manifests_synced_in_percentage": "100.00%",
-    "dependency_proxy_manifests_verified_in_percentage": "100.00%"
+    "dependency_proxy_manifests_verified_in_percentage": "100.00%",
+    "project_repositories_count": 5,
+    "project_repositories_checksum_total_count": 5,
+    "project_repositories_checksummed_count": 5,
+    "project_repositories_checksum_failed_count": 0,
+    "project_repositories_synced_count": 5,
+    "project_repositories_failed_count": 0,
+    "project_repositories_registry_count": 5,
+    "project_repositories_verification_total_count": 5,
+    "project_repositories_verified_count": 5,
+    "project_repositories_verification_failed_count": 0,
+    "project_repositories_synced_in_percentage": "100.00%",
+    "project_repositories_verified_in_percentage": "100.00%"
   }
 ]
 ```
@@ -1000,7 +1024,19 @@ Example response:
   "design_management_repositories_verified_count": 5,
   "design_management_repositories_verification_failed_count": 5,
   "design_management_repositories_synced_in_percentage": "100.00%",
-  "design_management_repositories_verified_in_percentage": "100.00%"
+  "design_management_repositories_verified_in_percentage": "100.00%",
+  "project_repositories_count": 5,
+  "project_repositories_checksum_total_count": 5,
+  "project_repositories_checksummed_count": 5,
+  "project_repositories_checksum_failed_count": 0,
+  "project_repositories_synced_count": 5,
+  "project_repositories_failed_count": 0,
+  "project_repositories_registry_count": 5,
+  "project_repositories_verification_total_count": 5,
+  "project_repositories_verified_count": 5,
+  "project_repositories_verification_failed_count": 0,
+  "project_repositories_synced_in_percentage": "100.00%",
+  "project_repositories_verified_in_percentage": "100.00%"
 }
 ```
 

@@ -2646,12 +2646,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(diff).to be_empty, failure_message(diff)
       end
 
-      def failure_message(_diff)
+      def failure_message(diff)
         <<~MSG
           It looks like project's set of exposed attributes is different from the expected set.
 
           The following attributes are missing or newly added:
-          {diff.to_a.to_sentence}
+          #{diff.to_a.to_sentence}
 
           Please update #{project_attributes_file} file"
         MSG

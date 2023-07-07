@@ -52,6 +52,9 @@ export default {
     },
   },
   methods: {
+    show() {
+      this.$refs.modal.show();
+    },
     onPrimary() {
       this.$refs.modal.hide();
     },
