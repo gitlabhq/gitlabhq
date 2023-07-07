@@ -180,10 +180,13 @@ export default {
       ].join(':'),
   ),
   shouldRenderCommentButton: memoize(
-    (props) => {
-      return isLoggedIn() && !props.line.isContextLineLeft && !props.line.isMetaLineLeft;
+    (props, side) => {
+      return (
+        isLoggedIn() && !props.line[`isContextLine${side}`] && !props.line[`isMetaLine${side}`]
+      );
     },
-    (props) => [props.line.isContextLineLeft, props.line.isMetaLineLeft].join(':'),
+    (props, side) =>
+      [props.line[`isContextLine${side}`], props.line[`isMetaLine${side}`]].join(':'),
   ),
   interopLeftAttributes(props) {
     if (props.inline) {
@@ -237,7 +240,7 @@ export default {
           <span
             v-if="
               !props.line.left.isConflictMarker &&
-              $options.shouldRenderCommentButton(props) &&
+              $options.shouldRenderCommentButton(props, 'Left') &&
               !props.line.hasDiscussionsLeft
             "
             class="add-diff-note tooltip-wrapper has-tooltip"
@@ -384,7 +387,10 @@ export default {
         <div :class="$options.classNameMapCellRight(props)" class="diff-td diff-line-num new_line">
           <template v-if="props.line.right.type !== $options.CONFLICT_MARKER_THEIR">
             <span
-              v-if="$options.shouldRenderCommentButton(props) && !props.line.hasDiscussionsRight"
+              v-if="
+                $options.shouldRenderCommentButton(props, 'Right') &&
+                !props.line.hasDiscussionsRight
+              "
               class="add-diff-note tooltip-wrapper has-tooltip"
               :title="props.line.right.addCommentTooltip"
             >

@@ -37,7 +37,7 @@ describe('HighlightMixin', () => {
       },
       template: '<div>{{chunks[0]?.highlightedContent}}</div>',
       created() {
-        this.initHighlightWorker({ rawTextBlob, simpleViewer, language });
+        this.initHighlightWorker({ rawTextBlob, simpleViewer, language, fileType });
       },
       methods: { onError: onErrorMock },
     };
@@ -87,6 +87,7 @@ describe('HighlightMixin', () => {
       expect(workerMock.postMessage.mock.calls[1][0]).toMatchObject({
         content: rawTextBlob,
         language: languageMock,
+        fileType: TEXT_FILE_TYPE,
       });
     });
   });

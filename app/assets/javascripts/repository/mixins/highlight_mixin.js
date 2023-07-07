@@ -37,7 +37,7 @@ export default {
       this.trackEvent(EVENT_LABEL_FALLBACK, language);
       this?.onError();
     },
-    initHighlightWorker({ rawTextBlob, language, simpleViewer }) {
+    initHighlightWorker({ rawTextBlob, language, simpleViewer, fileType }) {
       if (simpleViewer?.fileType !== TEXT_FILE_TYPE || !this.glFeatures.highlightJsWorker) return;
 
       if (this.isUnsupportedLanguage(language)) {
@@ -71,14 +71,14 @@ export default {
       this.instructWorker(firstSeventyLines, language);
 
       // Instruct the worker to start highlighting all lines in the background.
-      this.instructWorker(rawTextBlob, language);
+      this.instructWorker(rawTextBlob, language, fileType);
     },
     handleWorkerMessage({ data }) {
       this.chunks = data;
       this.highlightHash(); // highlight the line if a line number hash is present in the URL
     },
-    instructWorker(content, language) {
-      this.highlightWorker.postMessage({ content, language });
+    instructWorker(content, language, fileType) {
+      this.highlightWorker.postMessage({ content, language, fileType });
     },
     async highlightHash() {
       const { hash } = this.$route;

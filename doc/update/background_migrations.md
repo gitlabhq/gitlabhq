@@ -4,26 +4,24 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Check for background migrations before upgrading
+# Background migrations and upgrades **(FREE SELF)**
 
-Certain releases may require different migrations to be
-finished before you update to the newer version.
+Certain releases may require different migrations to be finished before you
+update to the newer version. Two kinds of migrations exist. They differ, and you
+should check that both are complete before upgrading GitLab:
 
-There are two kinds of migrations:
+- [Batched background migrations](#batched-background-migrations), available in GitLab 14.0 and later.
+- [Background migrations](#background-migrations) that are not batched.
 
-- [Background migrations](#background-migrations)
-- [Batched background migrations](#batched-background-migrations) (available in GitLab 14.0 and later)
-
-Background migrations and batched migrations are not the same, so you should check that both are
-complete before updating.
-
-Decrease the time required to complete these migrations by increasing the number of
+To decrease the time required to complete these migrations, increase the number of
 [Sidekiq workers](../administration/sidekiq/extra_sidekiq_processes.md)
 that can process jobs in the `background_migration` queue.
 
 ## Background migrations
 
-### Pending migrations
+### Check for pending background migrations
+
+To check for pending background migrations:
 
 ::Tabs
 
@@ -44,43 +42,45 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::Ba
 
 ::EndTabs
 
-### Failed migrations
+### Check for failed background migrations
+
+To check for background migrations that have failed:
 
 ::Tabs
 
 :::TabTitle Linux package (Omnibus)
 
-For GitLab 14.0-14.9:
-
-```shell
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
-```
-
-For GitLab 14.10 and later:
+For GitLab versions 14.10 and later:
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
-:::TabTitle Self-compiled (source)
-
-For GitLab 14.0-14.9:
+For GitLab versions 14.0-14.9:
 
 ```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
 ```
 
-For GitLab 14.10 and later:
+:::TabTitle Self-compiled (source)
+
+For GitLab versions 14.10 and later:
 
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
+For GitLab versions 14.0-14.9:
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+```
+
 ::EndTabs
 
-## Batched background migrations **(FREE SELF)**
+## Batched background migrations
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51332) in GitLab 13.11, [behind a feature flag](../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
@@ -97,27 +97,61 @@ are created by GitLab developers and run automatically on upgrade. However, such
 limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
 prevent integer overflow for some tables.
 
-Some installations [may need to run GitLab 14.0 for at least a day](index.md#1400) to complete the database changes introduced by that upgrade.
+Some installations [may need to run GitLab 14.0 for at least a day](index.md#1400)
+to complete the database changes introduced by that upgrade.
 
-Batched background migrations are handled by Sidekiq and [run in isolation](../development/database/batched_background_migrations.md#isolation), so an instance can remain operational while the migrations are processed. However, there may be performance degradation on larger instances that are heavily used while batched background migrations are run, so it's a good idea to [actively monitor the Sidekiq status](../user/admin_area/index.md#background-jobs) until all migrations are completed.
+Batched background migrations are handled by Sidekiq and
+[run in isolation](../development/database/batched_background_migrations.md#isolation),
+so an instance can remain operational while the migrations are processed. However,
+performance might degrade on larger instances that are heavily used while
+batched background migrations are run. You should
+[Actively monitor the Sidekiq status](../user/admin_area/index.md#background-jobs)
+until all migrations are completed.
 
 ### Check the status of batched background migrations
+
+You can check the status of batched background migrations in the GitLab UI, or
+by querying the database directly. Before you upgrade GitLab, all migrations must
+have a `Finished` status.
+
+If the migrations are not finished and you try to upgrade GitLab, you might
+see this error:
+
+```plaintext
+Expected batched background migration for the given configuration to be marked
+as 'finished', but it is 'active':
+```
+
+If you get this error,
+[review the options](#database-migrations-failing-because-of-batched-background-migration-not-finished) for
+how to complete the batched background migrations needed for the GitLab upgrade.
+
+#### From the GitLab UI
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 To check the status of batched background migrations:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
+1. Select **Queued** or **Finalizing** to see incomplete migrations,
+   and **Failed** for failed migrations.
 
-   ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
+#### From the database
 
-All migrations must have a `Finished` status before you upgrade GitLab.
+Prerequisites:
 
-The status of batched background migrations can also be queried directly in the database.
+- You must have administrator access to the instance.
 
-1. Log into a `psql` prompt according to the directions for your instance's installation method
-(for example, `sudo gitlab-psql` for Linux package installations).
-1. Run the following query in the `psql` session to see details on incomplete batched background migrations:
+To query the database directly for the status of batched background migrations:
+
+1. Log into a `psql` prompt, according to the directions for your instance's
+   installation method. For example, `sudo gitlab-psql` for Linux package installations.
+1. To see details on incomplete batched background migrations, run this query in
+   the `psql` session:
 
    ```sql
    SELECT
@@ -127,17 +161,7 @@ The status of batched background migrations can also be queried directly in the 
      job_arguments
    FROM batched_background_migrations
    WHERE status <> 3;
-    ```
-
-If the migrations are not finished and you try to update to a later version,
-GitLab prompts you with an error:
-
-```plaintext
-Expected batched background migration for the given configuration to be marked
-as 'finished', but it is 'active':
-```
-
-If you get this error, [check the batched background migration options](#database-migrations-failing-because-of-batched-background-migration-not-finished) to complete the upgrade.
+   ```
 
 ### Pause batched background migrations in GitLab 14.x
 
@@ -145,6 +169,10 @@ To pause an ongoing batched background migration,
 [disable the batched background migrations feature](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
 Disabling the feature completes the current batch of migrations, then waits to start
 the next batch until after the feature is enabled again.
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 Use the following database queries to see the state of the current batched background migration:
 
@@ -256,6 +284,10 @@ version of GitLab.
 To determine why the batched background migration failed,
 [view the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs) or:
 
+Prerequisites:
+
+- You must have administrator access to the instance.
+
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
@@ -267,6 +299,10 @@ If you are a GitLab customer, consider opening a [Support Request](https://suppo
 to debug why the batched background migrations failed.
 
 To correct the problem, you can retry the failed batched background migrations:
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -282,7 +318,7 @@ on a regular interval.
 
 ### Database migrations failing because of batched background migration not finished
 
-When updating to GitLab 14.2 or later there might be a database migration failing with a message like:
+When updating to GitLab version 14.2 or later, database migrations might fail with a message like:
 
 ```plaintext
 StandardError: An error has occurred, all later migrations canceled:

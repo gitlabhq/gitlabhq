@@ -17,6 +17,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Abstraction for
   - OpenAI
   - Google Vertex AI
+  - Anthropic
 - Rate Limiting
 - Circuit Breaker
 - Multi-Level feature flags
@@ -29,6 +30,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Experimental API endpoints for exploration of AI APIs by GitLab team members without the need for credentials
   - OpenAI
   - Google Vertex AI
+  - Anthropic
 
 ## Feature flags
 

@@ -63,9 +63,6 @@ export default {
     shouldHighlight() {
       return Boolean(this.highlightedContent) && (this.hasAppeared || this.isHighlighted);
     },
-    lines() {
-      return this.content.split('\n');
-    },
     pageSearchString() {
       const page = getPageParamValue(this.number);
       return getPageSearchString(this.blamePath, page);
@@ -123,7 +120,7 @@ export default {
 
       <pre
         class="gl-m-0 gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-0"
-      ><code v-if="shouldHighlight" v-once v-safe-html="highlightedContent" data-testid="content"></code><code v-else-if="!isLoading" v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
+      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" data-testid="content"></code><code v-else-if="!isLoading" v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
     </div>
   </gl-intersection-observer>
 </template>

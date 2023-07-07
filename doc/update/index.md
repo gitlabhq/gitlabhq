@@ -294,8 +294,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   migration may take multiple days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 16.1.0.
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.x.
-  - Versions containing fix: GitLab 16.2.0 and later.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
 - Geo: Some project imports do not initialize design repositories on project creation. Since the migration of project designs to SSF, [missing design repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/414279). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these design repositories. If you have not imported projects you are not impacted by this issue.
   - Impacted versions: GitLab versions 16.1.x.
   - Versions containing fix: GitLab 16.2.0 and later.
@@ -310,8 +310,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
   [throw errors on startup](../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.x.
-  - Versions containing fix: GitLab 16.2.0 and later.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
 
 ### 15.11.1
 
@@ -319,8 +319,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   require the Maintainer role instead of only requiring the Developer role. For more information, see the documentation
   for any importers you use.
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.x.
-  - Versions containing fix: GitLab 16.2.0 and later.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
 
 ### 15.11.0
 
@@ -328,8 +328,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   - Perform an intermediate upgrade to any version between 15.5 and 15.10 before upgrading to 15.11, or
   - Target version 15.11.3 or later.
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.x.
-  - Versions containing fix: GitLab 16.2 and later.
+  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
+  - Versions containing fix: GitLab 16.1.3 and later.
 
 ### 15.10.5
 
