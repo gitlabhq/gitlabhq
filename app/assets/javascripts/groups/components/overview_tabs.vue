@@ -3,6 +3,7 @@ import { GlTabs, GlTab, GlSearchBoxByType, GlSorting, GlSortingItem } from '@git
 import { isString, debounce } from 'lodash';
 import { __ } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import GroupsStore from '../store/groups_store';
 import GroupsService from '../service/groups_service';
 import ArchivedProjectsService from '../service/archived_projects_service';
@@ -40,7 +41,7 @@ export default {
       {
         title: this.$options.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
         key: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
-        emptyStateComponent: SubgroupsAndProjectsEmptyState,
+        emptyStateComponent: markRaw(SubgroupsAndProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
         service: new GroupsService(
           this.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
@@ -52,7 +53,7 @@ export default {
       {
         title: this.$options.i18n[ACTIVE_TAB_SHARED],
         key: ACTIVE_TAB_SHARED,
-        emptyStateComponent: SharedProjectsEmptyState,
+        emptyStateComponent: markRaw(SharedProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_SHARED,
         service: new GroupsService(this.endpoints[ACTIVE_TAB_SHARED], this.initialSort),
         store: new GroupsStore(),
@@ -61,7 +62,7 @@ export default {
       {
         title: this.$options.i18n[ACTIVE_TAB_ARCHIVED],
         key: ACTIVE_TAB_ARCHIVED,
-        emptyStateComponent: ArchivedProjectsEmptyState,
+        emptyStateComponent: markRaw(ArchivedProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_ARCHIVED,
         service: new ArchivedProjectsService(this.groupId, this.initialSort),
         store: new GroupsStore(),

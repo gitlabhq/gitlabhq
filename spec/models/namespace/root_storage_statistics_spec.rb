@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::RootStorageStatistics, type: :model do
+RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category: :consumables_cost_management do
   it { is_expected.to belong_to :namespace }
   it { is_expected.to have_one(:route).through(:namespace) }
 
@@ -123,10 +123,21 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
       let_it_be(:group1) { create(:group, parent: root_group) }
       let_it_be(:subgroup1) { create(:group, parent: group1) }
       let_it_be(:group2) { create(:group, parent: root_group) }
-      let_it_be(:root_namespace_stat) { create(:namespace_statistics, namespace: root_group, storage_size: 100, dependency_proxy_size: 100) }
-      let_it_be(:group1_namespace_stat) { create(:namespace_statistics, namespace: group1, storage_size: 200, dependency_proxy_size: 200) }
-      let_it_be(:group2_namespace_stat) { create(:namespace_statistics, namespace: group2, storage_size: 300, dependency_proxy_size: 300) }
-      let_it_be(:subgroup1_namespace_stat) { create(:namespace_statistics, namespace: subgroup1, storage_size: 300, dependency_proxy_size: 100) }
+      let_it_be(:root_namespace_stat) do
+        create(:namespace_statistics, namespace: root_group, storage_size: 100, dependency_proxy_size: 100)
+      end
+
+      let_it_be(:group1_namespace_stat) do
+        create(:namespace_statistics, namespace: group1, storage_size: 200, dependency_proxy_size: 200)
+      end
+
+      let_it_be(:group2_namespace_stat) do
+        create(:namespace_statistics, namespace: group2, storage_size: 300, dependency_proxy_size: 300)
+      end
+
+      let_it_be(:subgroup1_namespace_stat) do
+        create(:namespace_statistics, namespace: subgroup1, storage_size: 300, dependency_proxy_size: 100)
+      end
 
       let(:namespace) { root_group }
 
@@ -148,8 +159,12 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         total_pipeline_artifacts_size = project_stat1.pipeline_artifacts_size + project_stat2.pipeline_artifacts_size
         total_uploads_size = project_stat1.uploads_size + project_stat2.uploads_size
         total_wiki_size = project_stat1.wiki_size + project_stat2.wiki_size
-        total_dependency_proxy_size = root_namespace_stat.dependency_proxy_size + group1_namespace_stat.dependency_proxy_size + group2_namespace_stat.dependency_proxy_size + subgroup1_namespace_stat.dependency_proxy_size
-        total_storage_size = project_stat1.storage_size + project_stat2.storage_size + root_namespace_stat.storage_size + group1_namespace_stat.storage_size + group2_namespace_stat.storage_size + subgroup1_namespace_stat.storage_size
+        total_dependency_proxy_size = root_namespace_stat.dependency_proxy_size +
+          group1_namespace_stat.dependency_proxy_size + group2_namespace_stat.dependency_proxy_size +
+          subgroup1_namespace_stat.dependency_proxy_size
+        total_storage_size = project_stat1.storage_size + project_stat2.storage_size +
+          root_namespace_stat.storage_size + group1_namespace_stat.storage_size +
+          group2_namespace_stat.storage_size + subgroup1_namespace_stat.storage_size
 
         expect(root_storage_statistics.repository_size).to eq(total_repository_size)
         expect(root_storage_statistics.lfs_objects_size).to eq(total_lfs_objects_size)
@@ -209,7 +224,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
           root_storage_statistics.recalculate!
 
-          expect(root_storage_statistics.snippets_size).to eq(total_personal_snippets_size + total_project_snippets_size)
+          total = total_personal_snippets_size + total_project_snippets_size
+          expect(root_storage_statistics.snippets_size).to eq(total)
         end
 
         context 'when personal snippets do not have statistics' do
@@ -219,7 +235,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
             root_storage_statistics.recalculate!
 
-            expect(root_storage_statistics.snippets_size).to eq(total_project_snippets_size + snippets.last.statistics.repository_size)
+            total = total_project_snippets_size + snippets.last.statistics.repository_size
+            expect(root_storage_statistics.snippets_size).to eq(total)
           end
         end
       end
@@ -293,7 +310,9 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
         root_storage_statistics.reload
         expect(root_storage_statistics.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
-        expect(root_storage_statistics.storage_size).to eq(project.statistics.storage_size + project_fork.statistics.storage_size)
+
+        total = project.statistics.storage_size + project_fork.statistics.storage_size
+        expect(root_storage_statistics.storage_size).to eq(total)
       end
 
       it 'sets the public forks storage size back to zero' do

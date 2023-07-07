@@ -68,8 +68,9 @@ To create a KMS key using the AWS Console:
         1. Key material origin: **KMS**
         1. Regionality: **Multi-Region key**
 1. Enter your values for key alias, description, and tags.
-1. Select Key administrators (optionally allow or deny key administrators to delete the key).
-1. For Key usage permissions, add the GitLab AWS account using the **Other AWS accounts** dialog.
+1. Select key administrators.
+1. Optional. Allow or prevent key administrators from deleting the key.
+1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS account.
 
 The last page asks you to confirm the KMS key policy. It should look similar to the following example, populated with your account IDs and usernames:
 

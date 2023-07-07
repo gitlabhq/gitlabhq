@@ -149,6 +149,12 @@ stages:
     - bundle exec prepare-stage-reports --input-files "${QA_RSPEC_XML_FILE_PATTERN}"
     - !reference [.notify-slack-qa, script]
 
+.failure-videos:
+  variables:
+    USE_SELENOID: "true"
+    QA_RECORD_VIDEO: "true"
+    QA_REMOTE_GRID: "selenoid:4444"
+
 # ==========================================
 # Pre stage
 # ==========================================

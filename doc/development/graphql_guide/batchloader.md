@@ -161,7 +161,7 @@ you do so, you do not need to manage the lifecycle of lazy values yourself, and
 you are assured accurate results.
 
 GraphQL fields that return lazy values may need these values forced in tests.
-Forcing refers to explicit demands for evaluation, where this would normally
+Forcing refers to explicit demands for evaluation, where this would usually
 be arranged by the framework.
 
 You can force a lazy value with the `GraphqlHelpers#batch_sync` method available in [GraphQLHelpers](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/graphql_helpers.rb), or by using `Gitlab::Graphql::Lazy.force`. For example:

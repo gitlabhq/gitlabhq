@@ -1,46 +1,11 @@
 ---
-stage: Plan
-group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../../../administration/analytics/usage_trends.md'
+remove_date: '2023-10-07'
 ---
 
-# Usage Trends **(FREE SELF)**
+This document was moved to [another location](../../../administration/analytics/usage_trends.md).
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235754) in GitLab 13.5 behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46962) in GitLab 13.6.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/285220) from Instance Statistics to Usage Trends in GitLab 13.6.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-
-Usage Trends gives you an overview of how much data your instance contains, and how quickly this volume is changing over time.
-Usage Trends data refreshes daily.
-
-## View Usage Trends
-
-To view Usage Trends:
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. Select **Analytics > Usage Trends**.
-
-## Total counts
-
-At the top of the page, Usage Trends shows total counts for:
-
-- Users
-- Projects
-- Groups
-- Issues
-- Merge requests
-- Pipelines
-
-These figures can be useful for understanding how much data your instance contains in total.
-
-## Past year trend charts
-
-Usage Trends also displays line charts that show total counts per month, over the past 12 months,
-in the categories shown in [Total counts](#total-counts).
-
-These charts help you visualize how rapidly these records are being created on your instance.
-
-![Instance Activity Pipelines chart](img/instance_activity_pipelines_chart_v13_6_a.png)
+<!-- This redirect file can be deleted after <2023-10-07>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

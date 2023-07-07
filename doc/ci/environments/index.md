@@ -603,7 +603,7 @@ To stop an environment in the GitLab UI:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Operate > Environments**.
 1. Next to the environment you want to stop, select **Stop**.
-1. On the confirmation dialog box, select **Stop environment**.
+1. On the confirmation dialog, select **Stop environment**.
 
 #### Multiple stop actions for an environment
 
@@ -668,7 +668,7 @@ To delete an environment:
 1. Select **Operate > Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
-1. On the confirmation dialog box, select **Delete environment**.
+1. On the confirmation dialog, select **Delete environment**.
 
 ### Access an environment for preparation or verification purposes
 

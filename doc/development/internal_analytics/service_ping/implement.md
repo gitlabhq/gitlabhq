@@ -783,7 +783,7 @@ By default, it comes with a fully configured Prometheus service that is set up t
 However, it has the following limitations:
 
 - It does not run a `gitlab-exporter` instance, so several `process_*` metrics from services such as Gitaly may be missing.
-- While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it normally reports itself as not associated
+- While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it usually reports itself as not associated
   with any of the other running services. That is not how node metrics are reported in a production setup, where `node_exporter`
   always runs as a process alongside other GitLab components on any given node. For Service Ping, none of the node data would therefore
   appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Service Ping.

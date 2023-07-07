@@ -187,8 +187,7 @@ To enable advanced search:
 1. Enable **Elasticsearch indexing** and select **Save changes**. This creates
    an empty index if one does not already exist.
 1. Select **Index all projects**.
-1. Select **Check progress** in the confirmation message to see the status of
-   the background jobs.
+1. Optional. Select **Check progress** to see the status of background jobs.
 1. Personal snippets must be indexed using another Rake task:
 
    ```shell

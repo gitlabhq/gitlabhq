@@ -206,5 +206,25 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
         end
       end
     end
+
+    context 'for feature flags' do
+      let(:service_desk_issue) { create(:issue, project: project, author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
+
+      before do
+        visit project_issue_path(project, service_desk_issue)
+      end
+
+      it 'pushes the service_desk_ticket feature flag to frontend when available' do
+        stub_feature_flags(service_desk_ticket: true)
+
+        expect(page).to have_pushed_frontend_feature_flags(serviceDeskTicket: true)
+      end
+
+      it 'does not push the service_desk_ticket feature flag to frontend when not available' do
+        stub_feature_flags(service_desk_ticket: false)
+
+        expect(page).not_to have_pushed_frontend_feature_flags(serviceDeskTicket: false)
+      end
+    end
   end
 end

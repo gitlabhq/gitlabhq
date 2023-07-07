@@ -22667,6 +22667,24 @@ CREATE SEQUENCE sentry_issues_id_seq
 
 ALTER SEQUENCE sentry_issues_id_seq OWNED BY sentry_issues.id;
 
+CREATE TABLE service_access_tokens (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    category smallint DEFAULT 0 NOT NULL,
+    encrypted_token bytea NOT NULL,
+    encrypted_token_iv bytea NOT NULL
+);
+
+CREATE SEQUENCE service_access_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE service_access_tokens_id_seq OWNED BY service_access_tokens.id;
+
 CREATE TABLE service_desk_custom_email_credentials (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25924,6 +25942,8 @@ ALTER TABLE ONLY sent_notifications ALTER COLUMN id SET DEFAULT nextval('sent_no
 
 ALTER TABLE ONLY sentry_issues ALTER COLUMN id SET DEFAULT nextval('sentry_issues_id_seq'::regclass);
 
+ALTER TABLE ONLY service_access_tokens ALTER COLUMN id SET DEFAULT nextval('service_access_tokens_id_seq'::regclass);
+
 ALTER TABLE ONLY shards ALTER COLUMN id SET DEFAULT nextval('shards_id_seq'::regclass);
 
 ALTER TABLE ONLY slack_api_scopes ALTER COLUMN id SET DEFAULT nextval('slack_api_scopes_id_seq'::regclass);
@@ -28388,6 +28408,9 @@ ALTER TABLE ONLY sentry_issues
 
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT sequence_is_unique_per_iterations_cadence_id UNIQUE (iterations_cadence_id, sequence) DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE ONLY service_access_tokens
+    ADD CONSTRAINT service_access_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY service_desk_custom_email_credentials
     ADD CONSTRAINT service_desk_custom_email_credentials_pkey PRIMARY KEY (project_id);

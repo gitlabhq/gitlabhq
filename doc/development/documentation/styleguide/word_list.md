@@ -324,9 +324,11 @@ Related terms:
 
 ## confirmation dialog
 
-Use **confirmation dialog** to describe the dialog box that asks you to confirm your action. For example:
+Use **confirmation dialog** to describe the dialog that asks you to confirm your action. For example:
 
 - On the confirmation dialog, select **OK**.
+
+Do not use **confirmation box** or **confirmation dialog box**.
 
 ## Container Registry
 
@@ -1478,9 +1480,9 @@ Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) 
 
 ## type
 
-Use **type** when the cursor remains in the field you're typing in. For example,
-in a search dialog, you begin typing and the field populates results. You do not
-click out of the field.
+Use **type** when the cursor remains where you're typing. For example,
+in a search box, you begin typing and search results appear. You do not
+click out of the search box.
 
 For example:
 

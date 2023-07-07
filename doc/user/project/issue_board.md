@@ -501,8 +501,8 @@ To remove a list from an issue board:
 
 1. On the top of the list you want to remove, select **List actions** (**{ellipsis_v}**).
    The list settings sidebar opens on the right.
-1. Select **Remove list**. A confirmation dialog appears.
-1. Select **Remove list** again.
+1. Select **Remove list**.
+1. On the confirmation dialog, select **Remove list** again.
 
 ### Add issues to a list
 

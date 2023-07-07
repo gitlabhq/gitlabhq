@@ -65,13 +65,13 @@ To create a permission scheme for the group:
 1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **Issues**.
 1. On the left sidebar, select **Permission schemes**.
 1. Select **Add permission scheme**.
-1. In the **Add permission scheme** dialog:
+1. On the **Add permission scheme** dialog:
    - Enter a name for the scheme.
    - Optional. Enter a description for the scheme.
 1. Select **Add**.
 1. On the **Permission schemes** page, in the **Actions** column, select **Permissions** for the new scheme.
 1. Next to **Administer Projects**, select **Edit**.
-1. In the **Grant permission** dialog, for **Granted to**, select **Group**.
+1. On the **Grant permission** dialog, for **Granted to**, select **Group**.
 1. From the **Group** dropdown list, select `gitlab-developers`, then select **Grant**.
 
 You've done it! You can now use your new Jira username and password to configure the

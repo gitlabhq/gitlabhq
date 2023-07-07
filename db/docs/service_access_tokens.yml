@@ -1,0 +1,11 @@
+---
+table_name: service_access_tokens
+classes:
+- Ai::ServiceAccessToken
+feature_categories:
+- application_performance
+description: Persists JWT tokens for AI features (e.g. Code Suggestions) to authenticate
+  the GitLab instance
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125383
+milestone: '16.2'
+gitlab_schema: gitlab_main

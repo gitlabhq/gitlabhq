@@ -238,7 +238,9 @@ decomposition-multiple-db-selective-parallel:
 # ========== object-storage ===========
 
 object-storage:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   parallel: 2
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -274,7 +276,9 @@ object-storage-selective-parallel:
 # ========== object-storage-aws ===========
 
 object-storage-aws:
-  extends: object-storage
+  extends:
+    - object-storage
+    - .failure-videos
   variables:
     AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
@@ -304,7 +308,9 @@ object-storage-aws-selective-parallel:
 # ========== object-storage-gcs ===========
 
 object-storage-gcs:
-  extends: object-storage
+  extends:
+    - object-storage
+    - .failure-videos
   variables:
     GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
@@ -362,12 +368,11 @@ group-saml:
     - !reference [.rules:test:manual, rules]
 
 oauth:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::OAuth
-    USE_SELENOID: "true"
-    QA_RECORD_VIDEO: "true"
-    QA_REMOTE_GRID: "selenoid:4444"
   rules:
     - !reference [.rules:test:qa-default-branch, rules]
     - if: $QA_SUITES =~ /Test::Integration::OAuth/
@@ -383,7 +388,9 @@ instance-saml:
     - !reference [.rules:test:manual, rules]
 
 jira:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Jira
   rules:
@@ -401,7 +408,9 @@ integrations:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-server:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
@@ -410,7 +419,9 @@ ldap-no-server:
     - !reference [.rules:test:manual, rules]
 
 ldap-tls:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
@@ -419,7 +430,9 @@ ldap-tls:
     - !reference [.rules:test:manual, rules]
 
 ldap-no-tls:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:
@@ -437,7 +450,9 @@ mtls:
     - !reference [.rules:test:manual, rules]
 
 mattermost:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
@@ -446,7 +461,9 @@ mattermost:
     - !reference [.rules:test:manual, rules]
 
 registry:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
@@ -455,7 +472,9 @@ registry:
     - !reference [.rules:test:manual, rules]
 
 registry-with-cdn:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::RegistryWithCDN
     GCS_CDN_BUCKET_NAME: $QA_GCS_CDN_BUCKET_NAME
@@ -472,7 +491,9 @@ registry-with-cdn:
     - !reference [.rules:test:manual, rules]
 
 repository-storage:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
@@ -481,7 +502,9 @@ repository-storage:
     - !reference [.rules:test:manual, rules]
 
 service-ping-disabled:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::ServicePingDisabled
   rules:
@@ -490,7 +513,9 @@ service-ping-disabled:
     - !reference [.rules:test:manual, rules]
 
 smtp:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::SMTP
   rules:
@@ -499,20 +524,21 @@ smtp:
     - !reference [.rules:test:manual, rules]
 
 cloud-activation:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
-    USE_SELENOID: "true"
-    QA_RECORD_VIDEO: "true"
-    QA_REMOTE_GRID: "selenoid:4444"
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::CloudActivation/
     - !reference [.rules:test:manual, rules]
 
 large-setup:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag can_use_large_setup
@@ -551,7 +577,9 @@ registry-object-storage-tls:
     GITLAB_QA_OPTS: --omnibus-config registry_object_storage $EXTRA_GITLAB_QA_OPTS
 
 importers:
-  extends: .qa
+  extends:
+    - .qa
+    - .failure-videos
   variables:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"

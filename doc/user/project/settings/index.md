@@ -308,7 +308,7 @@ To delete a project:
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
-1. In the confirmation message text field, enter the name of the project as instructed, and select **Yes, delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
 This action deletes the project and all associated resources (such as issues and merge requests).
 
@@ -344,7 +344,7 @@ To immediately delete a project marked for deletion:
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
-1. In the confirmation message text field, enter the name of the project as instructed, as select **Yes, delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
 ## Restore a project **(PREMIUM)**
 

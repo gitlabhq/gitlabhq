@@ -81,7 +81,7 @@ To create a Jira Cloud API token:
    profile, select **Account Settings > Security > Create and manage API tokens**.
 
 1. Select **Create API token**.
-1. In the dialog, enter a label for your token and select **Create**.
+1. On the dialog, enter a label for your token and select **Create**.
 
 To copy the API token, select **Copy**.
 

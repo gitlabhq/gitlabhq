@@ -147,7 +147,7 @@ permissions to the project:
 git lfs unlock --id=123 --force
 ```
 
-You can normally push files to GitLab whether they're locked or unlocked.
+You can push files to GitLab whether they're locked or unlocked.
 
 NOTE:
 Although multi-branch file locks can be created and managed through the Git LFS
@@ -209,7 +209,7 @@ To lock a file:
 
 1. Open the file or directory in GitLab.
 1. In the upper-right corner, above the file, select **Lock**.
-1. On the confirmation dialog box, select **OK**.
+1. On the confirmation dialog, select **OK**.
 
 If you do not have permission to lock the file, the button is not enabled.
 

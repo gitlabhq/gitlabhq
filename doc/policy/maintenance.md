@@ -102,7 +102,7 @@ accessible.
 
 ### Backporting to older releases
 
-Backporting to more than one stable release is normally reserved for [security releases](#security-releases).
+Backporting to more than one stable release is usually reserved for [security releases](#security-releases).
 In some cases, however, we may need to backport *a bug fix* to more than one stable
 release, depending on the severity of the bug.
 

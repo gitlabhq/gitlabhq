@@ -235,7 +235,7 @@ To remove a member from a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Manage > Members**.
 1. Next to the project member you want to remove, select **Remove member**.
-1. Optional. In the confirmation box, select the
+1. Optional. On the confirmation dialog, select the
    **Also unassign this user from related issues and merge requests** checkbox.
 1. To prevent leaks of sensitive information from private projects, verify the
    member has not forked the private repository or created webhooks. Existing forks continue to receive
