@@ -64,7 +64,9 @@ describe('RelatedIssuesRoot', () => {
           await createComponent();
         });
 
-        it('removes related issue on API success', async () => {
+        // Quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/417177
+        // eslint-disable-next-line jest/no-disabled-tests
+        it.skip('removes related issue on API success', async () => {
           mock.onDelete(issuable1.referencePath).reply(HTTP_STATUS_OK, { issues: [] });
 
           findRelatedIssuesBlock().vm.$emit('relatedIssueRemoveRequest', issuable1.id);

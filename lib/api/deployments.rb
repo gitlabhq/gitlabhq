@@ -131,7 +131,7 @@ module API
 
         requires :status,
           type: String,
-          desc: 'The status to filter deployments by. One of `running`, `success`, `failed`, or `canceled`',
+          desc: 'The status of the deployment that is created. One of `running`, `success`, `failed`, or `canceled`',
           values: %w[running success failed canceled]
       end
       route_setting :authentication, job_token_allowed: true

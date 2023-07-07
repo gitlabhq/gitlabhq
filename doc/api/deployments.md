@@ -361,7 +361,7 @@ POST /projects/:id/deployments
 | `sha`         | string         | yes      | The SHA of the commit that is deployed.                                                                         |
 | `ref`         | string         | yes      | The name of the branch or tag that is deployed.                                                                 |
 | `tag`         | boolean        | yes      | A boolean that indicates if the deployed ref is a tag (`true`) or not (`false`).                                |
-| `status`      | string         | yes      | The status to filter deployments by. One of `running`, `success`, `failed`, or `canceled`.                      |
+| `status`      | string         | yes      | The status of the deployment that is created. One of `running`, `success`, `failed`, or `canceled`        |
 
 ```shell
 curl --data "environment=production&sha=a91957a858320c0e17f3a0eca7cfacbff50ea29a&ref=main&tag=false&status=success" \

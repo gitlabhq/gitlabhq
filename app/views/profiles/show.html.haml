@@ -8,7 +8,7 @@
   .js-user-profile
 - else
   = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
-    .settings-section.js-search-settings-section
+    .js-search-settings-section
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0
@@ -46,7 +46,7 @@
           = s_("Profiles|Remove avatar")
       .gl-pb-8
 
-    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
+    .js-search-settings-section.gl-border-t.gl-pt-6
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0= s_("Profiles|Current status")
@@ -62,7 +62,7 @@
               data: { js_name: 'clearStatusAfter' }
       .gl-pb-7
 
-    .settings-section.user-time-preferences.js-search-settings-section.gl-border-t.gl-pt-6
+    .user-time-preferences.js-search-settings-section.gl-border-t.gl-pt-6
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0= s_("Profiles|Time settings")
@@ -71,7 +71,7 @@
       .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
       .gl-pb-7
 
-    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
+    .js-search-settings-section.gl-border-t.gl-pt-6
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0

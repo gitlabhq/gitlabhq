@@ -40362,13 +40362,31 @@ msgstr ""
 msgid "ScanExecutionPolicy|Add condition"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Add new CI variable"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Conditions"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Customized CI variables:"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Customized variables will overwrite ones defined in the project CI/CD file and settings"
 msgstr ""
 
 msgid "ScanExecutionPolicy|If the field is empty, the runner will be automatically selected"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Key"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Kubernetes agent's timezone"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Maximum number of CI-criteria is one"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Only one variable can be added at a time."
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run a %{scan} scan on runner that %{tags}"
@@ -40387,6 +40405,9 @@ msgid "ScanExecutionPolicy|Schedules:"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select a scanner"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Select a variable"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select agent"
@@ -40414,6 +40435,9 @@ msgid "ScanExecutionPolicy|Tags"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Triggers:"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Value"
 msgstr ""
 
 msgid "ScanExecutionPolicy|agent"
@@ -40453,6 +40477,9 @@ msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
 msgid "ScanResultPolicy|Clear all"
+msgstr ""
+
+msgid "ScanResultPolicy|Customized CI Variables"
 msgstr ""
 
 msgid "ScanResultPolicy|Except"
@@ -41300,6 +41327,9 @@ msgid "SecurityOrchestration|No rules defined - policy will not run."
 msgstr ""
 
 msgid "SecurityOrchestration|No tags available"
+msgstr ""
+
+msgid "SecurityOrchestration|Non-existing CI variables have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing CI variables from the policy yaml."
 msgstr ""
 
 msgid "SecurityOrchestration|Non-existing DAST profiles have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing profiles from the policy yaml."

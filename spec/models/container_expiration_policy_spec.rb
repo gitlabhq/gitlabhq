@@ -11,8 +11,7 @@ RSpec.describe ContainerExpirationPolicy, type: :model do
     it { is_expected.to validate_presence_of(:project) }
 
     describe '#enabled' do
-      it { is_expected.to allow_value(true).for(:enabled) }
-      it { is_expected.to allow_value(false).for(:enabled) }
+      it { is_expected.to allow_value(true, false).for(:enabled) }
       it { is_expected.not_to allow_value(nil).for(:enabled) }
     end
 
