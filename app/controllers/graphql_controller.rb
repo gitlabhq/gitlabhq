@@ -277,9 +277,6 @@ class GraphqlController < ApplicationController
 
   def execute_introspection_query
     if introspection_query_can_use_cache?
-      Gitlab::AppLogger.info(message: "IntrospectionQueryCache hit")
-      log_introspection_query_cache_details(true)
-
       # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
       Rails.cache.fetch(
         introspection_query_cache_key,
@@ -287,9 +284,6 @@ class GraphqlController < ApplicationController
           execute_query.to_json
         end
     else
-      Gitlab::AppLogger.info(message: "IntrospectionQueryCache miss")
-      log_introspection_query_cache_details(false)
-
       execute_query
     end
   end
@@ -312,16 +306,6 @@ class GraphqlController < ApplicationController
       # If we don't provide operationName param, we infer it from the query
       graphql_query_object.selected_operation_name == INTROSPECTION_QUERY_OPERATION_NAME
     end
-  end
-
-  def log_introspection_query_cache_details(can_use_introspection_query_cache)
-    Gitlab::AppLogger.info(
-      message: "IntrospectionQueryCache",
-      can_use_introspection_query_cache: can_use_introspection_query_cache.to_s,
-      query: query,
-      variables: build_variables(params[:variables]).to_s,
-      introspection_query_cache_key: introspection_query_cache_key.to_s
-    )
   end
 
   def graphql_query_object

@@ -4,7 +4,7 @@ module AlertManagement
   class HttpIntegration < ApplicationRecord
     include ::Gitlab::Routing
 
-    LEGACY_IDENTIFIER = 'legacy'
+    LEGACY_IDENTIFIERS = %w[legacy legacy-prometheus].freeze
 
     belongs_to :project, inverse_of: :alert_management_http_integrations
 
@@ -20,7 +20,7 @@ module AlertManagement
     validates :token, presence: true, format: { with: /\A\h{32}\z/ }
     validates :name, presence: true, length: { maximum: 255 }
     validates :type_identifier, presence: true
-    validates :endpoint_identifier, presence: true, length: { maximum: 255 }, format: { with: /\A[A-Za-z0-9]+\z/ }
+    validates :endpoint_identifier, presence: true, length: { maximum: 255 }, format: { with: /\A[A-Za-z0-9-]+\z/ }
     validates :endpoint_identifier, uniqueness: { scope: [:project_id, :active] }, if: :active?
     validates :payload_attribute_mapping, json_schema: { filename: 'http_integration_payload_attribute_mapping' }
 
@@ -33,7 +33,6 @@ module AlertManagement
     scope :for_type, ->(type) { where(type_identifier: type) }
     scope :for_project, ->(project_ids) { where(project: project_ids) }
     scope :active, -> { where(active: true) }
-    scope :legacy, -> { for_endpoint_identifier(LEGACY_IDENTIFIER) }
     scope :ordered_by_type_and_id, -> { order(:type_identifier, :id) }
 
     enum type_identifier: {
@@ -42,16 +41,18 @@ module AlertManagement
     }
 
     def url
-      if legacy?
-        return project_alerts_notify_url(project, format: :json) if http?
-        return notify_project_prometheus_alerts_url(project, format: :json) if prometheus?
+      case endpoint_identifier
+      when 'legacy'
+        project_alerts_notify_url(project, format: :json)
+      when 'legacy-prometheus'
+        notify_project_prometheus_alerts_url(project, format: :json)
+      else
+        project_alert_http_integration_url(project, name_slug, endpoint_identifier, format: :json)
       end
-
-      project_alert_http_integration_url(project, name_slug, endpoint_identifier, format: :json)
     end
 
     def legacy?
-      endpoint_identifier == LEGACY_IDENTIFIER
+      LEGACY_IDENTIFIERS.include?(endpoint_identifier)
     end
 
     private

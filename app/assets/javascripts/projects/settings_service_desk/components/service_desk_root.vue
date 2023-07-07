@@ -8,7 +8,7 @@ import ServiceDeskSetting from './service_desk_setting.vue';
 
 export default {
   serviceDeskEmailHelpPath: helpPagePath('/user/project/service_desk.html', {
-    anchor: 'use-a-custom-email-address',
+    anchor: 'use-an-additional-service-desk-alias-email',
   }),
   components: {
     GlAlert,

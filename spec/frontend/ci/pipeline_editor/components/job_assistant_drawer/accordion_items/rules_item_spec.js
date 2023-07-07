@@ -49,32 +49,36 @@ describe('Rules item', () => {
 
     findRulesWhenSelect().vm.$emit('input', dummyRulesWhen);
 
-    expect(wrapper.emitted('update-job')).toHaveLength(1);
+    expect(wrapper.emitted('update-job')).toHaveLength(2);
     expect(wrapper.emitted('update-job')[0]).toEqual([
       'rules[0].when',
       JOB_RULES_WHEN.delayed.value,
     ]);
+    expect(wrapper.emitted('update-job')[1]).toEqual([
+      'rules[0].start_in',
+      `1 ${JOB_RULES_START_IN.second.value}`,
+    ]);
 
     findRulesStartInNumberInput().vm.$emit('input', dummyRulesStartInNumber);
 
-    expect(wrapper.emitted('update-job')).toHaveLength(2);
-    expect(wrapper.emitted('update-job')[1]).toEqual([
+    expect(wrapper.emitted('update-job')).toHaveLength(3);
+    expect(wrapper.emitted('update-job')[2]).toEqual([
       'rules[0].start_in',
       `2 ${JOB_RULES_START_IN.second.value}s`,
     ]);
 
     findRulesStartInUnitSelect().vm.$emit('input', dummyRulesStartInUnit);
 
-    expect(wrapper.emitted('update-job')).toHaveLength(3);
-    expect(wrapper.emitted('update-job')[2]).toEqual([
+    expect(wrapper.emitted('update-job')).toHaveLength(4);
+    expect(wrapper.emitted('update-job')[3]).toEqual([
       'rules[0].start_in',
       `2 ${dummyRulesStartInUnit}s`,
     ]);
 
     findRulesAllowFailureCheckBox().vm.$emit('input', dummyRulesAllowFailure);
 
-    expect(wrapper.emitted('update-job')).toHaveLength(4);
-    expect(wrapper.emitted('update-job')[3]).toEqual([
+    expect(wrapper.emitted('update-job')).toHaveLength(5);
+    expect(wrapper.emitted('update-job')[4]).toEqual([
       'rules[0].allow_failure',
       dummyRulesAllowFailure,
     ]);

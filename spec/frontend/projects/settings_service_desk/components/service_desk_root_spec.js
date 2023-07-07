@@ -80,7 +80,7 @@ describe('ServiceDeskRoot', () => {
       const alertBodyLink = alertEl.findComponent(GlLink);
       expect(alertBodyLink.exists()).toBe(true);
       expect(alertBodyLink.attributes('href')).toBe(
-        '/help/user/project/service_desk.html#use-a-custom-email-address',
+        '/help/user/project/service_desk.html#use-an-additional-service-desk-alias-email',
       );
       expect(alertBodyLink.text()).toBe('How do I create a custom email address?');
     });

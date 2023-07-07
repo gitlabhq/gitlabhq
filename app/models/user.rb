@@ -2063,7 +2063,7 @@ class User < ApplicationRecord
   # override, from Devise
   def lock_access!(opts = {})
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
-    audit_lock_access
+    audit_lock_access(reason: opts.delete(:reason))
     super
   end
 
@@ -2599,7 +2599,7 @@ class User < ApplicationRecord
   end
 
   # method overriden in EE
-  def audit_lock_access; end
+  def audit_lock_access(reason: nil); end
 
   # method overriden in EE
   def audit_unlock_access(author: self); end

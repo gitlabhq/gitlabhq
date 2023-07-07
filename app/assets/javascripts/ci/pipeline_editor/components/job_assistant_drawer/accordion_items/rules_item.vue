@@ -54,6 +54,13 @@ export default {
         `${this.startInNumber} ${this.startInUnit}${plural}`,
       );
     },
+    updateWhen(when) {
+      this.$emit('update-job', 'rules[0].when', when);
+
+      if (when === JOB_RULES_WHEN.delayed.value) {
+        this.updateStartIn();
+      }
+    },
   },
 };
 </script>
@@ -73,7 +80,7 @@ export default {
           :options="$options.whenOptions"
           data-testid="rules-when-select"
           :value="job.rules[0].when"
-          @input="$emit('update-job', 'rules[0].when', $event)"
+          @input="updateWhen"
         />
       </gl-form-group>
       <gl-form-group

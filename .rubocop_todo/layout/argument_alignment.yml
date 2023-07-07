@@ -1895,7 +1895,6 @@ Layout/ArgumentAlignment:
     - 'spec/requests/recursive_webhook_detection_spec.rb'
     - 'spec/requests/users/group_callouts_spec.rb'
     - 'spec/requests/users/project_callouts_spec.rb'
-    - 'spec/requests/verifies_with_email_spec.rb'
     - 'spec/routing/environments_spec.rb'
     - 'spec/routing/group_routing_spec.rb'
     - 'spec/routing/project_routing_spec.rb'

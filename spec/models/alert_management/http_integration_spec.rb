@@ -90,7 +90,7 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
   describe 'scopes' do
     let_it_be(:integration_1) { create(:alert_management_http_integration) }
     let_it_be(:integration_2) { create(:alert_management_http_integration, :inactive, project: project) }
-    let_it_be(:integration_3) { create(:alert_management_http_integration, :prometheus, project: project) }
+    let_it_be(:integration_3) { create(:alert_management_prometheus_integration, project: project) }
     let_it_be(:integration_4) { create(:alert_management_http_integration, :legacy, :inactive) }
 
     describe '.for_endpoint_identifier' do
@@ -127,12 +127,6 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
       subject { described_class.active }
 
       it { is_expected.to contain_exactly(integration_1, integration_3) }
-    end
-
-    describe '.legacy' do
-      subject { described_class.legacy }
-
-      it { is_expected.to contain_exactly(integration_4) }
     end
 
     describe '.ordered_by_type_and_id' do
@@ -232,9 +226,16 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
     end
 
     context 'when included in initialization args' do
-      let(:integration) { described_class.new(endpoint_identifier: 'legacy') }
+      let(:required_args) { { project: project, name: 'Name' } }
 
-      it { is_expected.to eq('legacy') }
+      AlertManagement::HttpIntegration::LEGACY_IDENTIFIERS.each do |identifier|
+        context "for endpoint identifier \"#{identifier}\"" do
+          let(:integration) { described_class.new(**required_args, endpoint_identifier: identifier) }
+
+          it { is_expected.to eq(identifier) }
+          specify { expect(integration).to be_valid }
+        end
+      end
     end
 
     context 'when reassigning' do
@@ -293,7 +294,7 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
     end
 
     context 'for a prometheus integration' do
-      let(:integration) { build(:alert_management_http_integration, :prometheus) }
+      let(:integration) { build(:alert_management_prometheus_integration) }
 
       it do
         is_expected.to eq(
@@ -307,7 +308,7 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
       end
 
       context 'for a legacy integration' do
-        let(:integration) { build(:alert_management_http_integration, :prometheus, :legacy) }
+        let(:integration) { build(:alert_management_prometheus_integration, :legacy) }
 
         it do
           is_expected.to eq(

@@ -76,6 +76,7 @@ export default {
         newRoleName,
       );
       if (!confirmed) {
+        this.selectedRoleValue = currentRoleValue;
         this.busy = false;
         return;
       }

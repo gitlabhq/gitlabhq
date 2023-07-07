@@ -111,12 +111,12 @@ export default {
     },
     emailSuffixHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
-        anchor: 'configure-a-custom-email-address-suffix',
+        anchor: 'configure-a-suffix-for-service-desk-alias-email',
       });
     },
     serviceDeskEmailAddressHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
-        anchor: 'use-a-custom-email-address',
+        anchor: 'use-an-additional-service-desk-alias-email',
       });
     },
     issuesHelpPagePath() {

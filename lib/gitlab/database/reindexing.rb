@@ -59,7 +59,6 @@ module Gitlab
       # most bloated indexes for reindexing.
       def self.perform_with_heuristic(candidate_indexes = Gitlab::Database::PostgresIndex.reindexing_support, maximum_records: DEFAULT_INDEXES_PER_INVOCATION)
         IndexSelection.new(candidate_indexes).take(maximum_records).each do |index|
-          Gitlab::Database::CiBuildsPartitioning.new.execute
           Coordinator.new(index).perform
         end
       end

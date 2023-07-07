@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -18,10 +18,6 @@ import RelatedIssuesBlock from '~/related_issues/components/related_issues_block
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 
 jest.mock('~/alert');
-// TODO: This suite is flaky with the default timeout, so
-// double it. Improve the test or component to avoid this.
-// See https://gitlab.com/gitlab-org/gitlab/-/issues/417175.
-jest.setTimeout(10_000);
 
 describe('RelatedIssuesRoot', () => {
   let wrapper;
@@ -39,7 +35,7 @@ describe('RelatedIssuesRoot', () => {
   });
 
   const createComponent = ({ props = {}, data = {} } = {}) => {
-    wrapper = mount(RelatedIssuesRoot, {
+    wrapper = shallowMount(RelatedIssuesRoot, {
       propsData: {
         ...defaultProps,
         ...props,

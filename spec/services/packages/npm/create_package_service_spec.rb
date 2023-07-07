@@ -6,7 +6,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
   let(:namespace) { create(:namespace) }
   let(:project) { create(:project, namespace: namespace) }
-  let(:user) { create(:user) }
+  let(:user) { project.owner }
   let(:version) { '1.0.1' }
 
   let(:params) do
@@ -168,6 +168,12 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
   describe '#execute' do
     context 'scoped package' do
+      it_behaves_like 'valid package'
+    end
+
+    context 'when user is no project member' do
+      let(:user) { create(:user) }
+
       it_behaves_like 'valid package'
     end
 
