@@ -11771,6 +11771,7 @@ CREATE TABLE application_settings (
     gitlab_shell_operation_limit integer DEFAULT 600,
     elasticsearch_requeue_workers boolean DEFAULT false NOT NULL,
     elasticsearch_worker_number_of_shards integer DEFAULT 2 NOT NULL,
+    relay_state_domain_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -22230,7 +22231,8 @@ CREATE TABLE saml_providers (
     enforced_group_managed_accounts boolean DEFAULT false NOT NULL,
     prohibited_outer_forks boolean DEFAULT true NOT NULL,
     default_membership_role smallint DEFAULT 10 NOT NULL,
-    git_check_enforced boolean DEFAULT false NOT NULL
+    git_check_enforced boolean DEFAULT false NOT NULL,
+    relay_state_domain_allowlist text[] DEFAULT '{}'::text[] NOT NULL
 );
 
 CREATE SEQUENCE saml_providers_id_seq

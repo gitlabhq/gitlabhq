@@ -9,6 +9,14 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
+  let_it_be(:variable_one) do
+    create(:ci_pipeline_schedule_variable, key: 'foo', value: 'foovalue', pipeline_schedule: pipeline_schedule)
+  end
+
+  let_it_be(:variable_two) do
+    create(:ci_pipeline_schedule_variable, key: 'bar', value: 'barvalue', pipeline_schedule: pipeline_schedule)
+  end
+
   let(:mutation) do
     variables = {
       id: pipeline_schedule.to_global_id.to_s,
@@ -30,6 +38,7 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
             nodes {
               key
               value
+              variableType
             }
           }
         }
@@ -88,8 +97,37 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
 
         expect(mutation_response['pipelineSchedule']['refForDisplay']).to eq(pipeline_schedule_parameters[:ref])
 
-        expect(mutation_response['pipelineSchedule']['variables']['nodes'][0]['key']).to eq('AAA')
-        expect(mutation_response['pipelineSchedule']['variables']['nodes'][0]['value']).to eq('AAA123')
+        expect(mutation_response['pipelineSchedule']['variables']['nodes'][2]['key']).to eq('AAA')
+        expect(mutation_response['pipelineSchedule']['variables']['nodes'][2]['value']).to eq('AAA123')
+      end
+    end
+
+    context 'when updating and removing variables' do
+      let(:pipeline_schedule_parameters) do
+        {
+          variables: [
+            { key: 'ABC', value: "ABC123", variableType: 'ENV_VAR', destroy: false },
+            { id: variable_one.to_global_id.to_s,
+              key: 'foo', value: "foovalue",
+              variableType: 'ENV_VAR',
+              destroy: true },
+            { id: variable_two.to_global_id.to_s, key: 'newbar', value: "newbarvalue", variableType: 'ENV_VAR' }
+          ]
+        }
+      end
+
+      it 'processes variables correctly' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+
+        expect(mutation_response['pipelineSchedule']['variables']['nodes'])
+          .to match_array(
+            [
+              { "key" => 'newbar', "value" => 'newbarvalue', "variableType" => 'ENV_VAR' },
+              { "key" => 'ABC', "value" => "ABC123", "variableType" => 'ENV_VAR' }
+            ]
+          )
       end
     end
 

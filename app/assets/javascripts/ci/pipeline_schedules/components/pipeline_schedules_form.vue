@@ -8,16 +8,21 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormTextarea,
+  GlLoadingIcon,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, queryToObject } from '~/lib/utils/url_utility';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 import createPipelineScheduleMutation from '../graphql/mutations/create_pipeline_schedule.mutation.graphql';
+import updatePipelineScheduleMutation from '../graphql/mutations/update_pipeline_schedule.mutation.graphql';
+import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
 import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
+
+const scheduleId = queryToObject(window.location.search).id;
 
 export default {
   components: {
@@ -29,20 +34,12 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormTextarea,
+    GlLoadingIcon,
     RefSelector,
     TimezoneDropdown,
     IntervalPatternInput,
   },
-  inject: [
-    'fullPath',
-    'projectId',
-    'defaultBranch',
-    'cron',
-    'cronTimezone',
-    'dailyLimit',
-    'settingsLink',
-    'schedulesPath',
-  ],
+  inject: ['fullPath', 'projectId', 'defaultBranch', 'dailyLimit', 'settingsLink', 'schedulesPath'],
   props: {
     timezoneData: {
       type: Array,
@@ -58,24 +55,74 @@ export default {
       required: true,
     },
   },
+  apollo: {
+    schedule: {
+      query: getPipelineSchedulesQuery,
+      variables() {
+        return {
+          projectPath: this.fullPath,
+          ids: scheduleId,
+        };
+      },
+      update(data) {
+        return data.project?.pipelineSchedules?.nodes[0] || {};
+      },
+      result({ data }) {
+        if (data) {
+          const {
+            project: {
+              pipelineSchedules: { nodes },
+            },
+          } = data;
+
+          const schedule = nodes[0];
+          const variables = schedule.variables?.nodes || [];
+
+          this.description = schedule.description;
+          this.cron = schedule.cron;
+          this.cronTimezone = schedule.cronTimezone;
+          this.scheduleRef = schedule.ref;
+          this.variables = variables.map((variable) => {
+            return {
+              id: variable.id,
+              variableType: variable.variableType,
+              key: variable.key,
+              value: variable.value,
+              destroy: false,
+            };
+          });
+          this.addEmptyVariable();
+          this.activated = schedule.active;
+        }
+      },
+      skip() {
+        return !this.editing;
+      },
+      error() {
+        createAlert({ message: this.$options.i18n.scheduleFetchError });
+      },
+    },
+  },
   data() {
     return {
-      cronValue: this.cron,
+      cron: '',
       description: '',
       scheduleRef: this.defaultBranch,
       activated: true,
-      timezone: this.cronTimezone,
+      cronTimezone: '',
       variables: [],
+      schedule: {},
     };
   },
   i18n: {
     activated: __('Activated'),
-    cronTimezone: s__('PipelineSchedules|Cron timezone'),
+    cronTimezoneText: s__('PipelineSchedules|Cron timezone'),
     description: s__('PipelineSchedules|Description'),
     shortDescriptionPipeline: s__(
       'PipelineSchedules|Provide a short description for this pipeline',
     ),
-    savePipelineSchedule: s__('PipelineSchedules|Save pipeline schedule'),
+    editScheduleBtnText: s__('PipelineSchedules|Edit pipeline schedule'),
+    createScheduleBtnText: s__('PipelineSchedules|Create pipeline schedule'),
     cancel: __('Cancel'),
     targetBranchTag: __('Select target branch or tag'),
     intervalPattern: s__('PipelineSchedules|Interval Pattern'),
@@ -86,6 +133,12 @@ export default {
     variables: s__('Pipeline|Variables'),
     scheduleCreateError: s__(
       'PipelineSchedules|An error occurred while creating the pipeline schedule.',
+    ),
+    scheduleUpdateError: s__(
+      'PipelineSchedules|An error occurred while updating the pipeline schedule.',
+    ),
+    scheduleFetchError: s__(
+      'PipelineSchedules|An error occurred while trying to fetch the pipeline schedule.',
     ),
   },
   typeOptions: {
@@ -114,8 +167,25 @@ export default {
     getEnabledRefTypes() {
       return [REF_TYPE_BRANCHES, REF_TYPE_TAGS];
     },
-    preparedVariables() {
+    preparedVariablesUpdate() {
       return this.variables.filter((variable) => variable.key !== '');
+    },
+    preparedVariablesCreate() {
+      return this.preparedVariablesUpdate.map((variable) => {
+        return {
+          key: variable.key,
+          value: variable.value,
+          variableType: variable.variableType,
+        };
+      });
+    },
+    loading() {
+      return this.$apollo.queries.schedule.loading;
+    },
+    buttonText() {
+      return this.editing
+        ? this.$options.i18n.editScheduleBtnText
+        : this.$options.i18n.createScheduleBtnText;
     },
   },
   created() {
@@ -133,6 +203,7 @@ export default {
         variableType: VARIABLE_TYPE,
         key: '',
         value: '',
+        destroy: false,
       });
     },
     setVariableAttribute(key, attribute, value) {
@@ -140,15 +211,10 @@ export default {
       variable[attribute] = value;
     },
     removeVariable(index) {
-      this.variables.splice(index, 1);
+      this.variables[index].destroy = true;
     },
     canRemove(index) {
       return index < this.variables.length - 1;
-    },
-    scheduleHandler() {
-      if (!this.editing) {
-        this.createPipelineSchedule();
-      }
     },
     async createPipelineSchedule() {
       try {
@@ -161,10 +227,10 @@ export default {
           variables: {
             input: {
               description: this.description,
-              cron: this.cronValue,
-              cronTimezone: this.timezone,
+              cron: this.cron,
+              cronTimezone: this.cronTimezone,
               ref: this.scheduleRef,
-              variables: this.preparedVariables,
+              variables: this.preparedVariablesCreate,
               active: this.activated,
               projectPath: this.fullPath,
             },
@@ -180,11 +246,48 @@ export default {
         createAlert({ message: this.$options.i18n.scheduleCreateError });
       }
     },
+    async updatePipelineSchedule() {
+      try {
+        const {
+          data: {
+            pipelineScheduleUpdate: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: updatePipelineScheduleMutation,
+          variables: {
+            input: {
+              id: this.schedule.id,
+              description: this.description,
+              cron: this.cron,
+              cronTimezone: this.cronTimezone,
+              ref: this.scheduleRef,
+              variables: this.preparedVariablesUpdate,
+              active: this.activated,
+            },
+          },
+        });
+
+        if (errors.length > 0) {
+          createAlert({ message: errors[0] });
+        } else {
+          visitUrl(this.schedulesPath);
+        }
+      } catch {
+        createAlert({ message: this.$options.i18n.scheduleUpdateError });
+      }
+    },
+    scheduleHandler() {
+      if (this.editing) {
+        this.updatePipelineSchedule();
+      } else {
+        this.createPipelineSchedule();
+      }
+    },
     setCronValue(cron) {
-      this.cronValue = cron;
+      this.cron = cron;
     },
     setTimezone(timezone) {
-      this.timezone = timezone.identifier || '';
+      this.cronTimezone = timezone.identifier || '';
     },
   },
 };
@@ -192,7 +295,8 @@ export default {
 
 <template>
   <div class="col-lg-8 gl-pl-0">
-    <gl-form>
+    <gl-loading-icon v-if="loading && editing" size="lg" />
+    <gl-form v-else>
       <!--Description-->
       <gl-form-group :label="$options.i18n.description" label-for="schedule-description">
         <gl-form-input
@@ -215,10 +319,10 @@ export default {
         />
       </gl-form-group>
       <!--Timezone-->
-      <gl-form-group :label="$options.i18n.cronTimezone" label-for="schedule-timezone">
+      <gl-form-group :label="$options.i18n.cronTimezoneText" label-for="schedule-timezone">
         <timezone-dropdown
           id="schedule-timezone"
-          :value="timezone"
+          :value="cronTimezone"
           :timezone-data="timezoneData"
           name="schedule-timezone"
           @input="setTimezone"
@@ -242,12 +346,12 @@ export default {
         <div
           v-for="(variable, index) in variables"
           :key="`var-${index}`"
-          class="gl-mb-3 gl-pb-2"
-          data-testid="ci-variable-row"
           data-qa-selector="ci_variable_row_container"
         >
           <div
-            class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row"
+            v-if="!variable.destroy"
+            class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row gl-mb-3 gl-pb-2"
+            data-testid="ci-variable-row"
           >
             <gl-dropdown
               :text="$options.typeOptions[variable.variableType]"
@@ -308,7 +412,7 @@ export default {
       </gl-form-checkbox>
 
       <gl-button variant="confirm" data-testid="schedule-submit-button" @click="scheduleHandler">
-        {{ $options.i18n.savePipelineSchedule }}
+        {{ buttonText }}
       </gl-button>
       <gl-button :href="schedulesPath" data-testid="schedule-cancel-button">
         {{ $options.i18n.cancel }}

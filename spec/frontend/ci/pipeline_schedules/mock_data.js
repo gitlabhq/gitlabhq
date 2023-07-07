@@ -2,6 +2,7 @@
 import mockGetPipelineSchedulesGraphQLResponse from 'test_fixtures/graphql/pipeline_schedules/get_pipeline_schedules.query.graphql.json';
 import mockGetPipelineSchedulesAsGuestGraphQLResponse from 'test_fixtures/graphql/pipeline_schedules/get_pipeline_schedules.query.graphql.as_guest.json';
 import mockGetPipelineSchedulesTakeOwnershipGraphQLResponse from 'test_fixtures/graphql/pipeline_schedules/get_pipeline_schedules.query.graphql.take_ownership.json';
+import mockGetSinglePipelineScheduleGraphQLResponse from 'test_fixtures/graphql/pipeline_schedules/get_pipeline_schedules.query.graphql.single.json';
 
 const {
   data: {
@@ -30,10 +31,10 @@ const {
 
 export const mockPipelineScheduleNodes = nodes;
 export const mockPipelineScheduleCurrentUser = currentUser;
-
 export const mockPipelineScheduleAsGuestNodes = guestNodes;
-
 export const mockTakeOwnershipNodes = takeOwnershipNodes;
+export const mockSinglePipelineScheduleNode = mockGetSinglePipelineScheduleGraphQLResponse;
+
 export const emptyPipelineSchedulesResponse = {
   data: {
     project: {
@@ -85,6 +86,16 @@ export const createScheduleMutationResponse = {
       clientMutationId: null,
       errors: [],
       __typename: 'PipelineScheduleCreatePayload',
+    },
+  },
+};
+
+export const updateScheduleMutationResponse = {
+  data: {
+    pipelineScheduleUpdate: {
+      clientMutationId: null,
+      errors: [],
+      __typename: 'PipelineScheduleUpdatePayload',
     },
   },
 };

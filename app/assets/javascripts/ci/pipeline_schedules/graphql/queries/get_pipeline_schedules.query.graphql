@@ -1,15 +1,22 @@
-query getPipelineSchedulesQuery($projectPath: ID!, $status: PipelineScheduleStatus) {
+query getPipelineSchedulesQuery(
+  $projectPath: ID!
+  $status: PipelineScheduleStatus
+  $ids: [ID!] = null
+) {
   currentUser {
     id
     username
   }
   project(fullPath: $projectPath) {
     id
-    pipelineSchedules(status: $status) {
+    pipelineSchedules(status: $status, ids: $ids) {
       count
       nodes {
         id
         description
+        cron
+        cronTimezone
+        ref
         forTag
         editPath
         refPath
@@ -34,6 +41,14 @@ query getPipelineSchedulesQuery($projectPath: ID!, $status: PipelineScheduleStat
           avatarUrl
           name
           webPath
+        }
+        variables {
+          nodes {
+            id
+            variableType
+            key
+            value
+          }
         }
         userPermissions {
           playPipelineSchedule

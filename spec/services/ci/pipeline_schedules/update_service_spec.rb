@@ -8,9 +8,16 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
+  let_it_be(:pipeline_schedule_variable) do
+    create(:ci_pipeline_schedule_variable,
+      key: 'foo', value: 'foovalue', pipeline_schedule: pipeline_schedule)
+  end
+
   before_all do
     project.add_maintainer(user)
     project.add_reporter(reporter)
+
+    pipeline_schedule.reload
   end
 
   describe "execute" do
@@ -35,7 +42,10 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
           description: 'updated_desc',
           ref: 'patch-x',
           active: false,
-          cron: '*/1 * * * *'
+          cron: '*/1 * * * *',
+          variables_attributes: [
+            { id: pipeline_schedule_variable.id, key: 'bar', secret_value: 'barvalue' }
+          ]
         }
       end
 
@@ -47,6 +57,42 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
           .and change { pipeline_schedule.ref }.from('master').to('patch-x')
           .and change { pipeline_schedule.active }.from(true).to(false)
           .and change { pipeline_schedule.cron }.from('0 1 * * *').to('*/1 * * * *')
+          .and change { pipeline_schedule.variables.last.key }.from('foo').to('bar')
+          .and change { pipeline_schedule.variables.last.value }.from('foovalue').to('barvalue')
+      end
+
+      context 'when creating a variable' do
+        let(:params) do
+          {
+            variables_attributes: [
+              { key: 'ABC', secret_value: 'ABC123' }
+            ]
+          }
+        end
+
+        it 'creates the new variable' do
+          expect { service.execute }.to change { Ci::PipelineScheduleVariable.count }.by(1)
+
+          expect(pipeline_schedule.variables.last.key).to eq('ABC')
+          expect(pipeline_schedule.variables.last.value).to eq('ABC123')
+        end
+      end
+
+      context 'when deleting a variable' do
+        let(:params) do
+          {
+            variables_attributes: [
+              {
+                id: pipeline_schedule_variable.id,
+                _destroy: true
+              }
+            ]
+          }
+        end
+
+        it 'deletes the existing variable' do
+          expect { service.execute }.to change { Ci::PipelineScheduleVariable.count }.by(-1)
+        end
       end
 
       it 'returns ServiceResponse.success' do

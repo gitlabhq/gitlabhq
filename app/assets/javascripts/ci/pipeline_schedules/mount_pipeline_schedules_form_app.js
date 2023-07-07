@@ -18,10 +18,8 @@ export default (selector, editing = false) => {
 
   const {
     fullPath,
-    cron,
     dailyLimit,
     timezoneData,
-    cronTimezone,
     projectId,
     defaultBranch,
     settingsLink,
@@ -37,8 +35,6 @@ export default (selector, editing = false) => {
       projectId,
       defaultBranch,
       dailyLimit: dailyLimit ?? '',
-      cronTimezone: cronTimezone ?? '',
-      cron: cron ?? '',
       settingsLink,
       schedulesPath,
     },

@@ -83,6 +83,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Connect to cloud services](cloud_services/index.md)                                         | Connect to cloud providers using OpenID Connect (OIDC) to retrieve temporary credentials to access services or secrets. |
 | **Verify**                                                                                   |             |
 | [CI services](services/index.md)                                                             | Link Docker containers with your base image. |
+| [Code Quality](testing/code_quality.md)                                                      | Analyze your source code quality. |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md)                  | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md)                               | Open an interactive web terminal to debug the running jobs. |
 | [Review Apps](review_apps/index.md)                                                          | Configure GitLab CI/CD to preview code changes. |
@@ -98,11 +99,19 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [GitLab Releases](../user/project/releases/index.md)                                         | Add release notes to Git tags. |
 | [Cloud deployment](cloud_deployment/index.md)                                                | Deploy your application to a main cloud provider. |
 | **Secure**                                                                                   |             |
-| [Code Quality](testing/code_quality.md)                                                      | Analyze your source code quality. |
-| [Container Scanning](../user/application_security/container_scanning/index.md)               | Check your Docker containers for known vulnerabilities. |
+| [Container Scanning](../user/application_security/container_scanning/index.md)               | Scan your container images for known vulnerabilities. |
+| [Coverage-guided fuzz testing](../user/application_security/coverage_fuzzing/index.md)       | Test your application's behavior by providing randomized input. |
+| [Dynamic Application Security Testing](../user/application_security/dast/index.md)           | Test your application's runtime behavior for vulnerabilities. |
 | [Dependency Scanning](../user/application_security/dependency_scanning/index.md)             | Analyze your dependencies for known vulnerabilities. |
+| [Infrastructure as Code scanning](../user/application_security/iac_scanning/index.md)        | Scan your IaC configuration files for known vulnerabilities. |
 | [License Compliance](../user/compliance/license_compliance/index.md)                         | Search your project dependencies for their licenses. |
-| [Security Test reports](../user/application_security/index.md)                               | Check for app vulnerabilities. |
+| [Secret Detection](../user/application_security/secret_detection/index.md)                   | Search your application's source code for secrets. |
+| [Static Application Security Testing](../user/application_security/sast/index.md)            | Test your application's source code for known vulnerabilities. |
+| [Web API fuzz testing](../user/application_security/api_fuzzing/index.md)                    | Test your application's API behavior by providing randomized input. |
+| **Govern**                                                                                   |             |
+| [Compliance frameworks](../user/group/compliance_frameworks.md)                              | Enforce a GitLab CI/CD configuration on all projects in a group. |
+| [Scan execution policies](../user/application_security/policies/scan-execution-policies.md)  | Enforce security scans run on a specified schedule or with the project pipeline. |
+| [Scan results policies](../user/application_security/policies/scan-result-policies.md)       | Enforce action based on results of a pipeline security scan. |
 
 ## Examples
 

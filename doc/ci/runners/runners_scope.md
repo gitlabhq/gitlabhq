@@ -5,9 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# The scope of runners **(FREE)**
+# Manage runners
 
-Runners are available based on who you want to have access:
+GitLab Runner has the following types of runners, which are available based on who you want to have access:
 
 - [Shared runners](#shared-runners) are available to all groups and projects in a GitLab instance.
 - [Group runners](#group-runners) are available to all projects and subgroups in a group.

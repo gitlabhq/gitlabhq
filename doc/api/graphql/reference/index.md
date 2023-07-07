@@ -27181,6 +27181,12 @@ A `CiPipelineScheduleID` is a global ID. It is encoded as a string.
 
 An example `CiPipelineScheduleID` is: `"gid://gitlab/Ci::PipelineSchedule/1"`.
 
+### `CiPipelineScheduleVariableID`
+
+A `CiPipelineScheduleVariableID` is a global ID. It is encoded as a string.
+
+An example `CiPipelineScheduleVariableID` is: `"gid://gitlab/Ci::PipelineScheduleVariable/1"`.
+
 ### `CiRunnerID`
 
 A `CiRunnerID` is a global ID. It is encoded as a string.
@@ -29032,6 +29038,8 @@ Attributes for the pipeline schedule variable.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelineschedulevariableinputdestroy"></a>`destroy` | [`Boolean`](#boolean) | Boolean option to destroy the variable. |
+| <a id="pipelineschedulevariableinputid"></a>`id` | [`CiPipelineScheduleVariableID`](#cipipelineschedulevariableid) | ID of the variable to mutate. |
 | <a id="pipelineschedulevariableinputkey"></a>`key` | [`String!`](#string) | Name of the variable. |
 | <a id="pipelineschedulevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
 | <a id="pipelineschedulevariableinputvariabletype"></a>`variableType` | [`CiVariableType!`](#civariabletype) | Type of the variable. |
