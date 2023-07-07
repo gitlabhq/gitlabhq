@@ -199,6 +199,12 @@ not used as training data.
 
 Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance)
 
+### Inference window context
+
+Code Suggestions currently inferences against the currently opened file and has a context window of 2,048 tokens and 8,192 character limits. This limit includes content before and after the cursor, the file name, and the extension type.
+
+Learn more about Google Vertex AI [code-gecko](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models).
+
 ### Self-managed instance data privacy
 
 A self-managed GitLab instance does not generate the code suggestion. After successful

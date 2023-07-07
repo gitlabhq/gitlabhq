@@ -201,7 +201,6 @@ Layout/LineLength:
     - 'app/graphql/types/query_type.rb'
     - 'app/graphql/types/repository/blob_type.rb'
     - 'app/graphql/types/repository_type.rb'
-    - 'app/graphql/types/root_storage_statistics_type.rb'
     - 'app/graphql/types/snippets/visibility_scopes_enum.rb'
     - 'app/graphql/types/todo_action_enum.rb'
     - 'app/helpers/application_helper.rb'

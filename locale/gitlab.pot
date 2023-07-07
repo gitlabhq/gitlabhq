@@ -34334,7 +34334,7 @@ msgstr ""
 msgid "Please try and refresh the page. If the problem persists please contact support."
 msgstr ""
 
-msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
+msgid "Please type %{phrase_code} to proceed."
 msgstr ""
 
 msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately."

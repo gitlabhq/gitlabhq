@@ -4,8 +4,15 @@ require 'spec_helper'
 require 'rspec-parameterized'
 require 'support/helpers/rails_helpers'
 
-RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_shared_state, :request_store, feature_category: :scalability do
+RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :request_store, feature_category: :scalability do
   using RSpec::Parameterized::TableSyntax
+  include RedisHelpers
+
+  let_it_be(:redis_store_class) { define_helper_redis_store_class }
+
+  before do
+    redis_store_class.with(&:flushdb)
+  end
 
   describe 'read and write' do
     where(:setup, :command, :expect_write, :expect_read) do
@@ -32,7 +39,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
 
     with_them do
       it 'counts bytes read and written' do
-        Gitlab::Redis::SharedState.with do |redis|
+        redis_store_class.with do |redis|
           setup.each { |cmd| redis.call(cmd) }
           RequestStore.clear!
           redis.call(command)
@@ -45,18 +52,18 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
   end
 
   describe 'counting' do
-    let(:instrumentation_class) { Gitlab::Redis::SharedState.instrumentation_class }
+    let(:instrumentation_class) { redis_store_class.instrumentation_class }
 
     it 'counts successful requests' do
       expect(instrumentation_class).to receive(:instance_count_request).with(1).and_call_original
 
-      Gitlab::Redis::SharedState.with { |redis| redis.call(:get, 'foobar') }
+      redis_store_class.with { |redis| redis.call(:get, 'foobar') }
     end
 
     it 'counts successful pipelined requests' do
       expect(instrumentation_class).to receive(:instance_count_request).with(2).and_call_original
 
-      Gitlab::Redis::SharedState.with do |redis|
+      redis_store_class.with do |redis|
         redis.pipelined do |pipeline|
           pipeline.call(:get, '{foobar}buz')
           pipeline.call(:get, '{foobar}baz')
@@ -68,12 +75,12 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       where(:case_name, :exception, :exception_counter) do
         'generic exception' | Redis::CommandError                                 | :instance_count_exception
         'moved redirection' | Redis::CommandError.new("MOVED 123 127.0.0.1:6380") | :instance_count_cluster_redirection
-        'ask redirection' | Redis::CommandError.new("ASK 123 127.0.0.1:6380") | :instance_count_cluster_redirection
+        'ask redirection'   | Redis::CommandError.new("ASK 123 127.0.0.1:6380")   | :instance_count_cluster_redirection
       end
 
       with_them do
         before do
-          Gitlab::Redis::SharedState.with do |redis|
+          redis_store_class.with do |redis|
             # We need to go 1 layer deeper to stub _client as we monkey-patch Redis::Client
             # with the interceptor. Stubbing `redis` will skip the instrumentation_class.
             allow(redis._client).to receive(:process).and_raise(exception)
@@ -88,7 +95,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
           expect(instrumentation_class).to receive(:instance_count_request).and_call_original
 
           expect do
-            Gitlab::Redis::SharedState.with { |redis| redis.call(:auth, 'foo', 'bar') }
+            redis_store_class.with { |redis| redis.call(:auth, 'foo', 'bar') }
           end.to raise_exception(Redis::CommandError)
         end
       end
@@ -103,7 +110,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
         expect(instrumentation_class).to receive(:increment_cross_slot_request_count).and_call_original
         expect(instrumentation_class).not_to receive(:increment_allowed_cross_slot_request_count).and_call_original
 
-        Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, 'foo', 'bar') }
+        redis_store_class.with { |redis| redis.call(:mget, 'foo', 'bar') }
       end
 
       it 'does not count allowed cross-slot requests' do
@@ -111,7 +118,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
         expect(instrumentation_class).to receive(:increment_allowed_cross_slot_request_count).and_call_original
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, 'foo', 'bar') }
+          redis_store_class.with { |redis| redis.call(:mget, 'foo', 'bar') }
         end
       end
 
@@ -120,7 +127,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
         expect(instrumentation_class).not_to receive(:increment_allowed_cross_slot_request_count).and_call_original
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-          Gitlab::Redis::SharedState.with { |redis| redis.call(:get, 'bar') }
+          redis_store_class.with { |redis| redis.call(:get, 'bar') }
         end
       end
 
@@ -128,7 +135,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
         expect(instrumentation_class).not_to receive(:increment_cross_slot_request_count).and_call_original
         expect(instrumentation_class).not_to receive(:increment_allowed_cross_slot_request_count).and_call_original
 
-        Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, '{foo}bar', '{foo}baz') }
+        redis_store_class.with { |redis| redis.call(:mget, '{foo}bar', '{foo}baz') }
       end
     end
 
@@ -139,14 +146,14 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
 
       it 'still runs cross-slot validation' do
         expect do
-          Gitlab::Redis::SharedState.with { |redis| redis.mget('foo', 'bar') }
+          redis_store_class.with { |redis| redis.mget('foo', 'bar') }
         end.to raise_error(instance_of(Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError))
       end
     end
   end
 
   describe 'latency' do
-    let(:instrumentation_class) { Gitlab::Redis::SharedState.instrumentation_class }
+    let(:instrumentation_class) { redis_store_class.instrumentation_class }
 
     describe 'commands in the apdex' do
       where(:command) do
@@ -161,7 +168,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
           expect(instrumentation_class).to receive(:instance_observe_duration).with(a_value > 0)
             .and_call_original
 
-          Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
+          redis_store_class.with { |redis| redis.call(*command) }
         end
       end
 
@@ -170,7 +177,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
           expect(instrumentation_class).to receive(:instance_observe_duration).twice.with(a_value > 0)
             .and_call_original
 
-          Gitlab::Redis::SharedState.with do |redis|
+          redis_store_class.with do |redis|
             redis.pipelined do |pipeline|
               pipeline.call(:get, '{foobar}buz')
               pipeline.call(:get, '{foobar}baz')
@@ -180,7 +187,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
 
         it 'raises error when keys are not from the same slot' do
           expect do
-            Gitlab::Redis::SharedState.with do |redis|
+            redis_store_class.with do |redis|
               redis.pipelined do |pipeline|
                 pipeline.call(:get, 'foo')
                 pipeline.call(:get, 'bar')
@@ -206,11 +213,11 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
 
       with_them do
         it 'skips requests we do not want in the apdex' do
-          Gitlab::Redis::SharedState.with { |redis| setup.each { |cmd| redis.call(*cmd) } }
+          redis_store_class.with { |redis| setup.each { |cmd| redis.call(*cmd) } }
 
           expect(instrumentation_class).not_to receive(:instance_observe_duration)
 
-          Gitlab::Redis::SharedState.with { |redis| redis.call(*command) }
+          redis_store_class.with { |redis| redis.call(*command) }
         end
       end
 
@@ -218,7 +225,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
         it 'skips requests that have blocking commands' do
           expect(instrumentation_class).not_to receive(:instance_observe_duration)
 
-          Gitlab::Redis::SharedState.with do |redis|
+          redis_store_class.with do |redis|
             redis.pipelined do |pipeline|
               pipeline.call(:get, '{foobar}buz')
               pipeline.call(:rpush, '{foobar}baz', 1)

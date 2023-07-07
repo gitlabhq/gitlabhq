@@ -1025,7 +1025,7 @@ Example response:
 }
 ```
 
-## Create Service Account User **(PREMIUM)**
+## Create Service Account User **(PREMIUM SELF)**
 
 > Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
 

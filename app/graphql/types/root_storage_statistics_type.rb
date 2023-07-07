@@ -11,8 +11,11 @@ module Types
     field :dependency_proxy_size, GraphQL::Types::Float, null: false, description: 'Dependency Proxy sizes in bytes.'
     field :lfs_objects_size, GraphQL::Types::Float, null: false, description: 'LFS objects size in bytes.'
     field :packages_size, GraphQL::Types::Float, null: false, description: 'Packages size in bytes.'
-    field :pipeline_artifacts_size, GraphQL::Types::Float, null: false, description: 'CI pipeline artifacts size in bytes.'
-    field :registry_size_estimated, GraphQL::Types::Boolean, null: false, description: 'Indicates whether the deduplicated Container Registry size for the namespace is an estimated value or not.'
+    field :pipeline_artifacts_size, GraphQL::Types::Float, null: false,
+      description: 'CI pipeline artifacts size in bytes.'
+    field :registry_size_estimated, GraphQL::Types::Boolean, null: false,
+      description: 'Indicates whether the deduplicated Container Registry size for ' \
+                   'the namespace is an estimated value or not.'
     field :repository_size, GraphQL::Types::Float, null: false, description: 'Git repository size in bytes.'
     field :snippets_size, GraphQL::Types::Float, null: false, description: 'Snippets size in bytes.'
     field :storage_size, GraphQL::Types::Float, null: false, description: 'Total storage in bytes.'

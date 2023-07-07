@@ -4,20 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   using RSpec::Parameterized::TableSyntax
+  include RedisHelpers
 
-  let_it_be(:redis_store_class) do
-    Class.new(Gitlab::Redis::Wrapper) do
-      def config_file_name
-        config_file_name = "spec/fixtures/config/redis_new_format_host.yml"
-        Rails.root.join(config_file_name).to_s
-      end
-
-      def self.name
-        'Sessions'
-      end
-    end
-  end
-
+  let_it_be(:redis_store_class) { define_helper_redis_store_class }
   let_it_be(:primary_db) { 1 }
   let_it_be(:secondary_db) { 2 }
   let_it_be(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
@@ -1140,9 +1129,5 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         expect(multi_store.use_primary_and_secondary_stores?).to be false
       end
     end
-  end
-
-  def create_redis_store(options, extras = {})
-    ::Redis::Store.new(options.merge(extras))
   end
 end

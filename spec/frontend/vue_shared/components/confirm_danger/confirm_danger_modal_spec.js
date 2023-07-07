@@ -60,9 +60,7 @@ describe('Confirm Danger Modal', () => {
   });
 
   it('renders the correct confirmation phrase', () => {
-    expect(findConfirmationPhrase().text()).toBe(
-      `Please type ${phrase} to proceed or close this modal to cancel.`,
-    );
+    expect(findConfirmationPhrase().text()).toBe(`Please type ${phrase} to proceed.`);
   });
 
   describe('without injected data', () => {
