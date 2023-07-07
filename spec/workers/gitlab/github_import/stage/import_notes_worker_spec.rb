@@ -10,7 +10,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportNotesWorker, feature_category:
   let(:single_endpoint_optional_stage) { true }
 
   before do
-    settings.write({ single_endpoint_notes_import: single_endpoint_optional_stage })
+    settings.write({ optional_stages: { single_endpoint_notes_import: single_endpoint_optional_stage } })
   end
 
   describe '#import' do

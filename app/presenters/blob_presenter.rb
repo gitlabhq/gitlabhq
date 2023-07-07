@@ -86,7 +86,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def find_file_path
-    url_helpers.project_find_file_path(project, blob.commit_id)
+    url_helpers.project_find_file_path(project, commit_id, ref_type: ref_type)
   end
 
   def blame_path
@@ -131,13 +131,13 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_modify_blob?
-    super(blob, project, blob.commit_id)
+    super(blob, project, commit_id)
   end
 
   def can_current_user_push_to_branch?
-    return false unless current_user && project.repository.branch_exists?(blob.commit_id)
+    return false unless current_user && project.repository.branch_exists?(commit_id)
 
-    user_access(project).can_push_to_branch?(blob.commit_id)
+    user_access(project).can_push_to_branch?(commit_id)
   end
 
   def archived?
@@ -145,7 +145,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def ide_edit_path
-    super(project, blob.commit_id, blob.path)
+    super(project, commit_id, blob.path)
   end
 
   def external_storage_url
@@ -159,7 +159,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def project_blob_path_root
-    project_blob_path(project, blob.commit_id)
+    project_blob_path(project, commit_id)
   end
 
   private
@@ -181,7 +181,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def environment
-    environment_params = project.repository.branch_exists?(blob.commit_id) ? { ref: blob.commit_id } : { sha: blob.commit_id }
+    environment_params = project.repository.branch_exists?(commit_id) ? { ref: commit_id } : { sha: commit_id }
     environment_params[:find_latest] = true
     ::Environments::EnvironmentsByDeploymentsFinder.new(project, current_user, environment_params).execute.last
   end
@@ -190,12 +190,13 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     blob.repository.project
   end
 
-  def ref_qualified_path
+  def commit_id
     # If `ref_type` is present the commit_id will include the ref qualifier e.g. `refs/heads/`.
     # We only accept/return unqualified refs so we need to remove the qualifier from the `commit_id`.
+    ExtractsRef.unqualify_ref(blob.commit_id, ref_type)
+  end
 
-    commit_id = ExtractsRef.unqualify_ref(blob.commit_id, ref_type)
-
+  def ref_qualified_path
     File.join(commit_id, blob.path)
   end
 

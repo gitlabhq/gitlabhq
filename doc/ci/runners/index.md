@@ -17,14 +17,9 @@ Your jobs can run on:
 - [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 - [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 
-Refer to the Compute [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
+Refer to the compute minutes [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
 The number of minutes you can use on these runners depends on the [maximum number of units of compute](../pipelines/cicd_minutes.md)
 in your [subscription plan](https://about.gitlab.com/pricing/).
-
-[Untagged](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) jobs automatically run in containers
-on the `small` Linux runners.
-
-The objective is to make 90% of CI jobs start executing in 120 seconds or less. The error rate should be less than 0.5%.
 
 ## How SaaS runners work
 
@@ -35,6 +30,9 @@ When you use SaaS runners:
 - The virtual machine where your job runs has `sudo` access with no password.
 - The storage is shared by the operating system, the image with pre-installed software, and a copy of your cloned repository.
 This means that the available free disk space for your jobs to use is reduced.
+- [Untagged](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) jobs automatically run in containers
+on the `small` Linux runners.
+- The objective is to make 90% of CI jobs start executing in 120 seconds or less. The error rate target will be less than 0.5%.
 
 NOTE:
 Jobs handled by SaaS runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.

@@ -3,7 +3,7 @@
 class Admin::RunnersController < Admin::ApplicationController
   include RunnerSetupScripts
 
-  before_action :runner, except: [:index, :new, :tag_list, :runner_setup_scripts]
+  before_action :runner, only: [:show, :edit, :register, :update]
 
   feature_category :runner
   urgency :low

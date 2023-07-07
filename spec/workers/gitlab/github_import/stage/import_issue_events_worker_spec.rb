@@ -11,7 +11,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_cat
   let(:stage_enabled) { true }
 
   before do
-    settings.write({ single_endpoint_issue_events_import: stage_enabled })
+    settings.write({ optional_stages: { single_endpoint_issue_events_import: stage_enabled } })
   end
 
   describe '#import' do

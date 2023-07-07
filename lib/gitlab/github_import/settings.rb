@@ -56,8 +56,16 @@ module Gitlab
       def write(user_settings)
         user_settings = user_settings.to_h.with_indifferent_access
 
-        optional_stages = fetch_stages_from_params(user_settings)
-        import_data = project.create_or_update_import_data(data: { optional_stages: optional_stages })
+        optional_stages = fetch_stages_from_params(user_settings[:optional_stages])
+        credentials = project.import_data&.credentials&.merge(
+          additional_access_tokens: user_settings[:additional_access_tokens]
+        )
+
+        import_data = project.create_or_update_import_data(
+          data: { optional_stages: optional_stages },
+          credentials: credentials
+        )
+
         import_data.save!
       end
 
@@ -74,6 +82,8 @@ module Gitlab
       attr_reader :project
 
       def fetch_stages_from_params(user_settings)
+        user_settings = user_settings.to_h.with_indifferent_access
+
         OPTIONAL_STAGES.keys.to_h do |stage_name|
           enabled = Gitlab::Utils.to_boolean(user_settings[stage_name], default: false)
           [stage_name, enabled]

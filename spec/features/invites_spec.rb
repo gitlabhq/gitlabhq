@@ -232,7 +232,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         end
 
         context 'when the user signs up for an account with the invitation email address' do
-          it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
+          it 'redirects to the most recent membership activity page with all invitations automatically accepted',
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417092' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 

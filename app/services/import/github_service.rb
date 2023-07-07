@@ -16,7 +16,7 @@ module Import
       track_access_level('github')
 
       if project.persisted?
-        store_import_settings(project)
+        store_import_settings(project, access_params)
         success(project)
       elsif project.errors[:import_source_disabled].present?
         error(project.errors[:import_source_disabled], :forbidden)
@@ -134,8 +134,13 @@ module Import
       error(translated_message, http_status)
     end
 
-    def store_import_settings(project)
-      Gitlab::GithubImport::Settings.new(project).write(params[:optional_stages])
+    def store_import_settings(project, access_params)
+      Gitlab::GithubImport::Settings
+        .new(project)
+        .write(
+          optional_stages: params[:optional_stages],
+          additional_access_tokens: access_params[:additional_access_tokens]
+        )
     end
   end
 end

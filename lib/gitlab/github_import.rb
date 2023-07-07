@@ -8,12 +8,18 @@ module Gitlab
 
     def self.new_client_for(project, token: nil, host: nil, parallel: true)
       token_to_use = token || project.import_data&.credentials&.fetch(:user)
-      Client.new(
-        token_to_use,
+      token_pool = project.import_data&.credentials&.dig(:additional_access_tokens)
+      options = {
         host: host.presence || self.formatted_import_url(project),
         per_page: self.per_page(project),
         parallel: parallel
-      )
+      }
+
+      if token_pool
+        ClientPool.new(token_pool: token_pool, **options)
+      else
+        Client.new(token_to_use, **options)
+      end
     end
 
     # Returns the ID of the ghost user.

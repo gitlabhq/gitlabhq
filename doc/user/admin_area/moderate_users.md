@@ -178,6 +178,7 @@ Users can also be deactivated using the [GitLab API](../../api/users.md#deactiva
 ### Automatically deactivate dormant users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320875) in GitLab 14.0.
+> - Exclusion of GitLab generate bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340346) in GitLab 14.5
 > - Customizable time period [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336747) in GitLab 15.4
 > - The lower limit for inactive period set to 90 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100793) in GitLab 15.5
 
@@ -199,6 +200,9 @@ To do this:
 When this feature is enabled, GitLab runs a job once a day to deactivate the dormant users.
 
 A maximum of 100,000 users can be deactivated per day.
+
+NOTE:
+GitLab generated bots are excluded from the automatic deactivation of dormant users.
 
 ### Automatically delete unconfirmed users **(PREMIUM SELF)**
 

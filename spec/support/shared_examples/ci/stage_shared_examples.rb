@@ -21,7 +21,7 @@ RSpec.shared_examples 'manual playable stage' do |stage_type|
     context 'when is skipped' do
       let(:status) { 'skipped' }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be_falsy }
     end
   end
 end

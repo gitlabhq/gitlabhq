@@ -1,0 +1,8 @@
+---
+name: runners_dashboard
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125301
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417002
+milestone: '16.2'
+type: development
+group: group::runner
+default_enabled: false

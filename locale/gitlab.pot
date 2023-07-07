@@ -39533,6 +39533,9 @@ msgstr ""
 msgid "Runners|Created %{timeAgo} by %{avatar}"
 msgstr ""
 
+msgid "Runners|Dashboard"
+msgstr ""
+
 msgid "Runners|Delete %d runner"
 msgid_plural "Runners|Delete %d runners"
 msgstr[0] ""

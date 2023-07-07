@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport do
+RSpec.describe Gitlab::GithubImport, feature_category: :importers do
   before do
     stub_feature_flags(github_importer_lower_per_page_limit: false)
   end
@@ -11,6 +11,8 @@ RSpec.describe Gitlab::GithubImport do
     let(:project) { double(:project, import_url: 'http://t0ken@github.com/user/repo.git', id: 1, group: nil) }
 
     it 'returns a new Client with a custom token' do
+      allow(project).to receive(:import_data)
+
       expect(described_class::Client)
         .to receive(:new)
         .with('123', host: nil, parallel: true, per_page: 100)
@@ -24,6 +26,7 @@ RSpec.describe Gitlab::GithubImport do
       expect(project)
         .to receive(:import_data)
         .and_return(import_data)
+        .twice
 
       expect(described_class::Client)
         .to receive(:new)
@@ -46,12 +49,31 @@ RSpec.describe Gitlab::GithubImport do
         described_class.ghost_user_id
       end
     end
+
+    context 'when there are additional access tokens' do
+      it 'returns a new ClientPool containing all tokens' do
+        import_data = double(:import_data, credentials: { user: '123', additional_access_tokens: %w[foo bar] })
+
+        expect(project)
+          .to receive(:import_data)
+          .and_return(import_data)
+          .twice
+
+        expect(described_class::ClientPool)
+          .to receive(:new)
+          .with(token_pool: %w[foo bar], host: nil, parallel: true, per_page: 100)
+
+        described_class.new_client_for(project)
+      end
+    end
   end
 
   context 'GitHub Enterprise' do
     let(:project) { double(:project, import_url: 'http://t0ken@github.another-domain.com/repo-org/repo.git', group: nil) }
 
     it 'returns a new Client with a custom token' do
+      allow(project).to receive(:import_data)
+
       expect(described_class::Client)
         .to receive(:new)
         .with('123', host: 'http://github.another-domain.com/api/v3', parallel: true, per_page: 100)
@@ -65,6 +87,7 @@ RSpec.describe Gitlab::GithubImport do
       expect(project)
         .to receive(:import_data)
         .and_return(import_data)
+        .twice
 
       expect(described_class::Client)
         .to receive(:new)

@@ -166,7 +166,6 @@
 - './ee/spec/controllers/security/vulnerabilities_controller_spec.rb'
 - './ee/spec/controllers/sitemap_controller_spec.rb'
 - './ee/spec/controllers/subscriptions_controller_spec.rb'
-- './ee/spec/controllers/subscriptions/groups_controller_spec.rb'
 - './ee/spec/controllers/trial_registrations_controller_spec.rb'
 - './ee/spec/controllers/users_controller_spec.rb'
 - './ee/spec/db/production/license_spec.rb'

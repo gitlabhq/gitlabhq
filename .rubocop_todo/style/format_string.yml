@@ -170,7 +170,6 @@ Style/FormatString:
     - 'ee/app/controllers/groups/saml_group_links_controller.rb'
     - 'ee/app/controllers/groups/sso_controller.rb'
     - 'ee/app/controllers/projects/requirements_management/requirements_controller.rb'
-    - 'ee/app/controllers/subscriptions/groups_controller.rb'
     - 'ee/app/helpers/admin/emails_helper.rb'
     - 'ee/app/helpers/billing_plans_helper.rb'
     - 'ee/app/helpers/ee/application_helper.rb'

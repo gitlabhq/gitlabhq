@@ -96,6 +96,12 @@ module Gitlab
         db_duration = ActiveRecord::LogSubscriber.runtime
         payload['db_duration_s'] = Gitlab::Utils.ms_to_round_sec(db_duration)
 
+        job_urgency = payload['class'].safe_constantize&.get_urgency.to_s
+        unless job_urgency.empty?
+          payload['urgency'] = job_urgency
+          payload['target_duration_s'] = Gitlab::Metrics::SidekiqSlis.execution_duration_for_urgency(job_urgency)
+        end
+
         payload
       end
 

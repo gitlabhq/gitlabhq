@@ -148,7 +148,7 @@ module Ci
     end
 
     def manual_playable?
-      blocked? || skipped?
+      blocked?
     end
 
     # This will be removed with ci_remove_ensure_stage_service

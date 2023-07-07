@@ -5,7 +5,13 @@ require 'spec_helper'
 RSpec.describe Import::GithubService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:token) { 'complex-token' }
-  let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
+  let_it_be(:access_params) do
+    {
+      github_access_token: 'github-complex-token',
+      additional_access_tokens: %w[foo bar]
+    }
+  end
+
   let(:settings) { instance_double(Gitlab::GithubImport::Settings) }
   let(:user_namespace_path) { user.namespace_path }
   let(:optional_stages) { nil }
@@ -26,7 +32,12 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
     before do
       allow(Gitlab::GithubImport::Settings).to receive(:new).with(project_double).and_return(settings)
-      allow(settings).to receive(:write).with(optional_stages)
+      allow(settings)
+        .to receive(:write)
+        .with(
+          optional_stages: optional_stages,
+          additional_access_tokens: access_params[:additional_access_tokens]
+        )
     end
 
     context 'do not raise an exception on input error' do
@@ -82,7 +93,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       context 'when there is no repository size limit defined' do
         it 'skips the check, succeeds, and tracks an access level' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
-          expect(settings).to have_received(:write).with(nil)
+          expect(settings)
+            .to have_received(:write)
+            .with(optional_stages: nil, additional_access_tokens: access_params[:additional_access_tokens])
           expect_snowplow_event(
             category: 'Import::GithubService',
             action: 'create',
@@ -102,7 +115,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
         it 'succeeds when the repository is smaller than the limit' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
-          expect(settings).to have_received(:write).with(nil)
+          expect(settings)
+            .to have_received(:write)
+            .with(optional_stages: nil, additional_access_tokens: access_params[:additional_access_tokens])
           expect_snowplow_event(
             category: 'Import::GithubService',
             action: 'create',
@@ -129,7 +144,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         context 'when application size limit is defined' do
           it 'succeeds when the repository is smaller than the limit' do
             expect(subject.execute(access_params, :github)).to include(status: :success)
-            expect(settings).to have_received(:write).with(nil)
+            expect(settings)
+              .to have_received(:write)
+              .with(optional_stages: nil, additional_access_tokens: access_params[:additional_access_tokens])
             expect_snowplow_event(
               category: 'Import::GithubService',
               action: 'create',
@@ -160,7 +177,22 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         it 'saves optional stages choice to import_data' do
           subject.execute(access_params, :github)
 
-          expect(settings).to have_received(:write).with(optional_stages)
+          expect(settings)
+            .to have_received(:write)
+            .with(
+              optional_stages: optional_stages,
+              additional_access_tokens: access_params[:additional_access_tokens]
+            )
+        end
+      end
+
+      context 'when additional access tokens are present' do
+        it 'saves additional access tokens to import_data' do
+          subject.execute(access_params, :github)
+
+          expect(settings)
+            .to have_received(:write)
+            .with(optional_stages: optional_stages, additional_access_tokens: %w[foo bar])
         end
       end
     end

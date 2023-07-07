@@ -6881,6 +6881,31 @@ Input type: `UserSetNamespaceCommitEmailInput`
 | <a id="mutationusersetnamespacecommitemailerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationusersetnamespacecommitemailnamespacecommitemail"></a>`namespaceCommitEmail` | [`NamespaceCommitEmail`](#namespacecommitemail) | User namespace commit email after mutation. |
 
+### `Mutation.vulnerabilitiesDismiss`
+
+WARNING:
+**Introduced** in 16.2.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `VulnerabilitiesDismissInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesdismisscomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was dismissed (maximum 50,000 characters). |
+| <a id="mutationvulnerabilitiesdismissdismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason why vulnerability should be dismissed. |
+| <a id="mutationvulnerabilitiesdismissvulnerabilityids"></a>`vulnerabilityIds` | [`[VulnerabilityID!]!`](#vulnerabilityid) | IDs of the vulnerabilities to be dismissed. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilitiesdismissvulnerabilities"></a>`vulnerabilities` **{warning-solid}** | [`[Vulnerability!]!`](#vulnerability) | **Deprecated:** This feature is an Experiment. It can be changed or removed at any time. Introduced in 16.2. |
+
 ### `Mutation.vulnerabilityConfirm`
 
 Input type: `VulnerabilityConfirmInput`

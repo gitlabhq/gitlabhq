@@ -456,6 +456,28 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+
+    context 'with a real worker' do
+      let(:worker_class) { AuthorizedKeysWorker.name }
+
+      let(:expected_end_payload) do
+        end_payload.merge(
+          'urgency' => 'high',
+          'target_duration_s' => 10
+        )
+      end
+
+      it 'logs job done with urgency and target_duration_s fields' do
+        travel_to(timestamp) do
+          expect(logger).to receive(:info).with(start_payload).ordered
+          expect(logger).to receive(:info).with(expected_end_payload).ordered
+          expect(subject).to receive(:log_job_start).and_call_original
+          expect(subject).to receive(:log_job_done).and_call_original
+
+          call_subject(job, 'test_queue') {}
+        end
+      end
+    end
   end
 
   describe '#add_time_keys!' do

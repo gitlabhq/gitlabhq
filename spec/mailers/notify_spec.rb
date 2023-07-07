@@ -1572,14 +1572,20 @@ RSpec.describe Notify do
 
           context 'when custom email is enabled' do
             let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+            let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
-                custom_email_enabled: true,
                 custom_email: 'supersupport@example.com'
               )
+            end
+
+            before_all do
+              verification.mark_as_finished!
+              project.reset
+              settings.update!(custom_email_enabled: true)
             end
 
             it 'uses custom email and service bot name in "from" header' do
@@ -1630,20 +1636,21 @@ RSpec.describe Notify do
           end
 
           context 'when custom email is enabled' do
-            let_it_be(:credentials) do
-              create(
-                :service_desk_custom_email_credential,
-                project: project
-              )
-            end
+            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+            let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
-                custom_email_enabled: true,
                 custom_email: 'supersupport@example.com'
               )
+            end
+
+            before_all do
+              verification.mark_as_finished!
+              project.reset
+              settings.update!(custom_email_enabled: true)
             end
 
             it 'uses custom email and author\'s name in "from" header' do
