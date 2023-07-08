@@ -255,7 +255,6 @@ Layout/LineLength:
     - 'app/helpers/sorting_helper.rb'
     - 'app/helpers/ssh_keys_helper.rb'
     - 'app/helpers/startupjs_helper.rb'
-    - 'app/helpers/storage_helper.rb'
     - 'app/helpers/submodule_helper.rb'
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'

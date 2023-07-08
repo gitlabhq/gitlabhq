@@ -3,7 +3,9 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
     id
     pipeline(iid: $pipelineIid) {
       id
+      active
       jobs(statuses: [FAILED], retried: false, jobKind: BUILD) {
+        count
         nodes {
           id
           allowFailure

@@ -1,31 +1,11 @@
 ---
-stage: Manage
-group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../../../administration/settings/import_export_rate_limits.md'
+remove_date: '2023-10-07'
 ---
 
-# Rate limits for imports and exports of project and groups **(FREE SELF)**
+This document was moved to [another location](../../../administration/settings/import_export_rate_limits.md).
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35728) in GitLab 13.2.
-
-You can configure the rate limits for imports and exports of projects and groups:
-
-To change a rate limit:
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. Select **Settings > Network**.
-1. Expand **Import and export rate limits**.
-1. Change the value of any rate limit. The rate limits are per minute per user, not per IP address.
-   Set to `0` to disable a rate limit.
-
-| Limit                   | Default |
-|-------------------------|---------|
-| Project Import          | 6       |
-| Project Export          | 6       |
-| Project Export Download | 1       |
-| Group Import            | 6       |
-| Group Export            | 6       |
-| Group Export Download   | 1       |
-
-When a user exceeds a rate limit, it is logged in `auth.log`.
+<!-- This redirect file can be deleted after <2023-10-07>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

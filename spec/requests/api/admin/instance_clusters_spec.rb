@@ -363,7 +363,7 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
           end
 
           it 'returns validation error' do
-            expect(json_response['message']['platform_kubernetes.base'].first).to eq(_('Cannot modify managed Kubernetes cluster'))
+            expect(json_response['message']['platform_kubernetes'].first).to eq(_('Cannot modify managed Kubernetes cluster'))
           end
         end
 

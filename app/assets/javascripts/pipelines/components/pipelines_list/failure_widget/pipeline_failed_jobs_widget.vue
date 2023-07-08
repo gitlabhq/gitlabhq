@@ -1,23 +1,12 @@
 <script>
-import {
-  GlButton,
-  GlCollapse,
-  GlIcon,
-  GlLink,
-  GlLoadingIcon,
-  GlPopover,
-  GlSprintf,
-} from '@gitlab/ui';
-import { createAlert } from '~/alert';
+import { GlButton, GlCollapse, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import getPipelineFailedJobs from '../../../graphql/queries/get_pipeline_failed_jobs.query.graphql';
-import WidgetFailedJobRow from './widget_failed_job_row.vue';
-import { sortJobsByStatus } from './utils';
+import { etagQueryHeaders } from '~/graphql_shared/utils';
+import getPipelineFailedJobsCount from '../../../graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
+import { graphqlEtagPipelinePath } from './utils';
+import FailedJobsList from './failed_jobs_list.vue';
 
-const JOB_ACTION_HEADER = __('Actions');
-const JOB_ID_HEADER = __('Job ID');
-const JOB_NAME_HEADER = __('Job name');
-const STAGE_HEADER = __('Stage');
+const POLL_INTERVAL = 10000;
 
 export default {
   components: {
@@ -25,13 +14,16 @@ export default {
     GlCollapse,
     GlIcon,
     GlLink,
-    GlLoadingIcon,
     GlPopover,
     GlSprintf,
-    WidgetFailedJobRow,
+    FailedJobsList,
   },
-  inject: ['fullPath'],
+  inject: ['fullPath', 'graphqlPath'],
   props: {
+    isPipelineActive: {
+      required: true,
+      type: Boolean,
+    },
     pipelineIid: {
       required: true,
       type: Number,
@@ -44,16 +36,17 @@ export default {
   data() {
     return {
       failedJobs: [],
+      failedJobsCount: 0,
+      isActive: false,
       isExpanded: false,
-      isLoadingMore: false,
     };
   },
   apollo: {
-    failedJobs: {
-      query: getPipelineFailedJobs,
-      skip() {
-        return !this.isExpanded;
+    failedJobsCount: {
+      context() {
+        return etagQueryHeaders('verify/ci/merge-request/pipelines', this.graphqlResourceEtag);
       },
+      query: getPipelineFailedJobsCount,
       variables() {
         return {
           fullPath: this.fullPath,
@@ -61,11 +54,10 @@ export default {
         };
       },
       update(data) {
-        const jobs = data?.project?.pipeline?.jobs?.nodes || [];
-        return sortJobsByStatus(jobs);
+        return data?.project?.pipeline?.jobs?.count || 0;
       },
-      error(e) {
-        createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
+      result({ data }) {
+        this.isActive = data?.project?.pipeline?.active || false;
       },
     },
   },
@@ -73,46 +65,63 @@ export default {
     bodyClasses() {
       return this.isExpanded ? '' : 'gl-display-none';
     },
-    failedJobsCount() {
-      return this.failedJobs.length;
+    failedJobsCountText() {
+      return sprintf(this.$options.i18n.showFailedJobs, { count: this.failedJobsCount });
+    },
+    graphqlResourceEtag() {
+      return graphqlEtagPipelinePath(this.graphqlPath, this.pipelineIid);
+    },
+    hasFailedJobs() {
+      return this.failedJobsCount > 0;
     },
     iconName() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
-    isInitialLoading() {
-      return this.isLoading && !this.isLoadingMore;
+  },
+  watch: {
+    isPipelineActive(flag) {
+      // Turn polling on and off based on REST actions
+      // By refetching jobs, we will get the graphql `active`
+      // field to update properly and cascade the polling changes
+      this.$apollo.queries.failedJobsCount.refetch();
+      this.handlePolling(flag);
     },
-    isLoading() {
-      return this.$apollo.queries.failedJobs.loading;
+    isActive(flag) {
+      this.handlePolling(flag);
+    },
+    isExpanded(flag) {
+      // When the user toggles the expand state, we check if the pipeline is
+      // active, which which case we restart polling for jobs count.
+      if (!flag && (this.isActive || this.isPipelineActive)) {
+        this.$apollo.queries.failedJobsCount.startPolling(POLL_INTERVAL);
+      } else {
+        this.$apollo.queries.failedJobsCount.stopPolling();
+      }
     },
   },
   methods: {
-    async refetchJobs(jobName) {
-      this.isLoadingMore = true;
-
-      await this.$apollo.queries.failedJobs.refetch();
-
-      this.isLoadingMore = false;
-      this.$toast.show(sprintf(this.$options.i18n.retriedJobsSuccess, { jobName }));
+    handlePolling(isActive) {
+      // If the pipeline status has changed and the widget is not expanded,
+      // We start polling.
+      if (!this.isExpanded && isActive) {
+        this.$apollo.queries.failedJobsCount.startPolling(POLL_INTERVAL);
+      } else {
+        this.$apollo.queries.failedJobsCount.stopPolling();
+      }
+    },
+    setFailedJobsCount(count) {
+      this.failedJobsCount = count;
     },
     toggleWidget() {
       this.isExpanded = !this.isExpanded;
     },
   },
-  columns: [
-    { text: JOB_NAME_HEADER, class: 'col-6' },
-    { text: STAGE_HEADER, class: 'col-2' },
-    { text: JOB_ID_HEADER, class: 'col-2' },
-    { text: JOB_ACTION_HEADER, class: 'col-2' },
-  ],
   i18n: {
     additionalInfoPopover: s__(
       'Pipelines|You will see a maximum of 100 jobs in this list. To view all failed jobs, %{linkStart}go to the details page%{linkEnd} of this pipeline.',
     ),
     additionalInfoTitle: __('Limitation on this view'),
-    fetchError: __('There was a problem fetching failed jobs'),
-    showFailedJobs: __('Show failed jobs'),
-    retriedJobsSuccess: __('%{jobName} job is being retried'),
+    showFailedJobs: __('Show failed jobs (%{count})'),
   },
 };
 </script>
@@ -120,7 +129,7 @@ export default {
   <div class="gl-border-none!">
     <gl-button variant="link" @click="toggleWidget">
       <gl-icon :name="iconName" />
-      {{ $options.i18n.showFailedJobs }}
+      {{ failedJobsCountText }}
       <gl-icon id="target" name="information-o" />
       <gl-popover target="target" placement="top">
         <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
@@ -133,30 +142,16 @@ export default {
         </slot>
       </gl-popover>
     </gl-button>
-    <gl-loading-icon v-if="isInitialLoading" />
     <gl-collapse
-      v-else
       v-model="isExpanded"
       class="gl-bg-gray-10 gl-border-1 gl-border-t gl-border-color-gray-100 gl-mt-4 gl-pt-3"
     >
-      <div class="container-fluid gl-grid-tpl-rows-auto">
-        <div class="row gl-mb-6 gl-text-gray-900">
-          <div
-            v-for="col in $options.columns"
-            :key="col.text"
-            class="gl-font-weight-bold gl-text-left"
-            :class="col.class"
-            data-testid="header"
-          >
-            {{ col.text }}
-          </div>
-        </div>
-      </div>
-      <widget-failed-job-row
-        v-for="job in failedJobs"
-        :key="job.id"
-        :job="job"
-        @job-retried="refetchJobs"
+      <failed-jobs-list
+        v-if="isExpanded"
+        :graphql-resource-etag="graphqlResourceEtag"
+        :is-pipeline-active="isPipelineActive"
+        :pipeline-iid="pipelineIid"
+        @failed-jobs-count="setFailedJobsCount"
       />
     </gl-collapse>
   </div>

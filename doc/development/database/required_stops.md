@@ -95,3 +95,9 @@ is identified after release, the following steps must still be completed:
 
 1. Update `Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION` in `lib/gitlab/database.rb` to the
    new required stop versions. Do not change `Gitlab::Database::MIN_SCHEMA_VERSION`.
+1. In the `charts` project, update the
+   [upgrade check hook](https://gitlab.com/gitlab-org/charts/gitlab/-/blame/master/templates/_runcheck.tpl#L32)
+   to the required stop version.
+1. In the `omnibus-gitlab` project, update the
+   [pre-install version check](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/templates/package-scripts/preinst.erb#L43)
+   to the required stop version.

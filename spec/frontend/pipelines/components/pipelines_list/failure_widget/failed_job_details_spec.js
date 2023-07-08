@@ -6,8 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import WidgetFailedJobRow from '~/pipelines/components/pipelines_list/failure_widget/widget_failed_job_row.vue';
+import FailedJobDetails from '~/pipelines/components/pipelines_list/failure_widget/failed_job_details.vue';
 import RetryMrFailedJobMutation from '~/pipelines/graphql/mutations/retry_mr_failed_job.mutation.graphql';
 import { job } from './mock';
 
@@ -16,7 +15,7 @@ jest.mock('~/alert');
 
 const createFakeEvent = () => ({ stopPropagation: jest.fn() });
 
-describe('WidgetFailedJobRow component', () => {
+describe('FailedJobDetails component', () => {
   let wrapper;
   let mockRetryResponse;
 
@@ -35,7 +34,7 @@ describe('WidgetFailedJobRow component', () => {
   const createComponent = ({ props = {} } = {}) => {
     const handlers = [[RetryMrFailedJobMutation, mockRetryResponse]];
 
-    wrapper = shallowMountExtended(WidgetFailedJobRow, {
+    wrapper = shallowMountExtended(FailedJobDetails, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -45,7 +44,6 @@ describe('WidgetFailedJobRow component', () => {
   };
 
   const findArrowIcon = () => wrapper.findComponent(GlIcon);
-  const findJobCiStatus = () => wrapper.findComponent(CiIcon);
   const findJobId = () => wrapper.findComponent(GlLink);
   const findHiddenJobLog = () => wrapper.findByTestId('log-is-hidden');
   const findVisibleJobLog = () => wrapper.findByTestId('log-is-visible');
@@ -77,14 +75,6 @@ describe('WidgetFailedJobRow component', () => {
 
       expect(findJobId().exists()).toBe(true);
       expect(findJobId().text()).toContain(String(jobId));
-    });
-
-    it('renders the ci status badge', () => {
-      expect(findJobCiStatus().exists()).toBe(true);
-    });
-
-    it('renders the right arrow', () => {
-      expect(findArrowIcon().props().name).toBe('chevron-right');
     });
 
     it('does not renders the job lob', () => {

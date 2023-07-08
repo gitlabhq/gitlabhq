@@ -200,7 +200,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
     def create_merge_request_pipeline
       page.within('.merge-request-tabs') { click_link('Pipelines') }
-      click_button('Run pipeline')
+      click_on('Run pipeline')
     end
 
     def check_pipeline(expected_project:)

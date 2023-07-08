@@ -435,6 +435,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RequirementsManagement::ProcessRequirementsReportsWorker' => 3,
         'RunPipelineScheduleWorker' => 3,
         'ScanSecurityReportSecretsWorker' => 17,
+        'Search::ElasticGroupAssociationDeletionWorker' => 3,
         'Security::AutoFixWorker' => 3,
         'Security::StoreScansWorker' => 3,
         'Security::TrackSecureScansWorker' => 1,

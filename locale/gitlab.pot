@@ -26512,9 +26512,6 @@ msgstr ""
 msgid "Keep divergent refs"
 msgstr ""
 
-msgid "Keeping all SAST analyzers enabled future-proofs the project in case new languages are added later on. Determining which analyzers apply is a process that consumes minimal resources and adds minimal time to the pipeline. Leaving all SAST analyzers enabled ensures maximum coverage."
-msgstr ""
-
 msgid "Kerberos access denied"
 msgstr ""
 
@@ -33974,6 +33971,9 @@ msgstr ""
 msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
+msgid "Pipeline|No failed jobs in this pipeline 🎉"
+msgstr ""
+
 msgid "Pipeline|Passed"
 msgstr ""
 
@@ -41008,9 +41008,6 @@ msgstr ""
 msgid "SecurityConfiguration|Breach and Attack Simulation is an incubating feature extending existing security testing by simulating adversary activity."
 msgstr ""
 
-msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the merge request."
-msgstr ""
-
 msgid "SecurityConfiguration|Configuration guide"
 msgstr ""
 
@@ -41093,9 +41090,6 @@ msgid "SecurityConfiguration|Quickly enable all continuous testing and complianc
 msgstr ""
 
 msgid "SecurityConfiguration|Runtime security metrics for application environments"
-msgstr ""
-
-msgid "SecurityConfiguration|SAST Analyzers"
 msgstr ""
 
 msgid "SecurityConfiguration|SAST configuration"
@@ -42809,7 +42803,7 @@ msgstr ""
 msgid "Show details"
 msgstr ""
 
-msgid "Show failed jobs"
+msgid "Show failed jobs (%{count})"
 msgstr ""
 
 msgid "Show file browser"
@@ -51060,9 +51054,6 @@ msgid "We invite you to %{featureLinkStart}request a feature%{featureLinkEnd}, %
 msgstr ""
 
 msgid "We recommend a work email address."
-msgstr ""
-
-msgid "We recommend leaving all SAST analyzers enabled"
 msgstr ""
 
 msgid "We recommend that you buy additional Pipeline minutes to avoid any interruption of service."

@@ -34,30 +34,44 @@ export const allowedToFailJob = {
   allowFailure: true,
 };
 
-export const failedJobsMock = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/20',
-      pipeline: {
-        id: 'gid://gitlab/Pipeline/20',
-        jobs: {
-          nodes: [allowedToFailJob, job],
+export const createFailedJobsMockCount = ({ count = 4, active = false } = {}) => {
+  return {
+    data: {
+      project: {
+        id: 'gid://gitlab/Project/20',
+        pipeline: {
+          id: 'gid://gitlab/Pipeline/20',
+          active,
+          jobs: {
+            count,
+          },
         },
       },
     },
-  },
+  };
 };
 
-export const failedJobsMock2 = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/20',
-      pipeline: {
-        id: 'gid://gitlab/Pipeline/20',
-        jobs: {
-          nodes: [job],
+const createFailedJobsMock = (nodes, active = false) => {
+  return {
+    data: {
+      project: {
+        id: 'gid://gitlab/Project/20',
+        pipeline: {
+          active,
+          id: 'gid://gitlab/Pipeline/20',
+          jobs: {
+            count: nodes.length,
+            nodes,
+          },
         },
       },
     },
-  },
+  };
 };
+
+export const failedJobsMock = createFailedJobsMock([allowedToFailJob, job]);
+export const failedJobsMockEmpty = createFailedJobsMock([]);
+
+export const activeFailedJobsMock = createFailedJobsMock([allowedToFailJob, job], true);
+
+export const failedJobsMock2 = createFailedJobsMock([job]);

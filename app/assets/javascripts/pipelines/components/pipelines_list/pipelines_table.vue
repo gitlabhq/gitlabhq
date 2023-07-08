@@ -71,6 +71,9 @@ export default {
     };
   },
   computed: {
+    showFailedJobsWidget() {
+      return this.glFeatures.ciJobFailuresInMr;
+    },
     tableFields() {
       return [
         {
@@ -151,9 +154,6 @@ export default {
       this.pipeline = data.pipeline;
       this.endpoint = data.endpoint;
     },
-    showFailedJobsWidget(item) {
-      return this.glFeatures.ciJobFailuresInMr && this.hasFailedJobs(item);
-    },
     onSubmit() {
       eventHub.$emit('postAction', this.endpoint);
       this.cancelingPipeline = this.pipelineId;
@@ -220,7 +220,8 @@ export default {
 
       <template #row-details="{ item }">
         <pipeline-failed-jobs-widget
-          v-if="showFailedJobsWidget(item)"
+          v-if="showFailedJobsWidget"
+          :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"
         />

@@ -1,38 +1,36 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
-import { GlButton, GlIcon, GlLoadingIcon, GlPopover, GlToast } from '@gitlab/ui';
+import { GlButton, GlIcon, GlPopover } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
-import { createAlert } from '~/alert';
-import WidgetFailedJobRow from '~/pipelines/components/pipelines_list/failure_widget/widget_failed_job_row.vue';
-import * as utils from '~/pipelines/components/pipelines_list/failure_widget/utils';
-import getPipelineFailedJobs from '~/pipelines/graphql/queries/get_pipeline_failed_jobs.query.graphql';
-import { failedJobsMock, failedJobsMock2 } from './mock';
+import FailedJobsList from '~/pipelines/components/pipelines_list/failure_widget/failed_jobs_list.vue';
+import getPipelineFailedJobsCount from '~/pipelines/graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
+import { createFailedJobsMockCount } from './mock';
 
 Vue.use(VueApollo);
-Vue.use(GlToast);
 
 jest.mock('~/alert');
 
 describe('PipelineFailedJobsWidget component', () => {
   let wrapper;
   let mockFailedJobsResponse;
-  const showToast = jest.fn();
 
   const defaultProps = {
+    isPipelineActive: false,
     pipelineIid: 1,
     pipelinePath: '/pipelines/1',
   };
 
   const defaultProvide = {
     fullPath: 'namespace/project/',
+    graphqlPath: '/api/graphql',
   };
 
   const createComponent = ({ props = {}, provide } = {}) => {
-    const handlers = [[getPipelineFailedJobs, mockFailedJobsResponse]];
+    const handlers = [[getPipelineFailedJobsCount, mockFailedJobsResponse]];
     const mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(PipelineFailedJobsWidget, {
@@ -45,33 +43,39 @@ describe('PipelineFailedJobsWidget component', () => {
         ...provide,
       },
       apolloProvider: mockApollo,
-      mocks: {
-        $toast: {
-          show: showToast,
-        },
-      },
     });
   };
 
-  const findAllHeaders = () => wrapper.findAllByTestId('header');
   const findFailedJobsButton = () => wrapper.findComponent(GlButton);
-  const findFailedJobRows = () => wrapper.findAllComponents(WidgetFailedJobRow);
+  const findFailedJobsList = () => wrapper.findAllComponents(FailedJobsList);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
   const findInfoPopover = () => wrapper.findComponent(GlPopover);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   beforeEach(() => {
-    mockFailedJobsResponse = jest.fn();
+    mockFailedJobsResponse = jest.fn().mockResolvedValue(createFailedJobsMockCount());
   });
 
-  describe('ui', () => {
+  describe('when it is loading', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('renders the show failed jobs button', () => {
+    it('renders the show failed jobs button with a count of 0', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe('Show failed jobs');
+      expect(findFailedJobsButton().text()).toBe('Show failed jobs (0)');
+    });
+  });
+
+  describe('when the failed jobs have loaded', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await waitForPromises();
+    });
+
+    it('renders the show failed jobs button with correct count', () => {
+      expect(findFailedJobsButton().exists()).toBe(true);
+      expect(findFailedJobsButton().text()).toBe('Show failed jobs (4)');
     });
 
     it('renders the info icon', () => {
@@ -82,104 +86,95 @@ describe('PipelineFailedJobsWidget component', () => {
       expect(findInfoPopover().exists()).toBe(true);
     });
 
-    it('does not show the list of failed jobs', () => {
-      expect(findFailedJobRows()).toHaveLength(0);
+    it('does not render the failed jobs widget', () => {
+      expect(findFailedJobsList().exists()).toBe(false);
     });
   });
 
-  describe('when loading failed jobs', () => {
+  describe('when the job button is clicked', () => {
     beforeEach(async () => {
-      mockFailedJobsResponse.mockResolvedValue(failedJobsMock);
       createComponent();
+      await waitForPromises();
+
       await findFailedJobsButton().vm.$emit('click');
     });
 
-    it('shows a loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
+    it('renders the failed jobs widget', () => {
+      expect(findFailedJobsList().exists()).toBe(true);
     });
   });
 
-  describe('when failed jobs have loaded', () => {
-    beforeEach(async () => {
-      mockFailedJobsResponse.mockResolvedValue(failedJobsMock);
-      jest.spyOn(utils, 'sortJobsByStatus');
+  describe('polling', () => {
+    it.each`
+      isGraphqlActive | isExpanded | shouldPoll | text
+      ${true}         | ${false}   | ${true}    | ${'polls'}
+      ${false}        | ${false}   | ${false}   | ${'does not poll'}
+      ${true}         | ${true}    | ${false}   | ${'does not poll'}
+      ${false}        | ${true}    | ${false}   | ${'does not poll'}
+    `(
+      `$text when isGraphqlActive: $isGraphqlActive, isExpanded: $isExpanded`,
+      async ({ isGraphqlActive, isExpanded, shouldPoll }) => {
+        const defaultCount = 4;
+        const newCount = 1;
+        const expectedCount = shouldPoll ? newCount : defaultCount;
+        const expectedCallCount = shouldPoll ? 2 : 1;
 
-      createComponent();
+        // Second result is to simulate polling with a different response
+        mockFailedJobsResponse.mockResolvedValueOnce(
+          createFailedJobsMockCount({ active: isGraphqlActive, count: defaultCount }),
+        );
+        mockFailedJobsResponse.mockResolvedValueOnce(
+          createFailedJobsMockCount({ active: isGraphqlActive, count: newCount }),
+        );
 
-      await findFailedJobsButton().vm.$emit('click');
-      await waitForPromises();
-    });
+        createComponent();
+        await waitForPromises();
 
-    it('does not renders a loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
-    });
+        // Initially, we get the first response which is always the default
+        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
+        expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${defaultCount})`);
 
-    it('renders table column', () => {
-      expect(findAllHeaders()).toHaveLength(4);
-    });
+        // If the user expands the widget, polling stops
+        if (isExpanded) {
+          await findFailedJobsButton().vm.$emit('click');
+        }
 
-    it('shows the list of failed jobs', () => {
-      expect(findFailedJobRows()).toHaveLength(
-        failedJobsMock.data.project.pipeline.jobs.nodes.length,
-      );
-    });
+        jest.advanceTimersByTime(10000);
+        await waitForPromises();
 
-    it('calls sortJobsByStatus', () => {
-      expect(utils.sortJobsByStatus).toHaveBeenCalledWith(
-        failedJobsMock.data.project.pipeline.jobs.nodes,
-      );
-    });
+        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(expectedCallCount);
+        expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${expectedCount})`);
+      },
+    );
   });
 
-  describe('when an error occurs loading jobs', () => {
-    const errorMessage = "We couldn't fetch jobs for you because you are not qualified";
+  describe('when a REST action occurs', () => {
+    const defaultCount = 4;
+    const newCount = 1;
 
-    beforeEach(async () => {
-      mockFailedJobsResponse.mockRejectedValue({ message: errorMessage });
-
-      createComponent();
-
-      await findFailedJobsButton().vm.$emit('click');
-      await waitForPromises();
-    });
-    it('does not renders a loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(false);
-    });
-
-    it('calls create Alert with the error message and danger variant', () => {
-      expect(createAlert).toHaveBeenCalledWith({ message: errorMessage, variant: 'danger' });
-    });
-  });
-
-  describe('when `refetch-jobs` job is fired from the widget', () => {
-    beforeEach(async () => {
-      mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock);
-      mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock2);
-
-      createComponent();
-
-      await findFailedJobsButton().vm.$emit('click');
-      await waitForPromises();
-    });
-
-    it('refetches all failed jobs', async () => {
-      expect(findFailedJobRows()).not.toHaveLength(
-        failedJobsMock2.data.project.pipeline.jobs.nodes.length,
+    beforeEach(() => {
+      // Second result is to simulate polling with a different response
+      mockFailedJobsResponse.mockResolvedValueOnce(
+        createFailedJobsMockCount({ active: false, count: defaultCount }),
       );
-
-      await findFailedJobRows().at(0).vm.$emit('job-retried', 'job-name');
-      await waitForPromises();
-
-      expect(findFailedJobRows()).toHaveLength(
-        failedJobsMock2.data.project.pipeline.jobs.nodes.length,
+      mockFailedJobsResponse.mockResolvedValueOnce(
+        createFailedJobsMockCount({ active: false, count: newCount }),
       );
     });
 
-    it('shows a toast message', async () => {
-      await findFailedJobRows().at(0).vm.$emit('job-retried', 'job-name');
+    it.each([true, false])('triggers a refetch of the jobs count', async (isPipelineActive) => {
+      createComponent({ props: { isPipelineActive } });
       await waitForPromises();
 
-      expect(showToast).toHaveBeenCalledWith('job-name job is being retried');
+      // Initially, we get the first response which is always the default
+      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
+      expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${defaultCount})`);
+
+      await wrapper.setProps({ isPipelineActive: !isPipelineActive });
+      await waitForPromises();
+
+      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(2);
+      expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${newCount})`);
     });
   });
 });

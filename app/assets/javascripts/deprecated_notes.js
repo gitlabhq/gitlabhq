@@ -515,9 +515,8 @@ export default class Notes {
     }
     if (discussionContainer.length === 0) {
       if (noteEntity.diff_discussion_html) {
-        const discussionElement = document.createElement('table');
+        let discussionElement = document.createElement('table');
         let internalNote;
-        let discussionDOM;
 
         if (!noteEntity.on_image) {
           /*
@@ -536,16 +535,15 @@ export default class Notes {
             Curiously, DOMPurify **ADDS** a totally novel <tbody>, so we're actually
             inserting a completely as-yet-unseen <tbody> element here.
           */
-          discussionDOM = internalNote.querySelector('table').firstChild;
+          discussionElement = internalNote.querySelector('table').querySelector('.notes_holder');
         } else {
           // Image comments don't need <table> manipulation, they're already <div>s
           internalNote = sanitize(noteEntity.diff_discussion_html, {
             RETURN_DOM: true,
           });
-          discussionDOM = internalNote.firstChild;
+          discussionElement.insertAdjacentElement('afterbegin', internalNote.firstElementChild);
         }
 
-        discussionElement.insertAdjacentElement('afterbegin', discussionDOM);
         renderGFM(discussionElement);
         const $discussion = $(discussionElement).unwrap();
 

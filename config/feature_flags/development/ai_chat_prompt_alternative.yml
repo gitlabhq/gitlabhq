@@ -1,0 +1,8 @@
+---
+name: ai_chat_prompt_alternative
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125092
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417230
+milestone: '16.2'
+type: development
+group: group::ai-enablement
+default_enabled: false

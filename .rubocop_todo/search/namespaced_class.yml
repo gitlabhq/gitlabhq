@@ -26,6 +26,7 @@ Search/NamespacedClass:
     - 'ee/app/models/concerns/elastic/projects_search.rb'
     - 'ee/app/models/concerns/elastic/repositories_search.rb'
     - 'ee/app/models/concerns/elastic/snippets_search.rb'
+    - 'ee/app/models/concerns/elastic/update_associated_epics_on_date_change.rb'
     - 'ee/app/models/concerns/elastic/wiki_repositories_search.rb'
     - 'ee/app/models/concerns/elasticsearch_indexed_container.rb'
     - 'ee/app/models/concerns/zoekt/searchable_repository.rb'

@@ -21,7 +21,12 @@ import syntaxHighlight from './syntax_highlight';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
+  defaultClient: createDefaultClient(
+    {},
+    {
+      useGet: true,
+    },
+  ),
 });
 
 // MergeRequestTabs
@@ -96,6 +101,7 @@ function mountPipelines() {
       artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
       targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
       fullPath: pipelineTableViewEl.dataset.fullPath,
+      graphqlPath: pipelineTableViewEl.dataset.graphqlPath,
       manualActionsLimit: 50,
       withFailedJobsDetails: true,
     },

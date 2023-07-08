@@ -443,7 +443,7 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
 
           it 'returns validation error' do
             expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['message']['platform_kubernetes.base'].first)
+            expect(json_response['message']['platform_kubernetes'].first)
               .to eq(_('Cannot modify managed Kubernetes cluster'))
           end
         end
