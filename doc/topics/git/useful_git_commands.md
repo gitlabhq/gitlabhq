@@ -59,6 +59,38 @@ git revert <commit-sha>
 git commit --amend
 ```
 
+### Create a new message for older commits
+
+WARNING:
+Changing commit history can disrupt others' work if they have cloned, forked, or have active branches.
+Only amend pushed commits if you're sure it's safe.
+To learn more, see [Git rebase and force push](git_rebase.md).
+
+```shell
+git rebase -i HEAD~n
+```
+
+Replace `n` with the number of commits you want to go back.
+
+This opens your text editor with a list of commits.
+In the editor, replace `pick` with `reword` for each commit you want to change the message:
+
+```shell
+reword 1fc6c95 original commit message
+pick 6b2481b another commit message
+pick 5c1291b another commit message
+```
+
+After saving and closing the file, you can update each message in a new editor window.
+
+After updating your commits, you must push them to the repository.
+As this rewrites history, a force push is required.
+To prevent unintentional overwrites, use `--force-with-lease`:
+
+```shell
+git push --force-with-lease
+```
+
 ### Add a file to the last commit
 
 ```shell
