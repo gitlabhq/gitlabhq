@@ -15,6 +15,7 @@ export async function mountIssuesDashboardApp() {
 
   const {
     autocompleteAwardEmojisPath,
+    autocompleteUsersPath,
     calendarPath,
     dashboardLabelsPath,
     dashboardMilestonesPath,
@@ -38,6 +39,7 @@ export async function mountIssuesDashboardApp() {
     }),
     provide: {
       autocompleteAwardEmojisPath,
+      autocompleteUsersPath,
       calendarPath,
       dashboardLabelsPath,
       dashboardMilestonesPath,

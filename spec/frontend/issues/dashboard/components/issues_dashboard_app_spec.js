@@ -54,6 +54,7 @@ describe('IssuesDashboardApp component', () => {
 
   const defaultProvide = {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
+    autocompleteUsersPath: 'autocomplete/users.json',
     calendarPath: 'calendar/path',
     dashboardLabelsPath: 'dashboard/labels/path',
     dashboardMilestonesPath: 'dashboard/milestones/path',

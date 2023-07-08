@@ -18,8 +18,6 @@ export const SCOPE_TOKEN_MAX_LENGTH = 36;
 
 export const INPUT_FIELD_PADDING = 84;
 
-export const IS_SEARCHING = 'is-searching';
-
 export const FETCH_TYPES = ['generic', 'search'];
 export const SEARCH_MODAL_ID = 'super-sidebar-search-modal';
 

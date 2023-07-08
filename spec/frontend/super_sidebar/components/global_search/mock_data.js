@@ -62,20 +62,6 @@ export const MOCK_SEARCH_CONTEXT = {
   group_metadata: {},
 };
 
-export const MOCK_SEARCH_CONTEXT_FULL = {
-  group: {
-    id: 31,
-    name: 'testGroup',
-    full_name: 'testGroup',
-  },
-  group_metadata: {
-    group_path: 'testGroup',
-    name: 'testGroup',
-    issues_path: '/groups/testGroup/-/issues',
-    mr_path: '/groups/testGroup/-/merge_requests',
-  },
-};
-
 export const MOCK_DEFAULT_SEARCH_OPTIONS = [
   {
     text: MSG_ISSUES_ASSIGNED_TO_ME,

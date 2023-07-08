@@ -127,6 +127,9 @@ export default {
       immediate: true,
     },
   },
+  updated() {
+    this.$emit('updated');
+  },
   methods: {
     filterBySearchQuery(items, key = 'keywords') {
       return fuzzaldrinPlus.filter(items, this.searchQuery, { key });

@@ -81,6 +81,7 @@ export default {
   },
   inject: [
     'autocompleteAwardEmojisPath',
+    'autocompleteUsersPath',
     'calendarPath',
     'dashboardLabelsPath',
     'dashboardMilestonesPath',
@@ -384,7 +385,9 @@ export default {
       });
     },
     fetchUsers(search) {
-      return axios.get('/-/autocomplete/users.json', { params: { active: true, search } });
+      return axios.get(this.autocompleteUsersPath, {
+        params: { active: true, search },
+      });
     },
     getStatus(issue) {
       if (issue.state === STATUS_CLOSED && issue.moved) {

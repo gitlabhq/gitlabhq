@@ -313,12 +313,9 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     padding: 0.5rem !important;
   }
 
-  .is-searching {
-    .in-search-scope-help {
-      position: absolute;
-      top: 0.625rem;
-      right: 2.5rem;
-    }
+  .search-scope-help {
+    top: 0.625rem;
+    right: 2.5rem;
   }
 
   .gl-search-box-by-type-input-borderless {

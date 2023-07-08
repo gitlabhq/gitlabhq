@@ -238,6 +238,7 @@ module IssuesHelper
   def dashboard_issues_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+      autocomplete_users_path: autocomplete_users_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
       dashboard_milestones_path: dashboard_milestones_path(format: :json),
