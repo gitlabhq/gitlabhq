@@ -83,7 +83,6 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Connect to cloud services](cloud_services/index.md)                                         | Connect to cloud providers using OpenID Connect (OIDC) to retrieve temporary credentials to access services or secrets. |
 | **Verify**                                                                                   |             |
 | [CI services](services/index.md)                                                             | Link Docker containers with your base image. |
-| [Code Quality](testing/code_quality.md)                                                      | Analyze your source code quality. |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md)                  | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md)                               | Open an interactive web terminal to debug the running jobs. |
 | [Review Apps](review_apps/index.md)                                                          | Configure GitLab CI/CD to preview code changes. |
@@ -99,6 +98,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [GitLab Releases](../user/project/releases/index.md)                                         | Add release notes to Git tags. |
 | [Cloud deployment](cloud_deployment/index.md)                                                | Deploy your application to a main cloud provider. |
 | **Secure**                                                                                   |             |
+| [Code Quality](testing/code_quality.md)                                                      | Analyze your source code quality. |
 | [Container Scanning](../user/application_security/container_scanning/index.md)               | Scan your container images for known vulnerabilities. |
 | [Coverage-guided fuzz testing](../user/application_security/coverage_fuzzing/index.md)       | Test your application's behavior by providing randomized input. |
 | [Dynamic Application Security Testing](../user/application_security/dast/index.md)           | Test your application's runtime behavior for vulnerabilities. |

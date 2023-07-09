@@ -1387,6 +1387,19 @@ describe "#==" do
 end
 ```
 
+If, after creating a table-based test, you see an error that looks like this:
+
+```ruby
+NoMethodError:
+  undefined method `to_params'
+
+  param_sets = extracted.is_a?(Array) ? extracted : extracted.to_params
+                                                                       ^^^^^^^^^^
+  Did you mean?  to_param
+```
+
+That indicates that you need to include the line `using RSpec::Parameterized::TableSyntax` in the spec file.
+
 <!-- vale gitlab.Spelling = NO -->
 
 WARNING:

@@ -36410,6 +36410,9 @@ ALTER TABLE ONLY ml_candidate_params
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_ml_candidates_on_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ml_experiments
+    ADD CONSTRAINT fk_ml_experiments_on_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_path_locks_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -36631,9 +36634,6 @@ ALTER TABLE ONLY geo_repository_created_events
 
 ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ml_experiments
-    ADD CONSTRAINT fk_rails_1fbc5e001f FOREIGN KEY (user_id) REFERENCES users(id);
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_rails_1fd07aff6f FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
