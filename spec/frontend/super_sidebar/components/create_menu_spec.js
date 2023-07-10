@@ -20,8 +20,12 @@ describe('CreateMenu component', () => {
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
   const findGlTooltip = () => wrapper.findComponent(GlTooltip);
 
-  const createWrapper = () => {
+  const createWrapper = ({ provide = {} } = {}) => {
     wrapper = shallowMountExtended(CreateMenu, {
+      provide: {
+        isImpersonating: false,
+        ...provide,
+      },
       propsData: {
         groups: createNewMenuGroups,
       },
@@ -88,6 +92,15 @@ describe('CreateMenu component', () => {
       await nextTick();
 
       expect(findGlTooltip().exists()).toBe(true);
+    });
+  });
+
+  it('decreases the dropdown offset when impersonating a user', () => {
+    createWrapper({ provide: { isImpersonating: true } });
+
+    expect(findGlDisclosureDropdown().props('dropdownOffset')).toEqual({
+      crossAxis: -115,
+      mainAxis: 4,
     });
   });
 });

@@ -6,12 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # The Customers Portal
 
-For some management tasks for your subscription and account, you use the Customers Portal.
+For some management tasks for your subscription and account, such as purchasing additional seats or storage and viewing invoices, you use the Customers Portal. See the following pages for specific instructions on managing your subscription:
+
+- [GitLab SaaS subscription](gitlab_com/index.md)
+- [Self-managed subscription](self_managed/index.md)
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription (your subscriptions are read-only).
-
-You can also specifically manage your [GitLab SaaS subscription](gitlab_com/index.md)
-or [self-managed subscription](self_managed/index.md).
 
 ## Sign in to Customers Portal
 
@@ -119,3 +119,24 @@ To change the password for this customers portal account:
 1. Select the **My account** dropdown list and select **Account details**.
 1. Make the required changes to the **Your password** section.
 1. Select **Save changes**.
+
+## Customers that purchased through a reseller
+
+If you purchased a subscription through an authorized reseller (including GCP and AWS marketplaces), you have access to the Customers Portal to:
+
+- View your subscription.
+- Associate your subscription with the relevant group (GitLab SaaS) or download the license (GitLab self-managed).
+- Manage contact information.
+
+Other changes and requests must be done through the reseller, including:
+
+- Changes to the subscription.
+- Purchase of additional seats, Storage, or Compute.
+- Requests for invoices, because those are issued by the reseller, not GitLab.
+
+Resellers do not have access to the Customers Portal, or their customers' accounts.
+
+After your subscription order is processed, you will receive several emails:
+
+- A "Welcome to the Customers Portal" email, including instructions on how to log in.
+- A purchase confirmation email with instructions on how to provision access.

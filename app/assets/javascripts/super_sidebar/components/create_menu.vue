@@ -11,10 +11,11 @@ import {
   TOP_NAV_INVITE_MEMBERS_COMPONENT,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
-import { DROPDOWN_Y_OFFSET } from '../constants';
+import { DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET = -147;
+const DROPDOWN_X_OFFSET_BASE = -147;
+const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
 
 export default {
   components: {
@@ -27,6 +28,7 @@ export default {
   i18n: {
     createNew: __('Create new...'),
   },
+  inject: ['isImpersonating'],
   props: {
     groups: {
       type: Array,
@@ -38,13 +40,20 @@ export default {
       dropdownOpen: false,
     };
   },
+  computed: {
+    dropdownOffset() {
+      return {
+        mainAxis: DROPDOWN_Y_OFFSET,
+        crossAxis: this.isImpersonating ? DROPDOWN_X_OFFSET_IMPERSONATING : DROPDOWN_X_OFFSET_BASE,
+      };
+    },
+  },
   methods: {
     isInvitedMembers(groupItem) {
       return groupItem.component === TOP_NAV_INVITE_MEMBERS_COMPONENT;
     },
   },
   toggleId: 'create-menu-toggle',
-  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 };
 </script>
@@ -58,7 +67,7 @@ export default {
       text-sr-only
       :toggle-text="$options.i18n.createNew"
       :toggle-id="$options.toggleId"
-      :dropdown-offset="$options.dropdownOffset"
+      :dropdown-offset="dropdownOffset"
       data-qa-selector="new_menu_toggle"
       data-testid="new-menu-toggle"
       @shown="dropdownOpen = true"

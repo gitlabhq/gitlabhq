@@ -11,12 +11,12 @@ import { s__, __, sprintf } from '~/locale';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
-import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
+import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 import UserNameGroup from './user_name_group.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
 const DROPDOWN_X_OFFSET_BASE = -211;
-const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + 32;
+const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
 
 export default {
   feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409005',
