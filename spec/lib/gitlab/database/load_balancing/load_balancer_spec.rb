@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
+RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, feature_category: :database do
   let(:conflict_error) { Class.new(RuntimeError) }
   let(:model) { ActiveRecord::Base }
   let(:db_host) { model.connection_pool.db_config.host }
@@ -71,7 +71,30 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
+  shared_examples 'logs service discovery thread interruption' do |lb_method|
+    context 'with service discovery' do
+      let(:service_discovery) do
+        instance_double(
+          Gitlab::Database::LoadBalancing::ServiceDiscovery,
+          log_refresh_thread_interruption: true
+        )
+      end
+
+      before do
+        allow(lb).to receive(:service_discovery).and_return(service_discovery)
+      end
+
+      it 'calls logs service discovery thread interruption' do
+        expect(service_discovery).to receive(:log_refresh_thread_interruption)
+
+        lb.public_send(lb_method) {}
+      end
+    end
+  end
+
   describe '#read' do
+    it_behaves_like 'logs service discovery thread interruption', :read
+
     it 'yields a connection for a read' do
       connection = double(:connection)
       host = double(:host)
@@ -203,6 +226,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   end
 
   describe '#read_write' do
+    it_behaves_like 'logs service discovery thread interruption', :read_write
+
     it 'yields a connection for a write' do
       connection = ActiveRecord::Base.connection_pool.connection
 

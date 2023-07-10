@@ -12,6 +12,8 @@ module Gitlab
 
         REPLICA_SUFFIX = '_replica'
 
+        attr_accessor :service_discovery
+
         attr_reader :host_list, :configuration
 
         # configuration - An instance of `LoadBalancing::Configuration` that
@@ -45,6 +47,8 @@ module Gitlab
         # If no secondaries were available this method will use the primary
         # instead.
         def read(&block)
+          service_discovery&.log_refresh_thread_interruption
+
           conflict_retried = 0
 
           while host
@@ -103,6 +107,8 @@ module Gitlab
 
         # Yields a connection that can be used for both reads and writes.
         def read_write
+          service_discovery&.log_refresh_thread_interruption
+
           connection = nil
           transaction_open = nil
 

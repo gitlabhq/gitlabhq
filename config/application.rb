@@ -30,13 +30,6 @@ module Gitlab
 
     # Rails 7.0
     config.action_controller.raise_on_open_redirects = false
-    config.action_dispatch.default_headers = { "X-Frame-Options" => "SAMEORIGIN",
-      "X-XSS-Protection" => "1; mode=block",
-      "X-Content-Type-Options" => "nosniff",
-      "X-Download-Options" => "noopen",
-      "X-Permitted-Cross-Domain-Policies" => "none",
-      "Referrer-Policy" => "strict-origin-when-cross-origin" }
-
     config.action_dispatch.return_only_request_media_type_on_content_type = true
     config.action_mailer.smtp_timeout = nil # New default is 5
     config.action_view.button_to_generates_button_tag = nil # New default is true

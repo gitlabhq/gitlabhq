@@ -4890,7 +4890,7 @@ Input type: `MergeRequestUpdateApprovalRuleInput`
 | <a id="mutationmergerequestupdateapprovalruleiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutationmergerequestupdateapprovalrulename"></a>`name` | [`String!`](#string) | Name of the approval rule. |
 | <a id="mutationmergerequestupdateapprovalruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutationmergerequestupdateapprovalruleremovehiddengroups"></a>`removeHiddenGroups` | [`[Boolean!]`](#boolean) | Whether hidden groups should be removed. |
+| <a id="mutationmergerequestupdateapprovalruleremovehiddengroups"></a>`removeHiddenGroups` | [`Boolean`](#boolean) | Whether hidden groups should be removed. |
 | <a id="mutationmergerequestupdateapprovalruleuserids"></a>`userIds` | [`[String!]`](#string) | IDs of users as approvers. |
 
 #### Fields

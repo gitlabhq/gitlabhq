@@ -15,12 +15,14 @@ module Gitlab
       class ServiceDiscovery
         EmptyDnsResponse = Class.new(StandardError)
 
+        attr_accessor :refresh_thread, :refresh_thread_last_run, :refresh_thread_interruption_logged
+
         attr_reader :interval, :record, :record_type, :disconnect_timeout,
                     :load_balancer
 
         MAX_SLEEP_ADJUSTMENT = 10
-
         MAX_DISCOVERY_RETRIES = 3
+        DISCOVERY_THREAD_REFRESH_DELTA = 3
 
         RETRY_DELAY_RANGE = (0.1..0.2).freeze
 
@@ -74,8 +76,10 @@ module Gitlab
         # rubocop:enable Metrics/ParameterLists
 
         def start
-          Thread.new do
+          self.refresh_thread = Thread.new do
             loop do
+              self.refresh_thread_last_run = Time.current
+
               next_sleep_duration = perform_service_discovery
 
               # We slightly randomize the sleep() interval. This should reduce
@@ -103,15 +107,6 @@ module Gitlab
             # Slightly randomize the retry delay so that, in the case of a total
             # dns outage, all starting services do not pressure the dns server at the same time.
             sleep(rand(RETRY_DELAY_RANGE))
-          rescue Exception => error # rubocop:disable Lint/RescueException
-            # All exceptions are logged to find any pattern and solve https://gitlab.com/gitlab-org/gitlab/-/issues/364370
-            # This will be removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120173
-            Gitlab::Database::LoadBalancing::Logger.error(
-              event: :service_discovery_unexpected_exception,
-              message: "Service discovery encountered an uncaught error: #{error.message}"
-            )
-
-            raise
           end
 
           interval
@@ -212,6 +207,20 @@ module Gitlab
             port: @port,
             use_tcp: @use_tcp
           )
+        end
+
+        def log_refresh_thread_interruption
+          return if refresh_thread_last_run.blank? || refresh_thread_interruption_logged ||
+            (refresh_thread_last_run + DISCOVERY_THREAD_REFRESH_DELTA.minutes).future?
+
+          Gitlab::Database::LoadBalancing::Logger.error(
+            event: :service_discovery_refresh_thread_interrupt,
+            refresh_thread_last_run: refresh_thread_last_run,
+            thread_status: refresh_thread&.status&.to_s,
+            thread_backtrace: refresh_thread&.backtrace&.join('\n')
+          )
+
+          self.refresh_thread_interruption_logged = true
         end
 
         private
