@@ -39,6 +39,7 @@ GitLab package.
 Upgrading versions might need some manual intervention. For more information,
 check the version your are upgrading to:
 
+- [GitLab 16](https://docs.gitlab.com/omnibus/update/gitlab_16_changes.html)
 - [GitLab 15](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html)
 - [GitLab 14](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
 - [GitLab 13](https://docs.gitlab.com/omnibus/update/gitlab_13_changes.html)

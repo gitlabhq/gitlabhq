@@ -1,8 +1,8 @@
 <script>
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
@@ -34,6 +34,7 @@ export default {
   components: {
     GlAlert,
     GlLoadingIcon,
+    GlSprintf,
     GraphViewSelector,
     LocalStorageSync,
     PipelineGraph,
@@ -62,6 +63,7 @@ export default {
       pipeline: null,
       skipRetryModal: false,
       showAlert: false,
+      showJobCountWarning: false,
       showLinks: false,
     };
   },
@@ -166,7 +168,12 @@ export default {
           },
         );
       },
-      result({ error }) {
+      result({ data, error }) {
+        const stages = data?.project?.pipeline?.stages?.nodes || [];
+
+        this.showJobCountWarning = stages.some((stage) => {
+          return stage.groups.nodes.length >= 100;
+        });
         /*
           If there is a successful load after a failure, clear
           the failure notification to avoid confusion.
@@ -273,13 +280,37 @@ export default {
       this.currentViewType = type;
     },
   },
+  i18n: {
+    jobLimitWarning: {
+      title: s__('Pipeline|Only the first 100 jobs per stage are displayed'),
+      desc: s__('Pipeline|To see the remaining jobs, go to the %{boldStart}Jobs%{boldEnd} tab.'),
+    },
+  },
   viewTypeKey: VIEW_TYPE_KEY,
 };
 </script>
 <template>
   <div>
-    <gl-alert v-if="showAlert" :variant="alert.variant" @dismiss="hideAlert">
+    <gl-alert
+      v-if="showAlert"
+      :variant="alert.variant"
+      data-testid="error-alert"
+      @dismiss="hideAlert"
+    >
       {{ alert.text }}
+    </gl-alert>
+    <gl-alert
+      v-if="showJobCountWarning"
+      variant="warning"
+      :dismissible="false"
+      :title="$options.i18n.jobLimitWarning.title"
+      data-testid="job-count-warning"
+    >
+      <gl-sprintf :message="$options.i18n.jobLimitWarning.desc">
+        <template #bold="{ content }">
+          <b>{{ content }}</b>
+        </template>
+      </gl-sprintf>
     </gl-alert>
     <local-storage-sync
       :storage-key="$options.viewTypeKey"

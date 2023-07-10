@@ -284,7 +284,7 @@ CI/CD is always uppercase. No need to spell it out on first use.
 
 ## CI/CD minutes
 
-Do not use **CI/CD minutes**. This term was renamed to [**units of compute**](#units-of-compute).
+Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#compute-minutes).
 
 ## click
 
@@ -318,9 +318,21 @@ Use **compute** for the resources used by runners to run CI/CD jobs.
 
 Related terms:
 
-- [**units of compute**](#units-of-compute): How compute usage is calculated. For example, `400 units of compute`.
-- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of units of compute that a namespace can use each month.
-- **compute usage**: The number of units of compute that the namespace has used from the monthly quota.
+- [**compute minutes**](#compute-minutes): How compute usage is calculated. For example, `400 compute minutes`.
+- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of compute minutes that a namespace can use each month.
+- **compute usage**: The number of compute minutes that the namespace has used from the monthly quota.
+
+## compute minutes
+
+Use **compute minutes** instead of these (or similar) terms:
+
+- **CI/CD minutes**
+- **CI minutes**
+- **pipeline minutes**
+- **CI pipeline minutes**
+- **pipeline minutes**
+
+For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
 ## confirmation dialog
 
@@ -1496,18 +1508,6 @@ See also [**enter**](#enter).
 
 Use **Ultimate**, in uppercase, for the subscription tier. When you refer to **Ultimate**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
-
-## units of compute
-
-Use **units of compute** instead of these (or similar) terms:
-
-- **CI/CD minutes**
-- **CI minutes**
-- **pipeline minutes**
-- **CI pipeline minutes**
-- **pipeline minutes**
-
-For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
 
 ## units of measurement
 

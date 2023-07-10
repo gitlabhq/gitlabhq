@@ -84,7 +84,7 @@ export default {
     ),
     stuckBadgeText: s__('Pipelines|stuck'),
     stuckBadgeTooltip: s__('Pipelines|This pipeline is stuck'),
-    computeCreditsTooltip: s__('Pipelines|Total amount of compute credits used for the pipeline'),
+    computeMinutesTooltip: s__('Pipelines|Total amount of compute minutes used for the pipeline'),
     totalJobsTooltip: s__('Pipelines|Total number of jobs for the pipeline'),
     retryPipelineText: __('Retry'),
     cancelPipelineText: __('Cancel pipeline'),
@@ -137,7 +137,7 @@ export default {
       required: false,
       default: '',
     },
-    computeCredits: {
+    computeMinutes: {
       type: String,
       required: false,
       default: '',
@@ -312,8 +312,8 @@ export default {
 
       return cancelable && userPermissions.updatePipeline;
     },
-    showComputeCredits() {
-      return this.isFinished && this.computeCredits !== '0.0';
+    showComputeMinutes() {
+      return this.isFinished && this.computeMinutes !== '0.0';
     },
   },
   methods: {
@@ -552,14 +552,14 @@ export default {
             {{ totalJobsText }}
           </span>
           <span
-            v-if="showComputeCredits"
+            v-if="showComputeMinutes"
             v-gl-tooltip
-            :title="$options.i18n.computeCreditsTooltip"
+            :title="$options.i18n.computeMinutesTooltip"
             class="gl-ml-2"
-            data-testid="compute-credits"
+            data-testid="compute-minutes"
           >
             <gl-icon name="quota" />
-            {{ computeCredits }}
+            {{ computeMinutes }}
           </span>
           <span v-if="inProgress" class="gl-ml-2" data-testid="pipeline-running-text">
             <gl-icon name="timer" />

@@ -12,9 +12,9 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
 
   let(:query) do
     %(
-      query($limit: Int) {
+      query($limit: Int, $sort: CiGroupVariablesSort) {
         project(fullPath: "#{project.full_path}") {
-          inheritedCiVariables(first: $limit) {
+          inheritedCiVariables(first: $limit, sort: $sort) {
             pageInfo {
               hasNextPage
               hasPreviousPage
@@ -38,6 +38,34 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
     )
   end
 
+  let(:expected_var_b) do
+    {
+      'id' => subgroup_var.to_global_id.to_s,
+      'key' => 'SUBGROUP_VAR_B',
+      'environmentScope' => '*',
+      'groupName' => subgroup.name,
+      'groupCiCdSettingsPath' => subgroup_var.group_ci_cd_settings_path,
+      'masked' => true,
+      'protected' => false,
+      'raw' => false,
+      'variableType' => 'FILE'
+    }
+  end
+
+  let(:expected_var_a) do
+    {
+      'id' => group_var.to_global_id.to_s,
+      'key' => 'GROUP_VAR_A',
+      'environmentScope' => 'production',
+      'groupName' => group.name,
+      'groupCiCdSettingsPath' => group_var.group_ci_cd_settings_path,
+      'masked' => false,
+      'protected' => true,
+      'raw' => true,
+      'variableType' => 'ENV_VAR'
+    }
+  end
+
   def create_variables
     create(:ci_group_variable, group: group)
     create(:ci_group_variable, group: subgroup)
@@ -58,7 +86,7 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
   context 'when user is a project maintainer' do
     let!(:group_var) do
       create(:ci_group_variable, group: group, key: 'GROUP_VAR_A',
-        environment_scope: 'production', masked: false, protected: true, raw: true)
+        environment_scope: 'production', masked: false, protected: true, raw: true, created_at: 1.day.ago)
     end
 
     let!(:subgroup_var) do
@@ -73,29 +101,8 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
     it "returns the project's CI variables inherited from its parent group and ancestors" do
       post_graphql(query, current_user: user)
 
-      expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to eq([
-        {
-          'id' => subgroup_var.to_global_id.to_s,
-          'key' => 'SUBGROUP_VAR_B',
-          'environmentScope' => '*',
-          'groupName' => subgroup.name,
-          'groupCiCdSettingsPath' => subgroup_var.group_ci_cd_settings_path,
-          'masked' => true,
-          'protected' => false,
-          'raw' => false,
-          'variableType' => 'FILE'
-        },
-        {
-          'id' => group_var.to_global_id.to_s,
-          'key' => 'GROUP_VAR_A',
-          'environmentScope' => 'production',
-          'groupName' => group.name,
-          'groupCiCdSettingsPath' => group_var.group_ci_cd_settings_path,
-          'masked' => false,
-          'protected' => true,
-          'raw' => true,
-          'variableType' => 'ENV_VAR'
-        }
+      expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to match_array([
+        expected_var_b, expected_var_a
       ])
     end
 
@@ -106,19 +113,83 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
         expect(has_next_page).to be_truthy
         expect(has_prev_page).to be_falsey
 
-        expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to eq([
-          {
-            'id' => subgroup_var.to_global_id.to_s,
-            'key' => 'SUBGROUP_VAR_B',
-            'environmentScope' => '*',
-            'groupName' => subgroup.name,
-            'groupCiCdSettingsPath' => subgroup_var.group_ci_cd_settings_path,
-            'masked' => true,
-            'protected' => false,
-            'raw' => false,
-            'variableType' => 'FILE'
-          }
+        expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to match_array([
+          expected_var_b
         ])
+      end
+    end
+
+    describe 'sorting behaviour' do
+      before do
+        post_graphql(query, current_user: user, variables: { sort: sort })
+      end
+
+      shared_examples_for 'unexpected sort parameter' do
+        it 'raises a NoData exception' do
+          expect { graphql_data }.to raise_error(GraphqlHelpers::NoData)
+        end
+      end
+
+      context 'with sort by created_at ascenidng' do
+        let(:sort) { 'CREATED_ASC' }
+
+        it 'returns variables ordered by created_at in ascending order' do
+          expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to eq([
+            expected_var_a, expected_var_b
+          ])
+        end
+      end
+
+      context 'with not existing sort parameter' do
+        let(:sort) { 'WRONG' }
+
+        it_behaves_like 'unexpected sort parameter'
+      end
+
+      context 'with empty sort parameter' do
+        let(:sort) { '' }
+
+        it_behaves_like 'unexpected sort parameter'
+      end
+
+      context 'with no sort parameter' do
+        let(:sort) { nil }
+
+        it 'returns variables by default in descending order by created_at' do
+          expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to eq([
+            expected_var_b, expected_var_a
+          ])
+        end
+      end
+
+      context 'with sort by created_at descending' do
+        let(:sort) { 'CREATED_DESC' }
+
+        it 'returns variables ordered by created_at in descending order' do
+          expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to eq([
+            expected_var_b, expected_var_a
+          ])
+        end
+      end
+
+      context 'with sort by key ascending' do
+        let(:sort) { 'KEY_ASC' }
+
+        it 'returns variables ordered by key in ascending order' do
+          expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to eq([
+            expected_var_a, expected_var_b
+          ])
+        end
+      end
+
+      context 'with sort by key descending' do
+        let(:sort) { 'KEY_DESC' }
+
+        it 'returns variables ordered by key in descending order' do
+          expect(graphql_data.dig('project', 'inheritedCiVariables', 'nodes')).to eq([
+            expected_var_b, expected_var_a
+          ])
+        end
       end
     end
 

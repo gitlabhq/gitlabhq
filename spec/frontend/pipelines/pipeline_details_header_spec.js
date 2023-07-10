@@ -65,7 +65,7 @@ describe('Pipeline details header', () => {
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findCommitTitle = () => wrapper.findByTestId('pipeline-commit-title');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
-  const findComputeCredits = () => wrapper.findByTestId('compute-credits');
+  const findComputeMinutes = () => wrapper.findByTestId('compute-minutes');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findPipelineRunningText = () => wrapper.findByTestId('pipeline-running-text').text();
   const findPipelineRefText = () => wrapper.findByTestId('pipeline-ref-text').text();
@@ -89,7 +89,7 @@ describe('Pipeline details header', () => {
   const defaultProps = {
     name: 'Ruby 3.0 master branch pipeline',
     totalJobs: '50',
-    computeCredits: '0.65',
+    computeMinutes: '0.65',
     yamlErrors: 'errors',
     failureReason: 'pipeline failed',
     badges: {
@@ -216,20 +216,20 @@ describe('Pipeline details header', () => {
   });
 
   describe('finished pipeline', () => {
-    it('displays compute credits when not zero', async () => {
+    it('displays compute minutes when not zero', async () => {
       createComponent();
 
       await waitForPromises();
 
-      expect(findComputeCredits().text()).toBe('0.65');
+      expect(findComputeMinutes().text()).toBe('0.65');
     });
 
-    it('does not display compute credits when zero', async () => {
-      createComponent(defaultHandlers, { ...defaultProps, computeCredits: '0.0' });
+    it('does not display compute minutes when zero', async () => {
+      createComponent(defaultHandlers, { ...defaultProps, computeMinutes: '0.0' });
 
       await waitForPromises();
 
-      expect(findComputeCredits().exists()).toBe(false);
+      expect(findComputeMinutes().exists()).toBe(false);
     });
 
     it('does not display created time ago', async () => {
@@ -266,8 +266,8 @@ describe('Pipeline details header', () => {
       await waitForPromises();
     });
 
-    it('does not display compute credits', () => {
-      expect(findComputeCredits().exists()).toBe(false);
+    it('does not display compute minutes', () => {
+      expect(findComputeMinutes().exists()).toBe(false);
     });
 
     it('does not display finished time ago', () => {

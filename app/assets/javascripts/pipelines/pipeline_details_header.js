@@ -18,7 +18,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
     pipelinesPath,
     name,
     totalJobs,
-    computeCredits,
+    computeMinutes,
     yamlErrors,
     failureReason,
     triggeredByPath,
@@ -53,7 +53,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
         props: {
           name,
           totalJobs,
-          computeCredits,
+          computeMinutes,
           yamlErrors,
           failureReason,
           refText,

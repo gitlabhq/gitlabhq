@@ -7,17 +7,17 @@ type: reference
 
 # Compute quota **(PREMIUM)**
 
-> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "units of compute" in GitLab 16.1.
+> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
 
 NOTE:
-The term `CI/CD minutes` is being renamed to `units of compute`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, and `units of compute`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
+The term `CI/CD minutes` is being renamed to `compute minutes`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, `compute credits`, `compute units`, and `compute minutes`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
 Administrators can limit the amount of time that projects can use to run jobs on
 [shared runners](../runners/runners_scope.md#shared-runners) each month. This limit
 is tracked with a compute quota.
 
 By default, one minute of execution time by a single job uses
-one unit of compute. The total execution time for a pipeline is
+one compute minute. The total execution time for a pipeline is
 [the sum of all its jobs' durations](#how-compute-usage-is-calculated).
 Jobs can run concurrently, so the total usage can be higher than the
 end-to-end duration of a pipeline.
@@ -25,17 +25,17 @@ end-to-end duration of a pipeline.
 On GitLab.com:
 
 - Compute quotas are enabled for all projects, but certain
-  projects [consume units of compute at a slower rate](#cost-factor).
+  projects [consume compute minutes at a slower rate](#cost-factor).
 - The base monthly compute quota for a GitLab.com [namespace](../../user/namespace/index.md)
   is determined by its [license tier](https://about.gitlab.com/pricing/).
-- You can [purchase additional units of compute](#purchase-additional-units-of-compute)
+- You can [purchase additional compute minutes](#purchase-additional-compute-minutes)
   if you need more than the amount of compute in your monthly quota.
 
 On self-managed GitLab instances:
 
 - Compute quotas are disabled by default.
 - When enabled, compute quotas apply to private projects only.
-- Administrators can [assign more units of compute](#set-the-compute-quota-for-a-specific-namespace)
+- Administrators can [assign more compute minutes](#set-the-compute-quota-for-a-specific-namespace)
   if a namespace uses all its monthly quota.
 
 [Project runners](../runners/runners_scope.md#project-runners) are not subject to a compute quota.
@@ -80,7 +80,7 @@ To set a compute quota for a namespace:
 1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
-1. In the **Compute quota** box, enter the maximum number of units of compute.
+1. In the **Compute quota** box, enter the maximum number of compute minutes.
 1. Select **Save changes**.
 
 You can also use the [update group API](../../api/groups.md#update-group) or the
@@ -134,64 +134,64 @@ The projects list shows [personal projects](../../user/project/working_with_proj
 with compute usage or shared runners usage in the current month only. The list
 is sorted in descending order of compute usage.
 
-## Purchase additional units of compute **(FREE SAAS)**
+## Purchase additional compute minutes **(FREE SAAS)**
 
-If you're using GitLab SaaS, you can purchase additional packs of units of compute.
-These additional units of compute:
+If you're using GitLab SaaS, you can purchase additional packs of compute minutes.
+These additional compute minutes:
 
 - Are used only after the monthly quota included in your subscription runs out.
 - Are carried over to the next month, if any remain at the end of the month.
-- Are valid for 12 months from date of purchase or until all units of compute are consumed, whichever comes first. Expiry of units of compute is not enforced.
+- Are valid for 12 months from date of purchase or until all compute minutes are consumed, whichever comes first. Expiry of compute minutes is not enforced.
 
 For example, with a GitLab SaaS Premium license:
 
-- You have `10,000` monthly units of compute.
-- You purchase an additional `5,000` units of compute.
-- Your total limit is `15,000` units of compute.
+- You have `10,000` monthly compute minutes.
+- You purchase an additional `5,000` compute minutes.
+- Your total limit is `15,000` compute minutes.
 
-If you use `13,000` units of compute during the month, the next month your additional units of compute become
-`2,000`. If you use `9,000` units of compute during the month, your additional units of compute remain the same.
+If you use `13,000` compute minutes during the month, the next month your additional compute minutes become
+`2,000`. If you use `9,000` compute minutes during the month, your additional compute minutes remain the same.
 
-If you bought additional units of compute while on a trial subscription, those units of compute are available after the trial ends or you upgrade to a paid plan.
+If you bought additional compute minutes while on a trial subscription, those compute minutes are available after the trial ends or you upgrade to a paid plan.
 
-You can find pricing for additional units of compute on the
+You can find pricing for additional compute minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).
 
-### Purchase units of compute for a group **(FREE SAAS)**
+### Purchase compute minutes for a group **(FREE SAAS)**
 
 Prerequisite:
 
 - You must have the Owner role for the group.
 
-You can purchase additional units of compute for your group.
-You cannot transfer purchased units of compute from one group to another,
+You can purchase additional compute minutes for your group.
+You cannot transfer purchased compute minutes from one group to another,
 so be sure to select the correct group.
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
-1. Select **Buy additional units of compute**.
+1. Select **Buy additional compute minutes**.
 1. Complete the details of the transaction.
 
-After your payment is processed, the additional units of compute are added to your group
+After your payment is processed, the additional compute minutes are added to your group
 namespace.
 
-### Purchase units of compute for a personal namespace **(FREE SAAS)**
+### Purchase compute minutes for a personal namespace **(FREE SAAS)**
 
 Prerequisite:
 
 - The namespace must be your personal namespace.
 
-To purchase additional units of compute for your personal namespace:
+To purchase additional compute minutes for your personal namespace:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
-1. Select **Buy additional units of compute**. GitLab redirects you to the Customers Portal.
-1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, select **Buy more units of compute**,
+1. Select **Buy additional compute minutes**. GitLab redirects you to the Customers Portal.
+1. Locate the subscription card that's linked to your personal namespace on GitLab SaaS, select **Buy more compute minutes**,
    and complete the details of the transaction.
 
-After your payment is processed, the additional units of compute are added to your personal
+After your payment is processed, the additional compute minutes are added to your personal
 namespace.
 
 ## How compute usage is calculated
@@ -206,17 +206,17 @@ Job duration * Cost factor
   not including time spent in the `created` or `pending` statuses.
 - [**Cost factor**](#cost-factor): A number based on project visibility.
 
-The value is transformed into units of compute and added to the count of used units
+The value is transformed into compute minutes and added to the count of used units
 in the job's top-level namespace.
 
 For example, if a user `alice` runs a pipeline:
 
-- Under the `gitlab-org` namespace, the units of compute used by each job in the pipeline are
+- Under the `gitlab-org` namespace, the compute minutes used by each job in the pipeline are
   added to the overall consumption for the `gitlab-org` namespace, not the `alice` namespace.
-- For one of the personal projects in their namespace, the units of compute are added
+- For one of the personal projects in their namespace, the compute minutes are added
   to the overall consumption for the `alice` namespace.
 
-The compute used by one pipeline is the total units of compute used by all the jobs
+The compute used by one pipeline is the total compute minutes used by all the jobs
 that ran in the pipeline. Jobs can run concurrently, so the total compute usage
 can be higher than the end-to-end duration of a pipeline.
 
@@ -228,19 +228,19 @@ The cost factors for jobs running on shared runners on GitLab.com are:
 - Exceptions for public projects:
   - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source).
   - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source). For every 125 minutes of job execution time,
-  you use 1 unit of compute.
+  you use 1 compute minute.
 - Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
 
-- `0` for public projects, so they do not consume units of compute.
+- `0` for public projects, so they do not consume compute minutes.
 - `1` for internal and private projects.
 
 #### Cost factor for community contributions to GitLab projects
 
 Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects
 maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://about.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
-is reduced by the units of compute used by pipelines from other projects.
+is reduced by the compute minutes used by pipelines from other projects.
 The 300,000 minutes applies to all SaaS tiers, and the cost factor calculation is:
 
 - `Monthly compute quota / 300,000 job duration minutes = Cost factor`
@@ -279,27 +279,27 @@ On the first day of each calendar month, the accumulated compute usage is reset 
 for all namespaces that use shared runners. This means your full quota is available, and
 calculations start again from `0`.
 
-For example, if you have a monthly quota of `10,000` units of compute:
+For example, if you have a monthly quota of `10,000` compute minutes:
 
-- On **April 1**, you have `10,000` units of compute.
-- During April, you use only `6,000` of the `10,000` units of compute.
-- On **May 1**, the accumulated compute usage resets to `0`, and you have `10,000` units of compute to use again
+- On **April 1**, you have `10,000` compute minutes.
+- During April, you use only `6,000` of the `10,000` compute minutes.
+- On **May 1**, the accumulated compute usage resets to `0`, and you have `10,000` compute minutes to use again
   during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.
 
-### Monthly rollover of purchased units of compute
+### Monthly rollover of purchased compute minutes
 
-If you purchase additional units of compute and don't use the full amount, the remaining amount rolls over to
+If you purchase additional compute minutes and don't use the full amount, the remaining amount rolls over to
 the next month.
 
 For example:
 
-- On **April 1**, you purchase `5,000` additional units of compute.
-- During April, you use only `3,000` of the `5,000` additional units of compute.
-- On **May 1**, the unused units of compute roll over, so you have `2,000` additional units of compute available for May.
+- On **April 1**, you purchase `5,000` additional compute minutes.
+- During April, you use only `3,000` of the `5,000` additional compute minutes.
+- On **May 1**, the unused compute minutes roll over, so you have `2,000` additional compute minutes available for May.
 
-Additional units of compute are a one-time purchase and do not renew or refresh each month.
+Additional compute minutes are a one-time purchase and do not renew or refresh each month.
 
 ## What happens when you exceed the quota
 
@@ -311,7 +311,7 @@ processing new jobs.
 - Any running job can be dropped at any point if the overall namespace usage goes over-quota
   by a grace period.
 
-The grace period for running jobs is `1,000` units of compute.
+The grace period for running jobs is `1,000` compute minutes.
 
 Jobs on project runners are not affected by the compute quota.
 
@@ -319,8 +319,8 @@ Jobs on project runners are not affected by the compute quota.
 
 On GitLab SaaS an email notification is sent to the namespace owners when:
 
-- The remaining units of compute is below 30% of the quota.
-- The remaining units of compute is below 5% of the quota.
+- The remaining compute minutes is below 30% of the quota.
+- The remaining compute minutes is below 5% of the quota.
 - All the compute quota has been used.
 
 ### Special quota limits

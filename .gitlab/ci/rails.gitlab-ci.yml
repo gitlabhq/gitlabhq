@@ -584,25 +584,25 @@ rspec migration pg14-as-if-foss single-db:
   extends:
     - rspec migration pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec background_migration pg14-as-if-foss single-db:
   extends:
     - rspec background_migration pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec migration pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec migration pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
 
 rspec background_migration pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec background_migration pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
 
 rspec unit pg14-as-if-foss:
   extends:
@@ -614,13 +614,13 @@ rspec unit pg14-as-if-foss single-db:
   extends:
     - rspec unit pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec unit pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec unit pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
 
 rspec integration pg14-as-if-foss:
   extends:
@@ -632,13 +632,13 @@ rspec integration pg14-as-if-foss single-db:
   extends:
     - rspec integration pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec integration pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec integration pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
 
 rspec system pg14-as-if-foss:
   extends:
@@ -650,13 +650,13 @@ rspec system pg14-as-if-foss single-db:
   extends:
     - rspec system pg14-as-if-foss
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-as-if-foss
 
 rspec system pg14-as-if-foss single-db-ci-connection:
   extends:
     - rspec system pg14-as-if-foss
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-as-if-foss
 
 rspec-ee migration pg14:
   extends:

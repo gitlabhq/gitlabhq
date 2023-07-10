@@ -51,7 +51,7 @@
       = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-form-input gl-mt-2'
       .help-block
         = _('Specify an email address regex pattern to identify default internal users.')
-        = link_to _('Learn more.'), help_page_path('user/admin_area/external_users', anchor: 'set-a-new-user-to-external'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more.'), help_page_path('administration/external_users', anchor: 'set-a-new-user-to-external'), target: '_blank', rel: 'noopener noreferrer'
     - unless Gitlab.com?
       .form-group
         = f.label :deactivate_dormant_users, _('Dormant users'), class: 'label-bold'

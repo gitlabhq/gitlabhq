@@ -2543,13 +2543,13 @@ msgstr ""
 msgid "AccountValidation|I'll bring my own runners"
 msgstr ""
 
-msgid "AccountValidation|In order to use free units of compute on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
+msgid "AccountValidation|In order to use free compute minutes on shared runners, you'll need to validate your account using one of our verification options. If you prefer not to, you can run pipelines by bringing your own runners and disabling shared runners for your project."
 msgstr ""
 
 msgid "AccountValidation|Learn more."
 msgstr ""
 
-msgid "AccountValidation|Looks like you'll need to validate your account to use free units of compute"
+msgid "AccountValidation|Looks like you'll need to validate your account to use free compute minutes"
 msgstr ""
 
 msgid "AccountValidation|Validate your account"
@@ -2966,6 +2966,9 @@ msgstr ""
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr ""
 
+msgid "Additional compute minutes:"
+msgstr ""
+
 msgid "Additional diagram formats"
 msgstr ""
 
@@ -2985,9 +2988,6 @@ msgid "Additional text to show on the sign-in page"
 msgstr ""
 
 msgid "Additional units"
-msgstr ""
-
-msgid "Additional units of compute:"
 msgstr ""
 
 msgid "Address"
@@ -3935,7 +3935,7 @@ msgstr ""
 msgid "AdminUsers|Sort by"
 msgstr ""
 
-msgid "AdminUsers|The maximum units of compute that jobs in this namespace can use on shared runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
+msgid "AdminUsers|The maximum compute minutes that jobs in this namespace can use on shared runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
 msgstr ""
 
 msgid "AdminUsers|The user can't access git repositories."
@@ -7205,28 +7205,28 @@ msgstr ""
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
 msgstr ""
 
-msgid "BillingPlans|10,000 units of compute per month"
+msgid "BillingPlans|10,000 compute minutes per month"
 msgstr ""
 
-msgid "BillingPlans|10000 units of compute"
+msgid "BillingPlans|10000 compute minutes"
 msgstr ""
 
 msgid "BillingPlans|10GB transfer per month"
 msgstr ""
 
-msgid "BillingPlans|400 units of compute"
+msgid "BillingPlans|400 compute minutes"
 msgstr ""
 
-msgid "BillingPlans|400 units of compute per month"
+msgid "BillingPlans|400 compute minutes per month"
 msgstr ""
 
 msgid "BillingPlans|5 users per namespace"
 msgstr ""
 
-msgid "BillingPlans|50,000 units of compute per month"
+msgid "BillingPlans|50,000 compute minutes per month"
 msgstr ""
 
-msgid "BillingPlans|50000 units of compute"
+msgid "BillingPlans|50000 compute minutes"
 msgstr ""
 
 msgid "BillingPlans|5GB storage"
@@ -7487,10 +7487,10 @@ msgstr ""
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
-msgid "Billings|To use free units of compute on shared runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
+msgid "Billings|To use free compute minutes on shared runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "Billings|To use free units of compute on shared runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
+msgid "Billings|To use free compute minutes on shared runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User validation required"
@@ -7502,7 +7502,7 @@ msgstr ""
 msgid "Billings|Validate user account"
 msgstr ""
 
-msgid "Billings|You'll now be able to take advantage of free units of compute on shared runners."
+msgid "Billings|You'll now be able to take advantage of free compute minutes on shared runners."
 msgstr ""
 
 msgid "Billings|Your account has been validated"
@@ -9357,7 +9357,7 @@ msgstr ""
 msgid "Checkout|$%{selectedPlanPrice} per 10 GB storage pack per year"
 msgstr ""
 
-msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 units of compute"
+msgid "Checkout|$%{selectedPlanPrice} per pack of 1,000 compute minutes"
 msgstr ""
 
 msgid "Checkout|%d compute pack"
@@ -9371,22 +9371,22 @@ msgstr ""
 msgid "Checkout|%{name}'s GitLab subscription"
 msgstr ""
 
+msgid "Checkout|%{name}'s compute minutes"
+msgstr ""
+
 msgid "Checkout|%{name}'s storage subscription"
 msgstr ""
 
-msgid "Checkout|%{name}'s units of compute"
+msgid "Checkout|%{quantity} GB of storage"
 msgstr ""
 
-msgid "Checkout|%{quantity} GB of storage"
+msgid "Checkout|%{quantity} compute minutes"
 msgstr ""
 
 msgid "Checkout|%{quantity} storage pack"
 msgid_plural "Checkout|%{quantity} storage packs"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Checkout|%{quantity} units of compute"
-msgstr ""
 
 msgid "Checkout|%{selectedPlanText} plan"
 msgstr ""
@@ -9427,7 +9427,7 @@ msgstr ""
 msgid "Checkout|Compute pack"
 msgstr ""
 
-msgid "Checkout|Compute packs are only used after you've used your subscription's monthly quota. The additional units of compute will roll over month to month and are valid for one year."
+msgid "Checkout|Compute packs are only used after you've used your subscription's monthly quota. The additional compute minutes will roll over month to month and are valid for one year."
 msgstr ""
 
 msgid "Checkout|Confirm purchase"
@@ -9568,10 +9568,10 @@ msgstr ""
 msgid "Checkout|Total"
 msgstr ""
 
-msgid "Checkout|Total storage: %{quantity} GB"
+msgid "Checkout|Total compute minutes: %{quantity}"
 msgstr ""
 
-msgid "Checkout|Total units of compute: %{quantity}"
+msgid "Checkout|Total storage: %{quantity} GB"
 msgstr ""
 
 msgid "Checkout|Users"
@@ -9598,7 +9598,7 @@ msgstr ""
 msgid "Checkout|company or team"
 msgstr ""
 
-msgid "Checkout|units of compute"
+msgid "Checkout|compute minutes"
 msgstr ""
 
 msgid "Checkout|x %{quantity} %{units} per pack"
@@ -11879,6 +11879,9 @@ msgid "Component type '%s' is not yet supported"
 msgstr ""
 
 msgid "Components must have a 'name'"
+msgstr ""
+
+msgid "Compute minutes"
 msgstr ""
 
 msgid "Compute quota"
@@ -33842,7 +33845,7 @@ msgstr ""
 msgid "Pipelines|Token"
 msgstr ""
 
-msgid "Pipelines|Total amount of compute credits used for the pipeline"
+msgid "Pipelines|Total amount of compute minutes used for the pipeline"
 msgstr ""
 
 msgid "Pipelines|Total number of jobs for the pipeline"
@@ -33980,6 +33983,9 @@ msgstr ""
 msgid "Pipeline|No failed jobs in this pipeline 🎉"
 msgstr ""
 
+msgid "Pipeline|Only the first 100 jobs per stage are displayed"
+msgstr ""
+
 msgid "Pipeline|Passed"
 msgstr ""
 
@@ -34062,6 +34068,9 @@ msgid "Pipeline|This pipeline ran on the contents of this merge request's source
 msgstr ""
 
 msgid "Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{linkStart}must be configured%{linkEnd} to run in merge request pipelines."
+msgstr ""
+
+msgid "Pipeline|To see the remaining jobs, go to the %{boldStart}Jobs%{boldEnd} tab."
 msgstr ""
 
 msgid "Pipeline|Trigger author"
@@ -37883,7 +37892,7 @@ msgstr ""
 msgid "RegistrationVerification|Are you sure you want to skip this step?"
 msgstr ""
 
-msgid "RegistrationVerification|Enable free units of compute"
+msgid "RegistrationVerification|Enable free compute minutes"
 msgstr ""
 
 msgid "RegistrationVerification|GitLab will not charge your card, it will only be used for validation."
@@ -37895,7 +37904,7 @@ msgstr ""
 msgid "RegistrationVerification|Skip this for now"
 msgstr ""
 
-msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free units of compute to build your application."
+msgid "RegistrationVerification|To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method, such as a debit or credit card. Until then, you can't use free compute minutes to build your application."
 msgstr ""
 
 msgid "RegistrationVerification|Validate account"
@@ -46072,6 +46081,9 @@ msgstr ""
 msgid "The maximum amount of time users have to set up two-factor authentication before it's enforced."
 msgstr ""
 
+msgid "The maximum compute minutes that jobs in a namespace can use on shared runners each month. 0 for unlimited."
+msgstr ""
+
 msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
@@ -46085,9 +46097,6 @@ msgid "The maximum file size is %{size}."
 msgstr ""
 
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
-msgstr ""
-
-msgid "The maximum units of compute that jobs in a namespace can use on shared runners each month. 0 for unlimited."
 msgstr ""
 
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
@@ -48794,9 +48803,6 @@ msgstr ""
 msgid "Unhappy?"
 msgstr ""
 
-msgid "Units of compute"
-msgstr ""
-
 msgid "Units|d"
 msgstr ""
 
@@ -49160,7 +49166,7 @@ msgstr ""
 msgid "UsageQuota|Audio samples, videos, datasets, and graphics."
 msgstr ""
 
-msgid "UsageQuota|Buy additional units of compute"
+msgid "UsageQuota|Buy additional compute minutes"
 msgstr ""
 
 msgid "UsageQuota|Buy storage"
@@ -49313,7 +49319,7 @@ msgstr ""
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr ""
 
-msgid "UsageQuota|This table omits projects that used 0 units of compute or 0 shared runners duration"
+msgid "UsageQuota|This table omits projects that used 0 compute minutes or 0 shared runners duration"
 msgstr ""
 
 msgid "UsageQuota|Total purchased storage"
@@ -50269,7 +50275,7 @@ msgstr ""
 msgid "VerificationReminder|Your account has been validated"
 msgstr ""
 
-msgid "VerificationReminder|You’ll now be able to take advantage of free units of compute on shared runners."
+msgid "VerificationReminder|You’ll now be able to take advantage of free compute minutes on shared runners."
 msgstr ""
 
 msgid "Verified"
@@ -54401,7 +54407,7 @@ msgstr ""
 msgid "in %{duration} and was queued for %{queued_duration}"
 msgstr ""
 
-msgid "in %{duration}, using %{compute_credits} compute credits, and was queued for %{queued_duration}"
+msgid "in %{duration}, using %{compute_minutes} compute minutes, and was queued for %{queued_duration}"
 msgstr ""
 
 msgid "in group %{link_to_group}"

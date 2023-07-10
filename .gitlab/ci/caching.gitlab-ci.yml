@@ -45,6 +45,7 @@ cache-assets:test as-if-foss:
   extends:
     - .cache-assets-base
     - .as-if-foss
+    - .caching:rules:cache-assets-as-if-foss
 
 cache-assets:production:
   extends:

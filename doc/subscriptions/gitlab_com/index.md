@@ -16,7 +16,7 @@ You don't need to install anything to use GitLab SaaS, you only need to
 
 The subscription determines which features are available for your private projects. Organizations with public open source projects can actively apply to our [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/join/).
 
-Qualifying open source projects also get 50,000 units of compute and free access to the **Ultimate** tier
+Qualifying open source projects also get 50,000 compute minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
 ## Obtain a GitLab SaaS subscription
@@ -364,10 +364,10 @@ on GitLab shared runners.
 Refer to [Compute usage](../../ci/pipelines/cicd_minutes.md)
 for more information.
 
-### Purchase additional units of compute
+### Purchase additional compute minutes
 
-You can [purchase additional units of compute](../../ci/pipelines/cicd_minutes.md#purchase-additional-units-of-compute)
-for your personal or group namespace. Units of compute are a **one-time purchase**, so they do not renew.
+You can [purchase additional compute minutes](../../ci/pipelines/cicd_minutes.md#purchase-additional-compute-minutes)
+for your personal or group namespace. Compute minutes are a **one-time purchase**, so they do not renew.
 
 ## Add-on subscription for additional Storage and Transfer
 

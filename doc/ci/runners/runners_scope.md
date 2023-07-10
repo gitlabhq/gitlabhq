@@ -26,12 +26,12 @@ If you are using a self-managed instance of GitLab:
 
 - Your administrator can [install GitLab Runner](https://docs.gitlab.com/runner/install/index.html) and register a shared runner.
 - The administrator can also configure a maximum number of shared runner
-  [units of compute for each group](../pipelines/cicd_minutes.md#set-the-compute-quota-for-a-specific-namespace).
+  [compute minutes for each group](../pipelines/cicd_minutes.md#set-the-compute-quota-for-a-specific-namespace).
 
 If you are using GitLab.com:
 
 - You can select from a list of [shared runners that GitLab maintains](index.md).
-- The shared runners consume the [units of compute](../pipelines/cicd_minutes.md)
+- The shared runners consume the [compute minutes](../pipelines/cicd_minutes.md)
   included with your account.
 
 ### Create a shared runner with an authentication token

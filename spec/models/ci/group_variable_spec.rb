@@ -90,6 +90,49 @@ RSpec.describe Ci::GroupVariable, feature_category: :secrets_management do
     end
   end
 
+  describe 'sort_by_attribute' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:environment_scope) { 'env_scope' }
+    let_it_be(:variable1) { create(:ci_group_variable, key: 'd_var', group: group, environment_scope: environment_scope, created_at: 4.days.ago) }
+    let_it_be(:variable2) { create(:ci_group_variable, key: 'a_var', group: group, environment_scope: environment_scope, created_at: 3.days.ago) }
+    let_it_be(:variable3) { create(:ci_group_variable, key: 'c_var', group: group, environment_scope: environment_scope, created_at: 2.days.ago) }
+    let_it_be(:variable4) { create(:ci_group_variable, key: 'b_var', group: group, environment_scope: environment_scope, created_at: 1.day.ago) }
+
+    let(:sort_by_attribute) { described_class.sort_by_attribute(method).pluck(:key) }
+
+    describe '.created_at_asc' do
+      let(:method) { 'created_at_asc' }
+
+      it 'order by created_at ascending' do
+        expect(sort_by_attribute).to eq(%w[d_var a_var c_var b_var])
+      end
+    end
+
+    describe '.created_at_desc' do
+      let(:method) { 'created_at_desc' }
+
+      it 'order by created_at descending' do
+        expect(sort_by_attribute).to eq(%w[b_var c_var a_var d_var])
+      end
+    end
+
+    describe '.key_asc' do
+      let(:method) { 'key_asc' }
+
+      it 'order by key ascending' do
+        expect(sort_by_attribute).to eq(%w[a_var b_var c_var d_var])
+      end
+    end
+
+    describe '.key_desc' do
+      let(:method) { 'key_desc' }
+
+      it 'order by key descending' do
+        expect(sort_by_attribute).to eq(%w[d_var c_var b_var a_var])
+      end
+    end
+  end
+
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:model) { create(:ci_group_variable) }
 

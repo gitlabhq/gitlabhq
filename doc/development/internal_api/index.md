@@ -1021,10 +1021,10 @@ Example response:
 
 ## Compute quota provisioning
 
-> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "units of compute" in GitLab 16.1.
+> [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
 
 The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
-to apply additional packs of units of compute, for personal namespaces or top-level groups in GitLab.com.
+to apply additional packs of compute minutes, for personal namespaces or top-level groups in GitLab.com.
 
 ### Create an additional pack
 
@@ -1038,7 +1038,7 @@ POST /namespaces/:id/minutes
 |:------------|:--------|:---------|:------------|
 | `packs`     | array   | yes      | An array of purchased compute packs |
 | `packs[expires_at]` | date   | yes      | Expiry date of the purchased pack|
-| `packs[number_of_minutes]`  | integer    | yes       | Number of additional units of compute |
+| `packs[number_of_minutes]`  | integer    | yes       | Number of additional compute minutes |
 | `packs[purchase_xid]` | string  | yes       | The unique ID of the purchase |
 
 Example request:

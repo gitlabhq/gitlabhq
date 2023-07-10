@@ -159,4 +159,4 @@ If you need any help while contributing to GitLab:
 - For any other questions or feedback on contributing:
   - Ping `@gitlab-org/community-relations/contributor-success` in a comment on your merge request or issue.
   - Feel free to [make a new issue with the Contributor Success team](https://gitlab.com/gitlab-org/community-relations/contributor-success/team-task/-/issues/) sharing your experience.
-- Did you run out of compute credits for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.
+- Did you run out of compute minutes for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.

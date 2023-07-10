@@ -34,7 +34,11 @@ import getPipelineHeaderData from '~/pipelines/graphql/queries/get_pipeline_head
 import * as sentryUtils from '~/pipelines/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
-import { mapCallouts, mockCalloutsResponse } from './mock_data';
+import {
+  mapCallouts,
+  mockCalloutsResponse,
+  mockPipelineResponseWithTooManyJobs,
+} from './mock_data';
 
 const defaultProvide = {
   graphqlResourceEtag: 'frog/amphibirama/etag/',
@@ -49,7 +53,10 @@ describe('Pipeline graph wrapper', () => {
 
   let wrapper;
   let requestHandlers;
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  let pipelineDetailsHandler;
+
+  const findAlert = () => wrapper.findByTestId('error-alert');
+  const findJobCountWarning = () => wrapper.findByTestId('job-count-warning');
   const findDependenciesToggle = () => wrapper.findByTestId('show-links-toggle');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
@@ -83,7 +90,6 @@ describe('Pipeline graph wrapper', () => {
   const createComponentWithApollo = ({
     calloutsList = [],
     data = {},
-    getPipelineDetailsHandler = jest.fn().mockResolvedValue(mockPipelineResponse),
     mountFn = shallowMountExtended,
     provide = {},
   } = {}) => {
@@ -92,7 +98,7 @@ describe('Pipeline graph wrapper', () => {
     requestHandlers = {
       getUserCalloutsHandler: jest.fn().mockResolvedValue(mockCalloutsResponse(callouts)),
       getPipelineHeaderDataHandler: jest.fn().mockResolvedValue(mockRunningPipelineHeaderData),
-      getPipelineDetailsHandler,
+      getPipelineDetailsHandler: pipelineDetailsHandler,
     };
 
     const handlers = [
@@ -105,24 +111,29 @@ describe('Pipeline graph wrapper', () => {
     createComponent({ apolloProvider, data, provide, mountFn });
   };
 
+  beforeEach(() => {
+    pipelineDetailsHandler = jest.fn();
+    pipelineDetailsHandler.mockResolvedValue(mockPipelineResponse);
+  });
+
   describe('when data is loading', () => {
-    it('displays the loading icon', () => {
+    beforeEach(() => {
       createComponentWithApollo();
+    });
+
+    it('displays the loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
     it('does not display the alert', () => {
-      createComponentWithApollo();
       expect(findAlert().exists()).toBe(false);
     });
 
     it('does not display the graph', () => {
-      createComponentWithApollo();
       expect(findGraph().exists()).toBe(false);
     });
 
     it('skips querying headerPipeline', () => {
-      createComponentWithApollo();
       expect(wrapper.vm.$apollo.queries.headerPipeline.skip).toBe(true);
     });
   });
@@ -153,11 +164,25 @@ describe('Pipeline graph wrapper', () => {
     });
   });
 
+  describe('when a stage has 100 jobs or more', () => {
+    beforeEach(async () => {
+      pipelineDetailsHandler.mockResolvedValue(mockPipelineResponseWithTooManyJobs);
+      createComponentWithApollo();
+      await waitForPromises();
+    });
+
+    it('show a warning alert', () => {
+      expect(findJobCountWarning().exists()).toBe(true);
+      expect(findJobCountWarning().props().title).toBe(
+        'Only the first 100 jobs per stage are displayed',
+      );
+    });
+  });
+
   describe('when there is an error', () => {
     beforeEach(async () => {
-      createComponentWithApollo({
-        getPipelineDetailsHandler: jest.fn().mockRejectedValue(new Error('GraphQL error')),
-      });
+      pipelineDetailsHandler.mockRejectedValue(new Error('GraphQL error'));
+      createComponentWithApollo();
       await waitForPromises();
     });
 
@@ -270,13 +295,12 @@ describe('Pipeline graph wrapper', () => {
         errors: [{ message: 'timeout' }],
       };
 
-      const failSucceedFail = jest
-        .fn()
+      pipelineDetailsHandler
         .mockResolvedValueOnce(errorData)
         .mockResolvedValueOnce(mockPipelineResponse)
         .mockResolvedValueOnce(errorData);
 
-      createComponentWithApollo({ getPipelineDetailsHandler: failSucceedFail });
+      createComponentWithApollo();
       await waitForPromises();
     });
 
@@ -438,9 +462,9 @@ describe('Pipeline graph wrapper', () => {
 
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
 
+        pipelineDetailsHandler.mockResolvedValue(nonNeedsResponse);
         createComponentWithApollo({
           mountFn: mountExtended,
-          getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
         });
 
         await waitForPromises();
@@ -460,9 +484,9 @@ describe('Pipeline graph wrapper', () => {
         const nonNeedsResponse = { ...mockPipelineResponse };
         nonNeedsResponse.data.project.pipeline.usesNeeds = false;
 
+        pipelineDetailsHandler.mockResolvedValue(nonNeedsResponse);
         createComponentWithApollo({
           mountFn: mountExtended,
-          getPipelineDetailsHandler: jest.fn().mockResolvedValue(nonNeedsResponse),
         });
 
         jest.runOnlyPendingTimers();

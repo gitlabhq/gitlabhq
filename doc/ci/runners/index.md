@@ -18,7 +18,7 @@ Your jobs can run on:
 - [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 
 Refer to the compute minutes [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
-The number of minutes you can use on these runners depends on the [maximum number of units of compute](../pipelines/cicd_minutes.md)
+The number of minutes you can use on these runners depends on the [maximum number of compute minutes](../pipelines/cicd_minutes.md)
 in your [subscription plan](https://about.gitlab.com/pricing/).
 
 ## How SaaS runners work

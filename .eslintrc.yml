@@ -155,6 +155,8 @@ overrides:
           message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
         - selector: CallExpression[arguments.length=1][arguments.0.type='Literal'] CallExpression[callee.property.name='toBe'] CallExpression[callee.property.name='attributes'][arguments.length=1][arguments.0.value='disabled']
           message: Avoid asserting disabled attribute exact value, because Vue.js 2 and Vue.js 3 renders it differently. Use toBeDefined / toBeUndefined instead
+        - selector: MemberExpression[object.object.name='Vue'][object.property.name='config'][property.name='errorHandler']
+          message: 'Use setErrorHandler/resetVueErrorHandler from helpers/set_vue_error_handler.js instead.'
       no-unsanitized/method: off
       no-unsanitized/property: off
   - files:

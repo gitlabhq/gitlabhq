@@ -872,6 +872,8 @@
 
 .build-images:rules:build-qa-image-as-if-foss:
   rules:
+    - <<: *if-jh
+      when: never
     - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
     - <<: *if-default-branch-schedule-nightly
       variables:
@@ -1008,6 +1010,12 @@
         - "lib/tasks/gitlab/assets.rake"
       when: manual
       allow_failure: true
+
+.caching:rules:cache-assets-as-if-foss:
+  rules:
+    - <<: *if-jh
+      when: never
+    - !reference [".caching:rules:cache-assets", "rules"]
 
 .caching:rules:packages-cleanup:
   rules:
@@ -1175,8 +1183,7 @@
 
 .frontend:rules:compile-test-assets-as-if-foss:
   rules:
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
@@ -1609,6 +1616,12 @@
       changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
 
+.rails:rules:single-db-as-if-foss:
+  rules:
+    - <<: *if-jh
+      when: never
+    - !reference [".rails:rules:single-db", "rules"]
+
 .rails:rules:db:check-migrations-single-db:
   rules:
     - <<: *if-merge-request-labels-run-single-db
@@ -1629,6 +1642,12 @@
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:single-db-ci-connection-as-if-foss:
+  rules:
+    - <<: *if-jh
+      when: never
+    - !reference [".rails:rules:single-db-ci-connection", "rules"]
 
 .rails:rules:db:check-migrations-single-db-ci-connection:
   rules:
@@ -1825,8 +1844,7 @@
 
 .rails:rules:as-if-foss-migration:
   rules:
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1851,8 +1869,7 @@
 
 .rails:rules:as-if-foss-unit:
   rules:
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
@@ -1863,8 +1880,7 @@
 
 .rails:rules:as-if-foss-integration:
   rules:
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
@@ -1875,8 +1891,7 @@
 
 .rails:rules:as-if-foss-system:
   rules:
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
@@ -2093,8 +2108,7 @@
 
 .static-analysis:rules:static-analysis-as-if-foss:
   rules:
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-qa-patterns
     - <<: *if-security-merge-request
