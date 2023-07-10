@@ -139,7 +139,7 @@ Added tags are displayed next to the timestamp.
 Incident timeline events support the following [GitLab Flavored Markdown](../../user/markdown.md) features.
 
 - [Code](../../user/markdown.md#code-spans-and-blocks).
-- [Emojis](../../user/markdown.md#emojis).
+- [Emoji](../../user/markdown.md#emoji).
 - [Emphasis](../../user/markdown.md#emphasis).
 - [GitLab-specific references](../../user/markdown.md#gitlab-specific-references).
 - [Images](../../user/markdown.md#images), rendered as a link to the uploaded image.

@@ -2724,7 +2724,7 @@ when to add jobs to pipelines.
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
   | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
-  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
+  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:
 
@@ -3114,7 +3114,7 @@ release_job:
 This example creates a release:
 
 - When you push a Git tag.
-- When you add a Git tag in the UI at **Repository > Tags**.
+- When you add a Git tag in the UI at **Code > Tags**.
 
 **Additional details**:
 

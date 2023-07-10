@@ -5,6 +5,7 @@ import {
   createDocBuilder,
   triggerNodeInputRule,
   expectDocumentAfterTransaction,
+  sleep,
 } from '../test_utils';
 
 const SAMPLE_README_CONTENT = `# Sample README
@@ -99,17 +100,10 @@ describe('content_editor/extensions/code_suggestion', () => {
       tiptapEditor.commands.setContent(doc(initialDoc).toJSON());
 
       jest.spyOn(tiptapEditor, 'isActive').mockReturnValue(true);
-      jest.useRealTimers();
 
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          tiptapEditor.commands.insertCodeSuggestion();
-
-          resolve();
-        }, 100);
-      });
-
-      jest.useFakeTimers();
+      tiptapEditor.commands.insertCodeSuggestion();
+      // wait some time to be sure no other transaction happened
+      await sleep();
 
       expect(tiptapEditor.getJSON()).toEqual(doc(initialDoc).toJSON());
     });

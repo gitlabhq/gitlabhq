@@ -78,7 +78,7 @@ that were found on the branch it was run on.
 
 ### Project quality view **(ULTIMATE)**
 
-The project quality view displays an overview of the code quality findings. The view can be found under **Analytics > CI/CD**, and requires [`project_quality_summary_page`](../../user/feature_flags.md) feature flag to be enabled for this particular project.
+The project quality view displays an overview of the code quality findings. The view can be found under **Analyze > CI/CD analytics**, and requires [`project_quality_summary_page`](../../user/feature_flags.md) feature flag to be enabled for this particular project.
 
 ![Code Quality Summary](img/code_quality_summary_15_9.png)
 

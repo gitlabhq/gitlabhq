@@ -271,7 +271,7 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | `push`                        | For pipelines triggered by a `git push` event, including for branches and tags.                                                                                                                                                  |
 | `schedule`                    | For [scheduled pipelines](../pipelines/schedules.md).                                                                                                                                                                            |
 | `trigger`                     | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines).                                                                                                                                           |
-| `web`                         | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section.                                                                                                       |
+| `web`                         | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **Build > Pipelines** section.                                                                                                       |
 | `webide`                      | For pipelines created by using the [WebIDE](../../user/project/web_ide/index.md).                                                                                                                                                |
 
 The following example runs the job as a manual job in scheduled pipelines or in push

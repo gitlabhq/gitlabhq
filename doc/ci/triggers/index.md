@@ -183,7 +183,7 @@ A part of the trigger's token displays on the right of the page, under the job d
 ![Marked as triggered on a single job page](img/trigger_single_job.png)
 
 In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
-**CI/CD > Jobs**.
+**Build > Jobs**.
 
 ## Troubleshooting
 

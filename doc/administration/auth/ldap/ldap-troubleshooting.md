@@ -378,7 +378,7 @@ things to debug the situation.
      an LDAP DN as the `Identifier`. If not, this user hasn't signed in with
      LDAP yet and must do so first.
 - You've waited an hour or [the configured interval](ldap_synchronization.md#adjust-ldap-group-sync-schedule) for
-  the group to sync. To speed up the process, either go to the GitLab group **Group information > Members**
+  the group to sync. To speed up the process, either go to the GitLab group **Manage > Members**
   and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
   (sync all groups).
 

@@ -79,7 +79,7 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
 
    ![Create project](img/initial-pipeline.png)
 
-1. Visit **Packages and registries > Container Registry**. Make sure the application image has been
+1. Visit **Deploy > Container Registry**. Make sure the application image has been
    pushed.
 
    ![Create project](img/registry.png)

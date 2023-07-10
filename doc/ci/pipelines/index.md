@@ -100,7 +100,7 @@ that might run pipelines after branch deletion.
 ### View pipelines
 
 You can find the current and historical pipeline runs under your project's
-**CI/CD > Pipelines** page. You can also access pipelines for a merge request by navigating
+**Build > Pipelines** page. You can also access pipelines for a merge request by navigating
 to its **Pipelines** tab.
 
 ![Pipelines index page](img/pipelines_index_v13_0.png)
@@ -290,7 +290,7 @@ pipelines.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
 
 Users with the Owner role for a project can delete a pipeline
-by selecting the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
+by selecting the pipeline in the **Build > Pipelines** to get to the **Pipeline Details**
 page, then selecting **Delete**.
 
 ![Pipeline Delete](img/pipeline-delete.png)
@@ -433,7 +433,7 @@ If a stage contains more than 100 jobs, only the first 100 jobs are listed in th
 pipeline graph. The remaining jobs still run as usual. To see the jobs:
 
 - Select the pipeline, and the jobs are listed on the right side of the pipeline details page.
-- On the left sidebar, select **CI/CD > Jobs**.
+- On the left sidebar, select **Build > Jobs**.
 
 ### View job dependencies in the pipeline graph
 

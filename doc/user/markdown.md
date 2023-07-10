@@ -58,7 +58,7 @@ Features not found in standard Markdown:
 
 - [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
-- [Emoji](#emojis)
+- [Emoji](#emoji)
 - [Front matter](#front-matter)
 - [Inline diffs](#inline-diff)
 - [Math equations and symbols written in LaTeX](#math)
@@ -207,9 +207,9 @@ installation of GitLab, a GitLab administrator [must enable it](../administratio
 To make Kroki available in GitLab, a GitLab administrator must enable it.
 For more information, see the [Kroki integration](../administration/integration/kroki.md) page.
 
-### Emojis
+### Emoji
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emojis).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emoji).
 
 ::Tabs
 
@@ -250,13 +250,13 @@ for a list of all supported emoji codes. :thumbsup:
 
 ::EndTabs
 
-#### Emojis and your operating system
+#### Emoji and your operating system
 
-The previous emoji example uses hard-coded images. Rendered emojis
+The previous emoji example uses hard-coded images. Rendered emoji
 in GitLab may be different depending on the OS and browser used.
 
-Most emojis are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
-emojis where there is no support.
+Most emoji are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
+emoji where there is no support.
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -266,7 +266,7 @@ this font installed by default.
 
 <!-- vale gitlab.Spelling = YES -->
 
-To learn more about adding custom emojis, see [Custom emojis](award_emojis.md#custom-emojis).
+To learn more about adding custom emoji, see [Custom emoji](award_emojis.md#custom-emoji).
 
 ### Front matter
 

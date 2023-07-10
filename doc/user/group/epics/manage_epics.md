@@ -347,8 +347,8 @@ you might not have permission to.
 
 ### Add a new issue to an epic
 
-You can add an existing issue to an epic, or create a new issue that's
-automatically added to the epic.
+Add an existing issue to an epic, or create a new issue that's automatically
+added to the epic.
 
 #### Add an existing issue to an epic
 
@@ -384,6 +384,12 @@ To add an existing issue to an epic:
 
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
+
+You can create a new issue from an epic only in projects that are in the epic's group or one of its
+descendant subgroups.
+To create a new issue in a [project that was shared with the epic's group](../../project/members/share_project_with_groups.md),
+first [create the issue directly in the project](../../project/issues/create_issues.md#from-a-project), and
+then [add an existing issue to an epic](#add-an-existing-issue-to-an-epic).
 
 Prerequisites:
 

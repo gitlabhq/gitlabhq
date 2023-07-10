@@ -2,6 +2,7 @@ import OrderedMap from 'orderedmap';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Schema, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
+import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
@@ -24,8 +25,23 @@ function parseHTML(schema, html) {
   return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
 }
 
+const findLoader = (editor, loaderId) => {
+  let position;
+
+  editor.view.state.doc.descendants((descendant, pos) => {
+    if (descendant.type.name === 'loading' && descendant.attrs.id === loaderId) {
+      position = pos;
+      return false;
+    }
+
+    return true;
+  });
+
+  return position;
+};
+
 export default Extension.create({
-  name: 'pasteMarkdown',
+  name: 'copyPaste',
   priority: EXTENSION_PRIORITY_HIGHEST,
   addOptions() {
     return {
@@ -35,7 +51,7 @@ export default Extension.create({
   },
   addCommands() {
     return {
-      pasteContent: (content = '', processMarkdown = true) => async () => {
+      pasteContent: (content = '', processMarkdown = true) => () => {
         const { editor, options } = this;
         const { renderMarkdown, eventHub } = options;
         const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
@@ -43,23 +59,37 @@ export default Extension.create({
         const pasteSchemaSpec = { ...editor.schema.spec };
         pasteSchemaSpec.marks = OrderedMap.from(pasteSchemaSpec.marks).remove('span');
         pasteSchemaSpec.nodes = OrderedMap.from(pasteSchemaSpec.nodes).remove('div').remove('pre');
-        const schema = new Schema(pasteSchemaSpec);
+        const pasteSchema = new Schema(pasteSchemaSpec);
 
         const promise = processMarkdown
-          ? deserializer.deserialize({ schema, markdown: content })
-          : Promise.resolve(parseHTML(schema, content));
+          ? deserializer.deserialize({ schema: pasteSchema, markdown: content })
+          : Promise.resolve(parseHTML(pasteSchema, content));
+        const loaderId = uniqueId('loading');
 
-        promise
-          .then(({ document }) => {
+        Promise.resolve()
+          .then(() => {
+            editor.commands.insertContent({ type: 'loading', attrs: { id: loaderId } });
+            return promise;
+          })
+          .then(async ({ document }) => {
             if (!document) return;
 
-            const { firstChild } = document.content;
+            const pos = findLoader(editor, loaderId);
+            if (!pos) return;
+
+            const { firstChild, childCount } = document.content;
             const toPaste =
-              document.content.childCount === 1 && firstChild.type.name === 'paragraph'
+              childCount === 1 && firstChild.type.name === 'paragraph'
                 ? firstChild.content
                 : document.content;
 
-            editor.commands.insertContent(toPaste.toJSON());
+            editor
+              .chain()
+              .deleteRange({ from: pos, to: pos + 1 })
+              .insertContentAt(pos, toPaste.toJSON(), {
+                updateSelection: false,
+              })
+              .run();
           })
           .catch(() => {
             eventHub.$emit(ALERT_EVENT, {
@@ -94,7 +124,7 @@ export default Extension.create({
 
     return [
       new Plugin({
-        key: new PluginKey('pasteMarkdown'),
+        key: new PluginKey('copyPaste'),
         props: {
           handleDOMEvents: {
             copy: handleCutAndCopy,

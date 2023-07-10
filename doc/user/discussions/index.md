@@ -103,7 +103,7 @@ To add a commit diff comment:
 
 The comment is displayed on the merge request's **Overview** tab.
 
-The comment is not displayed on your project's **Repository > Commits** page.
+The comment is not displayed on your project's **Code > Commits** page.
 
 NOTE:
 When your comment contains a reference to a commit included in the merge request,

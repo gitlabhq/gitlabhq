@@ -11,7 +11,7 @@ description: "Documentation on Git file history."
 Git file History provides information about the commit history associated
 with a file. To use it:
 
-1. Go to your project's **Repository > Files**.
+1. Go to your project's **Code > Repository**.
 1. In the upper-right corner, select **History**.
 
 When you select **History**, this information is displayed:

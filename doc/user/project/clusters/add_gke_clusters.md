@@ -60,7 +60,7 @@ To create new Kubernetes clusters to your project, group, or instance, through
 cluster certificates:
 
 1. Navigate to your:
-   - Project's **{cloud-gear}** **Infrastructure > Kubernetes clusters** page, for a project-level
+   - Project's **{cloud-gear}** **Operate > Kubernetes clusters** page, for a project-level
      cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **Main menu > Admin > Kubernetes** page, for an instance-level cluster.

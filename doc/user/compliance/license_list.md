@@ -24,7 +24,7 @@ Alternatively, licenses will also appear under the license list when using our d
 1. Your project must use at least one of the
    [supported languages and package managers](license_compliance/index.md#supported-languages-and-package-managers).
 
-When everything is configured, on the left sidebar, select **Security & Compliance > License Compliance**.
+When everything is configured, on the left sidebar, select **Secure > License compliance**.
 
 The licenses are displayed, where:
 

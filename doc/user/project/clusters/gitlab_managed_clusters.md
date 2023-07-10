@@ -45,7 +45,7 @@ your cluster. This can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. Navigate to your project's **Infrastructure > Kubernetes clusters** page, and select your cluster.
+1. Navigate to your project's **Operate > Kubernetes clusters** page, and select your cluster.
 1. Expand the **Advanced settings** section.
 1. Select **Clear cluster cache**.
 

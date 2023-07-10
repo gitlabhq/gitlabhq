@@ -199,7 +199,7 @@ semgrep-appsec-custom-rules:
         --include app --include lib --include workhorse \
         --exclude '*_test.go' --exclude spec --exclude qa > gl-sast-report.json || true
   variables:
-    CUSTOM_RULES_URL: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/raw/main/appsec-pings/rules.yml
+    CUSTOM_RULES_URL: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/raw/main/gitlab-sast-rules/rules.yml
   artifacts:
     paths:
       - gl-sast-report.json

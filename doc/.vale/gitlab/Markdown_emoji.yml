@@ -1,11 +1,11 @@
 ---
 # Warning: gitlab.Markdown_emoji
 #
-# Check for use of GLFM emoji syntax (https://docs.gitlab.com/ee/user/markdown.html#emojis), which doesn't render correctly in documentation.
+# Check for use of GLFM emoji syntax (https://docs.gitlab.com/ee/user/markdown.html#emoji), which doesn't render correctly in documentation.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: "Replace '%s' with GitLab SVGs or Unicode emojis."
+message: "Replace '%s' with GitLab SVGs or Unicode emoji."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#gitlab-svg-icons
 level: warning
 scope: text

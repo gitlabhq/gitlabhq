@@ -389,7 +389,7 @@ add different users to that project.
 
 You have now created a project in the parent group.
 
-In this project, go to **Project information > Members**.
+In this project, go to **Manage > Members**.
 
 The existing members of the parent group (you and Alex) are already members of
 this project because when your project belongs to a group, project members inherit

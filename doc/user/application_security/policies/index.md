@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Policies in GitLab provide security teams a way to require scans of their choice to be run
 whenever a project pipeline runs according to the configuration specified. Security teams can
 therefore be confident that the scans they set up have not been changed, altered, or disabled. You
-can access these by navigating to your project's **Security and Compliance > Policies** page.
+can access these by navigating to your project's **Secure > Policies** page.
 
 GitLab supports the following security policies:
 

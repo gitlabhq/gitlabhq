@@ -50,6 +50,8 @@ import Video from '~/content_editor/extensions/video';
 import HTMLMarks from '~/content_editor/extensions/html_marks';
 import HTMLNodes from '~/content_editor/extensions/html_nodes';
 
+export const DEFAULT_WAIT_TIMEOUT = 100;
+
 export const createDocBuilder = ({ tiptapEditor, names = {} }) => {
   const docBuilders = builders(tiptapEditor.schema, {
     p: { nodeType: 'paragraph' },
@@ -236,6 +238,16 @@ export const waitUntilTransaction = ({ tiptapEditor, number, action }) => {
     tiptapEditor.on('update', handleTransaction);
     action();
   });
+};
+
+export const sleep = (time = DEFAULT_WAIT_TIMEOUT) => {
+  jest.useRealTimers();
+  const promise = new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+  jest.useFakeTimers();
+
+  return promise;
 };
 
 export const expectDocumentAfterTransaction = ({ tiptapEditor, number, expectedDoc, action }) => {

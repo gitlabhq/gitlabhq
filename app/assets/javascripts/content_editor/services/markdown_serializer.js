@@ -32,6 +32,7 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
+import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
@@ -194,6 +195,7 @@ const defaultSerializerConfig = {
       inline: true,
     }),
     [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
+    [Loading.name]: () => {},
     [OrderedList.name]: preserveUnchanged(renderOrderedList),
     [Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
     [Reference.name]: renderReference,

@@ -1185,7 +1185,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/models/path_lock_spec.rb'
     - 'ee/spec/models/plan_spec.rb'
     - 'ee/spec/models/preloaders/environments/protected_environment_preloader_spec.rb'
-    - 'ee/spec/models/product_analytics/jitsu_authentication_spec.rb'
     - 'ee/spec/models/productivity_analytics_spec.rb'
     - 'ee/spec/models/project_alias_spec.rb'
     - 'ee/spec/models/project_ci_cd_setting_spec.rb'

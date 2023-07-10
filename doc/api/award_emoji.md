@@ -6,12 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Emoji reactions API **(FREE)**
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emojis" to "emoji reactions" in GitLab 16.0.
+> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
 
 An [emoji reaction](../user/award_emojis.md) tells a thousand words.
 
 We call GitLab objects on which you can react with an emoji "awardables".
-You can react with emojis on the following:
+You can react with emoji on the following:
 
 - [Epics](../user/group/epics/index.md) ([API](epics.md)). **(PREMIUM)**
 - [Issues](../user/project/issues/index.md) ([API](issues.md)).

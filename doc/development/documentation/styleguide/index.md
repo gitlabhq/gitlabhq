@@ -1201,7 +1201,7 @@ include a visual representation to help readers understand it, you can:
   an area of the screen.
 - Create a short video of the interaction and link to it.
 
-## Emojis
+## Emoji
 
 Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
 [GitLab SVG icons](#gitlab-svg-icons) instead.

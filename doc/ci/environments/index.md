@@ -32,7 +32,7 @@ There are a few ways to view a list of environments for a given project:
 - On the project's overview page, if at least one environment is available (that is, not stopped).
   ![Number of Environments](img/environments_project_home.png "Incremental counter of available Environments")
 
-- On the left sidebar, select **Deployments > Environments**.
+- On the left sidebar, select **Operate > Environments**.
    The environments are displayed.
 
    ![Environments list](img/environments_list_v14_8.png)

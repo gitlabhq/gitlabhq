@@ -85,7 +85,7 @@ and the supported strategies are:
 - [User List](#user-list)
 
 Strategies can be added to feature flags when [creating a feature flag](#create-a-feature-flag),
-or by editing an existing feature flag after creation by navigating to **Deployments > Feature flags**
+or by editing an existing feature flag after creation by navigating to **Deploy > Feature flags**
 and selecting **Edit** (**{pencil}**).
 
 ### All users

@@ -19,7 +19,7 @@ projects.
 To view Terraform modules in your project:
 
 1. Go to the project.
-1. On the left sidebar, select **Packages and registries > Terraform modules**.
+1. On the left sidebar, select **Operate > Terraform modules**.
 
 You can search, sort, and filter modules on this page.
 
@@ -186,7 +186,7 @@ Where `<namespace>` is the [namespace](../../../user/namespace/index.md) of the 
 
 To download a Terraform module:
 
-1. On the left sidebar, select **Packages and registries > Terraform modules**.
+1. On the left sidebar, select **Operate > Terraform modules**.
 1. Select the name of the module you want to download.
 1. In the **Activity** section, select the name of the module you want to download.
 
@@ -217,7 +217,7 @@ You can delete modules by using [the packages API](../../../api/packages.md#dele
 
 To delete a module in the UI, from your project:
 
-1. On the left sidebar, select **Packages and registries > Terraform modules**.
+1. On the left sidebar, select **Operate > Terraform modules**.
 1. Find the name of the package you want to delete.
 1. Select **Delete**.
 

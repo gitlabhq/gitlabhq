@@ -328,7 +328,7 @@ To enable Container Scanning in a project, create a merge request from the Secur
 page:
 
 1. In the project where you want to enable Container Scanning, go to
-   **Security and Compliance > Security configuration**.
+   **Secure > Security configuration**.
 1. In the **Container Scanning** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable Container Scanning.

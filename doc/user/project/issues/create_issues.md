@@ -99,7 +99,7 @@ Prerequisites:
 To create an issue from a project issue board:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Issues > Boards**.
+1. Select **Plan > Issue boards**.
 1. At the top of a board list, select **List actions** (**{ellipsis_v}**) **> Create new issue**.
 1. Enter the issue's title.
 1. Select **Create issue**.
@@ -107,7 +107,7 @@ To create an issue from a project issue board:
 To create an issue from a group issue board:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. Select **Issues > Boards**.
+1. Select **Plan > Issue boards**.
 1. At the top of a board list, select **List actions** (**{ellipsis_v}**) **> Create new issue**.
 1. Enter the issue's title.
 1. Under **Projects**, select the project in the group that the issue should belong to.

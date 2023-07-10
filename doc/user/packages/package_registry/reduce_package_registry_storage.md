@@ -29,7 +29,7 @@ You can delete packages by using [the API](../../../api/packages.md#delete-a-pro
 
 To delete a package in the UI, from your group or project:
 
-1. Go to **Packages and registries > Package Registry**.
+1. Go to **Deploy > Package Registry**.
 1. Find the name of the package you want to delete.
 1. Select **Delete**.
 
@@ -46,7 +46,7 @@ You can delete packages by using [the API](../../../api/packages.md#delete-a-pac
 
 To delete package assets in the UI, from your group or project:
 
-1. Go to **Packages and registries > Package Registry**.
+1. Go to **Deploy > Package Registry**.
 1. Find the name of the package you want to delete.
 1. Select the package to view additional details.
 1. Find the name of the assets you would like to delete.

@@ -26,7 +26,7 @@ Learn how to use the GitLab Package Registry to build your own custom package wo
 You can view packages for your project or group.
 
 1. Go to the project or group.
-1. Go to **Packages and registries > Package Registry**.
+1. Go to **Deploy > Package Registry**.
 
 You can search, sort, and filter packages on this page. You can share your search results by copying
 and pasting the URL from your browser.
@@ -131,7 +131,7 @@ You can also remove the Package Registry for your project specifically:
    **Packages** feature.
 1. Select **Save changes**.
 
-The **Packages and registries > Package Registry** entry is removed from the sidebar.
+The **Deploy > Package Registry** entry is removed from the sidebar.
 
 ## Package Registry visibility permissions
 

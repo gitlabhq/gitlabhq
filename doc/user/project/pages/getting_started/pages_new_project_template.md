@@ -19,7 +19,7 @@ configured to generate a Pages site.
    ![Project templates for Pages](../img/pages_project_templates_v13_1.png)
 
 1. Complete the form and select **Create project**.
-1. From the left sidebar, navigate to your project's **CI/CD > Pipelines**
+1. On the left sidebar, select **Build > Pipelines**
    and select **Run pipeline** to trigger GitLab CI/CD to build and deploy your
    site.
 

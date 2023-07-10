@@ -132,7 +132,7 @@ change. This can occur, for example, if Git or a third-party library that GitLab
 ## Repository languages
 
 For the default branch of each repository, GitLab determines which programming languages
-are used. This information is displayed on the **Project information** page.
+are used. This information is displayed on the **Project overview** page.
 
 ![Repository Languages bar](img/repository_languages_v15_2.png)
 
@@ -140,7 +140,7 @@ When new files are added, this information can take up to five minutes to update
 
 ### Add repository languages
 
-Not all files are detected and listed on the **Project information** page. Documentation,
+Not all files are detected and listed on the **Project overview** page. Documentation,
 vendor code, and most markup languages are excluded.
 
 You can change this behavior by overriding the default settings.
@@ -227,7 +227,7 @@ On self-managed GitLab, by default GitLab uses the `du -sk` command to determine
 `gitaly_catfile_repo_size`) instead. To switch between different calculation methods, ask an administrator to
 [enable or disable](../../../administration/feature_flags.md) these feature flags.
 
-The **Project information** page shows the size of all files in the repository. The size is
+The **Project overview** page shows the size of all files in the repository. The size is
 updated, at most, every 15 minutes. The file size includes repository files, artifacts, and LFS.
 
 The size can differ slightly from one instance to another due to compression, housekeeping, and other factors.
@@ -237,7 +237,7 @@ Administrators can set a [repository size limit](../../admin_area/settings/accou
 
 ## Repository contributor statistics
 
-All code contributors are displayed under your project's **Repository > Contributor statistics**.
+All code contributors are displayed under your project's **Analyze > Contributor statistics**.
 
 The graph shows the contributor with the most commits to the fewest.
 
@@ -248,7 +248,7 @@ The graph shows the contributor with the most commits to the fewest.
 A repository graph displays a visual history of the repository network, including branches and merges.
 This graph can help you visualize the Git flow strategy used in the repository.
 
-Go to your project's **Repository > Graph**.
+Go to your project's **Code > Repository graph**.
 
 ![repository Git flow](img/repo_graph.png)
 

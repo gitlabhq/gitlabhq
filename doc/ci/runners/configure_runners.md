@@ -1021,7 +1021,8 @@ To determine which runners need to be upgraded:
 
 As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
 
-1. Select **Main menu > Admin**.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
 1. On the left sidebar, select **CI/CD > Runners**.
 1. Select **View metrics**.
 

@@ -1,5 +1,6 @@
-import PasteMarkdown from '~/content_editor/extensions/paste_markdown';
+import CopyPaste from '~/content_editor/extensions/copy_paste';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Loading from '~/content_editor/extensions/loading';
 import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Heading from '~/content_editor/extensions/heading';
@@ -10,7 +11,12 @@ import eventHubFactory from '~/helpers/event_hub_factory';
 import { ALERT_EVENT } from '~/content_editor/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
-import { createTestEditor, createDocBuilder, waitUntilNextDocTransaction } from '../test_utils';
+import {
+  createTestEditor,
+  createDocBuilder,
+  waitUntilNextDocTransaction,
+  sleep,
+} from '../test_utils';
 
 const CODE_BLOCK_HTML = '<pre class="js-syntax-highlight" lang="javascript">var a = 2;</pre>';
 const DIAGRAM_HTML =
@@ -19,21 +25,32 @@ const FRONTMATTER_HTML = '<pre lang="yaml" data-lang-params="frontmatter">key: v
 const PARAGRAPH_HTML =
   '<p dir="auto">Some text with <strong>bold</strong> and <em>italic</em> text.</p>';
 
-describe('content_editor/extensions/paste_markdown', () => {
+describe('content_editor/extensions/copy_paste', () => {
   let tiptapEditor;
   let doc;
   let p;
   let bold;
   let italic;
+  let loading;
   let heading;
   let codeBlock;
   let renderMarkdown;
+  let resolveRenderMarkdownPromise;
+  let resolveRenderMarkdownPromiseAndWait;
+
   let eventHub;
   const defaultData = { 'text/plain': '**bold text**' };
 
   beforeEach(() => {
-    renderMarkdown = jest.fn();
     eventHub = eventHubFactory();
+    renderMarkdown = jest.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveRenderMarkdownPromise = resolve;
+          resolveRenderMarkdownPromiseAndWait = (data) =>
+            waitUntilNextDocTransaction({ tiptapEditor, action: () => resolve(data) });
+        }),
+    );
 
     jest.spyOn(eventHub, '$emit');
 
@@ -41,21 +58,23 @@ describe('content_editor/extensions/paste_markdown', () => {
       extensions: [
         Bold,
         Italic,
+        Loading,
         CodeBlockHighlight,
         Diagram,
         Frontmatter,
         Heading,
-        PasteMarkdown.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
+        CopyPaste.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
       ],
     });
 
     ({
-      builders: { doc, p, bold, italic, heading, codeBlock },
+      builders: { doc, p, bold, italic, heading, loading, codeBlock },
     } = createDocBuilder({
       tiptapEditor,
       names: {
         bold: { markType: Bold.name },
         italic: { markType: Italic.name },
+        loading: { nodeType: Loading.name },
         heading: { nodeType: Heading.name },
         codeBlock: { nodeType: CodeBlockHighlight.name },
       },
@@ -154,15 +173,51 @@ describe('content_editor/extensions/paste_markdown', () => {
   });
 
   describe('when pasting raw markdown source', () => {
+    it('shows a loading indicator while markdown is being processed', async () => {
+      const expectedDoc = doc(p(loading({ id: expect.any(String) })));
+
+      await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+
+      expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+    });
+
+    it('pastes in the correct position if some content is added before the markdown is processed', async () => {
+      const expectedDoc = doc(p(bold('some markdown'), 'some content'));
+      const resolvedValue = '<strong>some markdown</strong>';
+
+      await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+
+      tiptapEditor.commands.insertContent('some content');
+      await resolveRenderMarkdownPromiseAndWait(resolvedValue);
+
+      expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      expect(tiptapEditor.state.selection.from).toEqual(26); // end of the document
+    });
+
+    it('does not paste anything if the loading indicator is deleted before the markdown is processed', async () => {
+      const expectedDoc = doc(p());
+
+      await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+      tiptapEditor.chain().selectAll().deleteSelection().run();
+      resolveRenderMarkdownPromise('some markdown');
+
+      // wait some time to be sure no transaction happened
+      await sleep();
+      expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+    });
+
     describe('when rendering markdown succeeds', () => {
+      let resolvedValue;
+
       beforeEach(() => {
-        renderMarkdown.mockResolvedValueOnce('<strong>bold text</strong>');
+        resolvedValue = '<strong>bold text</strong>';
       });
 
       it('transforms pasted text into a prosemirror node', async () => {
         const expectedDoc = doc(p(bold('bold text')));
 
         await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });
@@ -174,6 +229,7 @@ describe('content_editor/extensions/paste_markdown', () => {
           tiptapEditor.commands.setContent('Initial text and ');
 
           await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+          await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
         });
@@ -187,6 +243,7 @@ describe('content_editor/extensions/paste_markdown', () => {
           tiptapEditor.commands.setTextSelection({ from: 13, to: 17 });
 
           await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+          await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
         });
@@ -194,8 +251,7 @@ describe('content_editor/extensions/paste_markdown', () => {
 
       describe('when pasting block content in an existing paragraph', () => {
         beforeEach(() => {
-          renderMarkdown.mockReset();
-          renderMarkdown.mockResolvedValueOnce('<h1>Heading</h1><p><strong>bold text</strong></p>');
+          resolvedValue = '<h1>Heading</h1><p><strong>bold text</strong></p>';
         });
 
         it('inserts the block content after the existing paragraph', async () => {
@@ -208,6 +264,7 @@ describe('content_editor/extensions/paste_markdown', () => {
           tiptapEditor.commands.setContent('Initial text and ');
 
           await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+          await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
           expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
         });
@@ -216,9 +273,8 @@ describe('content_editor/extensions/paste_markdown', () => {
 
     describe('when pasting html content', () => {
       it('strips out any stray div, pre, span tags', async () => {
-        renderMarkdown.mockResolvedValueOnce(
-          '<div><span dir="auto"><strong>bold text</strong></span></div><pre><code>some code</code></pre>',
-        );
+        const resolvedValue =
+          '<div><span dir="auto"><strong>bold text</strong></span></div><pre><code>some code</code></pre>';
 
         const expectedDoc = doc(p(bold('bold text')), p('some code'));
 
@@ -231,6 +287,7 @@ describe('content_editor/extensions/paste_markdown', () => {
             },
           }),
         );
+        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });
@@ -238,8 +295,7 @@ describe('content_editor/extensions/paste_markdown', () => {
 
     describe('when pasting text/x-gfm', () => {
       it('processes the content as markdown, even if html content exists', async () => {
-        renderMarkdown.mockResolvedValueOnce('<strong>bold text</strong>');
-
+        const resolvedValue = '<strong>bold text</strong>';
         const expectedDoc = doc(p(bold('bold text')));
 
         await triggerPasteEventHandlerAndWaitForTransaction(
@@ -252,6 +308,7 @@ describe('content_editor/extensions/paste_markdown', () => {
             },
           }),
         );
+        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });
@@ -259,9 +316,8 @@ describe('content_editor/extensions/paste_markdown', () => {
 
     describe('when pasting vscode-editor-data', () => {
       it('pastes the content as a code block', async () => {
-        renderMarkdown.mockResolvedValueOnce(
-          '<div class="gl-relative markdown-code-block js-markdown-code">&#x000A;<pre data-sourcepos="1:1-3:3" data-canonical-lang="ruby" class="code highlight js-syntax-highlight language-ruby" lang="ruby" v-pre="true"><code><span id="LC1" class="line" lang="ruby"><span class="nb">puts</span> <span class="s2">"Hello World"</span></span></code></pre>&#x000A;<copy-code></copy-code>&#x000A;</div>',
-        );
+        const resolvedValue =
+          '<div class="gl-relative markdown-code-block js-markdown-code">&#x000A;<pre data-sourcepos="1:1-3:3" data-canonical-lang="ruby" class="code highlight js-syntax-highlight language-ruby" lang="ruby" v-pre="true"><code><span id="LC1" class="line" lang="ruby"><span class="nb">puts</span> <span class="s2">"Hello World"</span></span></code></pre>&#x000A;<copy-code></copy-code>&#x000A;</div>';
 
         const expectedDoc = doc(
           codeBlock(
@@ -281,12 +337,13 @@ describe('content_editor/extensions/paste_markdown', () => {
             },
           }),
         );
+        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });
 
       it('pastes as regular markdown if language is markdown', async () => {
-        renderMarkdown.mockResolvedValueOnce('<p><strong>bold text</strong></p>');
+        const resolvedValue = '<p><strong>bold text</strong></p>';
 
         const expectedDoc = doc(p(bold('bold text')));
 
@@ -300,6 +357,7 @@ describe('content_editor/extensions/paste_markdown', () => {
             },
           }),
         );
+        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
       });

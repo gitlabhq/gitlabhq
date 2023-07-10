@@ -6,11 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Emoji reactions **(FREE)**
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emojis" to "emoji reactions" in GitLab 16.0.
-> - Reacting with emojis on work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
+> - Reacting with emoji on work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
 
 When you're collaborating online, you get fewer opportunities for high-fives
-and thumbs-ups. React with emojis on:
+and thumbs-ups. React with emoji on:
 
 - [Issues](project/issues/index.md).
 - [Tasks](tasks.md).
@@ -51,14 +51,14 @@ To add an emoji reaction:
 
 To remove an emoji reaction, select the emoji again.
 
-## Custom emojis
+## Custom emoji
 
-You can upload custom emojis to a GitLab instance with the GraphQL API.
-For more information, see [Use custom emojis with GraphQL](../api/graphql/custom_emoji.md).
+You can upload custom emoji to a GitLab instance with the GraphQL API.
+For more information, see [Use custom emoji with GraphQL](../api/graphql/custom_emoji.md).
 
-Custom emojis don't show in the emoji picker.
+Custom emoji don't show in the emoji picker.
 To use them in a text box, type the filename without the extension and surrounded by colons.
 For example, for a file named `thank-you.png`, type `:thank-you:`.
 
-For a list of custom emojis available for GitLab.com, see
+For a list of custom emoji available for GitLab.com, see
 [the `custom_emoji` project](https://gitlab.com/custom_emoji/custom_emoji/-/tree/main/img).

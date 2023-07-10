@@ -76,7 +76,7 @@ To publish the package with a deploy token:
   - `<tag>` is the Git tag name of the version you want to publish.
     To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
 
-You can view the published package by going to **Packages and registries > Package Registry** and
+You can view the published package by going to **Deploy > Package Registry** and
 selecting the **Composer** tab.
 
 ## Publish a Composer package by using CI/CD
@@ -99,13 +99,13 @@ You can publish a Composer package to the Package Registry as part of your CI/CD
 
 1. Run the pipeline.
 
-To view the published package, go to **Packages and registries > Package Registry** and select the **Composer** tab.
+To view the published package, go to **Deploy > Package Registry** and select the **Composer** tab.
 
 ### Use a CI/CD template
 
 A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` template:
 
-1. On the left sidebar, select **Project information**.
+1. On the left sidebar, select **Project overview**.
 1. Above the file list, select **Set up CI/CD**. If this button is not available, select **CI/CD Configuration** and then **Edit**.
 1. From the **Apply a template** list, select **Composer**.
 

@@ -10,7 +10,6 @@ Lint/SymbolConversion:
     - 'config/puma.rb'
     - 'ee/app/components/billing/plan_component.rb'
     - 'ee/app/controllers/projects/security/scanned_resources_controller.rb'
-    - 'ee/app/models/product_analytics/jitsu_authentication.rb'
     - 'ee/app/serializers/integrations/zentao_serializers/issue_entity.rb'
     - 'ee/db/fixtures/development/35_merge_request_predictions.rb'
     - 'ee/lib/api/analytics/product_analytics.rb'

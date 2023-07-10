@@ -16,7 +16,7 @@ details about those dependencies, including their known vulnerabilities. It is a
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9Tnbw4).
 
-To see the dependency list, go to your project and select **Security and Compliance > Dependency list**.
+To see the dependency list, go to your project and select **Secure > Dependency list**.
 
 This information is sometimes referred to as a Software Bill of Materials, SBOM, or BOM.
 

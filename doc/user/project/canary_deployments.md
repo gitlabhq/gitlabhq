@@ -121,7 +121,7 @@ or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md
 
 To use your [deploy board](../../user/project/deploy_boards.md):
 
-1. Go to **Deployments > Environments** for your project.
+1. Go to **Operate > Environments** for your project.
 1. Set the new weight with the dropdown list on the right side.
 1. Confirm your selection.
 

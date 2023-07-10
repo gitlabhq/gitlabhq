@@ -28616,6 +28616,7 @@ see the associated mutation type above.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aiexplainvulnerabilityinputincludesourcecode"></a>`includeSourceCode` | [`Boolean`](#boolean) | Include vulnerablility source code in the AI prompt. |
 | <a id="aiexplainvulnerabilityinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiFillInMergeRequestTemplateInput`

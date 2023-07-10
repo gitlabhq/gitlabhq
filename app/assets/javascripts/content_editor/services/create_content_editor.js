@@ -11,6 +11,7 @@ import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
 import CodeSuggestion from '../extensions/code_suggestion';
 import ColorChip from '../extensions/color_chip';
+import CopyPaste from '../extensions/copy_paste';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
 import Details from '../extensions/details';
@@ -40,10 +41,10 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
+import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
-import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
 import ReferenceLabel from '../extensions/reference_label';
 import ReferenceDefinition from '../extensions/reference_definition';
@@ -143,10 +144,11 @@ export const createContentEditor = ({
     ExternalKeydownHandler.configure({ eventHub }),
     Link,
     ListItem,
+    Loading,
     MathInline,
     OrderedList,
     Paragraph,
-    PasteMarkdown.configure({ eventHub, renderMarkdown, serializer }),
+    CopyPaste.configure({ eventHub, renderMarkdown, serializer }),
     Reference.configure({ assetResolver }),
     ReferenceLabel,
     ReferenceDefinition,

@@ -57,12 +57,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   .user-bar {
     background-color: $t-gray-a-04;
 
-    .tanuki-logo {
-      @include gl-vertical-align-middle;
-    }
-
-    .user-bar-item,
-    .tanuki-logo-container {
+    .user-bar-item {
       @include gl-rounded-base;
       @include gl-p-2;
       @include gl-bg-transparent;
@@ -79,21 +74,6 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
       &:focus,
       &:active {
         @include active-toggle;
-      }
-    }
-
-    $light-mode-btn-bg: #e0dfe5;
-    $dark-mode-btn-bg: #53515b;
-
-    .tanuki-logo-container {
-      &:hover,
-      &:focus,
-      &:active {
-        background-color: $light-mode-btn-bg;
-
-        .gl-dark & {
-          background-color: $dark-mode-btn-bg;
-        }
       }
     }
   }

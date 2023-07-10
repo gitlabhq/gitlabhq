@@ -230,7 +230,7 @@ You can review commits for a merge request, or for an entire project:
    1. Select **Code > Commits**.
 1. To review commits for a merge request:
    1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-   1. Select **Merge requests**, then select your merge request.
+   1. Select **Code > Merge requests**, then select your merge request.
    1. Select **Commits**.
 1. Identify the commit you want to review. Signed commits show either a **Verified**
    or **Unverified** badge, depending on the verification status of the GPG

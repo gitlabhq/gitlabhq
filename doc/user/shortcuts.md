@@ -68,24 +68,24 @@ relatively quickly to work, and they take you to another page in the project.
 
 | Keyboard shortcut           | Description |
 |-----------------------------|-------------|
-| <kbd>g</kbd> + <kbd>o</kbd> | Go to the project overview page (**Project > Details**). |
-| <kbd>g</kbd> + <kbd>v</kbd> | Go to the project activity feed (**Project > Activity**). |
-| <kbd>g</kbd> + <kbd>r</kbd> | Go to the project releases list (**Project > Releases**). |
-| <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) list (**Repository > Files**). |
-| <kbd>t</kbd>                | Go to the project file search page. (**Repository > Files**, select **Find Files**). |
-| <kbd>g</kbd> + <kbd>c</kbd> | Go to the project commits list (**Repository > Commits**). |
-| <kbd>g</kbd> + <kbd>n</kbd> | Go to the [repository graph](#repository-graph) page (**Repository > Graph**). |
-| <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Analytics > Repository Analytics**). |
-| <kbd>g</kbd> + <kbd>i</kbd> | Go to the project issues list (**Issues > List**). |
-| <kbd>i</kbd>                | Go to the New Issue page (**Issues**, select **New Issue** ). |
-| <kbd>g</kbd> + <kbd>b</kbd> | Go to the project issue boards list (**Issues > Boards**). |
-| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [merge requests](project/merge_requests/index.md) list (**Merge Requests**). |
-| <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD pipelines list (**CI/CD > Pipelines**). |
-| <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD jobs list (**CI/CD > Jobs**). |
-| <kbd>g</kbd> + <kbd>e</kbd> | Go to the project environments (**Deployments > Environments**). |
-| <kbd>g</kbd> + <kbd>k</kbd> | Go to the project Kubernetes cluster integration page (**Infrastructure > Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |
-| <kbd>g</kbd> + <kbd>s</kbd> | Go to the project snippets list (**Snippets**). |
-| <kbd>g</kbd> + <kbd>w</kbd> | Go to the [project wiki](project/wiki/index.md) (**Wiki**), if enabled. |
+| <kbd>g</kbd> + <kbd>o</kbd> | Go to the project overview page (**Project overview**). |
+| <kbd>g</kbd> + <kbd>v</kbd> | Go to the project activity feed (**Manage > Activity**). |
+| <kbd>g</kbd> + <kbd>r</kbd> | Go to the project releases list (**Deploy > Releases**). |
+| <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) list (**Code > Repository**). |
+| <kbd>t</kbd>                | Go to the project file search page. (**Code > Repository**, select **Find Files**). |
+| <kbd>g</kbd> + <kbd>c</kbd> | Go to the project commits list (**Code > Commits**). |
+| <kbd>g</kbd> + <kbd>n</kbd> | Go to the [repository graph](#repository-graph) page (**Code > Repository graph**). |
+| <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Analyze > Repository analytics**). |
+| <kbd>g</kbd> + <kbd>i</kbd> | Go to the project issues list (**Plan > Issues**). |
+| <kbd>i</kbd>                | Go to the New Issue page (**Pan > Issues**, select **New issue** ). |
+| <kbd>g</kbd> + <kbd>b</kbd> | Go to the project issue boards list (**Plan > Issue boards**). |
+| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [merge requests](project/merge_requests/index.md) list (**Code > Merge requests**). |
+| <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD pipelines list (**Build > Pipelines**). |
+| <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD jobs list (**Build > Jobs**). |
+| <kbd>g</kbd> + <kbd>e</kbd> | Go to the project environments (**Operate > Environments**). |
+| <kbd>g</kbd> + <kbd>k</kbd> | Go to the project Kubernetes cluster integration page (**Operate > Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |
+| <kbd>g</kbd> + <kbd>s</kbd> | Go to the project snippets list (**Code > Snippets**). |
+| <kbd>g</kbd> + <kbd>w</kbd> | Go to the [project wiki](project/wiki/index.md) (**Plan > Wiki**), if enabled. |
 | <kbd>.</kbd>                | Open the [Web IDE](project/web_ide/index.md). |
 
 ### Issues
@@ -123,14 +123,14 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 ### Project files
 
 These shortcuts are available when browsing the files in a project (go to
-**Repository > Files**):
+**Code > Repository**):
 
 | Keyboard shortcut | Description |
 |-------------------|-------------|
 | <kbd>↑</kbd>      | Move selection up. |
 | <kbd>↓</kbd>      | Move selection down. |
 | <kbd>Enter</kbd>  | Open selection. |
-| <kbd>Escape</kbd> | Go back to file list screen (only while searching for files, **Repository > Files**, then select **Find File**). |
+| <kbd>Escape</kbd> | Go back to file list screen (only while searching for files, **Code > Repository**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
 | <kbd>.</kbd>      | Open the [Web IDE](project/web_ide/index.md). |
 
@@ -219,7 +219,7 @@ These shortcuts are available when editing a file with the [Web IDE](project/web
 ### Repository graph
 
 These shortcuts are available when viewing the project [repository graph](project/repository/index.md#repository-history-graph)
-page (go to **Repository > Graph**):
+page (go to **Code > Repository graph**):
 
 | Keyboard shortcut                                                  | Description |
 |--------------------------------------------------------------------|-------------|

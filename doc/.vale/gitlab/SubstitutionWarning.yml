@@ -23,6 +23,7 @@ swap:
   distro: "distribution"
   docs: "documentation"
   e-mail: "email"
+  emojis: "emoji"
   ex: "for example"
   file name: "filename"
   filesystem: "file system"

@@ -77,7 +77,7 @@ or:
 
 or:
 
-1. On the left sidebar, at the top, select **Merge requests** (**{merge-request}**).
+1. On the left sidebar, select **Code > Merge requests** (**{merge-request}**).
 1. From the dropdown list, select **Assigned**.
 
 ## Filter the list of merge requests

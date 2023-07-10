@@ -37,7 +37,7 @@ To access a project wiki:
    - On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
      [wiki keyboard shortcut](../../shortcuts.md).
 
-If **Wiki** is not listed in the left sidebar of your project, a project administrator
+If **Plan > Wiki** is not listed in the left sidebar of your project, a project administrator
 has [disabled it](#enable-or-disable-a-project-wiki).
 
 ## Configure a default branch for your wiki
