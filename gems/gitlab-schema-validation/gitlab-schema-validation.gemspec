@@ -19,7 +19,11 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "diffy"
+  spec.add_runtime_dependency "pg_query"
+
   spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_development_dependency "pry"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-benchmark", "~> 0.6.0"
   spec.add_development_dependency "rspec-parameterized", "~> 1.0"

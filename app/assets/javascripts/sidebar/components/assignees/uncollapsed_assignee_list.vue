@@ -84,7 +84,6 @@ export default {
         <assignee-avatar-link
           :user="user"
           :issuable-type="issuableType"
-          :tooltip-has-name="!isMergeRequest"
           class="gl-word-break-word"
           data-css-area="user"
         >

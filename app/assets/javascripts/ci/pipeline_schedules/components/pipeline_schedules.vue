@@ -16,6 +16,7 @@ import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
+import { ALL_SCOPE } from '../constants';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
 import TakeOwnershipModal from './take_ownership_modal.vue';
 import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
@@ -68,7 +69,9 @@ export default {
       variables() {
         return {
           projectPath: this.fullPath,
-          status: this.scope,
+          // we need to ensure we send null to the API when
+          // the scope is 'ALL'
+          status: this.scope === ALL_SCOPE ? null : this.scope,
         };
       },
       update(data) {
@@ -114,7 +117,7 @@ export default {
         {
           text: s__('PipelineSchedules|All'),
           count: limitedCounterWithDelimiter(this.count),
-          scope: null,
+          scope: ALL_SCOPE,
           showBadge: true,
           attrs: { 'data-testid': 'pipeline-schedules-all-tab' },
         },
@@ -137,7 +140,7 @@ export default {
     // this watcher ensures that the count on the all tab
     //  is not updated when switching to other tabs
     schedulesCount(newCount) {
-      if (!this.scope) {
+      if (!this.scope || this.scope === ALL_SCOPE) {
         this.count = newCount;
       }
     },
@@ -256,10 +259,10 @@ export default {
     </gl-alert>
 
     <gl-tabs
-      v-if="isLoading || count > 0"
+      v-if="isLoading || schedulesCount > 0"
       sync-active-tab-with-query-params
       query-param-name="scope"
-      nav-class="gl-flex-grow-1 gl-align-items-center"
+      nav-class="gl-flex-grow-1 gl-align-items-center gl-mt-2"
     >
       <gl-tab
         v-for="tab in tabs"
@@ -303,7 +306,7 @@ export default {
       </template>
     </gl-tabs>
 
-    <pipeline-schedule-empty-state v-else-if="!isLoading && count === 0" />
+    <pipeline-schedule-empty-state v-else-if="!isLoading && schedulesCount === 0" />
 
     <take-ownership-modal
       :visible="showTakeOwnershipModal"

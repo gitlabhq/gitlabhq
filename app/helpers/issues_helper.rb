@@ -231,7 +231,8 @@ module IssuesHelper
       can_read_crm_organization: can?(current_user, :read_crm_organization, group).to_s,
       has_any_issues: @has_issues.to_s,
       has_any_projects: @has_projects.to_s,
-      new_project_path: new_project_path(namespace_id: group.id)
+      new_project_path: new_project_path(namespace_id: group.id),
+      group_id: group.id
     )
   end
 

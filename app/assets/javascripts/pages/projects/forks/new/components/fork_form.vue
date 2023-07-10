@@ -262,7 +262,6 @@ export default {
       try {
         const { data } = await axios.post(url, postParams);
         redirectTo(data.web_url); // eslint-disable-line import/no-deprecated
-        return;
       } catch (error) {
         createAlert({
           message: s__(

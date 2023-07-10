@@ -2,7 +2,12 @@
 
 module QA
   RSpec.describe 'Package', :requires_admin, product_group: :package_registry do
-    describe 'Terraform Module Registry' do
+    describe 'Terraform Module Registry',
+      quarantine: {
+        only: { pipeline: :nightly },
+        type: :investigating,
+        issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1883'
+      } do
       include Runtime::Fixtures
 
       let(:group) { Resource::Group.fabricate_via_api! }

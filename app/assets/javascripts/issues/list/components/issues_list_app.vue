@@ -166,6 +166,7 @@ export default {
     'releasesPath',
     'rssPath',
     'showNewIssueLink',
+    'groupId',
   ],
   props: {
     eeSearchTokens: {
@@ -895,6 +896,7 @@ export default {
           :query="$options.searchProjectsQuery"
           :query-variables="newIssueDropdownQueryVariables"
           :extract-projects="extractProjects"
+          :group-id="groupId"
         />
         <gl-disclosure-dropdown
           v-gl-tooltip.hover="$options.i18n.actionsLabel"

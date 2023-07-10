@@ -227,3 +227,21 @@ trigger-depsaster:
   trigger:
     project: "gitlab-com/gl-security/appsec/tooling/depsaster"
   allow_failure: true
+
+ping-appsec-for-dependency-review:
+  stage: lint
+  needs: []
+  variables:
+    GIT_CHECKOUT: "false"
+    DISABLE_MENTIONS: "false"
+    DISABLE_SCORING: "true"
+    DISABLE_COMMENTING: "false"
+    DEPENDENCY_REVIEW_BOT_CI_REG: "${CI_REGISTRY}/gitlab-com/gl-security/appsec/tooling/depscore/master"
+  extends: [".ping-appsec-for-dependency-review:rules", ".use-docker-in-docker"]
+  before_script:
+    - apk add jq curl
+    - DEPENDENCY_REVIEW_BOT_UNAME=$(curl --header "PRIVATE-TOKEN:$DEPENDENCY_REVIEW_PAT" "https://gitlab.com/api/v4/user" | jq -r '.username')
+    - echo "$DEPENDENCY_REVIEW_PAT" | docker login --password-stdin -u "$DEPENDENCY_REVIEW_BOT_UNAME" -- "$DEPENDENCY_REVIEW_BOT_CI_REG"
+  script:
+    - docker run --interactive --rm "$DEPENDENCY_REVIEW_BOT_CI_REG:latest" -t "$DEPENDENCY_REVIEW_PAT" -p "$CI_PROJECT_ID" -m "$CI_MERGE_REQUEST_IID" -s "$DISABLE_SCORING" -a "$DISABLE_MENTIONS" -c "$DISABLE_COMMENTING"
+  allow_failure: true

@@ -1,5 +1,0 @@
-include:
-  - local: gems/gem.gitlab-ci.yml
-    inputs:
-      gem_name: "gitlab_active_record"
-      gem_path_prefix: "vendor/gems/"

@@ -3,16 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe API::Lint, feature_category: :pipeline_composition do
-  describe 'POST /ci/lint' do
-    it 'responds with a 410' do
-      user = create(:user)
-
-      post api('/ci/lint', user), params: { content: "test_job:\n  script: ls" }
-
-      expect(response).to have_gitlab_http_status(:gone)
-    end
-  end
-
   describe 'GET /projects/:id/ci/lint' do
     subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run, include_jobs: include_jobs } }
 

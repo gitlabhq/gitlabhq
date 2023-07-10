@@ -41,7 +41,7 @@ To add streaming destinations to a top-level group:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
-1. Select **Add streaming destination** to show the section for adding destinations.
+1. Select **Add streaming destination** and select **HTTP endpoint** to show the section for adding destinations.
 1. Enter the destination URL to add.
 1. Optional. Locate the **Custom HTTP headers** table.
 1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the
@@ -68,7 +68,7 @@ To add a streaming destination for an instance:
 1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. On the main area, select **Streams** tab.
-1. Select **Add streaming destination** to show the section for adding destinations.
+1. Select **Add streaming destination** and select **HTTP endpoint** to show the section for adding destinations.
 1. Enter the destination URL to add.
 1. Optional. To add custom HTTP headers, select **Add header** to create a new name and value pair, and input their values. Repeat this step for as many name and value pairs are required. You can add up to 20 headers per streaming destination.
 1. Ignore the **Active** checkbox because it isn't functional. To track progress on adding functionality to the
@@ -76,6 +76,23 @@ To add a streaming destination for an instance:
 1. Select **Add header** to create a new name and value pair. Repeat this step for as many name and value pairs are required. You can add up to
    20 headers per streaming destination.
 1. After all headers have been filled out, select **Add** to add the new streaming destination.
+
+### Google Cloud Logging streaming
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To add Google Cloud Logging streaming destinations to a top-level group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
+1. Enter the Google Project ID, Google Client Email, Log ID, and Google Private Key to add.
+1. Select **Add** to add the new streaming destination.
 
 ## List streaming destinations
 
@@ -112,6 +129,21 @@ To list the streaming destinations for an instance:
 1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 1. On the main area, select **Streams** tab.
+
+### Google Cloud Logging streaming
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To list Google Cloud Logging streaming destinations for a top-level group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select the Google Cloud Logging stream to expand and see all the fields.
 
 ## Update streaming destinations
 
@@ -161,6 +193,23 @@ To update the streaming destinations for an instance:
    **Active** checkbox, see [issue 367509](https://gitlab.com/gitlab-org/gitlab/-/issues/367509).
 1. Select **Add header** to create a new name and value pair. Enter as many name and value pairs as required. You can add up to
    20 headers per streaming destination.
+1. Select **Save** to update the streaming destination.
+
+### Google Cloud Logging streaming
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To update Google Cloud Logging streaming destinations to a top-level group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select **Streams** tab.
+1. Select the Google Cloud Logging stream to expand.
+1. Enter the Google Project ID, Google Client Email, Log ID, and Google Private Key to update.
 1. Select **Save** to update the streaming destination.
 
 ## Delete streaming destinations
@@ -227,6 +276,23 @@ To delete only the custom HTTP headers for a streaming destination:
 1. Locate the header that you wish to remove.
 1. To the right of the header, select **Delete** (**{remove}**).
 1. Select **Save** to update the streaming destination.
+
+### Google Cloud Logging streaming
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To delete Google Cloud Logging streaming destinations to a top-level group:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the Google Cloud Logging stream to expand.
+1. Select **Delete destination**.
+1. Confirm by selecting **Delete destination** in the modal.
 
 ## Verify event authenticity
 

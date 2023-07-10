@@ -13,12 +13,12 @@ class Projects::ServiceDeskController < Projects::ApplicationController
   def update
     Projects::UpdateService.new(project, current_user, { service_desk_enabled: params[:service_desk_enabled] }).execute
 
-    result = ServiceDeskSettings::UpdateService.new(project, current_user, setting_params).execute
+    response = ServiceDeskSettings::UpdateService.new(project, current_user, setting_params).execute
 
-    if result[:status] == :success
+    if response.success?
       json_response
     else
-      render json: { message: result[:message] }, status: :unprocessable_entity
+      render json: { message: response.message }, status: :unprocessable_entity
     end
   end
 

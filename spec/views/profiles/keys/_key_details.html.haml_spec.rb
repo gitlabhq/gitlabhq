@@ -29,4 +29,19 @@ RSpec.describe 'profiles/keys/_key_details.html.haml' do
       end
     end
   end
+
+  describe 'displays key attributes' do
+    let(:key) { create(:key, :expired, last_used_at: Date.today, user: user) }
+
+    it 'renders key attributes' do
+      render
+
+      expect(rendered).to have_text(key.title)
+      expect(rendered).to have_text(key.created_at.to_fs(:medium))
+      expect(rendered).to have_text(key.expires_at.to_fs(:medium))
+      expect(rendered).to have_text(key.last_used_at.to_fs(:medium))
+      expect(rendered).to have_text(key.fingerprint)
+      expect(rendered).to have_text(key.fingerprint_sha256)
+    end
+  end
 end

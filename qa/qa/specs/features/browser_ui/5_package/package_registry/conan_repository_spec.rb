@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry, quarantine: {
-    only: { job: 'object_storage' },
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/335981',
-    type: :bug
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1883',
+    type: :investigating
   } do
     describe 'Conan Repository' do
       include Runtime::Fixtures

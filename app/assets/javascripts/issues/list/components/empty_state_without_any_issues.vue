@@ -28,6 +28,7 @@ export default {
     'newProjectPath',
     'showNewIssueLink',
     'signInPath',
+    'groupId',
   ],
   props: {
     currentTabCount: {
@@ -95,6 +96,7 @@ export default {
           :query="$options.searchProjectsQuery"
           :query-variables="newIssueDropdownQueryVariables"
           :extract-projects="extractProjects"
+          :group-id="groupId"
         />
       </template>
     </gl-empty-state>

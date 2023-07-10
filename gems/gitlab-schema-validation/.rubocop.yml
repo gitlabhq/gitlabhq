@@ -3,3 +3,9 @@ inherit_from:
 
 AllCops:
   NewCops: enable
+
+Gitlab/RSpec/AvoidSetup:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 25

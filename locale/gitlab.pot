@@ -1280,9 +1280,6 @@ msgstr ""
 msgid "%{url} (optional)"
 msgstr ""
 
-msgid "%{userName} (cannot merge)"
-msgstr ""
-
 msgid "%{userName}'s avatar"
 msgstr ""
 
@@ -42351,6 +42348,9 @@ msgstr ""
 msgid "ServiceAccount|User does not have permission to create a service account."
 msgstr ""
 
+msgid "ServiceDesk|Cannot create custom email"
+msgstr ""
+
 msgid "ServiceDesk|Custom email address could not be verified."
 msgstr ""
 
@@ -42360,6 +42360,12 @@ msgstr ""
 msgid "ServiceDesk|Custom email address verification has already been processed and failed."
 msgstr ""
 
+msgid "ServiceDesk|Custom email already exists"
+msgstr ""
+
+msgid "ServiceDesk|Custom email does not exist"
+msgstr ""
+
 msgid "ServiceDesk|Enable Service Desk"
 msgstr ""
 
@@ -42367,6 +42373,9 @@ msgid "ServiceDesk|For help setting up the Service Desk for your instance, pleas
 msgstr ""
 
 msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
+msgstr ""
+
+msgid "ServiceDesk|Parameters missing"
 msgstr ""
 
 msgid "ServiceDesk|Service Desk is not enabled"
@@ -50813,6 +50822,9 @@ msgstr ""
 msgid "Vulnerability|Comments"
 msgstr ""
 
+msgid "Vulnerability|Could not load prompt."
+msgstr ""
+
 msgid "Vulnerability|Crash address"
 msgstr ""
 
@@ -50865,6 +50877,9 @@ msgid "Vulnerability|File:"
 msgstr ""
 
 msgid "Vulnerability|GitLab Security Report"
+msgstr ""
+
+msgid "Vulnerability|Hide prompt"
 msgstr ""
 
 msgid "Vulnerability|Identifier"
@@ -50940,6 +50955,9 @@ msgid "Vulnerability|Severity"
 msgstr ""
 
 msgid "Vulnerability|Severity:"
+msgstr ""
+
+msgid "Vulnerability|Show prompt"
 msgstr ""
 
 msgid "Vulnerability|Status"

@@ -23,6 +23,8 @@ PATH
   remote: gems/gitlab-schema-validation
   specs:
     gitlab-schema-validation (0.1.0)
+      diffy
+      pg_query
 
 PATH
   remote: gems/gitlab-utils
@@ -1036,7 +1038,7 @@ GEM
     net-imap (0.3.4)
       date
       net-protocol
-    net-ldap (0.18.0)
+    net-ldap (0.17.1)
     net-ntp (2.1.3)
     net-pop (0.1.2)
       net-protocol
@@ -1890,7 +1892,7 @@ DEPENDENCIES
   multi_json (~> 1.14.1)
   neighbor (~> 0.2.3)
   net-http (= 0.1.1)
-  net-ldap (~> 0.18.0)
+  net-ldap (~> 0.17.1)
   net-ntp
   net-protocol (~> 0.1.3)
   nokogiri (~> 1.15, >= 1.15.2)

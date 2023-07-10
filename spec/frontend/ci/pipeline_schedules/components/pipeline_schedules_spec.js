@@ -322,6 +322,18 @@ describe('Pipeline schedules app', () => {
 
       expect(successHandler).toHaveBeenCalledTimes(3);
     });
+
+    it('all tab click should not send scope value with query', async () => {
+      findAllTab().trigger('click');
+
+      await nextTick();
+
+      expect(successHandler).toHaveBeenCalledWith({
+        ids: null,
+        projectPath: 'gitlab-org/gitlab',
+        status: null,
+      });
+    });
   });
 
   describe('Empty pipeline schedules response', () => {

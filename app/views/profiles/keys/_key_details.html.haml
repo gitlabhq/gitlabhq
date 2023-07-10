@@ -17,10 +17,10 @@
             %strong= @key.created_at.to_fs(:medium)
           %li
             %span.light= _('Expires:')
-            %strong= @key.expires_at.try(:to_s, :medium) || _('Never')
+            %strong= @key.expires_at&.to_fs(:medium) || _('Never')
           %li
             %span.light= _('Last used on:')
-            %strong= @key.last_used_at.try(:to_s, :medium) || _('Never')
+            %strong= @key.last_used_at&.to_fs(:medium) || _('Never')
 
   .col-md-8
     = form_errors(@key, type: 'key') unless @key.valid?

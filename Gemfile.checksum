@@ -381,7 +381,7 @@
 {"name":"net-http","version":"0.1.1","platform":"ruby","checksum":"75a4e109b6f9af32fad0e98a6180c47aceb415927ca3bd70c8fc3e7dbbabbe86"},
 {"name":"net-http-persistent","version":"4.0.1","platform":"ruby","checksum":"2752f4cce05fd1c45e0537c6f3a98fa5a4899efd5f88e63c104ed5f05cbddef9"},
 {"name":"net-imap","version":"0.3.4","platform":"ruby","checksum":"a82a59e2a429433dc54cae5a8b2979ffe49da8c66085740811bfa337dc3729b5"},
-{"name":"net-ldap","version":"0.18.0","platform":"ruby","checksum":"59adc934c4ab000c8bb02cffb6d415af6cc17f03e1fee80823a60436ac730c77"},
+{"name":"net-ldap","version":"0.17.1","platform":"ruby","checksum":"52571b55f9157120833ac1667f2969ce0139251811d0a9b64657c1c135069cf9"},
 {"name":"net-ntp","version":"2.1.3","platform":"ruby","checksum":"5bc73f4102bde0d1872bd3b293608ae99d9f5007d744f21919c6a565eda9267d"},
 {"name":"net-pop","version":"0.1.2","platform":"ruby","checksum":"848b4e982013c15b2f0382792268763b748cce91c9e91e36b0f27ed26420dff3"},
 {"name":"net-protocol","version":"0.1.3","platform":"ruby","checksum":"ad43e2be965ede676683c047b2c3d76762aa49a764779d98312a10da04622c14"},

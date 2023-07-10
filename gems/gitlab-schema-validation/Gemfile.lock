@@ -2,6 +2,8 @@ PATH
   remote: .
   specs:
     gitlab-schema-validation (0.1.0)
+      diffy
+      pg_query
 
 GEM
   remote: https://rubygems.org/
@@ -21,24 +23,32 @@ GEM
     concurrent-ruby (1.2.2)
     debug_inspector (1.1.0)
     diff-lcs (1.5.0)
+    diffy (3.4.2)
     gitlab-styles (10.1.0)
       rubocop (~> 1.50.2)
       rubocop-graphql (~> 0.18)
       rubocop-performance (~> 1.15)
       rubocop-rails (~> 2.17)
       rubocop-rspec (~> 2.22)
+    google-protobuf (3.23.3)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
+    method_source (1.0.0)
     minitest (5.18.1)
     parallel (1.23.0)
     parser (3.2.2.3)
       ast (~> 2.4.1)
       racc
+    pg_query (4.2.1)
+      google-protobuf (>= 3.22.3)
     proc_to_ast (0.1.0)
       coderay
       parser
       unparser
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     racc (1.7.1)
     rack (3.0.8)
     rainbow (3.1.1)
@@ -116,6 +126,7 @@ PLATFORMS
 DEPENDENCIES
   gitlab-schema-validation!
   gitlab-styles (~> 10.1.0)
+  pry
   rspec (~> 3.0)
   rspec-benchmark (~> 0.6.0)
   rspec-parameterized (~> 1.0)

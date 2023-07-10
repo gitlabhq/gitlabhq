@@ -94,6 +94,7 @@ export async function mountIssuesListApp() {
     rssPath,
     showNewIssueLink,
     signInPath,
+    groupId = '',
   } = el.dataset;
 
   return new Vue({
@@ -153,6 +154,7 @@ export async function mountIssuesListApp() {
       markdownHelpPath,
       quickActionsHelpPath,
       resetPath,
+      groupId,
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

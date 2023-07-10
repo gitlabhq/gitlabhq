@@ -2141,6 +2141,18 @@
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
 
+.ping-appsec-for-dependency-review:rules:
+  rules:
+    # Requiring $DEPENDENCY_REVIEW_PAT prevents the bot from running on forks or CE
+    # Without it the script would fail too.
+    - if: "$DEPENDENCY_REVIEW_PAT == null"
+      when: never
+    - <<: *if-not-ee
+      when: never
+    # Run only when the merge request have dependency file modifications
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+
 ##################
 # Releases rules #
 ##################

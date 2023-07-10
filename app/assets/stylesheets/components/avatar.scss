@@ -201,6 +201,12 @@ $avatar-sizes: (
 
   .gl-avatar-labeled-label,
   .gl-avatar-labeled-sublabel {
-    @include gl-text-truncate();
+    @include gl-text-truncate;
+  }
+
+  &.user-popover-cannot-merge {
+    .popover-header {
+      @include gl-bg-orange-50;
+    }
   }
 }

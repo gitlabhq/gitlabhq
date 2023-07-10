@@ -8,9 +8,9 @@ module ServiceDeskSettings
       params[:project_key] = nil if params[:project_key].blank?
 
       if settings.update(params)
-        success
+        ServiceResponse.success
       else
-        error(settings.errors.full_messages.to_sentence)
+        ServiceResponse.error(message: settings.errors.full_messages.to_sentence)
       end
     end
   end

@@ -37,9 +37,16 @@ export const mockSinglePipelineScheduleNode = mockGetSinglePipelineScheduleGraph
 
 export const emptyPipelineSchedulesResponse = {
   data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      username: 'root',
+    },
     project: {
       id: 'gid://gitlab/Project/1',
-      pipelineSchedules: { nodes: [], count: 0 },
+      pipelineSchedules: {
+        count: 0,
+        nodes: [],
+      },
     },
   },
 };

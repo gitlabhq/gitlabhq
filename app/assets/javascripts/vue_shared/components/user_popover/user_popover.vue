@@ -91,6 +91,9 @@ export default {
 
       return '';
     },
+    userCannotMerge() {
+      return this.target.dataset.cannotMerge;
+    },
     userIsLoading() {
       return !this.user?.loaded;
     },
@@ -122,6 +125,15 @@ export default {
     },
     username() {
       return `@${this.user?.username}`;
+    },
+    cssClasses() {
+      const classList = ['user-popover', 'gl-max-w-48', 'gl-overflow-hidden'];
+
+      if (this.userCannotMerge) {
+        classList.push('user-popover-cannot-merge');
+      }
+
+      return classList;
     },
   },
   methods: {
@@ -181,7 +193,7 @@ export default {
 <template>
   <!-- Delayed so not every mouseover triggers Popover -->
   <gl-popover
-    :css-classes="['user-popover', 'gl-max-w-48', 'gl-overflow-hidden']"
+    :css-classes="cssClasses"
     :show="show"
     :target="target"
     :delay="$options.USER_POPOVER_DELAY"
@@ -190,6 +202,12 @@ export default {
     triggers="hover focus manual"
     data-testid="user-popover"
   >
+    <template v-if="userCannotMerge" #title>
+      <div class="gl-pb-3 gl-display-flex gl-align-items-center" data-testid="cannot-merge">
+        <gl-icon name="warning-solid" class="gl-mr-2 gl-text-orange-400" />
+        <span class="gl-font-weight-normal">{{ __('Cannot merge') }}</span>
+      </div>
+    </template>
     <div class="gl-mb-3">
       <div v-if="userIsLoading" class="gl-w-20">
         <gl-skeleton-loader :width="160" :height="64">
