@@ -13,6 +13,7 @@ stages:
   - pages
   - notify
   - release-environments
+  - benchmark
 
 # always use `gitlab-org` runners, however
 # in cases where jobs require Docker-in-Docker, the job

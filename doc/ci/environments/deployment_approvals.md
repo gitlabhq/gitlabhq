@@ -163,7 +163,7 @@ require `Administrator` to approve every deployment job in `Production`.
 
 ![multiple approval rules](img/multiple_approval_rules_v16_0.png)
 
-### Allow self-approval **(PREMIUM)**
+### Allow self-approval
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.
 > - Automatic approval [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124638) in GitLab 16.2 due to [usability issues](https://gitlab.com/gitlab-org/gitlab/-/issues/391258).

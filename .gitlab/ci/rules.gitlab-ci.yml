@@ -465,7 +465,7 @@
   - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -492,7 +492,7 @@
   - ".stylelintrc"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".gitlab-ci.yml"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
@@ -1152,17 +1152,9 @@
       changes: *workhorse-patterns
     # Rules to support .qa:rules:package-and-test
     - <<: *if-default-branch-schedule-nightly
-    - <<: *if-merge-request
-      changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
       changes: *feature-flag-development-config-patterns
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
     - <<: *if-force-ci
 
 .frontend:rules:compile-production-assets-as-if-foss:
@@ -2473,9 +2465,9 @@
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
 
-#######################
+###################
 # Preflight rules #
-#######################
+###################
 
 .preflight:rules:rails-production-server-boot:
   rules:
@@ -2605,3 +2597,14 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
+
+###################
+# Benchmark rules #
+###################
+.benchmark:rules:benchmark-markdown:
+  rules:
+    - <<: *if-default-refs
+      changes: *setup-test-env-patterns
+      when: manual
+    - <<: *if-merge-request-labels-run-all-rspec
+      when: manual

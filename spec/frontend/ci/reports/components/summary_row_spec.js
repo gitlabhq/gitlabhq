@@ -38,7 +38,7 @@ describe('Summary row', () => {
 
   it('renders provided icon', () => {
     createComponent();
-    expect(findStatusIcon().classes()).toContain('js-ci-status-icon-warning');
+    expect(findStatusIcon().find('[data-testid="status_warning-icon"]').exists()).toBe(true);
   });
 
   it('renders help popover if popoverOptions are provided', () => {

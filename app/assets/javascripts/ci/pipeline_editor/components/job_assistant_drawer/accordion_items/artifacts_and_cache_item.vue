@@ -26,7 +26,7 @@ export default {
       return [
         {
           key: 'artifacts.paths',
-          title: i18n.ARTIFACTS_AND_CACHE,
+          title: i18n.ARTIFACTS_PATHS,
           paths: this.job.artifacts.paths,
           generateInputDataTestId: (index) => `artifacts-paths-input-${index}`,
           generateDeleteButtonDataTestId: (index) => `delete-artifacts-paths-button-${index}`,

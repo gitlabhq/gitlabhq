@@ -131,8 +131,8 @@ The flow of a PQL lead is as follows:
 ```mermaid
 sequenceDiagram
     Trial Frontend Forms ->>TrialsController#create_lead: GitLab.com frontend sends [lead] to backend
-    TrialsController#create_lead->>CreateLeadService: [lead]
-    TrialsController#create_lead->>ApplyTrialService: [lead] Apply the trial
+    TrialsController#create->>CreateLeadService: [lead]
+    TrialsController#create->>ApplyTrialService: [lead] Apply the trial
     CreateLeadService->>SubscriptionPortalClient#generate_trial(sync_to_gl=false): [lead] Creates customer account on CustomersDot
     ApplyTrialService->>SubscriptionPortalClient#generate_trial(sync_to_gl=true): [lead] Asks CustomersDot to apply the trial on namespace
     SubscriptionPortalClient#generate_trial(sync_to_gl=false)->>CustomersDot|TrialsController#create(sync_to_gl=false): GitLab.com sends [lead] to CustomersDot
@@ -169,8 +169,8 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    HandRaiseForm Vue Component->>TrialsController#create_hand_raise_lead: GitLab.com frontend sends [lead] to backend
-    Subscriptions::HandRaiseLeadsController#create->>CreateHandRaiseLeadService: [lead]
+    HandRaiseForm Vue Component->>HandRaiseLeadsController#create: GitLab.com frontend sends [lead] to backend
+    HandRaiseLeadsController#create->>CreateHandRaiseLeadService: [lead]
     CreateHandRaiseLeadService->>SubscriptionPortalClient: [lead]
     SubscriptionPortalClient->>CustomersDot|TrialsController#create_hand_raise_lead: GitLab.com sends [lead] to CustomersDot
 ```

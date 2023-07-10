@@ -107,7 +107,8 @@ For more information about debugging, see [troubleshooting documentation](troubl
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327152) in GitLab 14.9.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336641) in GitLab 14.10, the agent token can be revoked from the UI.
-> - Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030) in GitLab 16.1.
+> - Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `cluster_agents_limit_tokens_created`.
+> - Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
 
 An agent can have only two active tokens at one time.
 

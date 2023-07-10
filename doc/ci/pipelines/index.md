@@ -88,7 +88,7 @@ This table lists the refspecs injected for each pipeline type:
 |---------------                                                     |----------------------------------------                                                        |
 | pipeline for branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [merge request pipeline](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
+| [merge request pipeline](../pipelines/merge_request_pipelines.md)  | `+refs/pipelines/<id>:refs/pipelines/<id>`                                       |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a

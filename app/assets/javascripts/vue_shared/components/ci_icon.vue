@@ -36,6 +36,15 @@ export default {
     status: {
       type: Object,
       required: true,
+      validator(status) {
+        const { group, icon } = status;
+        return (
+          typeof group === 'string' &&
+          group.length &&
+          typeof icon === 'string' &&
+          icon.startsWith('status_')
+        );
+      },
     },
     size: {
       type: Number,
@@ -69,7 +78,7 @@ export default {
   computed: {
     wrapperStyleClasses() {
       const status = this.status.group;
-      return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status} gl-rounded-full gl-justify-content-center gl-line-height-0`;
+      return `ci-status-icon ci-status-icon-${status} gl-rounded-full gl-justify-content-center gl-line-height-0`;
     },
     icon() {
       return this.isBorderless ? `${this.status.icon}_borderless` : this.status.icon;
@@ -84,7 +93,6 @@ export default {
       { interactive: isInteractive, active: isActive, borderless: isBorderless },
     ]"
     :style="{ height: `${size}px`, width: `${size}px` }"
-    data-testid="ci-icon-wrapper"
   >
     <gl-icon :name="icon" :size="size" :class="cssClasses" :aria-label="status.icon" />
   </span>

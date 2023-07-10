@@ -240,7 +240,7 @@ This machine's Geo node name matches a database record ... no
 ```
 
 For more information about recommended site names in the description of the Name field, see
-[Geo Admin Area Common Settings](../../../user/admin_area/geo_sites.md#common-settings).
+[Geo Admin Area Common Settings](../../../administration/geo_sites.md#common-settings).
 
 ### Reverify all uploads (or any SSF data type which is verified)
 
@@ -1346,7 +1346,7 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 - Accessible from all secondary sites.
 
 1. Visit the primary site.
-1. [Set up the internal URLs](../../../user/admin_area/geo_sites.md#set-up-the-internal-urls).
+1. [Set up the internal URLs](../../../administration/geo_sites.md#set-up-the-internal-urls).
 
 ### Secondary site returns `Received HTTP code 403 from proxy after CONNECT`
 

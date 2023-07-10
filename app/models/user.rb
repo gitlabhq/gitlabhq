@@ -317,6 +317,9 @@ class User < ApplicationRecord
 
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
                                                             message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
+  validates :hide_no_ssh_key, allow_nil: false, inclusion: { in: [true, false] }
+  validates :hide_no_password, allow_nil: false, inclusion: { in: [true, false] }
+  validates :notified_of_own_activity, allow_nil: false, inclusion: { in: [true, false] }
 
   after_initialize :set_projects_limit
   before_validation :sanitize_attrs

@@ -59,6 +59,13 @@ export default {
         case COMMAND_HANDLE:
           this.getCommandsAndPages();
           break;
+        /* TODO: Search for recent issues initiated by #(ISSUE_HANDLE) from the command palette scope
+         was removed as using the # in command palette conflicted
+         with the existing global search functionality to search for issue by its id.
+         The code that performs the Recent issues search was not removed from the code base
+         as it would be nice to bring it back when we decide how to combine both search by id and text.
+         In scope of https://gitlab.com/gitlab-org/gitlab/-/issues/417434
+         we either bring back the search by #issue_text or remove the related code completely */
         case USER_HANDLE:
         case PROJECT_HANDLE:
         case ISSUE_HANDLE:

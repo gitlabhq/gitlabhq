@@ -87,8 +87,10 @@ module Types
                                                 description: 'Play path of the job.'
       field :playable, GraphQL::Types::Boolean, null: false, method: :playable?,
                                                 description: 'Indicates the job can be played.'
-      field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type, null: true,
-                                                                                    description: 'Jobs that must complete before the job runs. Returns `BuildNeed`, which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.'
+      field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type,
+            null: true,
+            description: 'Jobs that must complete before the job runs. Returns `BuildNeed`, ' \
+                         'which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.'
       field :ref_name, GraphQL::Types::String, null: true,
                                                description: 'Ref name of the job.'
       field :ref_path, GraphQL::Types::String, null: true,
@@ -179,7 +181,9 @@ module Types
             stages = pipeline.stages.by_position(positions)
 
             stages.each do |stage|
-              loader.call([pipeline, stage.position], stage.latest_statuses)
+              # Without `.to_a`, the memoization will only preserve the activerecord relation object. And when there is
+              # a call, the SQL query will be executed again.
+              loader.call([pipeline, stage.position], stage.latest_statuses.to_a)
             end
           end
         end

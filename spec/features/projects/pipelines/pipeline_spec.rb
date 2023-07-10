@@ -165,7 +165,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         it 'shows a running icon and a cancel action for the running build' do
           page.within('#ci-badge-deploy') do
-            expect(page).to have_selector('.js-ci-status-icon-running')
+            expect(page).to have_selector('[data-testid="status_running-icon"]')
             expect(page).to have_selector('.js-icon-cancel')
             expect(page).to have_content('deploy')
           end
@@ -187,7 +187,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         it 'shows a preparing icon and a cancel action' do
           page.within('#ci-badge-prepare') do
-            expect(page).to have_selector('.js-ci-status-icon-preparing')
+            expect(page).to have_selector('[data-testid="status_preparing-icon"]')
             expect(page).to have_selector('.js-icon-cancel')
             expect(page).to have_content('prepare')
           end
@@ -209,7 +209,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         it 'shows the success icon and a retry action for the successful build' do
           page.within('#ci-badge-build') do
-            expect(page).to have_selector('.js-ci-status-icon-success')
+            expect(page).to have_selector('[data-testid="status_success-icon"]')
             expect(page).to have_content('build')
           end
 
@@ -238,7 +238,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         it 'shows the scheduled icon and an unschedule action for the delayed job' do
           page.within('#ci-badge-delayed-job') do
-            expect(page).to have_selector('.js-ci-status-icon-scheduled')
+            expect(page).to have_selector('[data-testid="status_scheduled-icon"]')
             expect(page).to have_content('delayed-job')
           end
 
@@ -263,7 +263,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         it 'shows the failed icon and a retry action for the failed build' do
           page.within('#ci-badge-test') do
-            expect(page).to have_selector('.js-ci-status-icon-failed')
+            expect(page).to have_selector('[data-testid="status_failed-icon"]')
             expect(page).to have_content('test')
           end
 
@@ -297,7 +297,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         it 'shows the skipped icon and a play action for the manual build' do
           page.within('#ci-badge-manual-build') do
-            expect(page).to have_selector('.js-ci-status-icon-manual')
+            expect(page).to have_selector('[data-testid="status_manual-icon"]')
             expect(page).to have_content('manual')
           end
 
@@ -323,7 +323,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         end
 
         it 'shows the success icon and the generic comit status build' do
-          expect(page).to have_selector('.js-ci-status-icon-success')
+          expect(page).to have_selector('[data-testid="status_success-icon"]')
           expect(page).to have_content('jenkins')
           expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
         end

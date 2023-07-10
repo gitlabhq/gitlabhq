@@ -11315,7 +11315,7 @@ msgstr ""
 msgid "CommandPalette|Project files"
 msgstr ""
 
-msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user, %{projectHandle} for project, %{issueHandle} for issue, %{pathHandle} for project file or perform generic search..."
+msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user, %{projectHandle} for project, %{pathHandle} for project file, or perform generic search..."
 msgstr ""
 
 msgid "CommandPalette|command"
@@ -20958,6 +20958,9 @@ msgstr ""
 msgid "Gitpod|https://gitpod.example.com"
 msgstr ""
 
+msgid "Give feedback"
+msgstr ""
+
 msgid "Give us some feedback"
 msgstr ""
 
@@ -25849,7 +25852,13 @@ msgstr ""
 msgid "JiraConnect|Sign in to link groups"
 msgstr ""
 
+msgid "JiraConnect|Tell us what you think!"
+msgstr ""
+
 msgid "JiraConnect|The Jira user is not a site administrator. Check the permissions in Jira and try again."
+msgstr ""
+
+msgid "JiraConnect|We would love to learn more about your experience with the GitLab for Jira Cloud App."
 msgstr ""
 
 msgid "JiraConnect|Welcome to GitLab for Jira"

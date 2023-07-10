@@ -17,7 +17,7 @@ You can [customize the list](../project/index.md#create-a-project) of available 
 that all projects in your group have the same list. To do this, you populate a subgroup with the projects you want to
 use as templates.
 
-You can also configure [custom templates for the instance](../admin_area/custom_project_templates.md).
+You can also configure [custom templates for the instance](../../administration/custom_project_templates.md).
 
 ## Set up group-level project templates
 

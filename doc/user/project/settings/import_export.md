@@ -186,7 +186,7 @@ Items that are **not** exported include:
 - Links to related merge requests
 
 Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
-[instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
+[instance](../../../administration/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
 
 ## Import a project and its data
 
