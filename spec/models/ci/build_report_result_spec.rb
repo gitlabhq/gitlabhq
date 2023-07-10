@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildReportResult do
+RSpec.describe Ci::BuildReportResult, feature_category: :continuous_integration do
   let_it_be_with_reload(:build_report_result) { create(:ci_build_report_result, :with_junit_success) }
 
   it_behaves_like 'cleanup by a loose foreign key' do

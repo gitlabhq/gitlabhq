@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildDependencies do
+RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
 

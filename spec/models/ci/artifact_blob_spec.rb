@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ArtifactBlob do
+RSpec.describe Ci::ArtifactBlob, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:build) { create(:ci_build, :artifacts, project: project) }
 

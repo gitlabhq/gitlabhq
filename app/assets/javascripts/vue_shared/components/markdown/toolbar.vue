@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     showEditorModeSwitcher() {
-      return this.showContentEditorSwitcher && !this.previewMarkdown;
+      return this.showContentEditorSwitcher;
     },
   },
   methods: {

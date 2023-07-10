@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::ProjectPipelineCountsResolver do
+RSpec.describe Resolvers::Ci::ProjectPipelineCountsResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }
