@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema do
-  let_it_be(:connections) { GitlabSchema.connections.all_wrappers }
+  let_it_be(:connections) { described_class.connections.all_wrappers }
   let_it_be(:tracers) { described_class.tracers }
 
   let(:user) { build :user }

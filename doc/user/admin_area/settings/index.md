@@ -52,6 +52,7 @@ The **General** settings contain:
  Set max session time for web terminal.
 - [FLoC](floc.md) - Enable or disable
  [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) tracking.
+- [GitLab for Slack app](slack_app.md) - Enable and configure the GitLab for Slack app.
 
 ### CI/CD
 
@@ -91,10 +92,6 @@ The **Integrations** settings contain:
   to receive invite email bounce events from Mailgun, if it is your email provider.
 - [PlantUML](../../../administration/integration/plantuml.md) - Allow rendering of PlantUML
   diagrams in documents.
-- [Slack application](../../../user/project/integrations/gitlab_slack_application.md) -
-  Slack integration allows you to interact with GitLab via slash commands in a chat window.
-  This option is only available on GitLab.com, though it may be
-  [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164).
 - [Customer experience improvement and third-party offers](third_party_offers.md) -
   Control the display of customer experience improvement content and third-party offers.
 - [Snowplow](../../../development/internal_analytics/snowplow/index.md) - Configure the Snowplow integration.

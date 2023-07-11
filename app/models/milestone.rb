@@ -10,6 +10,7 @@ class Milestone < ApplicationRecord
   include IidRoutes
   include UpdatedAtFilterable
   include EachBatch
+  include Spammable
 
   prepend_mod_with('Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
@@ -61,6 +62,9 @@ class Milestone < ApplicationRecord
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validate :parent_type_check
   validate :uniqueness_of_title, if: :title_changed?
+
+  attr_spammable :title, spam_title: true
+  attr_spammable :description, spam_description: true
 
   state_machine :state, initial: :active do
     event :close do
@@ -253,6 +257,10 @@ class Milestone < ApplicationRecord
     else
       reference
     end
+  end
+
+  def check_for_spam?(*)
+    spammable_attribute_changed? && parent.public?
   end
 
   private

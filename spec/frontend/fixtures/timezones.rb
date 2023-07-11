@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe TimeZoneHelper, '(JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
-  include TimeZoneHelper
+  include described_class
 
   let(:response) { @timezones.sort_by! { |tz| tz[:name] }.to_json }
 

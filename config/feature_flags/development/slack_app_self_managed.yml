@@ -1,0 +1,8 @@
+---
+name: slack_app_self_managed
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124823
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416448
+milestone: '16.2'
+type: development
+group: group::import and integrate
+default_enabled: false

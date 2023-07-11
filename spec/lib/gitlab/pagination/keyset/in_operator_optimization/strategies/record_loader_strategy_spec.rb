@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::RecordLoaderStrategy do
-  let(:finder_query) { -> (created_at_value, id_value) { Project.where(Project.arel_table[:id].eq(id_value)) } }
+  let(:finder_query) { -> (created_at_value, id_value) { model.where(model.arel_table[:id].eq(id_value)) } }
   let(:model) { Project }
 
   let(:keyset_scope) do
     scope, _ = Gitlab::Pagination::Keyset::SimpleOrderBuilder.build(
-      Project.order(:created_at, :id)
+      model.order(:created_at, :id)
     )
 
     scope
@@ -20,6 +20,16 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
 
   let(:order_by_columns) do
     Gitlab::Pagination::Keyset::InOperatorOptimization::OrderByColumns.new(keyset_order.column_definitions, model.arel_table)
+  end
+
+  let_it_be(:ignored_column_model) do
+    Class.new(ApplicationRecord) do
+      self.table_name = 'projects'
+
+      include IgnorableColumns
+
+      ignore_column :name, remove_with: '16.4', remove_after: '2023-08-22'
+    end
   end
 
   subject(:strategy) { described_class.new(finder_query, model, order_by_columns) }
@@ -55,6 +65,34 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
       SQL
 
       expect(strategy.columns).to eq([expected_loader_query.chomp])
+    end
+  end
+
+  describe '#final_projections' do
+    context 'when model does not have ignored columns' do
+      it 'does not specify the selected column names' do
+        expect(strategy.final_projections).to contain_exactly("(#{described_class::RECORDS_COLUMN}).*")
+      end
+    end
+
+    context 'when model has ignored columns' do
+      let(:model) { ignored_column_model }
+
+      it 'specifies the selected column names' do
+        expect(strategy.final_projections).to match_array(
+          model.default_select_columns.map { |column| "(#{described_class::RECORDS_COLUMN}).#{column.name}" }
+        )
+      end
+
+      context 'when the key_set_optimizer_ignored_columns feature flag is disabled' do
+        before do
+          stub_feature_flags(key_set_optimizer_ignored_columns: false)
+        end
+
+        it 'does not specify the selected column names' do
+          expect(strategy.final_projections).to contain_exactly("(#{described_class::RECORDS_COLUMN}).*")
+        end
+      end
     end
   end
 end

@@ -246,7 +246,12 @@ module Gitlab
           scopes = where_values.map do |where_value|
             scope.dup.where(where_value).reorder(self) # rubocop: disable CodeReuse/ActiveRecord
           end
-          scope.model.from_union(scopes, remove_duplicates: false, remove_order: false)
+
+          if Feature.enabled?(:key_set_optimizer_ignored_columns)
+            scope.model.select(scope.select_values).from_union(scopes, remove_duplicates: false, remove_order: false)
+          else
+            scope.model.from_union(scopes, remove_duplicates: false, remove_order: false)
+          end
         end
 
         def to_sql_literal(column_definitions)

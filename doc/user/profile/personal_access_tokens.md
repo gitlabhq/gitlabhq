@@ -48,7 +48,7 @@ Use impersonation tokens to automate authentication as a specific user.
 
 You can create as many personal access tokens as you like.
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. Enter a name and expiry date for the token.
@@ -79,7 +79,7 @@ for guidance on managing personal access tokens (for example, setting a short ex
 
 At any time, you can revoke a personal access token.
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, select **Revoke**.
@@ -96,7 +96,7 @@ Token usage information is updated every 10 minutes. GitLab considers a token us
 
 To view the last time a token was used:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. In the **Active personal access tokens** area, next to the key, view the **Last Used** date.

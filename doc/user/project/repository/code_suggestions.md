@@ -79,7 +79,7 @@ Each individual user must also choose to enable Code Suggestions.
 Each user can enable Code Suggestions for themselves:
 
 1. On the left sidebar, select your avatar.
-1. On the left sidebar, select **Preferences**.
+1. Select **Preferences**.
 1. In the **Code Suggestions** section, select the **Enable Code Suggestions** checkbox.
 1. Select **Save changes**.
 

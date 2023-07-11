@@ -12,7 +12,7 @@ of GitLab to their liking.
 
 To navigate to your profile's preferences:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 
 ## Navigation theme

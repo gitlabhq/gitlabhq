@@ -7,8 +7,6 @@ export const STATUS_SUCCESS = 'success';
 export const STATUS_NEUTRAL = 'neutral';
 export const STATUS_NOT_FOUND = 'not_found';
 
-export const ICON_WARNING = 'warning';
-
 export const status = {
   LOADING,
   ERROR,

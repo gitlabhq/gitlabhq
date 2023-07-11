@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "display_information": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 35
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 140
+        },
+        "background_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-F]{6}$"
+        },
+        "long_description": {
+          "type": "string",
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "features": {
+      "type": "object",
+      "properties": {
+        "app_home": {
+          "type": "object",
+          "properties": {
+            "home_tab_enabled": {
+              "type": "boolean"
+            },
+            "messages_tab_enabled": {
+              "type": "boolean"
+            },
+            "messages_tab_read_only_enabled": {
+              "type": "boolean"
+            }
+          }
+        },
+        "bot_user": {
+          "type": "object",
+          "properties": {
+            "display_name": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "always_online": {
+              "type": "boolean"
+            }
+          }
+        },
+        "slash_commands": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "command": {
+                  "type": "string",
+                  "maxLength": 32
+                },
+                "url": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "usage_hint": {
+                  "type": "string",
+                  "maxLength": 1000
+                },
+                "should_escape": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "command",
+                "description"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "oauth_config": {
+      "type": "object",
+      "properties": {
+        "redirect_urls": {
+          "type": "array",
+          "maxContains": 1000,
+          "items": [
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "scopes": {
+          "type": "object",
+          "properties": {
+            "bot": {
+              "type": "array",
+              "maxContains": 255
+            }
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "event_subscriptions": {
+          "type": "object",
+          "properties": {
+            "request_url": {
+              "type": "string"
+            },
+            "bot_events": {
+              "type": "array",
+              "maxContains": 100,
+              "items": [
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "interactivity": {
+          "type": "object",
+          "properties": {
+            "is_enabled": {
+              "type": "boolean"
+            },
+            "request_url": {
+              "type": "string"
+            },
+            "message_menu_options_url": {
+              "type": "string"
+            }
+          }
+        },
+        "org_deploy_enabled": {
+          "type": "boolean"
+        },
+        "socket_mode_enabled": {
+          "type": "boolean"
+        },
+        "token_rotation_enabled": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "required": [
+    "display_information"
+  ]
+}

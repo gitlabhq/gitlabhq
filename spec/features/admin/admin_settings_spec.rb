@@ -8,11 +8,9 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
   include UsageDataHelpers
 
   let_it_be(:admin) { create(:admin) }
-  let(:dot_com?) { false }
 
   context 'application setting :admin_mode is enabled', :request_store do
     before do
-      allow(Gitlab).to receive(:com?).and_return(dot_com?)
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
       sign_in(admin)
       gitlab_enable_admin_mode_sign_in(admin)
@@ -147,9 +145,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       context 'Dormant users', feature_category: :user_management do
-        context 'when Gitlab.com' do
-          let(:dot_com?) { true }
-
+        context 'when Gitlab.com', :saas do
           it 'does not expose the setting section' do
             # NOTE: not_to have_content may have false positives for content
             #       that might not load instantly, so before checking that
@@ -163,8 +159,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
 
         context 'when not Gitlab.com' do
-          let(:dot_com?) { false }
-
           it 'exposes the setting section' do
             expect(page).to have_content('Dormant users')
             expect(page).to have_field('Deactivate dormant users after a period of inactivity')
@@ -366,9 +360,46 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       context 'GitLab for Slack app settings', feature_category: :integrations do
+        let(:create_heading) { 'Create your GitLab for Slack app' }
+        let(:configure_heading) { 'Configure the app settings' }
+        let(:update_heading) { 'Update your Slack app' }
+
+        it 'has all sections' do
+          page.within('.as-slack') do
+            expect(page).to have_content(create_heading)
+            expect(page).to have_content(configure_heading)
+            expect(page).to have_content(update_heading)
+          end
+        end
+
+        context 'when GitLab.com', :saas do
+          it 'only has the configure section' do
+            page.within('.as-slack') do
+              expect(page).to have_content(configure_heading)
+
+              expect(page).not_to have_content(create_heading)
+              expect(page).not_to have_content(update_heading)
+            end
+          end
+        end
+
+        context 'when the `slack_app_self_managed` flag is disabled' do
+          before do
+            stub_feature_flags(slack_app_self_managed: false)
+            visit general_admin_application_settings_path
+          end
+
+          it 'does not display any sections' do
+            expect(page).not_to have_selector('.as-slack')
+            expect(page).not_to have_content(configure_heading)
+            expect(page).not_to have_content(create_heading)
+            expect(page).not_to have_content(update_heading)
+          end
+        end
+
         it 'changes the settings' do
           page.within('.as-slack') do
-            check 'Enable Slack application'
+            check 'Enable GitLab for Slack app'
             fill_in 'Client ID', with: 'slack_app_id'
             fill_in 'Client secret', with: 'slack_app_secret'
             fill_in 'Signing secret', with: 'slack_app_signing_secret'

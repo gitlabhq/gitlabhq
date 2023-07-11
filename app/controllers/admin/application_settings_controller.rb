@@ -30,7 +30,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   feature_category :continuous_integration, [:ci_cd, :reset_registration_token]
   urgency :low, [:ci_cd, :reset_registration_token]
   feature_category :service_ping, [:usage_data, :service_usage_data]
-  feature_category :integrations, [:integrations]
+  feature_category :integrations, [:integrations, :slack_app_manifest_share, :slack_app_manifest_download]
   feature_category :pages, [:lets_encrypt_terms_of_service]
   feature_category :error_tracking, [:reset_error_tracking_access_token]
 
@@ -112,6 +112,14 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   # Because of that we use separate controller action
   def lets_encrypt_terms_of_service
     redirect_to ::Gitlab::LetsEncrypt.terms_of_service_url
+  end
+
+  def slack_app_manifest_share
+    redirect_to Slack::Manifest.share_url
+  end
+
+  def slack_app_manifest_download
+    send_data Slack::Manifest.to_json, type: :json, disposition: 'attachment', filename: 'slack_manifest.json'
   end
 
   private

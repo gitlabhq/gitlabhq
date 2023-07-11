@@ -190,7 +190,7 @@ module Emails
         to: @recipient.notification_email_for(@project.group),
         subject: subject("#{@issue.title} (##{@issue.iid})"),
         'X-GitLab-NotificationReason' => reason,
-        'X-GitLab-ConfidentialIssue' => confidentiality
+        'X-GitLab-ConfidentialIssue' => confidentiality.to_s
       }
     end
   end

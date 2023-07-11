@@ -155,7 +155,8 @@ namespace :admin do
     put :clear_repository_check_states
     match :general, :integrations, :repository, :ci_cd, :reporting, :metrics_and_profiling, :network, :preferences, via: [:get, :patch]
     get :lets_encrypt_terms_of_service
-
+    get :slack_app_manifest_download, format: :json
+    get :slack_app_manifest_share
     get :service_usage_data
 
     resource :appearances, only: [:show, :create, :update], path: 'appearance', module: 'application_settings' do

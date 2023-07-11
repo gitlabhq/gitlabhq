@@ -645,6 +645,16 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
     let_it_be(:user_2) { create(:user, created_at: five_months_ago) }
     let_it_be(:user_3) { create(:user, created_at: 1.month.ago) }
     let_it_be(:user_4) { create(:user, created_at: 2.months.ago) }
+    let_it_be(:ignored_column_model) do
+      Class.new(ApplicationRecord) do
+        self.table_name = 'users'
+
+        include IgnorableColumns
+        include FromUnion
+
+        ignore_column :username, remove_with: '16.4', remove_after: '2023-08-22'
+      end
+    end
 
     let(:expected_results) { [user_3, user_4, user_2, user_1] }
     let(:scope) { User.order(created_at: :desc, id: :desc) }
@@ -670,6 +680,36 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
     context 'when UNION optimization is on' do
       before do
         iterator_options[:use_union_optimization] = true
+      end
+
+      context 'when the scope model has ignored columns' do
+        let(:ignored_expected_results) { expected_results.map { |r| r.becomes(ignored_column_model) } } # rubocop:disable Cop/AvoidBecomes
+
+        context 'when scope selects all columns' do
+          let(:scope) { ignored_column_model.order(created_at: :desc, id: :desc) }
+
+          it 'returns items in the correct order' do
+            expect(items).to eq(ignored_expected_results)
+          end
+        end
+
+        context 'when scope selects only specific columns' do
+          let(:scope) { ignored_column_model.order(created_at: :desc, id: :desc).select(:id, :created_at) }
+
+          it 'returns items in the correct order' do
+            expect(items).to eq(ignored_expected_results)
+          end
+        end
+      end
+
+      context 'when key_set_optimizer_ignored_columns feature flag is disabled' do
+        before do
+          stub_feature_flags(key_set_optimizer_ignored_columns: false)
+        end
+
+        it 'returns items in the correct order' do
+          expect(items).to eq(expected_results)
+        end
       end
 
       it 'returns items in the correct order' do

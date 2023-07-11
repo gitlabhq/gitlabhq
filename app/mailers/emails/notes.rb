@@ -15,7 +15,14 @@ module Emails
 
       @issue = @note.noteable
       @target_url = project_issue_url(*note_target_url_options)
-      mail_answer_note_thread(@issue, @note, note_thread_options(reason))
+      mail_answer_note_thread(
+        @issue,
+        @note,
+        note_thread_options(
+          reason,
+          confidentiality: @issue.confidential?
+        )
+      )
     end
 
     def note_merge_request_email(recipient_id, note_id, reason = nil)
@@ -62,13 +69,15 @@ module Emails
       { anchor: "note_#{@note.id}" }
     end
 
-    def note_thread_options(reason)
+    def note_thread_options(reason, confidentiality: nil)
       {
         from: sender(@note.author_id),
         to: @recipient.notification_email_for(@project&.group || @group),
         subject: subject("#{@note.noteable.title} (#{@note.noteable.reference_link_text})"),
         'X-GitLab-NotificationReason' => reason
-      }
+      }.tap do |options|
+        options['X-GitLab-ConfidentialIssue'] = confidentiality.to_s unless confidentiality.nil?
+      end
     end
 
     def setup_note_mail(note_id, recipient_id)

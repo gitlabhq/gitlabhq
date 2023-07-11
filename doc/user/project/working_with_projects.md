@@ -9,40 +9,46 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
 
-## View projects
+## View all projects for the instance
 
-To view all your projects:
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
-
-To browse all projects you can access:
+To view all projects for the GitLab instance:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Explore**.
 
-### Who can view the Projects page
+On the left sidebar, **Projects** is selected. On the right, the list shows
+all projects for the instance.
 
-When you select a project, the project landing page shows the project contents.
+If you are not authenticated, then the list shows public projects only.
 
-For public projects, and members of internal and private projects
-with [permissions to view the project's code](../permissions.md#project-members-permissions),
-the project landing page shows:
+## View projects you are a member of
 
-- A [`README` or index file](repository/index.md#readme-and-index-files).
-- A list of directories in the project's repository.
+To view projects you are a member of:
 
-For users without permission to view the project's code, the landing page shows:
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
 
-- The wiki homepage.
-- The list of issues in the project.
+On the left sidebar, **Projects** is selected. On the list, on the **Yours** tab,
+all the projects you are a member of are displayed.
 
-### Access a project page with the project ID
+## View personal projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
+Personal projects are projects created under your personal namespace.
 
-To access a project from the GitLab UI using the project ID,
-visit the `/projects/:id` URL in your browser or other tool accessing the project.
+For example, if you create an account with the username `alex`, and create a project
+called `my-project` under your username, the project is created at `https://gitlab.example.com/alex/my-project`.
+
+To view your personal projects:
+
+1. On the left sidebar, select your avatar and then your username.
+1. On the left sidebar, select **Personal projects**.
+
+## View starred projects
+
+To view projects you have [starred](#star-a-project):
+
+1. On the left sidebar, select your avatar and then your username.
+1. On the left sidebar, select **Starred projects**.
 
 ## Organizing projects with topics
 
@@ -128,32 +134,6 @@ To add a star to a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. In the upper-right corner of the page, select **Star**.
-
-## View starred projects
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
-1. Select the **Starred** tab.
-1. GitLab displays information about your starred projects, including:
-
-   - Project description, including name, description, and icon.
-   - Number of times this project has been starred.
-   - Number of times this project has been forked.
-   - Number of open merge requests.
-   - Number of open issues.
-
-## View personal projects
-
-Personal projects are projects created under your personal namespace.
-
-For example, if you create an account with the username `alex`, and create a project
-called `my-project` under your username, the project is created at `https://gitlab.example.com/alex/my-project`.
-
-To view your personal projects:
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
-1. In the **Yours** tab, select **Personal**.
 
 ## Delete a project
 
@@ -247,6 +227,29 @@ Prerequisite:
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggle by each feature you want to turn on or off, or change access for.
 1. Select **Save changes**.
+
+## Access the Project overview page by using the project ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
+
+To access a project from the GitLab UI by using the project ID,
+put the `/projects/:id` URL in your browser or other tool you use to access the project.
+
+## Who can view the Project overview page
+
+When you select a project, the **Project overview** page shows the project contents.
+
+For public projects, and members of internal and private projects
+with [permissions to view the project's code](../permissions.md#project-members-permissions),
+the project landing page shows:
+
+- A [`README` or index file](repository/index.md#readme-and-index-files).
+- A list of directories in the project's repository.
+
+For users without permission to view the project's code, the landing page shows:
+
+- The wiki homepage.
+- The list of issues in the project.
 
 ## Leave a project
 

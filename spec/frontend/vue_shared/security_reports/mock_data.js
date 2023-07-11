@@ -341,120 +341,6 @@ export const securityReportMergeRequestDownloadPathsQueryNoArtifactsResponse = {
   },
 };
 
-export const securityReportMergeRequestDownloadPathsQueryResponse = {
-  project: {
-    id: '1',
-    mergeRequest: {
-      id: 'mr-1',
-      headPipeline: {
-        id: 'gid://gitlab/Ci::Pipeline/176',
-        jobs: {
-          nodes: [
-            {
-              id: 'job-1',
-              name: 'secret_detection',
-              artifacts: {
-                nodes: [
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=trace',
-                    fileType: 'TRACE',
-                    __typename: 'CiJobArtifact',
-                  },
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1399/artifacts/download?file_type=secret_detection',
-                    fileType: 'SECRET_DETECTION',
-                    __typename: 'CiJobArtifact',
-                  },
-                ],
-                __typename: 'CiJobArtifactConnection',
-              },
-              __typename: 'CiJob',
-            },
-            {
-              id: 'job-2',
-              name: 'bandit-sast',
-              artifacts: {
-                nodes: [
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=trace',
-                    fileType: 'TRACE',
-                    __typename: 'CiJobArtifact',
-                  },
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1400/artifacts/download?file_type=sast',
-                    fileType: 'SAST',
-                    __typename: 'CiJobArtifact',
-                  },
-                ],
-                __typename: 'CiJobArtifactConnection',
-              },
-              __typename: 'CiJob',
-            },
-            {
-              id: 'job-3',
-              name: 'eslint-sast',
-              artifacts: {
-                nodes: [
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=trace',
-                    fileType: 'TRACE',
-                    __typename: 'CiJobArtifact',
-                  },
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1401/artifacts/download?file_type=sast',
-                    fileType: 'SAST',
-                    __typename: 'CiJobArtifact',
-                  },
-                ],
-                __typename: 'CiJobArtifactConnection',
-              },
-              __typename: 'CiJob',
-            },
-            {
-              id: 'job-4',
-              name: 'all_artifacts',
-              artifacts: {
-                nodes: [
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=archive',
-                    fileType: 'ARCHIVE',
-                    __typename: 'CiJobArtifact',
-                  },
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=trace',
-                    fileType: 'TRACE',
-                    __typename: 'CiJobArtifact',
-                  },
-                  {
-                    downloadPath:
-                      '/gitlab-org/secrets-detection-test/-/jobs/1402/artifacts/download?file_type=metadata',
-                    fileType: 'METADATA',
-                    __typename: 'CiJobArtifact',
-                  },
-                ],
-                __typename: 'CiJobArtifactConnection',
-              },
-              __typename: 'CiJob',
-            },
-          ],
-          __typename: 'CiJobConnection',
-        },
-        __typename: 'Pipeline',
-      },
-      __typename: 'MergeRequest',
-    },
-    __typename: 'Project',
-  },
-};
-
 export const securityReportPipelineDownloadPathsQueryResponse = {
   project: {
     id: 'project-1',
@@ -566,9 +452,6 @@ export const securityReportPipelineDownloadPathsQueryResponse = {
   __typename: 'Project',
 };
 
-/**
- * These correspond to SAST jobs in the securityReportMergeRequestDownloadPathsQueryResponse above.
- */
 export const sastArtifacts = [
   {
     name: 'bandit-sast',
@@ -582,9 +465,6 @@ export const sastArtifacts = [
   },
 ];
 
-/**
- * These correspond to Secret Detection jobs in the securityReportMergeRequestDownloadPathsQueryResponse above.
- */
 export const secretDetectionArtifacts = [
   {
     name: 'secret_detection',
@@ -594,13 +474,6 @@ export const secretDetectionArtifacts = [
   },
 ];
 
-export const expectedDownloadDropdownPropsWithTitle = {
-  loading: false,
-  artifacts: [...secretDetectionArtifacts, ...sastArtifacts],
-  text: '',
-  title: 'Download results',
-};
-
 export const expectedDownloadDropdownPropsWithText = {
   loading: false,
   artifacts: [...secretDetectionArtifacts, ...sastArtifacts],
@@ -608,9 +481,6 @@ export const expectedDownloadDropdownPropsWithText = {
   text: 'Download results',
 };
 
-/**
- * These correspond to any jobs with zip archives in the securityReportMergeRequestDownloadPathsQueryResponse above.
- */
 export const archiveArtifacts = [
   {
     name: 'all_artifacts Archive',
@@ -619,9 +489,6 @@ export const archiveArtifacts = [
   },
 ];
 
-/**
- * These correspond to any jobs with trace data in the securityReportMergeRequestDownloadPathsQueryResponse above.
- */
 export const traceArtifacts = [
   {
     name: 'secret_detection Trace',
@@ -645,9 +512,6 @@ export const traceArtifacts = [
   },
 ];
 
-/**
- * These correspond to any jobs with metadata data in the securityReportMergeRequestDownloadPathsQueryResponse above.
- */
 export const metadataArtifacts = [
   {
     name: 'all_artifacts Metadata',

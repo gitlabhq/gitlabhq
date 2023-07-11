@@ -240,9 +240,9 @@ To [Create a new group](../group/index.md#create-a-group) select **New group**.
 
 [Topics](../project/working_with_projects.md#explore-topics) are used to categorize and find similar projects.
 
-You can administer all topics in the GitLab instance from the Admin Area's Topics page.
+### View all topics
 
-To access the Topics page:
+To view all topics in the GitLab instance:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -250,21 +250,70 @@ To access the Topics page:
 
 For each topic, the page displays its name and the number of projects labeled with the topic.
 
-To create a new topic, select **New topic**.
+### Search for topics
 
-To edit a topic, select **Edit** in that topic's row.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Overview > Topics**.
+1. In the search box, enter your search criteria.
+   The topic search is case-insensitive and applies partial matching.
 
-To remove a topic, select **Remove** in that topic's row.
+### Create a topic
 
-To remove a topic and move all assigned projects to another topic, select **Merge topics**.
+To create a topic:
 
-To search for topics by name, enter your criteria in the search box. The topic search is case
-insensitive and applies partial matching.
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Overview > Topics**.
+1. Select **New topic**.
+1. Enter the **Topic slug (name)** and **Topic title**.
+1. Optional. Enter a **Description** and add a **Topic avatar**.
+1. Select **Save changes**.
+
+The created topics are displayed on the **Explore topics** page.
 
 NOTE:
 The assigned topics are visible only to everyone with access to the project,
 but everyone can see which topics exist on the GitLab instance.
 Do not include sensitive information in the name of a topic.
+
+### Edit a topic
+
+You can edit a topic's name, title, description, and avatar at any time.
+To edit a topic:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Overview > Topics**.
+1. Select **Edit** in that topic's row.
+1. Edit the topic slug (name), title, description, or avatar.
+1. Select **Save changes**.
+
+### Remove a topic
+
+If you no longer need a topic, you can permanently remove it.
+To remove a topic:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Overview > Topics**.
+1. To remove a topic, select **Remove** in that topic's row.
+
+### Merge topics
+
+You can move all projects assigned to a topic to another topic.
+The source topic is then permanently deleted.
+After a merged topic is deleted, you cannot restore it.
+
+To merge topics:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Overview > Topics**.
+1. Select **Merge topics**.
+1. From the **Source topic** dropdown list, select the topic you want to merge and remove.
+1. From the **Target topic** dropdown list, select the topic you want to merge the source topic into.
+1. Select **Merge**.
 
 ## Administering Gitaly servers
 

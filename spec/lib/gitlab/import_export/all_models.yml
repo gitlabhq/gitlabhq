@@ -143,6 +143,7 @@ milestone:
 - boards
 - milestone_releases
 - releases
+- user_agent_detail
 snippets:
 - author
 - project

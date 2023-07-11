@@ -105,12 +105,12 @@ RSpec.describe Types::GlobalIDType do
       around do |example|
         # Unset all previously memoized GlobalIDTypes to allow us to define one
         # that will use the constants stubbed in the `before` block.
-        previous_id_types = Types::GlobalIDType.instance_variable_get(:@id_types)
-        Types::GlobalIDType.instance_variable_set(:@id_types, {})
+        previous_id_types = described_class.instance_variable_get(:@id_types)
+        described_class.instance_variable_set(:@id_types, {})
 
         example.run
       ensure
-        Types::GlobalIDType.instance_variable_set(:@id_types, previous_id_types)
+        described_class.instance_variable_set(:@id_types, previous_id_types)
       end
 
       before do

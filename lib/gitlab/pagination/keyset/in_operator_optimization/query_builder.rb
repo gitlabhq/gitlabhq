@@ -67,7 +67,11 @@ module Gitlab
               .select(finder_strategy.final_projections)
               .where("count <> 0") # filter out the initializer row
 
-            model.from(q.arel.as(table_name))
+            if Feature.enabled?(:key_set_optimizer_ignored_columns)
+              model.select(Arel.star).from(q.arel.as(table_name))
+            else
+              model.from(q.arel.as(table_name))
+            end
           end
 
           private

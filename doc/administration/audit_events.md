@@ -119,7 +119,7 @@ The first row contains the headers, which are listed in the following table alon
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
-1. Select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile > Authentication log**.
 
 After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.

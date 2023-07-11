@@ -250,7 +250,7 @@ Your primary email is used by default.
 
 To change your commit email:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Commit email** dropdown list, select an email address.
 1. Select **Update profile settings**.
@@ -261,7 +261,7 @@ Your primary email is the default email address for your login, commit email, an
 
 To change your primary email:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Email** field, enter your new email address.
 1. Select **Update profile settings**.
@@ -271,7 +271,7 @@ To change your primary email:
 
 You can select one of your [configured email addresses](#add-emails-to-your-user-profile) to be displayed on your public profile:
 
-1. In the upper-right corner, select your avatar.
+1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. In the **Public email** field, select one of the available email addresses.
 1. Select **Update profile settings**.

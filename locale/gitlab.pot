@@ -114,11 +114,6 @@ msgid_plural "%d Modules"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d Other"
-msgid_plural "%d Others"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d Package"
 msgid_plural "%d Packages"
 msgstr[0] ""
@@ -672,9 +667,6 @@ msgstr ""
 msgid "%{count} total weight"
 msgstr ""
 
-msgid "%{criticalStart}%{critical} Critical%{criticalEnd} %{highStart}%{high} High%{highEnd} and %{otherStart}%{otherMessage}%{otherEnd}"
-msgstr ""
-
 msgid "%{dashboard_path} could not be found."
 msgstr ""
 
@@ -1034,15 +1026,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{remaining_approvals} left"
-msgstr ""
-
-msgid "%{reportType} %{status}"
-msgstr ""
-
-msgid "%{reportType} detected %{totalStart}%{total}%{totalEnd} potential %{vulnMessage}"
-msgstr ""
-
-msgid "%{reportType} detected no new vulnerabilities."
 msgstr ""
 
 msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from:"
@@ -5608,7 +5591,7 @@ msgstr ""
 msgid "ApplicationSettings|Email restrictions for sign-ups"
 msgstr ""
 
-msgid "ApplicationSettings|Enable Slack application"
+msgid "ApplicationSettings|Enable GitLab for Slack app"
 msgstr ""
 
 msgid "ApplicationSettings|Enable domain denylist for sign-ups"
@@ -5675,9 +5658,6 @@ msgid "ApplicationSettings|Text shown after a user signs up. Markdown enabled."
 msgstr ""
 
 msgid "ApplicationSettings|This feature is only available on GitLab.com"
-msgstr ""
-
-msgid "ApplicationSettings|This option is only available on GitLab.com"
 msgstr ""
 
 msgid "ApplicationSettings|Upload denylist file"
@@ -13205,6 +13185,9 @@ msgid "Create or edit diagram"
 msgstr ""
 
 msgid "Create or import your first project"
+msgstr ""
+
+msgid "Create phone verification exemption"
 msgstr ""
 
 msgid "Create project"
@@ -33143,6 +33126,15 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
+msgid "Phone verification exemption"
+msgstr ""
+
+msgid "Phone verification exemption has been created."
+msgstr ""
+
+msgid "Phone verification exemption has been removed."
+msgstr ""
+
 msgid "PhoneVerification|Enter a valid code."
 msgstr ""
 
@@ -38245,6 +38237,9 @@ msgstr ""
 msgid "Remove parent epic from an epic"
 msgstr ""
 
+msgid "Remove phone verification exemption"
+msgstr ""
+
 msgid "Remove priority"
 msgstr ""
 
@@ -40984,12 +40979,6 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
-msgid "Security report is out of date. Please update your branch with the latest changes from the target branch (%{targetBranchName})"
-msgstr ""
-
-msgid "Security report is out of date. Run %{newPipelineLinkStart}a new pipeline%{newPipelineLinkEnd} for the target branch (%{targetBranchName})"
-msgstr ""
-
 msgid "SecurityApprovals|A merge request approval is required when test coverage declines."
 msgstr ""
 
@@ -41823,9 +41812,6 @@ msgstr ""
 msgid "SecurityReports|More info"
 msgstr ""
 
-msgid "SecurityReports|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch."
-msgstr ""
-
 msgid "SecurityReports|No longer detected"
 msgstr ""
 
@@ -41878,12 +41864,6 @@ msgid "SecurityReports|Security dashboard"
 msgstr ""
 
 msgid "SecurityReports|Security reports can only be accessed by authorized users."
-msgstr ""
-
-msgid "SecurityReports|Security reports help page link"
-msgstr ""
-
-msgid "SecurityReports|Security scan results"
 msgstr ""
 
 msgid "SecurityReports|Security scans have run"
@@ -41983,12 +41963,6 @@ msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
 msgstr ""
 
 msgid "SecurityReports|Undo dismiss"
-msgstr ""
-
-msgid "SecurityReports|Upgrade to interact, track and shift left with vulnerability management features in the UI."
-msgstr ""
-
-msgid "SecurityReports|Upgrade to manage vulnerabilities"
 msgstr ""
 
 msgid "SecurityReports|Vulnerability report"
@@ -43162,12 +43136,6 @@ msgstr ""
 msgid "Skype:"
 msgstr ""
 
-msgid "Slack application"
-msgstr ""
-
-msgid "Slack integration allows you to interact with GitLab via slash commands in a chat window."
-msgstr ""
-
 msgid "Slack logo"
 msgstr ""
 
@@ -43180,6 +43148,12 @@ msgstr ""
 msgid "Slack notifications will be deprecated"
 msgstr ""
 
+msgid "SlackIntegration|- *Notifications:* Get notifications to your team's Slack channel about events happening inside your GitLab projects."
+msgstr ""
+
+msgid "SlackIntegration|- *Slash commands:* Quickly open, access, or close issues from Slack using the `%{slash_command}` command. Streamline your GitLab deployments with ChatOps."
+msgstr ""
+
 msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
 msgstr ""
 
@@ -43189,7 +43163,22 @@ msgstr ""
 msgid "SlackIntegration|Client secret"
 msgstr ""
 
+msgid "SlackIntegration|Configure your GitLab for Slack app."
+msgstr ""
+
+msgid "SlackIntegration|Copy the %{link_start}settings%{link_end} from %{strong_open}%{settings_heading}%{strong_close} in your GitLab for Slack app."
+msgstr ""
+
+msgid "SlackIntegration|Create Slack app"
+msgstr ""
+
 msgid "SlackIntegration|Create and read issue data and comments."
+msgstr ""
+
+msgid "SlackIntegration|Download latest manifest file"
+msgstr ""
+
+msgid "SlackIntegration|Generated for %{host} by GitLab %{version}."
 msgstr ""
 
 msgid "SlackIntegration|GitLab for Slack"
@@ -43198,7 +43187,13 @@ msgstr ""
 msgid "SlackIntegration|GitLab for Slack was successfully installed."
 msgstr ""
 
+msgid "SlackIntegration|GitLab slash commands"
+msgstr ""
+
 msgid "SlackIntegration|Install GitLab for Slack app"
+msgstr ""
+
+msgid "SlackIntegration|Interact with GitLab without leaving your Slack workspace!"
 msgstr ""
 
 msgid "SlackIntegration|Perform deployments."
@@ -43228,6 +43223,12 @@ msgstr ""
 msgid "SlackIntegration|Signing secret"
 msgstr ""
 
+msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
+msgstr ""
+
+msgid "SlackIntegration|Step 2: Configure the app settings"
+msgstr ""
+
 msgid "SlackIntegration|Team name"
 msgstr ""
 
@@ -43243,7 +43244,22 @@ msgstr ""
 msgid "SlackIntegration|Update to the latest version to receive notifications from GitLab."
 msgstr ""
 
+msgid "SlackIntegration|Update your Slack app"
+msgstr ""
+
+msgid "SlackIntegration|Used for authenticating API requests from the GitLab for Slack app."
+msgstr ""
+
+msgid "SlackIntegration|Used for authenticating OAuth requests from the GitLab for Slack app."
+msgstr ""
+
+msgid "SlackIntegration|Used only for authenticating slash commands from the GitLab for Slack app. This method of authentication is deprecated by Slack."
+msgstr ""
+
 msgid "SlackIntegration|Verification token"
+msgstr ""
+
+msgid "SlackIntegration|When GitLab releases new features for the GitLab for Slack app, you might have to manually update your copy to use the new features."
 msgstr ""
 
 msgid "SlackIntegration|You can now close this window and go to your Slack workspace."
@@ -43255,7 +43271,13 @@ msgstr ""
 msgid "SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}."
 msgstr ""
 
+msgid "SlackIntegration|You must do this step only once."
+msgstr ""
+
 msgid "SlackIntegration|cannot have more than %{limit} channels"
+msgstr ""
+
+msgid "SlackIntegration|your-project-name-or-alias command"
 msgstr ""
 
 msgid "SlackModal|Are you sure you want to change the project?"
@@ -43631,6 +43653,12 @@ msgid "Something went wrong. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Try again later."
+msgstr ""
+
+msgid "Something went wrong. Unable to create phone exemption."
+msgstr ""
+
+msgid "Something went wrong. Unable to remove phone exemption."
 msgstr ""
 
 msgid "Sorry, no projects matched your search"
@@ -47335,6 +47363,9 @@ msgstr ""
 msgid "This user has the %{access} role in the %{name} project."
 msgstr ""
 
+msgid "This user is currently exempt from phone verification. Remove the exemption using the button below."
+msgstr ""
+
 msgid "This user is the author of this %{noteable}."
 msgstr ""
 
@@ -47885,6 +47916,9 @@ msgid "To remove the %{link_start}read-only%{link_end} state and regain write ac
 msgstr ""
 
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users. To minimize the impact to operations, for a limited time, GitLab is offering a %{promotion_link_start}one-time 70 percent discount%{link_end} off the list price at time of purchase for a new, one year subscription of GitLab Premium SaaS to %{offer_availability_link_start}qualifying top-level groups%{link_end}. The offer is valid until %{offer_date}."
+msgstr ""
+
+msgid "To replace phone verification with credit card verification, create a phone verification exemption using the button below."
 msgstr ""
 
 msgid "To resolve this, try to:"
@@ -53708,27 +53742,6 @@ msgstr ""
 msgid "ciReport|%{improvedNum} improved"
 msgstr ""
 
-msgid "ciReport|%{linkStartTag}Learn more about API Fuzzing%{linkEndTag}"
-msgstr ""
-
-msgid "ciReport|%{linkStartTag}Learn more about Container Scanning %{linkEndTag}"
-msgstr ""
-
-msgid "ciReport|%{linkStartTag}Learn more about Coverage Fuzzing %{linkEndTag}"
-msgstr ""
-
-msgid "ciReport|%{linkStartTag}Learn more about DAST %{linkEndTag}"
-msgstr ""
-
-msgid "ciReport|%{linkStartTag}Learn more about Dependency Scanning %{linkEndTag}"
-msgstr ""
-
-msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
-msgstr ""
-
-msgid "ciReport|%{linkStartTag}Learn more about Secret Detection %{linkEndTag}"
-msgstr ""
-
 msgid "ciReport|%{linkStartTag}Learn more about codequality reports %{linkEndTag}"
 msgstr ""
 
@@ -53736,12 +53749,6 @@ msgid "ciReport|%{prefix} %{strong_start}%{score}%{strong_end} %{delta} %{deltaP
 msgstr ""
 
 msgid "ciReport|%{remainingPackagesCount} more"
-msgstr ""
-
-msgid "ciReport|%{reportType} is loading"
-msgstr ""
-
-msgid "ciReport|%{reportType}: Loading resulted in an error"
 msgstr ""
 
 msgid "ciReport|%{sameNum} same"
@@ -53760,9 +53767,6 @@ msgid "ciReport|%{scanner} detected no new potential vulnerabilities"
 msgstr ""
 
 msgid "ciReport|%{scanner}: Loading resulted in an error"
-msgstr ""
-
-msgid "ciReport|: Loading resulted in an error"
 msgstr ""
 
 msgid "ciReport|API Fuzzing"
@@ -53834,16 +53838,10 @@ msgstr ""
 msgid "ciReport|Container Scanning"
 msgstr ""
 
-msgid "ciReport|Container Scanning detects known vulnerabilities in your container images."
-msgstr ""
-
 msgid "ciReport|Container scanning"
 msgstr ""
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
-msgstr ""
-
-msgid "ciReport|Could not dismiss vulnerability because the associated pipeline no longer exists. Refresh the page and try again."
 msgstr ""
 
 msgid "ciReport|Coverage Fuzzing"
@@ -53865,9 +53863,6 @@ msgid "ciReport|DAST"
 msgstr ""
 
 msgid "ciReport|Dependency Scanning"
-msgstr ""
-
-msgid "ciReport|Dependency Scanning detects known vulnerabilities in your project's dependencies."
 msgstr ""
 
 msgid "ciReport|Dependency scanning"
@@ -53892,9 +53887,6 @@ msgid "ciReport|Download the patch to apply it manually"
 msgstr ""
 
 msgid "ciReport|Dynamic Application Security Testing (DAST)"
-msgstr ""
-
-msgid "ciReport|Dynamic Application Security Testing (DAST) detects vulnerabilities in your web application."
 msgstr ""
 
 msgid "ciReport|Failed to load %{reportName} report"
@@ -53959,9 +53951,6 @@ msgstr ""
 msgid "ciReport|Manually added"
 msgstr ""
 
-msgid "ciReport|New"
-msgstr ""
-
 msgid "ciReport|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch."
 msgstr ""
 
@@ -53986,9 +53975,6 @@ msgstr ""
 msgid "ciReport|Secret Detection"
 msgstr ""
 
-msgid "ciReport|Secret Detection detects leaked credentials in your source code."
-msgstr ""
-
 msgid "ciReport|Secret detection"
 msgstr ""
 
@@ -53999,9 +53985,6 @@ msgid "ciReport|Security scan results"
 msgstr ""
 
 msgid "ciReport|Security scanning"
-msgstr ""
-
-msgid "ciReport|Security scanning failed loading any results"
 msgstr ""
 
 msgid "ciReport|Security scanning is loading"
@@ -54017,9 +54000,6 @@ msgid "ciReport|Something went wrong while fetching the finding. Please try agai
 msgstr ""
 
 msgid "ciReport|Static Application Security Testing (SAST)"
-msgstr ""
-
-msgid "ciReport|Static Application Security Testing (SAST) detects potential vulnerabilities in your source code."
 msgstr ""
 
 msgid "ciReport|TTFB P90"
@@ -54061,12 +54041,6 @@ msgid "ciReport|View full report"
 msgstr ""
 
 msgid "ciReport|in"
-msgstr ""
-
-msgid "ciReport|is loading"
-msgstr ""
-
-msgid "ciReport|is loading, errors when loading results"
 msgstr ""
 
 msgid "closed"

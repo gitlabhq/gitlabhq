@@ -36,7 +36,7 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :experiment
       # _published_experiments.html.haml partial.
       application_experiment.publish
 
-      expect(ApplicationExperiment.published_experiments['namespaced/stub']).to include(
+      expect(described_class.published_experiments['namespaced/stub']).to include(
         experiment: 'namespaced/stub',
         excluded: false,
         key: anything,

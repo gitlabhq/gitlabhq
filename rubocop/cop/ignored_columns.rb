@@ -19,8 +19,8 @@ module RuboCop
     #     ignore_column :full_name, remove_after: '2023-05-22', remove_with: '16.0'
     #   end
     class IgnoredColumns < RuboCop::Cop::Base
-      USE_CONCERN_ADD_MSG = 'Use `IgnoredColumns` concern instead of adding to `self.ignored_columns`.'
-      USE_CONCERN_SET_MSG = 'Use `IgnoredColumns` concern instead of setting `self.ignored_columns`.'
+      USE_CONCERN_ADD_MSG = 'Use `IgnorableColumns` concern instead of adding to `self.ignored_columns`.'
+      USE_CONCERN_SET_MSG = 'Use `IgnorableColumns` concern instead of setting `self.ignored_columns`.'
       WRONG_MODEL_MSG = <<~MSG
         If the model exists in CE and EE, the column has to be ignored
         in the CE model. If the model only exists in EE, then it has to be added there.
