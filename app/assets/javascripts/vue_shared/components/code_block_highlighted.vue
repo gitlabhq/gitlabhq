@@ -1,6 +1,6 @@
 <script>
+import { escape } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import CodeBlock from './code_block.vue';
 
@@ -39,7 +39,7 @@ export default {
         return this.hljs.highlight(this.code, { language: this.language }).value;
       }
 
-      return this.code;
+      return escape(this.code);
     },
   },
   async mounted() {

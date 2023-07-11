@@ -639,5 +639,3 @@ Style/GuardClause:
     - 'tooling/lib/tooling/helm3_client.rb'
     - 'tooling/lib/tooling/image.rb'
     - 'tooling/lib/tooling/kubernetes_client.rb'
-    - 'tooling/rspec_flaky/flaky_example.rb'
-    - 'tooling/rspec_flaky/listener.rb'

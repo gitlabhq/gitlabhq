@@ -98,7 +98,7 @@ triggers if an authentication token is specified in the legacy parameter `--regi
 Example command for GitLab 15.9:
 
 ```shell
-gitlab-runner register
+gitlab-runner register \
     --non-interactive \
     --executor "shell" \
     --url "https://gitlab.com/" \
@@ -116,7 +116,7 @@ In GitLab 15.11 and later, these attributes are no longer accepted as arguments 
 The following example shows the new command:
 
 ```shell
-gitlab-runner register
+gitlab-runner register \
     --non-interactive \
     --executor "shell" \
     --url "https://gitlab.com/" \

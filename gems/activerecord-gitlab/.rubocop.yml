@@ -1,6 +1,2 @@
 inherit_from:
   - ../config/rubocop.yml
-
-# FIXME
-Gitlab/RSpec/AvoidSetup:
-  Enabled: false

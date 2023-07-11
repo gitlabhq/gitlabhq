@@ -8,15 +8,13 @@ require_relative 'flaky_example'
 module RspecFlaky
   class FlakyExamplesCollection < SimpleDelegator
     def initialize(collection = {})
-      unless collection.is_a?(Hash)
-        raise ArgumentError, "`collection` must be a Hash, #{collection.class} given!"
-      end
+      raise ArgumentError, "`collection` must be a Hash, #{collection.class} given!" unless collection.is_a?(Hash)
 
       collection_of_flaky_examples =
         collection.map do |uid, example|
           [
             uid,
-            RspecFlaky::FlakyExample.new(example.to_h.symbolize_keys)
+            FlakyExample.new(example.to_h.symbolize_keys)
           ]
         end
 
@@ -24,13 +22,11 @@ module RspecFlaky
     end
 
     def to_h
-      transform_values { |example| example.to_h }.deep_symbolize_keys
+      transform_values(&:to_h).deep_symbolize_keys
     end
 
     def -(other)
-      unless other.respond_to?(:key)
-        raise ArgumentError, "`other` must respond to `#key?`, #{other.class} does not!"
-      end
+      raise ArgumentError, "`other` must respond to `#key?`, #{other.class} does not!" unless other.respond_to?(:key)
 
       self.class.new(reject { |uid, _| other.key?(uid) })
     end

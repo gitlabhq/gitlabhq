@@ -63,7 +63,7 @@ Custom emoji show in the emoji picker everywhere you can react with emoji.
 To add an emoji reaction to a comment or description:
 
 1. Select the smile (**{slight-smile}**).
-1. Select the GitLab logo (**{tanuki}**).
+1. Select the GitLab logo (**{tanuki}**) or scroll down to the **Custom** section.
 1. Select an emoji from the emoji picker.
 
 To use them in a text box, type the filename between two colons.

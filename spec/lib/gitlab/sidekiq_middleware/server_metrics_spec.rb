@@ -59,16 +59,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           described_class.initialize_process_metrics
         end
 
-        context 'when sidekiq_execution_application_slis FF is turned on' do
-          it 'initializes sidekiq SLIs for the workers in the current Sidekiq process' do
+        shared_examples "initializes sidekiq SLIs for the workers in the current process" do
+          before do
             allow(Gitlab::SidekiqConfig)
               .to receive(:current_worker_queue_mappings)
                     .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
-
             allow(completion_seconds_metric).to receive(:get)
+          end
 
+          it "initializes the SLIs with labels" do
             expect(Gitlab::Metrics::SidekiqSlis)
-              .to receive(:initialize_slis!).with([
+              .to receive(initialize_sli_method).with([
                 {
                   worker: 'MergeWorker',
                   urgency: 'high',
@@ -87,16 +88,44 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           end
         end
 
-        context 'when sidekiq_execution_application_slis FF is turned off' do
-          before do
-            stub_feature_flags(sidekiq_execution_application_slis: false)
-          end
-
+        shared_examples "not initializing sidekiq SLIs" do
           it 'does not initialize sidekiq SLIs' do
             expect(Gitlab::Metrics::SidekiqSlis)
-              .not_to receive(:initialize_slis!)
+              .not_to receive(initialize_sli_method)
 
             described_class.initialize_process_metrics
+          end
+        end
+
+        context 'initializing execution SLIs' do
+          let(:initialize_sli_method) { :initialize_execution_slis! }
+
+          context 'when sidekiq_execution_application_slis FF is turned on' do
+            it_behaves_like "initializes sidekiq SLIs for the workers in the current process"
+          end
+
+          context 'when sidekiq_execution_application_slis FF is turned off' do
+            before do
+              stub_feature_flags(sidekiq_execution_application_slis: false)
+            end
+
+            it_behaves_like "not initializing sidekiq SLIs"
+          end
+        end
+
+        context 'initializing queueing SLIs' do
+          let(:initialize_sli_method) { :initialize_queueing_slis! }
+
+          context 'when sidekiq_queueing_application_slis FF is turned on' do
+            it_behaves_like "initializes sidekiq SLIs for the workers in the current process"
+          end
+
+          context 'when sidekiq_queueing_application_slis FF is turned off' do
+            before do
+              stub_feature_flags(sidekiq_queueing_application_slis: false)
+            end
+
+            it_behaves_like "not initializing sidekiq SLIs"
           end
         end
 
@@ -121,15 +150,16 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
             described_class.initialize_process_metrics
           end
 
-          it 'does not initializes sidekiq SLIs' do
-            allow(Gitlab::SidekiqConfig)
-              .to receive(:current_worker_queue_mappings)
-                    .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
+          context 'sidekiq execution SLIs' do
+            let(:initialize_sli_method) { :initialize_execution_slis! }
 
-            expect(Gitlab::Metrics::SidekiqSlis)
-              .not_to receive(:initialize_slis!)
+            it_behaves_like 'not initializing sidekiq SLIs'
+          end
 
-            described_class.initialize_process_metrics
+          context 'sidekiq queueing SLIs' do
+            let(:initialize_sli_method) { :initialize_queueing_slis! }
+
+            it_behaves_like 'not initializing sidekiq SLIs'
           end
         end
       end
@@ -170,6 +200,13 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
             :feature_category,
             :urgency,
             :external_dependencies), false)
+
+          if queue_duration_for_job
+            expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_queueing_apdex).with(labels.slice(:worker,
+              :feature_category,
+              :urgency,
+              :external_dependencies), queue_duration_for_job)
+          end
 
           subject.call(worker, job, :test) { nil }
         end
@@ -260,6 +297,18 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           it 'does not call record_execution_apdex nor record_execution_error' do
             expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_apdex)
             expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_error)
+
+            subject.call(worker, job, :test) { nil }
+          end
+        end
+
+        context 'when sidekiq_queueing_application_slis FF is turned off' do
+          before do
+            stub_feature_flags(sidekiq_queueing_application_slis: false)
+          end
+
+          it 'does not call record_queueing_apdex' do
+            expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_queueing_apdex)
 
             subject.call(worker, job, :test) { nil }
           end

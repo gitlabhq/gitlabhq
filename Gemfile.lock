@@ -44,6 +44,13 @@ PATH
       oj (~> 3.13.16)
 
 PATH
+  remote: gems/rspec_flaky
+  specs:
+    rspec_flaky (0.1.0)
+      activesupport (>= 6.1, < 7.1)
+      rspec (~> 3.0)
+
+PATH
   remote: vendor/gems/attr_encrypted
   specs:
     attr_encrypted (3.2.4)
@@ -1963,6 +1970,7 @@ DEPENDENCIES
   rspec-parameterized (~> 1.0)
   rspec-rails (~> 6.0.1)
   rspec-retry (~> 0.6.2)
+  rspec_flaky!
   rspec_junit_formatter
   rspec_profiling (~> 0.0.6)
   rubocop

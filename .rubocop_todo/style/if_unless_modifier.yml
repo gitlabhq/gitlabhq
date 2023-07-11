@@ -1074,5 +1074,3 @@ Style/IfUnlessModifier:
     - 'tooling/lib/tooling/find_codeowners.rb'
     - 'tooling/lib/tooling/image.rb'
     - 'tooling/lib/tooling/test_map_packer.rb'
-    - 'tooling/rspec_flaky/flaky_example.rb'
-    - 'tooling/rspec_flaky/flaky_examples_collection.rb'

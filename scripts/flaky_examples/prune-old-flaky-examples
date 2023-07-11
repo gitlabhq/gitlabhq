@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# tooling/rspec_flaky/flaky_examples_collection.rb is requiring
-# `active_support/hash_with_indifferent_access`, and we install the `activesupport`
-# gem manually on the CI
-require 'rubygems'
-require_relative '../../tooling/rspec_flaky/report'
+require 'bundler/inline'
+
+gemfile do
+  gem 'rspec_flaky', path: 'gems/rspec_flaky'
+end
 
 report_file = ARGV.shift
 unless report_file
-  puts 'usage: prune-old-flaky-specs <report-file> <new-report-file>'
+  puts "usage: #{__FILE__} <report-file> <new-report-file>"
   exit 1
 end
 
@@ -20,5 +20,6 @@ puts "Current report has #{report.size} entries."
 
 new_report = report.prune_outdated
 
-puts "New report has #{new_report.size} entries: #{report.size - new_report.size} entries older than #{RspecFlaky::Report::OUTDATED_DAYS_THRESHOLD} days were removed."
+puts "New report has #{new_report.size} entries: #{report.size - new_report.size} entries older than " \
+     "#{RspecFlaky::Report::OUTDATED_DAYS_THRESHOLD} days were removed."
 puts "Saved #{new_report_file}." if new_report.write(new_report_file)

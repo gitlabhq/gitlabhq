@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 require 'tempfile'
-require 'gitlab/rspec/all'
 
-require_relative '../../../tooling/rspec_flaky/report'
+require 'rspec_flaky/report'
 
 RSpec.describe RspecFlaky::Report, :aggregate_failures, :freeze_time do
   let(:thirty_one_days) { 3600 * 24 * 31 }
   let(:collection_hash) do
     {
       a: { example_id: 'spec/foo/bar_spec.rb:2' },
-      b: { example_id: 'spec/foo/baz_spec.rb:3', first_flaky_at: (Time.now - thirty_one_days).to_s, last_flaky_at: (Time.now - thirty_one_days).to_s }
+      b: { example_id: 'spec/foo/baz_spec.rb:3', first_flaky_at: (Time.now - thirty_one_days).to_s,
+           last_flaky_at: (Time.now - thirty_one_days).to_s }
     }
   end
 
@@ -41,7 +41,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures, :freeze_time do
   describe '.load' do
     let!(:report_file) do
       Tempfile.new(%w[rspec_flaky_report .json]).tap do |f|
-        f.write(JSON.pretty_generate(suite_flaky_example_report)) # rubocop:disable Gitlab/Json
+        f.write(JSON.pretty_generate(suite_flaky_example_report))
         f.rewind
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures, :freeze_time do
 
   describe '.load_json' do
     let(:report_json) do
-      JSON.pretty_generate(suite_flaky_example_report) # rubocop:disable Gitlab/Json
+      JSON.pretty_generate(suite_flaky_example_report)
     end
 
     it 'loads the report file' do
@@ -72,7 +72,11 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures, :freeze_time do
     end
 
     it 'does not accept anything else' do
-      expect { described_class.new([1, 2, 3]) }.to raise_error(ArgumentError, "`flaky_examples` must be a RspecFlaky::FlakyExamplesCollection, Array given!")
+      expect do
+        described_class.new([1, 2,
+          3])
+      end.to raise_error(ArgumentError,
+        "`flaky_examples` must be a RspecFlaky::FlakyExamplesCollection, Array given!")
     end
   end
 
@@ -84,11 +88,11 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures, :freeze_time do
     let(:report_file_path) { File.join('tmp', 'rspec_flaky_report.json') }
 
     before do
-      FileUtils.rm(report_file_path) if File.exist?(report_file_path)
+      FileUtils.rm_f(report_file_path)
     end
 
     after do
-      FileUtils.rm(report_file_path) if File.exist?(report_file_path)
+      FileUtils.rm_f(report_file_path)
     end
 
     context 'when RspecFlaky::Config.generate_report? is false' do
@@ -113,7 +117,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures, :freeze_time do
 
         expect(File.exist?(report_file_path)).to be(true)
         expect(File.read(report_file_path))
-          .to eq(JSON.pretty_generate(report.flaky_examples.to_h)) # rubocop:disable Gitlab/Json
+          .to eq(JSON.pretty_generate(report.flaky_examples.to_h))
       end
     end
   end

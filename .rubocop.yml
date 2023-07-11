@@ -395,7 +395,6 @@ Gitlab/Json:
   Exclude:
     - 'qa/**/*'
     - 'scripts/**/*'
-    - 'tooling/rspec_flaky/**/*'
     - 'lib/quality/**/*'
     - 'tooling/danger/**/*'
 

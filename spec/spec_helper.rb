@@ -38,6 +38,8 @@ require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 require 'axe-rspec'
 
+require 'rspec_flaky'
+
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
@@ -228,11 +230,7 @@ RSpec.configure do |config|
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
-  require_relative '../tooling/rspec_flaky/config'
-
   if RspecFlaky::Config.generate_report?
-    require_relative '../tooling/rspec_flaky/listener'
-
     config.reporter.register_listener(
       RspecFlaky::Listener.new,
       :example_passed,

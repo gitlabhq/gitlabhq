@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'rspec-parameterized'
-require 'gitlab/rspec/all'
-
-require_relative '../../../tooling/rspec_flaky/config'
+require 'rspec_flaky/config'
 
 RSpec.describe RspecFlaky::Config, :aggregate_failures do
   include StubENV
@@ -14,10 +11,6 @@ RSpec.describe RspecFlaky::Config, :aggregate_failures do
     stub_env('FLAKY_RSPEC_SUITE_REPORT_PATH', nil)
     stub_env('FLAKY_RSPEC_REPORT_PATH', nil)
     stub_env('NEW_FLAKY_RSPEC_REPORT_PATH', nil)
-    # Ensure the behavior is the same locally and on CI (where Rails is defined since we run this test as part of the whole suite), i.e. Rails isn't defined
-    allow(described_class).to receive(:rails_path).and_wrap_original do |method, path|
-      path
-    end
   end
 
   describe '.generate_report?' do

@@ -49,43 +49,127 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
     expect(page).not_to have_selector('.file-content')
   end
 
-  context 'when user has groups' do
-    let(:group) do
-      create :group do |group|
-        group.add_owner(user)
+  context 'for tabs' do
+    shared_examples_for 'shows expected content' do
+      it 'shows expected content', :js do
+        visit(user_path(user))
+
+        page.within ".cover-block" do
+          expect(page).to have_content user.name
+          expect(page).to have_content user.username
+        end
+
+        page.within ".content" do
+          click_link link
+        end
+
+        page.within div do
+          expect(page).to have_content expected_content
+        end
       end
     end
 
-    let!(:project) do
-      create(:project, :repository, namespace: group) do |project|
-        create(:closed_issue_event, project: project)
-        project.add_maintainer(user)
+    context 'for Groups' do
+      let_it_be(:group) do
+        create :group do |group|
+          group.add_owner(user)
+        end
+      end
+
+      let_it_be(:project) do
+        create(:project, :repository, namespace: group) do |project|
+          create(:closed_issue_event, project: project)
+          project.add_maintainer(user)
+        end
+      end
+
+      it_behaves_like 'shows expected content' do
+        let(:link) { 'Groups' }
+        let(:div) { '#groups' }
+        let(:expected_content) { group.name }
       end
     end
 
-    def click_on_profile_picture
-      find(:css, '.header-user-dropdown-toggle').click
+    context 'for Contributed projects' do
+      let_it_be(:project) do
+        create(:project) do |project|
+          project.add_maintainer(user)
+        end
+      end
 
-      page.within ".header-user" do
-        click_link user.username
+      before do
+        push_event = create(:push_event, project: project, author: user)
+        create(:push_event_payload, event: push_event)
+      end
+
+      it_behaves_like 'shows expected content' do
+        let(:link) { 'Contributed projects' }
+        let(:div) { '#contributed' }
+        let(:expected_content) { project.name }
       end
     end
 
-    it 'shows user groups', :js do
-      visit(profile_path)
-      click_on_profile_picture
-
-      page.within ".cover-block" do
-        expect(page).to have_content user.name
-        expect(page).to have_content user.username
+    context 'for personal projects' do
+      let_it_be(:project) do
+        create(:project, namespace: user.namespace)
       end
 
-      page.within ".content" do
-        click_link "Groups"
+      it_behaves_like 'shows expected content' do
+        let(:link) { 'Personal projects' }
+        let(:div) { '#projects' }
+        let(:expected_content) { project.name }
+      end
+    end
+
+    context 'for starred projects' do
+      let_it_be(:project) { create(:project, :public) }
+
+      before do
+        user.toggle_star(project)
       end
 
-      page.within "#groups" do
-        expect(page).to have_content group.name
+      it_behaves_like 'shows expected content' do
+        let(:link) { 'Starred projects' }
+        let(:div) { '#starred' }
+        let(:expected_content) { project.name }
+      end
+    end
+
+    context 'for snippets' do
+      let_it_be(:snippet) { create(:snippet, :public, author: user) }
+
+      it_behaves_like 'shows expected content' do
+        let(:link) { 'Snippets' }
+        let(:div) { '#snippets' }
+        let(:expected_content) { snippet.title }
+      end
+    end
+
+    context 'for followers' do
+      let_it_be(:fan) { create(:user) }
+
+      before do
+        fan.follow(user)
+      end
+
+      it_behaves_like 'shows expected content' do
+        let(:link) { 'Followers' }
+        let(:div) { '#followers' }
+        let(:expected_content) { fan.name }
+      end
+    end
+
+    context 'for following' do
+      let_it_be(:star) { create(:user) }
+
+      before do
+        user.follow(star)
+      end
+
+      it_behaves_like 'shows expected content' do
+        let(:link) { 'Following' }
+        let(:div) { '#following' }
+        let(:expected_content) { star.name }
       end
     end
   end

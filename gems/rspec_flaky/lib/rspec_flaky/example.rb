@@ -15,7 +15,7 @@ module RspecFlaky
     end
 
     def uid
-      @uid ||= Digest::MD5.hexdigest("#{description}-#{file}")
+      @uid ||= Digest::MD5.hexdigest("#{description}-#{file}") # rubocop:disable Fips/MD5
     end
 
     def example_id

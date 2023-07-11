@@ -3,21 +3,21 @@
 require 'ostruct'
 
 module RspecFlaky
-  ALLOWED_ATTRIBUTES = %i[
-    example_id
-    file
-    line
-    description
-    first_flaky_at
-    last_flaky_at
-    last_flaky_job
-    last_attempts_count
-    flaky_reports
-    feature_category
-  ].freeze
-
   # This represents a flaky RSpec example and is mainly meant to be saved in a JSON file
   class FlakyExample
+    ALLOWED_ATTRIBUTES = %i[
+      example_id
+      file
+      line
+      description
+      first_flaky_at
+      last_flaky_at
+      last_flaky_job
+      last_attempts_count
+      flaky_reports
+      feature_category
+    ].freeze
+
     def initialize(example_hash)
       @attributes = {
         first_flaky_at: Time.now,
@@ -43,9 +43,9 @@ module RspecFlaky
       attributes[:feature_category] = example_hash[:feature_category]
       attributes[:last_attempts_count] = example_hash[:last_attempts_count] if example_hash[:last_attempts_count]
 
-      if ENV['CI_JOB_URL']
-        attributes[:last_flaky_job] = "#{ENV['CI_JOB_URL']}"
-      end
+      return unless ENV['CI_JOB_URL']
+
+      attributes[:last_flaky_job] = (ENV['CI_JOB_URL']).to_s
     end
 
     def to_h

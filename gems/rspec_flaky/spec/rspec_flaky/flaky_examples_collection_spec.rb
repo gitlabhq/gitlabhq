@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'gitlab/rspec/all'
-
-require_relative '../../../tooling/rspec_flaky/flaky_examples_collection'
+require 'rspec_flaky/flaky_examples_collection'
 
 RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures, :freeze_time do
   let(:collection_hash) do
@@ -45,7 +43,9 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures, :freeze
     end
 
     it 'does not accept anything else' do
-      expect { described_class.new([1, 2, 3]) }.to raise_error(ArgumentError, "`collection` must be a Hash, Array given!")
+      expect do
+        described_class.new([1, 2, 3])
+      end.to raise_error(ArgumentError, "`collection` must be a Hash, Array given!")
     end
   end
 
@@ -79,7 +79,9 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures, :freeze
     it 'fails if the given collection does not respond to `#key?`' do
       collection = described_class.new(collection_hash)
 
-      expect { collection - [1, 2, 3] }.to raise_error(ArgumentError, "`other` must respond to `#key?`, Array does not!")
+      expect do
+        collection - [1, 2, 3]
+      end.to raise_error(ArgumentError, "`other` must respond to `#key?`, Array does not!")
     end
   end
 end

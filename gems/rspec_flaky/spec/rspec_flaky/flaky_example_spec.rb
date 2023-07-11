@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'gitlab/rspec/all'
-
-require_relative '../../../tooling/rspec_flaky/flaky_example'
+require 'rspec_flaky/flaky_example'
 
 RSpec.describe RspecFlaky::FlakyExample, :aggregate_failures do
-  include ActiveSupport::Testing::TimeHelpers
   include StubENV
 
   let(:example_attrs) do
@@ -87,7 +84,7 @@ RSpec.describe RspecFlaky::FlakyExample, :aggregate_failures do
       end
 
       it 'updates the flaky_reports' do
-        expected_flaky_reports = flaky_example.to_h[:first_flaky_at] ? flaky_example.to_h[:flaky_reports] + 1 : 1
+        expected_flaky_reports = flaky_example.to_h[:first_flaky_at] ? flaky_example.to_h[:flaky_reports] + 1 : 1 # rubocop:disable RSpec/AvoidConditionalStatements
 
         expect { flaky_example.update!(example_attrs) }.to change { flaky_example.to_h[:flaky_reports] }.by(1)
         expect(flaky_example.to_h[:flaky_reports]).to eq(expected_flaky_reports)

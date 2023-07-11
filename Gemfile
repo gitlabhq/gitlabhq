@@ -462,6 +462,7 @@ end
 # Gems required in various pipelines
 group :development, :test, :monorepo do
   gem 'gitlab-rspec', path: 'gems/gitlab-rspec'
+  gem 'rspec_flaky', path: 'gems/rspec_flaky'
 end
 
 group :test do

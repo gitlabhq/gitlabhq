@@ -598,15 +598,10 @@ RSpec.describe UsersController, feature_category: :user_management do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).not_to be_empty
       end
-
-      it 'does not list projects aimed for deletion' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:contributed_projects)).to eq([project])
-      end
     end
 
     %i(html json).each do |format|
-      context "format: #{format}" do
+      context "with format: #{format}" do
         let(:format) { format }
 
         context 'with public profile' do
@@ -626,6 +621,13 @@ RSpec.describe UsersController, feature_category: :user_management do
             let(:user) { create(:admin) }
 
             it_behaves_like 'renders contributed projects'
+
+            if format == :json
+              it 'does not list projects aimed for deletion' do
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.body).not_to include aimed_for_deletion_project.name
+              end
+            end
           end
         end
       end
@@ -652,15 +654,10 @@ RSpec.describe UsersController, feature_category: :user_management do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).not_to be_empty
       end
-
-      it 'does not list projects aimed for deletion' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:starred_projects)).to eq([project])
-      end
     end
 
     %i(html json).each do |format|
-      context "format: #{format}" do
+      context "with format: #{format}" do
         let(:format) { format }
 
         context 'with public profile' do
@@ -680,6 +677,13 @@ RSpec.describe UsersController, feature_category: :user_management do
             let(:user) { create(:admin) }
 
             it_behaves_like 'renders starred projects'
+
+            if format == :json
+              it 'does not list projects aimed for deletion' do
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.body).not_to include aimed_for_deletion_project.name
+              end
+            end
           end
         end
       end

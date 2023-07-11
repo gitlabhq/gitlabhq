@@ -80,20 +80,29 @@ You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gi
 1. Edit `gems/<name-of-gem>/<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
 
    ```ruby
+   # frozen_string_literal: true
+
+   require_relative "lib/name/of/gem/version"
+
    Gem::Specification.new do |spec|
      spec.name = "<name-of-gem>"
-     spec.version = Gitlab::NameOfGem::VERSION
+     spec.version = Name::Of::Gem::Version::VERSION
      spec.authors = ["group::tenant-scale"]
      spec.email = ["engineering@gitlab.com"]
 
-     spec.summary = "GitLab's RSpec extensions"
-     spec.description = "A set of useful helpers to configure RSpec with various stubs and CI configs."
+     spec.summary = "Gem summary"
+     spec.description = "A more descriptive text about what the gem is doing."
      spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/<name-of-gem>"
-     spec.required_ruby_version = ">= 2.7"
+     spec.license = "MIT"
+     spec.required_ruby_version = ">= 3.0"
+     spec.metadata["rubygems_mfa_required"] = "true"
+
+     spec.files = Dir['lib/**/*.rb']
+     spec.require_paths = ["lib"]
    end
    ```
 
-1. Update `gems/<name-of-gem>/.rubocop` with:
+1. Update `gems/<name-of-gem>/.rubocop.yml` with:
 
    ```yaml
    inherit_from:

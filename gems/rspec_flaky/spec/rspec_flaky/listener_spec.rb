@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'gitlab/rspec/all'
-
-require_relative '../../../tooling/rspec_flaky/listener'
+require 'rspec_flaky/listener'
 
 RSpec.describe RspecFlaky::Listener, :aggregate_failures do
-  include ActiveSupport::Testing::TimeHelpers
   include StubENV
 
   let(:already_flaky_example_uid) { '6e869794f4cfd2badd93eb68719371d1' }
@@ -37,7 +34,10 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
     }
   end
 
-  let(:already_flaky_example) { RspecFlaky::FlakyExample.new(suite_flaky_example_report[already_flaky_example_uid]) }
+  let(:already_flaky_example) do
+    RspecFlaky::FlakyExample.new(suite_flaky_example_report[already_flaky_example_uid])
+  end
+
   let(:new_example_attrs) do
     {
       id: 'spec/foo/baz_spec.rb:3',
@@ -79,22 +79,23 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
         stub_env('FLAKY_RSPEC_SUITE_REPORT_PATH', report_file_path)
       end
 
-      context 'and report file exists' do
+      context 'when report file exists' do
         before do
-          expect(File).to receive(:exist?).with(report_file_path).and_return(true)
+          allow(File).to receive(:exist?).with(report_file_path).and_return(true)
         end
 
         it 'delegates the load to RspecFlaky::Report' do
-          report = RspecFlaky::Report.new(RspecFlaky::FlakyExamplesCollection.new(suite_flaky_example_report))
+          report = RspecFlaky::Report
+            .new(RspecFlaky::FlakyExamplesCollection.new(suite_flaky_example_report))
 
           expect(RspecFlaky::Report).to receive(:load).with(report_file_path).and_return(report)
           expect(described_class.new.suite_flaky_examples.to_h).to eq(report.flaky_examples.to_h)
         end
       end
 
-      context 'and report file does not exist' do
+      context 'when report file does not exist' do
         before do
-          expect(File).to receive(:exist?).with(report_file_path).and_return(false)
+          allow(File).to receive(:exist?).with(report_file_path).and_return(false)
         end
 
         it 'return an empty hash' do
@@ -217,7 +218,8 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
         expect(RspecFlaky::Report).to receive(:new).with(listener.flaky_examples).and_return(report1)
         expect(report1).to receive(:write).with(RspecFlaky::Config.flaky_examples_report_path)
 
-        expect(RspecFlaky::Report).to receive(:new).with(listener.__send__(:new_flaky_examples)).and_return(report2)
+        expect(RspecFlaky::Report)
+          .to receive(:new).with(listener.__send__(:new_flaky_examples)).and_return(report2)
         expect(report2).to receive(:write).with(RspecFlaky::Config.new_flaky_examples_report_path)
 
         listener.dump_summary(nil)

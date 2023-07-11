@@ -983,8 +983,6 @@ RSpec/VerifiedDoubles:
     - 'spec/tooling/danger/project_helper_spec.rb'
     - 'spec/tooling/lib/tooling/helm3_client_spec.rb'
     - 'spec/tooling/lib/tooling/kubernetes_client_spec.rb'
-    - 'spec/tooling/rspec_flaky/example_spec.rb'
-    - 'spec/tooling/rspec_flaky/listener_spec.rb'
     - 'spec/uploaders/file_uploader_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
     - 'spec/uploaders/personal_file_uploader_spec.rb'

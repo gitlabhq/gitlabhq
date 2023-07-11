@@ -232,8 +232,13 @@ Prerequisite:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
 
-To access a project from the GitLab UI by using the project ID,
-put the `/projects/:id` URL in your browser or other tool you use to access the project.
+To access a project by using the project ID instead of its name,
+go to `https://gitlab.example.com/projects/:id`.
+
+The project ID is displayed in the **Project overview** page, under the project name.
+
+For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`, you can access the project
+either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
 ## Who can view the Project overview page
 

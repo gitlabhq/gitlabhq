@@ -14,10 +14,6 @@ Lint/BinaryOperatorWithIdenticalOperands:
 Style/NumericPredicate:
   EnforcedStyle: comparison
 
-# FIXME
-Gitlab/RSpec/AvoidSetup:
-  Enabled: false
-
 # FIXME: When enabled, there's a spec failure in ee/spec/requests/api/graphql/mutations/merge_requests/update_approval_rule_spec.rb:51,
 # due to the `default_value` of `remove_hidden_groups` set to `[]`, most probably instead of `false`, in ee/app/graphql/mutations/merge_requests/update_approval_rule.rb.
 # The problem is that `Object#=~` exists (even though it's deprecated), hence calling it on an `Array` doesn't blow up, but `Array#match?` doesn't exist.

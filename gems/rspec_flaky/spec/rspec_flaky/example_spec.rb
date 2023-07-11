@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../../tooling/rspec_flaky/example'
+require 'rspec_flaky/example'
 
 RSpec.describe RspecFlaky::Example do
   let(:example_attrs) do
@@ -45,7 +45,7 @@ RSpec.describe RspecFlaky::Example do
 
   describe '#uid' do
     it 'returns a hash of the full description' do
-      expect(subject.uid).to eq(Digest::MD5.hexdigest("#{subject.description}-#{subject.file}"))
+      expect(subject.uid).to eq(Digest::MD5.hexdigest("#{subject.description}-#{subject.file}")) # rubocop:disable Fips/MD5
     end
   end
 

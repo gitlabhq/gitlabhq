@@ -19,12 +19,13 @@ module RspecFlaky
     end
 
     def self.load_json(json)
-      new(RspecFlaky::FlakyExamplesCollection.new(JSON.parse(json)))
+      new(FlakyExamplesCollection.new(JSON.parse(json)))
     end
 
     def initialize(flaky_examples)
-      unless flaky_examples.is_a?(RspecFlaky::FlakyExamplesCollection)
-        raise ArgumentError, "`flaky_examples` must be a RspecFlaky::FlakyExamplesCollection, #{flaky_examples.class} given!"
+      unless flaky_examples.is_a?(FlakyExamplesCollection)
+        raise ArgumentError,
+          "`flaky_examples` must be a RspecFlaky::FlakyExamplesCollection, #{flaky_examples.class} given!"
       end
 
       @flaky_examples = flaky_examples
@@ -32,13 +33,13 @@ module RspecFlaky
     end
 
     def write(file_path)
-      unless RspecFlaky::Config.generate_report?
+      unless Config.generate_report?
         Kernel.warn "! Generating reports is disabled. To enable it, please set the `FLAKY_RSPEC_GENERATE_REPORT=1` !"
         return
       end
 
       report_path_dir = File.dirname(file_path)
-      FileUtils.mkdir_p(report_path_dir) unless Dir.exist?(report_path_dir)
+      FileUtils.mkdir_p(report_path_dir)
 
       File.write(file_path, JSON.pretty_generate(flaky_examples.to_h))
     end
@@ -51,7 +52,7 @@ module RspecFlaky
           last_flaky_at && last_flaky_at.to_i < outdated_date_threshold.to_i
         end
 
-      self.class.new(RspecFlaky::FlakyExamplesCollection.new(recent_flaky_examples))
+      self.class.new(FlakyExamplesCollection.new(recent_flaky_examples))
     end
   end
 end

@@ -50,6 +50,10 @@ Prerequisites:
 Domain verification applies at the top-level group and to all subgroups and projects
 nested under that top-level parent group.
 
+You cannot verify a domain for more than one group. For example, if a group named
+'group1' has a verified domain named 'domain1', you cannot also verify 'domain1'
+for a different group named 'group2'.
+
 Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you:
 
 - Do not need to have a GitLab Pages website.
