@@ -31249,8 +31249,6 @@ CREATE INDEX index_events_on_project_id_and_created_at ON events USING btree (pr
 
 CREATE INDEX index_events_on_project_id_and_id ON events USING btree (project_id, id);
 
-CREATE INDEX index_events_on_project_id_and_id_desc_on_merged_action ON events USING btree (project_id, id DESC) WHERE (action = 7);
-
 CREATE UNIQUE INDEX index_events_on_target_type_and_target_id_and_fingerprint ON events USING btree (target_type, target_id, fingerprint);
 
 CREATE INDEX index_evidences_on_release_id ON evidences USING btree (release_id);

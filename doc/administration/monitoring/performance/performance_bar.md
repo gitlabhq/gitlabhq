@@ -38,8 +38,7 @@ From left to right, the performance bar displays:
   [Gitaly](../../gitaly/index.md) calls. Select to display a modal window with more
   details.
 - **Rugged calls**: the time taken (in milliseconds) and the total number of
-  [Rugged](../../nfs.md#improving-nfs-performance-with-gitlab) calls.
-  Select to display a modal window with more details.
+  Rugged calls. Select to display a modal window with more details.
 - **Redis calls**: the time taken (in milliseconds) and the total number of
   Redis calls. Select to display a modal window with more details.
 - **Elasticsearch calls**: the time taken (in milliseconds) and the total number of

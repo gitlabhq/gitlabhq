@@ -377,9 +377,6 @@ This can be risky because anything that prevents your Gitaly clients from reachi
 servers causes all Gitaly requests to fail. For example, any sort of network, firewall, or name
 resolution problems.
 
-Additionally, you must [disable Rugged](../nfs.md#improving-nfs-performance-with-gitlab)
-if previously enabled manually.
-
 Gitaly makes the following assumptions:
 
 - Your `gitaly1.internal` Gitaly server can be reached at `gitaly1.internal:8075` from your Gitaly

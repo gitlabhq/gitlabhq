@@ -55,8 +55,6 @@ on a machine:
 - With multiple disks mounted as a single mount-point (like with a RAID array).
 - Using LVM.
 
-Gitaly may work with NFS or a mounted Storage Appliance, but it is [not officially supported](../nfs.md#gitaly-with-nfs-not-supported) because Git requires low latency.
-
 Each project can have up to 3 different repositories:
 
 - A project repository, where the source code is stored.

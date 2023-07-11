@@ -52,13 +52,10 @@ Before deploying Gitaly Cluster, review:
 - [Configuration guidance](configure_gitaly.md) and [Repository storage options](../repository_storage_paths.md) to make
   sure that Gitaly Cluster is the best setup for you.
 
-If you have:
+If you have not yet migrated to Gitaly Cluster, you have two options:
 
-- Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. However, NFS
-  is [no longer supported](../../update/deprecations.md#nfs-for-git-repository-storage).
-- Not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options:
-  - A sharded Gitaly instance.
-  - Gitaly Cluster.
+- A sharded Gitaly instance.
+- Gitaly Cluster.
 
 Contact your [Customer Success Manager](https://about.gitlab.com/job-families/sales/customer-success-management/) or customer support if you have any questions.
 

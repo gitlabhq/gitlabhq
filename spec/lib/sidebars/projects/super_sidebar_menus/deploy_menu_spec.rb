@@ -18,8 +18,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::DeployMenu, feature_catego
       :releases,
       :feature_flags,
       :packages_registry,
-      :container_registry,
-      :model_experiments
+      :container_registry
     ])
   end
 end

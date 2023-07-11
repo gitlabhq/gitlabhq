@@ -11,6 +11,7 @@ module QA
 
           base.view 'app/assets/javascripts/lib/utils/confirm_via_gl_modal/confirm_modal.vue' do
             element :confirm_ok_button
+            element :confirmation_modal
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/confirm_danger/confirm_danger_modal.vue' do
@@ -36,6 +37,20 @@ module QA
 
         def click_confirmation_ok_button
           click_element(:confirm_ok_button)
+        end
+
+        # Click the confirmation button if the confirmation modal is present
+        # Can be used when the modal may not always appear in a test. For example, if the modal is behind a feature flag
+        #
+        # @return [void]
+        def click_confirmation_ok_button_if_present
+          # In the case of changing access levels[1], the modal appears while there's a request in process, so we need
+          # to skip the loading check otherwise it will time out.
+          #
+          # [1]: https://gitlab.com/gitlab-org/gitlab/-/blob/4a99af809b86047ce3c8985e6582748bbd23fc84/qa/qa/page/component/members/members_table.rb#L54
+          return unless has_element?(:confirmation_modal, skip_finished_loading_check: true)
+
+          click_element(:confirm_ok_button, skip_finished_loading_check: true)
         end
       end
     end

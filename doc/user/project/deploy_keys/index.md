@@ -57,6 +57,9 @@ For human interactions, use credentials tied to users such as Personal Access To
 To help detect a potential secret leak, you can use the
 [Audit Event](../../../administration/audit_event_streaming/examples.md#example-payloads-for-ssh-events-with-deploy-key) feature.
 
+WARNING:
+Deploy keys work even if the user who created them is removed from the group or project.
+
 ## View deploy keys
 
 To view the deploy keys available to a project:

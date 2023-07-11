@@ -44,7 +44,7 @@ default:
 workflow:
   name: '$PIPELINE_NAME'
   rules:
-    - if: '$CI_PROJECT_PATH == "gitlab/gitaly" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $GITALY_TEST'
+    - if: '$CI_PROJECT_PATH == "gitlab-org/gitaly" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $GITALY_TEST'
       variables:
         PIPELINE_NAME: 'Gitaly Rails Test Pipeline'
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.

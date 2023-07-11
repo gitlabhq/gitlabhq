@@ -68,7 +68,7 @@ export default {
         text: this.primaryText,
         attributes: {
           variant: this.primaryVariant,
-          'data-qa-selector': 'confirm_ok_button',
+          'data-testid': 'confirm-ok-button',
         },
       };
     },
@@ -110,6 +110,7 @@ export default {
     ref="modal"
     modal-id="confirmationModal"
     body-class="gl-display-flex"
+    data-testid="confirmation-modal"
     :size="size"
     :title="title"
     :action-primary="primaryAction"

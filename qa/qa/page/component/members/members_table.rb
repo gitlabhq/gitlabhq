@@ -14,6 +14,7 @@ module QA
               include MembersFilter
               include RemoveMemberModal
               include RemoveGroupModal
+              include ConfirmModal
             end
 
             base.view 'app/assets/javascripts/members/components/table/members_table.vue' do
@@ -53,6 +54,8 @@ module QA
               click_element :access_level_dropdown
               click_element :access_level_link, text: access_level
             end
+
+            click_confirmation_ok_button_if_present
           end
 
           def remove_member(username)

@@ -16,7 +16,7 @@ module QA
         MSG
 
         def initialize(name)
-          @image = "#{QA::Runtime::Env.container_registry_host}/gitlab-org/gitlab-runner:alpine"
+          @image = "#{QA::Runtime::Env.container_registry_host}/gitlab-org/#{QA::Runtime::Env.runner_container_image}"
           @name = name || "qa-runner-#{SecureRandom.hex(4)}"
           @run_untagged = true
           @executor = :shell

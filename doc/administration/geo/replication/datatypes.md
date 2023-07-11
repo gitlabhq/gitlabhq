@@ -80,10 +80,8 @@ on a machine:
 - With multiple disks mounted as a single mount-point (like with a RAID array).
 - Using LVM.
 
-GitLab does not require a special file system and can work with:
-
-- NFS.
-- A mounted Storage Appliance (there may be performance limitations when using a remote file system).
+GitLab does not require a special file system and can work with a mounted Storage Appliance. However, there can be
+performance limitations and consistency issues when using a remote file system.
 
 Geo triggers garbage collection in Gitaly to [deduplicate forked repositories](../../../development/git_object_deduplication.md#git-object-deduplication-and-gitlab-geo) on Geo secondary sites.
 
