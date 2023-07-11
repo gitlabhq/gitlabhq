@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { gqlClient } from '~/issues/list/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { gqlClient } from './graphql';
 import ServiceDeskListApp from './components/service_desk_list_app.vue';
 
 export async function mountServiceDeskListApp() {
@@ -11,7 +11,21 @@ export async function mountServiceDeskListApp() {
     return null;
   }
 
-  const { emptyStateSvgPath, fullPath, isProject, isSignedIn } = el.dataset;
+  const {
+    projectDataEmptyStateSvgPath,
+    projectDataFullPath,
+    projectDataIsProject,
+    projectDataIsSignedIn,
+    projectDataHasAnyIssues,
+    serviceDeskEmailAddress,
+    canAdminIssues,
+    canEditProjectSettings,
+    serviceDeskCalloutSvgPath,
+    serviceDeskSettingsPath,
+    serviceDeskHelpPath,
+    isServiceDeskSupported,
+    isServiceDeskEnabled,
+  } = el.dataset;
 
   Vue.use(VueApollo);
 
@@ -22,10 +36,19 @@ export async function mountServiceDeskListApp() {
       defaultClient: await gqlClient(),
     }),
     provide: {
-      emptyStateSvgPath,
-      fullPath,
-      isProject: parseBoolean(isProject),
-      isSignedIn: parseBoolean(isSignedIn),
+      emptyStateSvgPath: projectDataEmptyStateSvgPath,
+      fullPath: projectDataFullPath,
+      isProject: parseBoolean(projectDataIsProject),
+      isSignedIn: parseBoolean(projectDataIsSignedIn),
+      serviceDeskEmailAddress,
+      canAdminIssues: parseBoolean(canAdminIssues),
+      canEditProjectSettings: parseBoolean(canEditProjectSettings),
+      serviceDeskCalloutSvgPath,
+      serviceDeskSettingsPath,
+      serviceDeskHelpPath,
+      isServiceDeskSupported: parseBoolean(isServiceDeskSupported),
+      isServiceDeskEnabled: parseBoolean(isServiceDeskEnabled),
+      hasAnyIssues: parseBoolean(projectDataHasAnyIssues),
     },
     render: (createComponent) => createComponent(ServiceDeskListApp),
   });

@@ -14,6 +14,7 @@ import {
   searchPlaceholder,
   SERVICE_DESK_BOT_USERNAME,
 } from '../constants';
+import InfoBanner from './info_banner.vue';
 
 export default {
   i18n: {
@@ -26,8 +27,16 @@ export default {
   components: {
     GlEmptyState,
     IssuableList,
+    InfoBanner,
   },
-  inject: ['emptyStateSvgPath', 'isProject', 'isSignedIn', 'fullPath'],
+  inject: [
+    'emptyStateSvgPath',
+    'isProject',
+    'isSignedIn',
+    'fullPath',
+    'isServiceDeskSupported',
+    'hasAnyIssues',
+  ],
   data() {
     return {
       serviceDeskIssues: [],
@@ -52,11 +61,17 @@ export default {
       // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106004#note_1217325202 for details
       notifyOnNetworkStatusChange: true,
       result({ data }) {
+        if (!data) {
+          return;
+        }
         this.pageInfo = data?.project.issues.pageInfo ?? {};
       },
       error(error) {
         this.issuesError = this.$options.i18n.errorFetchingIssues;
         Sentry.captureException(error);
+      },
+      skip() {
+        return !this.hasAnyIssues;
       },
     },
     serviceDeskIssuesCounts: {
@@ -94,6 +109,9 @@ export default {
         [STATUS_ALL]: allIssues?.count,
       };
     },
+    isInfoBannerVisible() {
+      return this.isServiceDeskSupported && this.hasAnyIssues;
+    },
   },
   methods: {
     handleClickTab(state) {
@@ -108,6 +126,7 @@ export default {
 
 <template>
   <section>
+    <info-banner v-if="isInfoBannerVisible" />
     <issuable-list
       namespace="service-desk"
       recent-searches-storage-key="issues"

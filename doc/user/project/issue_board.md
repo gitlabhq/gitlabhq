@@ -422,7 +422,7 @@ Prerequisites:
 
 To set a WIP limit for a list, in an issue board:
 
-1. On the top of the list you want to edit, select **List actions** (**{ellipsis_v}**) **> Edit list settings**.
+1. On the top of the list you want to edit, select **Edit list settings** (**{settings}**).
    The list settings sidebar opens on the right.
 1. Next to **Work in progress limit**, select **Edit**.
 1. Enter the maximum number of issues.
@@ -499,7 +499,7 @@ Prerequisites:
 
 To remove a list from an issue board:
 
-1. On the top of the list you want to remove, select **List actions** (**{ellipsis_v}**).
+1. On the top of the list you want to remove, select **Edit list settings** (**{settings}**).
    The list settings sidebar opens on the right.
 1. Select **Remove list**.
 1. On the confirmation dialog, select **Remove list** again.

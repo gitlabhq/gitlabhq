@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planning do
+RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_desk do
   let(:project) { create(:project, :private, service_desk_enabled: true) }
 
   let_it_be(:user) { create(:user) }
@@ -181,6 +181,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
     context 'when service_desk_vue_list feature flag is enabled' do
       before do
         stub_feature_flags(service_desk_vue_list: true)
+        stub_feature_flags(frontend_caching: true)
       end
 
       context 'when there are issues' do
@@ -188,6 +189,20 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
         let_it_be(:other_user) { create(:user) }
         let_it_be(:service_desk_issue) { create(:issue, project: project, title: 'Help from email', author: support_bot, service_desk_reply_to: 'service.desk@example.com') }
         let_it_be(:other_user_issue) { create(:issue, project: project, author: other_user) }
+
+        describe 'service desk info content' do
+          before do
+            visit service_desk_project_issues_path(project)
+          end
+
+          it 'displays the small info box, documentation, a button to configure service desk, and the address' do
+            aggregate_failures do
+              expect(page).to have_link('Learn more', href: help_page_path('user/project/service_desk'))
+              expect(page).not_to have_link('Enable Service Desk')
+              expect(page).to have_content(project.service_desk_address)
+            end
+          end
+        end
 
         describe 'issues list' do
           before do

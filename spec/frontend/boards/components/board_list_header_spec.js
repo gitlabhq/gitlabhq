@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlButtonGroup } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
@@ -93,18 +93,17 @@ describe('Board List Header Component', () => {
         ...injectedProps,
       },
       stubs: {
-        GlDisclosureDropdown,
-        GlDisclosureDropdownItem,
+        GlButtonGroup,
       },
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
   const isCollapsed = () => wrapper.vm.list.collapsed;
   const findTitle = () => wrapper.find('.board-title');
   const findCaret = () => wrapper.findByTestId('board-title-caret');
-  const findNewIssueButton = () => wrapper.findByTestId('newIssueBtn');
-  const findSettingsButton = () => wrapper.findByTestId('settingsBtn');
+  const findNewIssueButton = () => wrapper.findByTestId('new-issue-btn');
+  const findSettingsButton = () => wrapper.findByTestId('settings-btn');
   const findBoardListHeader = () => wrapper.findByTestId('board-list-header');
 
   it('renders border when label color is present', () => {
@@ -131,13 +130,13 @@ describe('Board List Header Component', () => {
     it.each(hasNoAddButton)('does not render dropdown when List Type is `%s`', (listType) => {
       createComponent({ listType });
 
-      expect(findDropdown().exists()).toBe(false);
+      expect(findButtonGroup().exists()).toBe(false);
     });
 
     it.each(hasAddButton)('does render when List Type is `%s`', (listType) => {
       createComponent({ listType });
 
-      expect(findDropdown().exists()).toBe(true);
+      expect(findButtonGroup().exists()).toBe(true);
       expect(findNewIssueButton().exists()).toBe(true);
     });
 
@@ -146,7 +145,7 @@ describe('Board List Header Component', () => {
         currentUserId: null,
       });
 
-      expect(findDropdown().exists()).toBe(false);
+      expect(findButtonGroup().exists()).toBe(false);
     });
   });
 
@@ -156,20 +155,20 @@ describe('Board List Header Component', () => {
     it.each(hasSettings)('does render for List Type `%s`', (listType) => {
       createComponent({ listType });
 
-      expect(findDropdown().exists()).toBe(true);
+      expect(findButtonGroup().exists()).toBe(true);
       expect(findSettingsButton().exists()).toBe(true);
     });
 
     it('does not render dropdown when ListType `closed`', () => {
       createComponent({ listType: ListType.closed });
 
-      expect(findDropdown().exists()).toBe(false);
+      expect(findButtonGroup().exists()).toBe(false);
     });
 
     it('renders dropdown but not the Settings button when ListType `backlog`', () => {
       createComponent({ listType: ListType.backlog });
 
-      expect(findDropdown().exists()).toBe(true);
+      expect(findButtonGroup().exists()).toBe(true);
       expect(findSettingsButton().exists()).toBe(false);
     });
   });

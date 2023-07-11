@@ -7870,9 +7870,6 @@ msgstr ""
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
 msgstr ""
 
-msgid "Boards|List actions"
-msgstr ""
-
 msgid "Boards|Move card"
 msgstr ""
 
@@ -12980,6 +12977,9 @@ msgid "Could not remove the trigger."
 msgstr ""
 
 msgid "Could not restore the group"
+msgstr ""
+
+msgid "Could not retrieve the list of protected branches. Use the YAML editor mode, or refresh this page later. To view the list of protected branches, go to %{boldStart}Settings - Branches%{boldEnd} and expand %{boldStart}Protected branches%{boldEnd}."
 msgstr ""
 
 msgid "Could not revoke access token %{access_token_name}."

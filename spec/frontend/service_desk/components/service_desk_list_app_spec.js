@@ -10,6 +10,7 @@ import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import getServiceDeskIssuesQuery from '~/service_desk/queries/get_service_desk_issues.query.graphql';
 import getServiceDeskIssuesCountsQuery from '~/service_desk/queries/get_service_desk_issues_counts.query.graphql';
 import ServiceDeskListApp from '~/service_desk/components/service_desk_list_app.vue';
+import InfoBanner from '~/service_desk/components/info_banner.vue';
 import {
   getServiceDeskIssuesQueryResponse,
   getServiceDeskIssuesCountsQueryResponse,
@@ -27,6 +28,8 @@ describe('ServiceDeskListApp', () => {
     isProject: true,
     isSignedIn: true,
     fullPath: 'path/to/project',
+    isServiceDeskSupported: true,
+    hasAnyIssues: true,
   };
 
   const defaultQueryResponse = getServiceDeskIssuesQueryResponse;
@@ -37,6 +40,7 @@ describe('ServiceDeskListApp', () => {
     .mockResolvedValue(getServiceDeskIssuesCountsQueryResponse);
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
+  const findInfoBanner = () => wrapper.findComponent(InfoBanner);
 
   const mountComponent = ({
     provide = {},
@@ -98,7 +102,20 @@ describe('ServiceDeskListApp', () => {
     });
   });
 
-  describe('events', () => {
+  describe('InfoBanner', () => {
+    it('renders when Service Desk is supported and has any number of issues', () => {
+      expect(findInfoBanner().exists()).toBe(true);
+    });
+
+    it('does not render, when there are no issues', async () => {
+      wrapper = mountComponent({ provide: { hasAnyIssues: false } });
+      await waitForPromises();
+
+      expect(findInfoBanner().exists()).toBe(false);
+    });
+  });
+
+  describe('Events', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
       beforeEach(() => {
         mountComponent();
@@ -112,7 +129,7 @@ describe('ServiceDeskListApp', () => {
     });
   });
 
-  describe('errors', () => {
+  describe('Errors', () => {
     describe.each`
       error                      | mountOption                               | message
       ${'fetching issues'}       | ${'serviceDeskIssuesQueryResponse'}       | ${ServiceDeskListApp.i18n.errorFetchingIssues}

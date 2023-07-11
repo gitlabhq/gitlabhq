@@ -25,8 +25,6 @@ RSpec.describe 'Group Boards', feature_category: :team_planning do
 
     it 'adds an issue to the backlog' do
       page.within(find('.board', match: :first)) do
-        dropdown = first("[data-testid='header-list-actions']")
-        dropdown.click
         issue_title = 'Create new issue'
         click_button issue_title
 
