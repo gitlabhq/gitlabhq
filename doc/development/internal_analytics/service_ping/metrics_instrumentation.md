@@ -403,6 +403,36 @@ module Gitlab
 end
 ```
 
+## Prometheus metrics
+
+This instrumentation class lets you handle Prometheus queries by passing a Prometheus client object as an argument to the `value` block.
+Any Prometheus error handling should be done in the block itself.
+
+- `value`: Specifies the value of the metric. A Prometheus client object is passed as the first argument.
+- `available?`: Specifies whether the metric should be reported. The default is `true`.
+
+[Example of a merge request that adds a Prometheus metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122400).
+
+```ruby
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class GitalyApdexMetric < PrometheusMetric
+          value do |client|
+            result = client.query('avg_over_time(gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m[1w])').first
+
+            break FALLBACK unless result
+
+            result['value'].last.to_f
+          end
+        end
+      end
+    end
+  end
+end
+```
+
 ## Support for instrumentation classes
 
 There is support for:

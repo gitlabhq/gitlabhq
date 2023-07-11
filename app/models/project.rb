@@ -779,6 +779,7 @@ class Project < ApplicationRecord
   scope :pending_data_repair_analysis, -> do
     left_outer_joins(:container_registry_data_repair_detail)
     .where(container_registry_data_repair_details: { project_id: nil })
+    .order(id: :desc)
   end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }

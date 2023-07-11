@@ -20,7 +20,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       is_expected.to include(:counts_monthly)
       is_expected.to include(:counts_weekly)
       is_expected.to include(:license)
-      is_expected.to include(:settings)
 
       # usage_activity_by_stage data
       is_expected.to include(:usage_activity_by_stage)
@@ -865,97 +864,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           end
 
           it_behaves_like('zero count')
-        end
-      end
-    end
-
-    describe ".operating_system" do
-      let(:ohai_data) { { "platform" => "ubuntu", "platform_version" => "20.04" } }
-
-      before do
-        allow_next_instance_of(Ohai::System) do |ohai|
-          allow(ohai).to receive(:data).and_return(ohai_data)
-        end
-      end
-
-      subject { described_class.operating_system }
-
-      it { is_expected.to eq("ubuntu-20.04") }
-
-      context 'when on Debian with armv architecture' do
-        let(:ohai_data) { { "platform" => "debian", "platform_version" => "10", 'kernel' => { 'machine' => 'armv' } } }
-
-        it { is_expected.to eq("raspbian-10") }
-      end
-    end
-
-    describe ".system_usage_data_settings" do
-      let(:prometheus_client) { double(Gitlab::PrometheusClient) }
-      let(:snowplow_gitlab_host?) { Gitlab::CurrentSettings.snowplow_collector_hostname == 'snowplow.trx.gitlab.net' }
-
-      before do
-        allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
-        expect(prometheus_client).to receive(:query)
-          .with(/gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m/)
-          .and_return(
-            [
-              { 'metric' => {},
-                'value' => [1616016381.473, '0.95'] }
-            ])
-        expect(described_class).to receive(:with_prometheus_client).and_yield(prometheus_client)
-      end
-
-      subject { described_class.system_usage_data_settings }
-
-      it 'gathers encrypted secrets usage data', :aggregate_failures do
-        expect(subject[:settings][:ldap_encrypted_secrets_enabled]).to eq(Gitlab::Auth::Ldap::Config.encrypted_secrets.active?)
-        expect(subject[:settings][:smtp_encrypted_secrets_enabled]).to eq(Gitlab::Email::SmtpConfig.encrypted_secrets.active?)
-      end
-
-      it 'populates operating system information' do
-        expect(subject[:settings][:operating_system]).to eq('ubuntu-20.04')
-      end
-
-      it 'gathers gitaly apdex', :aggregate_failures do
-        expect(subject[:settings][:gitaly_apdex]).to be_within(0.001).of(0.95)
-      end
-
-      it 'reports collected data categories' do
-        expected_value = %w[standard subscription operational optional]
-
-        allow_next_instance_of(ServicePing::PermitDataCategories) do |instance|
-          expect(instance).to receive(:execute).and_return(expected_value)
-        end
-
-        expect(subject[:settings][:collected_data_categories]).to eq(expected_value)
-      end
-
-      it 'gathers service_ping_features_enabled' do
-        expect(subject[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
-      end
-
-      it 'gathers user_cap_feature_enabled' do
-        expect(subject[:settings][:user_cap_feature_enabled]).to eq(Gitlab::CurrentSettings.new_user_signups_cap)
-      end
-
-      it 'reports status of the certificate_based_clusters feature flag as true' do
-        expect(subject[:settings][:certificate_based_clusters_ff]).to eq(true)
-      end
-
-      context 'with certificate_based_clusters disabled' do
-        before do
-          stub_feature_flags(certificate_based_clusters: false)
-        end
-
-        it 'reports status of the certificate_based_clusters feature flag as false' do
-          expect(subject[:settings][:certificate_based_clusters_ff]).to eq(false)
-        end
-      end
-
-      context 'snowplow stats' do
-        it 'gathers snowplow stats' do
-          expect(subject[:settings][:snowplow_enabled]).to eq(Gitlab::CurrentSettings.snowplow_enabled?)
-          expect(subject[:settings][:snowplow_configured_to_gitlab_collector]).to eq(snowplow_gitlab_host?)
         end
       end
     end

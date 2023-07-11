@@ -231,7 +231,7 @@ export default {
       return this.$options.isLoggedIn && this.workItemCurrentUserTodos;
     },
     currentUserTodos() {
-      return this.workItemCurrentUserTodos?.currentUserTodos?.edges;
+      return this.workItemCurrentUserTodos?.currentUserTodos?.nodes;
     },
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
@@ -431,7 +431,9 @@ export default {
           >
           <work-item-todos
             v-if="showWorkItemCurrentUserTodos"
-            :work-item="workItem"
+            :work-item-id="workItem.id"
+            :work-item-iid="workItemIid"
+            :work-item-fullpath="workItem.project.fullPath"
             :current-user-todos="currentUserTodos"
             @error="updateError = $event"
           />

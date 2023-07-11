@@ -1,0 +1,9 @@
+mutation workItemTodoMarkDone($input: TodoMarkDoneInput!) {
+  todoMutation: todoMarkDone(input: $input) {
+    todo {
+      id
+      state
+    }
+    errors
+  }
+}

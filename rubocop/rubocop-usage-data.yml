@@ -114,3 +114,4 @@ UsageData/InstrumentationSuperclass:
     - :RedisMetric
     - :NumbersMetric
     - :AggregatedMetric
+    - :PrometheusMetric

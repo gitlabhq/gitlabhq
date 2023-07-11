@@ -1,9 +1,4 @@
-import {
-  autocompleteDataSources,
-  markdownPreviewPath,
-  getWorkItemTodoOptimisticResponse,
-} from '~/work_items/utils';
-import { workItemResponseFactory } from './mock_data';
+import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 
 describe('autocompleteDataSources', () => {
   beforeEach(() => {
@@ -28,19 +23,5 @@ describe('markdownPreviewPath', () => {
     expect(markdownPreviewPath('project/group', '2')).toEqual(
       '/foobar/project/group/preview_markdown?target_type=WorkItem&target_id=2',
     );
-  });
-});
-
-describe('getWorkItemTodoOptimisticResponse', () => {
-  it.each`
-    scenario     | pendingTodo | result
-    ${'empty'}   | ${false}    | ${0}
-    ${'present'} | ${true}     | ${1}
-  `('returns correct response when pending item list is $scenario', ({ pendingTodo, result }) => {
-    const workItem = workItemResponseFactory({ canUpdate: true });
-    expect(
-      getWorkItemTodoOptimisticResponse({ workItem, pendingTodo }).workItemUpdate.workItem
-        .widgets[0].currentUserTodos.edges.length,
-    ).toBe(result);
   });
 });

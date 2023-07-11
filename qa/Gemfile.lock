@@ -119,7 +119,7 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-qa (12.0.0)
+    gitlab-qa (12.1.0)
       activesupport (>= 6.1, < 7.1)
       gitlab (~> 4.19)
       http (~> 5.0)
@@ -348,7 +348,7 @@ DEPENDENCIES
   faraday-retry (~> 2.2)
   fog-core (= 2.1.0)
   fog-google (~> 1.19)
-  gitlab-qa (~> 12)
+  gitlab-qa (~> 12, >= 12.1.0)
   gitlab-utils!
   gitlab_quality-test_tooling (~> 0.8.3)
   influxdb-client (~> 2.9)
@@ -374,4 +374,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.8)
 
 BUNDLED WITH
-   2.4.14
+   2.4.15

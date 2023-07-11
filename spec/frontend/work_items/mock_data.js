@@ -629,14 +629,10 @@ export const workItemResponseFactory = ({
           ? {
               type: 'CURRENT_USER_TODOS',
               currentUserTodos: {
-                edges: [
+                nodes: [
                   {
-                    node: {
-                      id: 'gid://gitlab/Todo/1',
-                      state: 'pending',
-                      __typename: 'Todo',
-                    },
-                    __typename: 'TodoEdge',
+                    id: 'gid://gitlab/Todo/1',
+                    __typename: 'Todo',
                   },
                 ],
                 __typename: 'TodoConnection',
@@ -3252,6 +3248,20 @@ export const getAwardEmojiResponse = (toggledOn) => {
       awardEmojiToggle: {
         errors: [],
         toggledOn,
+      },
+    },
+  };
+};
+
+export const getTodosMutationResponse = (state) => {
+  return {
+    data: {
+      todoMutation: {
+        todo: {
+          id: 'gid://gitlab/Todo/1',
+          state,
+        },
+        errors: [],
       },
     },
   };

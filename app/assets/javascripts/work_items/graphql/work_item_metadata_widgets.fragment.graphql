@@ -45,11 +45,8 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
   ... on WorkItemWidgetCurrentUserTodos {
     type
     currentUserTodos(state: pending) {
-      edges {
-        node {
-          id
-          state
-        }
+      nodes {
+        id
       }
     }
   }

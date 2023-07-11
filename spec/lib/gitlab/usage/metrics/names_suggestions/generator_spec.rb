@@ -88,8 +88,8 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator, feature_cate
 
     context 'for alt_usage_data metrics' do
       it_behaves_like 'name suggestion' do
-        # corresponding metric is collected with alt_usage_data(fallback: nil) { operating_system }
-        let(:key_path) { 'settings.operating_system' }
+        # corresponding metric is collected with alt_usage_data { ApplicationRecord.database.version }
+        let(:key_path) { 'database.version' }
         let(:name_suggestion) { /<please fill metric name>/ }
       end
     end

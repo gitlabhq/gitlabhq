@@ -13,8 +13,9 @@ For self-managed GitLab instances, use
 For more information about our plans to make this feature configurable for all GitLab installations,
 see [epic 1211](https://gitlab.com/groups/gitlab-org/-/epics/1211).
 
-Slack provides a native application that you can enable with your project's
-integrations on GitLab.com.
+Slack provides a native application that you can enable with your project's integrations on GitLab.com. GitLab
+links your Slack user with your GitLab user so that commands you run in Slack are run by the linked GitLab user on
+GitLab.com.
 
 ## Installation
 

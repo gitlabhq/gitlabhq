@@ -100,8 +100,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         margin-left: 2.5rem;
         border: 1px solid $border-color;
         border-radius: $gl-border-radius-base;
-        background-color: $white;
         padding: $gl-padding-4 $gl-padding-8;
+      }
+
+      &:not(.target) .timeline-content:not(.flash-container) {
+        background-color: $white;
       }
 
       &.draft-note .timeline-content:not(.flash-container) {
@@ -139,9 +142,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
               border-top: 1px solid $border-color;
               border-top-left-radius: $gl-border-radius-base;
               border-top-right-radius: $gl-border-radius-base;
-              background-color: $white;
               padding: $gl-padding-4 $gl-padding-8;
             }
+          }
+
+          &:not(.target) .timeline-content:not(.flash-container) {
+            background-color: $white;
           }
 
           &.draft-note .timeline-content:not(.flash-container) {

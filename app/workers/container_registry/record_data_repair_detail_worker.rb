@@ -69,7 +69,7 @@ module ContainerRegistry
     end
 
     def next_project
-      Project.pending_data_repair_analysis.first
+      Project.pending_data_repair_analysis.limit(max_running_jobs * 2).sample
     end
     strong_memoize_attr :next_project
 
