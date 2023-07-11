@@ -4,40 +4,39 @@
 - type_plural = _('group access tokens')
 - @force_desktop_expanded_sidebar = true
 
-.row.gl-mt-3.js-search-settings-section
-  .col-lg-4
-    %h4.gl-mt-0
-      = page_title
-    %p
-    - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/settings/group_access_tokens') }
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
+  %p.gl-text-secondary
+    - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/settings/group_access_tokens') }
     - if current_user.can?(:create_resource_access_tokens, @group)
       = _('Generate group access tokens scoped to this group for your applications that need access to the GitLab API.')
-      %p
-        = html_escape(_('You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}')) % { link_start: link_start, link_end: '</a>'.html_safe }
+      = html_escape(_('You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
     - else
-      = html_escape(_('Group access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: link_start, link_end: '</a>'.html_safe }
-      %p
+      = _('Group access token creation is disabled in this group.')
       - root_group = @group.root_ancestor
       - if current_user.can?(:admin_group, root_group)
         - group_settings_link = edit_group_path(root_group)
         - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_settings_link }
         = html_escape(_('You can enable group access token creation in %{link_start}group settings%{link_end}.')) % { link_start: link_start, link_end: '</a>'.html_safe }
+      = html_escape(_('You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
 
-  .col-lg-8
-    #js-new-access-token-app{ data: { access_token_type: type } }
+  #js-new-access-token-app{ data: { access_token_type: type } }
 
-    - if current_user.can?(:create_resource_access_tokens, @group)
-      = render 'shared/access_tokens/form',
-          ajax: true,
-          type: type,
-          path: group_settings_access_tokens_path(@group),
-          resource: @group,
-          token: @resource_access_token,
-          scopes: @scopes,
-          access_levels: GroupMember.access_level_roles,
-          default_access_level: Gitlab::Access::GUEST,
-          prefix: :resource_access_token,
-          help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
+  - if current_user.can?(:create_resource_access_tokens, @group)
+    = render 'shared/access_tokens/form',
+        ajax: true,
+        type: type,
+        path: group_settings_access_tokens_path(@group),
+        resource: @group,
+        token: @resource_access_token,
+        scopes: @scopes,
+        access_levels: GroupMember.access_level_roles,
+        default_access_level: Gitlab::Access::GUEST,
+        prefix: :resource_access_token,
+        help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
 
-    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true
+  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true
  } }

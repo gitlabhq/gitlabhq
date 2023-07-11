@@ -4,9 +4,11 @@
 - type_plural = _('personal access tokens')
 - @force_desktop_expanded_sidebar = true
 
-.gl-pb-6.js-search-settings-section
-  %h4.gl-my-0
-    = page_title
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
   %p.gl-text-secondary
     = s_('AccessTokens|You can generate a personal access token for each application you use that needs access to the GitLab API.')
     = s_('AccessTokens|You can also use personal access tokens to authenticate against Git over HTTP.')

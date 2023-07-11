@@ -25,8 +25,7 @@ module Registrations
 
       if result.success?
         track_event('successfully_submitted_form')
-        finish_onboarding_on_welcome_page unless complete_signup_onboarding?
-
+        successful_update_hooks
         redirect_to update_success_path
       else
         render :show
@@ -94,7 +93,7 @@ module Registrations
     strong_memoize_attr :user_members
 
     # overridden in EE
-    def finish_onboarding_on_welcome_page; end
+    def successful_update_hooks; end
 
     # overridden in EE
     def signup_onboarding_path; end

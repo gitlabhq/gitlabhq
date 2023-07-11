@@ -7,7 +7,7 @@
 - access_levels = local_assigns.fetch(:access_levels, false)
 - default_access_level = local_assigns.fetch(:default_access_level, false)
 
-%h5.gl-mt-0
+%h5.gl-font-lg.gl-mt-0
   = title
 
 = gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { id: 'js-new-access-token-form', class: 'js-requires-input' }, remote: ajax do |f|
@@ -25,7 +25,7 @@
   - if resource
     .form-group
       = label_tag :access_level, s_("AccessTokens|Select a role"), class: "label-bold"
-      .select-wrapper
+      .select-wrapper.gl-form-input-md
         = select_tag :"#{prefix}[access_level]", options_for_select(access_levels, default_access_level), class: "form-control select-control", data: { qa_selector: 'access_token_access_level' }
         = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
 

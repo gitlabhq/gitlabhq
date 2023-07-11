@@ -405,6 +405,8 @@
   - 1
 - - object_storage
   - 1
+- - onboarding_create_iterable_trigger
+  - 1
 - - onboarding_issue_created
   - 1
 - - onboarding_pipeline_created

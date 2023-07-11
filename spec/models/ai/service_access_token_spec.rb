@@ -20,6 +20,7 @@ RSpec.describe Ai::ServiceAccessToken, type: :model, feature_category: :applicat
     describe 'validations' do
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:category) }
+      it { is_expected.to validate_presence_of(:expires_at) }
     end
   end
 end

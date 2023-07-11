@@ -214,4 +214,17 @@ RSpec.describe ServiceResponse, feature_category: :shared do
       end
     end
   end
+
+  describe '#deconstruct_keys' do
+    it 'supports pattern matching' do
+      status =
+        case described_class.error(message: 'Bad apple')
+        in { status: Symbol => status }
+          status
+        else
+          raise
+        end
+      expect(status).to eq(:error)
+    end
+  end
 end

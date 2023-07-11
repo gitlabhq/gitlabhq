@@ -38,12 +38,12 @@ To activate your instance with an activation code:
 The subscription is activated.
 
 If you have an offline environment,
-[activate GitLab EE with a license file or key](license_file.md) instead.
+[activate GitLab EE with a license file or key](../../administration/license_file.md) instead.
 
 If you have questions or need assistance activating your instance,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
 
-When [the license expires](license_file.md#what-happens-when-your-license-expires),
+When [the license expires](../../administration/license_file.md#what-happens-when-your-license-expires),
 some functionality is locked.
 
 ## Verify your GitLab edition

@@ -22673,7 +22673,8 @@ CREATE TABLE service_access_tokens (
     updated_at timestamp with time zone NOT NULL,
     category smallint DEFAULT 0 NOT NULL,
     encrypted_token bytea NOT NULL,
-    encrypted_token_iv bytea NOT NULL
+    encrypted_token_iv bytea NOT NULL,
+    expires_at timestamp with time zone NOT NULL
 );
 
 CREATE SEQUENCE service_access_tokens_id_seq

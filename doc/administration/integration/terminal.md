@@ -114,5 +114,5 @@ lifetime in your GitLab instance:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
-1. Select [**Settings > Web terminal**](../../user/admin_area/settings/index.md#general).
+1. Select [**Settings > Web terminal**](../../administration/settings/index.md#general).
 1. Set a `max session time`.

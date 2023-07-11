@@ -55,6 +55,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       organization
       jobTitle
       createdAt
+      pronouns
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

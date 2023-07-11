@@ -345,7 +345,7 @@ A payment receipt is emailed to you, which you can also access in the Customers 
 
 If your subscription was activated with an activation code, the additional seats are reflected in
 your instance immediately. If you're using a license file, you receive an updated file.
-To add the seats, [add the license file](../../user/admin_area/license_file.md)
+To add the seats, [add the license file](../../administration/license_file.md)
 to your instance.
 
 ### Renew subscription manually
@@ -451,7 +451,7 @@ before this occurs.
 
 ## Activate a license file or key
 
-If you have a license file or key, you can activate it [in the Admin Area](../../user/admin_area/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+If you have a license file or key, you can activate it [in the Admin Area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 
 ## Contact Support
 

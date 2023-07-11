@@ -146,8 +146,8 @@ export default {
       const downstream = pipeline.triggered;
       return keepLatestDownstreamPipelines(downstream);
     },
-    hasFailedJobs(pipeline) {
-      return pipeline?.failed_builds?.length > 0 || false;
+    failedJobsCount(pipeline) {
+      return pipeline?.failed_builds?.length || 0;
     },
     setModalData(data) {
       this.pipelineId = data.pipeline.id;
@@ -221,6 +221,7 @@ export default {
       <template #row-details="{ item }">
         <pipeline-failed-jobs-widget
           v-if="showFailedJobsWidget"
+          :failed-jobs-count="failedJobsCount(item)"
           :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"

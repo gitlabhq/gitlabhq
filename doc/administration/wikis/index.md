@@ -26,7 +26,7 @@ is edited again and the content changes.
 
 ### Wiki page content size limit configuration
 
-This setting is not available through the [Admin Area settings](../../user/admin_area/settings/index.md).
+This setting is not available through the [Admin Area settings](../settings/index.md).
 To configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 

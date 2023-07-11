@@ -1929,7 +1929,7 @@ msgstr ""
 msgid "AI|Experiment features"
 msgstr ""
 
-msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say \"The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?\" and wait for another question."
+msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say `The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?` and wait for another question."
 msgstr ""
 
 msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
@@ -21454,7 +21454,7 @@ msgstr ""
 msgid "Group URL"
 msgstr ""
 
-msgid "Group access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
+msgid "Group access token creation is disabled in this group."
 msgstr ""
 
 msgid "Group application: %{name}"
@@ -35520,7 +35520,7 @@ msgstr ""
 msgid "Project URL"
 msgstr ""
 
-msgid "Project access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
+msgid "Project access token creation is disabled in this group."
 msgstr ""
 
 msgid "Project already deleted"
@@ -52619,6 +52619,9 @@ msgid "You can set up jobs to only use runners with specific tags. Separate tags
 msgstr ""
 
 msgid "You can specify notification level per group or per project."
+msgstr ""
+
+msgid "You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"

@@ -22,7 +22,7 @@ Prerequisites:
   - Jira personal access token (GitLab 16.0 and later).
 
 You can enable the Jira issue integration by configuring your project settings in GitLab.
-You can configure these settings at the [group level](../../user/admin_area/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration) or at the [instance level](../../user/admin_area/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab.
+You can configure these settings at the [group level](../../administration/settings/project_integration_management.md#manage-group-level-default-settings-for-a-project-integration) or at the [instance level](../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) for self-managed GitLab.
 
 To configure your project settings in GitLab:
 

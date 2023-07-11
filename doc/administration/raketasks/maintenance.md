@@ -410,3 +410,16 @@ To re-import the metrics you can run:
 ```shell
 sudo gitlab-rake metrics:setup_common_metrics
 ```
+
+## Troubleshooting
+
+### Advisory lock connection information
+
+After running the `db:migrate` Rake task, you may see output like the following:
+
+```shell
+main: == [advisory_lock_connection] object_id: 173580, pg_backend_pid: 5532
+main: == [advisory_lock_connection] object_id: 173580, pg_backend_pid: 5532
+```
+
+The messages returned are informational and can be ignored.

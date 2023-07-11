@@ -1,24 +1,15 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-
 import { GlButton, GlIcon, GlPopover } from '@gitlab/ui';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import FailedJobsList from '~/pipelines/components/pipelines_list/failure_widget/failed_jobs_list.vue';
-import getPipelineFailedJobsCount from '~/pipelines/graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
-import { createFailedJobsMockCount } from './mock';
-
-Vue.use(VueApollo);
 
 jest.mock('~/alert');
 
 describe('PipelineFailedJobsWidget component', () => {
   let wrapper;
-  let mockFailedJobsResponse;
 
   const defaultProps = {
+    failedJobsCount: 4,
     isPipelineActive: false,
     pipelineIid: 1,
     pipelinePath: '/pipelines/1',
@@ -26,13 +17,9 @@ describe('PipelineFailedJobsWidget component', () => {
 
   const defaultProvide = {
     fullPath: 'namespace/project/',
-    graphqlPath: '/api/graphql',
   };
 
-  const createComponent = ({ props = {}, provide } = {}) => {
-    const handlers = [[getPipelineFailedJobsCount, mockFailedJobsResponse]];
-    const mockApollo = createMockApollo(handlers);
-
+  const createComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = shallowMountExtended(PipelineFailedJobsWidget, {
       propsData: {
         ...defaultProps,
@@ -42,7 +29,6 @@ describe('PipelineFailedJobsWidget component', () => {
         ...defaultProvide,
         ...provide,
       },
-      apolloProvider: mockApollo,
     });
   };
 
@@ -51,13 +37,9 @@ describe('PipelineFailedJobsWidget component', () => {
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
   const findInfoPopover = () => wrapper.findComponent(GlPopover);
 
-  beforeEach(() => {
-    mockFailedJobsResponse = jest.fn().mockResolvedValue(createFailedJobsMockCount());
-  });
-
-  describe('when it is loading', () => {
+  describe('when there are no failed jobs', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ props: { failedJobsCount: 0 } });
     });
 
     it('renders the show failed jobs button with a count of 0', () => {
@@ -66,16 +48,16 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   });
 
-  describe('when the failed jobs have loaded', () => {
-    beforeEach(async () => {
+  describe('when there are failed jobs', () => {
+    beforeEach(() => {
       createComponent();
-
-      await waitForPromises();
     });
 
     it('renders the show failed jobs button with correct count', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe('Show failed jobs (4)');
+      expect(findFailedJobsButton().text()).toBe(
+        `Show failed jobs (${defaultProps.failedJobsCount})`,
+      );
     });
 
     it('renders the info icon', () => {
@@ -94,8 +76,6 @@ describe('PipelineFailedJobsWidget component', () => {
   describe('when the job button is clicked', () => {
     beforeEach(async () => {
       createComponent();
-      await waitForPromises();
-
       await findFailedJobsButton().vm.$emit('click');
     });
 
@@ -104,77 +84,37 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   });
 
-  describe('polling', () => {
-    it.each`
-      isGraphqlActive | isExpanded | shouldPoll | text
-      ${true}         | ${false}   | ${true}    | ${'polls'}
-      ${false}        | ${false}   | ${false}   | ${'does not poll'}
-      ${true}         | ${true}    | ${false}   | ${'does not poll'}
-      ${false}        | ${true}    | ${false}   | ${'does not poll'}
-    `(
-      `$text when isGraphqlActive: $isGraphqlActive, isExpanded: $isExpanded`,
-      async ({ isGraphqlActive, isExpanded, shouldPoll }) => {
-        const defaultCount = 4;
-        const newCount = 1;
-        const expectedCount = shouldPoll ? newCount : defaultCount;
-        const expectedCallCount = shouldPoll ? 2 : 1;
-
-        // Second result is to simulate polling with a different response
-        mockFailedJobsResponse.mockResolvedValueOnce(
-          createFailedJobsMockCount({ active: isGraphqlActive, count: defaultCount }),
-        );
-        mockFailedJobsResponse.mockResolvedValueOnce(
-          createFailedJobsMockCount({ active: isGraphqlActive, count: newCount }),
-        );
-
-        createComponent();
-        await waitForPromises();
-
-        // Initially, we get the first response which is always the default
-        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
-        expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${defaultCount})`);
-
-        // If the user expands the widget, polling stops
-        if (isExpanded) {
-          await findFailedJobsButton().vm.$emit('click');
-        }
-
-        jest.advanceTimersByTime(10000);
-        await waitForPromises();
-
-        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(expectedCallCount);
-        expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${expectedCount})`);
-      },
-    );
-  });
-
-  describe('when a REST action occurs', () => {
-    const defaultCount = 4;
-    const newCount = 1;
-
+  describe('when the job count changes', () => {
     beforeEach(() => {
-      // Second result is to simulate polling with a different response
-      mockFailedJobsResponse.mockResolvedValueOnce(
-        createFailedJobsMockCount({ active: false, count: defaultCount }),
-      );
-      mockFailedJobsResponse.mockResolvedValueOnce(
-        createFailedJobsMockCount({ active: false, count: newCount }),
-      );
+      createComponent();
     });
 
-    it.each([true, false])('triggers a refetch of the jobs count', async (isPipelineActive) => {
-      createComponent({ props: { isPipelineActive } });
-      await waitForPromises();
+    describe('from the prop', () => {
+      it('updates the job count', async () => {
+        const newJobCount = 12;
 
-      // Initially, we get the first response which is always the default
-      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
-      expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${defaultCount})`);
+        expect(findFailedJobsButton().text()).toContain(String(defaultProps.failedJobsCount));
 
-      await wrapper.setProps({ isPipelineActive: !isPipelineActive });
-      await waitForPromises();
+        await wrapper.setProps({ failedJobsCount: newJobCount });
 
-      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(2);
-      expect(findFailedJobsButton().text()).toBe(`Show failed jobs (${newCount})`);
+        expect(findFailedJobsButton().text()).toContain(String(newJobCount));
+      });
+    });
+
+    describe('from the event', () => {
+      beforeEach(async () => {
+        await findFailedJobsButton().vm.$emit('click');
+      });
+
+      it('updates the job count', async () => {
+        const newJobCount = 12;
+
+        expect(findFailedJobsButton().text()).toContain(String(defaultProps.failedJobsCount));
+
+        await findFailedJobsList().at(0).vm.$emit('failed-jobs-count', newJobCount);
+
+        expect(findFailedJobsButton().text()).toContain(String(newJobCount));
+      });
     });
   });
 });

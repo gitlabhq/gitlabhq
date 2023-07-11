@@ -11,7 +11,7 @@ module Ai
       encode: false,
       encode_iv: false
 
-    validates :token, presence: true
+    validates :token, :expires_at, presence: true
 
     enum category: {
       code_suggestions: 1

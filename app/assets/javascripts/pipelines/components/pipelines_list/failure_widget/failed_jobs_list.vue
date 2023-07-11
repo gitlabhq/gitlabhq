@@ -4,7 +4,7 @@ import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
 import { getQueryHeaders } from '~/pipelines/components/graph/utils';
 import getPipelineFailedJobs from '../../../graphql/queries/get_pipeline_failed_jobs.query.graphql';
-import { sortJobsByStatus } from './utils';
+import { graphqlEtagPipelinePath, sortJobsByStatus } from './utils';
 import FailedJobDetails from './failed_job_details.vue';
 
 const POLL_INTERVAL = 10000;
@@ -19,12 +19,8 @@ export default {
     GlLoadingIcon,
     FailedJobDetails,
   },
-  inject: ['fullPath'],
+  inject: ['fullPath', 'graphqlPath'],
   props: {
-    graphqlResourceEtag: {
-      required: true,
-      type: String,
-    },
     isPipelineActive: {
       required: true,
       type: Boolean,
@@ -72,6 +68,9 @@ export default {
     },
   },
   computed: {
+    graphqlResourceEtag() {
+      return graphqlEtagPipelinePath(this.graphqlPath, this.pipelineIid);
+    },
     hasFailedJobs() {
       return this.failedJobs.length > 0;
     },

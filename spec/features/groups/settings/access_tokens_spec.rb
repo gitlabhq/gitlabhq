@@ -36,7 +36,7 @@ RSpec.describe 'Group > Settings > Access Tokens', :js, feature_category: :syste
     it_behaves_like 'resource access tokens creation', 'group'
 
     context 'when token creation is not allowed' do
-      it_behaves_like 'resource access tokens creation disallowed', 'Group access token creation is disabled in this group. You can still use and manage existing tokens.'
+      it_behaves_like 'resource access tokens creation disallowed', 'Group access token creation is disabled in this group.'
     end
   end
 

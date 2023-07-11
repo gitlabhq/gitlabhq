@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Keep your GitLab instance up and running.
 
 - [Housekeeping](../../administration/housekeeping.md)
-- [Activate GitLab EE with license](../../user/admin_area/license_file.md)
+- [Activate GitLab EE with license](../../administration/license_file.md)
 - [Fast SSH key lookup](../../administration/operations/fast_ssh_key_lookup.md)
 - [File system benchmarking](../../administration/operations/filesystem_benchmarking.md)
 - [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)

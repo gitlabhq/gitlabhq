@@ -17,14 +17,14 @@ In GitLab SaaS, administration tasks are limited compared to a self-managed appl
 
 In a self-managed instance:
 
-- You have complete access and administrative control over the application, including the [Admin Area](../../user/admin_area/settings/index.md).
+- You have complete access and administrative control over the application, including the [Admin Area](../../administration/settings/index.md).
 - You can impersonate, create, add, and remove users.
 - You can assign the [`Auditor`](../../administration/auditor_users.md) user type and `External` role.
 
 On GitLab SaaS:
 
 - You have limited administrative control. For example, you cannot impersonate, create, add, or remove users.
-- You cannot access the [Admin Area](../../user/admin_area/settings/index.md).
+- You cannot access the [Admin Area](../../administration/settings/index.md).
 - You cannot assign the `Auditor` user type and `External` role.
 
 ## Logs

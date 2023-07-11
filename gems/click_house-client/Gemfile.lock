@@ -33,7 +33,7 @@ GEM
     parser (3.2.2.3)
       ast (~> 2.4.1)
       racc
-    public_suffix (5.0.1)
+    public_suffix (5.0.3)
     racc (1.7.1)
     rack (3.0.8)
     rainbow (3.1.1)
@@ -88,7 +88,7 @@ GEM
     unicode-display_width (2.4.2)
 
 PLATFORMS
-  x86_64-linux
+  ruby
 
 DEPENDENCIES
   click_house-client!
@@ -99,4 +99,4 @@ DEPENDENCIES
   rubocop-rspec
 
 BUNDLED WITH
-   2.4.15
+   2.4.16

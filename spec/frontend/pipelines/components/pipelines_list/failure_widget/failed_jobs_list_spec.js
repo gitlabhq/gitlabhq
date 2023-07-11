@@ -31,6 +31,7 @@ describe('FailedJobsList component', () => {
 
   const defaultProvide = {
     fullPath: 'namespace/project/',
+    graphqlPath: 'api/graphql',
   };
 
   const createComponent = ({ props = {}, provide } = {}) => {
