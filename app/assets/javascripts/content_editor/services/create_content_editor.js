@@ -74,11 +74,6 @@ import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
     extensions: [...extensions],
-    editorProps: {
-      attributes: {
-        class: 'gl-shadow-none!',
-      },
-    },
     ...options,
   });
 

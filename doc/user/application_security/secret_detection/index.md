@@ -629,21 +629,10 @@ This feature is separate from Secret Detection scanning, which checks your Git r
 
 ## Troubleshooting
 
-### Set the logging level
+### Debug-level logging
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1.
-
-Set the logging level to `debug` when you need diagnostic information in a Secret Detection job log.
-
-WARNING:
-Debug logging can be a serious security risk. The output may contain the content of environment
-variables and other secrets available to the job. The output is uploaded to the GitLab server and
-visible in job logs.
-
-1. In the `.gitlab-ci.yml` file, set the `SECURE_LOG_LEVEL` CI/CD variable to `debug`.
-1. Run the Secret Detection job.
-1. Analyze the content of the Secret Detection job.
-1. In the `.gitlab-ci.yml` file, set the `SECURE_LOG_LEVEL` CI/CD variable to `info` (default).
+Debug-level logging can help when troubleshooting. For details, see
+[debug-level logging](../index.md#debug-level-logging).
 
 ### Warning: `gl-secret-detection-report.json: no matching files`
 
@@ -661,8 +650,8 @@ For example, you could have a pipeline triggered from a merge request containing
 clone is not deep enough to contain all of the relevant commits. To verify the current value, see
 [pipeline configuration](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
-To confirm this as the cause of the error, set the [logging level](#set-the-logging-level) to
-`debug`, then rerun the pipeline. The logs should look similar to the following example. The text
+To confirm this as the cause of the error, enable [debug-level logging](../index.md#debug-level-logging),
+then rerun the pipeline. The logs should look similar to the following example. The text
 "object not found" is a symptom of this error.
 
 ```plaintext

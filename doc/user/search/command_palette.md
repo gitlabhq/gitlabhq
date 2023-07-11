@@ -1,0 +1,28 @@
+---
+stage: Manage
+group: Foundations
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+type: reference
+---
+
+# Command palette **(FREE)**
+
+> Introduced in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `command_palette`. Disabled by default.
+
+You can use command palette to narrow down the scope of your search or to
+find an object more quickly.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to enable the feature flag named `command_palette`. On GitLab.com, this feature is not available.
+
+## Open the command palette
+
+To open the command palette:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**).
+1. Type one of the special characters:
+
+   - <kbd>></kbd> - Use to create a new object or to find a menu item.
+   - <kbd>@</kbd> - Search for user.
+   - <kbd>:</kbd> - Search for project.
+   - <kbd>/</kbd> - Search for project files in the default repository branch.

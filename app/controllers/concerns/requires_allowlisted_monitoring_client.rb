@@ -1,28 +1,28 @@
 # frozen_string_literal: true
 
-module RequiresWhitelistedMonitoringClient
+module RequiresAllowlistedMonitoringClient
   extend ActiveSupport::Concern
 
   included do
-    before_action :validate_ip_whitelisted_or_valid_token!
+    before_action :validate_ip_allowlisted_or_valid_token!
   end
 
   private
 
-  def validate_ip_whitelisted_or_valid_token!
-    render_404 unless client_ip_whitelisted? || valid_token?
+  def validate_ip_allowlisted_or_valid_token!
+    render_404 unless client_ip_allowlisted? || valid_token?
   end
 
-  def client_ip_whitelisted?
+  def client_ip_allowlisted?
     # Always allow developers to access http://localhost:3000/-/metrics for
     # debugging purposes
     return true if Rails.env.development? && request.local?
 
-    ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.instance.client_ip) }
+    ip_allowlist.any? { |e| e.include?(Gitlab::RequestContext.instance.client_ip) }
   end
 
-  def ip_whitelist
-    @ip_whitelist ||= Settings.monitoring.ip_whitelist.map { |ip| IPAddr.new(ip) }
+  def ip_allowlist
+    @ip_allowlist ||= Settings.monitoring.ip_whitelist.map { |ip| IPAddr.new(ip) }
   end
 
   def valid_token?

@@ -519,21 +519,6 @@ variables:
   SEARCH_MAX_DEPTH: 10
 ```
 
-#### Logging level
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10880) in GitLab 13.1.
-
-To control the verbosity of logs, set the `SECURE_LOG_LEVEL` environment variable. Messages of this
-logging level or higher are output.
-
-From highest to lowest severity, the logging levels are:
-
-- `fatal`
-- `error`
-- `warn`
-- `info` (default)
-- `debug`
-
 #### Custom Certificate Authority
 
 To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
@@ -772,14 +757,10 @@ By default SAST analyzers are supported in GitLab instances hosted on SELinux. A
 
 ## Troubleshooting
 
-### SAST debug logging
+### Debug-level logging
 
-Increase the [Secure scanner log verbosity](#logging-level) to `debug` in a global CI variable to help troubleshoot SAST jobs.
-
-```yaml
-variables:
-  SECURE_LOG_LEVEL: "debug"
-```
+Debug-level logging can help when troubleshooting. For details, see
+[debug-level logging](../index.md#debug-level-logging).
 
 ### Pipeline errors related to changes in the GitLab-managed CI/CD template
 

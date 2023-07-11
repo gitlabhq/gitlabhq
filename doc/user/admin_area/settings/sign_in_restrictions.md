@@ -114,11 +114,13 @@ Admin Mode times out after six hours, and you cannot change this timeout limit.
 The following access methods are **not** protected by Admin Mode:
 
 - Git client access (SSH using public keys or HTTPS using Personal Access Tokens).
-- API access using a Personal Access Token.
 
 In other words, administrators who are otherwise limited by Admin Mode can still use
-Git clients, and access RESTful API endpoints as administrators, without additional
-authentication steps.
+Git clients without additional authentication steps.
+
+To use the GitLab REST- or GraphQL API, administrators must [create a personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) with the [`admin_mode` scope](../../profile/personal_access_tokens.md#personal-access-token-scopes).
+
+If an administrator with a personal access token with the `admin_mode` scope loses their administrator access, that user cannot access the API as an administrator even though they still have the token with the `admin_mode` scope.
 
 We may address these limitations in the future. For more information see the following epic:
 [Admin Mode for GitLab Administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158).

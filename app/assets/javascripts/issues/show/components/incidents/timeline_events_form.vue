@@ -229,7 +229,7 @@ export default {
           <template #textarea>
             <textarea
               v-model="timelineText"
-              class="note-textarea js-gfm-input js-autosize markdown-area"
+              class="note-textarea note-textarea-rounded-bottom js-gfm-input js-autosize markdown-area gl-bordered"
               data-testid="input-note"
               dir="auto"
               data-supports-quick-actions="false"

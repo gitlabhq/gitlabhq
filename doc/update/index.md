@@ -312,6 +312,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
   - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
   - Versions containing fix: GitLab 16.1.3 and later.
+- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+  - This change applies to installation methods with Linux packages (Omnibus GitLab), GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
 
 ### 15.11.1
 

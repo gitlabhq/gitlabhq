@@ -46,6 +46,7 @@ Here's a list of where we're using this right now, and should try to move away
 from using `$FORCE_GITLAB_CI`.
 
 - [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html)
+- [Gitaly downstream GitLab pipeline](https://gitlab.com/gitlab-org/gitaly/-/issues/4615)
 
 ## Default image
 

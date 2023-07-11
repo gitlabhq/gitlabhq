@@ -76,10 +76,10 @@ export default {
           <h3 id="related-merge-requests" class="gl-new-card-title">
             {{ __('Related merge requests') }}
           </h3>
-          <div class="gl-display-inline-flex gl-align-items-center gl-m-0">
+          <div class="gl-new-card-count">
             <template v-if="totalCount">
-              <gl-icon name="merge-request" class="gl-ml-3 gl-mr-2 gl-text-gray-500" />
-              <span data-testid="count" class="gl-text-gray-500">{{ totalCount }}</span>
+              <gl-icon name="merge-request" class="gl-mr-2" />
+              <span data-testid="count">{{ totalCount }}</span>
             </template>
           </div>
         </div>

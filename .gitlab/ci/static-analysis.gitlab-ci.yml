@@ -134,7 +134,7 @@ rubocop:
         unset CI_SLACK_WEBHOOK_URL
         run_timed_command "fail_on_warnings bundle exec rake rubocop:check:graceful"
       else
-        cat "${RSPEC_CHANGED_FILES_PATH}" | ruby -e 'print $stdin.read.split(" ").select { |f| File.exist?(f) }.join(" ")' > "$RUBOCOP_TARGET_FILES"
+        select_existing_files < "${RSPEC_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
         # Skip running RuboCop if there's no target files
         if [ -s "${RUBOCOP_TARGET_FILES}" ]; then
           run_timed_command "fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"

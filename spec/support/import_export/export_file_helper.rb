@@ -92,7 +92,7 @@ module ExportFileHelper
   end
 
   # Returns the offended ObjectWithParent object if a sensitive word is found inside a hash,
-  # excluding the whitelisted safe hashes.
+  # excluding the allowlisted safe hashes.
   def find_sensitive_attributes(sensitive_word, project_hash)
     loop do
       object_with_parent = deep_find_with_parent(sensitive_word, project_hash)

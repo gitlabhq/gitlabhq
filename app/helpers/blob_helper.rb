@@ -118,8 +118,8 @@ module BlobHelper
     "#{blob_raw_path.rpartition('/').first}/"
   end
 
-  # SVGs can contain malicious JavaScript; only include whitelisted
-  # elements and attributes. Note that this whitelist is by no means complete
+  # SVGs can contain malicious JavaScript; only include allowlisted
+  # elements and attributes. Note that this allowlist is by no means complete
   # and may omit some elements.
   def sanitize_svg_data(data)
     Gitlab::Sanitizers::SVG.clean(data)

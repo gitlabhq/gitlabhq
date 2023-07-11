@@ -8,6 +8,7 @@ module Sidebars
         def configure_menu_items
           return false unless feature_enabled?
 
+          add_item(tracing_menu_item)
           add_item(error_tracking_menu_item)
           add_item(alert_management_menu_item)
           add_item(incidents_menu_item)
@@ -59,6 +60,20 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { controller: :error_tracking },
             item_id: :error_tracking
+          )
+        end
+
+        def tracing_menu_item
+          unless Gitlab::Observability.tracing_enabled?(context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :tracing)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Tracing'),
+            link: project_tracing_index_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
+            active_routes: { controller: :tracing },
+            item_id: :tracing
           )
         end
 

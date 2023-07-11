@@ -371,7 +371,7 @@ function rspec_rerun_previous_failed_tests() {
   local test_file_count_threshold=${RSPEC_PREVIOUS_FAILED_TEST_FILE_COUNT_THRESHOLD:-10}
   local matching_tests_file=${1}
   local rspec_opts=${2}
-  local test_files="$(cat "${matching_tests_file}")"
+  local test_files="$(select_existing_files < "${matching_tests_file}")"
   local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
 
   if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then

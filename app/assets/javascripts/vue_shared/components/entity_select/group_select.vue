@@ -121,6 +121,7 @@ export default {
     :default-toggle-text="$options.i18n.toggleText"
     :fetch-items="fetchGroups"
     :fetch-initial-selection-text="fetchGroupName"
+    v-on="$listeners"
   >
     <template #error>
       <gl-alert v-if="errorMessage" class="gl-mb-3" variant="danger" @dismiss="dismissError">{{

@@ -355,10 +355,7 @@ export default {
 <template>
   <div
     ref="gl-form"
-    :class="{
-      'gl-border-none! gl-shadow-none!': removeBorder,
-    }"
-    class="js-vue-markdown-field md-area position-relative gfm-form"
+    class="js-vue-markdown-field md-area position-relative gfm-form gl-overflow-hidden"
     :data-uploads-path="uploadsPath"
   >
     <markdown-header

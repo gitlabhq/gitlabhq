@@ -270,15 +270,10 @@ pipelines tab on merge requests by [setting `artifacts: paths`](../../../ci/yaml
 
 ## Troubleshooting
 
-### IaC debug logging
+### Debug-level logging
 
-To help troubleshoot IaC jobs, you can increase the [Secure scanner log verbosity](../sast/index.md#logging-level)
-by using a global CI/CD variable set to `debug`:
-
-```yaml
-variables:
-  SECURE_LOG_LEVEL: "debug"
-```
+Debug-level logging can help when troubleshooting. For details, see
+[debug-level logging](../index.md#debug-level-logging).
 
 ### IaC Scanning findings show as `No longer detected` unexpectedly
 

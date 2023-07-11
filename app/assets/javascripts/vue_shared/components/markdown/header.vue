@@ -257,11 +257,11 @@ export default {
 </script>
 
 <template>
-  <div class="md-header gl-bg-gray-50 gl-px-2 gl-rounded-base gl-mx-2 gl-mt-2">
+  <div class="md-header gl-border-b gl-border-gray-100 gl-px-3">
     <div class="gl-display-flex gl-align-items-center gl-flex-wrap">
       <div
         data-testid="md-header-toolbar"
-        class="md-header-toolbar gl-display-flex gl-py-2 gl-flex-wrap gl-row-gap-3"
+        class="md-header-toolbar gl-display-flex gl-py-3 gl-flex-wrap gl-row-gap-3"
       >
         <gl-button
           v-if="enablePreview"

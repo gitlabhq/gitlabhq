@@ -2,7 +2,7 @@
 
 # rubocop:disable Rails/ApplicationController
 class MetricsController < ActionController::Base
-  include RequiresWhitelistedMonitoringClient
+  include RequiresAllowlistedMonitoringClient
 
   protect_from_forgery with: :exception, prepend: true
 

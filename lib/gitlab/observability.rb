@@ -23,12 +23,23 @@ module Gitlab
       'https://observe.gitlab.com'
     end
 
-    # Returns true if the Observability feature flag is enabled
+    def oauth_url
+      "#{Gitlab::Observability.observability_url}/v1/auth/start"
+    end
+
+    # Returns true if the GitLab Observability UI (GOUI) feature flag is enabled
+    #
+    # @deprecated
     #
     def enabled?(group = nil)
       return Feature.enabled?(:observability_group_tab, group) if group
 
       Feature.enabled?(:observability_group_tab)
+    end
+
+    # Returns true if Tracing UI is enabled
+    def tracing_enabled?(project)
+      Feature.enabled?(:observability_tracing, project)
     end
 
     # Returns the embeddable Observability URL of a given URL

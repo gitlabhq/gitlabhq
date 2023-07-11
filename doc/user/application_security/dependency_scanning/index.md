@@ -635,7 +635,6 @@ The following variables allow configuration of global dependency scanning settin
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10.) Automatically set to `"-fips"` when FIPS mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.) |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
-| `SECURE_LOG_LEVEL`          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info` (default), `debug`. |
 
 #### Configuring specific analyzers used by dependency scanning
 
@@ -1136,12 +1135,10 @@ version number).
 
 ## Troubleshooting
 
-### Increase log verbosity
+### Debug-level logging
 
-When a [job log](../../../ci/jobs/index.md#expand-and-collapse-job-log-sections)
-doesn't contain enough information about a dependency-scanning failure,
-[set `SECURE_LOG_LEVEL` to `debug`](#configuring-dependency-scanning)
-and check the resulting, more verbose log.
+Debug-level logging can help when troubleshooting. For details, see
+[debug-level logging](../index.md#debug-level-logging).
 
 ### Working around missing support for certain languages or package managers
 

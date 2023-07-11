@@ -6,9 +6,14 @@
   max-height: 55vh;
   position: static;
   overflow-y: auto;
+  transition: box-shadow ease-in-out 0.15s;
 
   ::selection {
     background-color: transparent;
+  }
+
+  &:focus {
+    @include gl-focus($inset: true);
   }
 
   &:not(.ProseMirror-hideselection) .content-editor-selection,

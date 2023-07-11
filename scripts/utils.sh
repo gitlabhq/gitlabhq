@@ -201,6 +201,10 @@ function install_junit_merge_gem() {
   run_timed_command "gem install junit_merge --no-document --version 0.1.2"
 }
 
+function select_existing_files() {
+  ruby -e 'print $stdin.read.split(" ").select { |f| File.exist?(f) }.join(" ")'
+}
+
 function fail_on_warnings() {
   local cmd="$*"
   local warning_file

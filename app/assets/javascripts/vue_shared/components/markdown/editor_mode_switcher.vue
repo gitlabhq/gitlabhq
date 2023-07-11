@@ -27,7 +27,7 @@ export default {
 <template>
   <div class="content-editor-switcher gl-display-inline-flex gl-align-items-center">
     <gl-button
-      class="btn btn-default btn-sm gl-button btn-default-tertiary"
+      class="btn btn-default btn-sm gl-button btn-default-tertiary gl-font-sm! gl-text-secondary! gl-px-4!"
       data-qa-selector="editing_mode_switcher"
       @click="$emit('input')"
       >{{ text }}</gl-button

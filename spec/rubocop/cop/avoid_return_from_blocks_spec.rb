@@ -41,10 +41,10 @@ RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
     RUBY
   end
 
-  shared_examples 'examples with whitelisted method' do |whitelisted_method|
-    it "doesn't flag violation for return inside #{whitelisted_method}" do
+  shared_examples 'examples with allowlisted method' do |allowlisted_method|
+    it "doesn't flag violation for return inside #{allowlisted_method}" do
       expect_no_offenses(<<~RUBY)
-        items.#{whitelisted_method} do |item|
+        items.#{allowlisted_method} do |item|
           do_something
           return if something_else
         end
@@ -52,8 +52,8 @@ RSpec.describe RuboCop::Cop::AvoidReturnFromBlocks do
     end
   end
 
-  %i[each each_filename times loop].each do |whitelisted_method|
-    it_behaves_like 'examples with whitelisted method', whitelisted_method
+  %i[each each_filename times loop].each do |allowlisted_method|
+    it_behaves_like 'examples with allowlisted method', allowlisted_method
   end
 
   shared_examples 'examples with def methods' do |def_method|

@@ -39,6 +39,8 @@ describe('GroupSelect', () => {
   const findEntitySelect = () => wrapper.findComponent(EntitySelect);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
+  const handleInput = jest.fn();
+
   // Helpers
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(GroupSelect, {
@@ -51,6 +53,9 @@ describe('GroupSelect', () => {
       stubs: {
         GlAlert,
         EntitySelect,
+      },
+      listeners: {
+        input: handleInput,
       },
     });
   };
@@ -131,5 +136,12 @@ describe('GroupSelect', () => {
 
     expect(findAlert().exists()).toBe(true);
     expect(findAlert().text()).toBe(FETCH_GROUPS_ERROR);
+  });
+
+  it('forwards events to the parent scope via `v-on="$listeners"`', () => {
+    createComponent();
+    findEntitySelect().vm.$emit('input');
+
+    expect(handleInput).toHaveBeenCalledTimes(1);
   });
 });

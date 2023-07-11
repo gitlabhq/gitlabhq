@@ -17,6 +17,11 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
   describe 'GET #new' do
     include_context 'group project issue'
 
+    before do
+      group.add_developer(user)
+      login_as(user)
+    end
+
     it_behaves_like "observability csp policy", described_class do
       let(:tested_path) do
         new_project_issue_path(project)
@@ -26,11 +31,13 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
 
   describe 'GET #show' do
     before do
+      group.add_developer(user)
       login_as(user)
     end
 
     it_behaves_like "observability csp policy", described_class do
       include_context 'group project issue'
+
       let(:tested_path) do
         project_issue_path(project, issue)
       end

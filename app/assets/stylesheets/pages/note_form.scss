@@ -48,7 +48,7 @@
 
 .common-note-form {
   .md-area {
-    border: 1px solid $border-color;
+    border: 1px solid $gray-400;
     border-radius: $border-radius-large;
     transition: border-color ease-in-out 0.15s,
       box-shadow ease-in-out 0.15s;
@@ -65,19 +65,34 @@
       }
     }
 
-    // Disable inner focus
+    &:hover,
+    &:focus-within {
+      @include gl-shadow-md;
+    }
+
+    &:hover {
+      border: 1px solid $gray-500;
+    }
+
+    &:focus-within {
+      border: 1px solid $gray-900;
+    }
+
+    // Add focus
     textarea:focus {
-      @include gl-shadow-none;
+      @include gl-focus($inset: true);
+    }
+
+    .note-textarea-rounded-bottom {
+      border-bottom-left-radius: calc(#{$border-radius-large} - 1px);
+      border-bottom-right-radius: calc(#{$border-radius-large} - 1px);
+    }
+
+    // Disable inner focus on fullscreen
+    .zen-backdrop.fullscreen textarea:focus {
+      box-shadow: none;
     }
   }
-
-  .comment-warning-wrapper:focus-within {
-    @include gl-focus;
-  }
-}
-
-.md-area:focus-within {
-  @include gl-focus;
 }
 
 .md-header {
@@ -217,6 +232,7 @@ table {
 
   .md-area {
     background-color: $white;
+    @include gl-rounded-base;
   }
 }
 
@@ -309,12 +325,18 @@ table {
     resize: none;
     padding: $gl-padding-8 $gl-padding-12;
     line-height: 1;
-    border: 1px solid $border-color;
+    border: 1px solid $gray-200;
     background-color: $white;
     overflow: hidden;
+    transition: border-color ease-in-out 0.15s,
+      box-shadow ease-in-out 0.15s;
 
     @include media-breakpoint-down(xs) {
       margin-bottom: $gl-padding-8;
+    }
+
+    &:hover {
+      border: 1px solid $gray-500;
     }
   }
 }
@@ -436,9 +458,4 @@ table {
 .comment-warning-wrapper {
   transition: border-color ease-in-out 0.15s,
     box-shadow ease-in-out 0.15s;
-
-  .md-area {
-    border: 0;
-    box-shadow: none;
-  }
 }

@@ -103,6 +103,11 @@ To view a list of seats being used:
 1. Select **Settings > Usage Quotas**.
 1. On the **Seats** tab, view usage information.
 
+For each user, a list shows groups and projects where the user is a direct member.
+
+- **Group invite** indicates the user is a member of a [group shared with a group](../../user/group/manage.md#share-a-group-with-another-group).
+- **Project invite** indicates the user is a member of a [group shared with a project](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group).
+
 The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
 The counts for **Max seats used** and **Seats owed** are updated once per day.
 

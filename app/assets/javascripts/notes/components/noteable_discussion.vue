@@ -336,7 +336,7 @@ export default {
                 <li
                   v-else-if="canShowReplyActions && showReplies"
                   data-testid="reply-wrapper"
-                  class="discussion-reply-holder gl-border-t-0! clearfix"
+                  class="discussion-reply-holder gl-border-t-0! gl-pb-5! clearfix"
                   :class="discussionHolderClass"
                 >
                   <discussion-actions

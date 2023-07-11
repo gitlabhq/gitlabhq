@@ -227,7 +227,7 @@ export default {
 </script>
 <template>
   <content-editor-provider :content-editor="contentEditor">
-    <div>
+    <div class="md-area gl-overflow-hidden">
       <editor-state-observer
         @docUpdate="notifyChange"
         @focus="focus"
@@ -238,7 +238,6 @@ export default {
       <div
         data-testid="content-editor"
         data-qa-selector="content_editor_container"
-        class="md-area gl-border-none! gl-shadow-none!"
         :class="{ 'is-focused': focused }"
       >
         <formatting-toolbar
@@ -263,7 +262,7 @@ export default {
         <reference-bubble-menu />
       </div>
       <div
-        class="gl-display-flex gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-2 gl-mx-2 gl-mb-2 gl-bg-gray-10 gl-text-secondary"
+        class="gl-display-flex gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-2 gl-border-t gl-border-gray-100 gl-text-secondary"
       >
         <editor-mode-switcher size="small" value="richText" @input="handleEditorModeChanged" />
         <gl-button
@@ -274,6 +273,7 @@ export default {
           category="tertiary"
           size="small"
           title="Markdown is supported"
+          class="gl-px-3!"
         />
       </div>
     </div>

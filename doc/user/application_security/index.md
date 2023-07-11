@@ -536,23 +536,47 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 ## Troubleshooting
 
-<!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
--->
+### Logging level
 
-### Secure job failing with exit code 1
+The verbosity of logs output by GitLab analyzers is determined by the `SECURE_LOG_LEVEL` environment
+variable. Messages of this logging level or higher are output.
+
+From highest to lowest severity, the logging levels are:
+
+- `fatal`
+- `error`
+- `warn`
+- `info` (default)
+- `debug`
+
+#### Debug-level logging
 
 WARNING:
 Debug logging can be a serious security risk. The output may contain the content of
 environment variables and other secrets available to the job. The output is uploaded
-to the GitLab server and visible in job logs.
+to the GitLab server and is visible in job logs.
 
-If a Secure job is failing and it's unclear why, add `SECURE_LOG_LEVEL: "debug"` as a global CI/CD variable for
-more verbose output that is helpful for troubleshooting.
+To enable debug-level logging, add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 variables:
   SECURE_LOG_LEVEL: "debug"
 ```
+
+This indicates to all GitLab analyzers that they are to output **all** messages. For more details,
+see [logging level](#logging-level).
+
+<!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
+-->
+
+### Secure job failing with exit code 1
+
+If a Secure job is failing and it's unclear why:
+
+1. Enable [debug-level logging](#debug-level-logging).
+1. Run the job.
+1. Examine the job's output.
+1. Set the logging level to `info` (default).
 
 ### Outdated security reports
 

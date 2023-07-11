@@ -50,11 +50,11 @@ export default {
 <template>
   <div
     v-if="showCommentToolBar"
-    class="comment-toolbar gl-display-flex gl-flex-direction-row gl-mx-2 gl-mb-2 gl-px-2 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+    class="comment-toolbar gl-display-flex gl-flex-direction-row gl-px-2 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
     :class="
       showContentEditorSwitcher
-        ? 'gl-bg-gray-10 gl-justify-content-space-between'
-        : 'gl-justify-content-end'
+        ? 'gl-justify-content-space-between gl-align-items-center gl-border-t gl-border-gray-100'
+        : 'gl-justify-content-end gl-my-2'
     "
   >
     <editor-mode-switcher
@@ -63,21 +63,8 @@ export default {
       value="markdown"
       @input="handleEditorModeChanged"
     />
-    <div>
-      <div class="toolbar-text gl-font-sm">
-        <template v-if="markdownDocsPath">
-          <gl-button
-            v-gl-tooltip
-            icon="markdown-mark"
-            :href="markdownDocsPath"
-            target="_blank"
-            category="tertiary"
-            size="small"
-            title="Markdown is supported"
-          />
-        </template>
-      </div>
-      <span v-if="canAttachFile" class="uploading-container gl-font-sm gl-line-height-32">
+    <div class="gl-display-flex">
+      <div v-if="canAttachFile" class="uploading-container gl-font-sm gl-line-height-32 gl-mr-3">
         <span class="uploading-progress-container hide">
           <gl-icon name="paperclip" />
           <span class="attaching-file-message"></span>
@@ -125,7 +112,18 @@ export default {
         >
           {{ __('Cancel') }}
         </gl-button>
-      </span>
+      </div>
+      <gl-button
+        v-if="markdownDocsPath"
+        v-gl-tooltip
+        icon="markdown-mark"
+        :href="markdownDocsPath"
+        target="_blank"
+        category="tertiary"
+        size="small"
+        title="Markdown is supported"
+        class="gl-px-3!"
+      />
     </div>
   </div>
 </template>

@@ -66,9 +66,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-lg gl-border-gray-100 gl-bg-white gl-overflow-hidden"
-  >
+  <div class="comment-warning-wrapper">
     <div
       v-if="withAlertContainer"
       class="error-alert"
@@ -76,7 +74,7 @@ export default {
     ></div>
     <noteable-warning
       v-if="hasWarning"
-      class="gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100 gl-rounded-base gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
+      class="gl-pt-4 gl-pb-5 gl-mb-n3 gl-rounded-lg gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
       :noteable-type="noteableType"
@@ -84,10 +82,20 @@ export default {
       :confidential-noteable-docs-path="noteableData.confidential_issues_docs_path"
     />
     <slot></slot>
-    <attachments-warning v-if="showAttachmentWarning" />
+    <attachments-warning
+      v-if="showAttachmentWarning"
+      :class="{
+        'gl-py-3': !showEmailParticipantsWarning,
+        'gl-pt-4 gl-pb-3 gl-mt-n3': showEmailParticipantsWarning,
+      }"
+    />
     <email-participants-warning
       v-if="showEmailParticipantsWarning"
-      class="gl-border-t-1 gl-border-t-solid gl-border-t-gray-100 gl-rounded-base gl-rounded-top-left-none! gl-rounded-top-right-none!"
+      class="gl-border-t-1 gl-rounded-lg gl-rounded-top-left-none! gl-rounded-top-right-none!"
+      :class="{
+        'gl-pt-4 gl-pb-3 gl-mt-n3': !showAttachmentWarning,
+        'gl-py-3 gl-mt-1': showAttachmentWarning,
+      }"
       :emails="emailParticipants"
     />
   </div>

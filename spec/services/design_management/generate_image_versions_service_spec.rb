@@ -15,7 +15,7 @@ RSpec.describe DesignManagement::GenerateImageVersionsService, feature_category:
         .from(nil).to(CarrierWave::SanitizedFile)
     end
 
-    it 'skips generating image versions if the mime type is not whitelisted' do
+    it 'skips generating image versions if the mime type is not allowlisted' do
       stub_const('DesignManagement::DesignV432x230Uploader::MIME_TYPE_ALLOWLIST', [])
 
       described_class.new(version).execute

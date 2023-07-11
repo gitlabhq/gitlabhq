@@ -200,13 +200,9 @@ export default {
             />
             <slot name="header-text">{{ headerText }}</slot>
           </h3>
-          <div
-            class="gl-new-card-count js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3 gl-text-gray-500"
-          >
-            <span class="gl-display-inline-flex gl-align-items-center">
-              <gl-icon :name="issuableTypeIcon" class="gl-mr-2 gl-text-gray-500" />
-              {{ badgeLabel }}
-            </span>
+          <div class="gl-new-card-count js-related-issues-header-issue-count">
+            <gl-icon :name="issuableTypeIcon" class="gl-mr-2" />
+            {{ badgeLabel }}
           </div>
         </div>
         <slot name="header-actions"></slot>
@@ -220,7 +216,7 @@ export default {
         >
           <slot name="add-button-text">{{ __('Add') }}</slot>
         </gl-button>
-        <div class="gl-pl-3 gl-ml-3 gl-border-l-1 gl-border-l-solid gl-border-l-gray-100">
+        <div class="gl-new-card-toggle">
           <gl-button
             category="tertiary"
             size="small"
@@ -282,7 +278,7 @@ export default {
             @saveReorder="$emit('saveReorder', $event)"
           />
         </template>
-        <div v-if="!shouldShowTokenBody && !isFormVisible" data-testid="related-items-empty">
+        <div v-if="!shouldShowTokenBody && !isFormVisible">
           <p class="gl-new-card-empty">
             {{ emptyStateMessage }}
             <gl-link

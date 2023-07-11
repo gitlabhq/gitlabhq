@@ -25,7 +25,7 @@ RSpec.shared_examples 'default allowlist' do
     expect(filter(act).to_html).to eq exp
   end
 
-  it 'allows whitelisted HTML tags from the user' do
+  it 'allows allowlisted HTML tags from the user' do
     exp = act = "<dl>\n<dt>Term</dt>\n<dd>Definition</dd>\n</dl>"
     expect(filter(act).to_html).to eq exp
   end
