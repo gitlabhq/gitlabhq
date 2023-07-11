@@ -9,12 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 [Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
 
-GitLab provides out-of-the-box monitoring with Prometheus, providing easy
-access to high quality time-series monitoring of GitLab services.
+GitLab provides out-of-the-box monitoring with Prometheus, providing access to high quality time-series monitoring of
+GitLab services.
 
-Prometheus and the various exporters listed in this page are bundled in the
-Omnibus GitLab package. Check each exporter's documentation for the timeline
-they got added. For installations from source you must install them
+Prometheus and the various exporters listed in this page are bundled in Linux packages. Check each exporter's
+documentation for the timeline they got added. For installations from source you must install them
 yourself. Over subsequent releases additional GitLab metrics are captured.
 
 Prometheus services are on by default.
@@ -85,7 +84,7 @@ listens on:
 
 ### Adding custom scrape configurations
 
-You can configure additional scrape targets for the Omnibus GitLab-bundled
+You can configure additional scrape targets for the Linux package-bundled
 Prometheus by editing `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb`
 using the [Prometheus scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E)
 syntax.
@@ -108,16 +107,16 @@ prometheus['scrape_configs'] = [
 ]
 ```
 
-### Standalone Prometheus using Omnibus GitLab
+### Standalone Prometheus using the Linux package
 
-The Omnibus GitLab package can be used to configure a standalone Monitoring node running Prometheus and [Grafana](../performance/grafana_configuration.md).
+The Linux package can be used to configure a standalone Monitoring node running Prometheus and [Grafana](../performance/grafana_configuration.md).
 
-The steps below are the minimum necessary to configure a Monitoring node running Prometheus and Grafana with Omnibus GitLab:
+The steps below are the minimum necessary to configure a Monitoring node running Prometheus and Grafana with the Linux
+package:
 
 1. SSH into the Monitoring node.
-1. [Install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package you want using **steps 1 and 2** from the GitLab downloads page, but
-   do not follow the remaining steps.
+1. [Install](https://about.gitlab.com/install/) the Linux package you want using **steps 1 and 2** from the GitLab
+   downloads page, but do not follow the remaining steps.
 1. Make sure to collect the IP addresses or DNS records of the Consul server nodes, for the next step.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -388,8 +387,7 @@ Read more about the [GitLab Metrics](gitlab_metrics.md).
 
 ## Bundled software metrics
 
-Many of the GitLab dependencies bundled in Omnibus GitLab are preconfigured to
-export Prometheus metrics.
+Many of the GitLab dependencies bundled in the Linux package are preconfigured to export Prometheus metrics.
 
 ### Node exporter
 

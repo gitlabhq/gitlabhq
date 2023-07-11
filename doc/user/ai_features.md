@@ -90,7 +90,7 @@ code in a merge request:
 1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
 1. On the file you would like explained, select the three dots (**{ellipsis_v}**) and select **View File @ $SHA**.
-  
+
    A separate browser tab opens and shows the full file with the latest changes.
 
 1. On the new tab, select the lines that you want to have explained.
@@ -134,16 +134,16 @@ Review the drawer on the right-hand side of your screen.
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
-### GitLab Chat **(ULTIMATE SAAS)**
+### GitLab Duo Chat **(ULTIMATE SAAS)**
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#enable-third-party-ai-features) to be enabled.
 
-Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Chat.
+Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Duo Chat.
 
 1. In the lower-left corner, select the Help icon.
-1. Select **Ask in GitLab Chat**. A drawer opens on the right side of your screen.
+1. Select **Ask in GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to search the product documentation and produce an answer.
 
 To give feedback, select the **Give Feedback** link.

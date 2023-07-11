@@ -22263,11 +22263,12 @@ Counts of requirements by their state.
 | ---- | ---- | ----------- |
 | <a id="rootstoragestatisticsbuildartifactssize"></a>`buildArtifactsSize` | [`Float!`](#float) | CI artifacts size in bytes. |
 | <a id="rootstoragestatisticscontainerregistrysize"></a>`containerRegistrySize` | [`Float!`](#float) | Container Registry size in bytes. |
+| <a id="rootstoragestatisticscontainerregistrysizeisestimated"></a>`containerRegistrySizeIsEstimated` | [`Boolean!`](#boolean) | Indicates whether the deduplicated Container Registry size for the namespace is an estimated value or not. |
 | <a id="rootstoragestatisticsdependencyproxysize"></a>`dependencyProxySize` | [`Float!`](#float) | Dependency Proxy sizes in bytes. |
 | <a id="rootstoragestatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | LFS objects size in bytes. |
 | <a id="rootstoragestatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | Packages size in bytes. |
 | <a id="rootstoragestatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float!`](#float) | CI pipeline artifacts size in bytes. |
-| <a id="rootstoragestatisticsregistrysizeestimated"></a>`registrySizeEstimated` | [`Boolean!`](#boolean) | Indicates whether the deduplicated Container Registry size for the namespace is an estimated value or not. |
+| <a id="rootstoragestatisticsregistrysizeestimated"></a>`registrySizeEstimated` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.2. Use `container_registry_size_is_estimated`. |
 | <a id="rootstoragestatisticsrepositorysize"></a>`repositorySize` | [`Float!`](#float) | Git repository size in bytes. |
 | <a id="rootstoragestatisticssnippetssize"></a>`snippetsSize` | [`Float!`](#float) | Snippets size in bytes. |
 | <a id="rootstoragestatisticsstoragesize"></a>`storageSize` | [`Float!`](#float) | Total storage in bytes. |

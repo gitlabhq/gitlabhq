@@ -18,10 +18,10 @@ and Grafana allows you to query the data to display graphs.
 
 ## Deprecation of bundled Grafana
 
-Bundled Grafana was an optional Omnibus GitLab service that provided a user interface to GitLab metrics.
+Bundled Grafana was an optional service for Linux package installations that provided a user interface to GitLab metrics.
 
-The version of Grafana that is bundled with Omnibus GitLab is no longer supported. If you're using the bundled Grafana, you
-should switch to a newer version from [Grafana Labs](https://grafana.com/grafana/).
+The version of Grafana that is bundled with Linux package installations is no longer supported. If you're using the
+bundled Grafana, you should switch to a newer version from [Grafana Labs](https://grafana.com/grafana/).
 
 ### Switch to new Grafana instance
 
@@ -34,7 +34,8 @@ To switch away from bundled Grafana to a newer version of Grafana from Grafana L
 
 ### Temporary workaround
 
-In GitLab versions 16.0 to 16.2, you can still force Omnibus GitLab to enable and configure Grafana by setting the following:
+In GitLab versions 16.0 to 16.2, you can still force Linux package installations to enable and configure Grafana by
+setting the following:
 
 - `grafana['enable'] = true`.
 - `grafana['enable_deprecated_service'] = true`.
@@ -92,9 +93,9 @@ GitLab sidebar:
    and expand **Metrics - Grafana**.
 1. Select the **Add a link to Grafana** checkbox.
 1. Configure the **Grafana URL**:
-   - *If Grafana is enabled through Omnibus GitLab and on the same server,*
+   - If Grafana is enabled through a Linux package installation and on the same server,
      leave **Grafana URL** unchanged. It should be `/-/grafana`.
-   - *Otherwise,* enter the full URL of the Grafana instance.
+   - Otherwise, enter the full URL of the Grafana instance.
 1. Select **Save changes**.
 
 GitLab displays your link in the **Main menu > Admin > Monitoring > Metrics Dashboard**.

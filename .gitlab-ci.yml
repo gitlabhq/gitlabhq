@@ -29,13 +29,9 @@ default:
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "3.0"
-  OMNIBUS_GITLAB_RUBY3_BUILD: "true"
-  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
 
-.backcompat-ruby-variables: &backcompat-ruby-variables
-  RUBY_VERSION: "2.7"
-  OMNIBUS_GITLAB_RUBY2_BUILD: "true"
-  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY2"
+.next-ruby-variables: &next-ruby-variables
+  RUBY_VERSION: "3.1"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
   CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
@@ -59,10 +55,10 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    # For merge requests running exclusively in Ruby 2.7
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby2/'
+    # For merge requests running exclusively in Ruby 3.1
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
       variables:
-        <<: *backcompat-ruby-variables
+        <<: *next-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
         NO_SOURCEMAPS: 'true'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
@@ -84,10 +80,10 @@ workflow:
         <<: *default-branch-pipeline-failure-variables
         CRYSTALBALL: "true"
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
-    # Run pipelines for ruby2 branch
-    - if: '$CI_COMMIT_BRANCH == "ruby2" && $CI_PIPELINE_SOURCE == "schedule"'
+    # Run pipelines for ruby3_1 branch
+    - if: '$CI_COMMIT_BRANCH == "ruby3_1" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
-        <<: *backcompat-ruby-variables
+        <<: *next-ruby-variables
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 whichs prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
@@ -147,7 +143,6 @@ variables:
   UBI_VERSION: "8.6"
   CHROME_VERSION: "113"
   DOCKER_VERSION: "23.0.1"
-  RUBY_VERSION: "2.7"
   RUBYGEMS_VERSION: "3.4"
   GO_VERSION: "1.20"
   RUST_VERSION: "1.65"

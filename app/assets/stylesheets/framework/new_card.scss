@@ -37,10 +37,6 @@
     @include gl-line-height-24;
   }
 
-  &-title-lg {
-    @include gl-font-lg;
-  }
-
   &-count {
     @include gl-mx-3;
     @include gl-font-base;
@@ -49,8 +45,9 @@
   }
 
   &-description {
+    @include gl-font-sm;
     @include gl-text-gray-500;
-    @include gl-mt-1;
+    @include gl-m-0;
   }
 
   &-toggle {

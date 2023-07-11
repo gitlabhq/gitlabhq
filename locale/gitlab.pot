@@ -17531,6 +17531,9 @@ msgstr ""
 msgid "Environments|Job"
 msgstr ""
 
+msgid "Environments|Kubernetes namespace (optional)"
+msgstr ""
+
 msgid "Environments|Learn more about stopping environments"
 msgstr ""
 
@@ -17577,6 +17580,9 @@ msgid "Environments|Search by environment name"
 msgstr ""
 
 msgid "Environments|Select agent"
+msgstr ""
+
+msgid "Environments|Select namespace"
 msgstr ""
 
 msgid "Environments|Select which environments to clean up.     Protected environments are excluded. Learn more about cleaning up environments."
@@ -17633,6 +17639,9 @@ msgstr ""
 msgid "Environment|Cluster IP"
 msgstr ""
 
+msgid "Environment|Cluster agent not found."
+msgstr ""
+
 msgid "Environment|CronJobs"
 msgstr ""
 
@@ -17652,6 +17661,9 @@ msgid "Environment|External IP"
 msgstr ""
 
 msgid "Environment|Failed"
+msgstr ""
+
+msgid "Environment|Forbidden to access the cluster agent from this environment."
 msgstr ""
 
 msgid "Environment|Healthy"
@@ -17688,6 +17700,12 @@ msgid "Environment|Succeeded"
 msgstr ""
 
 msgid "Environment|Summary"
+msgstr ""
+
+msgid "Environment|There was an error connecting to the cluster agent."
+msgstr ""
+
+msgid "Environment|Unauthorized to access the cluster agent from this environment. Check your authentication and try again."
 msgstr ""
 
 msgid "Environment|Unhealthy"
@@ -40426,9 +40444,6 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select a scanner"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Select a variable"
-msgstr ""
-
 msgid "ScanExecutionPolicy|Select agent"
 msgstr ""
 
@@ -40436,6 +40451,9 @@ msgid "ScanExecutionPolicy|Select branches"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select namespaces"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Select or Create a Key"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select scanner profile"
@@ -40454,6 +40472,9 @@ msgid "ScanExecutionPolicy|Tags"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Triggers:"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Use a custom key"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Value"
@@ -41334,9 +41355,6 @@ msgid "SecurityOrchestration|No rules defined - policy will not run."
 msgstr ""
 
 msgid "SecurityOrchestration|No tags available"
-msgstr ""
-
-msgid "SecurityOrchestration|Non-existing CI variables have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing CI variables from the policy yaml."
 msgstr ""
 
 msgid "SecurityOrchestration|Non-existing DAST profiles have been detected in the policy yaml. As a result, rule mode has been disabled. To enable rule mode, remove those non-existing profiles from the policy yaml."
@@ -45307,7 +45325,7 @@ msgstr ""
 msgid "TanukiBot|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
-msgid "TanukiBot|GitLab Chat"
+msgid "TanukiBot|GitLab Duo Chat"
 msgstr ""
 
 msgid "TanukiBot|Give feedback"
@@ -45318,7 +45336,7 @@ msgid_plural "TanukiBot|Sources"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "TanukiBot|There was an error communicating with GitLab Chat. Please try again later."
+msgid "TanukiBot|There was an error communicating with GitLab Duo Chat. Please try again later."
 msgstr ""
 
 msgid "TanukiBot|What is a fork?"

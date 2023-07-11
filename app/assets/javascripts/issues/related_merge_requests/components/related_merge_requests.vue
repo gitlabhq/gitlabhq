@@ -66,7 +66,7 @@ export default {
 <template>
   <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
     <div class="gl-new-card">
-      <div class="gl-new-card-header">
+      <div class="gl-new-card-header gl-flex-direction-column">
         <div class="gl-new-card-title-wrapper">
           <gl-link
             class="anchor gl-absolute gl-text-decoration-none"
@@ -81,23 +81,23 @@ export default {
               <gl-icon name="merge-request" class="gl-ml-3 gl-mr-2 gl-text-gray-500" />
               <span data-testid="count" class="gl-text-gray-500">{{ totalCount }}</span>
             </template>
-            <p
-              v-if="hasClosingMergeRequest && !isFetchingMergeRequests"
-              class="gl-font-sm gl-font-weight-normal gl-flex-basis-full gl-mb-0 gl-text-gray-500"
-            >
-              {{ closingMergeRequestsText }}
-            </p>
           </div>
         </div>
+        <p
+          v-if="hasClosingMergeRequest && !isFetchingMergeRequests"
+          class="gl-new-card-description"
+        >
+          {{ closingMergeRequestsText }}
+        </p>
       </div>
-      <gl-loading-icon
-        v-if="isFetchingMergeRequests"
-        size="sm"
-        label="Fetching related merge requests"
-        class="gl-py-4"
-      />
       <div class="gl-new-card-body">
         <div class="gl-new-card-content">
+          <gl-loading-icon
+            v-if="isFetchingMergeRequests"
+            size="sm"
+            label="Fetching related merge requests"
+            class="gl-py-2"
+          />
           <ul class="content-list related-items-list">
             <li
               v-for="mr in mergeRequests"

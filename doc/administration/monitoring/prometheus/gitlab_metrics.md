@@ -23,8 +23,8 @@ GitLab monitors its own internal service metrics, and makes them available at th
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, to access
 the metrics, the client IP address must be [explicitly allowed](../ip_allowlist.md).
 
-These metrics are enabled and collected for [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
-and Chart installations. For source installations, these metrics must be enabled
+These metrics are enabled and collected for [Linux package](https://docs.gitlab.com/omnibus/)
+and Helm chart installations. For self-compiled installations, these metrics must be enabled
 manually and collected by a Prometheus server.
 
 For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#sidekiq-metrics).
@@ -498,5 +498,5 @@ metrics can't function correctly.
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.
 For best performance, create this directory in `tmpfs`.
 
-If GitLab is installed using [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
+If GitLab is installed using the [Linux package](https://docs.gitlab.com/omnibus/)
 and `tmpfs` is available, then GitLab configures the metrics directory for you.

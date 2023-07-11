@@ -34,6 +34,7 @@ export default {
               externalUrl: this.environment.externalUrl,
               projectPath: this.projectPath,
               clusterAgentId: this.environment.clusterAgentId,
+              kubernetesNamespace: this.environment.kubernetesNamespace,
             },
           },
         });

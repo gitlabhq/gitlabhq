@@ -12,6 +12,7 @@ import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.quer
 import isEnvironmentStoppingQuery from '~/environments/graphql/queries/is_environment_stopping.query.graphql';
 import pageInfoQuery from '~/environments/graphql/queries/page_info.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
+import { CLUSTER_AGENT_ERROR_MESSAGES } from '~/environments/constants';
 import {
   environmentsApp,
   resolvedEnvironmentsApp,
@@ -20,6 +21,7 @@ import {
   resolvedFolder,
   k8sPodsMock,
   k8sServicesMock,
+  k8sNamespacesMock,
 } from './mock_data';
 
 const ENDPOINT = `${TEST_HOST}/environments`;
@@ -318,6 +320,50 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         'API error',
       );
     });
+  });
+  describe('k8sNamespaces', () => {
+    const mockNamespacesListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        data: {
+          items: k8sNamespacesMock,
+        },
+      });
+    });
+
+    beforeEach(() => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1Namespace')
+        .mockImplementation(mockNamespacesListFn);
+    });
+
+    it('should request all namespaces from the cluster_client library', async () => {
+      const namespaces = await mockResolvers.Query.k8sNamespaces(null, { configuration });
+
+      expect(mockNamespacesListFn).toHaveBeenCalled();
+
+      expect(namespaces).toEqual(k8sNamespacesMock);
+    });
+    it.each([
+      ['Unauthorized', CLUSTER_AGENT_ERROR_MESSAGES.unauthorized],
+      ['Forbidden', CLUSTER_AGENT_ERROR_MESSAGES.forbidden],
+      ['Not found', CLUSTER_AGENT_ERROR_MESSAGES['not found']],
+      ['Unknown', CLUSTER_AGENT_ERROR_MESSAGES.other],
+    ])(
+      'should throw an error if the API call fails with the reason "%s"',
+      async (reason, message) => {
+        jest.spyOn(CoreV1Api.prototype, 'listCoreV1Namespace').mockRejectedValue({
+          response: {
+            data: {
+              reason,
+            },
+          },
+        });
+
+        await expect(mockResolvers.Query.k8sNamespaces(null, { configuration })).rejects.toThrow(
+          message,
+        );
+      },
+    );
   });
   describe('stopEnvironmentREST', () => {
     it('should post to the stop environment path', async () => {

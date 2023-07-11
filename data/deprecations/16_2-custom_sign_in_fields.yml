@@ -1,0 +1,11 @@
+- title: 'Deprecated parameters related to custom text in the sign-in page' # (required) The name of the feature to be deprecated
+  announcement_milestone: '16.2' # (required) The milestone when this feature was first announced as deprecated.
+  announcement_date: '2023-07-22' # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: '17.0' # (required) The milestone when this feature is planned to be removed
+  removal_date: '2024-04-22' # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: true # (required) If this deprecation is a breaking change, set this value to true
+  reporter: eduardosanz # (required) GitLab username of the person reporting the deprecation
+  stage: Manage # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124461 # (required) Link to the deprecation issue in GitLab
+  body: | # (required) Do not modify this line, instead modify the lines below.
+    The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings API](https://docs.gitlab.com/ee/api/settings.html). To add a custom text to the sign-in and sign-up pages, use the `description` field in the [Appearance API](https://docs.gitlab.com/ee/api/appearance.html).

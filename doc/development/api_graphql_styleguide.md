@@ -1668,7 +1668,7 @@ should look like this:
 ### Mounting the mutation
 
 To make the mutation available it must be defined on the mutation
-type that is stored in `graphql/types/mutation_types`. The
+type that is stored in `graphql/types/mutation_type`. The
 `mount_mutation` helper method defines a field based on the
 GraphQL-name of the mutation:
 

@@ -8,9 +8,6 @@ type: reference
 
 # Test cases **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233479) in GitLab 13.6.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/241983) in GitLab 13.7.
-
 Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 
 Now your Implementation and Testing teams can collaborate better, as they no longer have to
@@ -30,7 +27,8 @@ Prerequisite:
 
 To create a test case in a GitLab project:
 
-1. Go to **Build > Test cases**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Test cases**.
 1. Select **New test case**. You are taken to the new test case form. Here you can enter
    the new case's title, [description](../../user/markdown.md), attach a file, and assign [labels](../../user/project/labels.md).
 1. Select **Submit test case**. You are taken to view the new test case.
@@ -40,16 +38,15 @@ To create a test case in a GitLab project:
 You can view all test cases in the project in the test cases list. Filter the
 issue list with a search query, including labels or the test case's title.
 
-Prerequisite:
+Prerequisites:
 
-Whether you can view an test case depends on the [project visibility level](../../user/public_access.md):
-
-- Public project: You don't have to be a member of the project.
-- Private project: You must have at least the Guest role for the project.
+- In a public project: You don't have to be a member of the project.
+- In a private project: You must have at least the Guest role for the project.
 
 To view a test case:
 
-1. In a project, go to **Build > Test cases**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Test cases**.
 1. Select the title of the test case you want to view. You are taken to the test case page.
 
 ![An example test case page](img/test_case_show_v13_10.png)
@@ -58,11 +55,11 @@ To view a test case:
 
 You can edit a test case's title and description.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 - Users demoted to the Guest role can continue to edit the test cases they created
-when they were in the higher role.
+  when they were in the higher role.
 
 To edit a test case:
 
@@ -83,13 +80,19 @@ To archive a test case, on the test case's page, select **Archive test case**.
 
 To view archived test cases:
 
-1. Go to **Build > Test cases**.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Build > Test cases**.
 1. Select **Archived**.
 
 ## Reopen an archived test case
 
 If you decide to start using an archived test case again, you can reopen it.
 
-You must have at least the Reporter role.
+Prerequisites:
 
-To reopen an archived test case, on the test case's page, select **Reopen test case**.
+- You must have at least the Reporter role.
+
+To reopen an archived test case:
+
+1. [View a test case](#view-a-test-case).
+1. Select **Reopen test case**.

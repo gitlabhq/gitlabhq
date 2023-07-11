@@ -190,6 +190,20 @@ The runner's legacy escape sequence mechanism to handle variable expansion imple
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecated parameters related to custom text in the sign-in page
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.2</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124461).
+</div>
+
+The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings API](https://docs.gitlab.com/ee/api/settings.html). To add a custom text to the sign-in and sign-up pages, use the `description` field in the [Appearance API](https://docs.gitlab.com/ee/api/appearance.html).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### DingTalk OmniAuth provider
 
 <div class="deprecation-notes">
@@ -303,6 +317,22 @@ This change is a breaking change. You should use an [authentication token](../ci
 You can use GraphQL to query the amount of storage used by the GitLab Dependency Proxy. However, the `dependencyProxyTotalSizeInBytes` field is limited to ~2Gb (in bytes), which is not always large enough for the Dependency Proxy. As a result, `dependencyProxyTotalSizeInBytes` is deprecated and will be removed in GitLab 17.0.
 
 Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### GraphQL field `registrySizeEstimated` has been deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.2</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416509).
+</div>
+
+For clarity, the GraphQL field `registrySizeEstimated` was renamed to `containerRegistrySizeIsEstimated`, to match its counterpart.
+`registrySizeEstimated` was deprecated in GitLab 16.2 and will be removed in GitLab 17.0.
+Use `containerRegistrySizeIsEstimated` introduced in GitLab 16.2 instead.
 
 </div>
 

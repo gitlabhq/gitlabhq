@@ -1,0 +1,7 @@
+query getK8sNamespaces($configuration: LocalConfiguration) {
+  k8sNamespaces(configuration: $configuration) @client {
+    metadata {
+      name
+    }
+  }
+}

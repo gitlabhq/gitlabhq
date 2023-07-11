@@ -424,7 +424,7 @@ export default {
         'gl-new-card-body gl-mx-3!': hasDesigns,
       }"
     >
-      <gl-loading-icon v-if="isLoading" size="lg" />
+      <gl-loading-icon v-if="isLoading" size="sm" class="gl-py-4" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ $options.i18n.designLoadingError }}
       </gl-alert>

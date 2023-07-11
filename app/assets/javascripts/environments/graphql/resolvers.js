@@ -6,6 +6,7 @@ import {
   parseIntPagination,
   normalizeHeaders,
 } from '~/lib/utils/common_utils';
+import { humanizeClusterErrors } from '../helpers/k8s_integration_helper';
 
 import pollIntervalQuery from './queries/poll_interval.query.graphql';
 import environmentToRollbackQuery from './queries/environment_to_rollback.query.graphql';
@@ -72,6 +73,11 @@ const mapWorkloadItems = (items, kind) => {
   });
 };
 
+const handleClusterError = (err) => {
+  const error = err?.response?.data?.message ? new Error(err.response.data.message) : err;
+  throw error;
+};
+
 export const resolvers = (endpoint) => ({
   Query: {
     environmentApp(_context, { page, scope, search }, { cache }) {
@@ -124,8 +130,7 @@ export const resolvers = (endpoint) => ({
       return podsApi
         .then((res) => res?.data?.items || [])
         .catch((err) => {
-          const error = err?.response?.data?.message ? new Error(err.response.data.message) : err;
-          throw error;
+          handleClusterError(err);
         });
     },
     k8sServices(_, { configuration }) {
@@ -148,8 +153,7 @@ export const resolvers = (endpoint) => ({
           });
         })
         .catch((err) => {
-          const error = err?.response?.data?.message ? new Error(err.response.data.message) : err;
-          throw error;
+          handleClusterError(err);
         });
     },
     k8sWorkloads(_, { configuration, namespace }) {
@@ -205,6 +209,19 @@ export const resolvers = (endpoint) => ({
 
         return summaryList;
       });
+    },
+    k8sNamespaces(_, { configuration }) {
+      const coreV1Api = new CoreV1Api(new Configuration(configuration));
+      const namespacesApi = coreV1Api.listCoreV1Namespace();
+
+      return namespacesApi
+        .then((res) => {
+          return res?.data?.items || [];
+        })
+        .catch((err) => {
+          const error = err?.response?.data?.reason || err;
+          throw new Error(humanizeClusterErrors(error));
+        });
     },
   },
   Mutation: {

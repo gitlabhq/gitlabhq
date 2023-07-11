@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { removeLastSlashInUrlPath } from '~/lib/utils/url_utility';
 import NewEnvironment from './components/new_environment.vue';
 import { apolloProvider } from './graphql/client';
 
@@ -10,12 +11,16 @@ export default (el) => {
     return null;
   }
 
-  const { projectEnvironmentsPath, projectPath } = el.dataset;
+  const { projectEnvironmentsPath, projectPath, kasTunnelUrl } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider: apolloProvider(),
-    provide: { projectEnvironmentsPath, projectPath },
+    provide: {
+      projectEnvironmentsPath,
+      projectPath,
+      kasTunnelUrl: removeLastSlashInUrlPath(kasTunnelUrl),
+    },
     render(h) {
       return h(NewEnvironment);
     },

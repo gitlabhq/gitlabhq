@@ -86,7 +86,7 @@ For features that use the embedding database, additional setup is needed.
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database
 
-### Set up GitLab Chat
+### Set up GitLab Duo Chat
 
 1. [Enable Anthropic API features](#configure-anthropic-access).
 1. [Enable OpenAI support](#configure-openai-access).
@@ -100,7 +100,7 @@ For features that use the embedding database, additional setup is needed.
    ```
 
 1. Ensure that your current branch is up-to-date with `master`.
-1. To access the GitLab Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Chat**.
+1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
 
 #### Tips for local development
 
@@ -172,9 +172,9 @@ Feature.enable(:anthropic_experimentation)
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 ```
 
-### Testing GitLab Chat with predefined questions
+### Testing GitLab Duo Chat with predefined questions
 
-Because success of answers to user questions in GitLab Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use following commands to validate answers to some predefined questions:
+Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use following commands to validate answers to some predefined questions:
 
 1. Rake task which iterates through questions defined in CSV file and checks tools used for evaluating each question.
 

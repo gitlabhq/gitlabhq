@@ -25,27 +25,33 @@ Rails experience is useful but not required.
 
 ## Starting a Rails console session
 
-**For Omnibus installations**
+The process for starting a Rails console session depends on the type of GitLab installation.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 sudo gitlab-rails console
 ```
 
-**For Docker installations**
+:::TabTitle Docker
 
 ```shell
 docker exec -it <container-id> gitlab-rails console
 ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 ```shell
 sudo -u git -H bundle exec rails console -e production
 ```
 
-**For Kubernetes deployments**
+:::TabTitle Helm chart (Kubernetes)
 
 The console is in the toolbox pod. Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
+
+::EndTabs
 
 To exit the console, type: `quit`.
 
@@ -130,31 +136,31 @@ environment, you can do so using the [Rails Runner](https://guides.rubyonrails.o
 When executing a script file, the script must be accessible by the `git` user.
 
 When the command or script completes, the Rails Runner process finishes.
-It is useful for running within other scripts or cron jobs for example.
+It is useful for running in other scripts or cron jobs for example.
 
-**For Omnibus installations**
+- For Linux package installations:
 
-```shell
-sudo gitlab-rails runner "RAILS_COMMAND"
+  ```shell
+  sudo gitlab-rails runner "RAILS_COMMAND"
 
-# Example with a two-line Ruby script
-sudo gitlab-rails runner "user = User.first; puts user.username"
+  # Example with a two-line Ruby script
+  sudo gitlab-rails runner "user = User.first; puts user.username"
 
-# Example with a ruby script file (make sure to use the full path)
-sudo gitlab-rails runner /path/to/script.rb
-```
+  # Example with a ruby script file (make sure to use the full path)
+  sudo gitlab-rails runner /path/to/script.rb
+  ```
 
-**For installations from source**
+- For self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rails runner -e production "RAILS_COMMAND"
+  ```shell
+  sudo -u git -H bundle exec rails runner -e production "RAILS_COMMAND"
 
-# Example with a two-line Ruby script
-sudo -u git -H bundle exec rails runner -e production "user = User.first; puts user.username"
+  # Example with a two-line Ruby script
+  sudo -u git -H bundle exec rails runner -e production "user = User.first; puts user.username"
 
-# Example with a ruby script file (make sure to use the full path)
-sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
-```
+  # Example with a ruby script file (make sure to use the full path)
+  sudo -u git -H bundle exec rails runner -e production /path/to/script.rb
+  ```
 
 Rails Runner does not produce the same output as the console.
 

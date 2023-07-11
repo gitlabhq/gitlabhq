@@ -53,12 +53,24 @@ To remove an emoji reaction, select the emoji again.
 
 ## Custom emoji
 
+> - [Introduced for GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 13.6 [with a flag](../administration/feature_flags.md) named `custom_emoji`. Disabled by default.
+> - Enabled on GitLab.com in GitLab 14.0.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/333095) UI to add emoji in GitLab 16.2.
+
+![Custom emoji in emoji picker](img/custom_emoji_reactions_v16_2.png)
+
+Custom emoji show in the emoji picker everywhere you can react with emoji.
+To add an emoji reaction to a comment or description:
+
+1. Select the smile (**{slight-smile}**).
+1. Select the GitLab logo (**{tanuki}**).
+1. Select an emoji from the emoji picker.
+
+To use them in a text box, type the filename between two colons.
+For example, `:thank-you:`.
+
 You can upload custom emoji to a GitLab instance with the GraphQL API.
 For more information, see [Use custom emoji with GraphQL](../api/graphql/custom_emoji.md).
-
-Custom emoji don't show in the emoji picker.
-To use them in a text box, type the filename without the extension and surrounded by colons.
-For example, for a file named `thank-you.png`, type `:thank-you:`.
 
 For a list of custom emoji available for GitLab.com, see
 [the `custom_emoji` project](https://gitlab.com/custom_emoji/custom_emoji/-/tree/main/img).

@@ -160,6 +160,12 @@ type LocalK8sWorkloads {
   JobList: [localK8sJob]
   CronJobList: [localK8sCronJob]
 }
+type k8sNamespaceMetadata {
+  name: String
+}
+type LocalK8sNamespaces {
+  metadata: k8sNamespaceMetadata
+}
 
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp

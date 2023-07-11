@@ -8,13 +8,11 @@ class CommitStatus < Ci::ApplicationRecord
   include Presentable
   include BulkInsertableAssociations
   include TaggableQueries
-  include SafelyChangeColumnDefault
 
   self.table_name = 'ci_builds'
   self.sequence_name = 'ci_builds_id_seq'
   self.primary_key = :id
   partitionable scope: :pipeline
-  columns_changing_default :partition_id
 
   belongs_to :user
   belongs_to :project

@@ -57,7 +57,6 @@ Example response:
   "default_project_visibility" : "private",
   "default_group_visibility" : "private",
   "gravatar_enabled" : true,
-  "sign_in_text" : null,
   "container_expiration_policies_enable_historic_entries": true,
   "container_registry_cleanup_tags_service_max_list_size": 200,
   "container_registry_delete_tags_service_timeout": 250,
@@ -172,7 +171,6 @@ Example response:
   "signup_enabled": false,
   "password_authentication_enabled_for_web": true,
   "gravatar_enabled": true,
-  "sign_in_text": "",
   "created_at": "2015-06-12T15:51:55.432Z",
   "updated_at": "2015-06-30T13:22:42.210Z",
   "home_page_url": "",
@@ -283,7 +281,8 @@ Example responses: **(PREMIUM SELF)**
 
 ## List of settings that can be accessed via API calls
 
-> Fields `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
+> - Fields `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
+> - Parameters `sign_in_text` and `help_text` were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124461) in GitLab 16.2. Use `description` parameter in the [Appearance API](../api/appearance.md) instead.
 
 In general, all settings are optional. Certain settings though, if enabled,
 require other settings to be set to function properly. These requirements are
@@ -416,7 +415,7 @@ listed in the descriptions of the relevant settings.
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
 | `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page and help dropdown list. |
 | `help_page_text`                         | string           | no                                   | Custom text displayed on the help page. |
-| `help_text` **(PREMIUM)**                | string           | no                                   | GitLab server administrator information. |
+| `help_text` **(PREMIUM)**                | string           | no                                   | Deprecated: Use `description` parameter in the [Appearance API](../api/appearance.md). Custom text in sign-in page. |
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties in GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
 | `housekeeping_bitmaps_enabled`           | boolean          | no                                   | Deprecated. Git pack file bitmap creation is always enabled and cannot be changed via API and UI. Always returns `true`. |
@@ -506,7 +505,7 @@ listed in the descriptions of the relevant settings.
 | `sidekiq_job_limiter_mode` | string | no | `track` or `compress`. Sets the behavior for [Sidekiq job size limits](../user/admin_area/settings/sidekiq_job_limits.md). Default: 'compress'. |
 | `sidekiq_job_limiter_compression_threshold_bytes` | integer | no | The threshold in bytes at which Sidekiq jobs are compressed before being stored in Redis. Default: 100,000 bytes (100 KB). |
 | `sidekiq_job_limiter_limit_bytes` | integer | no | The threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job). |
-| `sign_in_text`                           | string           | no                                   | Text on the login page. |
+| `sign_in_text`                           | string           | no                                   | Deprecated: Use `description` parameter in the [Appearance API](../api/appearance.md). Custom text in sign-in page. |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
 | `silent_mode_enabled`                    | boolean          | no                                   | Enable [Silent mode](../administration/silent_mode/index.md). Default is `false`. |

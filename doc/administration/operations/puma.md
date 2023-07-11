@@ -173,7 +173,7 @@ optimal configuration:
 
 ## Configuring Puma to listen over SSL
 
-Puma, when deployed with Omnibus GitLab, listens over a Unix socket by
+Puma, when deployed with a Linux package installation, listens over a Unix socket by
 default. To configure Puma to listen over an HTTPS port instead, follow the
 steps below:
 
@@ -386,7 +386,7 @@ downtime. Otherwise, skip to the next section.
 
 GDB reports an error if the Puma process terminates before you can run these commands.
 To buy more time, you can always raise the
-Puma worker timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
+Puma worker timeout. For Linux package installation users, you can edit `/etc/gitlab/gitlab.rb` and
 increase it from 60 seconds to 600:
 
 ```ruby

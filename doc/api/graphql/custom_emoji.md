@@ -14,7 +14,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is available.
 This feature is ready for production use.
 
-To use custom emoji in comments and descriptions, you can add them to a top-level group using the GraphQL API.
+To use [custom emoji](../../user/award_emojis.md) in comments and descriptions, you can add them to a top-level group using the GraphQL API.
 
 Parameters:
 

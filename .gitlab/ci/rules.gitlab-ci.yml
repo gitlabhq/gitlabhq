@@ -21,7 +21,7 @@
   if: '$FORCE_GITLAB_CI'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby2" || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby3_1" || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
 
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
@@ -53,8 +53,8 @@
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
-.if-merge-request-labels-run-in-ruby2: &if-merge-request-labels-run-in-ruby2
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby2/'
+.if-merge-request-labels-run-in-ruby3_1: &if-merge-request-labels-run-in-ruby3_1
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
@@ -113,8 +113,8 @@
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
-.if-ruby2-branch-schedule-nightly: &if-ruby2-branch-schedule-nightly
-  if: '$CI_COMMIT_BRANCH == "ruby2" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+.if-ruby3_1-branch-schedule-nightly: &if-ruby3_1-branch-schedule-nightly
+  if: '$CI_COMMIT_BRANCH == "ruby3_1" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -149,8 +149,8 @@
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
-.if-ruby2-branch: &if-ruby2-branch
-  if: '$CI_COMMIT_BRANCH == "ruby2"'
+.if-ruby3_1-branch: &if-ruby3_1-branch
+  if: '$CI_COMMIT_BRANCH == "ruby3_1" || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
 
 ####################
 # Changes patterns #
@@ -868,7 +868,7 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         ARCH: amd64,arm64
-    - <<: *if-ruby2-branch
+    - <<: *if-ruby3_1-branch
 
 .build-images:rules:build-qa-image-as-if-foss:
   rules:
@@ -913,7 +913,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       allow_failure: true
-    - <<: *if-ruby2-branch
+    - <<: *if-ruby3_1-branch
       allow_failure: true
     # We include the job under the matching conditions below, but unlike in .qa:rules:e2e:test-on-gdk we don't need to
     # set OMNIBUS_GITLAB_BUILD_ON_ALL_OS when testing against GDK
@@ -948,7 +948,7 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-    - <<: *if-ruby2-branch
+    - <<: *if-ruby3_1-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - <<: *if-default-refs
@@ -1151,7 +1151,7 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
-    - <<: *if-ruby2-branch
+    - <<: *if-ruby3_1-branch
     - <<: *if-default-refs
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
@@ -1422,7 +1422,7 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
-    - <<: *if-ruby2-branch
+    - <<: *if-ruby3_1-branch
     # Rules to support .qa:rules:package-and-test-ee
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1459,7 +1459,10 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       allow_failure: true
-    - <<: *if-ruby2-branch
+    - <<: *if-ruby3_1-branch
+      variables:
+        USE_OLD_RUBY_VERSION: 'false'
+        CACHE_EDITION: 'GITLAB_RUBY3_1'
       allow_failure: true
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1977,7 +1980,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-default-branch-schedule-nightly
-    - <<: *if-ruby2-branch-schedule-nightly
+    - <<: *if-ruby3_1-branch-schedule-nightly
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:rspec-coverage:
@@ -2451,7 +2454,7 @@
 
 .setup:rules:verify-ruby-3.0:
   rules:
-    - <<: *if-merge-request-labels-run-in-ruby2
+    - <<: *if-merge-request-labels-run-in-ruby3_1
 
 .setup:rules:verify-tests-yml:
   rules:
