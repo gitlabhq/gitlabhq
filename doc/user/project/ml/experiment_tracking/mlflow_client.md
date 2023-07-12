@@ -4,17 +4,17 @@ group: Incubation
 info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
-# MLflow client integration **(FREE)**
+# MLflow client compatibility **(FREE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
 
 NOTE:
-Model experiment tracking is an [experimental feature](../../../policy/experiment-beta-support.md).
+Model experiment tracking is an [experimental feature](../../../../policy/experiment-beta-support.md).
 Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
 
 [MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning Experiment Tracking.
-GitLab works as a backend to the MLflow Client, [logging experiments](../ml/experiment_tracking/index.md).
-Setting up your integrations requires minimal changes to existing code.
+GitLab [Model experiment tracking](index.md) is compatible with MLflow Client,
+[logging experiments](index.md). The setup requires minimal changes to existing code.
 
 GitLab plays the role of a MLflow server. Running `mlflow server` is not necessary.
 
@@ -22,12 +22,12 @@ GitLab plays the role of a MLflow server. Running `mlflow server` is not necessa
 
 Prerequisites:
 
-- A [personal](../../../user/profile/personal_access_tokens.md), [project](../../../user/project/settings/project_access_tokens.md), or [group](../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` permission.
+- A [personal](../../../../user/profile/personal_access_tokens.md), [project](../../../../user/project/settings/project_access_tokens.md), or [group](../../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` permission.
 - The project ID. To find the project ID:
   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
   1. Select **Settings > General**.
 
-To enable MLflow client integration:
+To use MLflow client compatibility from a local environment:
 
 1. Set the tracking URI and token environment variables on the host that runs the code.
    This can be your local environment, CI pipeline, or remote host. For example:
@@ -53,18 +53,23 @@ Runs are registered as:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
 
 If your training code is being run from a CI/CD job, GitLab can use that information to enhance
-candidate metadata. To do so, add the following snippet to your training code within the run
-execution context:
+candidate metadata. To associate a candidate to a CI/CD job:
 
-```python
-with mlflow.start_run(run_name=f"Candidate {index}"):
-  # Your training code
+1. In the [Project CI variables](../../../../ci/variables/index.md), include the following variables:
+    - `MLFLOW_TRACKING_URI`: `"<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"`
+    - `MLFLOW_TRACKING_TOKEN`: `<your_access_token>`
 
-  # Start of snippet to be included
-  if os.getenv('GITLAB_CI'):
-    mlflow.set_tag('gitlab.CI_JOB_ID', os.getenv('CI_JOB_ID'))
-  # End of snippet to be included
-```
+1. In your training code within the run execution context, add the following code snippet:
+
+    ```python
+    with mlflow.start_run(run_name=f"Candidate {index}"):
+      # Your training code
+
+      # Start of snippet to be included
+      if os.getenv('GITLAB_CI'):
+        mlflow.set_tag('gitlab.CI_JOB_ID', os.getenv('CI_JOB_ID'))
+      # End of snippet to be included
+    ```
 
 ## Supported MLflow client methods and caveats
 

@@ -53796,6 +53796,9 @@ msgstr ""
 msgid "ciReport|%{sameNum} same"
 msgstr ""
 
+msgid "ciReport|%{scanner} detected %{atleastStart}at least%{atleastEnd} %{number} new potential %{vulnStr}"
+msgstr ""
+
 msgid "ciReport|%{scanner} detected %{number} new potential %{vulnStr}"
 msgstr ""
 

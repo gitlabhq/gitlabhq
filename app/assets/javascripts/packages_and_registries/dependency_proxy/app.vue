@@ -194,8 +194,6 @@ export default {
       </template>
     </title-area>
 
-    <gl-skeleton-loader v-if="$apollo.queries.group.loading" />
-
     <gl-form-group
       v-if="showDependencyProxyImagePrefix"
       :label="$options.i18n.proxyImagePrefix"
@@ -225,6 +223,7 @@ export default {
         </span>
       </template>
     </gl-form-group>
+    <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
 
     <manifests-list
       :dependency-proxy-image-prefix="dependencyProxyImagePrefix"

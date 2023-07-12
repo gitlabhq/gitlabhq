@@ -2,6 +2,7 @@
 
 require 'json'
 require 'time'
+require 'fileutils'
 
 require_relative 'config'
 require_relative 'flaky_examples_collection'

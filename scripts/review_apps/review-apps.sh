@@ -395,8 +395,9 @@ function verify_deploy() {
 
   mkdir -p curl-logs/
 
-  local max_try_times=${GITLAB_VERIFY_DEPLOY_TIMEOUT_MINUTES} * 60 / 5
-  for i in {1..max_try_times}; do # try for GITLAB_VERIFY_DEPLOY_TIMEOUT_MINUTES minutes, default 5 minutes
+  # By default, try for 5 minutes, with 5 of sleep between attempts
+  local max_try_times=$((${GITLAB_VERIFY_DEPLOY_TIMEOUT_MINUTES:-5} * 60 / 5))
+  for i in {1..$max_try_times}; do
     local now=$(date '+%H:%M:%S')
     echo "[${now}] Verifying deployment at ${CI_ENVIRONMENT_URL}/users/sign_in"
     log_name="curl-logs/${now}.log"

@@ -45,7 +45,7 @@ update-tests-metadata:
     - rspec-ee system pg14
     - rspec-ee background_migration pg14
   script:
-    - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
+    - run_timed_command "retry gem install fog-aws mime-types activesupport rspec rspec_profiling postgres-copy --no-document"
     - source ./scripts/rspec_helpers.sh
     - test -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo -e "\e[31m" 'Consider add ~"pipeline:run-all-rspec" to run full rspec jobs' "\e[0m"
     - update_tests_metadata

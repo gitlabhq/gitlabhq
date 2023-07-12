@@ -42,6 +42,7 @@ ee/spec/finders/remote_development/workspaces_finder_spec.rb \
 ee/spec/graphql/types/query_type_spec.rb \
 ee/spec/graphql/types/remote_development/workspace_type_spec.rb \
 ee/spec/graphql/types/subscription_type_spec.rb \
+ee/spec/lib/remote_development/agent_config/main_integration_spec.rb \
 ee/spec/lib/remote_development/unmatched_result_error_spec.rb \
 ee/spec/lib/remote_development/workspaces/create/create_processor_spec.rb \
 ee/spec/lib/remote_development/workspaces/create/devfile_processor_spec.rb \

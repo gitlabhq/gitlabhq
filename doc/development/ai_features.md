@@ -43,7 +43,7 @@ See the [feature flag tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/405
 
 ## Implement a new AI action
 
-To implement a new AI action, connect to the OpenAI API. You can connect to this API using either the:
+To implement a new AI action, connect to the preferred AI provider. You can connect to this API using either the:
 
 - Experimental REST API.
 - Abstraction layer.
@@ -208,7 +208,7 @@ The experimental endpoint is only available to GitLab team members on production
 
 ### GraphQL API
 
-To connect to the OpenAI API using the Abstraction Layer, use an extendable GraphQL API called
+To connect to the AI provider API using the Abstraction Layer, use an extendable GraphQL API called
 [`aiAction`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/graphql/mutations/ai/action.rb).
 The `input` accepts key/value pairs, where the `key` is the action that needs to be performed.
 We only allow one AI action per mutation request.
@@ -237,6 +237,8 @@ mutation {
 The GraphQL API then uses the [OpenAI Client](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/open_ai/client.rb)
 to send the response.
 
+Remember that other clients are available and you should not use OpenAI.
+
 #### How to receive a response
 
 As the OpenAI API requests are handled in a background job, we do not keep the request alive and
@@ -255,6 +257,8 @@ WARNING:
 You should only subscribe to the subscription once the mutation is sent. If multiple subscriptions are active on the same page, they currently all receive updates as our identifier is the user and the resource. To mitigate this, you should only subscribe when the mutation is sent. You can use [`skip()`](You can use [`skip()`](https://apollo.vuejs.org/guide/apollo/subscriptions.html#skipping-the-subscription)) for this case. To prevent this problem in the future, we implement a [request identifier](https://gitlab.com/gitlab-org/gitlab/-/issues/408196).
 
 #### Current abstraction layer flow
+
+The following graph uses OpenAI as an example. You can use different providers.
 
 ```mermaid
 flowchart TD

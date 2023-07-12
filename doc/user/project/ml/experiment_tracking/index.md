@@ -58,8 +58,8 @@ Some example parameters:
 ## Track new experiments and candidates
 
 Experiment and trials can only be tracked through the
-[MLflow](https://www.mlflow.org/docs/latest/tracking.html) client integration.
-See [MLflow client integration](../../integrations/mlflow_client.md) for more information
+[MLflow](https://www.mlflow.org/docs/latest/tracking.html) client compatibility.
+See [MLflow client compatibility](mlflow_client.md) for more information
 on how to use GitLab as a backend for the MLflow Client.
 
 ## Explore model candidates
@@ -81,6 +81,14 @@ Trial artifacts are saved as [generic packages](../../../packages/generic_packag
 limitations. After an artifact is logged for a candidate, all artifacts logged for the candidate are listed in the
 package registry. The package name for a candidate is `ml_experiment_<experiment_id>`, where the version is the candidate
 IID. The link to the artifacts can also be accessed from the **Experiment Candidates** list or **Candidate detail**.
+
+## View CI information
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119788) in 16.1
+
+Candidates can be associated to the CI job that created them, allowing quick links to the merge request, pipeline, and user that triggered the pipeline:
+
+![CI information in candidate detail](img/candidate_detail_ci_v16_12.png)
 
 ## Related topics
 

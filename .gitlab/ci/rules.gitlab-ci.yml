@@ -2527,6 +2527,10 @@
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
+    - <<: *if-merge-request
+      changes:
+        - "gems/gitlab-rspec"
+        - "gems/rspec_flaky"
 
 ###################
 # workhorse rules #

@@ -405,6 +405,13 @@ The following user actions on a GitLab instance generate instance audit events:
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 
+#### Application settings **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282428) in GitLab 16.2.
+
+When a user changes an application setting in an instance, project, or group,
+that change and the user that made the change are recorded in the audit log.
+
 ### GitLab Runner events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335509) in GitLab 14.8, audit events for when a runner is registered.
