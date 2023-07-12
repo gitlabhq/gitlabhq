@@ -12,7 +12,7 @@ module RuboCop
       METHOD_NAME_PATTERN = /\A([a-z_]+_)?namespace_project(?:_[a-z_]+)?_(?:url|path)\z/.freeze
 
       def on_send(node)
-        return unless method_name(node).to_s =~ METHOD_NAME_PATTERN
+        return unless METHOD_NAME_PATTERN.match?(method_name(node).to_s)
 
         namespace_expr, project_expr = arguments(node)
         return unless namespace_expr && project_expr

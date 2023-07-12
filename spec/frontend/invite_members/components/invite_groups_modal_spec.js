@@ -1,4 +1,4 @@
-import { GlModal, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Api from '~/api';
@@ -248,6 +248,17 @@ describe('InviteGroupsModal', () => {
       it('does not show the toast message on failure', () => {
         expect(mockToastShow).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('when group select emits an error event', () => {
+    it('displays error alert', async () => {
+      createComponent();
+
+      findGroupSelect().vm.$emit('error', GroupSelect.i18n.errorMessage);
+      await nextTick();
+
+      expect(wrapper.findComponent(GlAlert).text()).toBe(GroupSelect.i18n.errorMessage);
     });
   });
 });

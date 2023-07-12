@@ -259,7 +259,7 @@ export default {
   <div class="form-row gl-mb-5 work-item-labels gl-relative gl-flex-nowrap">
     <span
       :id="labelsTitleId"
-      class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
+      class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break work-item-field-label"
       data-testid="labels-title"
       >{{ __('Labels') }}</span
     >
@@ -272,7 +272,8 @@ export default {
       :loading="isLoading"
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
-      class="gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2!"
+      class="gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2! work-item-field-value"
+      menu-class="token-selector-menu-class"
       data-testid="work-item-labels-input"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"
       @input="focusTokenSelector"

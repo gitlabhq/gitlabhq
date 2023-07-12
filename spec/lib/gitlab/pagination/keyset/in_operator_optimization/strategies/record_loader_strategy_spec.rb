@@ -83,16 +83,6 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::R
           model.default_select_columns.map { |column| "(#{described_class::RECORDS_COLUMN}).#{column.name}" }
         )
       end
-
-      context 'when the key_set_optimizer_ignored_columns feature flag is disabled' do
-        before do
-          stub_feature_flags(key_set_optimizer_ignored_columns: false)
-        end
-
-        it 'does not specify the selected column names' do
-          expect(strategy.final_projections).to contain_exactly("(#{described_class::RECORDS_COLUMN}).*")
-        end
-      end
     end
   end
 end

@@ -1,4 +1,6 @@
 <script>
+import * as Sentry from '@sentry/browser';
+import { GlAlert } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import Api from '~/api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
@@ -19,6 +21,7 @@ export default {
     GroupSelect,
     InviteModalBase,
     InviteGroupNotification,
+    GlAlert,
   },
   props: {
     id: {
@@ -83,6 +86,7 @@ export default {
       isLoading: false,
       modalId: uniqueId('invite-groups-modal-'),
       groupToBeSharedWith: {},
+      groupSelectError: '',
     };
   },
   computed: {
@@ -165,6 +169,10 @@ export default {
     clearValidation() {
       this.invalidFeedbackMessage = '';
     },
+    onGroupSelectError(error) {
+      this.groupSelectError = error;
+      Sentry.captureException(error);
+    },
   },
   labels: GROUP_MODAL_LABELS,
 };
@@ -197,6 +205,9 @@ export default {
         :notification-link="$options.labels[inviteTo].notificationLink"
         class="gl-mb-5"
       />
+      <gl-alert v-if="groupSelectError" class="gl-mb-5" variant="danger" :dismissible="false">{{
+        groupSelectError
+      }}</gl-alert>
     </template>
 
     <template #select>
@@ -206,6 +217,7 @@ export default {
         :parent-group-id="groupSelectParentId"
         :invalid-groups="invalidGroups"
         @input="clearValidation"
+        @error="onGroupSelectError"
       />
     </template>
   </invite-modal-base>

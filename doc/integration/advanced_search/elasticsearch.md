@@ -179,7 +179,7 @@ To enable advanced search:
 
    NOTE:
    To see the **Advanced Search** section, you need an active GitLab Premium
-   [license](../../user/admin_area/license.md).
+   [license](../../administration/license.md).
 
 1. Configure the [advanced search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not enable **Search with Elasticsearch enabled**

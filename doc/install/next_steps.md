@@ -50,7 +50,7 @@ installation.
 
 ## License
 
-- [Add a license](../user/admin_area/license.md) or [start a free trial](https://about.gitlab.com/free-trial/):
+- [Add a license](../administration/license.md) or [start a free trial](https://about.gitlab.com/free-trial/):
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 

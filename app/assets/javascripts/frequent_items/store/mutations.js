@@ -53,7 +53,7 @@ export default {
     });
   },
   [types.RECEIVE_SEARCHED_ITEMS_SUCCESS](state, results) {
-    const rawItems = results.data ? results.data : results; // Api.groups returns array, Api.projects returns object
+    const rawItems = results.data;
     Object.assign(state, {
       items: rawItems.map((rawItem) => ({
         id: rawItem.id,

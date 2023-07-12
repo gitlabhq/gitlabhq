@@ -114,7 +114,7 @@ export default {
           :note-id="noteId"
           :is-system-note="true"
         >
-          <span ref="gfm-content" v-safe-html="actionTextHtml"></span>
+          <span ref="gfm-content" v-safe-html="actionTextHtml" class="gl-word-break-word"></span>
           <template v-if="canSeeDescriptionVersion" #extra-controls>
             &middot;
             <gl-button

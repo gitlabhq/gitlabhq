@@ -5,10 +5,11 @@ import {
   GlSkeletonLoader,
   GlButton,
   GlEmptyState,
+  GlIntersectionObserver,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -67,15 +68,20 @@ describe('WorkItemDetail component', () => {
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
-  const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
+  const findParent = () => wrapper.findByTestId('work-item-parent');
   const findParentButton = () => findParent().findComponent(GlButton);
-  const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
-  const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
+  const findCloseButton = () => wrapper.findByTestId('work-item-close');
+  const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
+  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+  const findStickyHeader = () => wrapper.findByTestId('work-item-sticky-header');
+  const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
+  const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
+  const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
   const createComponent = ({
     isModal = false,
@@ -92,7 +98,7 @@ describe('WorkItemDetail component', () => {
       confidentialityMock,
     ];
 
-    wrapper = shallowMount(WorkItemDetail, {
+    wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
       isLoggedIn: isLoggedIn(),
       propsData: {
@@ -644,6 +650,58 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findAlert().text()).toBe(updateError);
+    });
+  });
+
+  describe('work item two column view', () => {
+    describe('when `workItemsMvc2Enabled` is false', () => {
+      beforeEach(async () => {
+        createComponent({ workItemsMvc2Enabled: false });
+        await waitForPromises();
+      });
+
+      it('does not have the `work-item-overview` class', () => {
+        expect(findWorkItemTwoColumnViewContainer().classes()).not.toContain('work-item-overview');
+      });
+
+      it('does not have sticky header', () => {
+        expect(findIntersectionObserver().exists()).toBe(false);
+        expect(findStickyHeader().exists()).toBe(false);
+      });
+
+      it('does not have right sidebar', () => {
+        expect(findRightSidebar().exists()).toBe(false);
+      });
+    });
+
+    describe('when `workItemsMvc2Enabled` is true', () => {
+      beforeEach(async () => {
+        createComponent({ workItemsMvc2Enabled: true });
+        await waitForPromises();
+      });
+
+      it('has the `work-item-overview` class', () => {
+        expect(findWorkItemTwoColumnViewContainer().classes()).toContain('work-item-overview');
+      });
+
+      it('does not show sticky header by default', () => {
+        expect(findStickyHeader().exists()).toBe(false);
+      });
+
+      it('has the sticky header when the page is scrolled', async () => {
+        expect(findIntersectionObserver().exists()).toBe(true);
+
+        global.pageYOffset = 100;
+        triggerPageScroll();
+
+        await nextTick();
+
+        expect(findStickyHeader().exists()).toBe(true);
+      });
+
+      it('has the right sidebar', () => {
+        expect(findRightSidebar().exists()).toBe(true);
+      });
     });
   });
 });

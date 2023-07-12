@@ -15,7 +15,7 @@ New paid features will not be released in Bronze and Starter tiers after GitLab 
 The following features remain available to Bronze and Starter customers, even though
 the tiers are no longer mentioned in GitLab documentation:
 
-- [Activate GitLab EE with a license](../user/admin_area/license.md)
+- [Activate GitLab EE with a license](../administration/license.md)
 - [Add a help message to the sign-in page](../administration/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
 - [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md) in the [Milestone View](../user/project/milestones/index.md#burndown-charts),
 - [Code owners](../user/project/codeowners/index.md)

@@ -1173,7 +1173,50 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       commit_result.newrev
     end
 
-    subject { repository.new_blobs(newrevs).to_a }
+    subject { repository.new_blobs(newrevs) }
+
+    describe 'memoization' do
+      context 'when the fix_new_blobs_memoization feature flag is disabled' do
+        before do
+          stub_feature_flags(fix_new_blobs_memoization: false)
+        end
+
+        context 'when called with different revisions' do
+          it 'calls blobs with the same arguments and memoizes the result' do # for documenting bug behaviour
+            expect(repository).to receive(:blobs).twice.with(["--not", "--all", "--not", "revision1"], kind_of(Hash))
+              .and_return(['first_result'], ['second_result'])
+            expect(repository.new_blobs(['revision1'])).to eq(['first_result'])
+            expect(repository.new_blobs(['revision2'])).to eq(['second_result'])
+            expect(repository.new_blobs(['revision1'])).to eq(['first_result'])
+            expect(repository.new_blobs(['revision2'])).to eq(['second_result'])
+          end
+        end
+      end
+
+      context 'when the fix_new_blobs_memoization feature flag is enabled' do
+        before do
+          allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision1"], kind_of(Hash))
+            .and_return(['first result'])
+          repository.new_blobs(['revision1'])
+        end
+
+        it 'calls blobs only once' do
+          expect(repository.new_blobs(['revision1'])).to eq(['first result'])
+        end
+
+        context 'when called with a different revision' do
+          before do
+            allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision2"], kind_of(Hash))
+              .and_return(['second result'])
+            repository.new_blobs(['revision2'])
+          end
+
+          it 'memoizes the different arguments' do
+            expect(repository.new_blobs(['revision2'])).to eq(['second result'])
+          end
+        end
+      end
+    end
 
     shared_examples '#new_blobs with revisions' do
       before do
@@ -1195,7 +1238,9 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       it 'memoizes results' do
         expect(subject).to match_array(expected_blobs)
-        expect(subject).to match_array(expected_blobs)
+
+        # call subject again
+        expect(repository.new_blobs(newrevs)).to match_array(expected_blobs)
       end
     end
 

@@ -1,4 +1,9 @@
-import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
+  GlSprintf,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 
@@ -25,25 +30,27 @@ describe('Pipelines Artifacts dropdown', () => {
       },
       stubs: {
         GlSprintf,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
+        GlDisclosureDropdownGroup,
       },
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findFirstGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
-  const findAllGlDropdownItems = () =>
-    wrapper.findComponent(GlDropdown).findAllComponents(GlDropdownItem);
+  const findGlDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findFirstGlDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   it('should render a dropdown with all the provided artifacts', () => {
     createComponent();
 
-    expect(findAllGlDropdownItems()).toHaveLength(artifacts.length);
+    const [{ items }] = findGlDropdown().props('items');
+    expect(items).toHaveLength(artifacts.length);
   });
 
   it('should render a link with the provided path', () => {
     createComponent();
 
-    expect(findFirstGlDropdownItem().attributes('href')).toBe(artifacts[0].path);
+    expect(findFirstGlDropdownItem().props('item').href).toBe(artifacts[0].path);
     expect(findFirstGlDropdownItem().text()).toBe(artifacts[0].name);
   });
 
@@ -51,7 +58,7 @@ describe('Pipelines Artifacts dropdown', () => {
     it('should not render the dropdown', () => {
       createComponent({ mockArtifacts: [] });
 
-      expect(findDropdown().exists()).toBe(false);
+      expect(findGlDropdown().exists()).toBe(false);
     });
   });
 });

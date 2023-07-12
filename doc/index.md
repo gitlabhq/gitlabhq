@@ -38,7 +38,7 @@ Have a look at some of our most popular topics:
 | [Two-factor authentication](user/profile/account/two_factor_authentication.md)             | Improve the security of your GitLab account. |
 | [GitLab groups](user/group/index.md)                                                       | Manage projects together. |
 | [Keyword reference for the `.gitlab-ci.yml` file](ci/yaml/index.md)                        | Available configuration options for `.gitlab-ci.yml` files. |
-| [Activate GitLab EE with a license](user/admin_area/license.md)                            | Activate GitLab Enterprise Edition functionality with a license. |
+| [Activate GitLab EE with a license](administration/license.md)                            | Activate GitLab Enterprise Edition functionality with a license. |
 | [Back up and restore GitLab](administration/backup_restore/index.md)                                  | Backing up and restoring GitLab self-managed instances. |
 | [GitLab release and maintenance policy](policy/maintenance.md)                             | Policies for version naming and cadence, and also upgrade recommendations. |
 | [Elasticsearch integration](integration/advanced_search/elasticsearch.md)                  | Integrate Elasticsearch with GitLab to enable advanced search. |

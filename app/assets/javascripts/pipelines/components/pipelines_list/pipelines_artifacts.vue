@@ -1,10 +1,5 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownSectionHeader,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export const i18n = {
@@ -18,9 +13,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownSectionHeader,
+    GlDisclosureDropdown,
   },
   inject: {
     artifactsEndpoint: {
@@ -42,6 +35,21 @@ export default {
     },
   },
   computed: {
+    items() {
+      return [
+        {
+          name: this.$options.i18n.artifactSectionHeader,
+          items: this.artifacts.map(({ name, path }) => ({
+            text: name,
+            href: path,
+            extraAttrs: {
+              download: '',
+              rel: 'nofollow',
+            },
+          })),
+        },
+      ];
+    },
     shouldShowDropdown() {
       return this.artifacts?.length;
     },
@@ -49,31 +57,16 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
+  <gl-disclosure-dropdown
     v-if="shouldShowDropdown"
     v-gl-tooltip
     class="build-artifacts js-pipeline-dropdown-download"
     :title="$options.i18n.artifacts"
-    :text="$options.i18n.artifacts"
+    :toggle-text="$options.i18n.artifacts"
     :aria-label="$options.i18n.artifacts"
     icon="download"
-    right
-    lazy
+    placement="right"
     text-sr-only
-  >
-    <gl-dropdown-section-header>{{
-      $options.i18n.artifactSectionHeader
-    }}</gl-dropdown-section-header>
-
-    <gl-dropdown-item
-      v-for="(artifact, i) in artifacts"
-      :key="i"
-      :href="artifact.path"
-      rel="nofollow"
-      download
-      class="gl-word-break-word"
-    >
-      {{ artifact.name }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+    :items="items"
+  />
 </template>

@@ -27,7 +27,7 @@ module RuboCop
           return if in_qa_file?(node)
           return unless in_spec?(node)
 
-          add_offense(node, message: MESSAGE % node.value) if SELECTORS =~ node.value
+          add_offense(node, message: MESSAGE % node.value) if SELECTORS.match?(node.value)
         rescue StandardError
           # catch all errors and ignore them.
           # without this catch-all rescue, rubocop will fail

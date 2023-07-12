@@ -96,7 +96,7 @@ export default {
 </script>
 
 <template>
-  <section>
+  <div class="work-item-attributes-wrapper">
     <work-item-state
       :work-item="workItem"
       :work-item-parent-id="workItemParentId"
@@ -176,5 +176,5 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-  </section>
+  </div>
 </template>

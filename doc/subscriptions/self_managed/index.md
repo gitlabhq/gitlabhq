@@ -15,7 +15,7 @@ To subscribe to GitLab for a GitLab self-managed installation:
 
 1. Go to the [Customers Portal](https://customers.gitlab.com/) and purchase a GitLab self-managed plan.
 1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
-   You must [add this code to your GitLab instance](../../user/admin_area/license.md).
+   You must [add this code to your GitLab instance](../../administration/license.md).
 
 NOTE:
 If you're purchasing a subscription for an existing **Free** GitLab self-managed
@@ -132,7 +132,7 @@ To enable subscription data synchronization you must have:
 
 - GitLab Enterprise Edition (EE), version 14.1 or later.
 - Connection to the internet, and must not have an offline environment.
-- [Activated](../../user/admin_area/license.md) your instance with an activation code.
+- [Activated](../../administration/license.md) your instance with an activation code.
 
 When your instance is activated, and data is synchronized, the following processes are automated:
 
@@ -367,7 +367,7 @@ You can hover your mouse on the **Renew** button to see the date when it will be
 1. Enter the number of [users over subscription](#users-over-subscription) in the second box for the user overage incurred in your previous subscription term.
 1. Review your renewal details and complete the payment process.
 1. An activation code for the renewal term is available on the [Manage Purchases](https://customers.gitlab.com/subscriptions) page on the relevant subscription card. Select **Copy activation code** to get a copy.
-1. [Add the activation code](../../user/admin_area/license.md) to your instance.
+1. [Add the activation code](../../administration/license.md) to your instance.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page. If you have difficulty during the renewal process, contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 

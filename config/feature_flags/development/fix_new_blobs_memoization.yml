@@ -1,0 +1,8 @@
+---
+name: fix_new_blobs_memoization
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125241
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417632
+milestone: '16.2'
+type: development
+group: group::source code
+default_enabled: false

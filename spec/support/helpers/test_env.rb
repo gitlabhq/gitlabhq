@@ -523,7 +523,7 @@ module TestEnv
 
   def component_matches_git_sha?(component_folder, expected_version)
     # Not a git SHA, so return early
-    return false unless expected_version =~ ::Gitlab::Git::COMMIT_ID
+    return false unless ::Gitlab::Git::COMMIT_ID.match?(expected_version)
 
     return false unless Dir.exist?(component_folder)
 

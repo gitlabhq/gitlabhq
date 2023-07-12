@@ -152,7 +152,7 @@ RSpec.configure do |config|
 
     # Admin controller specs get auto admin mode enabled since they are
     # protected by the 'EnforcesAdminAuthentication' concern
-    metadata[:enable_admin_mode] = true if location =~ %r{(ee)?/spec/controllers/admin/}
+    metadata[:enable_admin_mode] = true if %r{(ee)?/spec/controllers/admin/}.match?(location)
   end
 
   config.define_derived_metadata(file_path: %r{(ee)?/spec/.+_docs\.rb\z}) do |metadata|

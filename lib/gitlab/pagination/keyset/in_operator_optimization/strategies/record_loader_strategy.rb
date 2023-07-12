@@ -31,7 +31,7 @@ module Gitlab
             end
 
             def final_projections
-              if @model.default_select_columns.is_a?(Array) && Feature.enabled?(:key_set_optimizer_ignored_columns)
+              if @model.default_select_columns.is_a?(Array)
                 @model.default_select_columns.map { |column| "(#{RECORDS_COLUMN}).#{column.name}" }
               else
                 ["(#{RECORDS_COLUMN}).*"]

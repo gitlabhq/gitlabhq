@@ -303,7 +303,7 @@ export default {
   <div class="form-row gl-mb-5 work-item-assignees gl-relative gl-flex-nowrap">
     <span
       :id="assigneesTitleId"
-      class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
+      class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break work-item-field-label"
       data-testid="assignees-title"
       >{{ assigneeText }}</span
     >
@@ -313,11 +313,12 @@ export default {
       :selected-tokens="localAssignees"
       :container-class="containerClass"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"
+      menu-class="token-selector-menu-class"
       :dropdown-items="dropdownItems"
       :loading="isLoadingUsers && !isLoadingMore"
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
-      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2"
+      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2 work-item-field-value"
       data-testid="work-item-assignees-input"
       @input="handleAssigneesInput"
       @text-input="debouncedSearchKeyUpdate"

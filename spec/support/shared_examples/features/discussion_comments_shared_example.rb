@@ -284,7 +284,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           expect(new_comment).to have_css('.discussion-with-resolve-btn')
         end
 
-        if resource_name =~ /(issue|merge request)/
+        if /(issue|merge request)/.match?(resource_name)
           it 'can be replied to' do
             submit_reply('some text')
 
@@ -373,7 +373,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
             expect(page).not_to have_selector menu_selector
           end
 
-          if resource_name =~ /(issue|merge request)/
+          if /(issue|merge request)/.match?(resource_name)
             it 'updates the close button text' do
               expect(find(close_selector)).to have_content "Comment & close #{resource_name}"
             end
@@ -402,7 +402,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
     end
   end
 
-  if resource_name =~ /(issue|merge request)/
+  if /(issue|merge request)/.match?(resource_name)
     describe "on a closed #{resource_name}" do
       before do
         find("#{form_selector} .js-note-target-close").click

@@ -94,7 +94,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-5 gl-border-t gl-pt-5">
+  <div class="gl-mb-5">
     <div class="gl-display-inline-flex gl-align-items-center gl-mb-3">
       <label class="d-block col-form-label gl-mr-5">{{ __('Description') }}</label>
       <gl-button

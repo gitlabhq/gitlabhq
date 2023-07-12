@@ -65,6 +65,11 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'config/foo.js'                    | [:frontend]
       'config/deep/foo.js'               | [:frontend]
 
+      'app/components/pajamas/empty_state_component.html.haml'    | [:frontend, :backend]
+      'ee/app/components/pajamas/empty_state_component.html.haml' | [:frontend, :backend]
+      'app/components/diffs/overflow_warning_component.html.haml' | [:frontend, :backend]
+      'app/components/layouts/horizontal_section_component.rb'    | [:frontend, :backend]
+
       'ee/app/assets/foo'                | [:frontend]
       'ee/app/views/foo'                 | [:frontend, :backend]
       'ee/spec/frontend/bar'             | [:frontend]
@@ -112,7 +117,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
       'scripts/glfm/bar.rb'                                   | [:backend]
       'scripts/glfm/bar.js'                                   | [:frontend]
-      'scripts/remote_development/run-smoke-test-suite.sh'    | [:remote_development]
+      'scripts/remote_development/run-smoke-test-suite.sh'    | [:remote_development_be]
       'scripts/lib/glfm/bar.rb'                               | [:backend]
       'scripts/lib/glfm/bar.js'                               | [:frontend]
       'scripts/bar.rb'                                        | [:backend, :tooling]

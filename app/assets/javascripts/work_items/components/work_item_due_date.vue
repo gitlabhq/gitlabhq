@@ -88,7 +88,11 @@ export default {
       return !this.canUpdate && !this.dueDate && !this.startDate;
     },
     labelClass() {
-      return this.isReadonlyWithNoDates ? 'gl-align-self-center gl-pb-0!' : 'gl-mt-3 gl-pb-0!';
+      return {
+        'work-item-field-label': true,
+        'gl-align-self-center gl-pb-0!': this.isReadonlyWithNoDates,
+        'gl-mt-3 gl-pb-0!': !this.isReadonlyWithNoDates,
+      };
     },
     showDueDateButton() {
       return this.canUpdate && !this.showDueDateInput;

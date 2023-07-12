@@ -80,7 +80,7 @@ RSpec.describe Emails::InProductMarketing do
           is_expected.to have_body_text(message.subtitle)
           is_expected.to have_body_text(CGI.unescapeHTML(message.cta_link))
 
-          if track =~ /(create|verify)/
+          if /create|verify/.match?(track)
             is_expected.to have_body_text(message.invite_text)
             is_expected.to have_body_text(CGI.unescapeHTML(message.invite_link))
           else

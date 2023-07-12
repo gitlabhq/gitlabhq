@@ -299,6 +299,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Geo: Since the migration of project designs to SSF, [missing design repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/414279). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these design repositories. You could be impacted by this issue even if you have not imported projects.
   - Impacted versions: GitLab versions 16.1.x.
   - Versions containing fix: GitLab 16.2.0 and later.
+- For self-compiled installations: You must remove any settings related to Puma worker killer from the `puma.rb` configuration file, since those have been [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
 
 ### 16.0.0
 
@@ -323,6 +324,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
   - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
   - Versions containing fix: GitLab 16.1.3 and later.
+- Geo: A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database to version 13. This leaves the secondary site in a broken state, and prevents upgrading the Geo installation to GitLab 16.x ([PostgreSQL 12 support has removed in 16.0](deprecations.md#postgresql-12-deprecated) and later releases). This occurs on secondary sites using the bundled PostgreSQL software, running both the secondary main Rails database and tracking database on the same node. There is a manual [workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround) for those impacted until a fix is backported to 15.11.
+  - Impacted versions: GitLab versions 15.2 - 15.11
+  - Version 16.0 and later are not impacted. Note, 15.11 is a mandatory upgrade stop on the way to 16.0.
 
 ### 15.11.0
 
@@ -332,6 +336,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Geo: Some project imports do not initialize wiki repositories on project creation. Since the migration of project wikis to SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704). This is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these wiki repositories. If you have not imported projects you are not impacted by this issue.
   - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
   - Versions containing fix: GitLab 16.1.3 and later.
+- Geo: A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database to version 13. This leaves the secondary site in a broken state, and prevents upgrading the Geo installation to GitLab 16.x ([PostgreSQL 12 support has removed in 16.0](deprecations.md#postgresql-12-deprecated) and later releases). This occurs on secondary sites using the bundled PostgreSQL software, running both the secondary main Rails database and tracking database on the same node. There is a manual [workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround) for those impacted until a fix is backported to 15.11.
+  - Impacted versions: GitLab versions 15.2 - 15.11
+  - Version 16.0 and later are not impacted. Note, 15.11 is a mandatory upgrade stop on the way to 16.0.
 
 ### 15.10.5
 

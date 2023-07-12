@@ -156,14 +156,6 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
       let(:batch_size) { 1 }
 
       it_behaves_like 'correct ordering examples'
-
-      context 'when key_set_optimizer_ignored_columns feature flag is disabled' do
-        before do
-          stub_feature_flags(key_set_optimizer_ignored_columns: false)
-        end
-
-        it_behaves_like 'correct ordering examples'
-      end
     end
 
     context 'when iterating records with LIMIT 3' do

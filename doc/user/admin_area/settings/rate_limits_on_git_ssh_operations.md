@@ -1,33 +1,11 @@
 ---
-stage: Create
-group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+redirect_to: '../../../administration/settings/rate_limits_on_git_ssh_operations.md'
+remove_date: '2023-10-12'
 ---
 
-# Rate limits on Git SSH operations **(FREE SELF)**
+This document was moved to [another location](../../../administration/settings/rate_limits_on_git_ssh_operations.md).
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../../../administration/feature_flags.md) named `rate_limit_gitlab_shell`. Available by default without a feature flag from 15.8.
-
-GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
-further connection requests from that user for the project.
-
-The rate limit applies at the Git command ([plumbing](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain)) level.
-Each command has a rate limit of 600 per minute. For example:
-
-- `git push` has a rate limit of 600 per minute.
-- `git pull` has its own rate limit of 600 per minute.
-
-Because the same commands are shared by `git-upload-pack`, `git pull`, and `git clone`, they share a rate limit.
-
-Users on self-managed GitLab can disable this rate limit.
-
-## Configure GitLab Shell operation limit
-
-`Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
-
-1. On the left sidebar, select **Your work > Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
-1. Expand **Git SSH operations rate limit**.
-1. Enter a value for **Maximum number of Git operations per minute**.
-1. Select **Save changes**.
+<!-- This redirect file can be deleted after <2023-10-12>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

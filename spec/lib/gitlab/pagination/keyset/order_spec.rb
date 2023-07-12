@@ -702,16 +702,6 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
         end
       end
 
-      context 'when key_set_optimizer_ignored_columns feature flag is disabled' do
-        before do
-          stub_feature_flags(key_set_optimizer_ignored_columns: false)
-        end
-
-        it 'returns items in the correct order' do
-          expect(items).to eq(expected_results)
-        end
-      end
-
       it 'returns items in the correct order' do
         expect(items).to eq(expected_results)
       end

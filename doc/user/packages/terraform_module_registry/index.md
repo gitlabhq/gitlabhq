@@ -162,7 +162,7 @@ Prerequisites:
 
 - You need to [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
 
-Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` file:
+Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` or `%APPDATA%/terraform.rc` file:
 
 ```terraform
 credentials "gitlab.com" {

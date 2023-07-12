@@ -77,7 +77,7 @@ module Tooling
       def metric_scope_affected
         select_models(helper.modified_files).each_with_object(Hash.new { |h, k| h[k] = [] }) do |file_name, matched_files|
           helper.changed_lines(file_name).each do |mod_line, _i|
-            next unless mod_line =~ /^\+\s+scope :\w+/
+            next unless /^\+\s+scope :\w+/.match?(mod_line)
 
             affected_scope = mod_line.match(/:\w+/)
             next if affected_scope.nil?

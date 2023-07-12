@@ -1,8 +1,0 @@
----
-name: key_set_optimizer_ignored_columns
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125462
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417515
-milestone: '16.2'
-type: development
-group: group::project management
-default_enabled: false

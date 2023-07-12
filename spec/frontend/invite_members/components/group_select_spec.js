@@ -10,6 +10,14 @@ jest.mock('~/api/groups_api');
 const group1 = { id: 1, full_name: 'Group One', avatar_url: 'test' };
 const group2 = { id: 2, full_name: 'Group Two', avatar_url: 'test' };
 const allGroups = [group1, group2];
+const headers = {
+  'X-Next-Page': 2,
+  'X-Page': 1,
+  'X-Per-Page': 20,
+  'X-Prev-Page': '',
+  'X-Total': 40,
+  'X-Total-Pages': 2,
+};
 
 describe('GroupSelect', () => {
   let wrapper;
@@ -25,7 +33,7 @@ describe('GroupSelect', () => {
   };
 
   beforeEach(() => {
-    getGroups.mockResolvedValueOnce(allGroups);
+    getGroups.mockResolvedValueOnce({ data: allGroups, headers });
   });
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
@@ -119,6 +127,62 @@ describe('GroupSelect', () => {
 
     it('sets dropdown toggle text to selected item', () => {
       expect(findListboxToggle().text()).toBe(group1.full_name);
+    });
+  });
+
+  describe('infinite scroll', () => {
+    it('sets infinite scroll related props', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findListbox().props()).toMatchObject({
+        infiniteScroll: true,
+        infiniteScrollLoading: false,
+        totalItems: 40,
+      });
+    });
+
+    describe('when `bottom-reached` event is fired', () => {
+      it('indicates new groups are loading and adds them to the listbox', async () => {
+        createComponent();
+        await waitForPromises();
+
+        const infiniteScrollGroup = {
+          id: 3,
+          full_name: 'Infinite scroll group',
+          avatar_url: 'test',
+        };
+
+        getGroups.mockResolvedValueOnce({ data: [infiniteScrollGroup], headers });
+
+        findListbox().vm.$emit('bottom-reached');
+        await nextTick();
+
+        expect(findListbox().props('infiniteScrollLoading')).toBe(true);
+
+        await waitForPromises();
+
+        expect(findListbox().props('items')[2]).toMatchObject({
+          value: infiniteScrollGroup.id,
+          id: infiniteScrollGroup.id,
+          name: infiniteScrollGroup.full_name,
+          avatarUrl: infiniteScrollGroup.avatar_url,
+        });
+      });
+
+      describe('when API request fails', () => {
+        it('emits `error` event', async () => {
+          createComponent();
+          await waitForPromises();
+
+          getGroups.mockRejectedValueOnce();
+
+          findListbox().vm.$emit('bottom-reached');
+          await waitForPromises();
+
+          expect(wrapper.emitted('error')).toEqual([[GroupSelect.i18n.errorMessage]]);
+        });
+      });
     });
   });
 });

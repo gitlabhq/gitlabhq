@@ -18,7 +18,7 @@ module Tooling
           changed_lines = helper.changed_lines(filename)
 
           changed_lines.each do |changed_line|
-            next unless changed_line =~ RSPEC_TOP_LEVEL_DESCRIBE_REGEX
+            next unless RSPEC_TOP_LEVEL_DESCRIBE_REGEX.match?(changed_line)
 
             line_number = file_lines.find_index(changed_line.delete_prefix('+'))
             next unless line_number

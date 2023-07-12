@@ -3,6 +3,7 @@ import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { s__ } from '~/locale';
 import { getGroups, getDescendentGroups } from '~/rest_api';
+import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import { SEARCH_DELAY, GROUP_FILTERS } from '../constants';
 
 export default {
@@ -39,6 +40,8 @@ export default {
       isFetching: false,
       groups: [],
       searchTerm: '',
+      pagination: {},
+      infiniteScrollLoading: false,
     };
   },
   computed: {
@@ -48,24 +51,29 @@ export default {
     isFetchResultEmpty() {
       return this.groups.length === 0;
     },
+    infiniteScroll() {
+      return Boolean(this.pagination.nextPage);
+    },
   },
   mounted() {
     this.retrieveGroups();
   },
   methods: {
-    retrieveGroups: debounce(function debouncedRetrieveGroups() {
+    retrieveGroups: debounce(async function debouncedRetrieveGroups() {
       this.isFetching = true;
-      return this.fetchGroups()
-        .then((response) => {
-          this.groups = this.processGroups(response);
-          this.isFetching = false;
-        })
-        .catch(() => {
-          this.isFetching = false;
-        });
+
+      try {
+        const response = await this.fetchGroups();
+        this.pagination = this.processPagination(response);
+        this.groups = this.processGroups(response);
+      } catch {
+        this.onApiError();
+      } finally {
+        this.isFetching = false;
+      }
     }, SEARCH_DELAY),
-    processGroups(response) {
-      const rawGroups = response.map((group) => ({
+    processGroups({ data }) {
+      const rawGroups = data.map((group) => ({
         // `value` is needed for `GlCollapsibleListbox`
         value: group.id,
         id: group.id,
@@ -75,6 +83,9 @@ export default {
       }));
 
       return this.filterOutInvalidGroups(rawGroups);
+    },
+    processPagination({ headers }) {
+      return parseIntPagination(normalizeHeaders(headers));
     },
     filterOutInvalidGroups(groups) {
       return groups.filter((group) => this.invalidGroups.indexOf(group.id) === -1);
@@ -86,23 +97,43 @@ export default {
       this.searchTerm = searchTerm;
       this.retrieveGroups();
     },
-    fetchGroups() {
+    fetchGroups(options = {}) {
+      const combinedOptions = {
+        ...this.$options.defaultFetchOptions,
+        ...options,
+      };
+
       switch (this.groupsFilter) {
         case GROUP_FILTERS.DESCENDANT_GROUPS:
-          return getDescendentGroups(
-            this.parentGroupId,
-            this.searchTerm,
-            this.$options.defaultFetchOptions,
-          );
+          return getDescendentGroups(this.parentGroupId, this.searchTerm, combinedOptions);
         default:
-          return getGroups(this.searchTerm, this.$options.defaultFetchOptions);
+          return getGroups(this.searchTerm, combinedOptions);
       }
+    },
+    async onBottomReached() {
+      this.infiniteScrollLoading = true;
+
+      try {
+        const response = await this.fetchGroups({ page: this.pagination.page + 1 });
+        this.pagination = this.processPagination(response);
+        this.groups.push(...this.processGroups(response));
+      } catch {
+        this.onApiError();
+      } finally {
+        this.infiniteScrollLoading = false;
+      }
+    },
+    onApiError() {
+      this.$emit('error', this.$options.i18n.errorMessage);
     },
   },
   i18n: {
     dropdownText: s__('GroupSelect|Select a group'),
     searchPlaceholder: s__('GroupSelect|Search groups'),
     emptySearchResult: s__('GroupSelect|No matching results'),
+    errorMessage: s__(
+      'GroupSelect|An error occurred fetching the groups. Please refresh the page to try again.',
+    ),
   },
   defaultFetchOptions: {
     exclude_internal: true,
@@ -125,6 +156,10 @@ export default {
       is-check-centered
       :searching="isFetching"
       :no-results-text="$options.i18n.emptySearchResult"
+      :infinite-scroll="infiniteScroll"
+      :infinite-scroll-loading="infiniteScrollLoading"
+      :total-items="pagination.total"
+      @bottom-reached="onBottomReached"
       @select="onSelect"
       @search="onSearch"
     >
