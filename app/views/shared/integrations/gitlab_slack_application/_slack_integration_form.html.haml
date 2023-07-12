@@ -22,7 +22,7 @@
       %td{ class: 'gl-py-3!' }
         .controls
           - project = integration.project
-          = link_to _('Edit'), edit_project_settings_slack_path(project), class: 'btn gl-button btn-default'
+          = link_button_to _('Edit'), edit_project_settings_slack_path(project)
           = link_to sprite_icon('remove', css_class: 'gl-icon'), project_settings_slack_path(project), method: :delete, class: 'btn gl-button btn-danger btn-danger-secondary', aria: { label: s_('SlackIntegration|Remove project') }, data: { confirm_btn_variant: "danger", confirm: s_('SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?') }
   .gl-my-5
     = render 'shared/integrations/gitlab_slack_application/slack_button', project: @project, label: s_('SlackIntegration|Reinstall GitLab for Slack app')

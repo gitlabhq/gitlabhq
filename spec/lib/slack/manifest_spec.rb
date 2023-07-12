@@ -72,6 +72,9 @@ RSpec.describe Slack::Manifest, feature_category: :integrations do
     subject(:to_json) { described_class.to_json }
 
     shared_examples 'a manifest that matches the JSON schema' do
+      # JSON schema file downloaded from
+      # https://raw.githubusercontent.com/slackapi/manifest-schema/v0.0.0/schemas/manifest.schema.2.0.0.json
+      # via https://github.com/slackapi/manifest-schema.
       it { is_expected.to match_schema('slack/manifest') }
     end
 

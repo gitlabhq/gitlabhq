@@ -17,11 +17,11 @@
         .col-sm-10
           %p.text-success.gl-mt-3
             = s_('PrometheusService|You have a cluster with the Prometheus integration enabled.')
-          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn gl-button btn-default'
+          = link_button_to s_('PrometheusService|Manage clusters'), project_clusters_path(project)
       - else
         .col-sm-2
           = image_tag 'illustrations/monitoring/loading.svg'
         .col-sm-10
           %p.gl-mt-3
             = s_('PrometheusService|Configure GitLab to query a Prometheus installed in one of your clusters.')
-          = link_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), class: 'btn gl-button btn-confirm'
+          = link_button_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), variant: :confirm

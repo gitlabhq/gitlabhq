@@ -8,8 +8,8 @@ import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '../../constants';
 import MarkdownEditor from './markdown_editor.vue';
 import eventHub from './eventhub';
 
-export const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
-export const MR_TARGET_BRANCH = 'merge_request[target_branch]';
+const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
+const MR_TARGET_BRANCH = 'merge_request[target_branch]';
 
 function organizeQuery(obj, isFallbackKey = false) {
   if (!obj[MR_SOURCE_BRANCH] && !obj[MR_TARGET_BRANCH]) {

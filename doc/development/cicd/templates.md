@@ -424,27 +424,11 @@ To add a metric definition for a new template:
 
 1. Install and start the [GitLab GDK](https://gitlab.com/gitlab-org/gitlab-development-kit#installation).
 1. In the `gitlab` directory in your GDK, check out the branch that contains the new template.
-1. [Add the template inclusion event](../internal_analytics/service_ping/implement.md#add-new-events)
-   with this Rake task:
-
-   ```shell
-   bin/rake gitlab:usage_data:generate_ci_template_events
-   ```
-
-   The task adds a section like the following to [`lib/gitlab/usage_data_counters/known_events/ci_templates.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/ci_templates.yml):
-
-   ```yaml
-   - name: p_ci_templates_my_template_name
-     category: ci_templates
-     aggregation: weekly
-   ```
-
-1. Copy the value of `name` from the new YAML section, and add it to the weekly
-   and monthly CI/CD template total count metrics:
+1. Add the new template event name to the weekly and monthly CI/CD template total count metrics:
    - [`config/metrics/counts_7d/20210216184557_ci_templates_total_unique_counts_weekly.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_7d/20210216184557_ci_templates_total_unique_counts_weekly.yml)
    - [`config/metrics/counts_28d/20210216184559_ci_templates_total_unique_counts_monthly.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184559_ci_templates_total_unique_counts_monthly.yml)
 
-1. Use the same `name` as above as the last argument in the following command to
+1. Use the same event name as above as the last argument in the following command to
   [add new metric definitions](../internal_analytics/service_ping/metrics_dictionary.md#metrics-added-dynamic-to-service-ping-payload):
 
    ```shell
@@ -481,7 +465,6 @@ To add a metric definition for a new template:
 For example, these are the metrics configuration files for the
 [5 Minute Production App template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/5-Minute-Production-App.gitlab-ci.yml):
 
-- The template inclusion event: [`lib/gitlab/usage_data_counters/known_events/ci_templates.yml#L438-L441`](https://gitlab.com/gitlab-org/gitlab/-/blob/dcddbf83c29d1ad0839d55362c1b43888304f453/lib/gitlab/usage_data_counters/known_events/ci_templates.yml#L438-L441)
 - The weekly and monthly metrics definitions:
   - [`config/metrics/counts_7d/20210901223501_p_ci_templates_5_minute_production_app_weekly.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/1a6eceff3914f240864b2ca15ae2dc076ea67bf6/config/metrics/counts_7d/20210216184515_p_ci_templates_5_min_production_app_weekly.yml)
   - [`config/metrics/counts_28d/20210901223505_p_ci_templates_5_minute_production_app_monthly.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184517_p_ci_templates_5_min_production_app_monthly.yml)

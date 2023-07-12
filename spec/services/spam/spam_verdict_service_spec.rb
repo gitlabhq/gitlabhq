@@ -403,7 +403,24 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
     describe 'issue' do
       let(:target) { issue }
 
-      it_behaves_like 'execute spam verdict service'
+      context 'when issue is publicly visible' do
+        before do
+          allow(issue).to receive(:publicly_visible?).and_return(true)
+        end
+
+        it_behaves_like 'execute spam verdict service'
+      end
+
+      context 'when issue is not publicly visible' do
+        before do
+          allow(issue).to receive(:publicly_visible?).and_return(false)
+          allow(service).to receive(:get_spamcheck_verdict).and_return(BLOCK_USER)
+        end
+
+        it 'overrides and renders the override verdict' do
+          expect(service.execute).to eq OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM
+        end
+      end
     end
 
     describe 'snippet' do

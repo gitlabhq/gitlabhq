@@ -6,7 +6,7 @@
     %p
       = _("You are already a member of this %{member_source}.") % { member_source: @invite_details[:title] }
     .actions
-      = link_to _("Go to %{source_name}") % { source_name: @invite_details[:title] }, @invite_details[:url], class: "btn gl-button btn-confirm"
+      = link_button_to _("Go to %{source_name}") % { source_name: @invite_details[:title] }, @invite_details[:url], variant: :confirm
 
   - else
     %p

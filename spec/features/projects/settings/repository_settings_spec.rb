@@ -10,7 +10,6 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :g
   let(:role) { :developer }
 
   before do
-    stub_feature_flags(mirror_only_branches_match_regex: false)
     project.add_role(user, role)
     sign_in(user)
   end

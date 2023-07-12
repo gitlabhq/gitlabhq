@@ -1559,6 +1559,42 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '#allow_possible_spam?' do
+    let_it_be(:issue) { build(:issue) }
+
+    subject { issue.allow_possible_spam?(issue.author) }
+
+    context 'when the `allow_possible_spam` application setting is turned off' do
+      context 'when the issue is private' do
+        it { is_expected.to eq(true) }
+
+        context 'when the user is the support bot' do
+          before do
+            allow(issue.author).to receive(:support_bot?).and_return(true)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+
+      context 'when the issue is public' do
+        before do
+          allow(issue).to receive(:publicly_visible?).and_return(true)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'when the `allow_possible_spam` application setting is turned on' do
+      before do
+        stub_application_setting(allow_possible_spam: true)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
   describe '#check_for_spam?' do
     let_it_be(:support_bot) { ::User.support_bot }
 
@@ -1568,24 +1604,24 @@ RSpec.describe Issue, feature_category: :team_planning do
       false | Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'new' } | true
       false | Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'new' } | true
       # confidential to non-confidential
-      false | Gitlab::VisibilityLevel::PUBLIC   | true  | { confidential: false } | true
+      false | Gitlab::VisibilityLevel::PUBLIC   | true  | { confidential: false } | false
       # non-confidential to confidential
       false | Gitlab::VisibilityLevel::PUBLIC   | false | { confidential: true } | false
       # spammable attributes changing on confidential
-      false | Gitlab::VisibilityLevel::PUBLIC   | true  | { description: 'new' } | false
+      false | Gitlab::VisibilityLevel::PUBLIC   | true  | { description: 'new' } | true
       # spammable attributes changing while changing to confidential
-      false | Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'new', confidential: true } | false
+      false | Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'new', confidential: true } | true
       # spammable attribute not changing
       false | Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'original description' } | false
       # non-spammable attribute changing
       false | Gitlab::VisibilityLevel::PUBLIC   | false | { weight: 3 } | false
       # spammable attributes changing on non-public
-      false | Gitlab::VisibilityLevel::INTERNAL | false | { description: 'new' } | false
-      false | Gitlab::VisibilityLevel::PRIVATE  | false | { description: 'new' } | false
+      false | Gitlab::VisibilityLevel::INTERNAL | false | { description: 'new' } | true
+      false | Gitlab::VisibilityLevel::PRIVATE  | false | { description: 'new' } | true
 
       ### support-bot cases
       # confidential to non-confidential
-      true | Gitlab::VisibilityLevel::PUBLIC    | true  | { confidential: false } | true
+      true | Gitlab::VisibilityLevel::PUBLIC    | true  | { confidential: false } | false
       # non-confidential to confidential
       true | Gitlab::VisibilityLevel::PUBLIC    | false | { confidential: true } | false
       # spammable attributes changing on confidential

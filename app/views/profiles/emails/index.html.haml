@@ -59,6 +59,6 @@
             .gl-display-flex.gl-justify-content-end.gl-align-items-flex-end.gl-flex-grow-1.gl-flex-wrap-reverse.gl-gap-3
               - unless email.confirmed?
                 - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
-                = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'gl-button btn btn-sm btn-default'
+                = link_button_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, size: :small
 
               = link_button_to nil, profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, variant: :danger, size: :small, icon: 'remove', 'aria-label': _('Remove')

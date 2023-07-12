@@ -19,4 +19,4 @@
 
   - if can? current_user, :admin_project, @project
     %td
-      = link_to 'Unprotect', [@project, protected_tag, { update_section: 'js-protected-tags-settings' }], aria: { label: s_('ProtectedTags|Unprotect tag') }, data: { confirm: 'Tag will be writable for developers. Are you sure?', confirm_btn_variant: 'danger' }, method: :delete, class: 'gl-button btn btn-danger-secondary'
+      = link_button_to 'Unprotect', [@project, protected_tag, { update_section: 'js-protected-tags-settings' }], aria: { label: s_('ProtectedTags|Unprotect tag') }, data: { confirm: 'Tag will be writable for developers. Are you sure?', confirm_btn_variant: 'danger' }, method: :delete, variant: :danger, category: :secondary

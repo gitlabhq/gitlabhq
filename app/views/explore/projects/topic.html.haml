@@ -26,7 +26,6 @@
     .nav-controls
       = render 'shared/projects/search_form'
       = render 'filter'
-    = link_to topic_explore_projects_path(@topic.name, rss_url_options), title: s_("Topics|Subscribe to the new projects feed"), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip' do
-      = sprite_icon('rss', css_class: 'gl-icon')
+    = link_button_to nil, topic_explore_projects_path(@topic.name, rss_url_options), title: s_("Topics|Subscribe to the new projects feed"), class: 'd-none d-sm-inline-flex has-tooltip', icon: 'rss'
 
   = render 'projects', projects: @projects

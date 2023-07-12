@@ -43,8 +43,8 @@
 .form-actions.gl-display-flex.gl-justify-content-space-between
   %div
     - if @created
-      = link_to _('Continue'), index_path, class: 'btn btn-confirm btn-md gl-button gl-mr-3'
-    = link_to _('Edit'), edit_path, class: 'btn btn-default btn-md gl-button'
+      = link_button_to _('Continue'), index_path, class: 'gl-mr-3', variant: :confirm
+    = link_button_to _('Edit'), edit_path
   = render 'shared/doorkeeper/applications/delete_form', path: delete_path
 
 -# Create a hidden field to save the ID of application created

@@ -76,6 +76,10 @@ When you sort by **Popularity**, the issue order changes to sort descending by t
 number of upvotes ([emoji reactions](../../award_emojis.md) with the "thumbs up")
 on each issue. You can use this to identify issues that are in high demand.
 
+The total number of votes is not summed up. An issue with 18 upvotes and 5
+downvotes is considered more popular than an issue with 17 upvotes and no
+downvotes.
+
 ## Sorting by priority
 
 When you sort by **Priority**, the issue order changes to sort in this order:

@@ -16,6 +16,10 @@ The instructions on this page guide you through:
 
 Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../administration/admin_area.md).
 
+Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
+These environment settings cannot be changed by tenants.
+GitLab Dedicated Engineers also don't have direct access to tenant environments, except for [break glass situations](../../subscriptions/gitlab_dedicated/index.md#access-controls).
+
 ## Onboarding
 
 To request the creation of a new GitLab Dedicated environment for your organization, you must provide the following information to your account team:

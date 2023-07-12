@@ -7,7 +7,8 @@ import NotificationEmailListboxInput from './components/notification_email_listb
 Vue.use(GlToast);
 
 const initNotificationEmailListboxInputs = () => {
-  const els = [...document.querySelectorAll('.js-notification-email-listbox-input')];
+  const CLASS_NAME = 'js-notification-email-listbox-input';
+  const els = [...document.querySelectorAll(`.${CLASS_NAME}`)];
 
   els.forEach((el, index) => {
     const { label, name, emptyValueText, value = '', placement } = el.dataset;
@@ -25,7 +26,9 @@ const initNotificationEmailListboxInputs = () => {
         placement,
       },
       render(h) {
-        return h(NotificationEmailListboxInput);
+        return h(NotificationEmailListboxInput, {
+          class: el.className.replace(CLASS_NAME, '').trim(),
+        });
       },
     });
   });

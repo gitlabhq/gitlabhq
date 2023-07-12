@@ -14,15 +14,14 @@ module Gitlab
       end
 
       def save(repositories, group_id)
-        if Feature.enabled?(:manifest_import_use_hash_tagged_key)
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.multi do |multi|
-              multi.set(hashtag_key_for('repositories'), Gitlab::Json.dump(repositories), ex: EXPIRY_TIME)
-              multi.set(hashtag_key_for('group_id'), group_id, ex: EXPIRY_TIME)
-            end
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.multi do |multi|
+            multi.set(hashtag_key_for('repositories'), Gitlab::Json.dump(repositories), ex: EXPIRY_TIME)
+            multi.set(hashtag_key_for('group_id'), group_id, ex: EXPIRY_TIME)
           end
         end
 
+        # writing into older key (without hash tags) to be removed in a subsequent release
         Gitlab::Redis::SharedState.with do |redis|
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
             redis.multi do |multi|
@@ -57,11 +56,7 @@ module Gitlab
 
       def redis_get(field)
         Gitlab::Redis::SharedState.with do |redis|
-          if Feature.enabled?(:manifest_import_use_hash_tagged_key)
-            redis.get(hashtag_key_for(field)) || redis.get(key_for(field))
-          else
-            redis.get(key_for(field))
-          end
+          redis.get(hashtag_key_for(field)) || redis.get(key_for(field))
         end
       end
     end

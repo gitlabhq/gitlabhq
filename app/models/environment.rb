@@ -78,13 +78,7 @@ class Environment < ApplicationRecord
       message: Gitlab::Regex.kubernetes_namespace_regex_message
     }
 
-  # Currently, the tier presence is validaed for newly created environments.
-  # After the `BackfillEnvironmentTiers` background migration has been completed, we should remove `on: :create`.
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/385253.
-  # Todo: Remove along with FF `validate_environment_tier_presence`.
-  validates :tier, presence: true, on: :create, unless: :validate_environment_tier_present?
-
-  validates :tier, presence: true, if: :validate_environment_tier_present?
+  validates :tier, presence: true
 
   validate :safe_external_url
   validate :merge_request_not_changed
@@ -609,10 +603,6 @@ class Environment < ApplicationRecord
     else
       self.class.tiers[:other]
     end
-  end
-
-  def validate_environment_tier_present?
-    Feature.enabled?(:validate_environment_tier_presence, self.project)
   end
 end
 

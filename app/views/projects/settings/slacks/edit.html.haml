@@ -17,4 +17,4 @@
       .footer-block.row-content-block
         = form.submit _('Save changes'), pajamas_button: true
         &nbsp;
-        = link_to _('Cancel'), edit_project_settings_integration_path(@project, @service), class: 'btn gl-button btn-cancel'
+        = link_button_to _('Cancel'), edit_project_settings_integration_path(@project, @service)

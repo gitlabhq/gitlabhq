@@ -125,52 +125,15 @@ when you add a new license. This happens when the start date of the new license
 is in the future and the expiring one is still active.
 The banner disappears after the new license becomes active.
 
-## Troubleshooting
+## License commands in the Rails console
 
-### No Subscription area in the Admin Area
-
-You cannot add your license because there is no **Subscription** area.
-This issue might occur if:
-
-- You're running GitLab Community Edition. Before you add your license, you
-  must [upgrade to Enterprise Edition](../update/index.md#community-to-enterprise-edition).
-- You're using GitLab.com. You cannot add a self-managed license to GitLab.com.
-  To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/gitlab_com/index.md).
-
-### Users exceed license limit upon renewal
-
-GitLab displays a message prompting you to purchase
-additional users. This issue occurs if you add a license that does not have enough
-users to cover the number of users in your instance.
-
-To fix this issue, purchase additional seats to cover those users.
-For more information, read the [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
-
-In GitLab 14.2 and later, for instances that use a license file, the following
-rules apply:
-
-- If the users over license are less than or equal to 10% of the users in the license
-  file, the license is applied and you pay the overage in the next renewal.
-- If the users over license are more than 10% of the users in the license file,
-  you cannot apply the license without purchasing more users.
-
-For example, if you purchase a license for 100 users, you can have 110 users when you add
-your license. However, if you have 111 users, you must purchase more users before you can add
-the license.
-
-### `Start GitLab Ultimate trial` still displays after adding license
-
-To fix this issue, restart [Puma or your entire GitLab instance](../administration/restart_gitlab.md).
-
-### License commands in the rails console
-
-The following commands can be run in the [rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
+The following commands can be run in the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions.  
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
 We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
 
-#### See current license information
+### See current license information
 
 ```ruby
 # License information (name, company, email address)
@@ -209,7 +172,7 @@ User.active.without_bots.excluding_guests.count
 License.future_dated
 ```
 
-#### Check if a project feature is available on the instance
+### Check if a project feature is available on the instance
 
 Features listed in [`features.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/gitlab_subscriptions/features.rb).
 
@@ -226,7 +189,9 @@ p = Project.find_by_full_path('<group>/<project>')
 p.feature_available?(:jira_dev_panel_integration)
 ```
 
-#### Add a license through the console
+### Add a license through the console
+
+#### Using a `key` variable
 
 ```ruby
 key = "<key>"
@@ -235,10 +200,25 @@ license.save
 License.current # check to make sure it applied
 ```
 
+#### Using a license file
+
+```ruby
+license_file = File.open("/tmp/Gitlab.license")
+
+key = license_file.read.gsub("\r\n", "\n").gsub(/\n+$/, '') + "\n"
+
+license = License.new(data: key)
+license.save
+License.current # check to make sure it applied
+```
+
+These snippets can be saved to a file and executed [using the Rails Runner](operations/rails_console.md#using-the-rails-runner) so the
+license can be applied via shell automation scripts.
+
 This is needed for example in a known edge-case with
 [expired license and multiple LDAP servers](../administration/auth/ldap/ldap-troubleshooting.md#expired-license-causes-errors-with-multiple-ldap-servers).
 
-#### Remove licenses
+### Remove licenses
 
 To clean up the [License History table](../administration/license_file.md#view-license-details-and-history):
 
@@ -250,3 +230,40 @@ License.select(&TYPE).each(&:destroy!)
 
 # or even License.all.each(&:destroy!)
 ```
+
+## Troubleshooting
+
+### No Subscription area in the Admin Area
+
+You cannot add your license because there is no **Subscription** area.
+This issue might occur if:
+
+- You're running GitLab Community Edition. Before you add your license, you
+  must [upgrade to Enterprise Edition](../update/index.md#community-to-enterprise-edition).
+- You're using GitLab.com. You cannot add a self-managed license to GitLab.com.
+  To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/gitlab_com/index.md).
+
+### Users exceed license limit upon renewal
+
+GitLab displays a message prompting you to purchase
+additional users. This issue occurs if you add a license that does not have enough
+users to cover the number of users in your instance.
+
+To fix this issue, purchase additional seats to cover those users.
+For more information, read the [licensing FAQ](https://about.gitlab.com/pricing/licensing-faq/).
+
+In GitLab 14.2 and later, for instances that use a license file, the following
+rules apply:
+
+- If the users over license are less than or equal to 10% of the users in the license
+  file, the license is applied and you pay the overage in the next renewal.
+- If the users over license are more than 10% of the users in the license file,
+  you cannot apply the license without purchasing more users.
+
+For example, if you purchase a license for 100 users, you can have 110 users when you add
+your license. However, if you have 111 users, you must purchase more users before you can add
+the license.
+
+### `Start GitLab Ultimate trial` still displays after adding license
+
+To fix this issue, restart [Puma or your entire GitLab instance](../administration/restart_gitlab.md).

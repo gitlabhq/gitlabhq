@@ -188,7 +188,8 @@ module QuickActions
         next unless definition
 
         definition.execute(self, arg)
-        usage_ping_tracking(definition.name, arg)
+        # summarize_diff will be removed https://gitlab.com/gitlab-org/gitlab/-/issues/407258#note_1385269274
+        usage_ping_tracking(definition.name, arg) unless definition.name == :summarize_diff
       end
     end
 

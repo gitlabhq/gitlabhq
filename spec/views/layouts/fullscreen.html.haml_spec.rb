@@ -35,6 +35,7 @@ RSpec.describe 'layouts/fullscreen' do
   end
 
   it_behaves_like 'a layout which reflects the application theme setting'
+  it_behaves_like 'a layout which reflects the preferred language'
 
   describe 'sidebar' do
     context 'when nav is set' do

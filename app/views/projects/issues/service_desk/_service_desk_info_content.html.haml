@@ -21,4 +21,4 @@
 
     - if can_edit_project_settings && !service_desk_enabled
       .gl-mt-3
-        = link_to s_("ServiceDesk|Enable Service Desk"), edit_project_path(@project), class: 'gl-button btn btn-confirm'
+        = link_button_to s_("ServiceDesk|Enable Service Desk"), edit_project_path(@project), variant: :confirm

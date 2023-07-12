@@ -57,7 +57,7 @@
             %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'cred' }
               - if @user.two_factor_enabled?
                 = _('Enabled')
-                = link_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'btn gl-button btn-sm btn-danger float-right', title: _('Disable Two-factor Authentication')
+                = link_button_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'float-right', title: _('Disable Two-factor Authentication'), variant: :danger, size: :small
               - else
                 = _('Disabled')
 

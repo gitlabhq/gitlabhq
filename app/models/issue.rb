@@ -584,16 +584,12 @@ class Issue < ApplicationRecord
         user, project.external_authorization_classification_label)
   end
 
-  def check_for_spam?(user:)
-    # content created via support bots is always checked for spam, EVEN if
-    # the issue is not publicly visible and/or confidential
-    return true if user.support_bot? && spammable_attribute_changed?
+  # Always enforce spam check for support bot but allow for other users when issue is not publicly visible
+  def allow_possible_spam?(user)
+    return true if Gitlab::CurrentSettings.allow_possible_spam
+    return false if user.support_bot?
 
-    # Only check for spam on issues which are publicly visible (and thus indexed in search engines)
-    return false unless publicly_visible?
-
-    # Only check for spam if certain attributes have changed
-    spammable_attribute_changed?
+    !publicly_visible?
   end
 
   def supports_recaptcha?
@@ -824,12 +820,6 @@ class Issue < ApplicationRecord
     return unless project
 
     Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
-  end
-
-  def spammable_attribute_changed?
-    # NOTE: We need to check them for spam when issues are made non-confidential, because spam
-    # may have been added while they were confidential and thus not being checked for spam.
-    super || confidential_changed?(from: true, to: false)
   end
 
   def ensure_metrics!

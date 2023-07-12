@@ -25,19 +25,10 @@ and thumbs-ups. React with emoji on:
 Emoji reactions make it much easier to give and receive feedback without a long
 comment thread.
 
+"Thumbs up" and "thumbs down" emoji are used to calculate an issue or merge request's position when
+[sorting by popularity](project/issues/sorting_issue_lists.md#sorting-by-popularity).
+
 For information on the relevant API, see [Emoji reactions API](../api/award_emoji.md).
-
-## Sort issues and merge requests on vote count
-
-You can quickly sort issues and merge requests by the number of votes ("thumbs up" and "thumbs down" emoji) they
-have received. The sort options can be found in the dropdown list as "Most
-popular" and "Least popular".
-
-![Votes sort options](img/award_emoji_votes_sort_options.png)
-
-The total number of votes is not summed up. An issue with 18 upvotes and 5
-downvotes is considered more popular than an issue with 17 upvotes and no
-downvotes.
 
 ## Emoji reactions for comments
 
@@ -57,14 +48,14 @@ To remove an emoji reaction, select the emoji again.
 > - Enabled on GitLab.com in GitLab 14.0.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/333095) UI to add emoji in GitLab 16.2.
 
-![Custom emoji in emoji picker](img/custom_emoji_reactions_v16_2.png)
-
 Custom emoji show in the emoji picker everywhere you can react with emoji.
 To add an emoji reaction to a comment or description:
 
-1. Select the smile (**{slight-smile}**).
+1. Select **Add reaction** (**{slight-smile}**).
 1. Select the GitLab logo (**{tanuki}**) or scroll down to the **Custom** section.
 1. Select an emoji from the emoji picker.
+
+![Custom emoji in emoji picker](img/custom_emoji_reactions_v16_2.png)
 
 To use them in a text box, type the filename between two colons.
 For example, `:thank-you:`.

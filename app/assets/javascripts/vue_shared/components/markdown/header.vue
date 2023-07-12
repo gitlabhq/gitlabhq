@@ -214,6 +214,7 @@ export default {
         : description;
 
       if (textArea) {
+        textArea.value = '';
         updateText({
           textArea,
           tag: `${text}\n\n---\n\n_${addendum}_`,

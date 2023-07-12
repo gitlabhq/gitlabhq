@@ -14,7 +14,7 @@
     - if primary_action?
       = primary_action
     - else
-      = link_to @button_text, @button_link, { **@button_options, class: 'btn btn-md btn-confirm gl-button js-close-callout' }
+      = link_button_to @button_text, @button_link, **@button_options, class: 'js-close-callout', variant: :confirm
 
     - actions.each do |action|
       = action

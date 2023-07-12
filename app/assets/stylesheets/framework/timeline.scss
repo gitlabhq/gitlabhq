@@ -44,7 +44,7 @@
     }
 
     + .public-note.discussion-reply-holder {
-      padding-top: $gl-padding-12;
+      padding-top: $gl-padding-12 !important;
     }
 
     &.system-note .note-body .note-text.system-note-commit-list::after {

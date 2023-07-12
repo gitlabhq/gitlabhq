@@ -21,7 +21,7 @@
         .gl-mb-3
           - text, status = domain_presenter.unverified? ? [_('Unverified'), :danger] : [_('Verified'), :success]
           = gl_badge_tag text, variant: status
-          = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "gl-ml-2 gl-button btn btn-sm btn-default has-tooltip", title: _("Retry verification")
+          = link_button_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: 'gl-ml-2 has-tooltip', title: _("Retry verification"), size: :small
         .input-group
           = text_field_tag :domain_verification, domain_presenter.verification_record, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append

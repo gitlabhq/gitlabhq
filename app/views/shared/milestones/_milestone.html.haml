@@ -52,6 +52,6 @@
             = render Pajamas::ButtonComponent.new(icon: 'level-up', category: :tertiary, size: :small, button_options: { class: 'js-promote-project-milestone-button', title: s_('Milestones|Promote to Group Milestone'), disabled: true, data: { toggle: 'tooltip', container: 'body', url: promote_project_milestone_path(milestone.project, milestone), milestone_title: milestone.title, group_name: @project.group.name } })
         - if can?(current_user, :admin_milestone, milestone)
           - if milestone.closed?
-            = link_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: "btn gl-button btn-sm gl-ml-3"
+            = link_button_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: 'gl-ml-3', size: :small
           - else
-            = link_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: "btn gl-button btn-default btn-default-secondary btn-sm gl-ml-3"
+            = link_button_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: 'gl-ml-3', category: :secondary, size: :small

@@ -82,15 +82,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
           expect(env).to validate_presence_of(:tier).on(:update)
         end
       end
-
-      context 'when FF is disabled' do
-        before do
-          stub_feature_flags(validate_environment_tier_presence: false)
-        end
-
-        it { expect(env).to validate_presence_of(:tier).on(:create) }
-        it { expect(env).not_to validate_presence_of(:tier).on(:update) }
-      end
     end
   end
 

@@ -22135,6 +22135,18 @@ Returns [`Tree`](#tree).
 | <a id="repositorytreeref"></a>`ref` | [`String`](#string) | Commit ref to get the tree for. Default value is HEAD. |
 | <a id="repositorytreereftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
 
+##### `Repository.validateCodeownerFile`
+
+Shows linting errors in the CODEOWNER file of the repository.
+
+Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositoryvalidatecodeownerfileref"></a>`ref` | [`String`](#string) | Ref where code owners file needs to be checked. Defaults to the repository's default branch. |
+
 ### `RepositoryBlob`
 
 #### Fields
@@ -22181,6 +22193,24 @@ Returns [`Tree`](#tree).
 | <a id="repositoryblobsize"></a>`size` | [`BigInt`](#bigint) | Size (in bytes) of the blob. |
 | <a id="repositoryblobstoredexternally"></a>`storedExternally` | [`Boolean`](#boolean) | Whether the blob's content is stored externally (for instance, in LFS). |
 | <a id="repositoryblobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
+
+### `RepositoryCodeownerError`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorycodeownererrorcode"></a>`code` | [`String!`](#string) | Linting error code. |
+| <a id="repositorycodeownererrorlines"></a>`lines` | [`[Int!]!`](#int) | Lines where the error occurred. |
+
+### `RepositoryCodeownerValidation`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorycodeownervalidationtotal"></a>`total` | [`Int!`](#int) | Total number of validation error in the file. |
+| <a id="repositorycodeownervalidationvalidationerrors"></a>`validationErrors` | [`[RepositoryCodeownerError!]!`](#repositorycodeownererror) | Specific lint error code. |
 
 ### `RepositoryLanguage`
 

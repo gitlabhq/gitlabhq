@@ -8573,7 +8573,7 @@ msgstr ""
 msgid "By authenticating with an account tied to an Enterprise e-mail address, it is understood that this account is an Enterprise User. "
 msgstr ""
 
-msgid "By default, all projects and groups will use the global notifications setting."
+msgid "By default, all projects and groups use the global notifications setting."
 msgstr ""
 
 msgid "By month"
@@ -20986,9 +20986,6 @@ msgstr ""
 msgid "Global notification level"
 msgstr ""
 
-msgid "Global notification settings"
-msgstr ""
-
 msgid "GlobalSearch| %{search} %{description} %{scope}"
 msgstr ""
 
@@ -30869,9 +30866,6 @@ msgid "Note|The created date provided is too far in the past."
 msgstr ""
 
 msgid "Nothing to preview."
-msgstr ""
-
-msgid "Notification Email"
 msgstr ""
 
 msgid "Notification events"
@@ -47975,7 +47969,7 @@ msgstr ""
 msgid "To set up this integration:"
 msgstr ""
 
-msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
+msgid "To specify the notification level per project of a group you belong to, visit the project page and change the notification level there."
 msgstr ""
 
 msgid "To start using GitLab Enterprise Edition, upload the %{codeOpen}.gitlab-license%{codeClose} file or enter the license key you have received from GitLab Inc."
@@ -52694,6 +52688,12 @@ msgid "You could not create a new trigger."
 msgstr ""
 
 msgid "You currently have no custom domains."
+msgstr ""
+
+msgid "You do not belong to any groups yet."
+msgstr ""
+
+msgid "You do not belong to any projects yet."
 msgstr ""
 
 msgid "You do not have access to any projects for creating incidents."

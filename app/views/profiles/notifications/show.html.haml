@@ -2,55 +2,59 @@
 - page_title _('Notifications')
 - @force_desktop_expanded_sidebar = true
 
-%div
-  - if @user.errors.any?
-    = render Pajamas::AlertComponent.new(variant: :danger) do |c|
-      - c.with_body do
-        %ul
-          - @user.errors.full_messages.each do |msg|
-            %li= msg
+- if @user.errors.any?
+  = render Pajamas::AlertComponent.new(variant: :danger) do |c|
+    - c.with_body do
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
 
-  = hidden_field_tag :notification_type, 'global'
-  .row.gl-mt-3.js-search-settings-section
-    .col-lg-4
-      %h4.gl-mt-0
+= hidden_field_tag :notification_type, 'global'
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
         = page_title
-      %p
-        = _('You can specify notification level per group or per project.')
-      %p
-        = _('By default, all projects and groups will use the global notifications setting.')
-    .col-lg-8
-      %h5.gl-mt-0
-        = _('Global notification settings')
+  %p.gl-text-secondary
+    = _('You can specify notification level per group or per project.')
 
-      = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications gl-mt-3' } do |f|
-        = render_if_exists 'profiles/notifications/email_settings', form: f
+  .gl-mt-0
+    = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications gl-mt-3' } do |f|
+      = render_if_exists 'profiles/notifications/email_settings', form: f
 
-      = label_tag :global_notification_level, _('Global notification level'), class: "label-bold"
-      %br
-      .clearfix
-      .form-group.float-left.global-notification-setting
-        - if @global_notification_setting
-          .js-vue-notification-dropdown{ data: { dropdown_items: notification_dropdown_items(@global_notification_setting).to_json, notification_level: @global_notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), show_label: 'true' } }
+    = label_tag :global_notification_level, _('Global notification level'), class: "label-bold gl-mb-0"
+    .gl-text-secondary.gl-mb-3
+      = _('By default, all projects and groups use the global notifications setting.')
 
-      .clearfix
+    .form-group.global-notification-setting.gl-mb-3
+      - if @global_notification_setting
+        .js-vue-notification-dropdown{ data: { dropdown_items: notification_dropdown_items(@global_notification_setting).to_json, notification_level: @global_notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), show_label: 'true' } }
 
-      = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put do |f|
-        .form-group
-          = f.gitlab_ui_checkbox_component :notified_of_own_activity, _('Receive notifications about your own activity')
+    = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put do |f|
+      .form-group
+        = f.gitlab_ui_checkbox_component :notified_of_own_activity, _('Receive notifications about your own activity')
 
-      %hr
-      %h5
-        = _('Groups (%{count})') % { count: @user_groups.total_count }
-      %div
-        - @group_notifications.each do |setting|
-          = render 'group_settings', setting: setting, group: setting.source
-        = paginate @user_groups, theme: 'gitlab'
-      %h5
-        = _('Projects (%{count})') % { count: @project_notifications.size }
-      %p.account-well
-        = _('To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there.')
-      .gl-mb-3
-        %ul.bordered-list
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header'}, body_options: { class: 'gl-new-card-body' }) do |c|
+      - c.with_header do
+        %h3.gl-new-card-title
+          = _('Groups (%{count})') % { count: @user_groups.total_count }
+      - c.with_body do
+        - if @user_groups.total_count > 0
+          - @group_notifications.each do |setting|
+            = render 'group_settings', setting: setting, group: setting.source
+          = paginate @user_groups, theme: 'gitlab'
+        - else
+          .gl-new-card-empty.gl-px-3.gl-py-4= _("You do not belong to any groups yet.")
+
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header gl-display-block'}, body_options: { class: 'gl-new-card-body' }) do |c|
+      - c.with_header do
+        %h3.gl-new-card-title
+          = _('Projects (%{count})') % { count: @project_notifications.size }
+        .gl-new-card-description
+          = _('To specify the notification level per project of a group you belong to, visit the project page and change the notification level there.')
+      - c.with_body do
+        - if @project_notifications.size > 0
           - @project_notifications.each do |setting|
             = render 'project_settings', setting: setting, project: setting.source
+        - else
+          .gl-new-card-empty.gl-px-3.gl-py-4= _("You do not belong to any projects yet.")
