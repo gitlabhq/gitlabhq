@@ -132,7 +132,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   describe '#show_container_registry_settings' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:admin) { create(:admin) }
 
     before do
       allow(helper).to receive(:current_user) { user }
@@ -249,6 +248,116 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
 
           it { is_expected.to be(false) }
         end
+      end
+    end
+  end
+
+  describe '#can_delete_packages?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    subject { helper.can_delete_packages?(project) }
+
+    context 'with package registry config enabled' do
+      before do
+        stub_config(packages: { enabled: true })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, project).and_return(true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, project).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'with package registry config disabled' do
+      before do
+        stub_config(packages: { enabled: false })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, project).and_return(true)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, project).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
+  describe '#can_delete_group_packages?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    subject { helper.can_delete_group_packages?(group) }
+
+    context 'with package registry config enabled' do
+      before do
+        stub_config(packages: { enabled: true })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, group).and_return(true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, group).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'with package registry config disabled' do
+      before do
+        stub_config(packages: { enabled: false })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, group).and_return(true)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :destroy_package, group).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
       end
     end
   end

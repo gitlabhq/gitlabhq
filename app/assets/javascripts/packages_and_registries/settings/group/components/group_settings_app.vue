@@ -78,6 +78,7 @@ export default {
     </gl-alert>
 
     <packages-settings
+      class="settings-section-no-bottom"
       :package-settings="packageSettings"
       :is-loading="isLoading"
       @success="handleSuccess(2)"

@@ -60,8 +60,8 @@ concepts to look at as an example.
 
 App Continuum:
 
-An illustration of how an application can evolve from a small, unstructed app, through various
-stages including a modular well-structured, monolith, all the way to a microservices architecture.
+An illustration of how an application can evolve from a small, unstructured app, through various
+stages including a modular well-structured monolith, all the way to a microservices architecture.
 
 Includes discussion of why you might want to stop at various stages, and specifically the
 challenges/concerns with making the jump to microservices, and why sticking with a

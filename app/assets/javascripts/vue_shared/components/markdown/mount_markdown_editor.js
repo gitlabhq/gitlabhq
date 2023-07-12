@@ -79,6 +79,7 @@ export function mountMarkdownEditor(options = {}) {
   const supportsQuickActions = parseBoolean(el.dataset.supportsQuickActions ?? true);
   const enableAutocomplete = parseBoolean(el.dataset.enableAutocomplete ?? true);
   const disableAttachments = parseBoolean(el.dataset.disableAttachments ?? false);
+  const autofocus = parseBoolean(el.dataset.autofocus ?? true);
   const hiddenInput = el.querySelector('input[type="hidden"]');
   const formFieldName = hiddenInput.getAttribute('name');
   const formFieldId = hiddenInput.getAttribute('id');
@@ -128,7 +129,7 @@ export function mountMarkdownEditor(options = {}) {
           autocompleteDataSources: gl.GfmAutoComplete?.dataSources,
           supportsQuickActions,
           disableAttachments,
-          autofocus: true,
+          autofocus,
         },
       });
     },

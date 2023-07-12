@@ -8,7 +8,7 @@ describe IpynbDiff::SymbolMap do
   end
 
   describe '.parse' do
-    subject { described_class.parse(JSON.pretty_generate(source)) }
+    subject(:symbol_map) { described_class.parse(JSON.pretty_generate(source)) }
 
     context 'when object has blank key' do
       let(:source) { { "": { "": 5 } } }
@@ -37,8 +37,8 @@ describe IpynbDiff::SymbolMap do
     context 'when object has inner object and number, string and array with object' do
       let(:source) { { obj1: { obj2: [123, 2, true], obj3: "hel\nlo", obj4: true, obj5: 123, obj6: 'a' } } }
 
-      it do
-        is_expected.to match_array(
+      specify do
+        expect(symbol_map).to match_array(
           res(['.obj1', 2],
             ['.obj1.obj2', 3],
             ['.obj1.obj2.0', 4],

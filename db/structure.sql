@@ -18592,6 +18592,7 @@ CREATE TABLE ml_experiments (
     user_id bigint,
     name text NOT NULL,
     deleted_on timestamp with time zone,
+    model_id bigint,
     CONSTRAINT check_ee07a0be2c CHECK ((char_length(name) <= 255))
 );
 
@@ -18603,6 +18604,24 @@ CREATE SEQUENCE ml_experiments_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ml_experiments_id_seq OWNED BY ml_experiments.id;
+
+CREATE TABLE ml_models (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_1fd2cc7d93 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ml_models_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_models_id_seq OWNED BY ml_models.id;
 
 CREATE TABLE namespace_admin_notes (
     id bigint NOT NULL,
@@ -25629,6 +25648,8 @@ ALTER TABLE ONLY ml_experiment_metadata ALTER COLUMN id SET DEFAULT nextval('ml_
 
 ALTER TABLE ONLY ml_experiments ALTER COLUMN id SET DEFAULT nextval('ml_experiments_id_seq'::regclass);
 
+ALTER TABLE ONLY ml_models ALTER COLUMN id SET DEFAULT nextval('ml_models_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('namespace_admin_notes_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_bans ALTER COLUMN id SET DEFAULT nextval('namespace_bans_id_seq'::regclass);
@@ -27847,6 +27868,9 @@ ALTER TABLE ONLY ml_experiment_metadata
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT ml_experiments_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_models
+    ADD CONSTRAINT ml_models_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT namespace_admin_notes_pkey PRIMARY KEY (id);
@@ -31974,11 +31998,17 @@ CREATE INDEX index_ml_candidates_on_user_id ON ml_candidates USING btree (user_i
 
 CREATE UNIQUE INDEX index_ml_experiment_metadata_on_experiment_id_and_name ON ml_experiment_metadata USING btree (experiment_id, name);
 
+CREATE INDEX index_ml_experiments_on_model_id ON ml_experiments USING btree (model_id);
+
 CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_iid ON ml_experiments USING btree (project_id, iid);
 
 CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_name ON ml_experiments USING btree (project_id, name);
 
 CREATE INDEX index_ml_experiments_on_user_id ON ml_experiments USING btree (user_id);
+
+CREATE INDEX index_ml_models_on_project_id ON ml_models USING btree (project_id);
+
+CREATE UNIQUE INDEX index_ml_models_on_project_id_and_name ON ml_models USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_mr_blocks_on_blocking_and_blocked_mr_ids ON merge_request_blocks USING btree (blocking_merge_request_id, blocked_merge_request_id);
 
@@ -36969,6 +36999,9 @@ ALTER TABLE ONLY project_repository_storage_moves
 ALTER TABLE ONLY ml_candidate_metadata
     ADD CONSTRAINT fk_rails_5117dddf22 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_models
+    ADD CONSTRAINT fk_rails_51e87f7c50 FOREIGN KEY (project_id) REFERENCES projects(id);
+
 ALTER TABLE ONLY elastic_group_index_statuses
     ADD CONSTRAINT fk_rails_52b9969b12 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -37427,6 +37460,9 @@ ALTER TABLE ONLY boards_epic_board_recent_visits
 
 ALTER TABLE ONLY packages_dependency_links
     ADD CONSTRAINT fk_rails_96ef1c00d3 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_experiments
+    ADD CONSTRAINT fk_rails_97194a054e FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_repository_storage_moves
     ADD CONSTRAINT fk_rails_982bb5daf1 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -8,7 +8,7 @@
   .js-user-profile
 - else
   = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
-    .js-search-settings-section
+    .settings-section.js-search-settings-section
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0
@@ -44,9 +44,8 @@
           button_options: { class: 'gl-mt-3', data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") } },
           method: :delete) do
           = s_("Profiles|Remove avatar")
-      .gl-pb-8
 
-    .js-search-settings-section.gl-border-t.gl-pt-6
+    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0= s_("Profiles|Current status")
@@ -60,18 +59,16 @@
             = status_form.hidden_field :clear_status_after,
               value: user_clear_status_at(@user),
               data: { js_name: 'clearStatusAfter' }
-      .gl-pb-7
 
-    .user-time-preferences.js-search-settings-section.gl-border-t.gl-pt-6
+    .settings-section.user-time-preferences.js-search-settings-section.gl-border-t.gl-pt-6
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0= s_("Profiles|Time settings")
       %p.gl-text-secondary= s_("Profiles|Set your local time zone.")
       = f.label :user_timezone, _("Time zone")
       .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
-      .gl-pb-7
 
-    .js-search-settings-section.gl-border-t.gl-pt-6
+    .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
       .settings-sticky-header
         .settings-sticky-header-inner
           %h4.gl-my-0
@@ -168,7 +165,6 @@
             = s_("Profiles|Achievements")
           = f.gitlab_ui_checkbox_component :achievements_enabled,
             s_('Profiles|Display achievements on your profile')
-      .gl-pb-7
 
     .js-hide-when-nothing-matches-search.settings-sticky-footer
       = f.submit s_("Profiles|Update profile settings"), class: 'gl-mr-3 js-password-prompt-btn', pajamas_button: true

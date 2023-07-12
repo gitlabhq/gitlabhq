@@ -15,6 +15,7 @@ inherit_mode:
 AllCops:
   # Target the current Ruby version. For example, "3.0" or "3.1".
   TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
+  SuggestExtensions: false
 
 # This cop doesn't make sense in the context of gems
 CodeReuse/ActiveRecord:
@@ -58,6 +59,18 @@ Graphql/Descriptions:
 Naming/FileName:
   Exclude:
     - spec/**/*.rb
+
+RSpec/ContextWording:
+  Prefixes:
+  - 'when'
+  - 'with'
+  - 'without'
+  - 'for'
+  - 'and'
+  - 'on'
+  - 'in'
+  - 'as'
+  - 'if'
 
 # This cop doesn't make sense in the context of gems
 RSpec/MissingFeatureCategory:

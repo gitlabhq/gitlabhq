@@ -41,6 +41,10 @@ describe('packages_list', () => {
     groupSettings: defaultPackageGroupSettings,
   };
 
+  const defaultProvide = {
+    canDeletePackages: true,
+  };
+
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
 
   const findPackagesListLoader = () => wrapper.findComponent(PackagesListLoader);
@@ -52,8 +56,9 @@ describe('packages_list', () => {
 
   const showMock = jest.fn();
 
-  const mountComponent = (props) => {
+  const mountComponent = ({ props = {}, provide = defaultProvide } = {}) => {
     wrapper = shallowMountExtended(PackagesList, {
+      provide,
       propsData: {
         ...defaultProps,
         ...props,
@@ -75,7 +80,7 @@ describe('packages_list', () => {
 
   describe('when is loading', () => {
     beforeEach(() => {
-      mountComponent({ isLoading: true });
+      mountComponent({ props: { isLoading: true } });
     });
 
     it('shows skeleton loader', () => {
@@ -109,6 +114,7 @@ describe('packages_list', () => {
         title: '2 packages',
         items: defaultProps.list,
         pagination: defaultProps.pageInfo,
+        hiddenDelete: false,
         isLoading: false,
       });
     });
@@ -134,6 +140,16 @@ describe('packages_list', () => {
 
     it('does not have an error alert displayed', () => {
       expect(findErrorPackageAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('when the user does not have permission to destroy packages', () => {
+    beforeEach(() => {
+      mountComponent({ provide: { canDeletePackages: false } });
+    });
+
+    it('sets the hidden delete prop of registry list to true', () => {
+      expect(findRegistryList().props('hiddenDelete')).toBe(true);
     });
   });
 
@@ -262,7 +278,7 @@ describe('packages_list', () => {
 
   describe('when an error package is present', () => {
     beforeEach(() => {
-      mountComponent({ list: [firstPackage, errorPackage] });
+      mountComponent({ props: { list: [firstPackage, errorPackage] } });
 
       return nextTick();
     });
@@ -290,7 +306,7 @@ describe('packages_list', () => {
 
   describe('when the list is empty', () => {
     beforeEach(() => {
-      mountComponent({ list: [] });
+      mountComponent({ props: { list: [] } });
     });
 
     it('show the empty slot', () => {
@@ -301,7 +317,7 @@ describe('packages_list', () => {
 
   describe('pagination', () => {
     beforeEach(() => {
-      mountComponent({ pageInfo: { hasPreviousPage: true } });
+      mountComponent({ props: { pageInfo: { hasPreviousPage: true } } });
     });
 
     it('emits prev-page events when the prev event is fired', () => {

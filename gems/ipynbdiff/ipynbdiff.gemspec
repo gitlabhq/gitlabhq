@@ -24,9 +24,10 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'benchmark-memory', '~>0.2.0'
   s.add_development_dependency 'bundler', '~> 2.2'
+  s.add_development_dependency 'gitlab-styles', '~> 10.1.0'
   s.add_development_dependency 'pry', '~> 0.14'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'rspec', '~> 3.10'
-  s.add_development_dependency 'rspec-parameterized', '~> 0.5.1'
-  s.add_development_dependency 'simplecov', '~> 0.12.0'
+  s.add_development_dependency 'rspec-parameterized', '~> 1.0'
+  s.add_development_dependency 'simplecov', '~> 0.22.0'
 end

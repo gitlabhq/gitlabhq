@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/packages_and_registries/package_registry/graphql/index';
 import PackageRegistry from '~/packages_and_registries/package_registry/pages/index.vue';
 import RegistryBreadcrumb from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';
@@ -20,6 +21,7 @@ export default () => {
     projectListUrl,
     groupListUrl,
     settingsPath,
+    canDeletePackages,
   } = el.dataset;
 
   const isGroupPage = pageType === 'groups';
@@ -50,6 +52,7 @@ export default () => {
         groupListUrl,
         breadCrumbState,
         settingsPath,
+        canDeletePackages: parseBoolean(canDeletePackages),
       },
       render(createElement) {
         return createElement(PackageRegistry);

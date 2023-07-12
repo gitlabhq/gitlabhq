@@ -55,17 +55,15 @@ RSpec.describe "with feature flag enabled", feature_flag: {
 
   let(:project) { Resource::Project.fabricate_via_api! }
 
-  before do
+  around do |example|
     Runtime::Feature.enable(:feature_flag_name, project: project)
+    example.run
+    Runtime::Feature.disable(:feature_flag_name, project: project)
   end
 
   it "feature flag test" do
     # Execute the test with the feature flag enabled.
     # It will only affect the project created in this test.
-  end
-
-  after do
-    Runtime::Feature.disable(:feature_flag_name, project: project)
   end
 end
 ```

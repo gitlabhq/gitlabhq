@@ -4,7 +4,7 @@ require_relative 'test_helper'
 
 describe IpynbDiff do
   def diff_signs(diff)
-    diff.to_s(:text).scan(/.*\n/).map { |l| l[0] }.join('') # rubocop:disable Rails/Pluck
+    diff.to_s(:text).scan(/.*\n/).map { |l| l[0] }.join('')
   end
 
   describe '.diff' do
@@ -18,9 +18,7 @@ describe IpynbDiff do
     subject { described_class.diff(from, to, include_frontmatter: include_frontmatter, hide_images: hide_images) }
 
     context 'if preprocessing is active' do
-      it 'html tables are stripped' do
-        is_expected.not_to include('<td>')
-      end
+      it { is_expected.not_to include('<td>') }
     end
 
     context 'when to is nil' do

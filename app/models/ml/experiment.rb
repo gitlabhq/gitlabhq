@@ -11,6 +11,7 @@ module Ml
 
     belongs_to :project
     belongs_to :user
+    belongs_to :model, optional: true, inverse_of: :default_experiment
     has_many :candidates, class_name: 'Ml::Candidate'
     has_many :metadata, class_name: 'Ml::ExperimentMetadata'
 
@@ -22,8 +23,19 @@ module Ml
 
     has_internal_id :iid, scope: :project
 
+    before_destroy :stop_destroy
+
     def package_name
       "#{PACKAGE_PREFIX}#{iid}"
+    end
+
+    def stop_destroy
+      return unless model_id
+
+      errors[:base] << "Cannot delete an experiment associated to a model"
+      # According to docs, throw is the correct way to stop on a callback
+      # https://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html#module-ActiveRecord::Callbacks-label-Canceling+callbacks
+      throw :abort # rubocop:disable Cop/BanCatchThrow
     end
 
     class << self

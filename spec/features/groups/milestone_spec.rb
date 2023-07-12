@@ -27,7 +27,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
 
       click_button("Preview")
 
-      preview = find('.js-md-preview')
+      preview = find('.js-vue-md-preview')
 
       expect(preview).to have_content('Nothing to preview.')
 

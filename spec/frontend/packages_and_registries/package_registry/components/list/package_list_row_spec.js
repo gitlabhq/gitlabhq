@@ -27,11 +27,11 @@ describe('packages_list_row', () => {
 
   const defaultProvide = {
     isGroupPage: false,
+    canDeletePackages: true,
   };
 
   const packageWithoutTags = { ...packageData(), project: packageProject(), ...linksData };
   const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
-  const packageCannotDestroy = { ...packageData(), ...linksData, canDestroy: false };
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findDeleteDropdown = () => wrapper.findByTestId('action-delete');
@@ -105,7 +105,9 @@ describe('packages_list_row', () => {
 
   describe('delete button', () => {
     it('does not exist when package cannot be destroyed', () => {
-      mountComponent({ packageEntity: packageCannotDestroy });
+      mountComponent({
+        packageEntity: { ...packageWithoutTags, canDestroy: false },
+      });
 
       expect(findDeleteDropdown().exists()).toBe(false);
     });
@@ -168,7 +170,10 @@ describe('packages_list_row', () => {
   describe('left action template', () => {
     it('does not render checkbox if not permitted', () => {
       mountComponent({
-        packageEntity: { ...packageWithoutTags, canDestroy: false },
+        provide: {
+          ...defaultProvide,
+          canDeletePackages: false,
+        },
       });
 
       expect(findBulkDeleteAction().exists()).toBe(false);
@@ -248,6 +253,7 @@ describe('packages_list_row', () => {
     it('if the package is published through CI show the project and author name', () => {
       mountComponent({
         provide: {
+          ...defaultProvide,
           isGroupPage: true,
         },
         packageEntity: { ...packageWithoutTags, pipelines: { nodes: packagePipelines() } },
@@ -261,6 +267,7 @@ describe('packages_list_row', () => {
     it('if the package is published manually dont show project and the author name', () => {
       mountComponent({
         provide: {
+          ...defaultProvide,
           isGroupPage: true,
         },
         packageEntity: { ...packageWithoutTags },

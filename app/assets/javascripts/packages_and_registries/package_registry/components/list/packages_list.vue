@@ -36,6 +36,7 @@ export default {
     RegistryList,
   },
   mixins: [Tracking.mixin()],
+  inject: ['canDeletePackages'],
   props: {
     list: {
       type: Array,
@@ -175,6 +176,7 @@ export default {
       >
       <registry-list
         data-testid="packages-table"
+        :hidden-delete="!canDeletePackages"
         :is-loading="isLoading"
         :items="list"
         :pagination="pageInfo"

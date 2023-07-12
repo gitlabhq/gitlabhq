@@ -42370,6 +42370,9 @@ msgstr ""
 msgid "ServiceDesk|Cannot create custom email"
 msgstr ""
 
+msgid "ServiceDesk|Cannot update custom email"
+msgstr ""
+
 msgid "ServiceDesk|Custom email address could not be verified."
 msgstr ""
 

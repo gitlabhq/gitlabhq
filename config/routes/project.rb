@@ -489,6 +489,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid
           resources :models, only: [:index], controller: 'models'
         end
+
+        namespace :service_desk do
+          resource :custom_email, only: [:show, :create, :update, :destroy], controller: 'custom_email'
+        end
       end
       # End of the /-/ scope.
 

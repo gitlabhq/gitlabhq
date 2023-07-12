@@ -76,6 +76,33 @@
   }
 }
 
+.settings-section {
+  @include gl-pt-6;
+
+  &::after {
+    content: '';
+    display: block;
+    @include gl-pb-7;
+  }
+}
+
+.settings-section:first-of-type,
+.settings-section-no-bottom + .settings-section {
+  @include gl-pt-0;
+}
+
+.settings-section:not(.settings-section-no-bottom) + .settings-section {
+  @include gl-border-t;
+}
+
+.settings-section-no-bottom::after {
+  @include gl-pb-0;
+
+  @include media-breakpoint-up(sm) {
+    @include gl-pb-5;
+  }
+}
+
 $sticky-header-z-index: 98;
 
 .settings-sticky-header,

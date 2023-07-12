@@ -12,13 +12,16 @@
   = render 'shared/milestones/form_dates', f: f
   .form-group
     = f.label :description, _('Description')
-    = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project) } do
-      = render 'shared/zen', f: f, attr: :description,
-                              classes: 'note-textarea',
-                              qa_selector: 'milestone_description_field',
-                              supports_autocomplete: true,
-                              placeholder: _('Write milestone description...')
-      = render 'shared/notes/hints'
+    - @gfm_form = true
+    .js-markdown-editor{ data: { render_markdown_path: preview_markdown_path(@project),
+                               markdown_docs_path: help_page_path('user/markdown'),
+                               qa_selector: 'milestone_description_field',
+                               form_field_placeholder: _('Write milestone description...'),
+                               supports_quick_actions: 'false',
+                               enable_autocomplete: 'true',
+                               autofocus: 'false',
+                               form_field_classes: 'note-textarea js-gfm-input markdown-area' } }
+      = f.hidden_field :description
     .clearfix
     .error-alert
 

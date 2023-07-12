@@ -1,0 +1,10 @@
+---
+table_name: ml_models
+classes:
+  - Ml::Model
+feature_categories:
+  - mlops
+description: A machine learning model for the model registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125302
+milestone: '16.2'
+gitlab_schema: gitlab_main

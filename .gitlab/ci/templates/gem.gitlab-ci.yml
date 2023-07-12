@@ -14,6 +14,7 @@ spec:
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       changes:
         - "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/**/*"
+        - ".gitlab/ci/gitlab-gems.gitlab-ci.yml"
         - ".gitlab/ci/templates/gem.gitlab-ci.yml"
         - "gems/gem.gitlab-ci.yml"
 

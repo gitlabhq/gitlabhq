@@ -43,7 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['isGroupPage'],
+  inject: ['isGroupPage', 'canDeletePackages'],
   props: {
     packageEntity: {
       type: Object,
@@ -122,7 +122,7 @@ export default {
   <list-item data-testid="package-row" :selected="selected" v-bind="$attrs">
     <template #left-action>
       <gl-form-checkbox
-        v-if="packageEntity.canDestroy"
+        v-if="canDeletePackages"
         class="gl-m-0"
         :checked="selected"
         @change="$emit('select')"

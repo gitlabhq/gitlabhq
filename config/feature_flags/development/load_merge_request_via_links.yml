@@ -1,8 +1,0 @@
----
-name: load_merge_request_via_links
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117321
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/412177
-milestone: '16.1'
-type: development
-group: group::threat insights
-default_enabled: false
