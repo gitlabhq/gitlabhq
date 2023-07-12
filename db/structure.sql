@@ -17152,6 +17152,8 @@ CREATE TABLE integrations (
     encrypted_properties bytea,
     encrypted_properties_iv bytea,
     incident_events boolean DEFAULT false NOT NULL,
+    group_mention_events boolean DEFAULT false NOT NULL,
+    group_confidential_mention_events boolean DEFAULT false NOT NULL,
     CONSTRAINT check_a948a0aa7e CHECK ((char_length(type_new) <= 255))
 );
 

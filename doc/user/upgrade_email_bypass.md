@@ -83,7 +83,7 @@ You have the following options to help your users:
 - They can confirm their address through the email that they received.
 - They can confirm the subject email address themselves by navigating to `https://gitlab.example.com/users/confirmation/new`.
 
-As an administrator, you may also confirm a user in the [Admin Area](admin_area/index.md#administering-users).
+As an administrator, you may also confirm a user in the [Admin Area](../administration/admin_area.md#administering-users).
 
 ## What do you do if you are an administrator and you're locked out?
 

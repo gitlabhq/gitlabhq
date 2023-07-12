@@ -114,7 +114,7 @@ Alternatively, projects that are marked for removal can be deleted immediately. 
 
 1. [Restore the project](../../project/settings/index.md#restore-a-project).
 1. Delete the project as described in the
-   [Administering Projects page](../../admin_area/index.md#administering-projects).
+   [Administering Projects page](../../../administration/admin_area.md#administering-projects).
 
 ## Configure project visibility defaults
 

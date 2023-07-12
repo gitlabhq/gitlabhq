@@ -124,7 +124,7 @@ You can assign topics to a project on the [Project Settings page](settings/index
 ### Administer topics
 
 Instance administrators can administer all project topics from the
-[Admin Area's Topics page](../admin_area/index.md#administering-topics).
+[Admin Area's Topics page](../../administration/admin_area.md#administering-topics).
 
 ## Star a project
 

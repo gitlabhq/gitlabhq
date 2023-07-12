@@ -36,11 +36,30 @@ module MergeRequests
 
       execute_external_hooks(merge_request, merge_data)
 
+      if action == 'open' && Feature.enabled?(:group_mentions, merge_request.project)
+        execute_group_mention_hooks(merge_request, merge_data)
+      end
+
       enqueue_jira_connect_messages_for(merge_request)
     end
 
     def execute_external_hooks(merge_request, merge_data)
       # Implemented in EE
+    end
+
+    def execute_group_mention_hooks(merge_request, merge_data)
+      return unless merge_request.instance_of?(MergeRequest)
+
+      args = {
+        mentionable_type: 'MergeRequest',
+        mentionable_id: merge_request.id,
+        hook_data: merge_data,
+        is_confidential: false
+      }
+
+      merge_request.run_after_commit_or_now do
+        Integrations::GroupMentionWorker.perform_async(args)
+      end
     end
 
     def handle_changes(merge_request, options)

@@ -20,7 +20,7 @@ To subscribe to GitLab for a GitLab self-managed installation:
 NOTE:
 If you're purchasing a subscription for an existing **Free** GitLab self-managed
 instance, ensure you're purchasing enough seats to
-[cover your users](../../user/admin_area/index.md#administering-users).
+[cover your users](../../administration/admin_area.md#administering-users).
 
 ### Subscription seats
 
@@ -121,7 +121,7 @@ GitLab has several features which can help you manage the number of users:
   option. **Available in GitLab 13.7 and later**.
 - [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new
   users manually.
-- View a breakdown of users by role in the [Users statistics](../../user/admin_area/index.md#users-statistics) page.
+- View a breakdown of users by role in the [Users statistics](../../administration/admin_area.md#users-statistics) page.
 
 ## Subscription data synchronization
 

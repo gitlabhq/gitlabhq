@@ -1,0 +1,8 @@
+---
+name: group_mentions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96684
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414856
+milestone: '16.2'
+type: development
+group: group::import and integrate
+default_enabled: false

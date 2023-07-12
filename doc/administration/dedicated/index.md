@@ -14,7 +14,7 @@ The instructions on this page guide you through:
 1. Onboarding and initial setup of your GitLab Dedicated instance.
 1. Configuring your GitLab Dedicated instance including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../user/admin_area/index.md).
+Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../administration/admin_area.md).
 
 ## Onboarding
 

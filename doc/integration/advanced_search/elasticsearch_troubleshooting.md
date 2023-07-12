@@ -487,7 +487,7 @@ $ jq --raw-output 'select(.severity == "ERROR") | [.error_class, .error_message]
   sort | uniq -c
 ```
 
-`Elastic` workers and [Sidekiq jobs](../../user/admin_area/index.md#background-jobs) could also appear much more often
+`Elastic` workers and [Sidekiq jobs](../../administration/admin_area.md#background-jobs) could also appear much more often
 because Elasticsearch frequently attempts to reindex if a previous job fails.
 You can use [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#usage)
 or `jq` to count workers in the [Sidekiq logs](../../administration/logs/index.md#sidekiq-logs):

@@ -13945,6 +13945,9 @@ msgstr ""
 msgid "DORA4Metrics|Accept testing terms of use?"
 msgstr ""
 
+msgid "DORA4Metrics|All labels"
+msgstr ""
+
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
@@ -13994,6 +13997,9 @@ msgid "DORA4Metrics|Failed to load charts"
 msgstr ""
 
 msgid "DORA4Metrics|Failed to load comparison chart for Namespace: %{fullPath}"
+msgstr ""
+
+msgid "DORA4Metrics|Filtered by"
 msgstr ""
 
 msgid "DORA4Metrics|Forecast"
@@ -19930,9 +19936,6 @@ msgstr ""
 msgid "Geo|%{label} should be between 1-999"
 msgstr ""
 
-msgid "Geo|%{name} is scheduled for forced re-download"
-msgstr ""
-
 msgid "Geo|%{name} is scheduled for re-sync"
 msgstr ""
 
@@ -20204,9 +20207,6 @@ msgid "Geo|Queued"
 msgstr ""
 
 msgid "Geo|Re-verification interval"
-msgstr ""
-
-msgid "Geo|Redownload"
 msgstr ""
 
 msgid "Geo|Remove"
@@ -21518,6 +21518,12 @@ msgid "Group membership expiration date changed"
 msgstr ""
 
 msgid "Group membership expiration date removed"
+msgstr ""
+
+msgid "Group mention in private"
+msgstr ""
+
+msgid "Group mention in public"
 msgstr ""
 
 msgid "Group milestone"
@@ -35899,6 +35905,12 @@ msgid "ProjectService|Trigger event when a confidential issue is created, update
 msgstr ""
 
 msgid "ProjectService|Trigger event when a deployment starts or finishes."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a group is mentioned in a confidential context."
+msgstr ""
+
+msgid "ProjectService|Trigger event when a group is mentioned in a public context."
 msgstr ""
 
 msgid "ProjectService|Trigger event when a merge request is created, updated, or merged."

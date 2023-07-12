@@ -140,7 +140,7 @@ From audit events pages, different filters are available depending on the page y
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.
 > - Impersonation session events included in group audit events in GitLab 14.8.
 
-When a user is [impersonated](../user/admin_area/index.md#user-impersonation), their actions are logged as audit events
+When a user is [impersonated](../administration/admin_area.md#user-impersonation), their actions are logged as audit events
 with additional details:
 
 - Audit events include information about the impersonating administrator. These audit events are visible in audit event

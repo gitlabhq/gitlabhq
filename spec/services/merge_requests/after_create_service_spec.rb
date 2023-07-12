@@ -75,6 +75,12 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       execute_service
     end
 
+    it 'calls GroupMentionWorker' do
+      expect(Integrations::GroupMentionWorker).to receive(:perform_async)
+
+      execute_service
+    end
+
     it_behaves_like 'records an onboarding progress action', :merge_request_created do
       let(:namespace) { merge_request.target_project.namespace }
     end

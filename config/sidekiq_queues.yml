@@ -303,6 +303,8 @@
   - 1
 - - integrations_execute
   - 1
+- - integrations_group_mention
+  - 1
 - - integrations_irker
   - 1
 - - integrations_slack_event

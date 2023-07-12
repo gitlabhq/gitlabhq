@@ -1115,5 +1115,5 @@ to change this behavior.
 To run protected manual jobs:
 
 - Add the administrator as a direct member of the private project (any role)
-- [Impersonate a user](../../user/admin_area/index.md#user-impersonation) who is a
+- [Impersonate a user](../../administration/admin_area.md#user-impersonation) who is a
   direct member of the project.

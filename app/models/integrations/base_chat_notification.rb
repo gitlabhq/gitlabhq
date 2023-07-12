@@ -262,11 +262,11 @@ module Integrations
     end
 
     def project_name
-      project.full_name
+      project.try(:full_name)
     end
 
     def project_url
-      project.web_url
+      project.try(:web_url)
     end
 
     def update?(data)

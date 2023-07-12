@@ -41,7 +41,7 @@ To assign topics to a project:
 1. Select **Save changes**.
 
 If you're an instance administrator, you can administer all project topics from the
-[Admin Area's Topics page](../../admin_area/index.md#administering-topics).
+[Admin Area's Topics page](../../../administration/admin_area.md#administering-topics).
 
 NOTE:
 The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
@@ -278,7 +278,7 @@ To transfer a project:
 You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [What happens when a repository path changes](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
-If you are an administrator, you can also use the [administration interface](../../admin_area/index.md#administering-projects)
+If you are an administrator, you can also use the [administration interface](../../../administration/admin_area.md#administering-projects)
 to move any project to any namespace.
 
 ### Transferring a GitLab SaaS project to a different subscription tier

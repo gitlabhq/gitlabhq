@@ -852,6 +852,28 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.execute_integrations' do
+    let(:integration) { create(:integrations_slack, :group, group: group) }
+    let(:test_data) { { 'foo' => 'bar' } }
+
+    before do
+      allow(group.integrations).to receive(:public_send).and_return([])
+      allow(group.integrations).to receive(:public_send).with(:push_hooks).and_return([integration])
+    end
+
+    it 'executes integrations with a matching scope' do
+      expect(integration).to receive(:async_execute).with(test_data)
+
+      group.execute_integrations(test_data, :push_hooks)
+    end
+
+    it 'ignores integrations without a matching scope' do
+      expect(integration).not_to receive(:async_execute).with(test_data)
+
+      group.execute_integrations(test_data, :note_hooks)
+    end
+  end
+
   describe '.public_or_visible_to_user' do
     let!(:private_group) { create(:group, :private) }
     let!(:private_subgroup) { create(:group, :private, parent: private_group) }

@@ -813,8 +813,11 @@ class Group < Namespace
   end
 
   def execute_integrations(data, hooks_scope)
-    # NOOP
-    # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
+    return unless Feature.enabled?(:group_mentions, self)
+
+    integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
+      integration.async_execute(data)
+    end
   end
 
   def preload_shared_group_links

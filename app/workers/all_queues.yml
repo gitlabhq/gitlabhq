@@ -2847,6 +2847,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: integrations_group_mention
+  :worker_name: Integrations::GroupMentionWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: integrations_irker
   :worker_name: Integrations::IrkerWorker
   :feature_category: :integrations

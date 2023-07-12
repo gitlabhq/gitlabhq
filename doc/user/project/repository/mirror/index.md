@@ -325,7 +325,7 @@ fail nor succeed. They also do not leave a clear log. To check for this problem:
    end
    ```
 
-1. After you run the command, the [background jobs page](../../../admin_area/index.md#background-jobs)
+1. After you run the command, the [background jobs page](../../../../administration/admin_area.md#background-jobs)
    should show new mirroring jobs being scheduled, especially when
    [triggered manually](#update-a-mirror).
 

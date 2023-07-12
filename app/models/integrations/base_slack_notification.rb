@@ -7,6 +7,8 @@ module Integrations
     ].freeze
 
     prop_accessor EVENT_CHANNEL['alert']
+    prop_accessor EVENT_CHANNEL['group_mention']
+    prop_accessor EVENT_CHANNEL['group_confidential_mention']
 
     override :default_channel_placeholder
     def default_channel_placeholder
@@ -16,15 +18,20 @@ module Integrations
     override :get_message
     def get_message(object_kind, data)
       return Integrations::ChatMessage::AlertMessage.new(data) if object_kind == 'alert'
+      return Integrations::ChatMessage::GroupMentionMessage.new(data) if object_kind == 'group_mention'
 
       super
     end
 
     override :supported_events
     def supported_events
-      additional = ['alert']
+      additional = %w[alert]
 
-      super + additional
+      if group_level? && Feature.enabled?(:group_mentions, group)
+        additional += %w[group_mention group_confidential_mention]
+      end
+
+      (super + additional).freeze
     end
 
     override :configurable_channels?

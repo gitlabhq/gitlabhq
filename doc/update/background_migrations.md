@@ -105,7 +105,7 @@ Batched background migrations are handled by Sidekiq and
 so an instance can remain operational while the migrations are processed. However,
 performance might degrade on larger instances that are heavily used while
 batched background migrations are run. You should
-[Actively monitor the Sidekiq status](../user/admin_area/index.md#background-jobs)
+[Actively monitor the Sidekiq status](../administration/admin_area.md#background-jobs)
 until all migrations are completed.
 
 ### Check the status of batched background migrations

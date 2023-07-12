@@ -89,7 +89,7 @@ ERROR: null value in column "user_id" violates not-null constraint
 ```
 
 The error can be found in the [PostgreSQL log](../../../administration/logs/index.md#postgresql-logs) and
-in the **Retries** section of the [background jobs view](../../admin_area/index.md#background-jobs) in the Admin Area.
+in the **Retries** section of the [background jobs view](../../../administration/admin_area.md#background-jobs) in the Admin Area.
 
 If the user being deleted used the [iterations](../../group/iterations/index.md) feature, such
 as adding an issue to an iteration, you must use

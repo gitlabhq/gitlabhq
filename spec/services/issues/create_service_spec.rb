@@ -149,6 +149,12 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         issue
       end
 
+      it 'calls GroupMentionWorker' do
+        expect(Integrations::GroupMentionWorker).to receive(:perform_async)
+
+        issue
+      end
+
       context 'when a build_service is provided' do
         let(:result) { described_class.new(container: project, current_user: user, params: opts, build_service: build_service).execute }
 

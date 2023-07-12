@@ -69,7 +69,6 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
         t.integer :retry_count, default: 0, limit: 2, null: false
         t.integer :verification_retry_count, default: 0, limit: 2, null: false
         t.boolean :checksum_mismatch, default: false, null: false
-        t.boolean :force_to_redownload, default: false, null: false
         t.boolean :missing_on_primary, default: false, null: false
         t.binary :verification_checksum
         t.binary :verification_checksum_mismatched
