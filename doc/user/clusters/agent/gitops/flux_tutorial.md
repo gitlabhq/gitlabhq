@@ -180,8 +180,6 @@ To demonstrate, deploy an `nginx` application and point Flux at it:
      interval: 1m0s
      ref:
        branch: main
-     secretRef:
-       name: example-nginx-app
      url: https://gitlab.com/gitlab-examples/ops/gitops-demo/example-mini-flux-deployment.git
    ---
    apiVersion: kustomize.toolkit.fluxcd.io/v1

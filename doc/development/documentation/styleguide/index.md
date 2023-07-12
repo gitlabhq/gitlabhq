@@ -381,7 +381,7 @@ If you use an acronym, spell it out on first use on a page. You do not need to s
 
 ### Numbers
 
-When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/numbers).
+For numbers in text, spell out zero through nine and use numbers for 10 and greater. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/numbers).
 
 ## Text
 

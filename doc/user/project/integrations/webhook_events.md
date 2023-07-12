@@ -24,6 +24,7 @@ Event type                                   | Trigger
 [Subgroup event](#subgroup-events)           | A subgroup is created or removed from a group.
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
 [Release event](#release-events)             | A release is created or updated.
+[Emoji event](#emoji-events)                 | An emoji is awarded or revoked.
 
 NOTE:
 If an author has no public email listed in their
@@ -1844,6 +1845,152 @@ Payload example:
       "name": "Example User",
       "email": "user@example.com"
     }
+  }
+}
+```
+
+## Emoji events
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123952) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `emoji_webhooks`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `emoji_webhooks`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+NOTE:
+To have the `emoji_webhooks` flag enabled on GitLab.com, see [issue 417288](https://gitlab.com/gitlab-org/gitlab/-/issues/417288).
+
+An emoji event is triggered when an emoji is awarded or revoked on:
+
+- Issues
+- Merge requests
+- Project snippets
+- Comments on:
+  - Issues
+  - Merge requests
+  - Project snippets
+  - Commits
+
+The available values for `object_attributes.action` in the payload are:
+
+- `award`
+- `revoke`
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Emoji Hook
+```
+
+Payload example:
+
+```json
+{
+  "object_kind": "emoji",
+  "event_type": "award",
+  "user": {
+    "id": 1,
+    "name": "Blake Bergstrom",
+    "username": "root",
+    "avatar_url": "http://example.com/uploads/-/system/user/avatar/1/avatar.png",
+    "email": "[REDACTED]"
+  },
+  "project_id": 6,
+  "project": {
+    "id": 6,
+    "name": "Flight",
+    "description": "Velit fugit aperiam illum deleniti odio sequi.",
+    "web_url": "http://example.com/flightjs/Flight",
+    "avatar_url": null,
+    "git_ssh_url": "ssh://git@example.com/flightjs/Flight.git",
+    "git_http_url": "http://example.com/flightjs/Flight.git",
+    "namespace": "Flightjs",
+    "visibility_level": 20,
+    "path_with_namespace": "flightjs/Flight",
+    "default_branch": "master",
+    "ci_config_path": null,
+    "homepage": "http://example.com/flightjs/Flight",
+    "url": "ssh://git@example.com/flightjs/Flight.git",
+    "ssh_url": "ssh://git@example.com/flightjs/Flight.git",
+    "http_url": "http://example.com/flightjs/Flight.git"
+  },
+  "object_attributes": {
+    "user_id": 1,
+    "created_at": "2023-07-04 20:44:11 UTC",
+    "id": 1,
+    "name": "thumbsup",
+    "awardable_type": "Note",
+    "awardable_id": 363,
+    "updated_at": "2023-07-04 20:44:11 UTC",
+    "action": "award",
+    "awarded_on_url": "http://example.com/flightjs/Flight/-/issues/42#note_363"
+  },
+  "note": {
+    "attachment": null,
+    "author_id": 1,
+    "change_position": null,
+    "commit_id": null,
+    "created_at": "2023-07-04 15:09:55 UTC",
+    "discussion_id": "c3d97fd471f210a5dc8b97a409e3bea95ee06c14",
+    "id": 363,
+    "line_code": null,
+    "note": "Testing 123",
+    "noteable_id": 635,
+    "noteable_type": "Issue",
+    "original_position": null,
+    "position": null,
+    "project_id": 6,
+    "resolved_at": null,
+    "resolved_by_id": null,
+    "resolved_by_push": null,
+    "st_diff": null,
+    "system": false,
+    "type": null,
+    "updated_at": "2023-07-04 19:58:46 UTC",
+    "updated_by_id": null,
+    "description": "Testing 123",
+    "url": "http://example.com/flightjs/Flight/-/issues/42#note_363"
+  },
+  "issue": {
+    "author_id": 1,
+    "closed_at": null,
+    "confidential": false,
+    "created_at": "2023-07-04 14:59:43 UTC",
+    "description": "Issue description!",
+    "discussion_locked": null,
+    "due_date": null,
+    "id": 635,
+    "iid": 42,
+    "last_edited_at": null,
+    "last_edited_by_id": null,
+    "milestone_id": null,
+    "moved_to_id": null,
+    "duplicated_to_id": null,
+    "project_id": 6,
+    "relative_position": 18981,
+    "state_id": 1,
+    "time_estimate": 0,
+    "title": "New issue!",
+    "updated_at": "2023-07-04 15:09:55 UTC",
+    "updated_by_id": null,
+    "weight": null,
+    "health_status": null,
+    "url": "http://example.com/flightjs/Flight/-/issues/42",
+    "total_time_spent": 0,
+    "time_change": 0,
+    "human_total_time_spent": null,
+    "human_time_change": null,
+    "human_time_estimate": null,
+    "assignee_ids": [
+      1
+    ],
+    "assignee_id": 1,
+    "labels": [
+
+    ],
+    "state": "opened",
+    "severity": "unknown"
   }
 }
 ```

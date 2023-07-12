@@ -35,6 +35,8 @@ module Integrations
             deployment_events_data
           when 'release'
             releases_events_data
+          when 'award_emoji'
+            emoji_events_data
           end
         end
       end

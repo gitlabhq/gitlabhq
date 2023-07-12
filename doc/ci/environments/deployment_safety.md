@@ -170,23 +170,3 @@ For more information, see [Custom CI/CD configuration path](../pipelines/setting
 ## Require an approval before deploying
 
 Before promoting a deployment to a production environment, cross-verifying it with a dedicated testing group is an effective way to ensure safety. For more information, see [Deployment Approvals](deployment_approvals.md).
-
-## Troubleshooting
-
-### Pipelines jobs fail with `The deployment job is older than the previously succeeded deployment job...`
-
-This is caused by the [Prevent outdated deployment jobs](../pipelines/settings.md#prevent-outdated-deployment-jobs) feature.
-If you have multiple jobs for the same environment (including non-deployment jobs), you might encounter this problem, for example:
-
-```yaml
-build:service-a:
- environment:
-   name: production
-
-build:service-b:
- environment:
-   name: production
-```
-
-The [Prevent outdated deployment jobs](../pipelines/settings.md#prevent-outdated-deployment-jobs) might
-not work well with this configuration, and must be disabled.

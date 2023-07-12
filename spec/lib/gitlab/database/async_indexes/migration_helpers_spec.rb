@@ -223,6 +223,21 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers, feature_categor
                 expect(async_index).to have_attributes(table_name: table_name, definition: index_definition)
               end
             end
+
+            context 'when the given SQL has whitespace' do
+              let(:index_definition) { "    #{super()}" }
+              let(:async_index) { index_model.find_by(name: index_name) }
+
+              it 'creates the async index record' do
+                expect { prepare_async_index_from_sql }.to change { index_model.where(name: index_name).count }.by(1)
+              end
+
+              it 'sets the async index attributes correctly' do
+                prepare_async_index_from_sql
+
+                expect(async_index).to have_attributes(table_name: table_name, definition: index_definition.strip)
+              end
+            end
           end
         end
       end

@@ -12644,6 +12644,9 @@ msgstr ""
 msgid "ContributionEvent|Left project %{resourceParentLink}."
 msgstr ""
 
+msgid "ContributionEvent|Made a private contribution."
+msgstr ""
+
 msgid "ContributionEvent|Pushed a new branch %{refLink} in %{resourceParentLink}."
 msgstr ""
 
@@ -51324,6 +51327,9 @@ msgstr ""
 msgid "Webhooks|A wiki page is created or updated."
 msgstr ""
 
+msgid "Webhooks|An emoji is awarded or revoked. %{help_link}?"
+msgstr ""
+
 msgid "Webhooks|An issue is created, updated, closed, or reopened."
 msgstr ""
 
@@ -51604,6 +51610,9 @@ msgid "When:"
 msgstr ""
 
 msgid "Which API requests are affected?"
+msgstr ""
+
+msgid "Which emoji events trigger webhooks"
 msgstr ""
 
 msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."

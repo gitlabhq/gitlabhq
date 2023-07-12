@@ -46,6 +46,7 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :grou
         expect(page).to have_content('Pipeline events')
         expect(page).to have_content('Wiki page events')
         expect(page).to have_content('Releases events')
+        expect(page).to have_content('Emoji events')
       end
 
       it 'create webhook', :js do

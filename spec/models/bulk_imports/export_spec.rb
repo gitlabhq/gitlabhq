@@ -83,4 +83,29 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
       end
     end
   end
+
+  describe '#remove_existing_upload!' do
+    context 'when upload exists' do
+      it 'removes the upload' do
+        export = create(:bulk_import_export)
+        upload = create(:bulk_import_export_upload, export: export)
+        upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+
+        expect_any_instance_of(BulkImports::ExportUpload) do |upload|
+          expect(upload).to receive(:remove_export_file!)
+          expect(upload).to receive(:save!)
+        end
+
+        export.remove_existing_upload!
+      end
+    end
+
+    context 'when upload does not exist' do
+      it 'returns' do
+        export = build(:bulk_import_export)
+
+        expect { export.remove_existing_upload! }.not_to change { export.upload }
+      end
+    end
+  end
 end

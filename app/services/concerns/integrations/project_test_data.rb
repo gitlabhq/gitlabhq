@@ -77,5 +77,20 @@ module Integrations
 
       release.to_hook_data('create')
     end
+
+    def emoji_events_data
+      no_data_error(s_('TestHooks|Ensure the project has notes.')) unless project.notes.any?
+
+      award_emoji = AwardEmoji.new(
+        id: 1,
+        name: 'thumbsup',
+        user: current_user,
+        awardable: project.notes.last,
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now
+      )
+
+      Gitlab::DataBuilder::Emoji.build(award_emoji, current_user, 'award')
+    end
   end
 end

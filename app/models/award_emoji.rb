@@ -85,4 +85,8 @@ class AwardEmoji < ApplicationRecord
   def to_ability_name
     'emoji'
   end
+
+  def hook_attrs
+    Gitlab::HookData::EmojiBuilder.new(self).build
+  end
 end

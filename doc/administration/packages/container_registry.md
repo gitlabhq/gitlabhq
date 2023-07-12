@@ -1007,28 +1007,27 @@ NOTE:
 Retention policies in your object storage provider, such as Amazon S3 Lifecycle, may prevent
 objects from being properly deleted.
 
-Container Registry can use considerable amounts of disk space. To clear up
-some unused layers, the registry includes a garbage collect command.
+The container registry can use considerable amounts of storage space, and you might want to
+[reduce storage usage](../../user/packages/container_registry/reduce_container_registry_storage.md).
+Among the listed options, deleting tags is the most effective option. However, tag deletion
+alone does not delete image layers, it only leaves the underlying image manifests untagged.
 
-GitLab offers a set of APIs to manipulate the Container Registry and aid the process
-of removing unused tags. Currently, this is exposed using the API, but in the future,
-these controls should migrate to the GitLab interface.
+To more effectively free up space, the Container Registry has a garbage collector that can
+delete unreferenced layers and (optionally) untagged manifests.
 
-Users who have the [Maintainer role](../../user/permissions.md) for the project can
-[delete Container Registry tags in bulk](../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
-periodically based on their own criteria. However, deleting the tags alone does not recycle data,
-it only unlinks tags from manifests and image blobs. To recycle the Container
-Registry data in the whole GitLab instance, you can use the built-in garbage collection command
-provided by `gitlab-ctl`.
+To start the garbage collector, use the `registry-garbage-collect` command provided by `gitlab-ctl`.
+
+WARNING:
+This command shuts down the Container Registry prior to the garbage collection and
+only starts it again after garbage collection completes. If you prefer to avoid downtime,
+you can manually set the Container Registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
+
+The time required to perform garbage collection is proportional to the Container Registry data size.
 
 Prerequisites:
 
 - You must have installed GitLab by using an Omnibus package or the
   [GitLab Helm chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
-- You must set the Registry to [read-only mode](#performing-garbage-collection-without-downtime).
-  Running garbage collection causes downtime for the Container Registry. When you run this command
-  on an instance in an environment where another instance is still writing to the Registry storage,
-  referenced manifests are removed.
 
 ### Understanding the content-addressable layers
 
@@ -1053,16 +1052,11 @@ Due to the architecture of registry, this data is still accessible when pulling 
 image `my.registry.com/my.group/my.project@sha256:111111`, though it is
 no longer directly accessible via the `:latest` tag.
 
-### Recycling unused tags
+### Remove unreferenced layers
 
-Before you run the built-in command, note the following:
-
-- The built-in command stops the registry before it starts the garbage collection.
-- The garbage collect command takes some time to complete, depending on the
-  amount of data that exists.
-- If you changed the location of registry configuration file, you must
-  specify its path.
-- After the garbage collection is done, the registry should start automatically.
+Image layers are the bulk of the Container Registry storage. A layer is considered
+unreferenced when no image manifest references it. Unreferenced layers are the
+default target of the Container Registry garbage collector.
 
 If you did not change the default location of the configuration file, run:
 
@@ -1070,51 +1064,37 @@ If you did not change the default location of the configuration file, run:
 sudo gitlab-ctl registry-garbage-collect
 ```
 
-This command takes some time to complete, depending on the amount of
-layers you have stored.
-
 If you changed the location of the Container Registry `config.yml`:
 
 ```shell
 sudo gitlab-ctl registry-garbage-collect /path/to/config.yml
 ```
 
-You may also [remove all untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers),
-although this is a way more destructive operation, and you should first
-understand the implications.
+You can also [remove all untagged manifests and unreferenced layers](#removing-untagged-manifests-and-unreferenced-layers)
+to recover additional space.
 
 ### Removing untagged manifests and unreferenced layers
 
-WARNING:
-This is a destructive operation.
+By default the Container Registry garbage collector ignores images that are untagged,
+and users can keep pulling untagged images by digest. Users can also re-tag images
+in the future, making them visible again in the GitLab UI and API.
 
-The GitLab Container Registry follows the same default workflow as Docker Distribution:
-retain untagged manifests and all layers, even ones that are not referenced directly. All content
-can be accessed by using context addressable identifiers.
-
-However, in most workflows, you don't care about untagged manifests and old layers if they are not directly
-referenced by a tagged manifest. The `registry-garbage-collect` command supports the
-`-m` switch to allow you to remove all unreferenced manifests and layers that are
-not directly accessible via `tag`:
+If you do not care about untagged images and the layers exclusively referenced by these images,
+you can delete them all. Use the `-m` flag on the `registry-garbage-collect` command:
 
 ```shell
 sudo gitlab-ctl registry-garbage-collect -m
 ```
 
-Since this is a way more destructive operation, this behavior is disabled by default.
-You are likely expecting this way of operation, but before doing that, ensure
-that you have backed up all registry data.
-
-When the command is used without the `-m` flag, the Container Registry only removes layers that are not referenced by any manifest, tagged or not.
+If you are unsure about deleting untagged images, back up your registry data before proceeding.
 
 ### Performing garbage collection without downtime
 
-You can perform garbage collection without stopping the Container Registry by putting
-it in read-only mode and by not using the built-in command. On large instances
-this could require Container Registry to be in read-only mode for a while.
-During this time,
-you are able to pull from the Container Registry, but you are not able to
-push.
+To do garbage collection while keeping the Container Registry online, put the registry
+in read-only mode and bypass the built-in `gitlab-ctl registry-garbage-collect` command.
+
+You can pull but not push images while the Container Registry is in read-only mode. The Container
+Registry must remain in read-only for the full duration of the garbage collection.
 
 By default, the [registry storage path](#configure-storage-for-the-container-registry)
 is `/var/opt/gitlab/gitlab-rails/shared/registry`.
@@ -1146,18 +1126,15 @@ To enable the read-only mode:
 
 1. Next, trigger one of the garbage collect commands:
 
-   WARNING:
-   You must use `/opt/gitlab/embedded/bin/registry` to recycle unused tags. If you use `gitlab-ctl registry-garbage-collect`, **the container registry goes down**.
-
    ```shell
-   # Recycling unused tags
+   # Remove unreferenced layers
    sudo /opt/gitlab/embedded/bin/registry garbage-collect /var/opt/gitlab/registry/config.yml
 
-   # Removing unused layers not referenced by manifests
+   # Remove untagged manifests and unreferenced layers
    sudo /opt/gitlab/embedded/bin/registry garbage-collect -m /var/opt/gitlab/registry/config.yml
    ```
 
-   This command starts the garbage collection, which might take some time to complete.
+   This command starts the garbage collection. The time to complete is proportional to the registry data size.
 
 1. Once done, in `/etc/gitlab/gitlab.rb` change it back to read-write mode:
 

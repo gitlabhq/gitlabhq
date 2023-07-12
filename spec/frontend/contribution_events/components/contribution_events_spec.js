@@ -5,7 +5,15 @@ import ContributionEventExpired from '~/contribution_events/components/contribut
 import ContributionEventJoined from '~/contribution_events/components/contribution_event/contribution_event_joined.vue';
 import ContributionEventLeft from '~/contribution_events/components/contribution_event/contribution_event_left.vue';
 import ContributionEventPushed from '~/contribution_events/components/contribution_event/contribution_event_pushed.vue';
-import { eventApproved, eventExpired, eventJoined, eventLeft, eventPushedBranch } from '../utils';
+import ContributionEventPrivate from '~/contribution_events/components/contribution_event/contribution_event_private.vue';
+import {
+  eventApproved,
+  eventExpired,
+  eventJoined,
+  eventLeft,
+  eventPushedBranch,
+  eventPrivate,
+} from '../utils';
 
 describe('ContributionEvents', () => {
   let wrapper;
@@ -13,7 +21,14 @@ describe('ContributionEvents', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(ContributionEvents, {
       propsData: {
-        events: [eventApproved(), eventExpired(), eventJoined(), eventLeft(), eventPushedBranch()],
+        events: [
+          eventApproved(),
+          eventExpired(),
+          eventJoined(),
+          eventLeft(),
+          eventPushedBranch(),
+          eventPrivate(),
+        ],
       },
     });
   };
@@ -25,6 +40,7 @@ describe('ContributionEvents', () => {
     ${ContributionEventJoined}   | ${eventJoined()}
     ${ContributionEventLeft}     | ${eventLeft()}
     ${ContributionEventPushed}   | ${eventPushedBranch()}
+    ${ContributionEventPrivate}  | ${eventPrivate()}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

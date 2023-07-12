@@ -1,4 +1,5 @@
-# The template generates jobs for gems vendored in the main GitLab project under `gems/`.
+# The template generates jobs for gems vendored in the main GitLab project
+# under `gem_path_prefix` (defaults to `gems/`).
 #
 # Inputs
 # - `gem_name`: The name of the gem, i.e. if the gem is located at `gems/gitlab-rspec`, `gem_name` should be set to `gitlab-rspec`.
@@ -17,13 +18,15 @@ workflow:
         PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
 
 variables:
+  BUNDLE_PATH: "vendor"
+  BUNDLE_FROZEN: "true"
   GIT_DEPTH: "20"
   # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_STRATEGY: "clone"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   # Default Ruby version for jobs that don't use .ruby_matrix
-  RUBY_VERSION: "3.1"
+  RUBY_VERSION: "3.0"
 
 default:
   image: "ruby:${RUBY_VERSION}"
@@ -35,9 +38,7 @@ default:
     - cd $[[inputs.gem_path_prefix]]$[[inputs.gem_name]]
     - ruby -v                                   # Print out ruby version for debugging
     - bundle_version=$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1 | sed -e 's/[[:space:]]//')
-    - gem install bundler --version $bundle_version --no-document # Bundler is not installed with the image
-    - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
-    - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
+    - gem install bundler --version "$bundle_version" --no-document # Bundler is not installed with the image
     - bundle config                             # Show bundler configuration
     - bundle install --jobs=$(nproc) --retry=3
 

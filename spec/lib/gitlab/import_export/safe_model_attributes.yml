@@ -608,6 +608,7 @@ ProjectHook:
 - confidential_note_events
 - repository_update_events
 - releases_events
+- emoji_events
 ProtectedBranch:
 - id
 - project_id

@@ -75,4 +75,22 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       end
     end
   end
+
+  describe '#supports_batched_export?' do
+    context 'when source version is greater than min supported version for batched migrations' do
+      it 'returns true' do
+        bulk_import = build(:bulk_import, source_version: '16.2.0')
+
+        expect(bulk_import.supports_batched_export?).to eq(true)
+      end
+    end
+
+    context 'when source version is less than min supported version for batched migrations' do
+      it 'returns false' do
+        bulk_import = build(:bulk_import, source_version: '15.5.0')
+
+        expect(bulk_import.supports_batched_export?).to eq(false)
+      end
+    end
+  end
 end

@@ -38,6 +38,7 @@ describe('ProjectsListItem', () => {
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findProjectDescription = () => wrapper.findByTestId('project-description');
+  const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
 
   it('renders project avatar', () => {
     createComponent();
@@ -64,6 +65,19 @@ describe('ProjectsListItem', () => {
 
     expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PRIVATE_STRING]);
     expect(tooltip.value).toBe(PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]);
+  });
+
+  describe('when visibility is not provided', () => {
+    it('does not render visibility icon', () => {
+      const { visibility, ...projectWithoutVisibility } = project;
+      createComponent({
+        propsData: {
+          project: projectWithoutVisibility,
+        },
+      });
+
+      expect(findVisibilityIcon().exists()).toBe(false);
+    });
   });
 
   it('renders access role badge', () => {
@@ -111,6 +125,19 @@ describe('ProjectsListItem', () => {
     createComponent();
 
     expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(project.updatedAt);
+  });
+
+  describe('when updated at is not available', () => {
+    it('does not render updated at', () => {
+      const { updatedAt, ...projectWithoutUpdatedAt } = project;
+      createComponent({
+        propsData: {
+          project: projectWithoutUpdatedAt,
+        },
+      });
+
+      expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(false);
+    });
   });
 
   describe('when issues are enabled', () => {

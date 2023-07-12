@@ -24,5 +24,13 @@ FactoryBot.define do
     trait :skipped do
       status { -2 }
     end
+
+    trait :batched do
+      batched { true }
+    end
+
+    trait :stale do
+      created_at { 1.day.ago }
+    end
   end
 end

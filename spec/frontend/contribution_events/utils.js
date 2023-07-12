@@ -5,6 +5,7 @@ import {
   EVENT_TYPE_JOINED,
   EVENT_TYPE_LEFT,
   EVENT_TYPE_PUSHED,
+  EVENT_TYPE_PRIVATE,
   PUSH_EVENT_REF_TYPE_BRANCH,
   PUSH_EVENT_REF_TYPE_TAG,
 } from '~/contribution_events/constants';
@@ -44,3 +45,5 @@ export const eventPushedRemovedTag = findPushEvent({
   refType: PUSH_EVENT_REF_TYPE_TAG,
 });
 export const eventBulkPushedBranch = findPushEvent({ commitCount: 5 });
+
+export const eventPrivate = () => ({ ...events[0], action: EVENT_TYPE_PRIVATE });

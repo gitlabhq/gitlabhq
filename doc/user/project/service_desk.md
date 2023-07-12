@@ -43,8 +43,8 @@ Meanwhile:
 
 ## Configure Service Desk
 
-To start using Service Desk for a project, you must first turn it on.
-By default, Service Desk is turned off.
+By default, Service Desk is active in new projects.
+If it's not active, you can do it in the project's settings.
 
 Prerequisites:
 

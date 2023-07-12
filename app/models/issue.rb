@@ -754,6 +754,10 @@ class Issue < ApplicationRecord
     issue_email_participants.find_by_email(email)&.destroy
   end
 
+  def hook_attrs
+    Gitlab::HookData::IssueBuilder.new(self).build
+  end
+
   private
 
   def check_issue_type_in_sync!

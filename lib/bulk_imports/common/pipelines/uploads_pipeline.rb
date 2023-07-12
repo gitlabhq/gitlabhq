@@ -10,6 +10,8 @@ module BulkImports
 
         AvatarLoadingError = Class.new(StandardError)
 
+        file_extraction_pipeline!
+
         def extract(_context)
           download_service.execute
           decompression_service.execute
@@ -46,7 +48,7 @@ module BulkImports
         def download_service
           BulkImports::FileDownloadService.new(
             configuration: context.configuration,
-            relative_url: context.entity.relation_download_url_path(relation),
+            relative_url: context.entity.relation_download_url_path(relation, context.extra[:batch_number]),
             tmpdir: tmpdir,
             filename: targz_filename
           )

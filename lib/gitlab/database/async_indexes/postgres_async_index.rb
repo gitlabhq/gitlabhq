@@ -13,6 +13,8 @@ module Gitlab
         MAX_IDENTIFIER_LENGTH = Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH
         MAX_DEFINITION_LENGTH = 2048
 
+        before_validation :remove_whitespaces
+
         validates :name, presence: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
         validates :table_name, presence: true, length: { maximum: MAX_TABLE_NAME_LENGTH }
         validates :definition, presence: true, length: { maximum: MAX_DEFINITION_LENGTH }
@@ -28,6 +30,10 @@ module Gitlab
         end
 
         private
+
+        def remove_whitespaces
+          definition.strip! if definition.present?
+        end
 
         def ensure_correct_schema_and_table_name
           return unless table_name

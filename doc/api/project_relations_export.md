@@ -6,8 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Project relations export API **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70330) in GitLab 14.4 [with a flag](../administration/feature_flags.md) named `bulk_import`. Disabled by default.
-> - New application setting `bulk_import_enabled` introduced in GitLab 15.8. Feature flag `bulk_import` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70330) in GitLab 14.4 behind
+    the `bulk_import` [feature flag](../administration/feature_flags.md), disabled by default.
+> - New application setting `bulk_import_enabled` introduced in GitLab 15.8. `bulk_import` feature
+    flag removed.
 
 The project relations export API partially exports a project's structure as separate files for each
 top-level

@@ -2154,6 +2154,8 @@
   rules:
     # Requiring $DEPENDENCY_REVIEW_PAT prevents the bot from running on forks or CE
     # Without it the script would fail too.
+    - if: $ENABLE_DEPSCORE != 'true'
+      when: never
     - if: "$DEPENDENCY_REVIEW_PAT == null"
       when: never
     - <<: *if-not-ee

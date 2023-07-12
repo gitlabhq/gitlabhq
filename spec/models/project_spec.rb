@@ -6394,6 +6394,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.has_active_hooks?(:merge_request_hooks)).to eq(true)
       expect(project.has_active_hooks?).to eq(true)
     end
+
+    context 'with :emoji_hooks scope' do
+      it 'returns true when a matching emoji hook exists' do
+        create(:project_hook, emoji_events: true, project: project)
+
+        expect(project.has_active_hooks?(:emoji_hooks)).to eq(true)
+      end
+    end
   end
 
   describe '#has_active_integrations?' do

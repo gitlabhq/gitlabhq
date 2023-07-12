@@ -15,35 +15,40 @@ module BulkImports
     end
 
     def perform(entity_id)
-      entity = BulkImports::Entity.find(entity_id)
+      @entity = BulkImports::Entity.find(entity_id)
 
-      entity.update!(source_xid: entity_source_xid(entity)) if entity.source_xid.nil?
-
-      request_export(entity)
+      set_source_xid
+      request_export
 
       BulkImports::EntityWorker.perform_async(entity_id)
     end
 
     def perform_failure(exception, entity_id)
-      entity = BulkImports::Entity.find(entity_id)
+      @entity = BulkImports::Entity.find(entity_id)
 
-      log_and_fail(exception, entity)
+      log_and_fail(exception)
     end
 
     private
 
-    def request_export(entity)
-      http_client(entity).post(entity.export_relations_url_path)
+    attr_reader :entity
+
+    def set_source_xid
+      entity.update!(source_xid: entity_source_xid) if entity.source_xid.nil?
     end
 
-    def http_client(entity)
+    def request_export
+      http_client.post(export_url)
+    end
+
+    def http_client
       @client ||= Clients::HTTP.new(
         url: entity.bulk_import.configuration.url,
         token: entity.bulk_import.configuration.access_token
       )
     end
 
-    def failure_attributes(exception, entity)
+    def failure_attributes(exception)
       {
         bulk_import_entity_id: entity.id,
         pipeline_class: 'ExportRequestWorker',
@@ -53,23 +58,20 @@ module BulkImports
       }
     end
 
-    def graphql_client(entity)
+    def graphql_client
       @graphql_client ||= BulkImports::Clients::Graphql.new(
         url: entity.bulk_import.configuration.url,
         token: entity.bulk_import.configuration.access_token
       )
     end
 
-    def entity_source_xid(entity)
-      query = entity_query(entity)
-      client = graphql_client(entity)
-
-      response = client.execute(
-        client.parse(query.to_s),
+    def entity_source_xid
+      response = graphql_client.execute(
+        graphql_client.parse(entity_query.to_s),
         { full_path: entity.source_full_path }
       ).original_hash
 
-      ::GlobalID.parse(response.dig(*query.data_path, 'id')).model_id
+      ::GlobalID.parse(response.dig(*entity_query.data_path, 'id')).model_id
     rescue StandardError => e
       log_exception(e,
         {
@@ -86,12 +88,12 @@ module BulkImports
       nil
     end
 
-    def entity_query(entity)
-      if entity.group?
-        BulkImports::Groups::Graphql::GetGroupQuery.new(context: nil)
-      else
-        BulkImports::Projects::Graphql::GetProjectQuery.new(context: nil)
-      end
+    def entity_query
+      @entity_query ||= if entity.group?
+                          BulkImports::Groups::Graphql::GetGroupQuery.new(context: nil)
+                        else
+                          BulkImports::Projects::Graphql::GetProjectQuery.new(context: nil)
+                        end
     end
 
     def logger
@@ -104,7 +106,7 @@ module BulkImports
       logger.error(structured_payload(payload))
     end
 
-    def log_and_fail(exception, entity)
+    def log_and_fail(exception)
       log_exception(exception,
         {
           bulk_import_entity_id: entity.id,
@@ -117,9 +119,13 @@ module BulkImports
         }
       )
 
-      BulkImports::Failure.create(failure_attributes(exception, entity))
+      BulkImports::Failure.create(failure_attributes(exception))
 
       entity.fail_op!
+    end
+
+    def export_url
+      entity.export_relations_url_path(batched: Feature.enabled?(:bulk_imports_batched_import_export))
     end
   end
 end

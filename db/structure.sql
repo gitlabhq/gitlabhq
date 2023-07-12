@@ -24658,7 +24658,8 @@ CREATE TABLE web_hooks (
     encrypted_url_variables bytea,
     encrypted_url_variables_iv bytea,
     integration_id integer,
-    branch_filter_strategy smallint DEFAULT 0 NOT NULL
+    branch_filter_strategy smallint DEFAULT 0 NOT NULL,
+    emoji_events boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE web_hooks_id_seq

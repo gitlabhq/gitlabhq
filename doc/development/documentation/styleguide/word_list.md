@@ -152,7 +152,7 @@ Instead of:
 - This feature enables users to add files to their repository.
 
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
-[View details in the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
 ## analytics
 
@@ -169,8 +169,8 @@ Instead of **and/or**, use **or** or rewrite the sentence to spell out both opti
 
 ## and so on
 
-Do not use **and so on**. Instead, be more specific. For details, see
-[the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
+Do not use **and so on**. Instead, be more specific. For more information, see the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
 
 ## area
 
@@ -336,11 +336,11 @@ For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epi
 
 ## confirmation dialog
 
-Use **confirmation dialog** to describe the dialog that asks you to confirm your action. For example:
+Use **confirmation dialog** to describe the dialog that asks you to confirm an action. For example:
 
 - On the confirmation dialog, select **OK**.
 
-Do not use **confirmation box** or **confirmation dialog box**.
+Do not use **confirmation box** or **confirmation dialog box**. See also [**dialog**](#dialog).
 
 ## Container Registry
 
@@ -401,9 +401,29 @@ When writing about the Developer role:
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
+## dialog
+
+Use **dialog** rather than any of these alternatives:
+
+- **dialog box**
+- **modal**
+- **modal dialog**
+- **modal window**
+- **pop-up**
+- **pop-up window**
+- **window**
+
+See also [**confirmation dialog**](#confirmation-dialog). For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/dialog-box-dialog-dialogue).
+
+When the dialog is the location of an action, use **on** as a preposition. For example:
+
+- On the **Grant permission** dialog, select **Group**.
+
+See also [**on**](#on).
+
 ## disable
 
-See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## disallow
@@ -456,7 +476,7 @@ Do not use Latin abbreviations. Use **for example**, **such as**, **for instance
 ## ellipsis
 
 When documenting UI text, if the UI includes an ellipsis, do not include the ellipsis in the documentation.
-For details, see [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
 Use:
 
@@ -476,7 +496,7 @@ Use **emoji** to refer to the plural form of **emoji**.
 
 ## enable
 
-See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## enter
@@ -1048,15 +1068,12 @@ For more information, see the
 
 ## on
 
-When documenting how to select high-level UI elements, use the word **on**.
+When documenting high-level UI elements, use **on** as a preposition. For example:
 
-Use:
+- On the left sidebar, select **Settings > CI/CD**.
+- On the **Grant permission** dialog, select **Group**.
 
-- `On the left sidebar...`
-
-Instead of:
-
-- Do not: `From the left sidebar...` or `In the left sidebar...`
+Do not use **from** or **in**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/f/from-vs-on).
 
 ## once
 
@@ -1137,7 +1154,7 @@ Use lowercase for **personal access token**.
 
 ## please
 
-Do not use **please**. For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+Do not use **please**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
 ## Premium
 
@@ -1514,8 +1531,8 @@ in the context of other subscription tiers, follow [the subscription tier](#subs
 Use a space between the number and the unit of measurement. For example, **128 GB**.
 ([Vale](../testing.md#vale) rule: [`Units.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Units.yml))
 
-For other guidance, follow
-[the Microsoft style guidelines](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+For more information, see the
+[Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
 
 ## update
 
@@ -1551,7 +1568,7 @@ If the UI element is not in a corner, use **upper left** and **upper right**.
 
 Do not use **top left** and **top right**.
 
-For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/upper-left-upper-right).
 
 ## useful
 
@@ -1598,7 +1615,7 @@ Instead of:
 
 - While job 1 can run quickly, job 2 is more precise.
 
-For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/w/while).
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/w/while).
 
 ## whilst
 

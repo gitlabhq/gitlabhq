@@ -57,6 +57,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
         job_events
         deployment_events
         releases_events
+        emoji_events
       ]
     end
 

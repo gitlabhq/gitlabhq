@@ -53,6 +53,12 @@ RSpec.describe AwardEmojis::AddService, feature_category: :team_planning do
         expect(award.user).to eq(user)
       end
 
+      it 'executes hooks' do
+        expect(service).to receive(:execute_hooks).with(kind_of(AwardEmoji), 'award')
+
+        service.execute
+      end
+
       describe 'marking Todos as done' do
         subject { service.execute }
 

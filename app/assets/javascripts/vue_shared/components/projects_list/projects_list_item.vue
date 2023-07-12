@@ -85,11 +85,14 @@ export default {
     };
   },
   computed: {
+    visibility() {
+      return this.project.visibility;
+    },
     visibilityIcon() {
-      return VISIBILITY_TYPE_ICON[this.project.visibility];
+      return VISIBILITY_TYPE_ICON[this.visibility];
     },
     visibilityTooltip() {
-      return PROJECT_VISIBILITY_TYPE[this.project.visibility];
+      return PROJECT_VISIBILITY_TYPE[this.visibility];
     },
     accessLevel() {
       return this.project.permissions?.projectAccess?.accessLevel;
@@ -161,6 +164,7 @@ export default {
     >
       <template #meta>
         <gl-icon
+          v-if="visibility"
           v-gl-tooltip="visibilityTooltip"
           :name="visibilityIcon"
           class="gl-text-secondary gl-ml-3"
@@ -248,7 +252,10 @@ export default {
           <span>{{ numberToMetricPrefix(project.openIssuesCount) }}</span>
         </gl-link>
       </div>
-      <div class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3">
+      <div
+        v-if="project.updatedAt"
+        class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3"
+      >
         <span>{{ $options.i18n.updated }}</span>
         <time-ago-tooltip :time="project.updatedAt" />
       </div>

@@ -6,12 +6,14 @@ import {
   EVENT_TYPE_JOINED,
   EVENT_TYPE_LEFT,
   EVENT_TYPE_PUSHED,
+  EVENT_TYPE_PRIVATE,
 } from '../constants';
 import ContributionEventApproved from './contribution_event/contribution_event_approved.vue';
 import ContributionEventExpired from './contribution_event/contribution_event_expired.vue';
 import ContributionEventJoined from './contribution_event/contribution_event_joined.vue';
 import ContributionEventLeft from './contribution_event/contribution_event_left.vue';
 import ContributionEventPushed from './contribution_event/contribution_event_pushed.vue';
+import ContributionEventPrivate from './contribution_event/contribution_event_private.vue';
 
 export default {
   props: {
@@ -120,6 +122,9 @@ export default {
 
         case EVENT_TYPE_PUSHED:
           return ContributionEventPushed;
+
+        case EVENT_TYPE_PRIVATE:
+          return ContributionEventPrivate;
 
         default:
           return EmptyComponent;

@@ -144,12 +144,27 @@ class BulkImports::Entity < ApplicationRecord
     end
   end
 
-  def export_relations_url_path
-    "#{base_resource_path}/export_relations"
+  def export_relations_url_path_base
+    File.join(base_resource_path, 'export_relations')
   end
 
-  def relation_download_url_path(relation)
-    "#{export_relations_url_path}/download?relation=#{relation}"
+  def export_relations_url_path(batched: false)
+    if batched && bulk_import.supports_batched_export?
+      Gitlab::Utils.add_url_parameters(export_relations_url_path_base, batched: batched)
+    else
+      export_relations_url_path_base
+    end
+  end
+
+  def relation_download_url_path(relation, batch_number = nil)
+    url = File.join(export_relations_url_path_base, 'download')
+    params = { relation: relation }
+
+    if batch_number && bulk_import.supports_batched_export?
+      params.merge!(batched: true, batch_number: batch_number)
+    end
+
+    Gitlab::Utils.add_url_parameters(url, params)
   end
 
   def wikis_url_path
