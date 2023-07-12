@@ -23921,7 +23921,7 @@ CREATE TABLE users (
     otp_backup_codes text,
     public_email character varying,
     dashboard integer DEFAULT 0,
-    project_view integer DEFAULT 0,
+    project_view integer DEFAULT 2,
     consumed_timestep integer,
     layout integer DEFAULT 0,
     hide_project_limit boolean DEFAULT false,

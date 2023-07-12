@@ -4575,9 +4575,6 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
-msgid "All default branches"
-msgstr ""
-
 msgid "All eligible users"
 msgstr ""
 
@@ -40576,7 +40573,7 @@ msgstr ""
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
 msgstr ""
 
-msgid "ScanResultPolicy|When %{scanType} in an open merge request targeting the %{branches} and the licenses match all of the following criteria:"
+msgid "ScanResultPolicy|When %{scanType} in an open merge request targeting %{branches} and the licenses match all of the following criteria:"
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} and match %{boldDescription} of the following criteria"
@@ -43989,9 +43986,6 @@ msgid "Spam log successfully submitted as ham."
 msgstr ""
 
 msgid "Specific branches"
-msgstr ""
-
-msgid "Specific protected branches"
 msgstr ""
 
 msgid "Specified URL cannot be used: \"%{reason}\""
@@ -53531,6 +53525,15 @@ msgstr ""
 msgid "all"
 msgstr ""
 
+msgid "all branches"
+msgstr ""
+
+msgid "all default branches"
+msgstr ""
+
+msgid "all protected branches"
+msgstr ""
+
 msgid "allowed to fail"
 msgstr ""
 
@@ -55408,6 +55411,9 @@ msgid "source"
 msgstr ""
 
 msgid "source diff"
+msgstr ""
+
+msgid "specific protected branches"
 msgstr ""
 
 msgid "specified top is not part of the tree"

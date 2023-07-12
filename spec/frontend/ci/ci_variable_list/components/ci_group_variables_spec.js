@@ -9,15 +9,13 @@ import {
   DELETE_MUTATION_ACTION,
   UPDATE_MUTATION_ACTION,
 } from '~/ci/ci_variable_list/constants';
+import getGroupEnvironments from '~/ci/ci_variable_list/graphql/queries/group_environments.query.graphql';
 import getGroupVariables from '~/ci/ci_variable_list/graphql/queries/group_variables.query.graphql';
 import addGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_add_variable.mutation.graphql';
 import deleteGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_delete_variable.mutation.graphql';
 import updateGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_update_variable.mutation.graphql';
 
 const mockProvide = {
-  glFeatures: {
-    groupScopedCiVariables: false,
-  },
   groupPath: '/group',
   groupId: 12,
 };
@@ -27,9 +25,16 @@ describe('Ci Group Variable wrapper', () => {
 
   const findCiShared = () => wrapper.findComponent(ciVariableShared);
 
-  const createComponent = ({ provide = {} } = {}) => {
+  const createComponent = ({ featureFlags } = {}) => {
     wrapper = shallowMount(ciGroupVariables, {
-      provide: { ...mockProvide, ...provide },
+      provide: {
+        ...mockProvide,
+        glFeatures: {
+          ciGroupEnvScopeGraphql: false,
+          groupScopedCiVariables: false,
+          ...featureFlags,
+        },
+      },
     });
   };
 
@@ -62,10 +67,10 @@ describe('Ci Group Variable wrapper', () => {
     });
   });
 
-  describe('feature flag', () => {
+  describe('groupScopedCiVariables feature flag', () => {
     describe('When enabled', () => {
       beforeEach(() => {
-        createComponent({ provide: { glFeatures: { groupScopedCiVariables: true } } });
+        createComponent({ featureFlags: { groupScopedCiVariables: true } });
       });
 
       it('Passes down `true` to variable shared component', () => {
@@ -75,11 +80,33 @@ describe('Ci Group Variable wrapper', () => {
 
     describe('When disabled', () => {
       beforeEach(() => {
-        createComponent({ provide: { glFeatures: { groupScopedCiVariables: false } } });
+        createComponent();
       });
 
       it('Passes down `false` to variable shared component', () => {
         expect(findCiShared().props('areScopedVariablesAvailable')).toBe(false);
+      });
+    });
+  });
+
+  describe('ciGroupEnvScopeGraphql feature flag', () => {
+    describe('When enabled', () => {
+      beforeEach(() => {
+        createComponent({ featureFlags: { ciGroupEnvScopeGraphql: true } });
+      });
+
+      it('Passes down environments query to variable shared component', () => {
+        expect(findCiShared().props('queryData').environments.query).toBe(getGroupEnvironments);
+      });
+    });
+
+    describe('When disabled', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('Does not pass down environments query to variable shared component', () => {
+        expect(findCiShared().props('queryData').environments).toBe(undefined);
       });
     });
   });

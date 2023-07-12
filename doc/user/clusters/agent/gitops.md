@@ -77,7 +77,12 @@ For additional repository structure recommendations, see the [Flux documentation
 
 ## Immediate Git repository reconciliation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`.
+On GitLab.com, this feature is not available.
 
 Usually, the Flux source controller reconciles Git repositories at configured intervals.
 This can cause delays between a `git push` and the reconciliation of the cluster state, and results in

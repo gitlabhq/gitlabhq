@@ -100,7 +100,7 @@ To install `agentk`:
    apiVersion: v1
    kind: Namespace
    metadata:
-   name: gitlab
+     name: gitlab
    ```
 
 1. Apply the agent registration token as a secret in the cluster:
@@ -143,7 +143,7 @@ To install `agentk`:
          sourceRef:
            kind: HelmRepository
            name: gitlab-agent
-           namespace: gitlab-agent
+           namespace: gitlab
      interval: 1h0m0s
      values:
        config:
