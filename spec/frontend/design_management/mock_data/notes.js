@@ -1,3 +1,4 @@
+import { mockAwardEmoji } from './apollo_mock';
 import DISCUSSION_1 from './discussion';
 
 const DISCUSSION_2 = {
@@ -17,9 +18,11 @@ const DISCUSSION_2 = {
           name: 'Mary',
           webUrl: 'link-to-mary-profile',
         },
+        awardEmoji: mockAwardEmoji,
         createdAt: '2020-05-08T07:10:45Z',
         userPermissions: {
           adminNote: true,
+          awardEmoji: true,
         },
         resolved: true,
       },

@@ -89,6 +89,9 @@ describe('Design discussions component', () => {
           },
         },
       },
+      stubs: {
+        EmojiPicker: true,
+      },
     });
   }
 

@@ -302,6 +302,7 @@ export default {
         :is-resolving="isResolving"
         :is-discussion="true"
         :noteable-id="noteableId"
+        :design-variables="designVariables"
         @delete-note="showDeleteNoteConfirmationModal($event)"
       >
         <template v-if="isLoggedIn && discussion.resolvable" #resolve-discussion>
@@ -344,6 +345,7 @@ export default {
         :is-resolving="isResolving"
         :noteable-id="noteableId"
         :is-discussion="false"
+        :design-variables="designVariables"
         @delete-note="showDeleteNoteConfirmationModal($event)"
       />
       <li

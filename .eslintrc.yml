@@ -117,6 +117,14 @@ rules:
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
     - selector: ImportSpecifier[imported.name='GlSafeHtmlDirective']
       message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.'
+    - selector: Literal[value=/docs.gitlab.+\u002Fee/]
+      message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
+    - selector: Literal[value=/(?=.*docs.gitlab.*)(?=^(?!.*\u002Fee\b).*$)/]
+      message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`'
+    - selector: Literal[value=/(?=.*about.gitlab.*)(?=^(?!.*\u002Fblog\b).*$)/]
+      message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`'
+    - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh/]
+      message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
   no-restricted-imports:
     - error
     - paths:

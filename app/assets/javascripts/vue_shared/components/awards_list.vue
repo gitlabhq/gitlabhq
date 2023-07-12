@@ -184,6 +184,7 @@ export default {
       class="gl-mr-3 gl-my-2"
       :class="awardList.classes"
       :title="awardList.title"
+      :data-emoji-name="awardList.name"
       data-testid="award-button"
       @click="handleAward(awardList.name)"
     >

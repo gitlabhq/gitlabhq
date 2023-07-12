@@ -11,6 +11,7 @@ spec:
 ---
 .gems:rules:$[[inputs.gem_name]]:
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       changes:
         - "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/**/*"

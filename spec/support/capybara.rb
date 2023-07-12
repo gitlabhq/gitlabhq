@@ -233,5 +233,6 @@ RSpec.configure do |config|
     # We don't reset the session when the example failed, because we need capybara-screenshot to have access to it.
     Capybara.reset_sessions! unless example.exception
     block_and_wait_for_requests_complete
+    block_and_wait_for_action_cable_requests_complete
   end
 end

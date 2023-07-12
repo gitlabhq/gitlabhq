@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work item', :js, feature_category: :team_planning, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416663' do
+RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:user2) { create(:user, name: 'John') }
 

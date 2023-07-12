@@ -1,10 +1,18 @@
 import { ApolloMutation } from 'vue-apollo';
 import { nextTick } from 'vue';
 import { GlAvatar, GlAvatarLink, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import * as Sentry from '@sentry/browser';
+
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
+import EmojiPicker from '~/emoji/components/picker.vue';
+import DesignNoteAwardsList from '~/design_management/components/design_notes/design_note_awards_list.vue';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import designNoteAwardEmojiToggleMutation from '~/design_management/graphql/mutations/design_note_award_emoji_toggle.mutation.graphql';
+import { mockAwardEmoji } from '../../mock_data/apollo_mock';
 
 const scrollIntoViewMock = jest.fn();
 const note = {
@@ -15,9 +23,11 @@ const note = {
     avatarUrl: 'https://gitlab.com/avatar',
     webUrl: 'https://gitlab.com/user',
   },
+  awardEmoji: mockAwardEmoji,
   body: 'test',
   userPermissions: {
     adminNote: false,
+    awardEmoji: true,
   },
   createdAt: '2019-07-26T15:02:20Z',
 };
@@ -27,14 +37,14 @@ const $route = {
   hash: '#note_123',
 };
 
-const mutate = jest.fn().mockResolvedValue({ data: { updateNote: {} } });
-
 describe('Design note component', () => {
   let wrapper;
+  let mutate;
 
   const findUserAvatar = () => wrapper.findComponent(GlAvatar);
   const findUserAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findUserLink = () => wrapper.findByTestId('user-link');
+  const findDesignNoteAwardsList = () => wrapper.findComponent(DesignNoteAwardsList);
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findEditButton = () => wrapper.findByTestId('note-edit');
   const findNoteContent = () => wrapper.findByTestId('note-text');
@@ -43,101 +53,110 @@ describe('Design note component', () => {
   const findEditDropdownItem = () => findDropdownItems().at(0);
   const findDeleteDropdownItem = () => findDropdownItems().at(1);
 
-  function createComponent(props = {}, data = { isEditing: false }) {
-    wrapper = mountExtended(DesignNote, {
+  function createComponent({
+    props = {},
+    data = { isEditing: false },
+    mountFn = mountExtended,
+    mocks = {
+      $route,
+      $apollo: {
+        mutate: jest.fn().mockResolvedValue({ data: { updateNote: {} } }),
+      },
+    },
+    stubs = {
+      ApolloMutation,
+      GlDisclosureDropdown,
+      GlDisclosureDropdownItem,
+      TimelineEntryItem: true,
+      TimeAgoTooltip: true,
+      GlAvatarLink: true,
+      GlAvatar: true,
+      GlLink: true,
+    },
+  } = {}) {
+    wrapper = mountFn(DesignNote, {
       propsData: {
         note: {},
         noteableId: 'gid://gitlab/DesignManagement::Design/6',
+        designVariables: {
+          atVersion: null,
+          filenames: ['foo.jpg'],
+          fullPath: 'gitlab-org/gitlab-test',
+          iid: '1',
+        },
         ...props,
+      },
+      provide: {
+        issueIid: '1',
+        projectPath: 'gitlab-org/gitlab-test',
       },
       data() {
         return {
           ...data,
         };
       },
-      mocks: {
-        $route,
-        $apollo: {
-          mutate,
-        },
-      },
-      stubs: {
-        ApolloMutation,
-        GlDisclosureDropdown,
-        GlDisclosureDropdownItem,
-        TimelineEntryItem: true,
-        TimeAgoTooltip: true,
-        GlAvatarLink: true,
-        GlAvatar: true,
-        GlLink: true,
-      },
+      mocks,
+      stubs,
     });
   }
 
-  it('should match the snapshot', () => {
-    createComponent({
-      note,
-    });
-
-    expect(wrapper.element).toMatchSnapshot();
+  beforeEach(() => {
+    window.gon = { current_user_id: 1 };
   });
 
-  it('should render avatar with correct props', () => {
-    createComponent({
-      note,
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent({ props: { note } });
     });
 
-    expect(findUserAvatar().props()).toMatchObject({
-      src: note.author.avatarUrl,
-      entityName: note.author.username,
+    it('should match the snapshot', () => {
+      expect(wrapper.element).toMatchSnapshot();
     });
 
-    expect(findUserAvatarLink().attributes()).toMatchObject({
-      href: note.author.webUrl,
-      'data-user-id': '1',
-      'data-username': `${note.author.username}`,
-    });
-  });
+    it('should render avatar with correct props', () => {
+      expect(findUserAvatar().props()).toMatchObject({
+        src: note.author.avatarUrl,
+        entityName: note.author.username,
+      });
 
-  it('should render author details', () => {
-    createComponent({
-      note,
-    });
-
-    expect(findUserLink().exists()).toBe(true);
-  });
-
-  it('should render a time ago tooltip if note has createdAt property', () => {
-    createComponent({
-      note,
+      expect(findUserAvatarLink().attributes()).toMatchObject({
+        href: note.author.webUrl,
+        'data-user-id': '1',
+        'data-username': `${note.author.username}`,
+      });
     });
 
-    expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(true);
-  });
-
-  it('should not render edit icon when user does not have a permission', () => {
-    createComponent({
-      note,
+    it('should render author details', () => {
+      expect(findUserLink().exists()).toBe(true);
     });
 
-    expect(findEditButton().exists()).toBe(false);
-  });
-
-  it('should not display a dropdown if user does not have a permission to delete note', () => {
-    createComponent({
-      note,
+    it('should render a time ago tooltip if note has createdAt property', () => {
+      expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(true);
     });
 
-    expect(findDropdown().exists()).toBe(false);
+    it('should render emoji awards list', () => {
+      expect(findDesignNoteAwardsList().exists()).toBe(true);
+    });
+
+    it('should not render edit icon when user does not have a permission', () => {
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('should not display a dropdown if user does not have a permission to delete note', () => {
+      expect(findDropdown().exists()).toBe(false);
+    });
   });
 
   describe('when user has a permission to edit note', () => {
     it('should open an edit form on edit button click', async () => {
       createComponent({
-        note: {
-          ...note,
-          userPermissions: {
-            adminNote: true,
+        props: {
+          note: {
+            ...note,
+            userPermissions: {
+              adminNote: true,
+              awardEmoji: true,
+            },
           },
         },
       });
@@ -151,25 +170,29 @@ describe('Design note component', () => {
 
     describe('when edit form is rendered', () => {
       beforeEach(() => {
-        createComponent(
-          {
+        createComponent({
+          props: {
             note: {
               ...note,
               userPermissions: {
                 adminNote: true,
+                awardEmoji: true,
               },
             },
           },
-          { isEditing: true },
-        );
+          data: { isEditing: true },
+        });
       });
 
       it('should open an edit form on edit button click', async () => {
         createComponent({
-          note: {
-            ...note,
-            userPermissions: {
-              adminNote: true,
+          props: {
+            note: {
+              ...note,
+              userPermissions: {
+                adminNote: true,
+                awardEmoji: true,
+              },
             },
           },
         });
@@ -207,10 +230,13 @@ describe('Design note component', () => {
   describe('when user has admin permissions', () => {
     it('should display a dropdown', () => {
       createComponent({
-        note: {
-          ...note,
-          userPermissions: {
-            adminNote: true,
+        props: {
+          note: {
+            ...note,
+            userPermissions: {
+              adminNote: true,
+              awardEmoji: true,
+            },
           },
         },
       });
@@ -227,17 +253,107 @@ describe('Design note component', () => {
       ...note,
       userPermissions: {
         adminNote: true,
+        awardEmoji: true,
       },
     };
 
     createComponent({
-      note: {
-        ...payload,
+      props: {
+        note: {
+          ...payload,
+        },
       },
     });
 
     findDeleteDropdownItem().find('button').trigger('click');
 
     expect(wrapper.emitted()).toEqual({ 'delete-note': [[{ ...payload }]] });
+  });
+
+  describe('when user has award emoji permissions', () => {
+    const findEmojiPicker = () => wrapper.findComponent(EmojiPicker);
+    const propsData = {
+      note: {
+        ...note,
+        userPermissions: {
+          adminNote: false,
+          awardEmoji: true,
+        },
+      },
+    };
+
+    it('should render emoji-picker button', () => {
+      createComponent({ props: propsData, mountFn: shallowMountExtended });
+
+      const emojiPicker = findEmojiPicker();
+
+      expect(emojiPicker.exists()).toBe(true);
+      expect(emojiPicker.props()).toMatchObject({
+        boundary: 'viewport',
+        right: false,
+      });
+    });
+
+    it('should call mutation to add an emoji', () => {
+      mutate = jest.fn().mockResolvedValue({
+        data: {
+          awardEmojiToggle: {
+            errors: [],
+            toggledOn: true,
+          },
+        },
+      });
+      createComponent({
+        props: propsData,
+        mountFn: shallowMountExtended,
+        mocks: {
+          $route,
+          $apollo: {
+            mutate,
+          },
+        },
+      });
+
+      findEmojiPicker().vm.$emit('click', 'thumbsup');
+
+      expect(mutate).toHaveBeenCalledWith({
+        mutation: designNoteAwardEmojiToggleMutation,
+        variables: {
+          name: 'thumbsup',
+          awardableId: note.id,
+        },
+        optimisticResponse: {
+          awardEmojiToggle: {
+            errors: [],
+            toggledOn: true,
+          },
+        },
+        update: expect.any(Function),
+      });
+    });
+
+    it('should emit an error when mutation fails', async () => {
+      jest.spyOn(Sentry, 'captureException');
+      mutate = jest.fn().mockRejectedValue({});
+      createComponent({
+        props: propsData,
+        mountFn: shallowMountExtended,
+        mocks: {
+          $route,
+          $apollo: {
+            mutate,
+          },
+        },
+      });
+
+      findEmojiPicker().vm.$emit('click', 'thumbsup');
+
+      expect(mutate).toHaveBeenCalled();
+
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalled();
+      expect(wrapper.emitted('error')).toEqual([[{}]]);
+    });
   });
 });

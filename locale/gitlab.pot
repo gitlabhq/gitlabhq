@@ -5245,7 +5245,7 @@ msgstr ""
 msgid "Analytics|Configure Dashboard Project"
 msgstr ""
 
-msgid "Analytics|Create dashboard %{dashboardId}"
+msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Custom dashboards"
@@ -5353,7 +5353,7 @@ msgstr ""
 msgid "Analytics|URL"
 msgstr ""
 
-msgid "Analytics|Updating dashboard %{dashboardId}"
+msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Updating visualization %{visualizationName}"

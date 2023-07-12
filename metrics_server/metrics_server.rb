@@ -7,10 +7,6 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   PumaProcessSupervisor = Class.new(Gitlab::ProcessSupervisor)
 
   class << self
-    def version
-      Rails.root.join('GITLAB_METRICS_EXPORTER_VERSION').read.chomp
-    end
-
     def start_for_puma
       metrics_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
 
@@ -28,45 +24,10 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
     end
 
     def start_for_sidekiq(**options)
-      if new_metrics_server?
-        self.spawn('sidekiq', **options)
-      else
-        self.fork('sidekiq', **options)
-      end
+      self.fork('sidekiq', **options)
     end
 
-    def spawn(target, metrics_dir:, **options)
-      return spawn_ruby_server(target, metrics_dir: metrics_dir, **options) unless new_metrics_server?
-
-      settings = settings_value(target)
-      path = options[:path]&.then { |p| Pathname.new(p) } || Pathname.new('')
-      cmd = path.join('gitlab-metrics-exporter').to_path
-      env = {
-        'GOGC' => '10', # Set Go GC heap goal to 10% to curb memory growth.
-        'GME_MMAP_METRICS_DIR' => metrics_dir.to_s,
-        'GME_PROBES' => 'self,mmap,mmap_stats',
-        'GME_SERVER_HOST' => settings['address'],
-        'GME_SERVER_PORT' => settings['port'].to_s
-      }
-
-      if settings['log_enabled']
-        env['GME_LOG_FILE'] = File.join(Rails.root, 'log', "#{name(target)}.log")
-        env['GME_LOG_LEVEL'] = 'info'
-      else
-        env['GME_LOG_LEVEL'] = 'quiet'
-      end
-
-      if settings['tls_enabled']
-        env['GME_CERT_FILE'] = settings['tls_cert_path']
-        env['GME_CERT_KEY'] = settings['tls_key_path']
-      end
-
-      Process.spawn(env, cmd, err: $stderr, out: $stdout, pgroup: true).tap do |pid|
-        Process.detach(pid)
-      end
-    end
-
-    def spawn_ruby_server(target, metrics_dir:, wipe_metrics_dir: false, **options)
+    def spawn(target, metrics_dir:, wipe_metrics_dir: false)
       ensure_valid_target!(target)
 
       cmd = "#{Rails.root}/bin/metrics-server"
@@ -124,10 +85,6 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       when 'sidekiq' then ::Settings.monitoring.sidekiq_exporter
       else ensure_valid_target!(target)
       end
-    end
-
-    def new_metrics_server?
-      Gitlab::Utils.to_boolean(ENV['GITLAB_GOLANG_METRICS_SERVER'])
     end
 
     def ensure_valid_target!(target)

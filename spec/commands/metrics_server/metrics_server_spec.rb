@@ -30,18 +30,6 @@ RSpec.describe 'GitLab metrics server', :aggregate_failures do
     }
   end
 
-  before(:all) do
-    Rake.application.rake_require 'tasks/gitlab/metrics_exporter'
-
-    @exporter_path = Rails.root.join('tmp', 'test', 'gme')
-
-    run_rake_task('gitlab:metrics_exporter:install', @exporter_path)
-  end
-
-  after(:all) do
-    FileUtils.rm_rf(@exporter_path)
-  end
-
   shared_examples 'serves metrics endpoint' do
     it 'serves /metrics endpoint' do
       start_server!
@@ -59,24 +47,18 @@ RSpec.describe 'GitLab metrics server', :aggregate_failures do
     end
   end
 
-  shared_examples 'spawns a server' do |target, use_golang_server|
-    context "targeting #{target} when using Golang server is #{use_golang_server}" do
+  shared_examples 'spawns a server' do |target|
+    context "targeting #{target}" do
       let(:metrics_dir) { Dir.mktmpdir }
 
       subject(:start_server!) do
-        @pid = MetricsServer.spawn(target, metrics_dir: metrics_dir, path: @exporter_path.join('bin'))
+        @pid = MetricsServer.spawn(target, metrics_dir: metrics_dir)
       end
 
       before do
-        if use_golang_server
-          stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
-          allow(Settings).to receive(:monitoring).and_return(
-            GitlabSettings::Options.build(config.dig('test', 'monitoring')))
-        else
-          config_file.write(YAML.dump(config))
-          config_file.close
-          stub_env('GITLAB_CONFIG', config_file.path)
-        end
+        config_file.write(YAML.dump(config))
+        config_file.close
+        stub_env('GITLAB_CONFIG', config_file.path)
         # We need to send a request to localhost
         WebMock.allow_net_connect!
       end
@@ -111,8 +93,6 @@ RSpec.describe 'GitLab metrics server', :aggregate_failures do
     end
   end
 
-  it_behaves_like 'spawns a server', 'puma', true
-  it_behaves_like 'spawns a server', 'puma', false
-  it_behaves_like 'spawns a server', 'sidekiq', true
-  it_behaves_like 'spawns a server', 'sidekiq', false
+  it_behaves_like 'spawns a server', 'puma'
+  it_behaves_like 'spawns a server', 'sidekiq'
 end

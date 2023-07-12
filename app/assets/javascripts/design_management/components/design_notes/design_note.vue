@@ -5,16 +5,24 @@ import {
   GlButton,
   GlDisclosureDropdown,
   GlLink,
+  GlIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
+import { produce } from 'immer';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import EmojiPicker from '~/emoji/components/picker.vue';
+import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
+import designNoteAwardEmojiToggleMutation from '../../graphql/mutations/design_note_award_emoji_toggle.mutation.graphql';
 import { hasErrors } from '../../utils/cache_update';
 import { findNoteId, extractDesignNoteId } from '../../utils/design_management_utils';
+import DesignNoteAwardsList from './design_note_awards_list.vue';
 import DesignReplyForm from './design_reply_form.vue';
 
 export default {
@@ -24,7 +32,10 @@ export default {
     deleteCommentText: __('Delete comment'),
   },
   components: {
+    EmojiPicker,
+    DesignNoteAwardsList,
     DesignReplyForm,
+    GlIcon,
     GlAvatar,
     GlAvatarLink,
     GlButton,
@@ -37,6 +48,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  inject: ['issueIid', 'projectPath'],
   props: {
     note: {
       type: Object,
@@ -56,6 +68,10 @@ export default {
       type: String,
       required: true,
     },
+    designVariables: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -64,6 +80,26 @@ export default {
     };
   },
   computed: {
+    currentUserId() {
+      return window.gon.current_user_id;
+    },
+    currentUserFullName() {
+      return window.gon.current_user_fullname;
+    },
+    canAwardEmoji() {
+      return this.note.userPermissions.awardEmoji;
+    },
+    awards() {
+      return this.note.awardEmoji.nodes.map((award) => {
+        return {
+          ...award,
+          user: {
+            ...award.user,
+            id: getIdFromGraphQLId(award.user.id),
+          },
+        };
+      });
+    },
     author() {
       return this.note.author;
     },
@@ -124,6 +160,93 @@ export default {
         this.$emit('error', data.errors[0]);
       }
     },
+    isEmojiPresentForCurrentUser(name) {
+      return (
+        this.awards.findIndex(
+          (emoji) => emoji.name === name && emoji.user.id === this.currentUserId,
+        ) > -1
+      );
+    },
+    /**
+     * Prepare award emoji nodes based on emoji name
+     * and whether the user has toggled the emoji off or on
+     */
+    getAwardEmojiNodes(name, toggledOn) {
+      // If the emoji toggled on, add the emoji
+      if (toggledOn) {
+        // If emoji is already present in award list, no action is needed
+        if (this.isEmojiPresentForCurrentUser(name)) {
+          return this.note.awardEmoji.nodes;
+        }
+
+        // else make a copy of unmutable list and return the list after adding the new emoji
+        const awardEmojiNodes = [...this.note.awardEmoji.nodes];
+        awardEmojiNodes.push({
+          name,
+          __typename: 'AwardEmoji',
+          user: {
+            id: convertToGraphQLId(TYPENAME_USER, this.currentUserId),
+            name: this.currentUserFullName,
+            __typename: 'UserCore',
+          },
+        });
+
+        return awardEmojiNodes;
+      }
+
+      // else just filter the emoji
+      return this.note.awardEmoji.nodes.filter(
+        (emoji) =>
+          !(emoji.name === name && getIdFromGraphQLId(emoji.user.id) === this.currentUserId),
+      );
+    },
+    handleAwardEmoji(name) {
+      this.$apollo
+        .mutate({
+          mutation: designNoteAwardEmojiToggleMutation,
+          variables: {
+            name,
+            awardableId: this.note.id,
+          },
+          optimisticResponse: {
+            awardEmojiToggle: {
+              errors: [],
+              toggledOn: !this.isEmojiPresentForCurrentUser(name),
+            },
+          },
+          update: (
+            cache,
+            {
+              data: {
+                awardEmojiToggle: { toggledOn },
+              },
+            },
+          ) => {
+            const query = {
+              query: getDesignQuery,
+              variables: this.designVariables,
+            };
+
+            const sourceData = cache.readQuery(query);
+
+            const newData = produce(sourceData, (draftState) => {
+              const {
+                awardEmoji,
+              } = draftState.project.issue.designCollection.designs.nodes[0].discussions.nodes
+                .find((d) => d.id === this.note.discussion.id)
+                .notes.nodes.find((n) => n.id === this.note.id);
+
+              awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
+            });
+
+            cache.writeQuery({ ...query, data: newData });
+          },
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+          this.$emit('error', error);
+        });
+    },
   },
   updateNoteMutation,
 };
@@ -164,8 +287,31 @@ export default {
           </gl-link>
         </span>
       </div>
-      <div class="gl-display-flex gl-align-items-baseline gl-mt-n2 gl-mr-n2">
+      <div class="gl-display-flex gl-align-items-flex-start gl-mt-n2 gl-mr-n2">
         <slot name="resolve-discussion"></slot>
+        <emoji-picker
+          v-if="canAwardEmoji"
+          toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
+          boundary="viewport"
+          :right="false"
+          data-testid="note-emoji-button"
+          @click="handleAwardEmoji"
+        >
+          <template #button-content>
+            <gl-icon
+              class="award-control-icon-neutral gl-button-icon gl-icon"
+              name="slight-smile"
+            />
+            <gl-icon
+              class="award-control-icon-positive gl-button-icon gl-icon gl-left-3!"
+              name="smiley"
+            />
+            <gl-icon
+              class="award-control-icon-super-positive gl-button-icon gl-icon gl-left-3!"
+              name="smile"
+            />
+          </template>
+        </emoji-picker>
         <gl-button
           v-if="isEditingAndHasPermissions"
           v-gl-tooltip
@@ -202,8 +348,14 @@ export default {
       ></div>
       <slot name="resolved-status"></slot>
     </template>
+    <design-note-awards-list
+      v-if="awards.length"
+      :awards="awards"
+      :can-award-emoji="note.userPermissions.awardEmoji"
+      @award="handleAwardEmoji"
+    />
     <design-reply-form
-      v-else
+      v-if="isEditing"
       :markdown-preview-path="markdownPreviewPath"
       :design-note-mutation="$options.updateNoteMutation"
       :mutation-variables="mutationVariables"

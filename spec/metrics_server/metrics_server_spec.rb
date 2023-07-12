@@ -69,136 +69,29 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
       end
 
       describe '.spawn' do
-        context 'for legacy Ruby server' do
-          let(:expected_env) do
-            {
-              'METRICS_SERVER_TARGET' => target,
-              'WIPE_METRICS_DIR' => '0',
-              'GITLAB_CONFIG' => 'path/to/config/gitlab.yml'
-            }
-          end
-
-          before do
-            stub_env('GITLAB_CONFIG', 'path/to/config/gitlab.yml')
-          end
-
-          it 'spawns a new server process and returns its PID' do
-            expect(Process).to receive(:spawn).with(
-              expected_env,
-              end_with('bin/metrics-server'),
-              hash_including(pgroup: true)
-            ).and_return(99)
-            expect(Process).to receive(:detach).with(99)
-
-            pid = described_class.spawn(target, metrics_dir: metrics_dir)
-
-            expect(pid).to eq(99)
-          end
+        let(:expected_env) do
+          {
+            'METRICS_SERVER_TARGET' => target,
+            'WIPE_METRICS_DIR' => '0',
+            'GITLAB_CONFIG' => 'path/to/config/gitlab.yml'
+          }
         end
 
-        context 'for Golang server' do
-          let(:log_enabled) { false }
-          let(:settings) do
-            GitlabSettings::Options.build(
-              {
-                'web_exporter' => {
-                  'enabled' => true,
-                  'address' => 'localhost',
-                  'port' => '8083',
-                  'log_enabled' => log_enabled
-                },
-                'sidekiq_exporter' => {
-                  'enabled' => true,
-                  'address' => 'localhost',
-                  'port' => '8082',
-                  'log_enabled' => log_enabled
-                }
-              }
-            )
-          end
+        before do
+          stub_env('GITLAB_CONFIG', 'path/to/config/gitlab.yml')
+        end
 
-          let(:expected_port) { target == 'puma' ? '8083' : '8082' }
-          let(:expected_env) do
-            {
-              'GOGC' => '10',
-              'GME_MMAP_METRICS_DIR' => metrics_dir,
-              'GME_PROBES' => 'self,mmap,mmap_stats',
-              'GME_SERVER_HOST' => 'localhost',
-              'GME_SERVER_PORT' => expected_port,
-              'GME_LOG_LEVEL' => 'quiet'
-            }
-          end
+        it 'spawns a new server process and returns its PID' do
+          expect(Process).to receive(:spawn).with(
+            expected_env,
+            end_with('bin/metrics-server'),
+            hash_including(pgroup: true)
+          ).and_return(99)
+          expect(Process).to receive(:detach).with(99)
 
-          before do
-            stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
-            allow(::Settings).to receive(:monitoring).and_return(settings)
-          end
+          pid = described_class.spawn(target, metrics_dir: metrics_dir)
 
-          it 'spawns a new server process and returns its PID' do
-            expect(Process).to receive(:spawn).with(
-              expected_env,
-              'gitlab-metrics-exporter',
-              hash_including(pgroup: true)
-            ).and_return(99)
-            expect(Process).to receive(:detach).with(99)
-
-            pid = described_class.spawn(target, metrics_dir: metrics_dir)
-
-            expect(pid).to eq(99)
-          end
-
-          it 'can launch from explicit path instead of PATH' do
-            expect(Process).to receive(:spawn).with(
-              expected_env,
-              '/path/to/gme/gitlab-metrics-exporter',
-              hash_including(pgroup: true)
-            ).and_return(99)
-
-            described_class.spawn(target, metrics_dir: metrics_dir, path: '/path/to/gme/')
-          end
-
-          context 'when logs are enabled' do
-            let(:log_enabled) { true }
-            let(:expected_log_file) { target == 'puma' ? 'web_exporter.log' : 'sidekiq_exporter.log' }
-
-            it 'sets log related environment variables' do
-              expect(Process).to receive(:spawn).with(
-                expected_env.merge(
-                  'GME_LOG_LEVEL' => 'info',
-                  'GME_LOG_FILE' => File.join(Rails.root, 'log', expected_log_file)
-                ),
-                'gitlab-metrics-exporter',
-                hash_including(pgroup: true)
-              ).and_return(99)
-
-              described_class.spawn(target, metrics_dir: metrics_dir)
-            end
-          end
-
-          context 'when TLS settings are present' do
-            before do
-              settings.web_exporter['tls_enabled'] = true
-              settings.web_exporter['tls_cert_path'] = '/path/to/cert.pem'
-              settings.web_exporter['tls_key_path'] = '/path/to/key.pem'
-
-              settings.sidekiq_exporter['tls_enabled'] = true
-              settings.sidekiq_exporter['tls_cert_path'] = '/path/to/cert.pem'
-              settings.sidekiq_exporter['tls_key_path'] = '/path/to/key.pem'
-            end
-
-            it 'sets the correct environment variables' do
-              expect(Process).to receive(:spawn).with(
-                expected_env.merge(
-                  'GME_CERT_FILE' => '/path/to/cert.pem',
-                  'GME_CERT_KEY' => '/path/to/key.pem'
-                ),
-                '/path/to/gme/gitlab-metrics-exporter',
-                hash_including(pgroup: true)
-              ).and_return(99)
-
-              described_class.spawn(target, metrics_dir: metrics_dir, path: '/path/to/gme/')
-            end
-          end
+          expect(pid).to eq(99)
         end
       end
     end
@@ -214,21 +107,10 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
     end
 
     describe '.spawn' do
-      context 'for legacy Ruby server' do
-        it 'raises an error' do
-          expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
-            raise_error('Target must be one of [puma,sidekiq]')
-          )
-        end
-      end
-
-      context 'for Golang server' do
-        it 'raises an error' do
-          stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
-          expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
-            raise_error('Target must be one of [puma,sidekiq]')
-          )
-        end
+      it 'raises an error' do
+        expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
+          raise_error('Target must be one of [puma,sidekiq]')
+        )
       end
     end
   end
@@ -345,21 +227,10 @@ RSpec.describe MetricsServer, feature_category: :application_performance do # ru
   end
 
   describe '.start_for_sidekiq' do
-    context 'for legacy Ruby server' do
-      it 'forks the parent process' do
-        expect(Process).to receive(:fork).and_return(42)
+    it 'forks the parent process' do
+      expect(Process).to receive(:fork).and_return(42)
 
-        described_class.start_for_sidekiq(metrics_dir: '/path/to/metrics')
-      end
-    end
-
-    context 'for Golang server' do
-      it 'spawns the server process' do
-        stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
-        expect(Process).to receive(:spawn).and_return(42)
-
-        described_class.start_for_sidekiq(metrics_dir: '/path/to/metrics')
-      end
+      described_class.start_for_sidekiq(metrics_dir: '/path/to/metrics')
     end
   end
 

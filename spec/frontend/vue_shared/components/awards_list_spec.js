@@ -74,6 +74,7 @@ describe('vue_shared/components/awards_list', () => {
       return {
         classes: x.classes(),
         title: x.attributes('title'),
+        emojiName: x.attributes('data-emoji-name'),
         html: x.find('[data-testid="award-html"]').html(),
         count: Number(x.find('.js-counter').text()),
       };
@@ -96,48 +97,56 @@ describe('vue_shared/components/awards_list', () => {
           count: 3,
           html: matchingEmojiTag(EMOJI_THUMBSUP),
           title: `Ada, Leonardo, and Marie reacted with :${EMOJI_THUMBSUP}:`,
+          emojiName: EMOJI_THUMBSUP,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 3,
           html: matchingEmojiTag(EMOJI_THUMBSDOWN),
           title: `You, Ada, and Marie reacted with :${EMOJI_THUMBSDOWN}:`,
+          emojiName: EMOJI_THUMBSDOWN,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 1,
           html: matchingEmojiTag(EMOJI_100),
           title: `Ada reacted with :${EMOJI_100}:`,
+          emojiName: EMOJI_100,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 2,
           html: matchingEmojiTag(EMOJI_SMILE),
           title: `Ada and Jane reacted with :${EMOJI_SMILE}:`,
+          emojiName: EMOJI_SMILE,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 4,
           html: matchingEmojiTag(EMOJI_OK),
           title: `You, Ada, Jane, and Leonardo reacted with :${EMOJI_OK}:`,
+          emojiName: EMOJI_OK,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 1,
           html: matchingEmojiTag(EMOJI_CACTUS),
           title: `You reacted with :${EMOJI_CACTUS}:`,
+          emojiName: EMOJI_CACTUS,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 1,
           html: matchingEmojiTag(EMOJI_A),
           title: `Marie reacted with :${EMOJI_A}:`,
+          emojiName: EMOJI_A,
         },
         {
           classes: [...REACTION_CONTROL_CLASSES, 'selected'],
           count: 1,
           html: matchingEmojiTag(EMOJI_B),
           title: `You reacted with :${EMOJI_B}:`,
+          emojiName: EMOJI_B,
         },
       ]);
     });
@@ -226,12 +235,14 @@ describe('vue_shared/components/awards_list', () => {
           count: 0,
           html: matchingEmojiTag(EMOJI_THUMBSUP),
           title: '',
+          emojiName: EMOJI_THUMBSUP,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 0,
           html: matchingEmojiTag(EMOJI_THUMBSDOWN),
           title: '',
+          emojiName: EMOJI_THUMBSDOWN,
         },
         // We expect the EMOJI_100 before the EMOJI_SMILE because it was given as a defaultAward
         {
@@ -239,12 +250,14 @@ describe('vue_shared/components/awards_list', () => {
           count: 1,
           html: matchingEmojiTag(EMOJI_100),
           title: `Marie reacted with :${EMOJI_100}:`,
+          emojiName: EMOJI_100,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
           count: 1,
           html: matchingEmojiTag(EMOJI_SMILE),
           title: `Marie reacted with :${EMOJI_SMILE}:`,
+          emojiName: EMOJI_SMILE,
         },
       ]);
     });

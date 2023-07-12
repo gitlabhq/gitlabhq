@@ -11,6 +11,15 @@ fragment DesignNote on Note {
   bodyHtml
   createdAt
   resolved
+  awardEmoji {
+    nodes {
+      name
+      user {
+        id
+        name
+      }
+    }
+  }
   position {
     diffRefs {
       ...DesignDiffRefs

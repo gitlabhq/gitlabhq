@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
 > - Reacting with emoji on work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
-
+> - Reacting with emoji on design discussion comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29756) in GitLab 16.2.
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. React with emoji on:
 
