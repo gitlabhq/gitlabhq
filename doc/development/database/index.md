@@ -32,7 +32,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Create a regular migration](../migration_style_guide.md#create-a-regular-schema-migration), including creating new models
 - [Deleting migrations](deleting_migrations.md)
 - [Different types of migrations](../migration_style_guide.md#choose-an-appropriate-migration-type)
-- [Legacy background migrations guidelines](background_migrations.md)
 - [Migrations for multiple databases](migrations_for_multiple_databases.md)
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations
 - [Partitioning tables](table_partitioning.md)

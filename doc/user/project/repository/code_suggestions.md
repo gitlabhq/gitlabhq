@@ -298,8 +298,9 @@ If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web
 
 ### Authentication troubleshooting
 
-If the above steps do not solve your issue, the problem may be related to the recent changes in authentication, specifically the token system. To resolve the issue, please follow these troubleshooting steps:
+If the above steps do not solve your issue, the problem may be related to the recent changes in authentication,
+specifically the token system. To resolve the issue:
 
-- Remove the existing personal access token from your GitLab account settings.
-- Reauthorize your GitLab account in VS Code using OAuth.
-- Test the code suggestions feature with different file extensions to verify if the issue is resolved.
+1. Remove the existing personal access token from your GitLab account settings.
+1. Reauthorize your GitLab account in VS Code using OAuth.
+1. Test the code suggestions feature with different file extensions to verify if the issue is resolved.

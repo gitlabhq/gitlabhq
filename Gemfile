@@ -472,10 +472,9 @@ group :test do
   gem 'rspec-benchmark', '~> 0.6.0'
   gem 'rspec-parameterized', '~> 1.0', require: false
 
-  gem 'capybara', '~> 3.39', '>= 3.39.1'
+  gem 'capybara', '~> 3.39', '>= 3.39.2'
   gem 'capybara-screenshot', '~> 1.0.26'
-  # 4.9.1 drops Ruby 2.7 support. We can upgrade further after we drop Ruby 2.7 support.
-  gem 'selenium-webdriver', '= 4.9.0'
+  gem 'selenium-webdriver', '= 4.10.0'
 
   gem 'graphlyte', '~> 1.0.0'
 
@@ -484,7 +483,7 @@ group :test do
   gem 'webmock', '~> 3.18.1'
   gem 'rails-controller-testing'
   gem 'concurrent-ruby', '~> 1.1'
-  gem 'test-prof', '~> 1.2.1'
+  gem 'test-prof', '~> 1.2.2'
   gem 'rspec_junit_formatter'
   gem 'guard-rspec'
   gem 'axe-core-rspec'
@@ -492,7 +491,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false
 
-  gem 'gitlab_quality-test_tooling', '~> 0.8.3', require: false
+  gem 'gitlab_quality-test_tooling', '~> 0.9.0', require: false
 end
 
 gem 'octokit', '~> 4.15'

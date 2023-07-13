@@ -83,6 +83,26 @@ if (global.document) {
     return actualVue;
   });
 
+  jest.mock('@vue/test-utils', () => {
+    const actualVTU = jest.requireActual('@vue/test-utils');
+
+    return {
+      ...actualVTU,
+      RouterLinkStub: {
+        ...actualVTU.RouterLinkStub,
+        render() {
+          const { default: defaultSlot } = this.$slots ?? {};
+          const defaultSlotFn =
+            defaultSlot && typeof defaultSlot !== 'function' ? () => defaultSlot : defaultSlot;
+          return actualVTU.RouterLinkStub.render.call({
+            $slots: defaultSlot ? { default: defaultSlotFn } : undefined,
+            custom: this.custom,
+          });
+        },
+      },
+    };
+  });
+
   jest.mock('portal-vue', () => ({
     __esModule: true,
     default: {

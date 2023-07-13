@@ -209,7 +209,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
             visit service_desk_project_issues_path(project)
           end
 
-          it 'only displays issues created by support bot', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417200' do
+          it 'only displays issues created by support bot' do
             expect(page).to have_selector('.issues-list .issue', count: 1)
             expect(page).to have_text('Help from email')
             expect(page).not_to have_text('Unrelated issue')

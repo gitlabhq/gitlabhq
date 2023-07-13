@@ -6,7 +6,7 @@ module Gitlab
       module Instrumentations
         class IndexInconsistenciesMetric < GenericMetric
           value do
-            runner = Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database, validators: validators)
+            runner = Gitlab::Schema::Validation::Runner.new(structure_sql, database, validators: validators)
 
             inconsistencies = runner.execute
 
@@ -23,19 +23,19 @@ module Gitlab
 
             def database
               database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
-              Gitlab::Database::SchemaValidation::Database.new(database_model.connection)
+              Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
             end
 
             def structure_sql
               stucture_sql_path = Rails.root.join('db/structure.sql')
-              Gitlab::Database::SchemaValidation::StructureSql.new(stucture_sql_path)
+              Gitlab::Schema::Validation::Sources::StructureSql.new(stucture_sql_path)
             end
 
             def validators
               [
-                Gitlab::Database::SchemaValidation::Validators::MissingIndexes,
-                Gitlab::Database::SchemaValidation::Validators::DifferentDefinitionIndexes,
-                Gitlab::Database::SchemaValidation::Validators::ExtraIndexes
+                Gitlab::Schema::Validation::Validators::MissingIndexes,
+                Gitlab::Schema::Validation::Validators::DifferentDefinitionIndexes,
+                Gitlab::Schema::Validation::Validators::ExtraIndexes
               ]
             end
           end

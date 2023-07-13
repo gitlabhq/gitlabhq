@@ -12993,7 +12993,7 @@ CREATE TABLE ci_build_needs (
     artifacts boolean DEFAULT true NOT NULL,
     optional boolean DEFAULT false NOT NULL,
     build_id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     id bigint NOT NULL
 );
 
@@ -13015,7 +13015,7 @@ CREATE TABLE ci_build_pending_states (
     failure_reason smallint,
     trace_checksum bytea,
     trace_bytesize bigint,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_build_pending_states_id_seq
@@ -13031,7 +13031,7 @@ CREATE TABLE ci_build_report_results (
     build_id bigint NOT NULL,
     project_id bigint NOT NULL,
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE TABLE ci_build_trace_chunks (
@@ -13042,7 +13042,7 @@ CREATE TABLE ci_build_trace_chunks (
     checksum bytea,
     lock_version integer DEFAULT 0 NOT NULL,
     build_id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_build_trace_chunks_id_seq
@@ -13062,7 +13062,7 @@ CREATE TABLE ci_build_trace_metadata (
     remote_checksum bytea,
     last_archival_attempt_at timestamp with time zone,
     archived_at timestamp with time zone,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE TABLE p_ci_builds (
@@ -13227,7 +13227,7 @@ CREATE TABLE ci_builds_runner_session (
     certificate character varying,
     "authorization" character varying,
     build_id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_builds_runner_session_id_seq
@@ -13407,7 +13407,7 @@ CREATE TABLE ci_job_artifacts (
     id bigint NOT NULL,
     job_id bigint NOT NULL,
     locked smallint DEFAULT 2,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     accessibility smallint DEFAULT 0 NOT NULL,
     file_final_path text,
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
@@ -13450,7 +13450,7 @@ CREATE TABLE ci_job_variables (
     variable_type smallint DEFAULT 1 NOT NULL,
     source smallint DEFAULT 0 NOT NULL,
     raw boolean DEFAULT false NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_job_variables_id_seq
@@ -13543,7 +13543,7 @@ CREATE TABLE ci_pending_builds (
     minutes_exceeded boolean DEFAULT false NOT NULL,
     tag_ids integer[] DEFAULT '{}'::integer[],
     namespace_traversal_ids integer[] DEFAULT '{}'::integer[],
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -13684,7 +13684,7 @@ CREATE TABLE ci_pipeline_variables (
     encrypted_value_iv character varying,
     pipeline_id integer NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
     pipeline_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
@@ -13729,7 +13729,7 @@ CREATE TABLE ci_pipelines (
     external_pull_request_id bigint,
     ci_ref_id bigint,
     locked smallint DEFAULT 1 NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
@@ -13971,7 +13971,7 @@ CREATE TABLE ci_running_builds (
     runner_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     runner_type smallint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_running_builds_id_seq
@@ -14037,8 +14037,8 @@ CREATE TABLE ci_sources_pipelines (
     source_project_id integer,
     source_pipeline_id integer,
     source_job_id bigint,
-    partition_id bigint DEFAULT 100 NOT NULL,
-    source_partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL,
+    source_partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_sources_pipelines_id_seq
@@ -14075,7 +14075,7 @@ CREATE TABLE ci_stages (
     lock_version integer DEFAULT 0,
     "position" integer,
     id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 );
 
@@ -14148,7 +14148,7 @@ CREATE TABLE ci_unit_test_failures (
     failed_at timestamp with time zone NOT NULL,
     unit_test_id bigint NOT NULL,
     build_id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_unit_test_failures_id_seq
@@ -33724,8 +33724,6 @@ CREATE INDEX tmp_idx_vulns_on_converted_uuid ON vulnerability_occurrences USING 
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
 CREATE INDEX tmp_index_cis_vulnerability_reads_on_id ON vulnerability_reads USING btree (id) WHERE (report_type = 7);
-
-CREATE INDEX tmp_index_for_backfilling_resource_link_events ON system_note_metadata USING btree (id) WHERE (((action)::text = 'relate_to_parent'::text) OR ((action)::text = 'unrelate_from_parent'::text));
 
 CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (member_namespace_id) WHERE (member_namespace_id IS NULL);
 

@@ -457,26 +457,20 @@ namespace :gitlab do
       desc 'Checks schema inconsistencies'
       task run: :environment do
         database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
-        database = Gitlab::Database::SchemaValidation::Database.new(database_model.connection)
+        database = Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
 
         stucture_sql_path = Rails.root.join('db/structure.sql')
-        structure_sql = Gitlab::Database::SchemaValidation::StructureSql.new(stucture_sql_path)
+        structure_sql = Gitlab::Schema::Validation::Sources::StructureSql.new(stucture_sql_path)
 
         filter = Gitlab::Database::SchemaValidation::InconsistencyFilter.new(IGNORED_TABLES, IGNORED_TRIGGERS)
 
-        inconsistencies =
-          Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute.filter_map(&filter)
+        validators = Gitlab::Schema::Validation::Validators::Base.all_validators
 
-        gitlab_url = 'gitlab-org/gitlab'
+        inconsistencies =
+          Gitlab::Schema::Validation::Runner.new(structure_sql, database, validators: validators).execute.filter_map(&filter)
 
         inconsistencies.each do |inconsistency|
-          Gitlab::Database::SchemaValidation::TrackInconsistency.new(
-            inconsistency,
-            Project.find_by_full_path(gitlab_url),
-            User.automation_bot
-          ).execute
-
-          puts inconsistency.inspect
+          puts inconsistency.display
         end
       end
     end

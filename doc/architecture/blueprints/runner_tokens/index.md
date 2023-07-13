@@ -319,7 +319,7 @@ The respective `CiRunner` fields must return the values for the `ci_runner_machi
 #### Stale runner cleanup
 
 The functionality to
-[clean up stale runners](../../../ci/runners/configure_runners.md#clean-up-stale-runners) needs
+[clean up stale runners](../../../ci/runners/runners_scope.md#clean-up-stale-group-runners) needs
 to be adapted to clean up `ci_runner_machines` records instead of `ci_runners` records.
 
 At some point after the removal of the registration token support, we'll want to create a background

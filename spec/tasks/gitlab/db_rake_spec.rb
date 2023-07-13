@@ -353,8 +353,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'schema inconsistencies' do
-    let(:runner) { instance_double(Gitlab::Database::SchemaValidation::Runner, execute: inconsistencies) }
-    let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Inconsistency }
+    let(:runner) { instance_double(Gitlab::Schema::Validation::Runner, execute: inconsistencies) }
+    let(:inconsistency_class) { Gitlab::Schema::Validation::Inconsistency }
 
     let(:inconsistencies) do
       [
@@ -375,7 +375,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
 
     before do
-      allow(Gitlab::Database::SchemaValidation::Runner).to receive(:new).and_return(runner)
+      allow(Gitlab::Schema::Validation::Runner).to receive(:new).and_return(runner)
     end
 
     it 'prints the inconsistency message' do

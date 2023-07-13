@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::SchemaInconsistenciesMetric, feature_category: :database do
   before do
-    allow(Gitlab::Database::SchemaValidation::Runner).to receive(:new).and_return(runner)
+    allow(Gitlab::Schema::Validation::Runner).to receive(:new).and_return(runner)
   end
 
-  let(:runner) { instance_double(Gitlab::Database::SchemaValidation::Runner, execute: inconsistencies) }
-  let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Inconsistency }
+  let(:runner) { instance_double(Gitlab::Schema::Validation::Runner, execute: inconsistencies) }
+  let(:inconsistency_class) { Gitlab::Schema::Validation::Inconsistency }
 
   let(:inconsistencies) do
     [

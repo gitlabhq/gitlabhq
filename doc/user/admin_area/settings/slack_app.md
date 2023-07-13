@@ -11,35 +11,39 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `slack_app_self_managed`. On GitLab.com, this feature is available.
 
-This page contains information about configuring the GitLab for Slack app on self-managed instances. For user documentation, see [GitLab for Slack app](../../../user/project/integrations/gitlab_slack_application.md).
+NOTE:
+This page contains information about administering the GitLab for Slack app for self-managed instances. For user documentation, see [GitLab for Slack app](../../../user/project/integrations/gitlab_slack_application.md).
 
-The GitLab for Slack app distributed through the Slack app directory only works with GitLab.com.
-On self-managed GitLab, you can create your own copy of the GitLab for Slack app from a [Slack app manifest file](https://api.slack.com/reference/manifests#creating_apps) and configure your instance.
+The GitLab for Slack app distributed through the Slack App Directory only works with GitLab.com.
+On self-managed GitLab, you can create your own copy of the GitLab for Slack app from a [manifest file](https://api.slack.com/reference/manifests#creating_apps) and configure your instance.
 
-The app is a private one-time copy installed in your Slack workspace only and not distributed through the Slack app directory. To have the [GitLab for Slack app](../../../user/project/integrations/gitlab_slack_application.md) on your self-managed instance, you must first enable the integration.
-
-Prerequisites:
-
-- You must be at least a [workspace administrator](https://slack.com/help/articles/360018112273-Types-of-roles-in-Slack) in Slack.
-- You must be [signed in](https://slack.com/signin) to your Slack workspace.
+The app is a private one-time copy installed in your Slack workspace only and not distributed through the Slack App Directory. To have the [GitLab for Slack app](../../../user/project/integrations/gitlab_slack_application.md) on your self-managed instance, you must first enable the integration.
 
 ## Create a GitLab for Slack app
 
+Prerequisite:
+
+- You must be at least a [Slack workspace administrator](https://slack.com/help/articles/360018112273-Types-of-roles-in-Slack).
+
 To create a GitLab for Slack app:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **GitLab for Slack app**.
-1. Select **Create Slack app**.
+- **In GitLab**:
 
-You are then redirected to Slack for the next steps. In the modal that appears:
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. Select **Admin Area**.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **GitLab for Slack app**.
+  1. Select **Create Slack app**.
 
-1. Select the Slack workspace to create the app in, then select **Next**.
-1. Slack displays a summary of the app for review. To view the complete manifest, select **Edit Configurations**. To go back to the review summary, select **Next**.
-1. Select **Create**.
-1. Close the modal by selecting **Got it**.
-1. Select **Install to Workspace**.
+You're then redirected to Slack for the next steps.
+
+- **In Slack**:
+
+  1. Select the Slack workspace to create the app in, then select **Next**.
+  1. Slack displays a summary of the app for review. To view the complete manifest, select **Edit Configurations**. To go back to the review summary, select **Next**.
+  1. Select **Create**.
+  1. Select **Got it** to close the dialog.
+  1. Select **Install to Workspace**.
 
 ## Configure the settings
 
@@ -51,9 +55,9 @@ After you've [created a GitLab for Slack app](#create-a-gitlab-for-slack-app), y
 1. Expand **GitLab for Slack app**.
 1. Select the **Enable GitLab for Slack app** checkbox.
 1. Enter the details of your GitLab for Slack app:
-    1. Go to [Slack API](https://api.slack.com/apps).
-    1. Select **GitLab (\<your host name\>)**. You can search to find it.
-    1. Scroll to **App Credentials**.
+   1. Go to [Slack API](https://api.slack.com/apps).
+   1. Search for and select **GitLab (\<your host name\>)**.
+   1. Scroll to **App Credentials**.
 1. Select **Save changes**.
 
 ### Test your configuration
@@ -73,7 +77,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 
 To update your copy of the GitLab for Slack app:
 
-- In GitLab:
+- **In GitLab**:
 
   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
   1. Select **Admin Area**.
@@ -81,10 +85,10 @@ To update your copy of the GitLab for Slack app:
   1. Expand **GitLab for Slack app**.
   1. Select **Download latest manifest file** to download `slack_manifest.json`.
 
-- In Slack:
+- **In Slack**:
 
   1. Go to [Slack API](https://api.slack.com/apps).
-  1. Select **GitLab (\<your host name\>)**. You can search to find it.
+  1. Search for and select **GitLab (\<your host name\>)**.
   1. On the left sidebar, select **App Manifest**.
   1. Select the **JSON** tab to switch to a JSON view of the manifest.
   1. Copy the contents of the `slack_manifest.json` file you've downloaded from GitLab.

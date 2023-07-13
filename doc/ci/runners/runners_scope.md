@@ -301,6 +301,48 @@ You must have the Owner role for the group.
      You must remove it from each project first.
 1. On the confirmation dialog, select **OK**.
 
+### Clean up stale group runners **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
+
+You can clean up group runners that have been inactive for more than three months.
+
+Group runners are those that were created at the group level.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Turn on the **Enable stale runner cleanup** toggle.
+
+#### View stale runner cleanup logs
+
+You can check the [Sidekiq logs](../../administration/logs/index.md#sidekiq-logs) to see the cleanup result. In Kibana you can use the following query:
+
+```json
+{
+  "query": {
+    "match_phrase": {
+      "json.class.keyword": "Ci::Runners::StaleGroupRunnersPruneCronWorker"
+    }
+  }
+}
+```
+
+Filter entries where stale runners were removed:
+
+```json
+{
+  "query": {
+    "range": {
+      "json.extra.ci_runners_stale_group_runners_prune_cron_worker.total_pruned": {
+        "gte": 1,
+        "lt": null
+      }
+    }
+  }
+}
+```
+
 ## Project runners
 
 Use _project runners_ when you want to use runners for specific projects. For example,
@@ -410,3 +452,95 @@ To lock or unlock a project runner:
 1. Select **Edit** (**{pencil}**).
 1. Select the **Lock to current projects** checkbox.
 1. Select **Save changes**.
+
+## Runner statuses
+
+A runner can have one of the following statuses.
+
+| Status  | Description |
+|---------|-------------|
+| `online`  | The runner has contacted GitLab within the last 2 hours and is available to run jobs. |
+| `offline` | The runner has not contacted GitLab in more than 2 hours and is not available to run jobs. Check the runner to see if you can bring it online. |
+| `stale`   | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
+| `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
+
+## View statistics for runner performance **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
+
+As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. Select **View metrics**.
+
+The **Median job queued time** value is calculated by sampling the queue duration of the
+most recent 100 jobs that were run by Instance runners. Jobs from only the latest 5000
+runners are considered.
+
+The median is a value that falls into the 50th percentile: half of the jobs
+queued for longer than the median value, and half of the jobs queued for less than the
+median value.
+
+## Determine which runners need to be upgraded **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
+
+The version of GitLab Runner used by your runners should be
+[kept up-to-date](https://docs.gitlab.com/runner/index.html#gitlab-runner-versions).
+
+To determine which runners need to be upgraded:
+
+1. View the list of runners:
+   - For a group:
+     1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+     1. Select **Build > Runners**.
+   - For the instance:
+     1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+     1. Select **Admin Area**.
+     1. Select **CI/CD > Runners**.
+
+1. Above the list of runners, view the status:
+   - **Outdated - recommended**: The runner does not have the latest `PATCH` version, which may make it vulnerable
+     to security or high severity bugs. Or, the runner is one or more `MAJOR` versions behind your GitLab instance, so some features may not be available or work properly.
+   - **Outdated - available**: Newer versions are available but upgrading is not critical.
+
+1. Filter the list by status to view which individual runners need to be upgraded.
+
+## Determine the IP address of a runner
+
+It may be useful to know the IP address of a runner so you can troubleshoot
+issues with that runner. GitLab stores and displays the IP address by viewing
+the source of the HTTP requests it makes to GitLab when polling for jobs. The
+IP address is always kept up to date so if the runner IP changes it
+automatically updates in GitLab.
+
+The IP address for shared runners and project runners can be found in
+different places.
+
+### Determine the IP address of a shared runner
+
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+To determine the IP address of a shared runner:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. Find the runner in the table and view the **IP Address** column.
+
+![shared runner IP address](img/shared_runner_ip_address_14_5.png)
+
+### Determine the IP address of a project runner
+
+To can find the IP address of a runner for a project project,
+you must have the Owner role for the
+project.
+
+1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
+1. On the details page you should see a row for **IP Address**.
+
+![Project runner IP address](img/project_runner_ip_address.png)

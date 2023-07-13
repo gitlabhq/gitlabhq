@@ -11,15 +11,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
 You can leave feedback on dashboard bugs or functionality in [issue 381787](https://gitlab.com/gitlab-org/gitlab/-/issues/381787).
+For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
-The Value Streams Dashboard is a customizable dashboard that enables decision-makers to identify trends, patterns, and opportunities for digital transformation improvements.
-This page is a work in progress, and we're updating the information as we add more features.
-For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
+The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
 
-## Initial use case
-
-Our initial use case is focused on providing the ability to compare software delivery metrics.
-This comparison can help decision-makers understand whether projects and groups are improving.
+With the Value Streams Dashboard, you can compare software delivery metrics.
+This comparison can help you understand whether projects and groups are improving.
 
 The Value Streams Dashboard includes the following metrics:
 

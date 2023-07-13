@@ -406,7 +406,7 @@ To restrict runner registration by members in a specific group:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
 
-By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../../ci/runners/configure_runners.md#determine-which-runners-need-to-be-upgraded).
+By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
 
 To disable your instance fetching this data:
 

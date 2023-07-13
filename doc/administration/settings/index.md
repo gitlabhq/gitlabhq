@@ -191,7 +191,7 @@ The **Repository** settings contain:
 
 The **Templates** settings contain:
 
-- [Templates](../../user/admin_area/settings/instance_template_repository.md#configuration) - Set instance-wide template repository.
+- [Templates](instance_template_repository.md#configuration) - Set instance-wide template repository.
 - [Custom project templates](../../user/admin_area/custom_project_templates.md) - Select the custom project template source group.
 
 ## Default first day of the week

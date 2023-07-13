@@ -73,18 +73,6 @@ function convertPoToJed(data, locale) {
    *   due to potential unnecessary double escaping.
    *   But for now it is here to ensure that the old and new output
    *   are equivalent.
-   * @param str
-   * @returns {string}
-   */
-  function escapeMsgid(str) {
-    return `${str}`.replace(/([\\"])/g, '\\$1');
-  }
-
-  /**
-   * TODO: This replacer might be unnecessary _or_ even cause bugs.
-   *   due to potential unnecessary double escaping.
-   *   But for now it is here to ensure that the old and new output
-   *   are equivalent.
    *
    *   NOTE: The replacements of `\n` and `\t` need to be iterated on,
    *   because: In the cases where we see those chars, they:
@@ -119,7 +107,7 @@ function convertPoToJed(data, locale) {
      }
     */
 
-    acc[escapeMsgid(msgid)] = msgstr.map(escapeMsgstr);
+    acc[msgid] = msgstr.map(escapeMsgstr);
 
     return acc;
   }, {});

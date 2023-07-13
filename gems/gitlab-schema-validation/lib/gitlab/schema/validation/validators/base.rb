@@ -12,6 +12,25 @@ module Gitlab
             @database = database
           end
 
+          def self.all_validators
+            [
+              ExtraTables,
+              ExtraTableColumns,
+              ExtraIndexes,
+              ExtraTriggers,
+              ExtraForeignKeys,
+              MissingTables,
+              MissingTableColumns,
+              MissingIndexes,
+              MissingTriggers,
+              MissingForeignKeys,
+              DifferentDefinitionTables,
+              DifferentDefinitionIndexes,
+              DifferentDefinitionTriggers,
+              DifferentDefinitionForeignKeys
+            ]
+          end
+
           def execute
             raise NoMethodError, "subclasses of #{self.class.name} must implement #{__method__}"
           end

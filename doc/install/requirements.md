@@ -81,9 +81,10 @@ the following table) as these were used for development and testing:
 | GitLab version | Minimum PostgreSQL version |
 |----------------|----------------------------|
 | 13.0           | 11                         |
-| 14.0           | 12.7                      |
+| 14.0           | 12.7                       |
 | 15.0           | 12.10                      |
 | 16.0           | 13.6                       |
+| 17.0 (planned) | 14.8                       |
 
 You must also ensure the following extensions are loaded into every
 GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).

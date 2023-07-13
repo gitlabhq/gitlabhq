@@ -4,6 +4,9 @@ module Ci
   class PendingBuild < Ci::ApplicationRecord
     include EachBatch
     include Ci::Partitionable
+    include SafelyChangeColumnDefault
+
+    columns_changing_default :partition_id
 
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build'

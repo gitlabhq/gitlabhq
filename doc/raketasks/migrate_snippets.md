@@ -18,7 +18,7 @@ For each snippet:
 - A file is created in the repository, using the snippet filename.
 - The snippet is committed to the repository.
 
-GitLab performs this migration through a [Background Migration](../development/database/background_migrations.md)
+GitLab performs this migration through a background migration
 when the GitLab instance is upgraded to 13.0 or a higher version.
 However, if the migration fails for any of the snippets, they must be migrated individually.
 The following Rake tasks help with that process.

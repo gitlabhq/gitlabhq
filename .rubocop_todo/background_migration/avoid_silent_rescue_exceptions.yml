@@ -1,6 +1,5 @@
 ---
 BackgroundMigration/AvoidSilentRescueExceptions:
-  Details: grace period
   Exclude:
     - 'lib/gitlab/background_migration/backfill_imported_issue_search_data.rb'
     - 'lib/gitlab/background_migration/migrate_links_for_vulnerability_findings.rb'

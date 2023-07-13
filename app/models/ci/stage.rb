@@ -7,6 +7,9 @@ module Ci
     include Ci::HasStatus
     include Gitlab::OptimisticLocking
     include Presentable
+    include SafelyChangeColumnDefault
+
+    columns_changing_default :partition_id
 
     partitionable scope: :pipeline
 

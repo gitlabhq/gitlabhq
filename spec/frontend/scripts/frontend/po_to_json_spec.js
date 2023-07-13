@@ -168,7 +168,7 @@ msgstr ""
     });
 
     describe('escaping', () => {
-      it('escapes quotes in msgid and translation', () => {
+      it('escapes quotes in translation', () => {
         const poContent = `
 # Escaped quotes in msgid and msgstr
 msgid "Changes the title to \\"%{title_param}\\"."
@@ -183,7 +183,7 @@ msgstr "Ändert den Titel in \\"%{title_param}\\"."
                 domain: 'app',
                 lang: LOCALE,
               },
-              'Changes the title to \\"%{title_param}\\".': [
+              'Changes the title to "%{title_param}".': [
                 'Ändert den Titel in \\"%{title_param}\\".',
               ],
             },
@@ -191,7 +191,7 @@ msgstr "Ändert den Titel in \\"%{title_param}\\"."
         });
       });
 
-      it('escapes backslashes in msgid and translation', () => {
+      it('escapes backslashes in translation', () => {
         const poContent = `
 # Escaped backslashes in msgid and msgstr
 msgid "Example: ssh\\\\:\\\\/\\\\/"
@@ -206,7 +206,7 @@ msgstr "Beispiel: ssh\\\\:\\\\/\\\\/"
                 domain: 'app',
                 lang: LOCALE,
               },
-              'Example: ssh\\\\:\\\\/\\\\/': ['Beispiel: ssh\\\\:\\\\/\\\\/'],
+              'Example: ssh\\:\\/\\/': ['Beispiel: ssh\\\\:\\\\/\\\\/'],
             },
           },
         });

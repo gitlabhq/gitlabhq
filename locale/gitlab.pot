@@ -36121,7 +36121,13 @@ msgstr ""
 msgid "ProjectSettings|Infrastructure"
 msgstr ""
 
+msgid "ProjectSettings|Instrument your application"
+msgstr ""
+
 msgid "ProjectSettings|Instrument your application to track events and behaviors."
+msgstr ""
+
+msgid "ProjectSettings|Instrumentation details"
 msgstr ""
 
 msgid "ProjectSettings|Internal"
@@ -36221,9 +36227,6 @@ msgid "ProjectSettings|Private"
 msgstr ""
 
 msgid "ProjectSettings|Product analytics configurator connection string"
-msgstr ""
-
-msgid "ProjectSettings|Product analytics needs to be set up before your application can be instrumented. Follow the %{link_start}set up process%{link_end}."
 msgstr ""
 
 msgid "ProjectSettings|Project visibility"
@@ -36428,6 +36431,12 @@ msgid "ProjectSettings|Wiki"
 msgstr ""
 
 msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute."
+msgstr ""
+
+msgid "ProjectSettings|You need to %{linkStart}set up product analytics%{linkEnd} before your application can be instrumented."
+msgstr ""
+
+msgid "ProjectSettings|Your project is set up. %{linkStart}View instrumentation instructions%{linkEnd}."
 msgstr ""
 
 msgid "ProjectTemplates|.NET Core"
@@ -39436,6 +39445,9 @@ msgstr ""
 msgid "Runners|Active"
 msgstr ""
 
+msgid "Runners|Active runners"
+msgstr ""
+
 msgid "Runners|Add notes such as the runner owner or what it should be used for."
 msgstr ""
 
@@ -39574,9 +39586,6 @@ msgstr ""
 msgid "Runners|Created %{timeAgo} by %{avatar}"
 msgstr ""
 
-msgid "Runners|Dashboard"
-msgstr ""
-
 msgid "Runners|Delete"
 msgstr ""
 
@@ -39646,6 +39655,9 @@ msgid "Runners|Fetch GitLab Runner release version data from GitLab.com"
 msgstr ""
 
 msgid "Runners|Filter projects"
+msgstr ""
+
+msgid "Runners|Fleet dashboard"
 msgstr ""
 
 msgid "Runners|Get started with runners"
@@ -39988,6 +40000,9 @@ msgstr ""
 msgid "Runners|Running"
 msgstr ""
 
+msgid "Runners|Running Jobs"
+msgstr ""
+
 msgid "Runners|Runs untagged jobs"
 msgstr ""
 
@@ -40084,6 +40099,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Runners|The unique ID for each runner that uses this configuration."
+msgstr ""
+
+msgid "Runners|There are no runners running jobs right now. Active runners will populate here as they pick up jobs."
 msgstr ""
 
 msgid "Runners|These runners are assigned to this project."

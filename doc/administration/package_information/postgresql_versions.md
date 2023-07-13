@@ -29,8 +29,11 @@ Read more about update policies and warnings in the PostgreSQL
 [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
 | GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
-| -------------- | --------------------- | ---------------------------------- | ---------------------------- | ----- |
-| 16.0 | 13.11 | 13.11 | 13.11 | |
+| -------------- | ------------------- | ---------------------------------- | ---------------------------- | ----- |
+| 16.0.2 | 13.11 | 13.11 | 13.11 | |
+| 16.0.0 | 13.8  | 13.8  | 13.8  | |
+| 15.11.7 | 13.11 | 13.11 | 12.12 | |
+| 15.10.8 | 13.11 | 13.11 | 12.12 | |
 | 15.6 | 12.12, 13.8 | 13.8 | 12.12 | For upgrades, users can manually upgrade to 13.8 following the [upgrade documentation](https://docs.gitlab.com/omnibus/settings/database.html#gitlab-150-and-later). |
 | 15.0 | 12.10, 13.6 | 13.6 | 12.10 | For upgrades, users can manually upgrade to 13.6 following the [upgrade documentation](https://docs.gitlab.com/omnibus/settings/database.html#gitlab-150-and-later). |
 | 14.1 | 12.7, 13.3 | 12.7 | 12.7 | PostgreSQL 13 available for fresh installations if not using [Geo](../geo/index.md#requirements-for-running-geo) or [Patroni](../postgresql/index.md#postgresql-replication-and-failover-with-omnibus-gitlab).

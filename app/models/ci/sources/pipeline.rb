@@ -5,6 +5,9 @@ module Ci
     class Pipeline < Ci::ApplicationRecord
       include Ci::Partitionable
       include Ci::NamespacedModelName
+      include SafelyChangeColumnDefault
+
+      columns_changing_default :partition_id
 
       self.table_name = "ci_sources_pipelines"
 

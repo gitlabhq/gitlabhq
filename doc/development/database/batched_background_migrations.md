@@ -1078,5 +1078,5 @@ creation.
 
 ## Legacy background migrations
 
-Batched background migrations replaced the [legacy background migrations framework](background_migrations.md).
+Batched background migrations replaced the legacy background migrations framework.
 Check that documentation in reference to any changes involving that framework.

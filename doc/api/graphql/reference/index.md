@@ -28678,7 +28678,8 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
-| <a id="aichatinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+| <a id="aichatinputnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
+| <a id="aichatinputresourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiExplainCodeInput`
 
