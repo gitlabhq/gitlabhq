@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_category: :team_planning do
+  include ContentEditorHelpers
+
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:user) { create(:user) }
@@ -20,6 +22,7 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
 
     using_session :other_session do
       visit project_issue_path(project, issue)
+      close_rich_text_promo_popover_if_present
       expect(page.find('.assignee')).to have_content 'None'
     end
 
@@ -43,6 +46,7 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
     using_session :other_session do
       visit project_issue_path(project, issue)
       wait_for_requests
+      close_rich_text_promo_popover_if_present
       expect(labels_value).to have_content('None')
     end
 
@@ -50,6 +54,7 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
 
     visit project_issue_path(project, issue)
     wait_for_requests
+    close_rich_text_promo_popover_if_present
     expect(labels_value).to have_content('None')
 
     page.within(labels_widget) do

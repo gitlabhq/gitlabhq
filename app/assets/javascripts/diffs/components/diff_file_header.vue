@@ -428,6 +428,7 @@ export default {
           toggle-class="btn-icon js-diff-more-actions"
           class="gl-pt-0!"
           data-qa-selector="dropdown_button"
+          lazy
           @show="setMoreActionsShown(true)"
           @hidden="setMoreActionsShown(false)"
         >

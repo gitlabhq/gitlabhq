@@ -16,12 +16,23 @@ module Admin
         project.repository&.gitlab_ci_yml.blank?
       end
 
+      def code_suggestions_description
+        link_start = code_suggestions_link_start(code_suggestions_docs_url)
+
+        # rubocop:disable Layout/LineLength
+        # rubocop:disable Style/FormatString
+        s_('CodeSuggestionsSM|Enable Code Suggestions for users of this instance. %{link_start}What are Code Suggestions?%{link_end}')
+          .html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+        # rubocop:enable Style/FormatString
+        # rubocop:enable Layout/LineLength
+      end
+
       def code_suggestions_token_explanation
         link_start = code_suggestions_link_start(code_suggestions_pat_docs_url)
 
         # rubocop:disable Layout/LineLength
         # rubocop:disable Style/FormatString
-        s_('CodeSuggestionsSM|Your personal access token from GitLab.com. See the %{link_start}documentation%{link_end} for information on creating a personal access token.')
+        s_('CodeSuggestionsSM|On GitLab.com, create a token. This token is required to use Code Suggestions on your self-managed instance. %{link_start}How do I create a token?%{link_end}')
           .html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
         # rubocop:enable Style/FormatString
         # rubocop:enable Layout/LineLength
@@ -33,8 +44,8 @@ module Admin
 
         # rubocop:disable Layout/LineLength
         # rubocop:disable Style/FormatString
-        s_('CodeSuggestionsSM|&#8226; Agree to the %{terms_link_start}GitLab Testing Agreement%{link_end}.%{br} &#8226; Acknowledge that GitLab will send data from the instance, including personal data, to Google for cloud hosting.%{br} &nbsp;&nbsp;&nbsp;We may also send data to %{ai_docs_link_start}third-party AI providers%{link_end} to provide this feature.')
-          .html_safe % { terms_link_start: terms_link_start, ai_docs_link_start: ai_docs_link_start, link_end: '</a>'.html_safe, br: '</br>'.html_safe }
+        s_('CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end} and acknowledge that GitLab will send data from the instance, including personal data, to our %{ai_docs_link_start}AI providers%{link_end} to provide this feature.')
+          .html_safe % { terms_link_start: terms_link_start, ai_docs_link_start: ai_docs_link_start, link_end: '</a>'.html_safe }
         # rubocop:enable Style/FormatString
         # rubocop:enable Layout/LineLength
       end
@@ -53,7 +64,7 @@ module Admin
       end
 
       def code_suggestions_ai_docs_url
-        'https://docs.gitlab.com/ee/user/ai_features.html'
+        'https://docs.gitlab.com/ee/user/ai_features.html#third-party-services'
       end
 
       def code_suggestions_pat_docs_url

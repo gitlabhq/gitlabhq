@@ -685,14 +685,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
         it_behaves_like 'makes recursive queries'
       end
-
-      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
     end
 
     describe '.self_and_descendant_ids' do
@@ -705,14 +697,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       context 'when feature flag :use_traversal_ids is disabled' do
         before do
           stub_feature_flags(use_traversal_ids: false)
-        end
-
-        it_behaves_like 'makes recursive queries'
-      end
-
-      context 'when feature flag :use_traversal_ids_for_descendants_scopes is disabled' do
-        before do
-          stub_feature_flags(use_traversal_ids_for_descendants_scopes: false)
         end
 
         it_behaves_like 'makes recursive queries'

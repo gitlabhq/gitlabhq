@@ -72,6 +72,9 @@ msgstr ""
 msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
+msgid "### Rich text editor"
+msgstr ""
+
 msgid "##### ERROR ##### You have used %{usage_percentage} of the storage quota for %{namespace_name} (%{current_size} of %{size_limit}). %{namespace_name} is now read-only. Projects under this namespace are locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
 msgstr ""
 
@@ -11152,25 +11155,25 @@ msgstr ""
 msgid "CodeSuggestionsAlert|Get started with Code Suggestions, available for free during the beta period."
 msgstr ""
 
-msgid "CodeSuggestionsSM|&#8226; Agree to the %{terms_link_start}GitLab Testing Agreement%{link_end}.%{br} &#8226; Acknowledge that GitLab will send data from the instance, including personal data, to Google for cloud hosting.%{br} &nbsp;&nbsp;&nbsp;We may also send data to %{ai_docs_link_start}third-party AI providers%{link_end} to provide this feature."
+msgid "CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end} and acknowledge that GitLab will send data from the instance, including personal data, to our %{ai_docs_link_start}AI providers%{link_end} to provide this feature."
 msgstr ""
 
 msgid "CodeSuggestionsSM|Code Suggestions"
 msgstr ""
 
-msgid "CodeSuggestionsSM|Enable Code Suggestion for users of this GitLab instance."
+msgid "CodeSuggestionsSM|Enable Code Suggestions for this instance %{beta}"
+msgstr ""
+
+msgid "CodeSuggestionsSM|Enable Code Suggestions for users of this instance. %{link_start}What are Code Suggestions?%{link_end}"
 msgstr ""
 
 msgid "CodeSuggestionsSM|Enter new personal access token"
 msgstr ""
 
+msgid "CodeSuggestionsSM|On GitLab.com, create a token. This token is required to use Code Suggestions on your self-managed instance. %{link_start}How do I create a token?%{link_end}"
+msgstr ""
+
 msgid "CodeSuggestionsSM|Personal access token"
-msgstr ""
-
-msgid "CodeSuggestionsSM|Turn on Code Suggestions for this instance. By turning on this feature, you:"
-msgstr ""
-
-msgid "CodeSuggestionsSM|Your personal access token from GitLab.com. See the %{link_start}documentation%{link_end} for information on creating a personal access token."
 msgstr ""
 
 msgid "CodeSuggestionsThirdPartyAlert|%{code_suggestions_link_start}Code Suggestions%{link_end} now uses third-party AI services to provide higher quality suggestions. You can %{third_party_link_start}disable third-party services%{link_end} for your group, or disable Code Suggestions entirely in %{profile_settings_link_start}your user profile%{link_end}."
@@ -48565,7 +48568,13 @@ msgstr ""
 msgid "Try grouping with different labels"
 msgstr ""
 
+msgid "Try out **styling** _your_ content right here or read the [direction](%{directionUrl})."
+msgstr ""
+
 msgid "Try out GitLab Pipelines"
+msgstr ""
+
+msgid "Try the rich text editor now"
 msgstr ""
 
 msgid "Try the troubleshooting steps here."
@@ -49237,6 +49246,9 @@ msgstr ""
 msgid "Usage statistics"
 msgstr ""
 
+msgid "UsageQuotas|(of %{totalStorageSize})"
+msgstr ""
+
 msgid "UsageQuotas|An error occurred loading the transfer data. Please refresh the page to try again."
 msgstr ""
 
@@ -49631,6 +49643,9 @@ msgid "Use the link below to confirm your email address (%{email})"
 msgstr ""
 
 msgid "Use the link below to confirm your email address."
+msgstr ""
+
+msgid "Use the new rich text editor to see your text and tables fully formatted as you type. No need to remember any formatting syntax, or switch between preview and editing modes!"
 msgstr ""
 
 msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link_start}install Kroki%{install_link_end} on your own infrastructure and use your own instance URL."
@@ -52354,6 +52369,9 @@ msgid "Write milestone description..."
 msgstr ""
 
 msgid "Write your release notes or drag your files here…"
+msgstr ""
+
+msgid "Writing just got easier"
 msgstr ""
 
 msgid "Wrong extern UID provided. Make sure Auth0 is configured correctly."

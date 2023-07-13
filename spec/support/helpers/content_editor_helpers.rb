@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module ContentEditorHelpers
+  def close_rich_text_promo_popover_if_present
+    return unless page.has_css?("[data-testid='rich-text-promo-popover']")
+
+    page.within("[data-testid='rich-text-promo-popover']") do
+      click_button "Close"
+    end
+  end
+
   def switch_to_content_editor
     click_button("Switch to rich text editing")
   end

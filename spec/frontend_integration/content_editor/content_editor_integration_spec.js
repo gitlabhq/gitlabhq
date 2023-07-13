@@ -22,6 +22,15 @@ describe('content_editor', () => {
       listeners: {
         ...listeners,
       },
+      mocks: {
+        $apollo: {
+          queries: {
+            currentUser: {
+              loading: false,
+            },
+          },
+        },
+      },
     });
   };
 

@@ -6,6 +6,7 @@
 
 RSpec.shared_examples 'User creates wiki page' do
   include WikiHelpers
+  include ContentEditorHelpers
 
   before do
     sign_in(user)
@@ -18,6 +19,7 @@ RSpec.shared_examples 'User creates wiki page' do
       wait_for_svg_to_be_loaded(example)
 
       click_link "Create your first page"
+      close_rich_text_promo_popover_if_present
     end
 
     it 'shows all available formats in the dropdown' do
@@ -190,6 +192,7 @@ RSpec.shared_examples 'User creates wiki page' do
     context "via the `new wiki page` page", :js do
       it "creates a page with a single word" do
         click_link("New page")
+        close_rich_text_promo_popover_if_present
 
         page.within(".wiki-form") do
           fill_in(:wiki_title, with: "foo")
@@ -208,6 +211,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       it "creates a page with spaces in the name", :js do
         click_link("New page")
+        close_rich_text_promo_popover_if_present
 
         page.within(".wiki-form") do
           fill_in(:wiki_title, with: "Spaces in the name")
@@ -226,6 +230,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       it "creates a page with hyphens in the name", :js do
         click_link("New page")
+        close_rich_text_promo_popover_if_present
 
         page.within(".wiki-form") do
           fill_in(:wiki_title, with: "hyphens-in-the-name")
@@ -249,6 +254,7 @@ RSpec.shared_examples 'User creates wiki page' do
       context 'when a server side validation error is returned' do
         it "still displays edit form", :js do
           click_link("New page")
+          close_rich_text_promo_popover_if_present
 
           page.within(".wiki-form") do
             fill_in(:wiki_title, with: "home")
@@ -266,6 +272,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
     it "shows the emoji autocompletion dropdown", :js do
       click_link("New page")
+      close_rich_text_promo_popover_if_present
 
       page.within(".wiki-form") do
         find("#wiki_content").native.send_keys("")

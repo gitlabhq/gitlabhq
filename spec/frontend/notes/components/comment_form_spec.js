@@ -121,6 +121,15 @@ describe('issue_comment_form component', () => {
         provide: {
           glFeatures: features,
         },
+        mocks: {
+          $apollo: {
+            queries: {
+              currentUser: {
+                loading: false,
+              },
+            },
+          },
+        },
       }),
     );
   };

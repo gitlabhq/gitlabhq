@@ -72,7 +72,8 @@ module Users
       project_repository_limit_alert_error_threshold: 70, # EE-only
       new_navigation_callout: 71,
       code_suggestions_third_party_callout: 72, # EE-only
-      namespace_over_storage_users_combined_alert: 73 # EE-only
+      namespace_over_storage_users_combined_alert: 73, # EE-only
+      rich_text_editor: 74
     }
 
     validates :feature_name,

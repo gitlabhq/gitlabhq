@@ -365,7 +365,7 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
           { type: types.SET_BATCH_LOADING_STATE, payload: 'error' },
         ],
-        [{ type: 'startRenderDiffsQueue' }, { type: 'startRenderDiffsQueue' }],
+        [],
       );
     });
   });
@@ -661,41 +661,6 @@ describe('DiffsStoreActions', () => {
         ],
         [],
       );
-    });
-  });
-
-  describe('startRenderDiffsQueue', () => {
-    it('should set all files to RENDER_FILE', () => {
-      const state = {
-        diffFiles: [
-          {
-            id: 1,
-            renderIt: false,
-            viewer: {
-              automaticallyCollapsed: false,
-            },
-          },
-          {
-            id: 2,
-            renderIt: false,
-            viewer: {
-              automaticallyCollapsed: false,
-            },
-          },
-        ],
-      };
-
-      const pseudoCommit = (commitType, file) => {
-        expect(commitType).toBe(types.RENDER_FILE);
-        Object.assign(file, {
-          renderIt: true,
-        });
-      };
-
-      diffActions.startRenderDiffsQueue({ state, commit: pseudoCommit });
-
-      expect(state.diffFiles[0].renderIt).toBe(true);
-      expect(state.diffFiles[1].renderIt).toBe(true);
     });
   });
 
@@ -1286,12 +1251,11 @@ describe('DiffsStoreActions', () => {
       $emit = jest.spyOn(eventHub, '$emit');
     });
 
-    it('renders and expands file for the given discussion id', () => {
+    it('expands the file for the given discussion id', () => {
       const localState = state({ collapsed: true, renderIt: false });
 
       diffActions.renderFileForDiscussionId({ rootState, state: localState, commit }, '123');
 
-      expect(commit).toHaveBeenCalledWith('RENDER_FILE', localState.diffFiles[0]);
       expect($emit).toHaveBeenCalledTimes(1);
       expect(commonUtils.scrollToElement).toHaveBeenCalledTimes(1);
     });
@@ -1375,18 +1339,6 @@ describe('DiffsStoreActions', () => {
       );
 
       expect(eventHub.$emit).toHaveBeenCalledWith('refetchDiffData');
-    });
-  });
-
-  describe('setRenderIt', () => {
-    it('commits RENDER_FILE', () => {
-      return testAction(
-        diffActions.setRenderIt,
-        'file',
-        {},
-        [{ type: types.RENDER_FILE, payload: 'file' }],
-        [],
-      );
     });
   });
 
@@ -1514,7 +1466,7 @@ describe('DiffsStoreActions', () => {
                 payload: { filePath: testFilePath, lines: [preparedLine, preparedLine] },
               },
             ],
-            [{ type: 'startRenderDiffsQueue' }],
+            [],
           );
         },
       );

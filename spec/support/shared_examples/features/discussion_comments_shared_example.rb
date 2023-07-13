@@ -150,6 +150,8 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
 end
 
 RSpec.shared_examples 'thread comments for issue, epic and merge request' do |resource_name|
+  include ContentEditorHelpers
+
   let(:form_selector) { '.js-main-target-form' }
   let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
   let(:toggle_selector) { "#{dropdown_selector} .gl-new-dropdown-toggle" }
@@ -158,6 +160,10 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry:not(.being-posted)' }
   let(:comment) { 'My comment' }
+
+  before do
+    close_rich_text_promo_popover_if_present
+  end
 
   it 'clicking "Comment" will post a comment' do
     expect(page).to have_selector toggle_selector

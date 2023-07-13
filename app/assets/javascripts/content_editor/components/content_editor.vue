@@ -264,7 +264,7 @@ export default {
       <div
         class="gl-display-flex gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-2 gl-border-t gl-border-gray-100 gl-text-secondary"
       >
-        <editor-mode-switcher size="small" value="richText" @input="handleEditorModeChanged" />
+        <editor-mode-switcher size="small" value="richText" @switch="handleEditorModeChanged" />
         <gl-button
           v-gl-tooltip
           icon="markdown-mark"

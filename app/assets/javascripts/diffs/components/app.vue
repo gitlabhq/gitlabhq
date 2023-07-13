@@ -58,7 +58,6 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
 import TreeList from './tree_list.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
-import PreRenderer from './pre_renderer.vue';
 
 export default {
   name: 'DiffsApp',
@@ -66,7 +65,6 @@ export default {
     FindingsDrawer,
     DynamicScroller,
     DynamicScrollerItem,
-    PreRenderer,
     VirtualScrollerScrollSync,
     CompareVersions,
     DiffFile,
@@ -665,22 +663,6 @@ export default {
                 </dynamic-scroller-item>
               </template>
               <template #before>
-                <pre-renderer :max-length="diffFilesLength">
-                  <template #default="{ item, index, active }">
-                    <dynamic-scroller-item :item="item" :active="active">
-                      <diff-file
-                        :file="item"
-                        :reviewed="fileReviews[item.id]"
-                        :is-first-file="index === 0"
-                        :is-last-file="index === diffFilesLength - 1"
-                        :help-page-path="helpPagePath"
-                        :can-current-user-fork="canCurrentUserFork"
-                        :view-diffs-file-by-file="viewDiffsFileByFile"
-                        pre-render
-                      />
-                    </dynamic-scroller-item>
-                  </template>
-                </pre-renderer>
                 <virtual-scroller-scroll-sync v-model="virtualScrollCurrentIndex" />
               </template>
             </dynamic-scroller>

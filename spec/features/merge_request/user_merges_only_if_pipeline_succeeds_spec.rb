@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, feature_category: :code_review_workflow do
+  include ContentEditorHelpers
+
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:project)       { merge_request.target_project }
 
@@ -114,6 +116,7 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
 
         it 'allows MR to be merged immediately' do
           visit project_merge_request_path(project, merge_request)
+          close_rich_text_promo_popover_if_present
 
           wait_for_requests
 

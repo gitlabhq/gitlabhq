@@ -67,6 +67,15 @@ describe('Markdown field component', () => {
           showContentEditorSwitcher,
           supportsQuickActions: true,
         },
+        mocks: {
+          $apollo: {
+            queries: {
+              currentUser: {
+                loading: false,
+              },
+            },
+          },
+        },
       },
     );
   }

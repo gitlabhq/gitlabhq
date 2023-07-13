@@ -15,16 +15,14 @@
         = badge_counter
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter, show_image_comment_badge: show_image_comment_badge }
 
-  .flash-container
-
-  .discussion-reply-holder
-    - if can_create_note?
-      .discussion-with-resolve-btn
-        = link_to_reply_discussion(discussion)
-    - elsif !current_user
-      .disabled-comment.text-center
-        Please
-        = link_to "register", new_session_path(:user, redirect_to_referer: 'yes')
-        or
-        = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes')
-        to reply
+    %li.discussion-reply-holder.clearfix{ class: 'gl-border-t-0! gl-pb-5!' }
+      - if can_create_note?
+        .discussion-with-resolve-btn
+          = link_to_reply_discussion(discussion)
+      - elsif !current_user
+        .disabled-comment.text-center
+          Please
+          = link_to "register", new_session_path(:user, redirect_to_referer: 'yes')
+          or
+          = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes')
+          to reply

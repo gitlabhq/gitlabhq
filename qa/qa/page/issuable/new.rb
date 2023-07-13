@@ -4,6 +4,8 @@ module QA
   module Page
     module Issuable
       class New < Page::Base
+        include Page::Component::RichTextPopover
+
         view 'app/views/shared/issuable/form/_title.html.haml' do
           element :issuable_form_title_field
         end
@@ -48,6 +50,7 @@ module QA
         end
 
         def choose_template(template_name)
+          close_rich_text_promo_popover_if_present
           click_element :template_dropdown
           within_element(:template_dropdown) do
             click_on template_name

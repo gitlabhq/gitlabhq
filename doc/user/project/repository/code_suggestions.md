@@ -25,7 +25,7 @@ Write code more efficiently by using generative AI to suggest code while you're 
 
 Code Suggestions are available:
 
-- To users of GitLab SaaS (by default) and self-managed GitLab (when requested).
+- To users of GitLab SaaS (by default) and self-managed GitLab Enterprise Edition (when requested). Code Suggestions are not available for GitLab Community Edition.
 - In VS Code and Microsoft Visual Studio when you have the corresponding GitLab extension installed.
 - In the GitLab WebIDE
 
@@ -92,11 +92,11 @@ This setting controls Code Suggestions for all IDEs. Support for [more granular 
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../policy/experiment-beta-support.md#beta).
 
-To enable Code Suggestions on a self-managed GitLab instance, you must:
+To enable Code Suggestions on a self-managed GitLab EE instance, you must:
 
 - Be an administrator.
 - Have a [GitLab SaaS account](https://gitlab.com/users/sign_up).
-  You do not need to have a GitLab SaaS subscription.
+You do not need to have a GitLab SaaS subscription.
 
 Then, you will:
 

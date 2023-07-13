@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "Issues > User edits issue", :js, feature_category: :team_planning do
   include CookieHelper
+  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:project_with_milestones) { create(:project_empty_repo, :public) }
@@ -27,6 +28,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
       before do
         stub_licensed_features(multiple_issue_assignees: false)
         visit edit_project_issue_path(project, issue)
+        close_rich_text_promo_popover_if_present
       end
 
       it_behaves_like 'edits content using the content editor'

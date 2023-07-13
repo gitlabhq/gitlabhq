@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ActionView::Helpers::JavaScriptHelper
   include ListboxHelpers
+  include ContentEditorHelpers
 
   let_it_be(:project)   { create(:project, :repository) }
   let_it_be(:user)      { create(:user) }
@@ -36,6 +37,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   describe 'new issue' do
     before do
       visit new_project_issue_path(project)
+      close_rich_text_promo_popover_if_present
     end
 
     describe 'shorten users API pagination limit' do

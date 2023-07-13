@@ -12,8 +12,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = s_('CodeSuggestionsSM|Enable Code Suggestion for users of this GitLab instance.')
-      = link_to sprite_icon('question-o'), code_suggestions_docs_url, target: '_blank', class: 'has-tooltip', title: _('More information')
+      = code_suggestions_description
 
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-ai-access-settings'), html: { class: 'fieldset-form', id: 'ai-access-settings' } do |f|
@@ -22,7 +21,7 @@
       %fieldset
         .form-group
           = f.gitlab_ui_checkbox_component :instance_level_code_suggestions_enabled,
-            s_('CodeSuggestionsSM|Turn on Code Suggestions for this instance. By turning on this feature, you:'),
+            s_('CodeSuggestionsSM|Enable Code Suggestions for this instance %{beta}').html_safe % { beta: gl_badge_tag(_('Beta'), variant: :neutral, size: :sm) },
             help_text: code_suggestions_agreement
           = f.label :ai_access_token, token_label, class: 'label-bold'
           = f.password_field :ai_access_token, value: token_value, autocomplete: 'on', class: 'form-control gl-form-input', aria: { describedby: 'code_suggestions_token_explanation' }

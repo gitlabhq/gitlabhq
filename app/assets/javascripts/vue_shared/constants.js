@@ -94,6 +94,7 @@ export const confidentialityInfoText = (workspaceType, issuableType) =>
     },
   );
 
+export const EDITING_MODE_KEY = 'gl-markdown-editor-mode';
 export const EDITING_MODE_MARKDOWN_FIELD = 'markdownField';
 export const EDITING_MODE_CONTENT_EDITOR = 'contentEditor';
 export const CLEAR_AUTOSAVE_ENTRY_EVENT = 'markdown_clear_autosave_entry';

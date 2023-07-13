@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_workflow do
   include MergeRequestDiffHelpers
   include RepoHelpers
+  include ContentEditorHelpers
 
   def expect_suggestion_has_content(element, expected_changing_content, expected_suggested_content)
     changing_content = element.all(:css, '.line_holder.old').map { |el| el.text(normalize_ws: true) }
@@ -35,6 +36,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   context 'single suggestion note' do
     it 'hides suggestion popover' do
       click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
+      close_rich_text_promo_popover_if_present
 
       expect(page).to have_selector('.diff-suggest-popover')
 

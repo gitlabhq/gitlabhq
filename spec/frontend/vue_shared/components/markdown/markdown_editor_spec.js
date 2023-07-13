@@ -64,6 +64,15 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         BubbleMenu: stubComponent(BubbleMenu),
         ...stubs,
       },
+      mocks: {
+        $apollo: {
+          queries: {
+            currentUser: {
+              loading: false,
+            },
+          },
+        },
+      },
     });
   };
 
@@ -439,8 +448,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
   describe('when contentEditor is disabled', () => {
     it('resets the editingMode to markdownField', () => {
-      localStorage.setItem('gl-markdown-editor-mode', 'contentEditor');
-
       buildWrapper({ propsData: { autosaveKey: 'issue/1234', enableContentEditor: false } });
 
       expect(wrapper.vm.editingMode).toBe(EDITING_MODE_MARKDOWN_FIELD);

@@ -1,9 +1,9 @@
 ---
-redirect_to: '../../../administration//reporting/git_abuse_rate_limit.md'
+redirect_to: '../../../administration/reporting/git_abuse_rate_limit.md'
 remove_date: '2023-10-12'
 ---
 
-This document was moved to [another location](../../../administration//reporting/git_abuse_rate_limit.md).
+This document was moved to [another location](../../../administration/reporting/git_abuse_rate_limit.md).
 
 <!-- This redirect file can be deleted after <2023-10-12>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

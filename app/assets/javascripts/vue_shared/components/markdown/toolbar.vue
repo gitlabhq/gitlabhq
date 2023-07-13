@@ -1,5 +1,8 @@
 <script>
 import { GlButton, GlLoadingIcon, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { updateText } from '~/lib/utils/text_markdown';
+import { __, sprintf } from '~/locale';
+import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import EditorModeSwitcher from './editor_mode_switcher.vue';
 
 export default {
@@ -40,7 +43,33 @@ export default {
     },
   },
   methods: {
-    handleEditorModeChanged() {
+    insertIntoTextarea(...lines) {
+      const text = lines.join('\n');
+      const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
+      if (textArea && !textArea.value) {
+        updateText({
+          textArea,
+          tag: text,
+          cursorOffset: 0,
+          wrap: false,
+        });
+      }
+    },
+    handleEditorModeChanged(isFirstSwitch) {
+      if (isFirstSwitch) {
+        this.insertIntoTextarea(
+          __(`### Rich text editor`),
+          '',
+          sprintf(
+            __(
+              'Try out **styling** _your_ content right here or read the [direction](%{directionUrl}).',
+            ),
+            {
+              directionUrl: `${PROMO_URL}/direction/plan/knowledge/content_editor/`,
+            },
+          ),
+        );
+      }
       this.$emit('enableContentEditor');
     },
   },
@@ -61,7 +90,7 @@ export default {
       v-if="showEditorModeSwitcher"
       size="small"
       value="markdown"
-      @input="handleEditorModeChanged"
+      @switch="handleEditorModeChanged"
     />
     <div class="gl-display-flex">
       <div v-if="canAttachFile" class="uploading-container gl-font-sm gl-line-height-32 gl-mr-3">

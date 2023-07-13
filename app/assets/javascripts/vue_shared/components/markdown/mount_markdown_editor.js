@@ -95,15 +95,8 @@ export function mountMarkdownEditor(options = {}) {
   const setFacade = (props) => Object.assign(facade, props);
   const autosaveKey = `autosave/${document.location.pathname}/${searchTerm}/description`;
 
-  if (options.useApollo || options.apolloProvider) {
-    let { apolloProvider } = options;
-
-    if (!apolloProvider) {
-      apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
-    }
-
-    componentConfiguration.apolloProvider = apolloProvider;
-  }
+  componentConfiguration.apolloProvider =
+    options.apolloProvider || new VueApollo({ defaultClient: createApolloClient() });
 
   // eslint-disable-next-line no-new
   new Vue({

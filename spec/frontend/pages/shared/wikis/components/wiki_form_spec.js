@@ -95,6 +95,15 @@ describe('WikiForm', () => {
           GlFormInput,
           GlFormGroup,
         },
+        mocks: {
+          $apollo: {
+            queries: {
+              currentUser: {
+                loading: false,
+              },
+            },
+          },
+        },
       }),
     );
   }

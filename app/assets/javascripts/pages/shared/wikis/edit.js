@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import Translate from '~/vue_shared/translate';
@@ -64,9 +66,14 @@ const createWikiFormApp = () => {
   if (el) {
     const { pageInfo, formatOptions } = el.dataset;
 
+    Vue.use(VueApollo);
+
+    const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
+
     // eslint-disable-next-line no-new
     new Vue({
       el,
+      apolloProvider,
       provide: {
         formatOptions: JSON.parse(formatOptions),
         pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),

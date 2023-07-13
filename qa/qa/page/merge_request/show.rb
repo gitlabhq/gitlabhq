@@ -6,6 +6,7 @@ module QA
       class Show < Page::Base
         include Page::Component::Note
         include Page::Component::Issuable::Sidebar
+        include Page::Component::RichTextPopover
 
         view 'app/assets/javascripts/batch_comments/components/preview_dropdown.vue' do
           element :review_preview_dropdown
@@ -285,6 +286,7 @@ module QA
         end
 
         def merge!
+          close_rich_text_promo_popover_if_present
           try_to_merge!
           finished_loading?
 

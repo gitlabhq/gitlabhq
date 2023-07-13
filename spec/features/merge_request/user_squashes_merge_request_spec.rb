@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User squashes a merge request', :js, feature_category: :code_review_workflow do
+  include ContentEditorHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:source_branch) { 'csv' }
@@ -12,6 +14,8 @@ RSpec.describe 'User squashes a merge request', :js, feature_category: :code_rev
 
   shared_examples 'squash' do
     it 'squashes the commits into a single commit, and adds a merge commit', :sidekiq_might_not_need_inline do
+      close_rich_text_promo_popover_if_present
+
       expect(page).to have_content('Merged')
 
       latest_master_commits = project.repository.commits_between(original_head.sha, 'master').map(&:raw)
@@ -37,12 +41,16 @@ RSpec.describe 'User squashes a merge request', :js, feature_category: :code_rev
 
   shared_examples 'no squash' do
     it 'accepts the merge request without squashing', :sidekiq_might_not_need_inline do
+      close_rich_text_promo_popover_if_present
+
       expect(page).to have_content('Merged')
       expect(project.repository).to be_merged_to_root_ref(source_branch)
     end
   end
 
   def accept_mr
+    close_rich_text_promo_popover_if_present
+
     expect(page).to have_button('Merge')
 
     uncheck 'Delete source branch' unless protected_source_branch

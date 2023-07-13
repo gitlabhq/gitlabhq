@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_review_workflow do
   include NoteInteractionHelpers
+  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project, :repository) }
 
@@ -21,6 +22,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
     sign_in(user)
 
     visit project_merge_request_path(project, merge_request)
+    close_rich_text_promo_popover_if_present
   end
 
   subject { page }

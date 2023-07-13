@@ -78,6 +78,7 @@ module QA
 
         # Attachment option should be an absolute path
         def comment(text, attachment: nil, filter: :all_activities)
+          close_rich_text_promo_popover_if_present
           method("select_#{filter}_filter").call
           fill_element :comment_field, "#{text}\n"
 

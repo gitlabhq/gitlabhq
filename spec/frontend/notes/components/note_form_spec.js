@@ -26,6 +26,15 @@ describe('issue_note_form component', () => {
       provide: {
         glFeatures: provide,
       },
+      mocks: {
+        $apollo: {
+          queries: {
+            currentUser: {
+              loading: false,
+            },
+          },
+        },
+      },
     });
   };
 

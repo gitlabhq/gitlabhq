@@ -99,6 +99,43 @@ end
 
 We recommend creating four associated test cases, two for each shared example.
 
+## Test naming
+
+Test names should form a readable sentence defining the purpose of the test. Our [testing guide](index.md) extends the [Thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). This page clarifies the guidelines, along with input from [https://www.betterspecs.org/](https://www.betterspecs.org/) and [the RSpec naming guide](https://rspec.rubystyle.guide/#naming.)
+
+### Recommended approach
+
+The following block generates a test named `Plan wiki content creation in a project adds a home page`
+
+``` ruby
+# `RSpec.describe` is the DevOps Stage being covered
+RSpec.describe 'Plan', product_group: :knowledge do
+  # `describe` is the feature being tested
+  describe 'wiki content creation' do
+    # `context` provides the condition being covered
+    context 'in a project'
+      # `it` defines the expected result of the test
+      it 'adds a home page'
+      ...
+      end
+    ...
+    end
+  ...
+  end
+end
+```
+
+1. Every `describe`, `context`, and `it` blocks should have a short description attached
+1. Keep descriptions as concise as possible.
+    1. Long descriptions or multiple conditionals could be a sign it should be split up (additional `context` blocks).
+    1. The [Documentation Style Guide](../../documentation/styleguide/index.md) gives recommendations on how to write concisely and with [active voice](../../documentation/styleguide/word_list.md#active-voice).
+1. The outermost `Rspec.describe` block should be [the DevOps stage name](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+1. Inside the `Rspec.describe` block is a `describe` block with the name of the feature being tested
+1. Optional `context` blocks define what the conditions being tested are
+    1. `context` blocks descriptions should begin with `when`, `with`, `without`, `for`, `and`, `on`, `in`, `as`, or `if` to match the [rubocop rule](https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ContextWording)
+1. The `it` block describes the pass/fail criteria for the test
+    1. In `shared_examples` with a single example a `specify` block can be used instead of a named `it` block
+
 ## Prefer API over UI
 
 The end-to-end testing framework has the ability to fabricate its resources on a case-by-case basis.

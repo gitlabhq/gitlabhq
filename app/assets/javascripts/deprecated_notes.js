@@ -1462,7 +1462,11 @@ export default class Notes {
 
     $note.addClass('fade-in-full');
     renderGFM(Notes.getNodeToRender($note));
-    $notesList.append($note);
+    if ($notesList.find('.discussion-reply-holder').length) {
+      $notesList.children('.timeline-entry').last().after($note);
+    } else {
+      $notesList.append($note);
+    }
     return $note;
   }
 

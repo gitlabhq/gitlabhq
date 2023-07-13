@@ -1,13 +1,16 @@
 import { GlButton, GlBadge, GlIcon, GlAvatarLabeled, GlAvatarLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
-
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 
 const issuableHeaderProps = {
   ...mockIssuable,
   ...mockIssuableShowProps,
+  issuableType: TYPE_ISSUE,
+  workspaceType: WORKSPACE_PROJECT,
 };
 
 describe('IssuableHeader', () => {
@@ -53,6 +56,14 @@ describe('IssuableHeader', () => {
       setHTMLFixture('<button class="js-toggle-right-sidebar-button">Collapse sidebar</button>');
     });
 
+    it('emits a "toggle" event', () => {
+      createComponent();
+
+      findButton().vm.$emit('click');
+
+      expect(wrapper.emitted('toggle')).toEqual([[]]);
+    });
+
     it('dispatches `click` event on sidebar toggle button', () => {
       createComponent();
       const toggleSidebarButtonEl = document.querySelector('.js-toggle-right-sidebar-button');
@@ -94,14 +105,12 @@ describe('IssuableHeader', () => {
     });
 
     it('renders confidential icon when issuable is confidential', () => {
-      createComponent({
-        confidential: true,
+      createComponent({ confidential: true });
+
+      expect(wrapper.findComponent(ConfidentialityBadge).props()).toEqual({
+        issuableType: 'issue',
+        workspaceType: 'project',
       });
-
-      const confidentialEl = wrapper.findByTestId('confidential');
-
-      expect(confidentialEl.exists()).toBe(true);
-      expect(confidentialEl.findComponent(GlIcon).props('name')).toBe('eye-slash');
     });
 
     it('renders issuable author avatar', () => {

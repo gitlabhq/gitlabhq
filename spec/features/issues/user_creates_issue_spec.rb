@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User creates issue", feature_category: :team_planning do
   include DropzoneHelper
+  include ContentEditorHelpers
 
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
@@ -41,6 +42,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       sign_in(user)
 
       visit(new_project_issue_path(project))
+      close_rich_text_promo_popover_if_present
     end
 
     context 'available metadata' do

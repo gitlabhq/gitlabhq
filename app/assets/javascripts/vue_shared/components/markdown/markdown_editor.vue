@@ -5,6 +5,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { setUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import {
+  EDITING_MODE_KEY,
   EDITING_MODE_MARKDOWN_FIELD,
   EDITING_MODE_CONTENT_EDITOR,
   CLEAR_AUTOSAVE_ENTRY_EVENT,
@@ -223,6 +224,7 @@ export default {
       }
     },
   },
+  EDITING_MODE_KEY,
 };
 </script>
 <template>
@@ -230,7 +232,7 @@ export default {
     <local-storage-sync
       :value="editingMode"
       as-string
-      storage-key="gl-markdown-editor-mode"
+      :storage-key="$options.EDITING_MODE_KEY"
       @input="onEditingModeRestored"
     />
     <markdown-field
