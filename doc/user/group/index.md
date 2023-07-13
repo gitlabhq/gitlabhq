@@ -211,7 +211,7 @@ In lists of group members, entries can display the following badges:
 
 ### Search a group
 
-You can search for members by name, username, or email.
+You can search for members by name, username, or [public email](../profile/index.md#set-your-public-email).
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Manage > Members**.

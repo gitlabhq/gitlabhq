@@ -25848,7 +25848,7 @@ msgstr ""
 msgid "JiraConnect|No linked groups"
 msgstr ""
 
-msgid "JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here."
+msgid "JiraConnect|Not seeing your groups? Only groups you have access to appear here."
 msgstr ""
 
 msgid "JiraConnect|Setting up this integration is only possible if you're a GitLab administrator."

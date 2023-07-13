@@ -24,6 +24,7 @@
 #     with_issues_enabled: boolean
 #     with_merge_requests_enabled: boolean
 #     min_access_level: int
+#     owned: boolean
 #
 class GroupProjectsFinder < ProjectsFinder
   DEFAULT_PROJECTS_LIMIT = 100
@@ -83,7 +84,9 @@ class GroupProjectsFinder < ProjectsFinder
 
   def filter_by_visibility(relation)
     if current_user
-      if min_access_level?
+      if owned_projects?
+        relation.visible_to_user_and_access_level(current_user, Gitlab::Access::OWNER)
+      elsif min_access_level?
         relation.visible_to_user_and_access_level(current_user, params[:min_access_level])
       else
         relation.public_or_visible_to_user(current_user)
@@ -103,6 +106,10 @@ class GroupProjectsFinder < ProjectsFinder
 
   def only_owned?
     options.fetch(:only_owned, false)
+  end
+
+  def owned_projects?
+    params.fetch(:owned, false)
   end
 
   def only_shared?

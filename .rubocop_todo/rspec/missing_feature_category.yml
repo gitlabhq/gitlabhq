@@ -5269,7 +5269,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/rubocop/cop/graphql/descriptions_spec.rb'
     - 'spec/rubocop/cop/graphql/enum_names_spec.rb'
     - 'spec/rubocop/cop/graphql/enum_values_spec.rb'
-    - 'spec/rubocop/cop/graphql/gid_expected_type_spec.rb'
     - 'spec/rubocop/cop/graphql/graphql_name_position_spec.rb'
     - 'spec/rubocop/cop/graphql/id_type_spec.rb'
     - 'spec/rubocop/cop/graphql/json_type_spec.rb'

@@ -146,8 +146,7 @@ Go GitLab linter plugins are maintained in the [`gitlab-org/language-tools/go/li
 
 Dependencies should be kept to the minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval Guidelines](../code_review.md#approval-guidelines).
-Both [License Scanning](../../user/compliance/license_compliance/index.md)
-and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
+[Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
 should be activated on all projects to ensure new dependencies
 security status and license compatibility.
 

@@ -87,6 +87,16 @@ RSpec.describe GroupProjectsFinder do
       end
     end
 
+    context "owned" do
+      before do
+        root_group.add_owner(current_user)
+      end
+
+      let(:params) { { owned: true } }
+
+      it { is_expected.to match_array([private_project, public_project]) }
+    end
+
     context "all" do
       context 'with subgroups projects' do
         before do

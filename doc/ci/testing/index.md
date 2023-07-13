@@ -18,7 +18,7 @@ display reports or link to important information directly from [merge requests](
 | [Code Quality](code_quality.md)                                         | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area. |
 | [Display arbitrary job artifacts](../yaml/index.md#artifactsexpose_as)  | Configure CI pipelines with the `artifacts:expose_as` parameter to directly link to selected [artifacts](../jobs/job_artifacts.md) in merge requests. |
 | [Unit test reports](unit_test_reports.md)                               | Configure your CI jobs to use Unit test reports, and let GitLab display a report on the merge request so that it's easier and faster to identify the failure without having to check the entire job log. |
-| [License Compliance](../../user/compliance/license_compliance/index.md) | Manage the licenses of your dependencies. |
+| [License Scanning](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) | Manage the licenses of your dependencies. |
 | [Metrics Reports](metrics_reports.md)                                   | Display the Metrics Report on the merge request so that it's fast and easier to identify changes to important metrics. |
 | [Test Coverage visualization](test_coverage_visualization.md)           | See test coverage results for merge requests, in the file diff. |
 | [Fail fast testing](fail_fast_testing.md)                               | Run a subset of your RSpec test suite, so failed tests stop the pipeline before the full suite of tests run, saving resources. |

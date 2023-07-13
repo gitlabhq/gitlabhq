@@ -1091,6 +1091,50 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      context 'with owned' do
+        let(:group) { create(:group) }
+
+        let(:project1) { create(:project, group: group) }
+        let(:project1_guest) { create(:user) }
+        let(:project1_owner) { create(:user) }
+        let(:project1_maintainer) { create(:user) }
+
+        let(:project2) { create(:project, group: group) }
+
+        before do
+          project1.add_guest(project1_guest)
+          project1.add_owner(project1_owner)
+          project1.add_maintainer(project1_maintainer)
+
+          project2_owner = project1_owner
+          project2.add_owner(project2_owner)
+        end
+
+        context "as a guest" do
+          it 'returns no projects' do
+            get api("/groups/#{group.id}/projects", project1_guest), params: { owned: true }
+            project_ids = json_response.map { |proj| proj['id'] }
+            expect(project_ids).to match_array([])
+          end
+        end
+
+        context "as a maintainer" do
+          it 'returns no projects' do
+            get api("/groups/#{group.id}/projects", project1_maintainer), params: { owned: true }
+            project_ids = json_response.map { |proj| proj['id'] }
+            expect(project_ids).to match_array([])
+          end
+        end
+
+        context "as an owner" do
+          it 'returns projects with owner access level' do
+            get api("/groups/#{group.id}/projects", project1_owner), params: { owned: true }
+            project_ids = json_response.map { |proj| proj['id'] }
+            expect(project_ids).to match_array([project1.id, project2.id])
+          end
+        end
+      end
+
       it "returns the group's projects", :aggregate_failures do
         get api("/groups/#{group1.id}/projects", user1)
 

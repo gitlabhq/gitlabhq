@@ -93,7 +93,7 @@ above. You can find more information at each of the pages below:
 - [Secret Detection offline directions](../secret_detection/index.md#running-secret-detection-in-an-offline-environment)
 - [DAST offline directions](../dast/run_dast_offline.md#run-dast-in-an-offline-environment)
 - [API Fuzzing offline directions](../api_fuzzing/index.md#running-api-fuzzing-in-an-offline-environment)
-- [License Compliance offline directions](../../compliance/license_compliance/index.md#running-license-compliance-in-an-offline-environment)
+- [License Scanning offline directions](../../compliance/license_scanning_of_cyclonedx_files/index.md#running-in-an-offline-environment)
 - [Dependency Scanning offline directions](../dependency_scanning/index.md#running-dependency-scanning-in-an-offline-environment)
 
 ## Loading Docker images onto your offline host

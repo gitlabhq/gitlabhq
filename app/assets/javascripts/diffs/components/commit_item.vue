@@ -133,7 +133,7 @@ export default {
           />
         </div>
         <div
-          class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-flex-start gl-flex-grow-1 gl-min-w-0"
+          class="commit-detail flex-list gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-grow-1 gl-min-w-0"
         >
           <div class="commit-content" data-qa-selector="commit_content">
             <a

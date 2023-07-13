@@ -104,7 +104,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Dynamic Application Security Testing](../user/application_security/dast/index.md)           | Test your application's runtime behavior for vulnerabilities. |
 | [Dependency Scanning](../user/application_security/dependency_scanning/index.md)             | Analyze your dependencies for known vulnerabilities. |
 | [Infrastructure as Code scanning](../user/application_security/iac_scanning/index.md)        | Scan your IaC configuration files for known vulnerabilities. |
-| [License Compliance](../user/compliance/license_compliance/index.md)                         | Search your project dependencies for their licenses. |
+| [License Scanning](../user/compliance/license_scanning_of_cyclonedx_files/index.md)                         | Search your project dependencies for their licenses. |
 | [Secret Detection](../user/application_security/secret_detection/index.md)                   | Search your application's source code for secrets. |
 | [Static Application Security Testing](../user/application_security/sast/index.md)            | Test your application's source code for known vulnerabilities. |
 | [Web API fuzz testing](../user/application_security/api_fuzzing/index.md)                    | Test your application's API behavior by providing randomized input. |

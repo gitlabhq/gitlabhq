@@ -621,15 +621,6 @@ Graphql/AuthorizeTypes:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
-Graphql/GIDExpectedType:
-  Enabled: true
-  Include:
-    - 'app/graphql/**/*'
-    - 'ee/app/graphql/**/*'
-  Exclude:
-    - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
-
 Graphql/IDType:
   Enabled: true
   Include:

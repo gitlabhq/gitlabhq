@@ -5,7 +5,7 @@ module JiraConnectHelper
     skip_groups = subscriptions.map(&:namespace_id)
 
     {
-      groups_path: api_v4_groups_path(params: { min_access_level: Gitlab::Access::MAINTAINER, skip_groups: skip_groups }),
+      groups_path: api_v4_groups_path(params: { all_available: true, skip_groups: skip_groups }),
       subscriptions: subscriptions.map { |s| serialize_subscription(s) }.to_json,
       subscriptions_path: jira_connect_subscriptions_path(format: :json),
       gitlab_user_path: current_user ? user_path(current_user) : nil,

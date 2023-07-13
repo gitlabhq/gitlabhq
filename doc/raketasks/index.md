@@ -38,7 +38,7 @@ The following Rake tasks are available for use with GitLab:
 | [Sidekiq job migration](../administration/sidekiq/sidekiq_job_migration.md) | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
 | [Service Desk email](../administration/raketasks/service_desk_email.md) | Service Desk email-related tasks. |
 | [SMTP maintenance](../administration/raketasks/smtp.md) | SMTP-related tasks. |
-| [SPDX license list import](spdx.md)                   | Import a local copy of the [SPDX license list](https://spdx.org/licenses/) for matching [License Compliance policies](../user/compliance/license_compliance/index.md). |
+| [SPDX license list import](spdx.md)                   | Import a local copy of the [SPDX license list](https://spdx.org/licenses/) for matching [License Approval policies](../user/compliance/license_approval_policies.md). |
 | [Repository storage](../administration/raketasks/storage.md) | List and migrate existing projects and attachments from legacy storage to hashed storage. |
 | [Reset user passwords](../security/reset_user_password.md#use-a-rake-task) | Reset user passwords using Rake. |
 | [Uploads migrate](../administration/raketasks/uploads/migrate.md) | Migrate uploads between local storage and object storage. |
