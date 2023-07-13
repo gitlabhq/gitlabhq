@@ -89,11 +89,6 @@ msgid_plural "%d Alerts"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d Alert:"
-msgid_plural "%d Alerts:"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d Approval"
 msgid_plural "%d Approvals"
 msgstr[0] ""
@@ -1228,9 +1223,6 @@ msgid "%{timebox_type} must have a start and due date"
 msgstr ""
 
 msgid "%{time} UTC"
-msgstr ""
-
-msgid "%{title} %{operator} %{threshold}"
 msgstr ""
 
 msgid "%{title} changes"

@@ -58,33 +58,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Url do
     end
   end
 
-  describe '#grafana_regex' do
-    let(:url) do
-      namespace_project_grafana_api_metrics_dashboard_url(
-        'foo',
-        'bar',
-        start: '2019-08-02T05:43:09.000Z',
-        dashboard: 'config/prometheus/common_metrics.yml',
-        group: 'awesome group',
-        anchor: 'title'
-      )
-    end
-
-    let(:expected_params) do
-      {
-        'url' => url,
-        'namespace' => 'foo',
-        'project' => 'bar',
-        'query' => '?dashboard=config%2Fprometheus%2Fcommon_metrics.yml&group=awesome+group&start=2019-08-02T05%3A43%3A09.000Z',
-        'anchor' => '#title'
-      }
-    end
-
-    subject { described_class.grafana_regex }
-
-    it_behaves_like 'regex which matches url when expected'
-  end
-
   describe '#alert_regex' do
     let(:url) { Gitlab::Routing.url_helpers.metrics_dashboard_namespace_project_prometheus_alert_url(*url_params) }
     let(:url_params) do

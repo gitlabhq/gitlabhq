@@ -856,7 +856,7 @@ Kubernetes aren't shown.
 
 GitLab has limits around:
 
-- The patch size for a single file. [This is configurable on self-managed instance](../user/admin_area/diff_limits.md).
+- The patch size for a single file. [This is configurable on self-managed instance](../administration/diff_limits.md).
 - The total size of all the diffs for a merge request.
 
 An upper and lower limit applies to each of these:

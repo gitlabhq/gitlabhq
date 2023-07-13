@@ -269,6 +269,8 @@ Details for each security policy is shown in the Security Approvals section of y
 The security approval rules are applied to all merge requests until the pipeline is complete. The application of the
 security approval rules prevents users from merging in code before the security scans run. After the pipeline is
 complete, the security approval rules are checked to determine if the security approvals are still required.
+In case the scanners in the pipeline identify an issue and security approvals are required, a bot comment is generated
+on the merge request to indicate which steps are needed to proceed.
 
 ![Security Approvals](img/security_approvals_v15_0.png)
 

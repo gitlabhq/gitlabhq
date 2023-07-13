@@ -289,6 +289,14 @@ RSpec.describe RemoteMirror, :mailer do
       end
     end
 
+    context 'with silent mode enabled' do
+      it 'returns nil' do
+        allow(Gitlab::SilentMode).to receive(:enabled?).and_return(true)
+
+        expect(remote_mirror.sync).to be_nil
+      end
+    end
+
     context 'with remote mirroring enabled' do
       it 'defaults to disabling only protected branches' do
         expect(remote_mirror.only_protected_branches?).to be_falsey
