@@ -24,7 +24,7 @@ module ProtectedRefDeployKeyAccess
   end
 
   def humanize
-    return "Deploy key" if deploy_key.present?
+    return deploy_key.title if deploy_key?
 
     super
   end

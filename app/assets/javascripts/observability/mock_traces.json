@@ -1,0 +1,147 @@
+{
+  "data": [
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 100,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    },
+    {
+      "traceID": "668ec7d464968a87",
+      "date": "Mon, 03 Jul 2023 14:35:37 GMT",
+      "service": "HealthCheck",
+      "operation": "/grpc.health.v1.Health/Check",
+      "duration": 343,
+      "method": "GET",
+      "status": 200,
+      "spans": [
+
+      ],
+      "warnings": null
+    }
+  ]
+}

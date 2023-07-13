@@ -61,6 +61,12 @@ export default {
 
       this.hideSkeleton();
     },
+    onError() {
+      clearTimeout(this.errorTimeout);
+      clearTimeout(this.loadingTimeout);
+
+      this.showError();
+    },
     setLoadingTimeout() {
       this.loadingTimeout = setTimeout(() => {
         /**
@@ -130,7 +136,7 @@ export default {
     <transition>
       <div
         v-show="state === $options.SKELETON_STATE.HIDDEN"
-        data-testid="observability-wrapper"
+        data-testid="content-wrapper"
         class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
       >
         <slot></slot>

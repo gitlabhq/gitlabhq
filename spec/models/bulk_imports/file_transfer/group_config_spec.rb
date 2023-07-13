@@ -40,7 +40,12 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
 
   describe '#top_relation_tree' do
     it 'returns relation tree of a top level relation' do
-      expect(subject.top_relation_tree('labels')).to eq('priorities' => {})
+      expect(subject.top_relation_tree('boards')).to include(
+        'lists' => a_hash_including({
+          'board' => anything,
+          'label' => anything
+        })
+      )
     end
   end
 

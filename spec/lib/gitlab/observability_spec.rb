@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+
   describe '.observability_url' do
     let(:gitlab_url) { 'https://example.com' }
 
@@ -35,6 +38,18 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
     subject { described_class.oauth_url }
 
     it { is_expected.to eq("#{described_class.observability_url}/v1/auth/start") }
+  end
+
+  describe '.tracing_url' do
+    subject { described_class.tracing_url(project) }
+
+    it { is_expected.to eq("#{described_class.observability_url}/query/#{group.id}/#{project.id}/v1/traces") }
+  end
+
+  describe '.provisioning_url' do
+    subject { described_class.provisioning_url(project) }
+
+    it { is_expected.to eq(described_class.observability_url.to_s) }
   end
 
   describe '.build_full_url' do

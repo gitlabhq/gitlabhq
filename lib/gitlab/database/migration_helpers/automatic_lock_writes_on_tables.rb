@@ -11,7 +11,9 @@ module Gitlab
         end
 
         def exec_migration(connection, direction)
-          return super if %w[main ci].exclude?(Gitlab::Database.db_config_name(connection))
+          db_config_name = Gitlab::Database.db_config_name(connection)
+          db_info = Gitlab::Database.all_database_connections.fetch(db_config_name)
+          return super if db_info.lock_gitlab_schemas.empty?
           return super if automatic_lock_on_writes_disabled?
 
           # This compares the tables only on the `public` schema. Partitions are not affected
@@ -20,7 +22,7 @@ module Gitlab
           new_tables = connection.tables - tables
 
           new_tables.each do |table_name|
-            lock_writes_on_table(connection, table_name) if should_lock_writes_on_table?(table_name)
+            lock_writes_on_table(connection, table_name) if should_lock_writes_on_table?(db_info, table_name)
           end
         end
 
@@ -39,16 +41,17 @@ module Gitlab
           end
         end
 
-        def should_lock_writes_on_table?(table_name)
-          # currently gitlab_schema represents only present existing tables, this is workaround for deleted tables
-          # that should be skipped as they will be removed in a future migration.
+        def should_lock_writes_on_table?(db_info, table_name)
+          # We skip locking writes on tables that are scheduled for deletion in a future migration
           return false if Gitlab::Database::GitlabSchema.deleted_tables_to_schema[table_name]
 
           table_schema = Gitlab::Database::GitlabSchema.table_schema!(table_name.to_s)
 
-          return false unless %i[gitlab_main gitlab_ci].include?(table_schema)
-
-          Gitlab::Database.gitlab_schemas_for_connection(connection).exclude?(table_schema)
+          # This takes into consideration which database mode is used.
+          # In single-db and single-db-ci-connection the main database includes gitlab_ci tables,
+          # so we don't lock them there.
+          Gitlab::Database.gitlab_schemas_for_connection(connection).exclude?(table_schema) &&
+            db_info.lock_gitlab_schemas.include?(table_schema)
         end
 
         # with_retries creates new a transaction. So we set it to false if the connection is

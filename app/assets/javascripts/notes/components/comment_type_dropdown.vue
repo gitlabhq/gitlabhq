@@ -1,16 +1,20 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 
-import { sprintf } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import { COMMENT_FORM } from '~/notes/i18n';
 import * as constants from '../constants';
 
 export default {
-  i18n: COMMENT_FORM,
+  name: 'CommentTypeDropdown',
+  i18n: {
+    ...COMMENT_FORM,
+    toggleSrText: __('Comment type'),
+  },
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
+    GlButtonGroup,
+    GlButton,
+    GlCollapsibleListbox,
   },
   model: {
     prop: 'noteType',
@@ -93,56 +97,63 @@ export default {
         noteableDisplayName: this.noteableDisplayName,
       });
     },
+    dropdownItems() {
+      return [
+        {
+          text: this.dropdownCommentButtonTitle,
+          description: this.commentDescription,
+          value: constants.COMMENT,
+        },
+        {
+          text: this.dropdownStartThreadButtonTitle,
+          description: this.startDiscussionDescription,
+          value: constants.DISCUSSION,
+          qaSelector: 'discussion_menu_item',
+        },
+      ];
+    },
   },
   methods: {
     handleClick() {
       this.$emit('click');
     },
-    setNoteTypeToComment() {
-      if (this.noteType !== constants.COMMENT) {
-        this.$emit('change', constants.COMMENT);
-      }
-    },
-    setNoteTypeToDiscussion() {
-      if (this.noteType !== constants.DISCUSSION) {
-        this.$emit('change', constants.DISCUSSION);
-      }
+    setNoteType(value) {
+      this.$emit('change', value);
     },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown
-    split
-    :text="commentButtonTitle"
-    class="gl-mr-3 js-comment-button js-comment-submit-button comment-type-dropdown"
-    category="primary"
-    variant="confirm"
-    :disabled="disabled"
-    data-testid="comment-button"
-    data-qa-selector="comment_button"
+  <!--TODO: Replace button-group workaround once `split` option for new dropdowns is implemented.-->
+  <!-- See issue at https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2263-->
+  <gl-button-group
+    class="js-comment-button js-comment-submit-button comment-type-dropdown gl-w-full gl-mb-3 gl-md-w-auto gl-md-mb-0"
     :data-track-label="trackingLabel"
     data-track-action="click_button"
-    @click="$emit('click')"
+    data-testid="comment-button"
+    data-qa-selector="comment_button"
   >
-    <gl-dropdown-item
-      is-check-item
-      :is-checked="isNoteTypeComment"
-      @click.stop.prevent="setNoteTypeToComment"
+    <gl-button variant="confirm" :disabled="disabled" @click="handleClick">
+      {{ commentButtonTitle }}
+    </gl-button>
+    <gl-collapsible-listbox
+      class="split"
+      toggle-class="gl-rounded-top-left-none! gl-rounded-bottom-left-none! gl-pl-1!"
+      variant="confirm"
+      text-sr-only
+      :toggle-text="$options.i18n.toggleSrText"
+      :disabled="disabled"
+      :items="dropdownItems"
+      :selected="noteType"
+      @select="setNoteType"
     >
-      <strong>{{ dropdownCommentButtonTitle }}</strong>
-      <p class="gl-m-0">{{ commentDescription }}</p>
-    </gl-dropdown-item>
-    <gl-dropdown-divider />
-    <gl-dropdown-item
-      is-check-item
-      :is-checked="isNoteTypeDiscussion"
-      data-qa-selector="discussion_menu_item"
-      @click.stop.prevent="setNoteTypeToDiscussion"
-    >
-      <strong>{{ dropdownStartThreadButtonTitle }}</strong>
-      <p class="gl-m-0">{{ startDiscussionDescription }}</p>
-    </gl-dropdown-item>
-  </gl-dropdown>
+      <template #list-item="{ item }">
+        <div :data-qa-selector="item.qaSelector">
+          <strong>{{ item.text }}</strong>
+          <p class="gl-m-0">{{ item.description }}</p>
+        </div>
+      </template>
+    </gl-collapsible-listbox>
+  </gl-button-group>
 </template>

@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
@@ -8,9 +8,9 @@ import { COMMENT_FORM } from '~/notes/i18n';
 describe('CommentTypeDropdown component', () => {
   let wrapper;
 
-  const findCommentGlDropdown = () => wrapper.findComponent(GlDropdown);
-  const findCommentDropdownOption = () => wrapper.findAllComponents(GlDropdownItem).at(0);
-  const findDiscussionDropdownOption = () => wrapper.findAllComponents(GlDropdownItem).at(1);
+  const findCommentButton = () => wrapper.findComponent(GlButton);
+  const findCommentListboxOption = () => wrapper.findAllComponents(GlListboxItem).at(0);
+  const findDiscussionListboxOption = () => wrapper.findAllComponents(GlListboxItem).at(1);
 
   const mountComponent = ({ props = {} } = {}) => {
     wrapper = extendedWrapper(
@@ -19,6 +19,10 @@ describe('CommentTypeDropdown component', () => {
           noteableDisplayName: 'issue',
           noteType: constants.COMMENT,
           ...props,
+        },
+        stubs: {
+          GlCollapsibleListbox,
+          GlListboxItem,
         },
       }),
     );
@@ -33,15 +37,15 @@ describe('CommentTypeDropdown component', () => {
     ({ isInternalNote, buttonText }) => {
       mountComponent({ props: { noteType: constants.COMMENT, isInternalNote } });
 
-      expect(findCommentGlDropdown().props()).toMatchObject({ text: buttonText });
+      expect(findCommentButton().text()).toBe(buttonText);
     },
   );
 
   it('Should set correct dropdown item checked when comment is selected', () => {
     mountComponent({ props: { noteType: constants.COMMENT } });
 
-    expect(findCommentDropdownOption().props()).toMatchObject({ isChecked: true });
-    expect(findDiscussionDropdownOption().props()).toMatchObject({ isChecked: false });
+    expect(findCommentListboxOption().props('isSelected')).toBe(true);
+    expect(findDiscussionListboxOption().props('isSelected')).toBe(false);
   });
 
   it.each`
@@ -53,32 +57,22 @@ describe('CommentTypeDropdown component', () => {
     ({ isInternalNote, buttonText }) => {
       mountComponent({ props: { noteType: constants.DISCUSSION, isInternalNote } });
 
-      expect(findCommentGlDropdown().props()).toMatchObject({ text: buttonText });
+      expect(findCommentButton().text()).toBe(buttonText);
     },
   );
 
   it('Should set correct dropdown item option checked when discussion is selected', () => {
     mountComponent({ props: { noteType: constants.DISCUSSION } });
 
-    expect(findCommentDropdownOption().props()).toMatchObject({ isChecked: false });
-    expect(findDiscussionDropdownOption().props()).toMatchObject({ isChecked: true });
+    expect(findCommentListboxOption().props('isSelected')).toBe(false);
+    expect(findDiscussionListboxOption().props('isSelected')).toBe(true);
   });
 
   it('Should emit `change` event when clicking on an alternate dropdown option', () => {
     mountComponent({ props: { noteType: constants.DISCUSSION } });
 
-    const event = {
-      type: 'click',
-      stopPropagation: jest.fn(),
-      preventDefault: jest.fn(),
-    };
-
-    findCommentDropdownOption().vm.$emit('click', event);
-    findDiscussionDropdownOption().vm.$emit('click', event);
-
-    // ensure the native events don't trigger anything
-    expect(event.stopPropagation).toHaveBeenCalledTimes(2);
-    expect(event.preventDefault).toHaveBeenCalledTimes(2);
+    findCommentListboxOption().trigger('click');
+    findDiscussionListboxOption().trigger('click');
 
     expect(wrapper.emitted('change')[0]).toEqual([constants.COMMENT]);
     expect(wrapper.emitted('change').length).toEqual(1);
@@ -87,7 +81,7 @@ describe('CommentTypeDropdown component', () => {
   it('Should emit `click` event when clicking on the action button', () => {
     mountComponent({ props: { noteType: constants.DISCUSSION } });
 
-    findCommentGlDropdown().vm.$emit('click');
+    findCommentButton().vm.$emit('click');
 
     expect(wrapper.emitted('click').length > 0).toBe(true);
   });

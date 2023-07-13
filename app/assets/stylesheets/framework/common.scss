@@ -549,3 +549,16 @@ li.note {
 See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
 **/
 .gl-line-height-14 { line-height: $gl-line-height-14; }
+
+// TODO: To be removed once `split` option for new dropdowns is implemented.
+//  See issue at https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2263
+.gl-new-dropdown.split:nth-child(n+2) {
+  .gl-new-dropdown-toggle {
+    margin-left: 1px;
+
+    &.btn-tertiary,
+    &.disabled {
+      margin-left: -1px;
+    }
+  }
+}

@@ -121,7 +121,7 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
           get api(route, user)
 
           expect(json_response['push_access_levels']).to include(
-            a_hash_including('access_level_description' => 'Deploy key', 'deploy_key_id' => deploy_key.id)
+            a_hash_including('access_level_description' => deploy_key.title, 'deploy_key_id' => deploy_key.id)
           )
         end
       end

@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::TracingController, feature_category: :tracing do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
   let(:path) { nil }
   let(:observability_tracing_ff) { true }
@@ -42,6 +43,17 @@ RSpec.describe Projects::TracingController, feature_category: :tracing do
 
       it 'returns 200' do
         expect(subject).to have_gitlab_http_status(:ok)
+      end
+
+      it 'renders the js-tracing element correctly' do
+        element = Nokogiri::HTML.parse(subject.body).at_css('#js-tracing')
+
+        expected_view_model = {
+          tracingUrl: Gitlab::Observability.tracing_url(project),
+          provisioningUrl: Gitlab::Observability.provisioning_url(project),
+          oauthUrl: Gitlab::Observability.oauth_url
+        }.to_json
+        expect(element.attributes['data-view-model'].value).to eq(expected_view_model)
       end
 
       context 'when feature is disabled' do

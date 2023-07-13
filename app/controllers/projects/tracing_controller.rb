@@ -8,10 +8,7 @@ module Projects
 
     before_action :check_tracing_enabled
 
-    def index
-      # TODO frontend changes coming separately https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125014
-      render html: helpers.tag.strong('Tracing')
-    end
+    def index; end
 
     private
 

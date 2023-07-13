@@ -23,6 +23,21 @@ module Gitlab
         tables.map { |table| table_schema!(table) }.to_set
       end
 
+      # Mainly used for test tables
+      # It maps table names prefixes to gitlab_schemas.
+      # The order of keys matter. Prefixes that contain other prefixes should come first.
+      IMPLICIT_GITLAB_SCHEMAS = {
+        '_test_gitlab_main_clusterwide_' => :gitlab_main_clusterwide,
+        '_test_gitlab_main_cell_' => :gitlab_main_cell,
+        '_test_gitlab_main_' => :gitlab_main,
+        '_test_gitlab_ci_' => :gitlab_ci,
+        '_test_gitlab_embedding_' => :gitlab_embedding,
+        '_test_gitlab_geo_' => :gitlab_geo,
+        '_test_gitlab_pm_' => :gitlab_pm,
+        '_test_' => :gitlab_shared,
+        'pg_' => :gitlab_internal
+      }.freeze
+
       # rubocop:disable Metrics/CyclomaticComplexity
       def self.table_schema(name)
         schema_name, table_name = name.split('.', 2) # Strip schema name like: `public.`
@@ -54,19 +69,11 @@ module Gitlab
         # All tables from `information_schema.` are marked as `internal`
         return :gitlab_internal if schema_name == 'information_schema'
 
-        return :gitlab_main if table_name.start_with?('_test_gitlab_main_')
+        IMPLICIT_GITLAB_SCHEMAS.each do |prefix, gitlab_schema|
+          return gitlab_schema if table_name.start_with?(prefix)
+        end
 
-        return :gitlab_ci if table_name.start_with?('_test_gitlab_ci_')
-
-        return :gitlab_embedding if table_name.start_with?('_test_gitlab_embedding_')
-
-        return :gitlab_geo if table_name.start_with?('_test_gitlab_geo_')
-
-        # All tables that start with `_test_` without a following schema are shared and ignored
-        return :gitlab_shared if table_name.start_with?('_test_')
-
-        # All `pg_` tables are marked as `internal`
-        return :gitlab_internal if table_name.start_with?('pg_')
+        nil
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 

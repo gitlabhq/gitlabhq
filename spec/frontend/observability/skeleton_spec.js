@@ -19,7 +19,7 @@ describe('Skeleton component', () => {
 
   const SKELETON_VARIANTS = Object.values(SKELETON_VARIANTS_BY_ROUTE);
 
-  const findContentWrapper = () => wrapper.findByTestId('observability-wrapper');
+  const findContentWrapper = () => wrapper.findByTestId('content-wrapper');
 
   const findExploreSkeleton = () => wrapper.findComponent(ExploreSkeleton);
 
@@ -42,8 +42,8 @@ describe('Skeleton component', () => {
       mountComponent({ variant: 'explore' });
     });
 
-    describe('loading timers', () => {
-      it('show Skeleton if content is not loaded within CONTENT_WAIT_MS', async () => {
+    describe('showing content', () => {
+      it('shows the skeleton if content is not loaded within CONTENT_WAIT_MS', async () => {
         expect(findExploreSkeleton().exists()).toBe(false);
         expect(findContentWrapper().isVisible()).toBe(false);
 
@@ -55,7 +55,7 @@ describe('Skeleton component', () => {
         expect(findContentWrapper().isVisible()).toBe(false);
       });
 
-      it('does not show the skeleton if content has loaded within CONTENT_WAIT_MS', async () => {
+      it('does not show the skeleton if content loads within CONTENT_WAIT_MS', async () => {
         expect(findExploreSkeleton().exists()).toBe(false);
         expect(findContentWrapper().isVisible()).toBe(false);
 
@@ -73,12 +73,39 @@ describe('Skeleton component', () => {
         expect(findContentWrapper().isVisible()).toBe(true);
         expect(findExploreSkeleton().exists()).toBe(false);
       });
+
+      it('hides the skeleton after content loads', async () => {
+        jest.advanceTimersByTime(DEFAULT_TIMERS.CONTENT_WAIT_MS);
+
+        await nextTick();
+
+        expect(findExploreSkeleton().exists()).toBe(true);
+        expect(findContentWrapper().isVisible()).toBe(false);
+
+        wrapper.vm.onContentLoaded();
+
+        await nextTick();
+
+        expect(findContentWrapper().isVisible()).toBe(true);
+        expect(findExploreSkeleton().exists()).toBe(false);
+      });
     });
 
-    describe('error timeout', () => {
+    describe('error handling', () => {
       it('shows the error dialog if content has not loaded within TIMEOUT_MS', async () => {
         expect(findAlert().exists()).toBe(false);
         jest.advanceTimersByTime(DEFAULT_TIMERS.TIMEOUT_MS);
+
+        await nextTick();
+
+        expect(findAlert().exists()).toBe(true);
+        expect(findContentWrapper().isVisible()).toBe(false);
+      });
+
+      it('shows the error dialog if content fails to load', async () => {
+        expect(findAlert().exists()).toBe(false);
+
+        wrapper.vm.onError();
 
         await nextTick();
 

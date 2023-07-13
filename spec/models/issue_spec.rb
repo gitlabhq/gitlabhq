@@ -1510,52 +1510,22 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#publicly_visible?' do
-    context 'using a public project' do
-      let(:project) { create(:project, :public) }
+    let(:project) { build(:project, project_visiblity) }
+    let(:issue) { build(:issue, confidential: confidential, project: project) }
 
-      it 'returns true for a regular issue' do
-        issue = build(:issue, project: project)
+    subject { issue.send(:publicly_visible?) }
 
-        expect(issue).to be_truthy
-      end
-
-      it 'returns false for a confidential issue' do
-        issue = build(:issue, :confidential, project: project)
-
-        expect(issue).not_to be_falsy
-      end
+    where(:project_visiblity, :confidential, :expected_value) do
+      :public   | false | true
+      :public   | true  | false
+      :internal | false | false
+      :internal | true  | false
+      :private  | false | false
+      :private  | true  | false
     end
 
-    context 'using an internal project' do
-      let(:project) { create(:project, :internal) }
-
-      it 'returns false for a regular issue' do
-        issue = build(:issue, project: project)
-
-        expect(issue).not_to be_falsy
-      end
-
-      it 'returns false for a confidential issue' do
-        issue = build(:issue, :confidential, project: project)
-
-        expect(issue).not_to be_falsy
-      end
-    end
-
-    context 'using a private project' do
-      let(:project) { create(:project, :private) }
-
-      it 'returns false for a regular issue' do
-        issue = build(:issue, project: project)
-
-        expect(issue).not_to be_falsy
-      end
-
-      it 'returns false for a confidential issue' do
-        issue = build(:issue, :confidential, project: project)
-
-        expect(issue).not_to be_falsy
-      end
+    with_them do
+      it { is_expected.to eq(expected_value) }
     end
   end
 

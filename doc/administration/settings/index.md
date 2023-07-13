@@ -70,7 +70,7 @@ The **CI/CD** settings contain:
 
 ## Security and Compliance settings
 
-- [License compliance settings](../../user/admin_area/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync): Enable or disable synchronization of package metadata by a registry type.
+- [License compliance settings](security_and_compliance.md#choose-package-registry-metadata-to-sync): Enable or disable synchronization of package metadata by a registry type.
 
 ### Geo **(PREMIUM SELF)**
 

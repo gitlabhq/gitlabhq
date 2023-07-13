@@ -27,6 +27,15 @@ module Gitlab
       "#{Gitlab::Observability.observability_url}/v1/auth/start"
     end
 
+    def tracing_url(project)
+      "#{Gitlab::Observability.observability_url}/query/#{project.group.id}/#{project.id}/v1/traces"
+    end
+
+    def provisioning_url(_project)
+      # TODO Change to correct endpoint when API is ready
+      Gitlab::Observability.observability_url.to_s
+    end
+
     # Returns true if the GitLab Observability UI (GOUI) feature flag is enabled
     #
     # @deprecated

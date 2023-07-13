@@ -148,7 +148,7 @@ module QA
 
         def start_discussion(text)
           fill_element :comment_field, text
-          within_element(:comment_button) { click_button(class: 'dropdown-toggle-split') }
+          within_element(:comment_button) { click_button(class: 'gl-new-dropdown-toggle') }
           click_element :discussion_menu_item
           click_element :comment_button
 

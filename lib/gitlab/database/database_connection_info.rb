@@ -6,6 +6,7 @@ module Gitlab
       :name,
       :description,
       :gitlab_schemas,
+      :lock_gitlab_schemas,
       :klass,
       :fallback_database,
       :db_dir,
@@ -20,6 +21,7 @@ module Gitlab
         self.name = name.to_sym
         self.gitlab_schemas = gitlab_schemas.map(&:to_sym)
         self.klass = klass.constantize
+        self.lock_gitlab_schemas = (lock_gitlab_schemas || []).map(&:to_sym)
         self.fallback_database = fallback_database&.to_sym
         self.db_dir = Rails.root.join(db_dir || 'db')
       end
