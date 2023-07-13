@@ -17,8 +17,8 @@ users.
 A user in _pending approval_ state requires action by an administrator. A user sign up can be in a
 pending approval state because an administrator has enabled any of the following options:
 
-- [Require administrator approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
-- [User cap](settings/sign_up_restrictions.md#user-cap).
+- [Require administrator approval for new sign-ups](../../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
+- [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
 - [Block auto-created users (OmniAuth)](../../integration/omniauth.md#configure-common-settings)
 - [Block auto-created users (LDAP)](../../administration/auth/ldap/index.md#basic-configuration-settings)
 

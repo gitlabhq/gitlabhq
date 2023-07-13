@@ -67,7 +67,7 @@ By default GitLab enforces the following password requirements:
 Self-managed installations can configure the following additional password requirements:
 
 - [Password minimum and maximum length limits](../../security/password_length_limits.md).
-- [Password complexity requirements](../admin_area/settings/sign_up_restrictions.md#password-complexity-requirements).
+- [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements).
 
 ## Block weak passwords
 

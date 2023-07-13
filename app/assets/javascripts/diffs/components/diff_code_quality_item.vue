@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
-import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
+import { getSeverity } from '~/ci/reports/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -12,14 +12,21 @@ export default {
       type: Object,
       required: true,
     },
+    link: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  computed: {
+    enhancedFinding() {
+      return getSeverity(this.finding);
+    },
+    listText() {
+      return `${this.finding.severity} - ${this.finding.description}`;
+    },
   },
   methods: {
-    severityClass(severity) {
-      return SEVERITY_CLASSES[severity] || SEVERITY_CLASSES.unknown;
-    },
-    severityIcon(severity) {
-      return SEVERITY_ICONS[severity] || SEVERITY_ICONS.unknown;
-    },
     toggleDrawer() {
       this.setDrawer(this.finding);
     },
@@ -33,8 +40,8 @@ export default {
     <span class="gl-mr-3">
       <gl-icon
         :size="12"
-        :name="severityIcon(finding.severity)"
-        :class="severityClass(finding.severity)"
+        :name="enhancedFinding.name"
+        :class="enhancedFinding.class"
         class="codequality-severity-icon"
       />
     </span>
@@ -43,12 +50,13 @@ export default {
       data-testid="description-button-section"
       class="gl-display-flex"
     >
-      <gl-link category="primary" variant="link" @click="toggleDrawer">
-        {{ finding.severity }} - {{ finding.description }}</gl-link
+      <gl-link v-if="link" category="primary" variant="link" @click="toggleDrawer">
+        {{ listText }}</gl-link
       >
+      <span v-else>{{ listText }}</span>
     </span>
     <span v-else data-testid="description-plain-text" class="gl-display-flex">
-      {{ finding.severity }} - {{ finding.description }}
+      {{ listText }}
     </span>
   </li>
 </template>

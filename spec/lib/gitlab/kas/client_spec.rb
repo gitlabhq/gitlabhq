@@ -79,6 +79,7 @@ RSpec.describe Gitlab::Kas::Client do
 
       let(:repository) { instance_double(Gitlab::Agent::Entity::GitalyRepository) }
       let(:gitaly_info) { instance_double(Gitlab::Agent::Entity::GitalyInfo) }
+      let(:gitaly_features) { Feature::Gitaly.server_feature_flags }
 
       let(:agent_configurations) { [double] }
 
@@ -94,7 +95,7 @@ RSpec.describe Gitlab::Kas::Client do
           .and_return(repository)
 
         expect(Gitlab::Agent::Entity::GitalyInfo).to receive(:new)
-          .with(Gitlab::GitalyClient.connection_data(project.repository_storage))
+          .with(Gitlab::GitalyClient.connection_data(project.repository_storage).merge(features: gitaly_features))
           .and_return(gitaly_info)
 
         expect(Gitlab::Agent::ConfigurationProject::Rpc::ListAgentConfigFilesRequest).to receive(:new)

@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage,
+    quarantine: {
+      only: { job: 'relative_url', condition: -> { QA::Support::FIPS.enabled? } },
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
+      type: :investigating
+    }, product_group: :package_registry do
     describe 'Maven Repository with Gradle' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

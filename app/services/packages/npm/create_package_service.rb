@@ -18,7 +18,7 @@ module Packages
           ApplicationRecord.transaction { create_npm_package! }
         end
 
-        return error('Could not obtain package lease.', 400) unless package
+        return error('Could not obtain package lease. Please try again.', 400) unless package
 
         package
       end
@@ -40,7 +40,7 @@ module Packages
       def create_npm_metadatum!(package)
         package.create_npm_metadatum!(package_json: package_json)
       rescue ActiveRecord::RecordInvalid => e
-        if package.npm_metadatum && package.npm_metadatum.errors.added?(:package_json, 'structure is too large')
+        if package.npm_metadatum && package.npm_metadatum.errors.where(:package_json, :too_large).any? # rubocop: disable CodeReuse/ActiveRecord
           Gitlab::ErrorTracking.track_exception(e, field_sizes: field_sizes_for_error_tracking)
         end
 

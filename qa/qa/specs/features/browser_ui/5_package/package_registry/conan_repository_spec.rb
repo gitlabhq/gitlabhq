@@ -2,8 +2,9 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1883',
-    type: :investigating
+    only: { job: %w[object_storage relative_url airgapped], condition: -> { QA::Support::FIPS.enabled? } },
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',
+    type: :bug
   } do
     describe 'Conan Repository' do
       include Runtime::Fixtures

@@ -92,7 +92,7 @@ GitLab may conduct unscheduled maintenance to address high-severity issues affec
 
 ### Application
 
-GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the unsupported features [listed below](#features-that-are-not-available).
+GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the [unsupported features](#features-that-are-not-available) listed below.
 
 #### GitLab Runners
 

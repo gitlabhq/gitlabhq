@@ -189,3 +189,7 @@ export const mapParallel = (content) => (line) => {
     commentRowClasses: hasDiscussions(left) || hasDiscussions(right) ? '' : 'js-temp-notes-holder',
   };
 };
+
+export const mapParallelNoSast = (content) => {
+  return mapParallel(content);
+};

@@ -3,9 +3,9 @@
 module QA
   RSpec.describe 'Package', :object_storage,
     quarantine: {
-      only: { pipeline: :nightly },
-      type: :investigating,
-      issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1883'
+      only: { job: %w[relative_url airgapped] },
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
+      type: :investigating
     } do
     describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures

@@ -44,11 +44,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
   end
 
   shared_examples 'reject metadata request' do |status:|
-    it 'rejects the metadata request' do
-      subject
-
-      expect(response).to have_gitlab_http_status(status)
-    end
+    it_behaves_like 'returning response status', status
   end
 
   shared_examples 'redirect metadata request' do |status:|
@@ -280,12 +276,14 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
           example_name = 'redirect metadata request'
           status = :redirected
         else
-          example_name = 'reject metadata request'
           status = :not_found
         end
       end
 
       status = :not_found if scope == :group && params[:package_name_type] == :non_existing && !params[:request_forward]
+
+      # Check the error message for :not_found
+      example_name = 'returning response status with error' if status == :not_found
 
       it_behaves_like example_name, status: status
     end
@@ -361,11 +359,11 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
   end
 
   shared_examples 'reject audit request' do |status:|
-    it 'rejects the audit request' do
-      subject
+    it_behaves_like 'returning response status', status
+  end
 
-      expect(response).to have_gitlab_http_status(status)
-    end
+  shared_examples 'reject audit request with error' do |status:|
+    it_behaves_like 'returning response status with error', status: status, error: 'Project not found'
   end
 
   shared_examples 'redirect audit request' do |status:|
@@ -464,7 +462,7 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
           example_name = 'redirect audit request'
           status = :temporary_redirect
         else
-          example_name = 'reject audit request'
+          example_name = 'reject audit request with error'
           status = :not_found
         end
       end
@@ -633,12 +631,12 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
       example_name = "#{params[:expected_result]} package tags request"
       status = params[:expected_status]
 
-      if scope == :instance && params[:package_name_type] != :scoped_naming_convention
-        example_name = 'reject package tags request'
+      if (scope == :instance && params[:package_name_type] != :scoped_naming_convention) || (scope == :group && params[:package_name_type] == :non_existing)
         status = :not_found
       end
 
-      status = :not_found if scope == :group && params[:package_name_type] == :non_existing
+      # Check the error message for :not_found
+      example_name = 'returning response status with error' if status == :not_found
 
       it_behaves_like example_name, status: status
     end
@@ -857,6 +855,9 @@ RSpec.shared_examples 'handling different package names, visibilities and user r
     end
 
     status = :not_found if scope == :group && params[:package_name_type] == :non_existing && params[:auth].present?
+
+    # Check the error message for :not_found
+    example_name = 'returning response status with error' if status == :not_found
 
     it_behaves_like example_name, status: status
   end

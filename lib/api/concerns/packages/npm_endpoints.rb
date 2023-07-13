@@ -21,6 +21,10 @@ module API
         included do
           helpers ::API::Helpers::Packages::DependencyProxyHelpers
 
+          rescue_from ActiveRecord::RecordInvalid do |e|
+            render_structured_api_error!({ message: e.message, error: e.message }, 400)
+          end
+
           before do
             require_packages_enabled!
             authenticate_non_get!
@@ -88,7 +92,7 @@ module API
               packages = ::Packages::Npm::PackageFinder.new(package_name, project: project)
                                                        .execute
 
-              not_found! if packages.empty?
+              not_found!('Package') if packages.empty?
 
               track_package_event(:list_tags, :npm, project: project, namespace: project.namespace)
 

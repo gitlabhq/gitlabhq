@@ -69,7 +69,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
             field_sizes: expected_field_sizes
           )
 
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Package json structure is too large')
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /structure is too large/)
             .and not_change { Packages::Package.count }
             .and not_change { Packages::Package.npm.count }
             .and not_change { Packages::Tag.count }
@@ -296,7 +296,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       with_them do
-        it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Version is invalid') }
+        it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Version #{Gitlab::Regex.semver_regex_message}") }
       end
     end
 
@@ -319,7 +319,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       it { expect(subject[:http_status]).to eq 400 }
-      it { expect(subject[:message]).to eq 'Could not obtain package lease.' }
+      it { expect(subject[:message]).to eq 'Could not obtain package lease. Please try again.' }
     end
 
     context 'when many of the same packages are created at the same time', :delete do

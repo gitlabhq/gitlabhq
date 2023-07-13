@@ -57,6 +57,7 @@ export default {
     ...mapGetters('diffs', ['commitId', 'fileLineCoverage']),
     ...mapState('diffs', [
       'codequalityDiff',
+      'sastDiff',
       'highlightedRow',
       'coverageLoaded',
       'selectedCommentPosition',
@@ -75,7 +76,10 @@ export default {
       );
     },
     hasCodequalityChanges() {
-      return this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0;
+      return (
+        this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0 ||
+        this.sastDiff?.added?.length > 0
+      );
     },
   },
   created() {
@@ -183,7 +187,10 @@ export default {
       );
     },
     getCodeQualityLine(line) {
-      return (line.left ?? line.right)?.codequality?.[0]?.line;
+      return (
+        (line.left ?? line.right)?.codequality?.[0]?.line ||
+        (line.left ?? line.right)?.sast?.[0]?.line
+      );
     },
     lineDrafts(line, side) {
       return (line[side]?.lineDrafts || []).filter((entry) => entry.isDraft);

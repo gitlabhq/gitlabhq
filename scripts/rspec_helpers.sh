@@ -20,19 +20,19 @@ function retrieve_tests_metadata() {
 }
 
 function update_tests_metadata() {
-  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
-  local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
+  local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
+  local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_folder}")/"
 
-  echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+  echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
 
-  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ${knapsack_folder_path}rspec*.json
+  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${knapsack_folder_path:-unknown_folder}rspec*.json
 
   export FLAKY_RSPEC_GENERATE_REPORT="true"
-  scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ${rspec_flaky_folder_path}all_*.json
+  scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_file}" ${rspec_flaky_folder_path:-unknown_folder}all_*.json
 
   # Prune flaky tests that weren't flaky in the last 7 days, *after* updating the flaky tests detected
   # in this pipeline, so that first_flaky_at for tests that are still flaky is maintained.
-  scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
+  scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH:-unknown_file}"
 
   if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
     if [[ -n "$RSPEC_PROFILING_PGSSLKEY" ]]; then
@@ -70,10 +70,10 @@ function update_tests_mapping() {
     return 0
   fi
 
-  scripts/generate-test-mapping "${RSPEC_TESTS_MAPPING_PATH}" crystalball/rspec*.yml
-  scripts/pack-test-mapping "${RSPEC_TESTS_MAPPING_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-  gzip "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-  rm -f crystalball/rspec*.yml "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
+  scripts/generate-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" crystalball/rspec*.yml
+  scripts/pack-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
+  gzip "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
+  rm -f crystalball/rspec*.yml "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
 }
 
 function crystalball_rspec_data_exists() {
@@ -451,14 +451,14 @@ function cleanup_individual_job_reports() {
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
 
-  rm -rf ${knapsack_folder_path}rspec*.json \
-    ${rspec_flaky_folder_path}all_*.json \
-    ${rspec_flaky_folder_path}new_*.json \
-    ${rspec_flaky_folder_path}skipped_flaky_tests_*_report.txt \
-    ${rspec_flaky_folder_path}retried_tests_*_report.txt \
-    ${RSPEC_LAST_RUN_RESULTS_FILE} \
-    ${RSPEC_PROFILING_FOLDER_PATH}/**/*
-  rmdir ${RSPEC_PROFILING_FOLDER_PATH} || true
+  rm -rf ${knapsack_folder_path:-unknown_folder}rspec*.json \
+    ${rspec_flaky_folder_path:-unknown_folder}all_*.json \
+    ${rspec_flaky_folder_path:-unknown_folder}new_*.json \
+    ${rspec_flaky_folder_path:-unknown_folder}skipped_flaky_tests_*_report.txt \
+    ${rspec_flaky_folder_path:-unknown_folder}retried_tests_*_report.txt \
+    ${RSPEC_LAST_RUN_RESULTS_FILE:-unknown_folder} \
+    ${RSPEC_PROFILING_FOLDER_PATH:-unknown_folder}/**/*
+  rmdir ${RSPEC_PROFILING_FOLDER_PAT:-unknown_folder} || true
 }
 
 function generate_flaky_tests_reports() {

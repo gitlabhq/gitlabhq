@@ -68,7 +68,9 @@ module Gitlab
       end
 
       def gitaly_info(project)
+        gitaly_features = Feature::Gitaly.server_feature_flags
         connection_data = Gitlab::GitalyClient.connection_data(project.repository_storage)
+          .merge(features: gitaly_features)
 
         Gitlab::Agent::Entity::GitalyInfo.new(connection_data)
       end

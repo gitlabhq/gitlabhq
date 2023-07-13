@@ -353,7 +353,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
 
       it { is_expected.to eq(output) }
 
-      if params[:valid] # rubocop:disable RSpec/AvoidConditionalStatements
+      if params[:valid]
         it 'is a valid ivar name' do
           expect { instance_variable_defined?(ivar) }.not_to raise_error
         end

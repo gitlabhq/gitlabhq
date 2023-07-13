@@ -1536,8 +1536,8 @@ msgstr ""
 msgid "0 B"
 msgstr ""
 
-msgid "1 Code quality finding"
-msgid_plural "%d Code quality findings"
+msgid "1 Code Quality finding"
+msgid_plural "%d Code Quality findings"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1548,6 +1548,11 @@ msgstr[1] ""
 
 msgid "1 Issue"
 msgid_plural "%d Issues"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "1 Security finding"
+msgid_plural "%d Security findings"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -5187,6 +5192,9 @@ msgid "An unexpected error occurred while checking the project runners."
 msgstr ""
 
 msgid "An unexpected error occurred while communicating with the Web Terminal."
+msgstr ""
+
+msgid "An unexpected error occurred while loading the Sast diff."
 msgstr ""
 
 msgid "An unexpected error occurred while loading the code quality diff."
@@ -12637,6 +12645,9 @@ msgid "ContributionAnalytics|There is too much data to calculate. Try lowering t
 msgstr ""
 
 msgid "ContributionAnalytics|Total Contributions"
+msgstr ""
+
+msgid "ContributionEvent|Accepted merge request %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
 msgid "ContributionEvent|Approved merge request %{targetLink} in %{resourceParentLink}."
@@ -30226,6 +30237,9 @@ msgid "New Protected Branch"
 msgstr ""
 
 msgid "New Requirement"
+msgstr ""
+
+msgid "New Security findings"
 msgstr ""
 
 msgid "New Snippet"
@@ -55513,7 +55527,7 @@ msgstr ""
 msgid "starts on %{timebox_start_date}"
 msgstr ""
 
-msgid "structure is too large"
+msgid "structure is too large. Maximum size is %{max_size} characters"
 msgstr ""
 
 msgid "stuck"

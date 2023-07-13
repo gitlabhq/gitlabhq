@@ -114,10 +114,10 @@ Managing the number of users against the number of subscription seats can be a c
 
 GitLab has several features which can help you manage the number of users:
 
-- Enable the [**Require administrator approval for new sign ups**](../../user/admin_area/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
+- Enable the [**Require administrator approval for new sign ups**](../../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
   option.
 - Enable `block_auto_created_users` for new sign-ups via [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or [OmniAuth](../../integration/omniauth.md#configure-common-settings).
-- Enable the [User cap](../../user/admin_area/settings/sign_up_restrictions.md#user-cap)
+- Enable the [User cap](../../administration/settings/sign_up_restrictions.md#user-cap)
   option. **Available in GitLab 13.7 and later**.
 - [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new
   users manually.

@@ -88,6 +88,11 @@ export default {
       required: false,
       default: true,
     },
+    preRender: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   idState() {
     return {
@@ -117,7 +122,7 @@ export default {
       return getShortShaFromFile(this.file);
     },
     showLoadingIcon() {
-      return this.idState.isLoadingCollapsedDiff;
+      return this.idState.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
     hasDiff() {
       return hasDiff(this.file);
@@ -172,9 +177,6 @@ export default {
     showLocalFileReviews() {
       return Boolean(gon.current_user_id);
     },
-    codequalityDiffForFile() {
-      return this.codequalityDiff?.files?.[this.file.file_path] || [];
-    },
     isCollapsed() {
       if (collapsedType(this.file) !== DIFF_FILE_MANUAL_COLLAPSE) {
         return this.viewDiffsFileByFile ? false : this.file.viewer?.automaticallyCollapsed;
@@ -200,6 +202,8 @@ export default {
   watch: {
     'file.id': {
       handler: function fileIdHandler() {
+        if (this.preRender) return;
+
         this.manageViewedEffects();
       },
     },
@@ -212,6 +216,7 @@ export default {
           newHash &&
           oldHash &&
           !this.hasDiff &&
+          !this.preRender &&
           !this.idState.hasLoadedCollapsedDiff
         ) {
           this.requestDiff();
@@ -220,10 +225,14 @@ export default {
     },
   },
   created() {
+    if (this.preRender) return;
+
     notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
     eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   mounted() {
+    if (this.preRender) return;
+
     if (this.hasDiff) {
       this.postRender();
     }
@@ -231,12 +240,15 @@ export default {
     this.manageViewedEffects();
   },
   beforeDestroy() {
+    if (this.preRender) return;
+
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   methods: {
     ...mapActions('diffs', [
       'loadCollapsedDiff',
       'assignDiscussionsToDiff',
+      'setRenderIt',
       'setFileCollapsedByUser',
       'saveDiffDiscussion',
       'toggleFileCommentForm',
@@ -300,6 +312,10 @@ export default {
         .then(() => {
           idState.isLoadingCollapsedDiff = false;
           idState.hasLoadedCollapsedDiff = true;
+
+          if (this.file.file_hash === file.file_hash) {
+            this.setRenderIt(this.file);
+          }
         })
         .then(() => {
           if (this.file.file_hash !== file.file_hash) return;
@@ -359,14 +375,15 @@ export default {
 
 <template>
   <div
-    :id="file.file_hash"
+    :id="!preRender && active && file.file_hash"
     :class="{
+      'is-active': currentDiffFileId === file.file_hash,
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
     }"
     :data-path="file.new_path"
-    class="diff-file file-holder gl-border-none gl-mb-0! gl-pb-5"
+    class="diff-file file-holder gl-border-none"
   >
     <diff-file-header
       :can-current-user-fork="canCurrentUserFork"
@@ -377,7 +394,6 @@ export default {
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
-      :codequality-diff="codequalityDiffForFile"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
       @toggleFile="handleToggle({ viaUserInteraction: true })"
@@ -406,7 +422,7 @@ export default {
     </div>
     <template v-else>
       <div
-        :id="`diff-content-${file.file_hash}`"
+        :id="!preRender && active && `diff-content-${file.file_hash}`"
         :class="hasBodyClasses.contentByHash"
         data-testid="content-area"
       >
@@ -530,3 +546,20 @@ export default {
     </template>
   </div>
 </template>
+
+<style>
+@keyframes shadow-fade {
+  from {
+    box-shadow: 0 0 4px #919191;
+  }
+
+  to {
+    box-shadow: 0 0 0 #dfdfdf;
+  }
+}
+
+.diff-file.is-active {
+  box-shadow: 0 0 0 #dfdfdf;
+  animation: shadow-fade 1.2s 0.1s 1;
+}
+</style>

@@ -1,4 +1,4 @@
-export const multipleFindingsArr = [
+export const multipleFindingsArrCodeQualityScale = [
   {
     severity: 'minor',
     description: 'mocked minor Issue',
@@ -31,19 +31,78 @@ export const multipleFindingsArr = [
   },
 ];
 
-export const fiveFindings = {
-  filePath: 'index.js',
-  codequality: multipleFindingsArr.slice(0, 5),
+export const multipleFindingsArrSastScale = [
+  {
+    severity: 'low',
+    description: 'mocked low Issue',
+    line: 2,
+  },
+  {
+    severity: 'medium',
+    description: 'mocked medium Issue',
+    line: 3,
+  },
+  {
+    severity: 'info',
+    description: 'mocked info Issue',
+    line: 3,
+  },
+  {
+    severity: 'high',
+    description: 'mocked high Issue',
+    line: 3,
+  },
+  {
+    severity: 'critical',
+    description: 'mocked critical Issue',
+    line: 3,
+  },
+  {
+    severity: 'unknown',
+    description: 'mocked unknown Issue',
+    line: 3,
+  },
+];
+
+export const multipleCodeQualityNoSast = {
+  codeQuality: multipleFindingsArrCodeQualityScale,
+  sast: [],
 };
 
-export const threeFindings = {
-  filePath: 'index.js',
-  codequality: multipleFindingsArr.slice(0, 3),
+export const multipleSastNoCodeQuality = {
+  codeQuality: [],
+  sast: multipleFindingsArrSastScale,
 };
 
-export const singularFinding = {
+export const fiveCodeQualityFindings = {
   filePath: 'index.js',
-  codequality: [multipleFindingsArr[0]],
+  codequality: multipleFindingsArrCodeQualityScale.slice(0, 5),
+};
+
+export const threeCodeQualityFindings = {
+  filePath: 'index.js',
+  codequality: multipleFindingsArrCodeQualityScale.slice(0, 3),
+};
+
+export const singularCodeQualityFinding = {
+  filePath: 'index.js',
+  codequality: [multipleFindingsArrCodeQualityScale[0]],
+};
+
+export const singularFindingSast = {
+  filePath: 'index.js',
+  sast: [multipleFindingsArrSastScale[0]],
+};
+
+export const threeSastFindings = {
+  filePath: 'index.js',
+  sast: multipleFindingsArrSastScale.slice(0, 3),
+};
+
+export const oneCodeQualityTwoSastFindings = {
+  filePath: 'index.js',
+  sast: multipleFindingsArrSastScale.slice(0, 2),
+  codequality: [multipleFindingsArrCodeQualityScale[0]],
 };
 
 export const diffCodeQuality = {
@@ -73,7 +132,7 @@ export const diffCodeQuality = {
         old_line: null,
         new_line: 2,
 
-        codequality: [multipleFindingsArr[0]],
+        codequality: [multipleFindingsArrCodeQualityScale[0]],
         lineDrafts: [],
       },
     },

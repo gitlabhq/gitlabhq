@@ -6,6 +6,7 @@ import {
   EVENT_TYPE_LEFT,
   EVENT_TYPE_PUSHED,
   EVENT_TYPE_PRIVATE,
+  EVENT_TYPE_MERGED,
   PUSH_EVENT_REF_TYPE_BRANCH,
   PUSH_EVENT_REF_TYPE_TAG,
 } from '~/contribution_events/constants';
@@ -19,6 +20,8 @@ export const eventExpired = () => findEventByAction(EVENT_TYPE_EXPIRED);
 export const eventJoined = () => findEventByAction(EVENT_TYPE_JOINED);
 
 export const eventLeft = () => findEventByAction(EVENT_TYPE_LEFT);
+
+export const eventMerged = () => findEventByAction(EVENT_TYPE_MERGED);
 
 const findPushEvent = ({
   isNew = false,

@@ -105,6 +105,7 @@ describe('DiffsStoreMutations', () => {
 
       mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
 
+      expect(state.diffFiles[0].renderIt).toEqual(true);
       expect(state.diffFiles[0].collapsed).toEqual(false);
       expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });

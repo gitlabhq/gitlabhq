@@ -307,6 +307,7 @@ function mergeTwoFiles(target, source) {
     ...target,
     [INLINE_DIFF_LINES_KEY]: missingInline ? source[INLINE_DIFF_LINES_KEY] : originalInline,
     parallel_diff_lines: null,
+    renderIt: source.renderIt,
     collapsed: source.collapsed,
   };
 }
@@ -387,6 +388,7 @@ function prepareDiffFileLines(file) {
 
 function finalizeDiffFile(file) {
   Object.assign(file, {
+    renderIt: true,
     isShowingFullFile: false,
     isLoadingFullFile: false,
     discussions: [],

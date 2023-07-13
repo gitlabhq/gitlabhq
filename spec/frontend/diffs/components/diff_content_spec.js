@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
+import * as diffRowUtils from 'ee_else_ce/diffs/components/diff_row_utils';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import DiffView from '~/diffs/components/diff_view.vue';
@@ -77,6 +78,7 @@ describe('DiffContent', () => {
             getCommentFormForDiffFile: getCommentFormForDiffFileGetterMock,
             diffLines: () => () => [...getDiffFileMock().parallel_diff_lines],
             fileLineCodequality: () => () => [],
+            fileLineSast: () => () => [],
           },
           actions: {
             saveDiffDiscussion: saveDiffDiscussionMock,
@@ -117,6 +119,32 @@ describe('DiffContent', () => {
       createComponent({ props: { diffFile: { ...textDiffFile, renderingLines: true } } });
 
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    });
+
+    it('should include Sast findings when sastReportsInInlineDiff flag is true', () => {
+      const mapParallelSpy = jest.spyOn(diffRowUtils, 'mapParallel');
+      const mapParallelNoSastSpy = jest.spyOn(diffRowUtils, 'mapParallelNoSast');
+      createComponent({
+        provide: {
+          glFeatures: {
+            sastReportsInInlineDiff: true,
+          },
+        },
+        props: { diffFile: { ...textDiffFile, renderingLines: true } },
+      });
+
+      expect(mapParallelSpy).toHaveBeenCalled();
+      expect(mapParallelNoSastSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not include Sast findings when sastReportsInInlineDiff flag is false', () => {
+      const mapParallelSpy = jest.spyOn(diffRowUtils, 'mapParallel');
+      const mapParallelNoSastSpy = jest.spyOn(diffRowUtils, 'mapParallelNoSast');
+
+      createComponent({ props: { diffFile: { ...textDiffFile, renderingLines: true } } });
+
+      expect(mapParallelNoSastSpy).toHaveBeenCalled();
+      expect(mapParallelSpy).not.toHaveBeenCalled();
     });
   });
 

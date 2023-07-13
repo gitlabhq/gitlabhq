@@ -23,6 +23,12 @@ function updateDiffFilesInState(state, files) {
   return Object.assign(state, { diffFiles: files });
 }
 
+function renderFile(file) {
+  Object.assign(file, {
+    renderIt: true,
+  });
+}
+
 export default {
   [types.SET_BASE_CONFIG](state, options) {
     const {
@@ -94,6 +100,10 @@ export default {
 
   [types.SET_COVERAGE_DATA](state, coverageFiles) {
     Object.assign(state, { coverageFiles, coverageLoaded: true });
+  },
+
+  [types.RENDER_FILE](state, file) {
+    renderFile(file);
   },
 
   [types.SET_MERGE_REQUEST_DIFFS](state, mergeRequestDiffs) {
@@ -344,6 +354,10 @@ export default {
         file.viewer.automaticallyCollapsed = collapsed;
         file.viewer.manuallyCollapsed = null;
       }
+    }
+
+    if (file && !collapsed) {
+      renderFile(file);
     }
   },
   [types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {

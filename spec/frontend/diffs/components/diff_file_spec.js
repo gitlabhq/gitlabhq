@@ -546,6 +546,24 @@ describe('DiffFile', () => {
     });
   });
 
+  it('loads collapsed file on mounted when single file mode is enabled', async () => {
+    const file = {
+      ...getReadableFile(),
+      load_collapsed_diff_url: '/diff_for_path',
+      highlighted_diff_lines: [],
+      parallel_diff_lines: [],
+      viewer: { name: 'collapsed', automaticallyCollapsed: true },
+    };
+
+    axiosMock.onGet(file.load_collapsed_diff_url).reply(HTTP_STATUS_OK, getReadableFile());
+
+    ({ wrapper, store } = createComponent({ file, props: { viewDiffsFileByFile: true } }));
+
+    await nextTick();
+
+    expect(findLoader(wrapper).exists()).toBe(true);
+  });
+
   describe('merge conflicts', () => {
     it('does not render conflict alert', () => {
       const file = {

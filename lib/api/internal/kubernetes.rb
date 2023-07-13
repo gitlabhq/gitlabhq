@@ -29,21 +29,13 @@ module API
         end
 
         def gitaly_info(project)
-          shard = repo_type.repository_for(project).shard
-          {
-            address: Gitlab::GitalyClient.address(shard),
-            token: Gitlab::GitalyClient.token(shard),
-            features: Feature::Gitaly.server_feature_flags
-          }
+          gitaly_features = Feature::Gitaly.server_feature_flags
+
+          Gitlab::GitalyClient.connection_data(project.repository_storage).merge(features: gitaly_features)
         end
 
         def gitaly_repository(project)
-          {
-            storage_name: project.repository_storage,
-            relative_path: project.disk_path + '.git',
-            gl_repository: repo_type.identifier_for_container(project),
-            gl_project_path: repo_type.repository_for(project).full_path
-          }
+          project.repository.gitaly_repository.to_h
         end
 
         def check_feature_enabled

@@ -77,9 +77,8 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         sign_in(author_user)
         visit diffs_project_merge_request_path(project, merge_request)
 
-        first(".js-diff-more-actions").click
-
-        expect(page).to have_selector(".js-edit-blob")
+        # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
+        expect(page).to have_selector(".js-edit-blob", visible: false)
       end
     end
 

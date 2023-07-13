@@ -78,6 +78,10 @@ module Gitlab
         @npm_package_name_regex ||= %r{\A(?:@(#{Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX})/)?[-+\.\_a-zA-Z0-9]+\z}o
       end
 
+      def npm_package_name_regex_message
+        'should be a valid NPM package name: https://github.com/npm/validate-npm-package-name#naming-rules.'
+      end
+
       def nuget_package_name_regex
         @nuget_package_name_regex ||= %r{\A[-+\.\_a-zA-Z0-9]+\z}.freeze
       end
@@ -175,6 +179,10 @@ module Gitlab
 
       def semver_regex
         @semver_regex ||= Regexp.new("\\A#{::Gitlab::Regex.unbounded_semver_regex.source}\\z", ::Gitlab::Regex.unbounded_semver_regex.options).freeze
+      end
+
+      def semver_regex_message
+        'should follow SemVer: https://semver.org'
       end
 
       # These partial semver regexes are intended for use in composing other

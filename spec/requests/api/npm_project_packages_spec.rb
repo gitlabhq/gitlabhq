@@ -240,12 +240,13 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
     subject(:upload_package_with_token) { upload_with_token(package_name, params) }
 
-    shared_examples 'handling invalid record with 400 error' do
+    shared_examples 'handling invalid record with 400 error' do |error_message|
       it 'handles an ActiveRecord::RecordInvalid exception with 400 error' do
         expect { upload_package_with_token }
           .not_to change { project.packages.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq(error_message)
       end
     end
 
@@ -255,7 +256,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           let(:package_name) { "@#{group.path}/my_inv@@lid_package_name" }
           let(:params) { upload_params(package_name: package_name) }
 
-          it_behaves_like 'handling invalid record with 400 error'
+          it_behaves_like 'handling invalid record with 400 error', "Validation failed: Name is invalid, Name #{Gitlab::Regex.npm_package_name_regex_message}"
           it_behaves_like 'not a package tracking event'
         end
 
@@ -277,7 +278,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           with_them do
             let(:params) { upload_params(package_name: package_name, package_version: version) }
 
-            it_behaves_like 'handling invalid record with 400 error'
+            it_behaves_like 'handling invalid record with 400 error', "Validation failed: Version #{Gitlab::Regex.semver_regex_message}"
             it_behaves_like 'not a package tracking event'
           end
         end
@@ -286,7 +287,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           let(:package_name) { "@#{group.path}/my_package_name" }
           let(:params) { upload_params(package_name: package_name, file: 'npm/payload_with_empty_attachment.json') }
 
-          it_behaves_like 'handling invalid record with 400 error'
+          it_behaves_like 'handling invalid record with 400 error', 'Attachment data is empty.'
           it_behaves_like 'not a package tracking event'
         end
       end
@@ -373,7 +374,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
             let(:package_name) { "@#{group.path}/test" }
 
-            it_behaves_like 'handling invalid record with 400 error'
+            it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package already exists'
             it_behaves_like 'not a package tracking event'
 
             context 'with a new version' do
@@ -408,6 +409,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             .not_to change { project.packages.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('Package already exists.')
         end
 
         it_behaves_like 'does not enqueue a worker to sync a metadata cache' do
@@ -461,7 +463,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             .not_to change { project.packages.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('Could not obtain package lease.')
+          expect(response.body).to include('Could not obtain package lease. Please try again.')
+          expect(json_response['error']).to eq('Could not obtain package lease. Please try again.')
         end
       end
 
@@ -487,15 +490,8 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             end
           end
 
+          it_behaves_like 'handling invalid record with 400 error', 'Validation failed: Package json structure is too large. Maximum size is 20000 characters'
           it_behaves_like 'not a package tracking event'
-
-          it 'returns an error' do
-            expect { upload_package_with_token }
-              .not_to change { project.packages.count }
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(response.body).to include('Validation failed: Package json structure is too large')
-          end
         end
       end
 

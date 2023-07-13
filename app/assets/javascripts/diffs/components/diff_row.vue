@@ -141,6 +141,18 @@ export default {
     },
     (props) => [props.inline, props.line.right?.codequality?.length].join(':'),
   ),
+  showSecurityLeft: memoize(
+    (props) => {
+      return props.inline && props.line.left?.sast?.length > 0;
+    },
+    (props) => [props.inline, props.line.left?.sast?.length].join(':'),
+  ),
+  showSecurityRight: memoize(
+    (props) => {
+      return !props.inline && props.line.right?.sast?.length > 0;
+    },
+    (props) => [props.inline, props.line.right?.sast?.length].join(':'),
+  ),
   classNameMapCellLeft: memoize(
     (props) => {
       return utils.classNameMapCell({
@@ -325,12 +337,17 @@ export default {
         >
           <component
             :is="$options.CodeQualityGutterIcon"
-            v-if="$options.showCodequalityLeft(props)"
+            v-if="$options.showCodequalityLeft(props) || $options.showSecurityLeft(props)"
             :code-quality-expanded="props.codeQualityExpanded"
             :codequality="props.line.left.codequality"
+            :sast="props.line.left.sast"
             :file-path="props.filePath"
             @showCodeQualityFindings="
-              listeners.toggleCodeQualityFindings(props.line.left.codequality[0].line)
+              listeners.toggleCodeQualityFindings(
+                props.line.left.codequality[0]
+                  ? props.line.left.codequality[0].line
+                  : props.line.left.sast[0].line,
+              )
             "
           />
         </div>
@@ -461,12 +478,17 @@ export default {
         >
           <component
             :is="$options.CodeQualityGutterIcon"
-            v-if="$options.showCodequalityRight(props)"
+            v-if="$options.showCodequalityRight(props) || $options.showSecurityRight(props)"
             :codequality="props.line.right.codequality"
+            :sast="props.line.right.sast"
             :file-path="props.filePath"
             data-testid="codeQualityIcon"
             @showCodeQualityFindings="
-              listeners.toggleCodeQualityFindings(props.line.right.codequality[0].line)
+              listeners.toggleCodeQualityFindings(
+                props.line.right.codequality[0]
+                  ? props.line.right.codequality[0].line
+                  : props.line.right.sast[0].line,
+              )
             "
           />
         </div>

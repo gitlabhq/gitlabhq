@@ -73,6 +73,8 @@ describe('diffs/components/app', () => {
       propsData: {
         endpointCoverage: `${TEST_HOST}/diff/endpointCoverage`,
         endpointCodequality: '',
+        endpointSast: '',
+        projectPath: 'namespace/project',
         currentUser: {},
         changesEmptyStateIllustration: '',
         ...props,
@@ -181,6 +183,16 @@ describe('diffs/components/app', () => {
       wrapper.vm.fetchData(false);
 
       expect(wrapper.vm.fetchCodequality).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('SAST diff', () => {
+    it('does not fetch Sast data on FOSS', () => {
+      createComponent();
+      jest.spyOn(wrapper.vm, 'fetchSast');
+      wrapper.vm.fetchData(false);
+
+      expect(wrapper.vm.fetchSast).not.toHaveBeenCalled();
     });
   });
 

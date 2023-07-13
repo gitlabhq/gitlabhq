@@ -7,10 +7,6 @@ CodeReuse/ActiveRecord:
 Gitlab/Json:
   Enabled: false
 
-# FIXME
-Gitlab/RSpec/AvoidSetup:
-  Enabled: false
-
 Naming/FileName:
   Exclude:
     - spec/**/*.rb
@@ -18,9 +14,6 @@ Naming/FileName:
     - lib/gitlab/rspec/all.rb
 
 Rails/Pluck:
-  Enabled: false
-
-RSpec/AvoidConditionalStatements:
   Enabled: false
 
 RSpec/MultipleMemoizedHelpers:

@@ -16,6 +16,7 @@ AllCops:
   # Target the current Ruby version. For example, "3.0" or "3.1".
   TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
   SuggestExtensions: false
+  NewCops: disable
 
 # This cop doesn't make sense in the context of gems
 CodeReuse/ActiveRecord:
@@ -60,6 +61,10 @@ Naming/FileName:
   Exclude:
     - spec/**/*.rb
 
+# This cop doesn't make sense in the context of gems
+RSpec/AvoidConditionalStatements:
+  Enabled: false
+
 RSpec/ContextWording:
   Prefixes:
   - 'when'
@@ -79,6 +84,9 @@ RSpec/MissingFeatureCategory:
 # Enable once we drop 3.0 support
 Style/HashSyntax:
   Enabled: false
+
+Style/Lambda:
+  EnforcedStyle: literal
 
 Style/RegexpLiteralMixedPreserve:
   Enabled: true
