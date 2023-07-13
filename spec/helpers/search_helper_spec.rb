@@ -1454,4 +1454,13 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
     it { is_expected.to eq(false) }
   end
+
+  describe '#wiki_blob_link' do
+    let_it_be(:project) { create :project, :wiki_repo }
+    let(:wiki_blob) do
+      Gitlab::Search::FoundBlob.new({ path: 'test', basename: 'test', ref: 'master', data: 'foo', startline: 2, project: project, project_id: project.id })
+    end
+
+    it { expect(wiki_blob_link(wiki_blob)).to eq("/#{project.namespace.path}/#{project.path}/-/wikis/#{wiki_blob.path}") }
+  end
 end

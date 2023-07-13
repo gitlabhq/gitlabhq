@@ -16,7 +16,7 @@ Support is not provided for features listed as "Experimental" or "Alpha" or any 
 
 - Not ready for production use.
 - No support available.
-- May be unstable or have performance issues.
+- May be unstable.
 - Can be removed at any time.
 - Data loss may occur.
 - Documentation may not exist or just be in a blog format.
@@ -36,7 +36,7 @@ Commercially-reasonable efforts are made to provide limited support for features
 
 - May not be ready for production use.
 - Support on a commercially-reasonable effort basis.
-- May be unstable and can cause performance and stability issues.
+- May be unstable.
 - Configuration and dependencies unlikely to change.
 - Features and functions unlikely to change. However, breaking changes may occur outside of major releases or with less notice than for Generally Available features.
 - Data loss not likely.

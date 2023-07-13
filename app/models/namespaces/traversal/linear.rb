@@ -96,13 +96,6 @@ module Namespaces
         traversal_ids.present?
       end
 
-      def use_traversal_ids_for_ancestors_upto?
-        return false unless use_traversal_ids?
-        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors_upto, root_ancestor)
-
-        traversal_ids.present?
-      end
-
       def root_ancestor
         strong_memoize(:root_ancestor) do
           if association(:parent).loaded? && parent.present?
@@ -162,7 +155,7 @@ module Namespaces
       # This copies the behavior of the recursive method. We will deprecate
       # this behavior soon.
       def ancestors_upto(top = nil, hierarchy_order: nil)
-        return super unless use_traversal_ids_for_ancestors_upto?
+        return super unless use_traversal_ids?
 
         # We can't use a default value in the method definition above because
         # we need to preserve those specific parameters for super.

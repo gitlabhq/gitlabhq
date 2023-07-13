@@ -14,8 +14,6 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
-        push_frontend_feature_flag(:frozen_outbound_job_token_scopes, @project)
-        push_frontend_feature_flag(:frozen_outbound_job_token_scopes_override, @project)
       end
 
       helper_method :highlight_badge

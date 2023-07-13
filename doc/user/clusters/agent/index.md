@@ -34,7 +34,7 @@ You can choose from two primary workflows. The GitOps workflow is recommended.
 
 ### GitOps workflow
 
-You should use Flux for GitOps. To get started, see the GitLab [Flux documentation](../../../user/clusters/agent/gitops/flux.md).
+You should use Flux for GitOps. To get started, see [Tutorial: Set up Flux for GitOps](gitops/flux_tutorial.md)
 
 ### GitLab CI/CD workflow
 

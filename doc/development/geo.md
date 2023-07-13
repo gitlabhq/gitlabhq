@@ -425,18 +425,17 @@ not used, so sessions and so on, aren't shared between sites.
 ## Object Storage
 
 GitLab can optionally use Object Storage to store data it would
-otherwise store on disk. These things can be:
+otherwise store on disk. For example:
 
 - LFS Objects
 - CI Job Artifacts
 - Uploads
 
-Objects that are stored in object storage, are not handled by Geo. Geo
-ignores items in object storage. Either:
+By default, Geo does not replicate objects that are stored in object storage. Depending on the situation and needs of the customer, they can:
 
-- The object storage layer should take care of its own geographical
-  replication.
-- All secondary sites should use the same storage site.
+- [Enable GitLab-managed object storage replication](../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication).
+- Use their cloud provider's built-in services to replicate object storage across Geo sites.
+- Configure secondary Geo sites to access the same object storage endpoint as the primary site.
 
 ## Verification
 

@@ -15,3 +15,5 @@ module Types
     end
   end
 end
+
+Types::Ci::RunnerSortEnum.prepend_mod

@@ -72,6 +72,7 @@ module Ci
 
     has_many :runner_managers, inverse_of: :runner
     has_many :builds
+    has_many :running_builds, inverse_of: :runner
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
@@ -198,6 +199,7 @@ module Ci
     scope :order_created_at_desc, -> { order(created_at: :desc) }
     scope :order_token_expires_at_asc, -> { order(token_expires_at: :asc) }
     scope :order_token_expires_at_desc, -> { order(token_expires_at: :desc) }
+
     scope :with_tags, -> { preload(:tags) }
     scope :with_creator, -> { preload(:creator) }
 

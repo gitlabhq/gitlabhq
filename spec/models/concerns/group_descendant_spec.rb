@@ -19,16 +19,15 @@ RSpec.describe GroupDescendant do
 
         query_count = ActiveRecord::QueryRecorder.new { test_group.hierarchy }.count
 
-        # use_traversal_ids_for_ancestors_upto actor based feature flag check adds an extra query.
-        expect(query_count).to eq(2)
+        expect(query_count).to eq(1)
       end
 
       it 'only queries once for the ancestors when a top is given' do
         test_group = create(:group, parent: subsub_group).reload
 
         recorder = ActiveRecord::QueryRecorder.new { test_group.hierarchy(subgroup) }
-        # use_traversal_ids_for_ancestors_upto actor based feature flag check adds an extra query.
-        expect(recorder.count).to eq(2)
+
+        expect(recorder.count).to eq(1)
       end
 
       it 'builds a hierarchy for a group' do

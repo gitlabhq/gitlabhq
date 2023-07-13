@@ -1609,38 +1609,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#use_traversal_ids_for_ancestors_upto?' do
-    let_it_be(:namespace, reload: true) { create(:namespace) }
-
-    subject { namespace.use_traversal_ids_for_ancestors_upto? }
-
-    context 'when use_traversal_ids_for_ancestors_upto feature flag is true' do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestors_upto: true)
-      end
-
-      it { is_expected.to eq true }
-
-      it_behaves_like 'disabled feature flag when traversal_ids is blank'
-    end
-
-    context 'when use_traversal_ids_for_ancestors_upto feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestors_upto: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-
-    context 'when use_traversal_ids? feature flag is false' do
-      before do
-        stub_feature_flags(use_traversal_ids: false)
-      end
-
-      it { is_expected.to eq false }
-    end
-  end
-
   describe '#users_with_descendants' do
     let(:user_a) { create(:user) }
     let(:user_b) { create(:user) }

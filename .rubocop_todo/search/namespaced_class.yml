@@ -81,6 +81,7 @@ Search/NamespacedClass:
     - 'ee/lib/api/elasticsearch_indexed_namespaces.rb'
     - 'ee/lib/ee/api/helpers/search_helpers.rb'
     - 'ee/lib/ee/gitlab/group_search_results.rb'
+    - 'ee/lib/ee/gitlab/search/found_wiki_page.rb'
     - 'ee/lib/ee/gitlab/search/parsed_query.rb'
     - 'ee/lib/ee/gitlab/search_context.rb'
     - 'ee/lib/ee/gitlab/search_results.rb'

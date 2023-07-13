@@ -28,3 +28,5 @@ module Types
     field :wiki_size, GraphQL::Types::Float, null: false, description: 'Wiki size in bytes.'
   end
 end
+
+Types::RootStorageStatisticsType.prepend_mod_with('Types::RootStorageStatisticsType')

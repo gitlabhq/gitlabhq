@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  before do
-    stub_feature_flags(frozen_outbound_job_token_scopes_override: false)
-  end
-
   let_it_be(:project) do
     create(:project,
       keep_latest_artifact: true,
@@ -97,22 +93,6 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
             )
           )
         )
-        expect(project.ci_outbound_job_token_scope_enabled).to eq(false)
-      end
-    end
-
-    context 'when FF frozen_outbound_job_token_scopes is disabled' do
-      before do
-        stub_feature_flags(frozen_outbound_job_token_scopes: false)
-      end
-
-      it 'allows setting job_token_scope_enabled to true' do
-        project.update!(ci_outbound_job_token_scope_enabled: true)
-        post_graphql_mutation(mutation, current_user: user)
-
-        project.reload
-
-        expect(response).to have_gitlab_http_status(:success)
         expect(project.ci_outbound_job_token_scope_enabled).to eq(false)
       end
     end

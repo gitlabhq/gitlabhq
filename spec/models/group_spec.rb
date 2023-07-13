@@ -703,10 +703,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
       end
 
-      describe '#ancestors_upto' do
-        it { expect(group.ancestors_upto.to_sql).not_to include "WITH ORDINALITY" }
-      end
-
       describe '.shortest_traversal_ids_prefixes' do
         it { expect { described_class.shortest_traversal_ids_prefixes }.to raise_error /Feature not supported since the `:use_traversal_ids` is disabled/ }
       end

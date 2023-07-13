@@ -27,7 +27,7 @@ You can use advanced search in:
 - Code
 - Comments
 - Commits
-- Project wikis (not [group wikis](../project/wiki/group.md))
+- Project and group wikis
 
 ## Enable advanced search
 

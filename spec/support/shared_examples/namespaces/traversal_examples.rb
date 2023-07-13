@@ -239,13 +239,11 @@ RSpec.shared_examples 'namespace traversal' do
   end
 
   describe '#ancestors_upto' do
-    context 'with use_traversal_ids_for_ancestors_upto enabled' do
-      include_examples '#ancestors_upto'
-    end
+    include_examples '#ancestors_upto'
 
-    context 'with use_traversal_ids_for_ancestors_upto disabled' do
+    context 'with use_traversal_ids disabled' do
       before do
-        stub_feature_flags(use_traversal_ids_for_ancestors_upto: false)
+        stub_feature_flags(use_traversal_ids: false)
       end
 
       include_examples '#ancestors_upto'

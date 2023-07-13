@@ -9,23 +9,34 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab uses Gems as a tool to improve code reusability and modularity
 in a monolithic codebase.
 
-Sometimes we extract libraries from our codebase because their functionality
+We extract libraries from our codebase when their functionality
 is highly isolated and we want to use them in other applications
 ourselves or we think it would benefit the wider community.
-Extracting code to a gem also means that we can be sure that the gem
-does not contain any hidden dependencies on our application code.
 
-Gems should be used always when implementing functions that can be considered isolated,
+Extracting code to a gem also ensure that the gem does not contain any hidden 
+dependencies on our application code.
+
+Gems should always be used when implementing functionality that can be considered isolated,
 that are decoupled from the business logic of GitLab and can be developed separately.
 
-The best place in Rails where we can look for opportunities to extract new gems
+The best place in a Rails codebase with opportunities to extract new gems
 is the [lib/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/) folder.
 
-The **lib/** folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
+Our **lib/** folder is a mix of code that is generic/universal, GitLab-specific, and tightly integrated with the rest of the codebase.
 
-Ask yourself the question: **is this code generic or universal that can be done as a separate and small project?**.
-If the answer is **Yes** you should strongly consider starting with creating a new Gem [in the same repo](#in-the-same-repo)
-and eventually evaluate whether to extract it as a separate repository if its meant to be used by other projects.
+In order to decide whether to extract part of the codebase as a Gem, ask yourself the following questions:
+
+1. Is this code generic or universal that can be done as a separate and small project?
+1. Do I expect it to be used internally outside of the Monolith?
+1. Is this useful for the wider community that we should consider releasing as a separate component?
+
+If the answer is **Yes** for any of the questions above, you should strongly consider creating a new Gem.
+
+You can always start by creating a new Gem [in the same repo](#in-the-same-repo) and eventually evaluate whether migrate it to a separate Repository, when it is intended to be used by a wider community.
+
+WARNING:
+To prevent malicious actors from name-squatting the extracted Gems, follow the instructions 
+to [reserve a gem name](#reserve-a-gem-name).
 
 ## Advantages of using Gems
 
@@ -61,13 +72,16 @@ Examples of existing gems:
 
 ## In the same repo
 
-**Our GitLab Gems should be always put in `gems/` of GitLab monorepo.**
+**When extracting Gems from existing codebase, put them in `gems/` of the GitLab monorepo**
 
 That gives us the advantages of gems (modular code, quicker to run tests in development).
 and prevents complexity (coordinating changes across repos, new permissions, multiple projects, etc.).
 
 Gems stored in the same repo should be referenced in `Gemfile` with the `path:` syntax.
-They should not be published to RubyGems.
+
+WARNING:
+To prevent malicious actors from name-squatting the extracted Gems, follow the instructions 
+to [reserve a gem name](#reserve-a-gem-name).
 
 ### Create and use a new Gem
 
@@ -289,3 +303,13 @@ to store them in monorepo:
   - It is expected that vendored gems might be published by third-party.
   - Those Gems will not be published by us to RubyGems.
   - Those Gems will be referenced via `path:` in `Gemfile`, since we cannot depend on RubyGems.
+
+## Reserve a gem name
+
+We reserve a gem name as a precaution **before publishing any public code that contains a new gem**, to avoid name-squatters taking over the name in RubyGems.
+
+To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#create-and-publish-a-ruby-gem), with the following changes:
+
+- Use `0.0.0` as the version
+- Include a single file `lib/NAME.rb` with the content `raise "Reserved for GitLab"`
+- Perform the `build` and `publish` and check <https://rubygems.org/gems/> to confirm it succeed

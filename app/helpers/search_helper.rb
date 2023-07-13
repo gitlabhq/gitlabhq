@@ -657,6 +657,10 @@ module SearchHelper
 
     sanitized_params
   end
+
+  def wiki_blob_link(wiki_blob)
+    project_wiki_path(wiki_blob.project, wiki_blob.basename)
+  end
 end
 
 SearchHelper.prepend_mod_with('SearchHelper')

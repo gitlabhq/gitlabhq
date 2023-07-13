@@ -14,6 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/395364) in GitLab 16.1 to prioritize Flux for GitOps.
 
 GitLab integrates [Flux](https://fluxcd.io/flux/) for GitOps.
+To get started with Flux, see the [Flux for GitOps tutorial](gitops/flux_tutorial.md)`
 
 With GitOps, you can manage containerized clusters and applications from a Git repository that:
 
@@ -28,8 +29,6 @@ By combining GitLab, Kubernetes, and GitOps, you can have:
 - The agent for Continuous Deployment and cluster observability.
 - Built-in automatic drift remediation.
 - Resource management with [server-side applies](https://kubernetes.io/docs/reference/using-api/server-side-apply/) for transparent multi-actor field management.
-
-To get started with Flux, see the [Flux for GitOps tutorial](gitops/flux_tutorial.md).
 
 ## Deployment sequence
 

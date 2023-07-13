@@ -9,7 +9,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include BlobActiveModel
 
-      attr_reader :project, :content_match, :blob_path, :highlight_line, :matched_lines_count
+      attr_reader :project, :content_match, :blob_path, :highlight_line, :matched_lines_count, :group_level_blob, :group
 
       PATH_REGEXP = /\A(?<ref>[^:]*):(?<path>[^\x00]*)\x00/.freeze
       CONTENT_REGEXP = /^(?<ref>[^:]*):(?<path>[^\x00]*)\x00(?<startline>\d+)\x00/.freeze
@@ -31,14 +31,17 @@ module Gitlab
         @binary_data = opts.fetch(:data, nil)
         @per_page = opts.fetch(:per_page, 20)
         @project = opts.fetch(:project, nil)
+        @group = opts.fetch(:group, nil)
         # Some callers (e.g. Elasticsearch) do not have the Project object,
         # yet they can trigger many calls in one go,
         # causing duplicated queries.
         # Allow those to just pass project_id instead.
         @project_id = opts.fetch(:project_id, nil)
+        @group_id = opts.fetch(:group_id, nil)
         @content_match = opts.fetch(:content_match, nil)
         @blob_path = opts.fetch(:blob_path, nil)
         @repository = opts.fetch(:repository, nil)
+        @group_level_blob = opts.fetch(:group_level_blob, false)
       end
 
       def id

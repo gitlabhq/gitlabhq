@@ -4,6 +4,7 @@ module Resolvers
   module Ci
     class RunnersResolver < BaseResolver
       include LooksAhead
+      include Gitlab::Graphql::Authorize::AuthorizeResource
 
       type Types::Ci::RunnerType.connection_type, null: true
 
@@ -105,3 +106,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::Ci::RunnersResolver.prepend_mod
