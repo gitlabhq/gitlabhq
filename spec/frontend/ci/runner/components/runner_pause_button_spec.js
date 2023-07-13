@@ -12,13 +12,11 @@ import {
 import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
 import RunnerPauseAction from '~/ci/runner/components/runner_pause_action.vue';
 
-jest.mock('~/alert');
-jest.mock('~/ci/runner/sentry_utils');
-
 describe('RunnerPauseButton', () => {
   let wrapper;
 
   const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip').value;
+  const findRunnerPauseAction = () => wrapper.findComponent(RunnerPauseAction);
   const findBtn = () => wrapper.findComponent(GlButton);
 
   const createComponent = ({
@@ -139,5 +137,13 @@ describe('RunnerPauseButton', () => {
     findBtn().vm.$emit('click');
 
     expect(mockOnClick).toHaveBeenCalled();
+  });
+
+  it('Emits toggledPaused when done', () => {
+    createComponent();
+
+    findRunnerPauseAction().vm.$emit('done');
+
+    expect(wrapper.emitted('toggledPaused')).toHaveLength(1);
   });
 });

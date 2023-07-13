@@ -3,14 +3,18 @@
 module QA
   module Runtime
     module Path
-      extend self
+      class << self
+        def qa_root
+          ::File.expand_path('../../', __dir__)
+        end
 
-      def qa_root
-        ::File.expand_path('../../', __dir__)
-      end
+        def fixtures_path
+          ::File.expand_path('../fixtures', __dir__)
+        end
 
-      def fixtures_path
-        ::File.expand_path('../fixtures', __dir__)
+        def fixture(*args)
+          ::File.join(fixtures_path, *args)
+        end
       end
     end
   end

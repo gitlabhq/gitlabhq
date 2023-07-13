@@ -39585,6 +39585,9 @@ msgstr ""
 msgid "Runners|Dashboard"
 msgstr ""
 
+msgid "Runners|Delete"
+msgstr ""
+
 msgid "Runners|Delete %d runner"
 msgid_plural "Runners|Delete %d runners"
 msgstr[0] ""
@@ -40235,6 +40238,9 @@ msgid "Runners|project"
 msgstr ""
 
 msgid "Runners|shared"
+msgstr ""
+
+msgid "Runner|Runner actions"
 msgstr ""
 
 msgid "Running"

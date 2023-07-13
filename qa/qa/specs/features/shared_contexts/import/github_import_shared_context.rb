@@ -48,7 +48,7 @@ module QA
       )
     end
 
-    let(:mocks_path) { File.join(Runtime::Path.fixtures_path, "mocks", "import") }
+    let(:mocks_path) { Runtime::Path.fixture("mocks", "import") }
 
     before do
       set_mocks

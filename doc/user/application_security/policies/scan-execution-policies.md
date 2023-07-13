@@ -47,6 +47,13 @@ before the policy changes take effect.
 
 ![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_11.png)
 
+NOTE:
+Selection of site and scanner profiles using the rule mode editor for DAST execution policies differs based on
+whether the policy is being created at the project or group level. For project-level policies the rule mode editor
+presents a list of profiles to choose from that are already defined in the project. For group-level policies
+you are required to type in the names of the profiles to use, and to prevent pipeline errors, profiles with
+matching names must exist in all of the group's projects.
+
 ## Scan execution policies schema
 
 The YAML file with scan execution policies consists of an array of objects matching scan execution

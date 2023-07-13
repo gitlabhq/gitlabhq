@@ -51,7 +51,6 @@ export default {
       return this.label;
     },
   },
-  methods: {},
 };
 </script>
 

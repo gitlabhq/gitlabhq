@@ -31,7 +31,7 @@ module QA
           edit.set_title(page_title)
           edit.use_new_editor
           edit.add_heading('Heading 1', heading_text)
-          edit.upload_image(File.join(Runtime::Path.fixtures_path, 'designs', image_file_name))
+          edit.upload_image(Runtime::Path.fixture('designs', image_file_name))
         end
 
         Page::Project::Wiki::Edit.perform(&:click_submit)

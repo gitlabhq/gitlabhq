@@ -21,7 +21,7 @@ import { captureException } from '~/ci/runner/sentry_utils';
  *   <button :disabled="loading" @click="onClick">{{ runner.paused ? 'Go!' : 'Stop!' }}</button>
  * </runner-pause-action>
  * ```
- * 
+ *
  */
 export default {
   name: 'RunnerPauseAction',
@@ -41,11 +41,6 @@ export default {
     return {
       loading: false,
     };
-  },
-  computed: {
-    isPaused() {
-      return this.runner.paused;
-    },
   },
   methods: {
     async onClick() {

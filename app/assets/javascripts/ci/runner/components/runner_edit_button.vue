@@ -9,15 +9,23 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  props: {
+    href: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
   I18N_EDIT,
 };
 </script>
 
 <template>
   <gl-button
+    v-if="href"
     v-gl-tooltip="$options.I18N_EDIT"
-    v-bind="$attrs"
     :aria-label="$options.I18N_EDIT"
+    :href="href"
     icon="pencil"
     v-on="$listeners"
   />

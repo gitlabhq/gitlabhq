@@ -13,7 +13,7 @@ We extract libraries from our codebase when their functionality
 is highly isolated and we want to use them in other applications
 ourselves or we think it would benefit the wider community.
 
-Extracting code to a gem also ensure that the gem does not contain any hidden 
+Extracting code to a gem also ensures that the gem does not contain any hidden 
 dependencies on our application code.
 
 Gems should always be used when implementing functionality that can be considered isolated,
@@ -32,7 +32,8 @@ In order to decide whether to extract part of the codebase as a Gem, ask yoursel
 
 If the answer is **Yes** for any of the questions above, you should strongly consider creating a new Gem.
 
-You can always start by creating a new Gem [in the same repo](#in-the-same-repo) and eventually evaluate whether migrate it to a separate Repository, when it is intended to be used by a wider community.
+You can always start by creating a new Gem [in the same repo](#in-the-same-repo) and later evaluate whether to migrate it to a separate repository, when it is intended
+to be used by a wider community.
 
 WARNING:
 To prevent malicious actors from name-squatting the extracted Gems, follow the instructions 
@@ -310,6 +311,6 @@ We reserve a gem name as a precaution **before publishing any public code that c
 
 To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#create-and-publish-a-ruby-gem), with the following changes:
 
-- Use `0.0.0` as the version
-- Include a single file `lib/NAME.rb` with the content `raise "Reserved for GitLab"`
-- Perform the `build` and `publish` and check <https://rubygems.org/gems/> to confirm it succeed
+- Use `0.0.0` as the version.
+- Include a single file `lib/NAME.rb` with the content `raise "Reserved for GitLab"`.
+- Perform the `build` and `publish`, and check <https://rubygems.org/gems/> to confirm it succeeded.

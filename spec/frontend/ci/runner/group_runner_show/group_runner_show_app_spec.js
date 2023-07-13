@@ -9,10 +9,8 @@ import { visitUrl } from '~/lib/utils/url_utility';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
+import RunnerHeaderActions from '~/ci/runner/components/runner_header_actions.vue';
 import RunnerDetails from '~/ci/runner/components/runner_details.vue';
-import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
-import RunnerDeleteButton from '~/ci/runner/components/runner_delete_button.vue';
-import RunnerEditButton from '~/ci/runner/components/runner_edit_button.vue';
 import RunnerDetailsTabs from '~/ci/runner/components/runner_details_tabs.vue';
 import RunnersJobs from '~/ci/runner/components/runner_jobs.vue';
 
@@ -47,9 +45,7 @@ describe('GroupRunnerShowApp', () => {
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
   const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
-  const findRunnerDeleteButton = () => wrapper.findComponent(RunnerDeleteButton);
-  const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
-  const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
+  const findRunnerHeaderActions = () => wrapper.findComponent(RunnerHeaderActions);
   const findRunnerDetailsTabs = () => wrapper.findComponent(RunnerDetailsTabs);
   const findRunnersJobs = () => wrapper.findComponent(RunnersJobs);
 
@@ -95,10 +91,11 @@ describe('GroupRunnerShowApp', () => {
       expect(findRunnerHeader().text()).toContain(`#${mockRunnerId} (${mockRunnerSha})`);
     });
 
-    it('displays the runner edit and pause buttons', () => {
-      expect(findRunnerEditButton().attributes('href')).toBe(mockEditGroupRunnerPath);
-      expect(findRunnerPauseButton().exists()).toBe(true);
-      expect(findRunnerDeleteButton().exists()).toBe(true);
+    it('displays the runner buttons', () => {
+      expect(findRunnerHeaderActions().props()).toEqual({
+        runner: mockRunner,
+        editPath: mockEditGroupRunnerPath,
+      });
     });
 
     it('shows runner details', () => {
@@ -127,54 +124,6 @@ describe('GroupRunnerShowApp', () => {
       expect(wrapper.text().replace(/\s+/g, ' ')).toContain(expected);
     });
 
-    describe('when runner cannot be updated', () => {
-      beforeEach(async () => {
-        mockRunnerQueryResult({
-          userPermissions: {
-            ...mockRunner.userPermissions,
-            updateRunner: false,
-          },
-        });
-
-        await createComponent({
-          mountFn: mountExtended,
-        });
-      });
-
-      it('does not display the runner edit and pause buttons', () => {
-        expect(findRunnerEditButton().exists()).toBe(false);
-        expect(findRunnerPauseButton().exists()).toBe(false);
-      });
-
-      it('displays delete button', () => {
-        expect(findRunnerDeleteButton().exists()).toBe(true);
-      });
-    });
-
-    describe('when runner cannot be deleted', () => {
-      beforeEach(async () => {
-        mockRunnerQueryResult({
-          userPermissions: {
-            ...mockRunner.userPermissions,
-            deleteRunner: false,
-          },
-        });
-
-        await createComponent({
-          mountFn: mountExtended,
-        });
-      });
-
-      it('does not display the delete button', () => {
-        expect(findRunnerDeleteButton().exists()).toBe(false);
-      });
-
-      it('displays edit and pause buttons', () => {
-        expect(findRunnerEditButton().exists()).toBe(true);
-        expect(findRunnerPauseButton().exists()).toBe(true);
-      });
-    });
-
     describe('when runner is deleted', () => {
       beforeEach(async () => {
         await createComponent({
@@ -183,7 +132,7 @@ describe('GroupRunnerShowApp', () => {
       });
 
       it('redirects to the runner list page', () => {
-        findRunnerDeleteButton().vm.$emit('deleted', { message: 'Runner deleted' });
+        findRunnerHeaderActions().vm.$emit('deleted', { message: 'Runner deleted' });
 
         expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
           message: 'Runner deleted',

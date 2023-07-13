@@ -238,6 +238,10 @@ helm upgrade gitlab-agent gitlab/gitlab-agent \
   --set image.tag=v14.9.1
 ```
 
+The Helm chart is updated separately from the agent for Kubernetes, and might occasionally lag behind the latest version of the agent. If you run `helm repo update` and don't specify an image tag, your agent runs the version specified in the chart.
+
+To use the latest release of the agent for Kubernetes, set the image tag to match the most recent agent image.
+
 ## Uninstall the agent
 
 If you [installed the agent with Helm](#install-the-agent-with-helm), then you can also uninstall with Helm. For example, if the release and namespace are both called `gitlab-agent`, then you can uninstall the agent using the following command:

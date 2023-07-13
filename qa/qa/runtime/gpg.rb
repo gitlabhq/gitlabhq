@@ -14,7 +14,7 @@ module QA
       def key
         return @key if defined?(@key)
 
-        shell("gpg --import #{File.join(Path.fixtures_path, 'gpg', 'admin.asc')}")
+        shell("gpg --import #{Path.fixture('gpg', 'admin.asc')}")
         @key = shell("gpg --armor --export #{key_id}")
       end
     end

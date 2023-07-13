@@ -15,7 +15,7 @@ module QA
           merge_request.title = 'Needs some suggestions'
           merge_request.description = '... so please add them.'
           merge_request.file_content = File.read(
-            File.join(Runtime::Path.fixtures_path, 'metrics_dashboards', 'templating.yml')
+            Runtime::Path.fixture('metrics_dashboards', 'templating.yml')
           )
         end
       end
