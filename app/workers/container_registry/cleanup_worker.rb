@@ -16,8 +16,6 @@ module ContainerRegistry
     BATCH_SIZE = 200
 
     def perform
-      log_counts
-
       reset_stale_deletes
       delete_stale_ongoing_repair_details
 
@@ -59,19 +57,6 @@ module ContainerRegistry
       return false unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 
       Project.pending_data_repair_analysis.exists?
-    end
-
-    def log_counts
-      ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries do
-        log_extra_metadata_on_done(
-          :delete_scheduled_container_repositories_count,
-          ContainerRepository.delete_scheduled.count
-        )
-        log_extra_metadata_on_done(
-          :stale_delete_container_repositories_count,
-          stale_delete_container_repositories.count
-        )
-      end
     end
 
     def stale_delete_container_repositories
