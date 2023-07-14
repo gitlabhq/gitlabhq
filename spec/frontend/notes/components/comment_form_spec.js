@@ -20,6 +20,7 @@ import eventHub from '~/notes/event_hub';
 import { COMMENT_FORM } from '~/notes/i18n';
 import notesModule from '~/notes/stores/modules';
 import { sprintf } from '~/locale';
+import { mockTracking } from 'helpers/tracking_helper';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -31,6 +32,7 @@ Vue.use(Vuex);
 describe('issue_comment_form component', () => {
   useLocalStorageSpy();
 
+  let trackingSpy;
   let store;
   let wrapper;
   let axiosMock;
@@ -137,6 +139,7 @@ describe('issue_comment_form component', () => {
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
     store = createStore();
+    trackingSpy = mockTracking(undefined, null, jest.spyOn);
   });
 
   afterEach(() => {
@@ -157,6 +160,21 @@ describe('issue_comment_form component', () => {
         expect(wrapper.vm.note).toBe('');
         expect(wrapper.vm.saveNote).toHaveBeenCalled();
         expect(wrapper.vm.stopPolling).toHaveBeenCalled();
+      });
+
+      it('tracks event', () => {
+        mountComponent({ mountFunction: mount, initialData: { note: 'hello world' } });
+
+        jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
+        jest.spyOn(wrapper.vm, 'stopPolling');
+
+        findCloseReopenButton().trigger('click');
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
+          context: 'Issue_comment',
+          editorType: 'editor_type_plain_text_editor',
+          label: 'editor_tracking',
+        });
       });
 
       it('does not report errors in the UI when the save succeeds', async () => {

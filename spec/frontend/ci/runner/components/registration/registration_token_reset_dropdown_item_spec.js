@@ -1,4 +1,4 @@
-import { GlDropdownItem, GlLoadingIcon, GlToast, GlModal } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlLoadingIcon, GlToast, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 
@@ -27,7 +27,7 @@ describe('RegistrationTokenResetDropdownItem', () => {
   let showToast;
 
   const mockEvent = { preventDefault: jest.fn() };
-  const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findModal = () => wrapper.findComponent(GlModal);
   const clickSubmit = () => findModal().vm.$emit('primary', mockEvent);

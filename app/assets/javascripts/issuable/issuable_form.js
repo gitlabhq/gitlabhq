@@ -7,6 +7,9 @@ import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import ZenMode from '~/zen_mode';
 import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import { EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
+import { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
@@ -45,6 +48,13 @@ function getSearchTerm(newIssuePath) {
 function getFallbackKey() {
   const searchTerm = format(document.location.search, true);
   return ['autosave', document.location.pathname, searchTerm].join('/');
+}
+
+function getIssuableType() {
+  if (document.location.pathname.includes('merge_requests')) return MERGE_REQUEST_NOTEABLE_TYPE;
+  if (document.location.pathname.includes('issues')) return ISSUE_NOTEABLE_TYPE;
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return 'Other';
 }
 
 export default class IssuableForm {
@@ -143,6 +153,11 @@ export default class IssuableForm {
 
   async handleSubmit(event) {
     event.preventDefault();
+
+    trackSavedUsingEditor(
+      localStorage.getItem('gl-markdown-editor-mode') === EDITING_MODE_CONTENT_EDITOR,
+      getIssuableType(),
+    );
 
     const form = event.target;
     const descriptionText = this.descriptionField().val();

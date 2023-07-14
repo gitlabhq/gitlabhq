@@ -60,7 +60,7 @@ export const noteableDataMock = {
   updated_at: '2017-08-04T09:53:01.226Z',
   updated_by_id: 1,
   web_url: '/gitlab-org/gitlab-foss/issues/26',
-  noteableType: 'issue',
+  noteableType: 'Issue',
   blocked_by_issues: [],
 };
 

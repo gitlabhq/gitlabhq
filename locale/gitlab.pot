@@ -5855,6 +5855,12 @@ msgstr ""
 msgid "ApprovalRule|Rule name"
 msgstr ""
 
+msgid "ApprovalRule|Search in"
+msgstr ""
+
+msgid "ApprovalRule|Search users or groups"
+msgstr ""
+
 msgid "ApprovalRule|Select eligible approvers by expertise or files changed."
 msgstr ""
 
@@ -5862,6 +5868,12 @@ msgid "ApprovalRule|Target branch"
 msgstr ""
 
 msgid "ApprovalRule|Try for free"
+msgstr ""
+
+msgid "ApprovalRule|all groups"
+msgstr ""
+
+msgid "ApprovalRule|project groups"
 msgstr ""
 
 msgid "ApprovalSettings|Keep approvals"
@@ -40890,9 +40902,6 @@ msgstr ""
 msgid "Search users"
 msgstr ""
 
-msgid "Search users or groups"
-msgstr ""
-
 msgid "Search your projects"
 msgstr ""
 
@@ -51824,16 +51833,13 @@ msgstr ""
 msgid "WikiEmpty|You've enabled the Confluence Workspace integration. Your wiki will be viewable directly within Confluence. We are hard at work integrating Confluence more seamlessly into GitLab. If you'd like to stay up to date, follow our %{wiki_confluence_epic_link_start}Confluence epic%{wiki_confluence_epic_link_end}."
 msgstr ""
 
+msgid "WikiHistoricalPage|Browse history"
+msgstr ""
+
+msgid "WikiHistoricalPage|Go to most recent version"
+msgstr ""
+
 msgid "WikiHistoricalPage|This is an old version of this page."
-msgstr ""
-
-msgid "WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}."
-msgstr ""
-
-msgid "WikiHistoricalPage|history"
-msgstr ""
-
-msgid "WikiHistoricalPage|most recent version"
 msgstr ""
 
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"

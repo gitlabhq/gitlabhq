@@ -196,6 +196,8 @@ module Gitlab
         when AccessTokenValidationService::EXPIRED
           raise ExpiredError
         when AccessTokenValidationService::REVOKED
+          revoke_token_family(access_token)
+
           raise RevokedError
         when AccessTokenValidationService::IMPERSONATION_DISABLED
           raise ImpersonationDisabled
@@ -398,6 +400,10 @@ module Gitlab
         ::Ci::AuthJobFinder.new(token: token).execute.tap do |job|
           raise UnauthorizedError unless job
         end
+      end
+
+      def revoke_token_family(token)
+        PersonalAccessTokens::RevokeTokenFamilyService.new(token).execute
       end
     end
   end

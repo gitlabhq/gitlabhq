@@ -17005,6 +17005,16 @@ Helm file metadata.
 | <a id="helmfilemetadatametadata"></a>`metadata` | [`PackageHelmMetadataType!`](#packagehelmmetadatatype) | Metadata of the Helm chart. |
 | <a id="helmfilemetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 
+### `Ide`
+
+IDE settings and feature flags.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="idecodesuggestionsenabled"></a>`codeSuggestionsEnabled` | [`Boolean!`](#boolean) | Indicates whether AI assisted code suggestions are enabled. |
+
 ### `IncidentManagementOncallRotation`
 
 Describes an incident management on-call rotation.
@@ -17859,6 +17869,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneegroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestassigneegroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneeid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestassigneeide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestassigneejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestassigneelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestassigneelocation"></a>`location` | [`String`](#string) | Location of the user. |
@@ -18138,6 +18149,7 @@ The author of the merge request.
 | <a id="mergerequestauthorgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestauthorgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestauthoride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestauthorjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestauthorlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestauthorlocation"></a>`location` | [`String`](#string) | Location of the user. |
@@ -18464,6 +18476,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestparticipantgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestparticipantide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestparticipantjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestparticipantlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestparticipantlocation"></a>`location` | [`String`](#string) | Location of the user. |
@@ -18778,6 +18791,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestreviewergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestrevieweride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestreviewerjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestreviewerlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="mergerequestreviewerlocation"></a>`location` | [`String`](#string) | Location of the user. |
@@ -23355,6 +23369,7 @@ Core represention of a GitLab user.
 | <a id="usercoregroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usercoregroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="usercoreide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="usercorejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="usercorelinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="usercorelocation"></a>`location` | [`String`](#string) | Location of the user. |
@@ -28405,6 +28420,7 @@ Implementations:
 | <a id="usergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="useride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="userjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="userlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="userlocation"></a>`location` | [`String`](#string) | Location of the user. |

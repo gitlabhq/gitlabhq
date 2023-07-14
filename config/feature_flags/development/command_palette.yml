@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/413060
 milestone: '16.1'
 type: development
 group: group::foundations
-default_enabled: false
+default_enabled: true

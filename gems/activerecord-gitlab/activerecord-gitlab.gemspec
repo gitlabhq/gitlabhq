@@ -18,10 +18,11 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "activerecord", ">= 6.1.7.3"
+  spec.add_runtime_dependency "activerecord", ">= 7"
 
   spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
   spec.add_development_dependency "rspec", "~> 3.12"
   spec.add_development_dependency "rubocop", "~> 1.50"
   spec.add_development_dependency "rubocop-rspec", "~> 2.22"
+  spec.add_development_dependency "sqlite3", "~> 1.6"
 end

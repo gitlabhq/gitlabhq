@@ -196,7 +196,7 @@ export default {
           class="gl-ml-3"
           :registration-token="registrationToken"
           :type="$options.INSTANCE_TYPE"
-          right
+          placement="right"
         />
       </div>
     </div>

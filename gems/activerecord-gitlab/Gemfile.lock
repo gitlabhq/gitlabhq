@@ -1,23 +1,22 @@
 PATH
   remote: .
   specs:
-    activerecord-gitlab (0.1.0)
-      activerecord (>= 6.1.7.3)
+    activerecord-gitlab (0.2.0)
+      activerecord (>= 7)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.1.7.3)
-      activesupport (= 6.1.7.3)
-    activerecord (6.1.7.3)
-      activemodel (= 6.1.7.3)
-      activesupport (= 6.1.7.3)
-    activesupport (6.1.7.3)
+    activemodel (7.0.6)
+      activesupport (= 7.0.6)
+    activerecord (7.0.6)
+      activemodel (= 7.0.6)
+      activesupport (= 7.0.6)
+    activesupport (7.0.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     ast (2.4.2)
     concurrent-ruby (1.2.2)
     diff-lcs (1.5.0)
@@ -30,6 +29,7 @@ GEM
     i18n (1.13.0)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
+    mini_portile2 (2.8.2)
     minitest (5.18.0)
     parallel (1.23.0)
     parser (3.2.2.3)
@@ -83,10 +83,11 @@ GEM
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
+    sqlite3 (1.6.3)
+      mini_portile2 (~> 2.8.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
-    zeitwerk (2.6.8)
 
 PLATFORMS
   ruby
@@ -97,6 +98,7 @@ DEPENDENCIES
   rspec (~> 3.12)
   rubocop (~> 1.50)
   rubocop-rspec (~> 2.22)
+  sqlite3 (~> 1.6)
 
 BUNDLED WITH
    2.4.14

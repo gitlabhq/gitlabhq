@@ -20140,7 +20140,8 @@ CREATE TABLE personal_access_tokens (
     token_digest character varying,
     expire_notification_delivered boolean DEFAULT false NOT NULL,
     last_used_at timestamp with time zone,
-    after_expiry_notification_delivered boolean DEFAULT false NOT NULL
+    after_expiry_notification_delivered boolean DEFAULT false NOT NULL,
+    previous_personal_access_token_id bigint
 );
 
 CREATE SEQUENCE personal_access_tokens_id_seq
@@ -29976,6 +29977,8 @@ CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_npm ON p
 
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
 
+CREATE INDEX idx_personal_access_tokens_on_previous_personal_access_token_id ON personal_access_tokens USING btree (previous_personal_access_token_id);
+
 CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packages_debian_group_distribution_keys USING btree (distribution_id);
 
 CREATE INDEX idx_pkgs_debian_project_distribution_keys_on_distribution_id ON packages_debian_project_distribution_keys USING btree (distribution_id);
@@ -36109,6 +36112,9 @@ ALTER TABLE ONLY agent_activity_events
 
 ALTER TABLE ONLY issue_links
     ADD CONSTRAINT fk_c900194ff2 FOREIGN KEY (source_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY personal_access_tokens
+    ADD CONSTRAINT fk_c951fbf57e FOREIGN KEY (previous_personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;

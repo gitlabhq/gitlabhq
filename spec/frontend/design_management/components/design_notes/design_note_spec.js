@@ -109,10 +109,6 @@ describe('Design note component', () => {
       createComponent({ props: { note } });
     });
 
-    it('should match the snapshot', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
     it('should render avatar with correct props', () => {
       expect(findUserAvatar().props()).toMatchObject({
         src: note.author.avatarUrl,

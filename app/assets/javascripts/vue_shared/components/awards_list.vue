@@ -210,7 +210,6 @@ export default {
         @hidden="setIsMenuOpen(false)"
       >
         <template #button-content>
-          <span class="gl-sr-only">{{ __('Add reaction') }}</span>
           <span class="reaction-control-icon reaction-control-icon-neutral">
             <gl-icon name="slight-smile" />
           </span>

@@ -64,6 +64,12 @@ describe('RegistrationToken', () => {
       expect(showToastMock).toHaveBeenCalledTimes(1);
       expect(showToastMock).toHaveBeenCalledWith('Registration token copied!');
     });
+
+    it('emits a copy event', () => {
+      findInputCopyToggleVisibility().vm.$emit('copy');
+
+      expect(wrapper.emitted('copy')).toHaveLength(1);
+    });
   });
 
   describe('When slots are used', () => {

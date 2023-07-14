@@ -21,6 +21,12 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
+  describe 'associations' do
+    subject(:project_access_token) { create(:personal_access_token) }
+
+    it { is_expected.to belong_to(:previous_personal_access_token).class_name('PersonalAccessToken') }
+  end
+
   describe 'scopes' do
     describe '.project_access_tokens' do
       let_it_be(:user) { create(:user, :project_bot) }

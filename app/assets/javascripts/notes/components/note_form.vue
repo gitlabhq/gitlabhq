@@ -5,6 +5,7 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -295,6 +296,11 @@ export default {
     handleUpdate(shouldResolve) {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
+
+      trackSavedUsingEditor(
+        this.$refs.markdownEditor.isContentEditorActive,
+        `${this.getNoteableData.noteableType}_note`,
+      );
 
       this.$emit(
         'handleFormUpdate',

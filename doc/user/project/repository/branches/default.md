@@ -96,7 +96,7 @@ unless a subgroup configuration overrides it.
 
 ## Protect initial default branches **(FREE SELF)**
 
-> Full protection after initial push [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
+> Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
 
 GitLab administrators and group owners can define [branch protections](../../../project/protected_branches.md)
 to apply to every repository's [default branch](#default-branch)

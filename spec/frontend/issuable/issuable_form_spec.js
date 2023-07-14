@@ -4,6 +4,9 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableForm from '~/issuable/issuable_form';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
+import { mockTracking } from 'helpers/tracking_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import { getSaveableFormChildren } from './helpers';
 
 jest.mock('~/autosave');
@@ -20,8 +23,11 @@ const createIssuable = (form) => {
 };
 
 describe('IssuableForm', () => {
+  let trackingSpy;
   let $form;
   let instance;
+
+  useLocalStorageSpy();
 
   beforeEach(() => {
     setHTMLFixture(`
@@ -32,6 +38,7 @@ describe('IssuableForm', () => {
       </form>
     `);
     $form = $('form');
+    trackingSpy = mockTracking(undefined, null, jest.spyOn);
   });
 
   afterEach(() => {
@@ -265,6 +272,34 @@ describe('IssuableForm', () => {
       expect(handleSubmit).toHaveBeenCalled();
       expect(resetAutosave).toHaveBeenCalled();
     });
+
+    it.each`
+      windowLocation                                        | context           | localStorageValue  | editorType
+      ${'/gitlab-org/gitlab/-/issues/412699'}               | ${'Issue'}        | ${'contentEditor'} | ${'editor_type_rich_text_editor'}
+      ${'/gitlab-org/gitlab/-/merge_requests/125979/diffs'} | ${'MergeRequest'} | ${'contentEditor'} | ${'editor_type_rich_text_editor'}
+      ${'/groups/gitlab-org/-/milestones/8/edit'}           | ${'Other'}        | ${'contentEditor'} | ${'editor_type_rich_text_editor'}
+      ${'/gitlab-org/gitlab/-/issues/412699'}               | ${'Issue'}        | ${'markdownField'} | ${'editor_type_plain_text_editor'}
+      ${'/gitlab-org/gitlab/-/merge_requests/125979/diffs'} | ${'MergeRequest'} | ${'markdownField'} | ${'editor_type_plain_text_editor'}
+      ${'/groups/gitlab-org/-/milestones/8/edit'}           | ${'Other'}        | ${'markdownField'} | ${'editor_type_plain_text_editor'}
+    `(
+      'tracks event on form submit',
+      ({ windowLocation, context, localStorageValue, editorType }) => {
+        setWindowLocation(`${TEST_HOST}/${windowLocation}`);
+        localStorage.setItem('gl-markdown-editor-mode', localStorageValue);
+
+        issueDescription.value = 'sample message';
+
+        createIssuable($form);
+
+        $form.submit();
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
+          context,
+          editorType,
+          label: 'editor_tracking',
+        });
+      },
+    );
 
     it('prevents form submission when token is present', () => {
       issueDescription.value = sensitiveMessage;

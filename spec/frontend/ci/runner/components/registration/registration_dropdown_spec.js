@@ -1,4 +1,10 @@
-import { GlModal, GlDropdown, GlDropdownItem, GlDropdownForm, GlIcon } from '@gitlab/ui';
+import {
+  GlModal,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlDropdownForm,
+  GlIcon,
+} from '@gitlab/ui';
 import { createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -35,9 +41,10 @@ Vue.use(VueApollo);
 describe('RegistrationDropdown', () => {
   let wrapper;
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownBtn = () => findDropdown().find('button');
-  const findRegistrationInstructionsDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findRegistrationInstructionsDropdownItem = () =>
+    wrapper.findComponent(GlDisclosureDropdownItem);
   const findTokenDropdownItem = () => wrapper.findComponent(GlDropdownForm);
   const findRegistrationToken = () => wrapper.findComponent(RegistrationToken);
   const findRegistrationTokenInput = () =>
@@ -54,9 +61,8 @@ describe('RegistrationDropdown', () => {
       .replace(/[\n\t\s]+/g, ' ');
 
   const openModal = async () => {
-    await findRegistrationInstructionsDropdownItem().trigger('click');
+    await findRegistrationInstructionsDropdownItem().vm.$emit('action');
     findModal().vm.$emit('shown');
-
     await waitForPromises();
   };
 
@@ -66,6 +72,9 @@ describe('RegistrationDropdown', () => {
         registrationToken: mockRegistrationToken,
         type: INSTANCE_TYPE,
         ...props,
+      },
+      stubs: {
+        GlDisclosureDropdownItem,
       },
       ...options,
     });
@@ -188,6 +197,26 @@ describe('RegistrationDropdown', () => {
     });
   });
 
+  describe('Dropdown is expanded', () => {
+    beforeEach(() => {
+      createComponent({}, mountExtended);
+      findDropdownBtn().vm.$emit('click');
+    });
+
+    it('has aria-expanded set to true', () => {
+      expect(findDropdownBtn().attributes('aria-expanded')).toBe('true');
+    });
+
+    describe('when token is copied', () => {
+      it('should close dropdown', async () => {
+        findRegistrationToken().vm.$emit('copy');
+        await nextTick();
+
+        expect(findDropdownBtn().attributes('aria-expanded')).toBeUndefined();
+      });
+    });
+  });
+
   describe('When token is reset', () => {
     const newToken = 'mock1';
 
@@ -226,7 +255,8 @@ describe('RegistrationDropdown', () => {
       expect(findDropdown().props()).toMatchObject({
         category: 'tertiary',
         variant: 'default',
-        text: '',
+        toggleText: I18N_REGISTER_INSTANCE_TYPE,
+        textSrOnly: true,
       });
 
       expect(findDropdown().attributes()).toMatchObject({

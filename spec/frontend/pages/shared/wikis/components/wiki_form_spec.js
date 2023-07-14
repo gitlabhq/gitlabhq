@@ -7,13 +7,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import {
-  CONTENT_EDITOR_LOADED_ACTION,
-  SAVED_USING_CONTENT_EDITOR_ACTION,
-  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
-  WIKI_FORMAT_LABEL,
-  WIKI_FORMAT_UPDATED_ACTION,
-} from '~/pages/shared/wikis/constants';
+import { WIKI_FORMAT_LABEL, WIKI_FORMAT_UPDATED_ACTION } from '~/pages/shared/wikis/constants';
 import { DRAWIO_ORIGIN } from 'spec/test_constants';
 
 jest.mock('~/emoji');
@@ -234,7 +228,22 @@ describe('WikiForm', () => {
       });
 
       it('triggers wiki format tracking event', () => {
-        expect(trackingSpy).toHaveBeenCalledTimes(1);
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'wiki_format_updated', {
+          extra: {
+            old_format: 'markdown',
+            project_path: '/project/path/-/wikis/home',
+            value: 'markdown',
+          },
+          label: 'wiki_format',
+        });
+      });
+
+      it('tracks editor type used', () => {
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
+          context: 'Wiki',
+          editorType: 'editor_type_plain_text_editor',
+          label: 'editor_tracking',
+        });
       });
 
       it('does not trim page content', () => {
@@ -316,12 +325,6 @@ describe('WikiForm', () => {
       expect(findFormat().element.getAttribute('disabled')).toBeDefined();
     });
 
-    it('sends tracking event when editor loads', () => {
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, CONTENT_EDITOR_LOADED_ACTION, {
-        label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
-      });
-    });
-
     describe('when triggering form submit', () => {
       const updatedMarkdown = 'hello **world**';
 
@@ -331,10 +334,6 @@ describe('WikiForm', () => {
       });
 
       it('triggers tracking events on form submit', () => {
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, SAVED_USING_CONTENT_EDITOR_ACTION, {
-          label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
-        });
-
         expect(trackingSpy).toHaveBeenCalledWith(undefined, WIKI_FORMAT_UPDATED_ACTION, {
           label: WIKI_FORMAT_LABEL,
           extra: {

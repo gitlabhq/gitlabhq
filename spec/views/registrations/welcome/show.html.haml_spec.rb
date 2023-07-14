@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'registrations/welcome/show' do
+RSpec.describe 'registrations/welcome/show', feature_category: :onboarding do
   let_it_be(:user) { create(:user) }
 
   before do

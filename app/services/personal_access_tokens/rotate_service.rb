@@ -41,6 +41,7 @@ module PersonalAccessTokens
 
     def create_token_params(token)
       {  name: token.name,
+         previous_personal_access_token_id: token.id,
          impersonation: token.impersonation,
          scopes: token.scopes,
          expires_at: Date.today + EXPIRATION_PERIOD }

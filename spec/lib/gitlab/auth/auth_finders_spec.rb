@@ -505,6 +505,26 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
       end
     end
+
+    context 'automatic reuse detection' do
+      let_it_be(:token_3) { create(:personal_access_token, :revoked) }
+      let_it_be(:token_2) { create(:personal_access_token, :revoked, previous_personal_access_token_id: token_3.id) }
+      let_it_be(:token_1) { create(:personal_access_token, previous_personal_access_token_id: token_2.id) }
+
+      context 'when a revoked token is used' do
+        before do
+          set_bearer_token(token_3.token)
+        end
+
+        it 'revokes the latest rotated token' do
+          expect(token_1).not_to be_revoked
+
+          expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::RevokedError)
+
+          expect(token_1.reload).to be_revoked
+        end
+      end
+    end
   end
 
   describe '#find_user_from_web_access_token' do

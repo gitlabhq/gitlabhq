@@ -20,6 +20,7 @@ class PersonalAccessToken < ApplicationRecord
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user
+  belongs_to :previous_personal_access_token, class_name: 'PersonalAccessToken'
 
   after_initialize :set_default_scopes, if: :persisted?
   before_save :ensure_token

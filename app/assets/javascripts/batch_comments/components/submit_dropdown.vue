@@ -8,6 +8,7 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 
 export default {
   components: {
@@ -80,6 +81,8 @@ export default {
     async submitReview() {
       this.isSubmitting = true;
 
+      trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'MergeRequest_review');
+
       try {
         await this.publishReview(this.noteData);
 
@@ -131,6 +134,7 @@ export default {
         </template>
         <div class="common-note-form gfm-form">
           <markdown-editor
+            ref="markdownEditor"
             v-model="noteData.note"
             :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
             class="js-no-autosize"

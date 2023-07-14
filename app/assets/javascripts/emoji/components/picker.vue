@@ -106,7 +106,10 @@ export default {
       @shown="$emit('shown')"
       @hidden="$emit('hidden')"
     >
-      <template #button-content><slot name="button-content"></slot></template>
+      <template #button-content>
+        <slot name="button-content"></slot>
+        <span class="gl-sr-only">{{ __('Add reaction') }}</span>
+      </template>
       <gl-search-box-by-type
         v-model="searchValue"
         class="gl-mx-5! gl-mb-2!"

@@ -1,8 +1,8 @@
 PATH
   remote: gems/activerecord-gitlab
   specs:
-    activerecord-gitlab (0.1.0)
-      activerecord (>= 6.1.7.3)
+    activerecord-gitlab (0.2.0)
+      activerecord (>= 7)
 
 PATH
   remote: gems/click_house-client

@@ -2,6 +2,8 @@
 import { __ } from '~/locale';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import { ISSUE_NOTEABLE_TYPE } from '~/notes/constants';
 import updateMixin from '../../mixins/update';
 
 export default {
@@ -55,6 +57,10 @@ export default {
     focus() {
       this.$refs.textarea?.focus();
     },
+    saveIssuable() {
+      trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, ISSUE_NOTEABLE_TYPE);
+      this.updateIssuable();
+    },
   },
 };
 </script>
@@ -63,6 +69,7 @@ export default {
   <div class="common-note-form">
     <label class="sr-only" for="issue-description">{{ __('Description') }}</label>
     <markdown-editor
+      ref="markdownEditor"
       :enable-content-editor="Boolean(glFeatures.contentEditorOnIssues)"
       class="gl-mt-3"
       :value="value"
@@ -75,8 +82,8 @@ export default {
       autofocus
       data-qa-selector="description_field"
       @input="$emit('input', $event)"
-      @keydown.meta.enter="updateIssuable"
-      @keydown.ctrl.enter="updateIssuable"
+      @keydown.meta.enter="saveIssuable"
+      @keydown.ctrl.enter="saveIssuable"
     />
   </div>
 </template>
