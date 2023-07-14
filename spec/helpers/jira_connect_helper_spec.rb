@@ -75,10 +75,6 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
         end
       end
 
-      it 'passes "all_available" param to groups_path' do
-        expect(subject[:groups_path]).to include('all_available=true')
-      end
-
       it 'passes group as "skip_groups" param' do
         skip_groups_param = CGI.escape('skip_groups[]')
 

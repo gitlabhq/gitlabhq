@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     ...mapState(['query', 'groups', 'fetchingGroups']),
-    ...mapGetters(['frequentGroups']),
+    ...mapGetters(['frequentGroups', 'currentScope']),
     selectedGroup() {
       return isEmpty(this.initialData) ? ANY_OPTION : this.initialData;
     },
@@ -43,6 +43,7 @@ export default {
           [GROUP_DATA.queryParam]: group.id,
           [PROJECT_DATA.queryParam]: null,
           nav_source: null,
+          scope: this.currentScope,
         }),
       );
     },

@@ -290,7 +290,7 @@ To always receive notifications on your own issues, merge requests, and so on, t
 
 NOTE:
 This feature is enabled by default for self-managed instances. Administrators may disable this feature
-through the [Sign-in restrictions](../admin_area/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
+through the [Sign-in restrictions](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
 The feature is always enabled on GitLab.com.
 
 When a user successfully signs in from a previously unknown IP address or device,

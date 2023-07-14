@@ -4,6 +4,14 @@ module Resolvers
   class UserMergeRequestsResolverBase < MergeRequestsResolver
     include ResolvesProject
 
+    argument :group_id,
+             type: ::Types::GlobalIDType[::Group],
+             required: false,
+             description: <<~DESC
+               The global ID of the group the authored merge requests should be in.
+               Merge requests in subgroups are included.
+             DESC
+
     argument :project_path,
              type: GraphQL::Types::String,
              required: false,

@@ -83,7 +83,7 @@ running GitLab on ARM.
 
 ## OS Versions that are no longer supported
 
-GitLab provides omnibus packages for operating systems only until their
+GitLab provides Linux packages for operating systems only until their
 EOL (End-Of-Life). After the EOL date of the OS, GitLab stops releasing
 official packages. The list of deprecated operating systems and the final GitLab
 release for them can be found below:

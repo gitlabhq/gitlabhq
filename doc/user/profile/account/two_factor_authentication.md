@@ -501,7 +501,7 @@ This error occurs in the following scenarios:
 - You do not have 2FA enabled but an administrator has enabled the
   [enforce 2FA for all users](../../../security/two_factor_authentication.md#enforce-2fa-for-all-users) setting.
 - You do not have 2FA enabled, but an administrator has disabled the
-  [password authentication enabled for Git over HTTP(S)](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled)
+  [password authentication enabled for Git over HTTP(S)](../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
   setting.
 
 Instead you can authenticate:

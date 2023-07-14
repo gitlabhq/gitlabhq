@@ -22,6 +22,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
   let_it_be(:private_issue) { create(:issue, project: private_project) }
   let_it_be(:public_issue) { create(:issue, project: public_project) }
 
+  before do
+    stub_feature_flags(move_close_into_dropdown: false)
+  end
+
   context 'widget visibility' do
     context 'when not logged in' do
       it 'does not show widget when internal project' do

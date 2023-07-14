@@ -11,8 +11,7 @@ the package assumes the defaults as noted below.
 
 ## Ports
 
-See the table below for the list of ports that the Omnibus GitLab assigns
-by default:
+See the table below for the list of ports that the Linux package assigns by default:
 
 |      Component       | On by default | Communicates via | Alternative |              Connection port               |
 |:--------------------:|:-------------:|:----------------:|:-----------:|:------------------------------------------:|

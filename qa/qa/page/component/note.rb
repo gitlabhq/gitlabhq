@@ -73,6 +73,7 @@ module QA
         end
 
         def collapse_replies
+          close_rich_text_promo_popover_if_present
           click_element :collapse_replies_button
         end
 

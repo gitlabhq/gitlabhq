@@ -49,9 +49,6 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
 ### Require associated Jira issue for merge requests to be merged **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280766) in GitLab 13.12 [with a flag](../../administration/feature_flags.md) named `jira_issue_association_on_merge_request`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/335280) in GitLab 14.2. Feature flag `jira_issue_association_on_merge_request` removed.
-
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
 
@@ -134,8 +131,6 @@ Consider this example:
 
 ## View Jira issues **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3622) in GitLab 13.2.
-
 You can view and search issues from a selected Jira project directly in GitLab,
 provided your GitLab administrator [has configured the integration](configure.md#configure-the-integration).
 
@@ -148,7 +143,7 @@ The issues are sorted by **Created date** by default, with the most recently cre
 
 - To display the most recently updated issues first, select **Updated date**.
 - You can [search and filter the issue list](#search-and-filter-the-issue-list).
-- In GitLab 13.10 and later, you can [select an issue from the list to view the issue in GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/299832).
+- You can [select an issue from the list to view the issue in GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/299832).
 
 Issues are grouped into tabs based on their
 [Jira status](https://confluence.atlassian.com/adminjiraserver070/defining-status-field-values-749382903.html):
@@ -177,8 +172,6 @@ Enhancements to use these filters through the user interface
 [are planned](https://gitlab.com/groups/gitlab-org/-/epics/3622).
 
 ## Automatic issue transitions
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55773) in GitLab 13.11.
 
 When you configure automatic issue transitions, you can transition a referenced
 Jira issue to the next available status with a category of **Done**. To configure

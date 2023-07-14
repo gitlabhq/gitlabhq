@@ -113,6 +113,8 @@ module Tooling
         %r{\A\.editorconfig\z} => :tooling,
         %r{Dangerfile\z} => :tooling,
         %r{\A((ee|jh)/)?(danger/|tooling/danger/)} => :tooling,
+        %r{\Agems/gem\.gitlab-ci\.yml\z} => :tooling,
+        %r{\Agems/config/} => :tooling,
 
         %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.rb} => [:backend],
         %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.js} => [:frontend],
@@ -162,6 +164,7 @@ module Tooling
         %r{\A(Gemfile.*|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
         %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
+        %r{\Agems/.*/\.rubocop\.yml\z} => :backend,
         %r{\A\.rubocop_todo/.*\.yml\z} => :backend,
         %r{\Afile_hooks/} => :backend,
 

@@ -10,7 +10,7 @@ The Jira issue integration connects one or more GitLab projects to a Jira instan
 
 ## Configure the integration
 
-> Authentication with Jira personal access tokens was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8222) in GitLab 16.0.
+> Authentication with Jira personal access tokens [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8222) in GitLab 16.0.
 
 Prerequisites:
 

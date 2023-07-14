@@ -111,7 +111,11 @@ export default {
     />
 
     <p class="gl-mb-3">
-      {{ s__('JiraConnect|Not seeing your groups? Only groups you have access to appear here.') }}
+      {{
+        s__(
+          'JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here.',
+        )
+      }}
     </p>
 
     <gl-loading-icon v-if="isLoadingInitial" size="lg" />

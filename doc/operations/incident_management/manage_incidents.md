@@ -222,9 +222,9 @@ When you close an incident that is linked to an [alert](alerts.md),
 the linked alert's status changes to **Resolved**.
 You are then credited with the alert's status change.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
 If you don't see this action at the top of an incident, your project or instance might have
-enabled a feature flag for [moved actions](../../user/project/merge_requests/index.md#move-sidebar-actions)
+enabled a feature flag to [moved it in the actions menu](../../user/project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
 
 ### Automatically close incidents via recovery alerts
 

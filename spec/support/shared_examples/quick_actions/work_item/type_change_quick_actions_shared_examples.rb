@@ -20,7 +20,7 @@ RSpec.shared_examples 'quick actions that change work item type' do
     end
 
     context 'when new type is the same as current type' do
-      let(:command) { '/type Issue' }
+      let(:command) { '/type issue' }
 
       it_behaves_like 'quick command error', 'Types are the same'
     end
@@ -57,7 +57,7 @@ RSpec.shared_examples 'quick actions that change work item type' do
       it 'populates :issue_type: and :work_item_type' do
         _, updates, message = service.execute(command, work_item)
 
-        expect(message).to eq(_('Work Item promoted successfully.'))
+        expect(message).to eq(_('Work item promoted successfully.'))
         expect(updates).to eq({ issue_type: 'incident', work_item_type: WorkItems::Type.default_by_type(:incident) })
       end
 
@@ -73,7 +73,7 @@ RSpec.shared_examples 'quick actions that change work item type' do
       it 'populates :issue_type: and :work_item_type' do
         _, updates, message = service.execute(command, work_item)
 
-        expect(message).to eq(_('Work Item promoted successfully.'))
+        expect(message).to eq(_('Work item promoted successfully.'))
         expect(updates).to eq({ issue_type: 'issue', work_item_type: WorkItems::Type.default_by_type(:issue) })
       end
 

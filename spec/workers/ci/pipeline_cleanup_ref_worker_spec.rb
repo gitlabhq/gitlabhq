@@ -39,10 +39,10 @@ RSpec.describe Ci::PipelineCleanupRefWorker, :sidekiq_inline, feature_category: 
         expect(persistent_ref).not_to receive(:delete_refs)
       end
 
-      expect(worker).to receive(:in_lock).and_wrap_original do |method, *args, &block|
+      expect(worker).to receive(:in_lock).and_wrap_original do |method, *args, **kwargs, &block|
         pipeline.run!
 
-        method.call(*args, &block)
+        method.call(*args, **kwargs, &block)
       end
 
       subject

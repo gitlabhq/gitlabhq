@@ -25888,7 +25888,7 @@ msgstr ""
 msgid "JiraConnect|No linked groups"
 msgstr ""
 
-msgid "JiraConnect|Not seeing your groups? Only groups you have access to appear here."
+msgid "JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here."
 msgstr ""
 
 msgid "JiraConnect|Setting up this integration is only possible if you're a GitLab administrator."
@@ -40476,6 +40476,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{agents} %{namespaces}"
 msgstr ""
 
+msgid "ScanExecutionPolicy|A runner will be selected automatically from those available."
+msgstr ""
+
 msgid "ScanExecutionPolicy|Add condition"
 msgstr ""
 
@@ -40491,9 +40494,6 @@ msgstr ""
 msgid "ScanExecutionPolicy|Customized variables will overwrite ones defined in the project CI/CD file and settings"
 msgstr ""
 
-msgid "ScanExecutionPolicy|If the field is empty, the runner will be automatically selected"
-msgstr ""
-
 msgid "ScanExecutionPolicy|Key"
 msgstr ""
 
@@ -40503,13 +40503,22 @@ msgstr ""
 msgid "ScanExecutionPolicy|Maximum number of CI-criteria is one"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Maximum number of runner tags-criteria is one"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Only one variable can be added at a time."
 msgstr ""
 
-msgid "ScanExecutionPolicy|Run a %{scan} scan on runner that %{tags}"
+msgid "ScanExecutionPolicy|Run a %{scan} scan with %{dastProfiles} with the following options:"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Run a %{scan} scan with %{dastProfiles} on runner that %{tags}"
+msgid "ScanExecutionPolicy|Run a %{scan} scan with the following options:"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Runner tags"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Runner tags:"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Scanner profile"
@@ -51944,9 +51953,6 @@ msgstr ""
 msgid "Won't fix / Accept risk"
 msgstr ""
 
-msgid "Work Item promoted successfully."
-msgstr ""
-
 msgid "Work Item type with id %{id} was not found"
 msgstr ""
 
@@ -51954,6 +51960,9 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress limit"
+msgstr ""
+
+msgid "Work item promoted successfully."
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"

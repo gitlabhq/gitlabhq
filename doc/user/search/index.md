@@ -27,7 +27,7 @@ can limit the search scope by disabling the following [`ops` feature flags](../.
 | Issues | `global_search_issues_tab` | When enabled, global search includes issues. |
 | Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests. |
 | Users | `global_search_users_tab` | When enabled, global search includes users. |
-| Wiki | `global_search_wiki_tab` | When enabled, global search includes project and group wikis. |
+| Wiki | `global_search_wiki_tab` | When enabled, global search includes project and [group wikis](../project/wiki/group.md). |
 
 All global search scopes are enabled by default on self-managed instances.
 

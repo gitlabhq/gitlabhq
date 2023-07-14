@@ -25,7 +25,7 @@ Users added through LDAP:
 - Usually use a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
 - Can authenticate with Git using either their GitLab username or their email and LDAP password,
   even if password authentication for Git
-  [is disabled](../../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
+  [is disabled](../../settings/sign_in_restrictions.md#password-authentication-enabled).
 
 The LDAP DN is associated with existing GitLab users when:
 

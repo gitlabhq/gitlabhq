@@ -3,7 +3,7 @@
 
 - if can?(current_user, :download_code, @project)
   .git-clone-holder.js-git-clone-holder
-    %a#clone-dropdown.gl-button.btn.btn-confirm.clone-dropdown-btn{ href: '#', data: { toggle: 'dropdown', qa_selector: 'clone_dropdown' } }
+    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { id: 'clone-dropdown', class: 'clone-dropdown-btn', data: { toggle: 'dropdown', qa_selector: 'clone_dropdown' } }) do
       %span.gl-mr-2.js-clone-dropdown-label
         = _('Clone')
       = sprite_icon("chevron-down", css_class: "icon")

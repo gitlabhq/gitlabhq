@@ -3435,7 +3435,7 @@ module Gitlab
 
           it 'returns errors and empty configuration' do
             expect(subject.valid?).to eq(false)
-            expect(subject.errors).to eq(['Unknown alias: bad_alias'])
+            expect(subject.errors).to all match(%r{unknown .+ bad_alias}i)
           end
         end
 

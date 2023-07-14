@@ -72,6 +72,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /.gitlab/ci/test-on-gdk/ @gl-quality/eng-prod @gl-quality/qe-maintainers
 Dangerfile
 /danger/
+/gems/gem.gitlab-ci.yml
 /tooling/danger/
 /scripts/
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
@@ -81,6 +82,7 @@ Dangerfile
 ^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull @splattael
 .rubocop*.yml
 .rubocop_todo/
+/gems/config/rubocop.yml
 /rubocop/
 /spec/rubocop/
 

@@ -81,8 +81,8 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 - Set password length limit, configure SSO or SAML user management.
 - Limit email domains if allowing sign-up.
 - Require two-factor authentication (2FA).
-- [Disable password authentication](../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled) for Git over HTTPS.
-- Set up [email notification for unknown sign-ins](../user/admin_area/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins).
+- [Disable password authentication](settings/sign_in_restrictions.md#password-authentication-enabled) for Git over HTTPS.
+- Set up [email notification for unknown sign-ins](settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins).
 - Configure [user and IP rate limits](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
 - Limit [webhooks local access](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#webhooks).
 - Set [rate limits for protected paths](../user/admin_area/settings/protected_paths.md).

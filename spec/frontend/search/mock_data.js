@@ -902,3 +902,5 @@ export const MOCK_FILTERED_UNAPPLIED_SELECTED_LABELS = [
     parent_full_name: 'Toolbox / Gitlab Smoke Tests',
   },
 ];
+
+export const CURRENT_SCOPE = 'blobs';

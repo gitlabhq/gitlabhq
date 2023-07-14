@@ -157,7 +157,7 @@ RSpec.shared_examples 'work item supports type change via quick actions' do
   let_it_be(:assignee) { create(:user) }
   let_it_be(:task_type) { WorkItems::Type.default_by_type(:task) }
 
-  let(:body) { "Updating type.\n/type Issue" }
+  let(:body) { "Updating type.\n/type issue" }
 
   before do
     noteable.update!(work_item_type: task_type)
@@ -209,6 +209,17 @@ RSpec.shared_examples 'work item supports type change via quick actions' do
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['errors'])
         .to include("Commands only Type changed successfully. Assigned @#{assignee.username}.")
+    end
+  end
+
+  context 'when the type name is upper case' do
+    let(:body) { "Updating type.\n/type Issue" }
+
+    it 'changes type to issue' do
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+        noteable.reload
+      end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
     end
   end
 end

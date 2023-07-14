@@ -161,6 +161,10 @@ Prerequisites:
 
 To close an epic, at the top of an epic, select **Close epic**.
 
+<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
+If you don't see this action at the top of an epic, your project or instance might have
+enabled a feature flag to [moved it in the actions menu](../../project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
+
 You can also use the `/close` [quick action](../../project/quick_actions.md).
 
 ## Reopen a closed epic
@@ -178,6 +182,10 @@ To do so, either:
   ![reopen epic - button](img/button_reopen_epic.png)
 
 - Use the `/reopen` [quick action](../../project/quick_actions.md).
+
+<!-- Delete when the `move_close_into_dropdown` feature flag is removed -->
+If you don't see this action at the top of an epic, your project or instance might have
+enabled a feature flag to [moved it in the actions menu](../../project/issues/managing_issues.md#move-the-close-button-into-the-actions-menu).
 
 ## Go to an epic from an issue
 

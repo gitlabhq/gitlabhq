@@ -20,7 +20,7 @@ you run in Slack is run by your linked GitLab user.
 Prerequisites:
 
 - You must have the [appropriate permissions to add apps to your Slack workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
-- On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature](../../admin_area/settings/slack_app.md). On GitLab.com, this feature is available.
+- On self-managed GitLab, an administrator must [enable the integration](../../admin_area/settings/slack_app.md).
 
 In GitLab 15.0 and later, the GitLab for Slack app uses
 [granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
@@ -176,7 +176,7 @@ The following events are available for Slack notifications:
 
 ### GitLab for Slack app does not appear in the list of integrations
 
-The GitLab for Slack app might not appear in the list of integrations. To have the GitLab for Slack app on your self-managed instance, an administrator must first [enable the integration](../../admin_area/settings/slack_app.md). On GitLab.com, the GitLab for Slack app is available by default.
+The GitLab for Slack app might not appear in the list of integrations. To have the GitLab for Slack app on your self-managed instance, an administrator must [enable the integration](../../admin_area/settings/slack_app.md). On GitLab.com, the GitLab for Slack app is available by default.
 
 The GitLab for Slack app is enabled at the project level only. Support for the app at the group and instance levels is proposed in [issue 391526](https://gitlab.com/gitlab-org/gitlab/-/issues/391526).
 

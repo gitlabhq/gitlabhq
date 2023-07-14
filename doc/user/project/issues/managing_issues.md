@@ -215,6 +215,9 @@ To close an issue, you can either:
   1. Select **Plan > Issues**, then select your issue to view it.
   1. At the top of the issue, select **Close issue**.
 
+If you don't see this action at the top of an issue, your project or instance might have
+enabled a feature flag to [moved it in the actions menu](#move-the-close-button-into-the-actions-menu).
+
 ### Reopen a closed issue
 
 Prerequisites:
@@ -223,6 +226,9 @@ Prerequisites:
 
 To reopen a closed issue, at the top of the issue, select **Reopen issue**.
 A reopened issue is no different from any other open issue.
+
+If you don't see this action at the top of an issue, your project or instance might have
+enabled a feature flag to [moved it in the actions menu](#move-the-close-button-into-the-actions-menu).
 
 ### Closing issues automatically
 
@@ -323,6 +329,24 @@ Prerequisites:
 
 Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md).
 of your installation.
+
+<!-- Delete when the `move_close_into_dropdown` feature flag is removed
+and update steps for closing and reopening issues, incidents, and epics -->
+### Move the close button into the actions menu
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125173) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `move_close_into_dropdown`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `move_close_into_dropdown`.
+On GitLab.com, this feature is not available.
+
+When this feature flag is enabled, in the upper-right corner,
+**Issue actions** (**{ellipsis_v}**) contains the **Close issue** and **Reopen issue** actions.
+
+In GitLab 16.2 and later, similar action menus are also available on incidents and epics.
+
+When this feature flag is disabled, **Close issue** and **Reopen issue** are
+on the top bar, outside of the actions menu.
 
 ## Change the issue type
 

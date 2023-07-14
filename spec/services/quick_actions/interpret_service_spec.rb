@@ -2872,13 +2872,13 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let_it_be(:project) { create(:project, :private) }
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
-      let(:command) { '/type Issue' }
+      let(:command) { '/type issue' }
 
       it 'has command available' do
         _, explanations = service.explain(command, work_item)
 
         expect(explanations)
-          .to contain_exactly("Converts work item to Issue. Widgets not supported in new type are removed.")
+          .to contain_exactly("Converts work item to issue. Widgets not supported in new type are removed.")
       end
     end
 

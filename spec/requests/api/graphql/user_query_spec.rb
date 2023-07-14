@@ -503,4 +503,51 @@ RSpec.describe 'getting user information', feature_category: :user_management do
       end
     end
   end
+
+  context 'authored merge requests' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, :public, group: group) }
+    let_it_be(:merge_request1) do
+      create(:merge_request, source_project: project, source_branch: '1', author: current_user)
+    end
+
+    let_it_be(:merge_request2) do
+      create(:merge_request, source_project: project, source_branch: '2', author: current_user)
+    end
+
+    let_it_be(:merge_request_different_user) do
+      create(:merge_request, source_project: project, source_branch: '3', author: create(:user))
+    end
+
+    let_it_be(:merge_request_different_group) do
+      create(:merge_request, source_project: create(:project, :public), author: current_user)
+    end
+
+    let_it_be(:merge_request_subgroup) do
+      create(:merge_request, source_project: create(:project, :public, group: subgroup), author: current_user)
+    end
+
+    let(:query) do
+      %(
+        query {
+          currentUser {
+            authoredMergeRequests(groupId: "#{group.to_global_id}") {
+              nodes {
+                id
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'returns merge requests for the current user for the specified group' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:current_user, :authored_merge_requests, :nodes).pluck('id')).to contain_exactly(
+        merge_request1.to_global_id.to_s, merge_request2.to_global_id.to_s, merge_request_subgroup.to_global_id.to_s)
+    end
+  end
 end

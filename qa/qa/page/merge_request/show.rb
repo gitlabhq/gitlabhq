@@ -381,6 +381,7 @@ module QA
         end
 
         def try_to_merge!
+          close_rich_text_promo_popover_if_present
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
           wait_until_ready_to_merge

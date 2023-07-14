@@ -1,0 +1,8 @@
+---
+name: move_close_into_dropdown
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125173
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416861
+milestone: '16.2'
+type: development
+group: group::ux paper cuts
+default_enabled: false

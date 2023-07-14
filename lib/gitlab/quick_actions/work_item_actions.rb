@@ -98,7 +98,7 @@ module Gitlab
       def success_msg
         {
           type: _('Type changed successfully.'),
-          promote_to: _("Work Item promoted successfully.")
+          promote_to: _("Work item promoted successfully.")
         }
       end
     end

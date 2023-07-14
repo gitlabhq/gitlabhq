@@ -426,7 +426,7 @@ export default {
     </gl-button>
 
     <gl-button
-      v-if="showToggleIssueStateButton"
+      v-if="showToggleIssueStateButton && !glFeatures.moveCloseIntoDropdown"
       class="gl-display-none gl-sm-display-inline-flex!"
       :data-qa-selector="qaSelector"
       :loading="isToggleStateButtonLoading"
@@ -462,7 +462,12 @@ export default {
 
         <gl-dropdown-divider />
       </template>
-
+      <gl-dropdown-item
+        v-if="showToggleIssueStateButton && glFeatures.moveCloseIntoDropdown"
+        @click="toggleIssueState"
+      >
+        {{ buttonText }}
+      </gl-dropdown-item>
       <gl-dropdown-item v-if="canCreateIssue && isUserSignedIn" :href="newIssuePath">
         {{ newIssueTypeText }}
       </gl-dropdown-item>
@@ -492,6 +497,7 @@ export default {
           >{{ copyMailAddressText }}</gl-dropdown-item
         >
       </template>
+      <gl-dropdown-divider v-if="showToggleIssueStateButton || canDestroyIssue || canReportSpam" />
       <gl-dropdown-item
         v-if="canReportSpam"
         :href="submitAsSpamPath"
@@ -500,8 +506,14 @@ export default {
       >
         {{ __('Submit as spam') }}
       </gl-dropdown-item>
+      <gl-dropdown-item
+        v-if="!isIssueAuthor && isUserSignedIn"
+        data-testid="report-abuse-item"
+        @click="toggleReportAbuseDrawer(true)"
+      >
+        {{ $options.i18n.reportAbuse }}
+      </gl-dropdown-item>
       <template v-if="canDestroyIssue">
-        <gl-dropdown-divider />
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
@@ -511,13 +523,6 @@ export default {
           {{ deleteButtonText }}
         </gl-dropdown-item>
       </template>
-      <gl-dropdown-item
-        v-if="!isIssueAuthor && isUserSignedIn"
-        data-testid="report-abuse-item"
-        @click="toggleReportAbuseDrawer(true)"
-      >
-        {{ $options.i18n.reportAbuse }}
-      </gl-dropdown-item>
     </gl-dropdown>
 
     <new-header-actions-popover v-if="isMrSidebarMoved" :issue-type="issueType" />

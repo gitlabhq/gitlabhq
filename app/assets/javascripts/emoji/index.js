@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { escape, minBy } from 'lodash';
 import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
@@ -11,6 +12,10 @@ import { CACHE_KEY, CACHE_VERSION_KEY, CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } 
 
 let emojiMap = null;
 let validEmojiNames = null;
+
+export const state = Vue.observable({
+  loading: true,
+});
 
 export const FALLBACK_EMOJI_KEY = 'grey_question';
 
@@ -91,6 +96,7 @@ async function prepareEmojiMap() {
       ...values[1],
     };
     validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
+    state.loading = false;
   });
 }
 

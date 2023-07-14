@@ -839,14 +839,14 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
         context 'when changing work item type' do
           let_it_be(:work_item) { create(:work_item, :task, project: project) }
-          let(:description) { "/type Issue" }
+          let(:description) { "/type issue" }
 
           let(:input) { { 'descriptionWidget' => { 'description' => description } } }
 
           context 'with multiple commands' do
             let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
-            let(:description) { "Updating work item\n/type Issue\n/due tomorrow\n/title Foo" }
+            let(:description) { "Updating work item\n/type issue\n/due tomorrow\n/title Foo" }
 
             it 'updates the work item type and other attributes' do
               expect do

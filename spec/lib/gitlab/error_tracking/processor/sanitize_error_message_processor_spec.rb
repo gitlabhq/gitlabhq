@@ -9,7 +9,9 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SanitizeErrorMessageProcessor, 
 
     shared_examples 'processes the exception' do
       it 'cleans the exception message' do
-        expect(Gitlab::Sanitizers::ExceptionMessage).to receive(:clean).with('StandardError', 'raw error').and_return('cleaned')
+        expect(Gitlab::Sanitizers::ExceptionMessage).to receive(:clean).with(
+          'StandardError', match('raw error')
+        ).and_return('cleaned')
 
         expect(result_hash[:exception][:values].first).to include(
           type: 'StandardError',
