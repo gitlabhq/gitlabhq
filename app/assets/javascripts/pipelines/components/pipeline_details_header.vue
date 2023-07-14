@@ -404,7 +404,7 @@ export default {
     <gl-loading-icon v-if="loading" class="gl-text-left" size="lg" />
     <div
       v-else
-      class="gl-display-flex gl-justify-content-space-between"
+      class="gl-display-flex gl-justify-content-space-between gl-flex-wrap"
       data-qa-selector="pipeline_details_header"
     >
       <div>
@@ -571,7 +571,7 @@ export default {
           </span>
         </div>
       </div>
-      <div>
+      <div class="gl-mt-5 gl-lg-mt-0">
         <gl-button
           v-if="canRetryPipeline"
           v-gl-tooltip

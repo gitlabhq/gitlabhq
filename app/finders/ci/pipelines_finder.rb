@@ -164,7 +164,7 @@ module Ci
                    :id
                  end
 
-      sort = if params[:sort] =~ /\A(ASC|DESC)\z/i
+      sort = if /\A(ASC|DESC)\z/i.match?(params[:sort])
                params[:sort]
              else
                :desc

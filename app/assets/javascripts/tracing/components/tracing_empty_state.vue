@@ -1,0 +1,46 @@
+<script>
+import EMPTY_TRACING_SVG from '@gitlab/svgs/dist/illustrations/monitoring/tracing.svg?url';
+import { GlEmptyState, GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
+
+export default {
+  EMPTY_TRACING_SVG,
+  name: 'TracingEmptyState',
+  i18n: {
+    title: __('Get started with Tracing'),
+    description: __('Monitor your applications with GitLab Distributed Tracing.'),
+    enableButtonText: __('Enable'),
+  },
+  components: {
+    GlEmptyState,
+    GlButton,
+  },
+  props: {
+    enableTracing: {
+      type: Function,
+      required: true,
+    },
+  },
+  methods: {
+    onEnabledClicked() {
+      this.enableTracing();
+    },
+  },
+};
+</script>
+
+<template>
+  <gl-empty-state :title="$options.i18n.title" :svg-path="$options.EMPTY_TRACING_SVG">
+    <template #description>
+      <div>
+        <span>{{ $options.i18n.description }}</span>
+      </div>
+    </template>
+
+    <template #actions>
+      <gl-button variant="confirm" class="gl-mx-2 gl-mb-3" @click="onEnabledClicked">
+        {{ $options.i18n.enableButtonText }}
+      </gl-button>
+    </template>
+  </gl-empty-state>
+</template>

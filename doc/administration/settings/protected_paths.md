@@ -38,6 +38,6 @@ customized on **Admin > Network > Protected Paths**, along with these options:
 - Rate limit period in seconds.
 - Paths to be protected.
 
-![protected-paths](../../user/admin_area/settings/img/protected_paths.png)
+![protected-paths](img/protected_paths.png)
 
 Requests over the rate limit are logged into `auth.log`.

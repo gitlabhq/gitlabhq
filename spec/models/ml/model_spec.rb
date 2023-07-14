@@ -6,6 +6,7 @@ RSpec.describe Ml::Model, feature_category: :mlops do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:default_experiment) }
+    it { is_expected.to have_many(:versions) }
   end
 
   describe '#valid?' do

@@ -203,7 +203,7 @@ Older versions of SSH may require you to remove `-E md5` from the command.
 ## Related topics
 
 - Configure a [Pull Mirroring Interval](../../../../administration/instance_limits.md#pull-mirroring-interval)
-- [Disable mirrors for a project](../../../admin_area/settings/visibility_and_access_controls.md#enable-project-mirroring)
+- [Disable mirrors for a project](../../../../administration/settings/visibility_and_access_controls.md#enable-project-mirroring)
 - [Secrets file and mirroring](../../../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost)
 
 ## Troubleshooting

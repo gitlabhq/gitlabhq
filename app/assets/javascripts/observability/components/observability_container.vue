@@ -1,8 +1,10 @@
 <script>
 import { buildClient } from '../client';
+import { SKELETON_SPINNER_VARIANT } from '../constants';
 import ObservabilitySkeleton from './skeleton/index.vue';
 
 export default {
+  SKELETON_SPINNER_VARIANT,
   components: {
     ObservabilitySkeleton,
   },
@@ -30,6 +32,7 @@ export default {
     window.addEventListener('message', this.messageHandler);
 
     // TODO Remove once backend work done - just for testing
+    // https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2270
     // setTimeout(() => {
     //   this.messageHandler({
     //     data: { type: 'AUTH_COMPLETION', status: 'success' },
@@ -79,7 +82,10 @@ export default {
       data-testid="observability-oauth-iframe"
     ></iframe>
 
-    <observability-skeleton ref="observabilitySkeleton">
+    <observability-skeleton
+      ref="observabilitySkeleton"
+      :variant="$options.SKELETON_SPINNER_VARIANT"
+    >
       <slot v-if="observabilityClient" :observability-client="observabilityClient"></slot>
     </observability-skeleton>
   </div>

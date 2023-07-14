@@ -90,7 +90,7 @@ not.
 
 When visiting the public page of a user, you can only see the projects which you have privileges to.
 
-If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
+If the [public level is restricted](../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 user profiles are only visible to authenticated users.
 
 ## Add details to your profile with a README

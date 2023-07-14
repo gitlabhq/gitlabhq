@@ -18,7 +18,7 @@ module IgnorableColumns
     #
     # Indicate the earliest date and release we can stop ignoring the column with +remove_after+ (a date string) and +remove_with+ (a release)
     def ignore_columns(*columns, remove_after:, remove_with:)
-      raise ArgumentError, 'Please indicate when we can stop ignoring columns with remove_after (date string YYYY-MM-DD), example: ignore_columns(:name, remove_after: \'2019-12-01\', remove_with: \'12.6\')' unless remove_after =~ Gitlab::Regex.utc_date_regex
+      raise ArgumentError, 'Please indicate when we can stop ignoring columns with remove_after (date string YYYY-MM-DD), example: ignore_columns(:name, remove_after: \'2019-12-01\', remove_with: \'12.6\')' unless Gitlab::Regex.utc_date_regex.match?(remove_after)
       raise ArgumentError, 'Please indicate in which release we can stop ignoring columns with remove_with, example: ignore_columns(:name, remove_after: \'2019-12-01\', remove_with: \'12.6\')' unless remove_with
 
       self.ignored_columns += columns.flatten # rubocop:disable Cop/IgnoredColumns

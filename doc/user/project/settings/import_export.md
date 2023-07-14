@@ -79,7 +79,7 @@ For example:
 
 Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
 
-1. [Enable file exports](../../admin_area/settings/visibility_and_access_controls.md#enable-project-export) on the source
+1. [Enable file exports](../../../administration/settings/visibility_and_access_controls.md#enable-project-export) on the source
    instance.
 1. Enable file exports as an import source for the destination instance. On GitLab.com, file exports are already enabled
    as an import source.

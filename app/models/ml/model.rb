@@ -13,6 +13,7 @@ module Ml
 
     has_one :default_experiment, class_name: 'Ml::Experiment'
     belongs_to :project
+    has_many :versions, class_name: 'Ml::ModelVersion'
 
     def valid_default_experiment?
       return unless default_experiment

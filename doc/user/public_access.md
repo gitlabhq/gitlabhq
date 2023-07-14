@@ -56,7 +56,7 @@ Public groups can have public, internal, or private subgroups.
 
 NOTE:
 If an administrator restricts the
-[**Public** visibility level](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
+[**Public** visibility level](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 then `/public` is visible only to authenticated users.
 
 ## Change project visibility
@@ -99,7 +99,7 @@ Prerequisites:
 Administrators can restrict which visibility levels users can choose when they create a project or a snippet.
 This setting can help prevent users from publicly exposing their repositories by accident.
 
-For more information, see [Restrict visibility levels](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels).
+For more information, see [Restrict visibility levels](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels).
 
 ## Related topics
 

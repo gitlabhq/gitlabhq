@@ -396,24 +396,31 @@ lib/gitlab/checks/**
 ^[Documentation Pages]
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
 # Begin rake-managed-docs-block
+/doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
-/doc/administration/audit_event_streaming.md @eread
+/doc/administration/audit_event_streaming/ @eread
 /doc/administration/audit_events.md @eread
 /doc/administration/audit_reports.md @eread
 /doc/administration/auditor_users.md @jglassman1
 /doc/administration/auth/ @jglassman1
+/doc/administration/backup_restore/ @axil
 /doc/administration/cicd.md @marcel.amirault
 /doc/administration/clusters/ @phillipwells
 /doc/administration/compliance.md @eread
 /doc/administration/configure.md @axil
 /doc/administration/consul.md @axil
+/doc/administration/credentials_inventory.md @jglassman1
+/doc/administration/custom_project_templates.md @aqualls @msedlakjakubowski
+/doc/administration/diff_limits.md @aqualls @msedlakjakubowski
 /doc/administration/docs_self_host.md @axil
 /doc/administration/encrypted_configuration.md @axil
 /doc/administration/environment_variables.md @axil
 /doc/administration/external_pipeline_validation.md @marcel.amirault
+/doc/administration/external_users.md @jglassman1
 /doc/administration/feature_flags.md @axil
 /doc/administration/file_hooks.md @eread @ashrafkhamis
 /doc/administration/geo/ @axil
+/doc/administration/geo_sites.md @axil
 /doc/administration/get_started.md @kpaizee
 /doc/administration/git_protocol.md @aqualls @msedlakjakubowski
 /doc/administration/gitaly/ @eread
@@ -431,14 +438,20 @@ lib/gitlab/checks/**
 /doc/administration/issue_closing_pattern.md @aqualls
 /doc/administration/job_artifacts.md @marcel.amirault
 /doc/administration/job_logs.md @fneill
+/doc/administration/labels.md @msedlakjakubowski
 /doc/administration/lfs/ @aqualls @msedlakjakubowski
 /doc/administration/libravatar.md @axil
+/doc/administration/license.md @fneill
+/doc/administration/license_file.md @fneill
 /doc/administration/load_balancer.md @axil
 /doc/administration/logs/ @axil
 /doc/administration/logs/index.md @msedlakjakubowski
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @aqualls @msedlakjakubowski
+/doc/administration/merge_requests_approvals.md @aqualls @msedlakjakubowski
+/doc/administration/moderate_users.md @jglassman1
 /doc/administration/monitoring/github_imports.md @eread @ashrafkhamis
+/doc/administration/monitoring/health_check.md @msedlakjakubowski
 /doc/administration/monitoring/index.md @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
 /doc/administration/monitoring/performance/gitlab_configuration.md @msedlakjakubowski
@@ -471,11 +484,36 @@ lib/gitlab/checks/**
 /doc/administration/reference_architectures/ @axil
 /doc/administration/reply_by_email.md @msedlakjakubowski
 /doc/administration/reply_by_email_postfix_setup.md @axil
+/doc/administration/reporting/ @phillipwells
+/doc/administration/reporting/spamcheck.md @axil
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
 /doc/administration/repository_storage_types.md @eread
 /doc/administration/restart_gitlab.md @axil
+/doc/administration/review_abuse_reports.md @phillipwells
 /doc/administration/server_hooks.md @eread
+/doc/administration/settings/account_and_limit_settings.md @aqualls @msedlakjakubowski
+/doc/administration/settings/deprecated_api_rate_limits.md @aqualls @msedlakjakubowski
+/doc/administration/settings/git_lfs_rate_limits.md @aqualls @msedlakjakubowski
+/doc/administration/settings/gitaly_timeouts.md @eread
+/doc/administration/settings/import_export_rate_limits.md @eread @ashrafkhamis
+/doc/administration/settings/incident_management_rate_limits.md @msedlakjakubowski
+/doc/administration/settings/index.md @aqualls @msedlakjakubowski
+/doc/administration/settings/instance_template_repository.md @aqualls @msedlakjakubowski
+/doc/administration/settings/package_registry_rate_limits.md @phillipwells
+/doc/administration/settings/project_integration_management.md @eread @ashrafkhamis
+/doc/administration/settings/push_event_activities_limit.md @aqualls @msedlakjakubowski
+/doc/administration/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
+/doc/administration/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
+/doc/administration/settings/rate_limit_on_pipelines_creation.md @marcel.amirault
+/doc/administration/settings/rate_limit_on_projects_api.md @lciutacu
+/doc/administration/settings/rate_limit_on_users_api.md @jglassman1
+/doc/administration/settings/rate_limits_on_git_ssh_operations.md @aqualls @msedlakjakubowski
+/doc/administration/settings/scim_setup.md @jglassman1
+/doc/administration/settings/security_and_compliance.md @rdickenson
+/doc/administration/settings/terraform_limits.md @phillipwells
+/doc/administration/settings/third_party_offers.md @lciutacu
+/doc/administration/settings/visibility_and_access_controls.md @aqualls @msedlakjakubowski
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
 /doc/administration/silent_mode/ @axil
@@ -505,6 +543,7 @@ lib/gitlab/checks/**
 /doc/api/commits.md @aqualls @msedlakjakubowski
 /doc/api/container_registry.md @marcel.amirault
 /doc/api/custom_attributes.md @msedlakjakubowski
+/doc/api/database_migrations.md @aqualls
 /doc/api/dependencies.md @rdickenson
 /doc/api/dependency_proxy.md @marcel.amirault
 /doc/api/deploy_keys.md @phillipwells
@@ -594,7 +633,7 @@ lib/gitlab/checks/**
 /doc/api/project_aliases.md @aqualls @msedlakjakubowski
 /doc/api/project_badges.md @aqualls @msedlakjakubowski
 /doc/api/project_clusters.md @phillipwells
-/doc/api/project_import_export.md @aqualls @msedlakjakubowski
+/doc/api/project_import_export.md @eread @ashrafkhamis
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_relations_export.md @eread @ashrafkhamis
@@ -689,12 +728,10 @@ lib/gitlab/checks/**
 /doc/development/distribution/ @axil
 /doc/development/documentation/ @sselhorn
 /doc/development/export_csv.md @eread @ashrafkhamis
+/doc/development/fe_guide/ @sselhorn
 /doc/development/fe_guide/customizable_dashboards.md @lciutacu
-/doc/development/fe_guide/dark_mode.md @sselhorn
-/doc/development/fe_guide/graphql.md @sselhorn
 /doc/development/fe_guide/merge_request_widget_extensions.md @aqualls
 /doc/development/fe_guide/source_editor.md @aqualls @msedlakjakubowski
-/doc/development/fe_guide/view_component.md @sselhorn
 /doc/development/feature_categorization/ @sselhorn
 /doc/development/feature_development.md @sselhorn
 /doc/development/feature_flags/ @sselhorn
@@ -715,6 +752,7 @@ lib/gitlab/checks/**
 /doc/development/integrations/ @eread @ashrafkhamis
 /doc/development/integrations/secure.md @rdickenson
 /doc/development/integrations/secure_partner_integration.md @rdickenson
+/doc/development/internal_analytics/ @lciutacu
 /doc/development/internal_api/ @aqualls @msedlakjakubowski
 /doc/development/internal_users.md @sselhorn
 /doc/development/issuable-like-models.md @msedlakjakubowski
@@ -734,6 +772,7 @@ lib/gitlab/checks/**
 /doc/development/packages/cleanup_policies.md @marcel.amirault
 /doc/development/packages/dependency_proxy.md @marcel.amirault
 /doc/development/permissions.md @jglassman1
+/doc/development/permissions/ @jglassman1
 /doc/development/policies.md @jglassman1
 /doc/development/project_templates.md @aqualls @msedlakjakubowski
 /doc/development/prometheus_metrics.md @msedlakjakubowski
@@ -743,8 +782,6 @@ lib/gitlab/checks/**
 /doc/development/search/ @ashrafkhamis
 /doc/development/sec/ @rdickenson
 /doc/development/secure_coding_guidelines.md @sselhorn
-/doc/development/service_ping/ @lciutacu
-/doc/development/snowplow/ @lciutacu
 /doc/development/spam_protection_and_captcha/ @phillipwells
 /doc/development/sql.md @aqualls
 /doc/development/testing_guide/ @sselhorn
@@ -773,8 +810,6 @@ lib/gitlab/checks/**
 /doc/integration/mattermost/ @axil
 /doc/integration/partner_marketplace.md @fneill
 /doc/integration/recaptcha.md @phillipwells
-/doc/integration/security_partners/ @rdickenson
-/doc/integration/slash_commands.md @eread @ashrafkhamis
 /doc/integration/sourcegraph.md @aqualls @msedlakjakubowski
 /doc/integration/trello_power_up.md @eread @ashrafkhamis
 /doc/integration/vault.md @phillipwells
@@ -783,8 +818,6 @@ lib/gitlab/checks/**
 /doc/operations/index.md @msedlakjakubowski
 /doc/policy/ @axil
 /doc/raketasks/ @axil
-/doc/raketasks/generate_sample_prometheus_data.md @msedlakjakubowski
-/doc/raketasks/migrate_snippets.md @ashrafkhamis
 /doc/raketasks/spdx.md @rdickenson
 /doc/raketasks/x509_signatures.md @aqualls @msedlakjakubowski
 /doc/security/ @jglassman1
@@ -802,53 +835,21 @@ lib/gitlab/checks/**
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/compliance_pipeline/ @eread
 /doc/tutorials/configure_gitlab_runner_to_use_gke/ @fneill
+/doc/tutorials/container_scanning/ @rdickenson
 /doc/tutorials/convert_personal_namespace_to_group/ @lciutacu
+/doc/tutorials/dependency_scanning.md @rdickenson
 /doc/tutorials/fuzz_testing/ @rdickenson
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
+/doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/scan_result_policy/ @rdickenson
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
-/doc/user/admin_area/analytics/ @lciutacu
-/doc/user/admin_area/credentials_inventory.md @jglassman1
-/doc/user/admin_area/custom_project_templates.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/diff_limits.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/external_users.md @jglassman1
-/doc/user/admin_area/geo_sites.md @axil
-/doc/user/admin_area/labels.md @msedlakjakubowski
-/doc/user/admin_area/license.md @fneill
-/doc/user/admin_area/license_file.md @fneill
-/doc/user/admin_area/merge_requests_approvals.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/moderate_users.md @jglassman1
-/doc/user/admin_area/monitoring/ @msedlakjakubowski
-/doc/user/admin_area/reporting/git_abuse_rate_limit.md @phillipwells
-/doc/user/admin_area/reporting/spamcheck.md @axil
-/doc/user/admin_area/review_abuse_reports.md @phillipwells
-/doc/user/admin_area/settings/account_and_limit_settings.md @aqualls @msedlakjakubowski
 /doc/user/admin_area/settings/continuous_integration.md @marcel.amirault
-/doc/user/admin_area/settings/deprecated_api_rate_limits.md @aqualls @msedlakjakubowski
 /doc/user/admin_area/settings/email.md @msedlakjakubowski
 /doc/user/admin_area/settings/external_authorization.md @jglassman1
 /doc/user/admin_area/settings/files_api_rate_limits.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/settings/git_lfs_rate_limits.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/settings/gitaly_timeouts.md @eread
-/doc/user/admin_area/settings/import_export_rate_limits.md @eread @ashrafkhamis
-/doc/user/admin_area/settings/incident_management_rate_limits.md @msedlakjakubowski
-/doc/user/admin_area/settings/index.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/settings/instance_template_repository.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/settings/package_registry_rate_limits.md @phillipwells
-/doc/user/admin_area/settings/project_integration_management.md @eread @ashrafkhamis
-/doc/user/admin_area/settings/push_event_activities_limit.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
-/doc/user/admin_area/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
-/doc/user/admin_area/settings/rate_limit_on_pipelines_creation.md @marcel.amirault
-/doc/user/admin_area/settings/rate_limit_on_projects_api.md @lciutacu
-/doc/user/admin_area/settings/rate_limit_on_users_api.md @jglassman1
-/doc/user/admin_area/settings/scim_setup.md @jglassman1
-/doc/user/admin_area/settings/security_and_compliance.md @rdickenson
-/doc/user/admin_area/settings/terraform_limits.md @phillipwells
-/doc/user/admin_area/settings/third_party_offers.md @lciutacu
+/doc/user/admin_area/settings/slack_app.md @eread @ashrafkhamis
 /doc/user/admin_area/settings/usage_statistics.md @lciutacu
-/doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls @msedlakjakubowski
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson
@@ -957,6 +958,7 @@ lib/gitlab/checks/**
 /doc/user/report_abuse.md @phillipwells
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
+/doc/user/search/command_palette.md @sselhorn
 /doc/user/shortcuts.md @ashrafkhamis
 /doc/user/snippets.md @aqualls @msedlakjakubowski
 /doc/user/ssh.md @jglassman1

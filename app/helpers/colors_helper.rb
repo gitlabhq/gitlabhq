@@ -4,7 +4,7 @@ module ColorsHelper
   HEX_COLOR_PATTERN = /\A\#(?:[0-9A-Fa-f]{3}){1,2}\Z/.freeze
 
   def hex_color_to_rgb_array(hex_color)
-    unless hex_color.is_a?(String) && hex_color =~ HEX_COLOR_PATTERN
+    unless hex_color.is_a?(String) && HEX_COLOR_PATTERN.match?(hex_color)
       raise ArgumentError, "invalid hex color `#{hex_color}`"
     end
 

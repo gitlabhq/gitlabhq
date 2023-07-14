@@ -289,12 +289,29 @@ In GitLab, ensure Code Suggestions is enabled:
 
 To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.
 
-If you are a self-managed user, ensure that Code Suggestions for the [GitLab WebIDE](../../project/web_ide/index.md) are enabled:
+#### Code Suggestions not displayed in VS Code or GitLab WebIDE
+
+Check all steps above first.
+
+If you are a self-managed user, ensure that Code Suggestions for the [GitLab WebIDE](../../project/web_ide/index.md) are enabled. The same settings apply to VS Code as local IDE.
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
 1. In **GitLab > AI Assisted Code Suggestions**, select the **Enable code completion (Beta)**
    checkbox.
+
+If the settings are enabled, but Code Suggestions are still not displayed, try the following steps:
+
+1. Enable the `Debug` checkbox in the GitLab Workflow **Extension Settings**.
+1. Open the extension log in **View > Output** and change the dropdown to **GitLab Workflow** as log filter. The command palette command is `GitLab: Show Extension Logs`.
+1. Disable and re-enable the **Enable code completion (Beta)** checkbox.
+1. Verify that the debug log contains similar output:
+
+```shell
+2023-07-14T17:29:00:763 [debug]: Disabling code completion
+2023-07-14T17:29:01:802 [debug]: Enabling code completion
+2023-07-14T17:29:01:802 [debug]: AI Assist: Using server: https://codesuggestions.gitlab.com/v2/completions
+```
 
 ### Authentication troubleshooting
 

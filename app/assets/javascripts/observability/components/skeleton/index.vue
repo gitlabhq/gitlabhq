@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import { GlSkeletonLoader, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 
 import {
   SKELETON_VARIANTS_BY_ROUTE,
@@ -9,6 +9,7 @@ import {
   TIMEOUT_ERROR_LABEL,
   TIMEOUT_ERROR_MESSAGE,
   SKELETON_VARIANT_EMBED,
+  SKELETON_SPINNER_VARIANT,
 } from '../../constants';
 import DashboardsSkeleton from './dashboards.vue';
 import ExploreSkeleton from './explore.vue';
@@ -23,6 +24,7 @@ export default {
     ManageSkeleton,
     EmbedSkeleton,
     GlAlert,
+    GlLoadingIcon,
   },
   SKELETON_VARIANTS_BY_ROUTE,
   SKELETON_STATE,
@@ -45,6 +47,23 @@ export default {
       loadingTimeout: null,
       errorTimeout: null,
     };
+  },
+  computed: {
+    skeletonVisible() {
+      return this.state === SKELETON_STATE.VISIBLE;
+    },
+    skeletonHidden() {
+      return this.state === SKELETON_STATE.HIDDEN;
+    },
+    errorVisible() {
+      return this.state === SKELETON_STATE.ERROR;
+    },
+    spinnerVariant() {
+      return this.variant === SKELETON_SPINNER_VARIANT;
+    },
+    embedVariant() {
+      return this.variant === SKELETON_VARIANT_EMBED;
+    },
   },
   mounted() {
     this.setLoadingTimeout();
@@ -98,8 +117,7 @@ export default {
     showError() {
       this.state = SKELETON_STATE.ERROR;
     },
-
-    isSkeletonShown(route) {
+    isVariantByRoute(route) {
       return this.variant === SKELETON_VARIANTS_BY_ROUTE[route];
     },
   },
@@ -108,11 +126,12 @@ export default {
 <template>
   <div class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch">
     <transition name="fade">
-      <div v-if="state === $options.SKELETON_STATE.VISIBLE" class="gl-px-5">
-        <dashboards-skeleton v-if="isSkeletonShown($options.OBSERVABILITY_ROUTES.DASHBOARDS)" />
-        <explore-skeleton v-else-if="isSkeletonShown($options.OBSERVABILITY_ROUTES.EXPLORE)" />
-        <manage-skeleton v-else-if="isSkeletonShown($options.OBSERVABILITY_ROUTES.MANAGE)" />
-        <embed-skeleton v-else-if="variant === $options.SKELETON_VARIANT_EMBED" />
+      <div v-if="skeletonVisible" class="gl-px-5 gl-my-5">
+        <dashboards-skeleton v-if="isVariantByRoute($options.OBSERVABILITY_ROUTES.DASHBOARDS)" />
+        <explore-skeleton v-else-if="isVariantByRoute($options.OBSERVABILITY_ROUTES.EXPLORE)" />
+        <manage-skeleton v-else-if="isVariantByRoute($options.OBSERVABILITY_ROUTES.MANAGE)" />
+        <embed-skeleton v-else-if="embedVariant" />
+        <gl-loading-icon v-else-if="spinnerVariant" size="lg" />
 
         <gl-skeleton-loader v-else>
           <rect y="2" width="10" height="8" />
@@ -121,10 +140,19 @@ export default {
           <rect y="15" width="400" height="30" />
         </gl-skeleton-loader>
       </div>
+
+      <!-- The double condition is only here temporarily for back-compatibility reasons. Will be removed in next iteration https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2275 -->
+      <div
+        v-if="spinnerVariant && skeletonHidden"
+        data-testid="content-wrapper"
+        class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
+      >
+        <slot></slot>
+      </div>
     </transition>
 
     <gl-alert
-      v-if="state === $options.SKELETON_STATE.ERROR"
+      v-if="errorVisible"
       :title="$options.i18n.TIMEOUT_ERROR_LABEL"
       variant="danger"
       :dismissible="false"
@@ -133,9 +161,10 @@ export default {
       {{ $options.i18n.TIMEOUT_ERROR_MESSAGE }}
     </gl-alert>
 
-    <transition>
+    <!-- This is only kept temporarily for back-compatibility reasons. Will be removed in next iteration https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2275 -->
+    <transition v-if="!spinnerVariant">
       <div
-        v-show="state === $options.SKELETON_STATE.HIDDEN"
+        v-show="skeletonHidden"
         data-testid="content-wrapper"
         class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
       >

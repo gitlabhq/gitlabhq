@@ -49,11 +49,11 @@ describe('ProjectsListItem', () => {
       label: project.name,
       labelLink: project.webUrl,
     });
+
     expect(avatarLabeled.attributes()).toMatchObject({
       'entity-id': project.id.toString(),
       'entity-name': project.name,
       shape: 'rect',
-      size: '48',
     });
   });
 
@@ -288,6 +288,22 @@ describe('ProjectsListItem', () => {
       createComponent();
 
       expect(findProjectDescription().exists()).toBe(false);
+    });
+  });
+
+  describe('when `showProjectIcon` prop is `true`', () => {
+    it('shows project icon', () => {
+      createComponent({ propsData: { showProjectIcon: true } });
+
+      expect(wrapper.findByTestId('project-icon').exists()).toBe(true);
+    });
+  });
+
+  describe('when `showProjectIcon` prop is `false`', () => {
+    it('does not show project icon', () => {
+      createComponent();
+
+      expect(wrapper.findByTestId('project-icon').exists()).toBe(false);
     });
   });
 });

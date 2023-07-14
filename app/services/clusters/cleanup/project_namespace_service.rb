@@ -29,7 +29,7 @@ module Clusters
           rescue Kubeclient::HttpError => e
             # unauthorized, forbidden: GitLab's access has been revoked
             # certificate verify failed: Cluster is probably gone forever
-            raise unless e.message =~ /unauthorized|forbidden|certificate verify failed/i
+            raise unless /unauthorized|forbidden|certificate verify failed/i.match?(e.message)
           end
 
           kubernetes_namespace.destroy!

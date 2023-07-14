@@ -216,7 +216,7 @@ The import sources that are available by default depend on which GitLab you use:
 
 - GitLab.com: all available import sources are enabled by default.
 - GitLab self-managed: no import sources are enabled by default and must be
-  [enabled](../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+  [enabled](../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
 
 | Import source                                                                                       | GitLab.com default     | GitLab self-managed default |
 |:----------------------------------------------------------------------------------------------------|:-----------------------|:----------------------------|

@@ -1544,7 +1544,7 @@ class User < ApplicationRecord
   end
 
   def full_website_url
-    return "http://#{website_url}" if website_url !~ %r{\Ahttps?://}
+    return "http://#{website_url}" unless %r{\Ahttps?://}.match?(website_url)
 
     website_url
   end

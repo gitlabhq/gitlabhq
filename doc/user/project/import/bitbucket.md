@@ -36,7 +36,7 @@ When importing:
 
 - [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be enabled. If that integration is not enabled, ask your GitLab administrator
   to enable it. The Bitbucket Cloud integration is enabled by default on GitLab.com.
-- [Bitbucket Cloud import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
+- [Bitbucket Cloud import source](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
   GitLab administrator to enable it. The Bitbucket Cloud import source is enabled by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
 

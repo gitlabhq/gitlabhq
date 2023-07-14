@@ -47,7 +47,7 @@ The **General** settings contain:
  Enable mandatory two-factor authentication.
 - [Terms of Service and Privacy Policy](../../user/admin_area/settings/terms.md) - Include a Terms of Service agreement
  and Privacy Policy that all users must accept.
-- [External Authentication](../../user/admin_area/settings/external_authorization.md#configuration) - External Classification Policy Authorization.
+- [External Authentication](../../administration/settings/external_authorization.md#configuration) - External Classification Policy Authorization.
 - [Web terminal](../integration/terminal.md#limiting-websocket-connection-time) -
  Set max session time for web terminal.
 - [FLoC](floc.md) - Enable or disable
@@ -174,7 +174,7 @@ The **Repository** settings contain:
   Set a custom branch name for new repositories created in your instance.
 - [Repository's initial default branch protection](../../user/project/repository/branches/default.md#instance-level-default-branch-protection) -
   Configure the branch protections to apply to every repository's default branch.
-- [Repository mirror](../../user/admin_area/settings/visibility_and_access_controls.md#enable-project-mirroring) -
+- [Repository mirror](visibility_and_access_controls.md#enable-project-mirroring) -
   Configure repository mirroring.
 - [Repository storage](../repository_storage_types.md) - Configure storage path settings.
 - Repository maintenance:

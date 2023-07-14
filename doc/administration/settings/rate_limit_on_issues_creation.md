@@ -25,7 +25,7 @@ action exceeding a rate of 300 per minute are blocked. Access to the endpoint is
 
 When using [epics](../../user/group/epics/index.md), epic creation shares this rate limit with issues.
 
-![Rate limits on issues creation](../../user/admin_area/settings/img/rate_limit_on_issues_creation_v14_2.png)
+![Rate limits on issues creation](img/rate_limit_on_issues_creation_v14_2.png)
 
 This limit is:
 

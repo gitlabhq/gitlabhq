@@ -18605,6 +18605,26 @@ CREATE SEQUENCE ml_experiments_id_seq
 
 ALTER SEQUENCE ml_experiments_id_seq OWNED BY ml_experiments.id;
 
+CREATE TABLE ml_model_versions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    model_id bigint NOT NULL,
+    package_id bigint,
+    version text NOT NULL,
+    CONSTRAINT check_28b2d892c8 CHECK ((char_length(version) <= 255))
+);
+
+CREATE SEQUENCE ml_model_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_model_versions_id_seq OWNED BY ml_model_versions.id;
+
 CREATE TABLE ml_models (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25595,6 +25615,8 @@ ALTER TABLE ONLY ml_experiment_metadata ALTER COLUMN id SET DEFAULT nextval('ml_
 
 ALTER TABLE ONLY ml_experiments ALTER COLUMN id SET DEFAULT nextval('ml_experiments_id_seq'::regclass);
 
+ALTER TABLE ONLY ml_model_versions ALTER COLUMN id SET DEFAULT nextval('ml_model_versions_id_seq'::regclass);
+
 ALTER TABLE ONLY ml_models ALTER COLUMN id SET DEFAULT nextval('ml_models_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('namespace_admin_notes_id_seq'::regclass);
@@ -27811,6 +27833,9 @@ ALTER TABLE ONLY ml_experiment_metadata
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT ml_experiments_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_model_versions
+    ADD CONSTRAINT ml_model_versions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT ml_models_pkey PRIMARY KEY (id);
@@ -31945,6 +31970,14 @@ CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_name ON ml_experiment
 
 CREATE INDEX index_ml_experiments_on_user_id ON ml_experiments USING btree (user_id);
 
+CREATE INDEX index_ml_model_versions_on_model_id ON ml_model_versions USING btree (model_id);
+
+CREATE INDEX index_ml_model_versions_on_package_id ON ml_model_versions USING btree (package_id);
+
+CREATE INDEX index_ml_model_versions_on_project_id ON ml_model_versions USING btree (project_id);
+
+CREATE UNIQUE INDEX index_ml_model_versions_on_project_id_and_model_id_and_version ON ml_model_versions USING btree (project_id, model_id, version);
+
 CREATE INDEX index_ml_models_on_project_id ON ml_models USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ml_models_on_project_id_and_name ON ml_models USING btree (project_id, name);
@@ -35540,6 +35573,9 @@ ALTER TABLE ONLY incident_management_timeline_events
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_39c726d3b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_model_versions
+    ADD CONSTRAINT fk_39f8aa0b8a FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
+
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_3a9eaa254d FOREIGN KEY (stage_id) REFERENCES ci_stages(id) ON DELETE CASCADE;
 
@@ -35605,6 +35641,9 @@ ALTER TABLE ONLY sbom_occurrences
 
 ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT fk_4d6ba63ba5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_model_versions
+    ADD CONSTRAINT fk_4e8b59e7a8 FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_4efde02858 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -37294,6 +37333,9 @@ ALTER TABLE ONLY achievements
 
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_898a13b650 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_model_versions
+    ADD CONSTRAINT fk_rails_8a481bd22e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY snippet_repositories
     ADD CONSTRAINT fk_rails_8afd7e2f71 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;

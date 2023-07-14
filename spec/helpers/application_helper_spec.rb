@@ -200,6 +200,60 @@ RSpec.describe ApplicationHelper do
     it { expect(helper.active_when(false)).to eq(nil) }
   end
 
+  describe '#linkedin_url?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user) }
+
+    subject { helper.linkedin_url(user) }
+
+    before do
+      user.linkedin = linkedin_name
+    end
+
+    where(:linkedin_name, :linkedin_url) do
+      nil                                       | 'https://www.linkedin.com/in/'
+      ''                                        | 'https://www.linkedin.com/in/'
+      'alice'                                   | 'https://www.linkedin.com/in/alice'
+      'http://www.linkedin.com/in/alice'        | 'http://www.linkedin.com/in/alice'
+      'http://linkedin.com/in/alice'            | 'http://linkedin.com/in/alice'
+      'https://www.linkedin.com/in/alice'       | 'https://www.linkedin.com/in/alice'
+      'https://linkedin.com/in/alice'           | 'https://linkedin.com/in/alice'
+      'https://linkedin.com/in/alice/more/path' | 'https://linkedin.com/in/alice/more/path'
+    end
+
+    with_them do
+      it { is_expected.to eq(linkedin_url) }
+    end
+  end
+
+  describe '#twitter_url?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user) }
+
+    subject { helper.twitter_url(user) }
+
+    before do
+      user.twitter = twitter_name
+    end
+
+    where(:twitter_name, :twitter_url) do
+      nil                                   | 'https://twitter.com/'
+      ''                                    | 'https://twitter.com/'
+      'alice'                               | 'https://twitter.com/alice'
+      'http://www.twitter.com/alice'        | 'http://www.twitter.com/alice'
+      'http://twitter.com/alice'            | 'http://twitter.com/alice'
+      'https://www.twitter.com/alice'       | 'https://www.twitter.com/alice'
+      'https://twitter.com/alice'           | 'https://twitter.com/alice'
+      'https://twitter.com/alice/more/path' | 'https://twitter.com/alice/more/path'
+    end
+
+    with_them do
+      it { is_expected.to eq(twitter_url) }
+    end
+  end
+
   unless Gitlab.jh?
     describe '#promo_host' do
       subject { helper.promo_host }

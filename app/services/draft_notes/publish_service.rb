@@ -49,6 +49,7 @@ module DraftNotes
       notification_service.async.new_review(review)
       MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      after_publish(review)
     end
 
     def create_note_from_draft(draft, skip_capture_diff_note_position: false, skip_keep_around_commits: false, skip_merge_status_trigger: false)
@@ -108,5 +109,11 @@ module DraftNotes
         project.repository.keep_around(*shas)
       end
     end
+
+    def after_publish(review)
+      # Overridden in EE
+    end
   end
 end
+
+DraftNotes::PublishService.prepend_mod

@@ -15,12 +15,15 @@ branches, tags, and commits from an upstream repository to yours.
 Unlike [push mirrors](push.md), pull mirrors retrieve changes from an upstream (remote)
 repository on a scheduled basis. To prevent the mirror from diverging from the upstream
 repository, don't push commits directly to the downstream mirror. Push commits to
-the upstream repository instead. Changes in the remote repository are pulled into the GitLab repository, either:
+the upstream repository instead. Changes in the remote repository are pulled into the GitLab repository:
 
-- Automatically in a certain period of time. Self-managed instances can
-  configure [pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval).
+- Automatically, 30 minutes after a previous pull. This cannot be disabled.
 - When an administrator [force-updates the mirror](index.md#force-an-update).
 - When an [API call triggers an update](#trigger-an-update-by-using-the-api).
+
+UI and API updates are subject to default
+[pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
+of 5 minutes. This interval can be configured by self-managed instances.
 
 By default, if any branch or tag on the downstream pull mirror diverges from the
 local repository, GitLab stops updating the branch. This prevents data loss.

@@ -27,7 +27,7 @@ You can now see the message on `/help`.
 
 NOTE:
 By default, `/help` is visible to unauthenticated users. However, if the
-[**Public** visibility level](../../user/admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
+[**Public** visibility level](visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/help` is visible only to authenticated users.
 
 ## Add a help message to the sign-in page

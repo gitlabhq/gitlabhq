@@ -28,6 +28,7 @@ describe('ProjectsList', () => {
     expect(expectedProps).toEqual(
       defaultPropsData.projects.map((project) => ({
         project,
+        showProjectIcon: false,
       })),
     );
   });

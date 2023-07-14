@@ -30,7 +30,7 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 
 On self-managed GitLab, by default [migrating group items](#migrated-group-items) is not available. To show the
-feature, ask an administrator to [enable it in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
+feature, ask an administrator to [enable it in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
 
 Migrating groups by direct transfer copies the groups from one place to another. You can:
 
@@ -105,7 +105,7 @@ To migrate groups by direct transfer:
 - The network connection between instances or GitLab.com must support HTTPS.
 - Any firewalls must not block the connection between the source and destination GitLab instances.
 - Both GitLab instances must have group migration by direct transfer
-  [enabled in application settings](../../admin_area/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  [enabled in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
 - The source GitLab instance must be running GitLab 14.0 or later.
 - You must have a [personal access token](../../../user/profile/personal_access_tokens.md) for the source GitLab

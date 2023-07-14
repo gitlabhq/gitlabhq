@@ -18,7 +18,7 @@ This setting defaults to `300` requests per minute, and allows you to rate limit
 
 For example, requests over `300` per minute to `https://gitlab.com/gitlab-org/gitlab-foss/raw/master/app/controllers/application_controller.rb` are blocked. Access to the raw file is released after 1 minute.
 
-![Rate limits on raw endpoints](../../user/admin_area/settings/img/rate_limits_on_raw_endpoints.png)
+![Rate limits on raw endpoints](img/rate_limits_on_raw_endpoints.png)
 
 This limit is:
 

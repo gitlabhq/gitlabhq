@@ -41,7 +41,7 @@ Get started:
 - [Add members](../user/group/index.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
 - [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
-- Enable [external authorization control](../user/admin_area/settings/external_authorization.md#configuration).
+- Enable [external authorization control](../administration/settings/external_authorization.md#configuration).
 
 **More resources**
 

@@ -838,7 +838,7 @@ class Repository
     files = ls_files(options[:branch_name])
 
     options[:actions] = files.each_with_object([]) do |item, list|
-      next unless item =~ regex
+      next unless regex.match?(item)
 
       list.push(
         action: :move,

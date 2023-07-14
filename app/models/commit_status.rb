@@ -288,7 +288,7 @@ class CommitStatus < Ci::ApplicationRecord
 
   def sortable_name
     name.to_s.split(/(\d+)/).map do |v|
-      v =~ /\d+/ ? v.to_i : v
+      /\d+/.match?(v) ? v.to_i : v
     end
   end
 

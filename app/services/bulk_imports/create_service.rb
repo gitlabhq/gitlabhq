@@ -105,7 +105,7 @@ module BulkImports
     def validate_setting_enabled!
       source_full_path, source_type = Array.wrap(params)[0].values_at(:source_full_path, :source_type)
       entity_type = ENTITY_TYPES_MAPPING.fetch(source_type)
-      if source_full_path =~ /^[0-9]+$/
+      if /^[0-9]+$/.match?(source_full_path)
         query = query_type(entity_type)
         response = graphql_client.execute(
           graphql_client.parse(query.to_s),
@@ -154,7 +154,7 @@ module BulkImports
     end
 
     def validate_destination_slug(destination_slug)
-      return if destination_slug =~ Gitlab::Regex.oci_repository_path_regex
+      return if Gitlab::Regex.oci_repository_path_regex.match?(destination_slug)
 
       raise BulkImports::Error.destination_slug_validation_failure
     end

@@ -31,6 +31,6 @@ class DeviseEmailValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    record.errors.add(attribute, :invalid) unless value =~ options[:regexp]
+    record.errors.add(attribute, :invalid) unless options[:regexp].match?(value)
   end
 end

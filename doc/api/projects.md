@@ -2469,7 +2469,7 @@ This endpoint:
 - From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
   [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, delayed project deletion is enabled by default.
   The deletion happens after the number of days specified in the
-  [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+  [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 WARNING:
 The option to delete projects immediately from deletion protection settings in the Admin Area was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.

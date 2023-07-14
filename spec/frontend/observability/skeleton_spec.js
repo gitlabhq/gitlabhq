@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import { GlSkeletonLoader, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import Skeleton from '~/observability/components/skeleton/index.vue';
@@ -17,7 +17,7 @@ import {
 describe('Skeleton component', () => {
   let wrapper;
 
-  const SKELETON_VARIANTS = Object.values(SKELETON_VARIANTS_BY_ROUTE);
+  const SKELETON_VARIANTS = [...Object.values(SKELETON_VARIANTS_BY_ROUTE), 'spinner'];
 
   const findContentWrapper = () => wrapper.findByTestId('content-wrapper');
 
@@ -132,6 +132,7 @@ describe('Skeleton component', () => {
       ${'explore'}    | ${'variant is explore'}                           | ${SKELETON_VARIANTS[1]}
       ${'manage'}     | ${'variant is manage'}                            | ${SKELETON_VARIANTS[2]}
       ${'embed'}      | ${'variant is embed'}                             | ${SKELETON_VARIANT_EMBED}
+      ${'spinner'}    | ${'variant is spinner'}                           | ${'spinner'}
       ${'default'}    | ${'variant is not manage, dashboards or explore'} | ${'unknown'}
     `('should render $skeletonType skeleton if $condition', async ({ skeletonType, variant }) => {
       mountComponent({ variant });
@@ -147,6 +148,8 @@ describe('Skeleton component', () => {
       expect(findEmbedSkeleton().exists()).toBe(skeletonType === SKELETON_VARIANT_EMBED);
 
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(showsDefaultSkeleton);
+
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(variant === 'spinner');
     });
   });
 
