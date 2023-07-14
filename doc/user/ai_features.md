@@ -46,20 +46,14 @@ The following feature is in Beta:
 
 ## Experiment AI features
 
-[Experiment features](../policy/experiment-beta-support.md#experiment) will soon require
-[Experiment features to be enabled](group/manage.md#enable-experiment-features).
-
-## Third-party AI features
-
-Third-party AI features require [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
-
-For Experiment third-party AI features, [Experiment features must be enabled](group/manage.md#enable-experiment-features) as well.
+[Experiment](../policy/experiment-beta-support.md#experiment) AI features require
+[Experiment features to be enabled](group/manage.md#enable-experiment-features) as well as [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
 
 ### Explain Selected Code in the Web UI **(ULTIMATE SAAS)**
 
 > Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
-This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3.
+This AI feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.com that is powered by Google's Codey for Code Chat (codechat-bison).
 
 GitLab can help you get up to speed faster if you:
 
@@ -70,9 +64,11 @@ By using a large language model, GitLab can explain the code in natural language
 
 Prerequisites:
 
-- The project must be a public project on GitLab.com.
+Additional prerequisites [beyond the two above](#experiment-ai-features).
+
+- The project must be on GitLab.com.
 - You must have the GitLab Ultimate subscription tier.
-- You must be a member of the project.
+- You must be a member of the project with sufficient permissions to view the repository.
 
 To explain your code:
 

@@ -1,7 +1,14 @@
 <script>
-import { GlAvatarLabeled, GlAvatarLink, GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlAvatarLink,
+  GlLoadingIcon,
+  GlPagination,
+  GlEmptyState,
+} from '@gitlab/ui';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
+import { isCurrentUser } from '~/lib/utils/common_utils';
 
 export default {
   i18n: {
@@ -13,7 +20,9 @@ export default {
     GlAvatarLink,
     GlLoadingIcon,
     GlPagination,
+    GlEmptyState,
   },
+  inject: ['followEmptyState', 'userId'],
   props: {
     /**
      * Expected format:
@@ -48,12 +57,34 @@ export default {
       required: false,
       default: DEFAULT_PER_PAGE,
     },
+    currentUserEmptyStateTitle: {
+      type: String,
+      required: true,
+    },
+    visitorEmptyStateTitle: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    emptyStateTitle() {
+      return isCurrentUser(this.userId)
+        ? this.currentUserEmptyStateTitle
+        : this.visitorEmptyStateTitle;
+    },
   },
 };
 </script>
 
 <template>
   <gl-loading-icon v-if="loading" class="gl-mt-5" size="md" />
+  <gl-empty-state
+    v-else-if="!users.length"
+    class="gl-mt-5"
+    :svg-path="followEmptyState"
+    :svg-height="144"
+    :title="emptyStateTitle"
+  />
   <div v-else>
     <div class="gl-my-n3 gl-mx-n3 gl-display-flex gl-flex-wrap">
       <div v-for="user in users" :key="user.id" class="gl-p-3 gl-w-full gl-md-w-half gl-lg-w-25p">

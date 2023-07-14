@@ -68,6 +68,8 @@ describe('FollowingTab', () => {
         loading: false,
         page: MOCK_PAGE,
         totalItems: MOCK_TOTAL_FOLLOWING,
+        currentUserEmptyStateTitle: FollowingTab.i18n.currentUserEmptyStateTitle,
+        visitorEmptyStateTitle: FollowingTab.i18n.visitorEmptyStateTitle,
       });
     });
 

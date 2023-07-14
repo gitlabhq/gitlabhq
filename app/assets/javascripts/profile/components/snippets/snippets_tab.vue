@@ -1,9 +1,11 @@
 <script>
 import { GlTab, GlKeysetPagination, GlEmptyState } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { SNIPPET_MAX_LIST_COUNT } from '~/profile/constants';
+import { isCurrentUser } from '~/lib/utils/common_utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import getUserSnippets from '../graphql/get_user_snippets.query.graphql';
 import SnippetRow from './snippet_row.vue';
 
@@ -11,7 +13,11 @@ export default {
   name: 'SnippetsTab',
   i18n: {
     title: s__('UserProfile|Snippets'),
-    noSnippets: s__('UserProfiles|No snippets found.'),
+    currentUserEmptyStateTitle: s__('UserProfile|Get started with snippets'),
+    visitorEmptyStateTitle: s__("UserProfile|This user doesn't have any snippets"),
+    emptyStateDescription: s__('UserProfile|Store, share, and embed bits of code and text.'),
+    newSnippet: __('New snippet'),
+    learnMore: __('Learn more'),
   },
   components: {
     GlTab,
@@ -19,7 +25,7 @@ export default {
     GlEmptyState,
     SnippetRow,
   },
-  inject: ['userId', 'snippetsEmptyState'],
+  inject: ['userId', 'snippetsEmptyState', 'newSnippetPath'],
   data() {
     return {
       userInfo: {},
@@ -57,6 +63,14 @@ export default {
     hasSnippets() {
       return this.userSnippets?.length;
     },
+    emptyStateTitle() {
+      return isCurrentUser(this.userId)
+        ? this.$options.i18n.currentUserEmptyStateTitle
+        : this.$options.i18n.visitorEmptyStateTitle;
+    },
+    emptyStateDescription() {
+      return isCurrentUser(this.userId) ? this.$options.i18n.emptyStateDescription : null;
+    },
   },
   methods: {
     isLastSnippet(index) {
@@ -76,6 +90,7 @@ export default {
         beforeToken: this.pageInfo.startCursor,
       };
     },
+    helpPagePath,
   },
 };
 </script>
@@ -100,11 +115,17 @@ export default {
       </div>
     </template>
     <template v-if="!hasSnippets">
-      <gl-empty-state class="gl-mt-5" :svg-height="75" :svg-path="snippetsEmptyState">
-        <template #title>
-          <p class="gl-font-weight-bold gl-mt-n5">{{ $options.i18n.noSnippets }}</p>
-        </template>
-      </gl-empty-state>
+      <gl-empty-state
+        class="gl-mt-5"
+        :svg-path="snippetsEmptyState"
+        :svg-height="144"
+        :title="emptyStateTitle"
+        :description="emptyStateDescription"
+        :primary-button-link="newSnippetPath"
+        :primary-button-text="$options.i18n.newSnippet"
+        :secondary-button-text="$options.i18n.learnMore"
+        :secondary-button-link="helpPagePath('user/snippets')"
+      />
     </template>
   </gl-tab>
 </template>

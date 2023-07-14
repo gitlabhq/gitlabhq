@@ -355,8 +355,8 @@ for GitLab.com, see
 
 For information on rate limiting responses, see:
 
-- [List of headers on responses to blocked requests](../admin_area/settings/user_and_ip_rate_limits.md#response-headers).
-- [Customizable response text](../admin_area/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
+- [List of headers on responses to blocked requests](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
+- [Customizable response text](../../administration/settings/user_and_ip_rate_limits.md#use-a-custom-rate-limit-response).
 
 ### Protected paths throttle
 
@@ -366,7 +366,7 @@ paths that exceed 10 requests per **minute** per IP address.
 See the source below for which paths are protected. This includes user creation,
 user confirmation, user sign in, and password reset.
 
-[User and IP rate limits](../admin_area/settings/user_and_ip_rate_limits.md#response-headers)
+[User and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md#response-headers)
 includes a list of the headers responded to blocked requests.
 
 See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.

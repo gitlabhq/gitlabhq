@@ -11,7 +11,6 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import EditedAt from '~/issues/show/components/edited.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
@@ -34,7 +33,7 @@ export default {
     WorkItemCommentForm,
     EditedAt,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   inject: ['fullPath'],
   props: {
     workItemId: {
@@ -370,12 +369,7 @@ export default {
         />
       </div>
       <div class="note-awards" :class="isFirstNote ? '' : 'gl-pl-7'">
-        <work-item-note-awards-list
-          v-if="glFeatures.workItemsMvc2"
-          :note="note"
-          :work-item-iid="workItemIid"
-          :is-modal="isModal"
-        />
+        <work-item-note-awards-list :note="note" :work-item-iid="workItemIid" :is-modal="isModal" />
       </div>
     </div>
   </timeline-entry-item>

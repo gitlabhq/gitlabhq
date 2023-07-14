@@ -34,16 +34,7 @@ module Members
       # @param sources [Group, Project, Array<Group>, Array<Project>, Group::ActiveRecord_Relation,
       # Project::ActiveRecord_Relation] - Can't be an array of source ids because we don't know the type of source.
       # @return Array<Member>
-      def add_members(
-        sources,
-        invitees,
-        access_level,
-        current_user: nil,
-        expires_at: nil,
-        tasks_to_be_done: [],
-        tasks_project_id: nil,
-        ldap: nil
-      ) # rubocop:disable Metrics/ParameterLists
+      def add_members(sources, invitees, access_level, **args)
         return [] unless invitees.present?
 
         sources = Array.wrap(sources) if sources.is_a?(ApplicationRecord) # For single source
@@ -51,7 +42,9 @@ module Members
         Member.transaction do
           sources.flat_map do |source|
             # If this user is attempting to manage Owner members and doesn't have permission, do not allow
-            next [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
+            if managing_owners?(args[:current_user], access_level) && cannot_manage_owners?(source, args[:current_user])
+              next []
+            end
 
             emails, users, existing_members = parse_users_list(source, invitees)
 
@@ -59,12 +52,8 @@ module Members
               source: source,
               access_level: access_level,
               existing_members: existing_members,
-              current_user: current_user,
-              expires_at: expires_at,
-              tasks_to_be_done: tasks_to_be_done,
-              tasks_project_id: tasks_project_id,
-              ldap: ldap
-            }
+              tasks_to_be_done: args[:tasks_to_be_done] || []
+            }.merge(parsed_args(args))
 
             members = emails.map do |email|
               new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
@@ -79,25 +68,20 @@ module Members
         end
       end
 
-      def add_member(
-        source,
-        invitee,
-        access_level,
-        current_user: nil,
-        expires_at: nil,
-        ldap: nil
-      ) # rubocop:disable Metrics/ParameterLists
-        add_members(
-          source,
-          [invitee],
-          access_level,
-          current_user: current_user,
-          expires_at: expires_at,
-          ldap: ldap
-        ).first
+      def add_member(source, invitee, access_level, **args)
+        add_members(source, [invitee], access_level, **args).first
       end
 
       private
+
+      def parsed_args(args)
+        {
+          current_user: args[:current_user],
+          expires_at: args[:expires_at],
+          tasks_project_id: args[:tasks_project_id],
+          ldap: args[:ldap]
+        }
+      end
 
       def managing_owners?(current_user, access_level)
         current_user && Gitlab::Access.sym_options_with_owner[access_level] == Gitlab::Access::OWNER

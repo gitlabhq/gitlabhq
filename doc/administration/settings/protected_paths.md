@@ -24,7 +24,7 @@ After 10 requests, the client must wait 60 seconds before it can try again.
 See also:
 
 - List of paths [protected by default](../instance_limits.md#by-protected-path).
-- [User and IP rate limits](../../user/admin_area/settings/user_and_ip_rate_limits.md#response-headers)
+- [User and IP rate limits](user_and_ip_rate_limits.md#response-headers)
   for the headers returned to blocked requests.
 
 ## Configure protected paths

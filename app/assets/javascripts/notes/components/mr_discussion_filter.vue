@@ -62,6 +62,12 @@ export default {
       this.updateMergeRequestFilters(filters);
       this.selectedFilters = filters;
     },
+    deselectAll() {
+      this.selectedFilters = [];
+    },
+    selectAll() {
+      this.selectedFilters = MR_FILTER_OPTIONS.map((f) => f.value);
+    },
   },
   MR_FILTER_OPTIONS,
 };
@@ -84,9 +90,14 @@ export default {
       <gl-collapsible-listbox
         v-model="selectedFilters"
         :items="$options.MR_FILTER_OPTIONS"
+        :header-text="__('Filter activity')"
+        :show-select-all-button-label="__('Select all')"
+        :reset-button-label="__('Deselect all')"
         multiple
         placement="right"
         @hidden="applyFilters"
+        @reset="deselectAll"
+        @select-all="selectAll"
       >
         <template #toggle>
           <gl-button class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!">

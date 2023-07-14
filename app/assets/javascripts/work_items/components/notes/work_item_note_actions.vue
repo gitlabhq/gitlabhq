@@ -10,7 +10,6 @@ import * as Sentry from '@sentry/browser';
 import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getMutation, optimisticAwardUpdate } from '../../notes/award_utils';
 
 export default {
@@ -36,7 +35,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath'],
   props: {
     workItemIid: {
@@ -199,7 +197,7 @@ export default {
       {{ __('Contributor') }}
     </user-access-role-badge>
     <emoji-picker
-      v-if="showAwardEmoji && glFeatures.workItemsMvc2"
+      v-if="showAwardEmoji"
       toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
       data-testid="note-emoji-button"
       @click="setAwardEmoji"

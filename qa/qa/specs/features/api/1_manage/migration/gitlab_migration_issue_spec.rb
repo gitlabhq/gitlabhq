@@ -43,11 +43,7 @@ module QA
 
         it(
           'successfully imports issue',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347608',
-          quarantine: {
-            type: :investigating,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415247"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347608'
         ) do
           expect_project_import_finished_successfully
           expect(imported_issues.count).to eq(1)
@@ -71,11 +67,7 @@ module QA
 
         it(
           'preserves related merge request',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305',
-          quarantine: {
-            type: :investigating,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415247"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305'
         ) do
           expect_project_import_finished_successfully
           expect(imported_related_mrs).to eq([source_mr.iid])
@@ -99,11 +91,7 @@ module QA
 
         it(
           'successfully imports design',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366449',
-          quarantine: {
-            type: :investigating,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415247"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366449'
         ) do
           expect_project_import_finished_successfully
           expect(imported_issues.count).to eq(1)

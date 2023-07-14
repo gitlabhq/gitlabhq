@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8.
 
-This is the group-level documentation. For self-managed instances, see the [administration documentation](../admin_area/moderate_users.md).
+This is the group-level documentation. For self-managed instances, see the [administration documentation](../../administration/moderate_users.md).
 
 A group Owner can moderate user access by banning and unbanning users.
 

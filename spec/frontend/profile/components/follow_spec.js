@@ -1,11 +1,19 @@
-import { GlAvatarLabeled, GlAvatarLink, GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlAvatarLink,
+  GlEmptyState,
+  GlLoadingIcon,
+  GlPagination,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import users from 'test_fixtures/api/users/followers/get.json';
 import Follow from '~/profile/components/follow.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
+import { isCurrentUser } from '~/lib/utils/common_utils';
 
 jest.mock('~/rest_api');
+jest.mock('~/lib/utils/common_utils');
 
 describe('FollowersTab', () => {
   let wrapper;
@@ -15,6 +23,13 @@ describe('FollowersTab', () => {
     loading: false,
     page: 1,
     totalItems: 50,
+    currentUserEmptyStateTitle: 'UserProfile|You do not have any followers.',
+    visitorEmptyStateTitle: "UserProfile|This user doesn't have any followers.",
+  };
+
+  const defaultProvide = {
+    followEmptyState: '/illustrations/empty-state/empty-friends-md.svg',
+    userId: '1',
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -23,11 +38,13 @@ describe('FollowersTab', () => {
         ...defaultPropsData,
         ...propsData,
       },
+      provide: defaultProvide,
     });
   };
 
   const findPagination = () => wrapper.findComponent(GlPagination);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   describe('when `loading` prop is `true`', () => {
     it('renders loading icon', () => {
@@ -93,6 +110,36 @@ describe('FollowersTab', () => {
         findPagination().vm.$emit('input', nextPage);
 
         expect(wrapper.emitted('pagination-input')).toEqual([[nextPage]]);
+      });
+    });
+
+    describe('when the users prop is empty', () => {
+      describe('when user is the current user', () => {
+        beforeEach(() => {
+          isCurrentUser.mockImplementation(() => true);
+          createComponent({ propsData: { users: [] } });
+        });
+
+        it('displays empty state with correct message', () => {
+          expect(findEmptyState().props()).toMatchObject({
+            svgPath: defaultProvide.followEmptyState,
+            title: defaultPropsData.currentUserEmptyStateTitle,
+          });
+        });
+      });
+
+      describe('when user is a visitor', () => {
+        beforeEach(() => {
+          isCurrentUser.mockImplementation(() => false);
+          createComponent({ propsData: { users: [] } });
+        });
+
+        it('displays empty state with correct message', () => {
+          expect(findEmptyState().props()).toMatchObject({
+            svgPath: defaultProvide.followEmptyState,
+            title: defaultPropsData.visitorEmptyStateTitle,
+          });
+        });
       });
     });
   });

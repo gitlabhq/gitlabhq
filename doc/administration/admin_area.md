@@ -85,8 +85,8 @@ To list users matching a specific criteria, select one of the following tabs on 
 - **2FA Enabled**
 - **2FA Disabled**
 - **External**
-- **[Blocked](../user/admin_area/moderate_users.md#block-a-user)**
-- **[Deactivated](../user/admin_area/moderate_users.md#deactivate-a-user)**
+- **[Blocked](../administration/moderate_users.md#block-a-user)**
+- **[Deactivated](../administration/moderate_users.md#deactivate-a-user)**
 - **Without projects**
 
 For each user, the following are listed:

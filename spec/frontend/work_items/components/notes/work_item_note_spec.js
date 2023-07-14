@@ -95,14 +95,10 @@ describe('Work Item Note', () => {
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
     assignees = mockAssignees,
     workItemByIidResponseHandler = workItemResponseHandler,
-    workItemsMvc2 = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       provide: {
         fullPath: 'test-project-path',
-        glFeatures: {
-          workItemsMvc2,
-        },
       },
       propsData: {
         workItemId,
@@ -430,12 +426,6 @@ describe('Work Item Note', () => {
           );
         });
       });
-    });
-
-    it('does not show awards when feature flag disabled', () => {
-      createComponent();
-
-      expect(findAwardsList().exists()).toBe(false);
     });
 
     it('passes note props to awards list', () => {

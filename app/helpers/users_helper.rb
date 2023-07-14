@@ -190,7 +190,9 @@ module UsersHelper
       user_activity_path: user_activity_path(user, :json),
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
       user_id: user.id,
-      snippets_empty_state: image_path('illustrations/empty-state/empty-snippets-md.svg')
+      snippets_empty_state: image_path('illustrations/empty-state/empty-snippets-md.svg'),
+      new_snippet_path: (new_snippet_path if can?(current_user, :create_snippet)),
+      follow_empty_state: image_path('illustrations/empty-state/empty-friends-md.svg')
     }
   end
 

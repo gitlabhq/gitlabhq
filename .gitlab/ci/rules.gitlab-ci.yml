@@ -613,6 +613,8 @@
 
 .as-if-jh-default-exclusion-rules:
   rules:
+    - if: '$ADD_JH_FILES_TOKEN == null'
+      when: never
     - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-targeting-stable-branch

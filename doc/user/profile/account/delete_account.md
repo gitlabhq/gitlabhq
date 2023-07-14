@@ -30,7 +30,7 @@ As a user, to delete your own account:
 1. Select **Delete account**.
 
 NOTE:
-On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../admin_area/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created. Unblocking the account does not undo the deletion because the account will still be in the deletion queue, and will be deleted. Accounts with no issues, comments, notes, merge requests, or snippets are deleted immediately. Accounts under paid namespaces are deleted immediately.
+On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../../administration/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created. Unblocking the account does not undo the deletion because the account will still be in the deletion queue, and will be deleted. Accounts with no issues, comments, notes, merge requests, or snippets are deleted immediately. Accounts under paid namespaces are deleted immediately.
 
 ## Delete users and user contributions **(FREE SELF)**
 
@@ -69,7 +69,7 @@ When deleting users, you can either:
   - Personal access tokens.
   - Snippets.
 
-An alternative to deleting is [blocking a user](../../admin_area/moderate_users.md#block-a-user).
+An alternative to deleting is [blocking a user](../../../administration/moderate_users.md#block-a-user).
 
 When a user is deleted from an [abuse report](../../../administration/review_abuse_reports.md) or spam log, these associated
 records are always removed.

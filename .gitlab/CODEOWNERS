@@ -1103,7 +1103,6 @@ lib/gitlab/checks/**
 /ee/app/assets/javascripts/access_tokens/
 /ee/app/assets/javascripts/audit_events/components/tokens/
 /ee/app/assets/javascripts/audit_events/token_utils.js
-/ee/app/assets/javascripts/batch_comments/
 /ee/app/assets/javascripts/groups/settings/components/
 /ee/app/assets/javascripts/pages/admin/application_settings/general/components/
 /ee/app/assets/javascripts/pages/groups/omniauth_callbacks/

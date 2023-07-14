@@ -21,3 +21,5 @@ module Members
     end
   end
 end
+
+Members::Groups::CreatorService.prepend_mod_with('Members::Groups::CreatorService')

@@ -47,10 +47,10 @@ The lists of users are displayed.
 A _billable user_ counts against the number of subscription seats. Every user is considered a
 billable user, with the following exceptions:
 
-- [Deactivated users](../../user/admin_area/moderate_users.md#deactivate-a-user) and
-  [blocked users](../../user/admin_area/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
+- [Deactivated users](../../administration/moderate_users.md#deactivate-a-user) and
+  [blocked users](../../administration/moderate_users.md#block-a-user) don't count as billable users in the current subscription. When they are either deactivated or blocked they release a _billable user_ seat. However, they may
   count toward overages in the subscribed seat count.
-- Users who are [pending approval](../../user/admin_area/moderate_users.md#users-pending-approval).
+- Users who are [pending approval](../../administration/moderate_users.md#users-pending-approval).
 - Users with only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - Users with only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
 - Users without project or group memberships on an Ultimate subscription.
@@ -354,7 +354,7 @@ Starting 30 days before a subscription expires, a banner with the expiry date di
 
 You should follow these steps during renewal:
 
-1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../user/admin_area/moderate_users.md#block-a-user).
+1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../administration/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
 The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.

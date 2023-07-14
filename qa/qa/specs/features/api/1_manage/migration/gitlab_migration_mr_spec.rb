@@ -72,8 +72,8 @@ module QA
           'successfully imports merge request',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478',
           quarantine: {
-            type: :investigating,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415245"
+            type: :bug,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/414859"
           }
         ) do
           expect_project_import_finished_successfully

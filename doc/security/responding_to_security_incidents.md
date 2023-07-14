@@ -14,7 +14,7 @@ additional steps. These suggestions are intended to supplement existing security
 
 If you suspect that a user account or bot account has been compromised, consider taking the following steps:
 
-- [Block the user](../user/admin_area/moderate_users.md#block-a-user) to mitigate any current risk.
+- [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
 - [Review the audit events](../administration/audit_events.md) available to you to identify any suspicious account behavior. For
   example:
   - Suspicious sign-in events.
@@ -44,7 +44,7 @@ hosts in accordance with vendor guidance.
 If you suspect that your GitLab instance has been compromised, consider taking the following steps:
 
 - [Review the audit events](../administration/audit_events.md) available to you for suspicious account behavior.
-- [Review all users](../user/admin_area/moderate_users.md) (including the Administrative root user), and follow the steps in [Suspected compromised user account](#suspected-compromised-user-account) if necessary.
+- [Review all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in [Suspected compromised user account](#suspected-compromised-user-account) if necessary.
 - Review the [Credentials Inventory](../user/admin_area/credentials_inventory.md), if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database,
   CI/CD pipelines, or elsewhere.

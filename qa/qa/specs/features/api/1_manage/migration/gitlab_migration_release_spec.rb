@@ -34,10 +34,10 @@ module QA
               commit_path: release[:commit_path].split("/-/").last,
               tag_path: release[:tag_path].split("/-/").last,
               assets: release[:assets].merge({
-                                               sources: release.dig(:assets, :sources).map do |source|
-                                                 source.merge({ url: source[:url].split("/-/").last })
-                                               end
-                                             }),
+                sources: release.dig(:assets, :sources).map do |source|
+                  source.merge({ url: source[:url].split("/-/").last })
+                end
+              }),
               milestones: release[:milestones].map do |milestone|
                 milestone.except(:id, :project_id).merge({ web_url: milestone[:web_url].split("/-/").last })
               end,
@@ -58,11 +58,7 @@ module QA
 
         it(
           'successfully imports project release',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243',
-          quarantine: {
-            type: :investigating,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/415292"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243'
         ) do
           expect_project_import_finished_successfully
 

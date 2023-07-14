@@ -1755,7 +1755,7 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to deactivate a user that is:
   - Blocked by administrator or by LDAP synchronization.
-  - Not [dormant](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users).
+  - Not [dormant](../administration/moderate_users.md#automatically-deactivate-dormant-users).
   - Internal.
 
 ## Activate user **(FREE SELF)**
@@ -1924,7 +1924,7 @@ Example Responses:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339925) in GitLab 14.3.
 
-Rejects specified user that is [pending approval](../user/admin_area/moderate_users.md#users-pending-approval). Available only for administrators.
+Rejects specified user that is [pending approval](../administration/moderate_users.md#users-pending-approval). Available only for administrators.
 
 ```plaintext
 POST /users/:id/reject

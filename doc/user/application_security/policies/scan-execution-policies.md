@@ -10,13 +10,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Group-level security policies [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
 > - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 > - Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
+> - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Enabled by default.
 
-Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
-schedule or with the project pipeline. The security scan runs with multiple project pipelines if you define the policy
-at a group or subgroup level. GitLab injects the required scans into the CI pipeline as new jobs. In the event
-of a job name collision, GitLab adds a dash and a number to the job name. GitLab increments the number until the name
-no longer conflicts with existing job names. If you create a policy at the group level, it applies to every child project
-or subgroup. You cannot edit a group-level policy from a child project or subgroup.
+FLAG:
+On self-managed GitLab, this feature is enabled by default. To disable it, ask an
+administrator to [disable the feature flag](../../../administration/feature_flags.md) named
+`scan_execution_policy_pipelines`. On GitLab.com, this feature is enabled.
+
+Group, subgroup, or project owners can use scan execution policies to require that security scans
+run on a specified schedule or with the project pipeline. The security scan runs with multiple
+project pipelines if you define the policy at a group or subgroup level. GitLab injects the required
+scans into the CI/CD pipeline as new jobs.
+
+Scan execution policies are enforced for all applicable projects, even those without a GitLab
+CI/CD configuration file or where AutoDevOps is disabled. Security policies create the file
+implicitly so that the policies can be enforced. This ensures policies enabling execution of
+secret detection, static analysis, or other scanners that do not require a build in the
+project, are still able to execute and be enforced.
+
+In the event of a job name collision, GitLab appends a hyphen and a number to the job name. GitLab
+increments the number until the name no longer conflicts with existing job names. If you create a
+policy at the group level, it applies to every child project or subgroup. You cannot edit a
+group-level policy from a child project or subgroup.
 
 This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#compliance-pipelines),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).

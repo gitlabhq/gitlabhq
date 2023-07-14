@@ -15807,6 +15807,9 @@ msgstr ""
 msgid "Descriptive label"
 msgstr ""
 
+msgid "Deselect all"
+msgstr ""
+
 msgid "Design"
 msgstr ""
 
@@ -19375,6 +19378,9 @@ msgid "Fill in the fields below, turn on %{strong_open}Enable SAML authenticatio
 msgstr ""
 
 msgid "Filter"
+msgstr ""
+
+msgid "Filter activity"
 msgstr ""
 
 msgid "Filter by"
@@ -49936,9 +49942,6 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
-msgid "UserProfiles|No snippets found."
-msgstr ""
-
 msgid "UserProfile|%{count} %{file}"
 msgstr ""
 
@@ -49993,6 +49996,9 @@ msgstr ""
 msgid "UserProfile|Following"
 msgstr ""
 
+msgid "UserProfile|Get started with snippets"
+msgstr ""
+
 msgid "UserProfile|Groups"
 msgstr ""
 
@@ -50032,13 +50038,22 @@ msgstr ""
 msgid "UserProfile|Starred projects"
 msgstr ""
 
+msgid "UserProfile|Store, share, and embed bits of code and text."
+msgstr ""
+
 msgid "UserProfile|Subscribe"
 msgstr ""
 
 msgid "UserProfile|There are no projects available to be displayed here."
 msgstr ""
 
+msgid "UserProfile|This user doesn't have any followers"
+msgstr ""
+
 msgid "UserProfile|This user doesn't have any followers."
+msgstr ""
+
+msgid "UserProfile|This user doesn't have any snippets"
 msgstr ""
 
 msgid "UserProfile|This user has a private profile"
@@ -50051,6 +50066,9 @@ msgid "UserProfile|This user hasn't starred any projects"
 msgstr ""
 
 msgid "UserProfile|This user is blocked"
+msgstr ""
+
+msgid "UserProfile|This user isn't following other users"
 msgstr ""
 
 msgid "UserProfile|This user isn't following other users."
@@ -50074,10 +50092,16 @@ msgstr ""
 msgid "UserProfile|View user in admin area"
 msgstr ""
 
+msgid "UserProfile|You are not following other users"
+msgstr ""
+
 msgid "UserProfile|You are not following other users."
 msgstr ""
 
 msgid "UserProfile|You can create a group for several dependent projects."
+msgstr ""
+
+msgid "UserProfile|You do not have any followers"
 msgstr ""
 
 msgid "UserProfile|You do not have any followers."

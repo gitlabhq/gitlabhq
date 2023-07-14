@@ -34,7 +34,7 @@ To disable sign ups:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/267568) in GitLab 13.6.
 
 When this setting is enabled, any user visiting your GitLab domain and signing up for a new account using the registration form
-must be explicitly [approved](../../user/admin_area/moderate_users.md#approve-or-reject-a-user-sign-up) by an
+must be explicitly [approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up) by an
 administrator before they can start using their account. In GitLab 13.6 and later, this setting is
 enabled by default for new GitLab instances. It is only applicable if sign ups are enabled.
 
@@ -84,7 +84,7 @@ The following settings are available:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292600) in GitLab 13.9.
 
 When the number of billable users reaches the user cap, any user who is added or requests access must be
-[approved](../../user/admin_area/moderate_users.md#approve-or-reject-a-user-sign-up) by an administrator before they can start using
+[approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up) by an administrator before they can start using
 their account.
 
 If an administrator [increases](#set-the-user-cap-number) or [removes](#remove-the-user-cap) the

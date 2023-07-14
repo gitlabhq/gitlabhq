@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This is the administration documentation. For information about Git abuse rate limiting at the group level, see the [group-level documentation](../../user/group/reporting/git_abuse_rate_limit.md).
 
-Git abuse rate limiting is a feature to automatically [ban users](../../user/admin_area/moderate_users.md#ban-and-unban-users) who download, clone, or fork more than a specified number of repositories in any project in the instance in a given time frame. Banned users cannot sign in to the instance and cannot access any non-public group via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../user/profile/personal_access_tokens.md) or [group access token](../../user/group/settings/group_access_tokens.md).
+Git abuse rate limiting is a feature to automatically [ban users](../../administration/moderate_users.md#ban-and-unban-users) who download, clone, or fork more than a specified number of repositories in any project in the instance in a given time frame. Banned users cannot sign in to the instance and cannot access any non-public group via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../user/profile/personal_access_tokens.md) or [group access token](../../user/group/settings/group_access_tokens.md).
 
 Git abuse rate limiting does not apply to instance administrators, [deploy tokens](../../user/project/deploy_tokens/index.md), or [deploy keys](../../user/project/deploy_keys/index.md).
 

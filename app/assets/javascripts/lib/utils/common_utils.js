@@ -721,3 +721,13 @@ export const getFirstPropertyValue = (data) => {
 
   return data[key];
 };
+
+export const isCurrentUser = (userId) => {
+  const currentUserId = window.gon?.current_user_id;
+
+  if (!currentUserId) {
+    return false;
+  }
+
+  return Number(userId) === currentUserId;
+};

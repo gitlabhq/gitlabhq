@@ -837,7 +837,7 @@ Read more about the data returned by the replica
 
 ### Selecting the appropriate Patroni replication method
 
-[Review the Patroni documentation carefully](https://patroni.readthedocs.io/en/latest/SETTINGS.html#postgresql)
+[Review the Patroni documentation carefully](https://patroni.readthedocs.io/en/latest/yaml_configuration.html#postgresql)
 before making changes as **_some of the options carry a risk of potential data
 loss if not fully understood_**. The [replication mode](https://patroni.readthedocs.io/en/latest/replication_modes.html)
 configured determines the amount of tolerable data loss.

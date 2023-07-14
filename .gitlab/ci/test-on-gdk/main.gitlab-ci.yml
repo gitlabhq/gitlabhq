@@ -134,12 +134,12 @@ gdk-qa-smoke-with-load-balancer:
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
+  allow_failure: true
   rules:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
 
-# TODO: set non manual once smoke tests prove to be stable
 gdk-qa-reliable:
   extends:
     - .gdk-qa-base
@@ -149,7 +149,7 @@ gdk-qa-reliable:
     QA_RUN_TYPE: gdk-qa-blocking
   allow_failure: true
   rules:
-    - when: manual
+    - when: always
 
 gdk-qa-reliable-with-load-balancer:
   extends:

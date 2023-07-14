@@ -161,6 +161,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   - Token with the specified ID does not exist.
 - `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
 
+### Automatic reuse detection
+
+Refer to [automatic reuse detection for personal access tokens](personal_access_tokens.md#automatic-reuse-detection)
+for more information.
+
 ## Revoke a project access token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
