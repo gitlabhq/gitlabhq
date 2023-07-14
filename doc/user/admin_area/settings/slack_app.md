@@ -6,10 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Slack app administration **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed instances in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `slack_app_self_managed`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `slack_app_self_managed`. On GitLab.com, this feature is available.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed instances in GitLab 16.2.
 
 NOTE:
 This page contains information about administering the GitLab for Slack app for self-managed instances. For user documentation, see [GitLab for Slack app](../../../user/project/integrations/gitlab_slack_application.md).

@@ -42,14 +42,6 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
         expect(kas_cookie).to eq('foobar')
         expect(::Gitlab::Kas::UserAccess).to have_received(:cookie_data)
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(kas_user_access: false)
-        end
-
-        it { is_expected.to be_blank }
-      end
     end
   end
 
@@ -88,60 +80,42 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
       request.env['action_dispatch.content_security_policy'].directives['connect-src']
     end
 
-    context "when feature flag is disabled" do
+    context 'when KAS is on same domain as rails' do
       let_it_be(:kas_tunnel_url) { 'ws://gitlab.example.com/-/k8s-proxy/' }
 
-      before do
-        stub_feature_flags(kas_user_access: false)
-      end
-
-      it 'does not add KAS url to connect-src directives' do
+      it 'does not add KAS url to CSP connect-src directive' do
         expect(kas_csp_connect_src).not_to include(::Gitlab::Kas.tunnel_url)
       end
     end
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(kas_user_access: true)
+    context 'when KAS is on subdomain' do
+      let_it_be(:kas_tunnel_url) { 'ws://kas.gitlab.example.com/k8s-proxy/' }
+
+      it 'adds KAS url to CSP connect-src directive' do
+        expect(kas_csp_connect_src).to include(::Gitlab::Kas.tunnel_url)
       end
 
-      context 'when KAS is on same domain as rails' do
-        let_it_be(:kas_tunnel_url) { 'ws://gitlab.example.com/-/k8s-proxy/' }
+      context 'when content_security_policy is disabled' do
+        let(:content_security_policy_enabled) { false }
 
         it 'does not add KAS url to CSP connect-src directive' do
           expect(kas_csp_connect_src).not_to include(::Gitlab::Kas.tunnel_url)
         end
       end
+    end
 
-      context 'when KAS is on subdomain' do
-        let_it_be(:kas_tunnel_url) { 'ws://kas.gitlab.example.com/k8s-proxy/' }
+    context 'when KAS tunnel url is configured without trailing slash' do
+      let_it_be(:kas_tunnel_url) { 'ws://kas.gitlab.example.com/k8s-proxy' }
 
-        it 'adds KAS url to CSP connect-src directive' do
-          expect(kas_csp_connect_src).to include(::Gitlab::Kas.tunnel_url)
-        end
-
-        context 'when content_security_policy is disabled' do
-          let(:content_security_policy_enabled) { false }
-
-          it 'does not add KAS url to CSP connect-src directive' do
-            expect(kas_csp_connect_src).not_to include(::Gitlab::Kas.tunnel_url)
-          end
-        end
+      it 'adds KAS url to CSP connect-src directive with trailing slash' do
+        expect(kas_csp_connect_src).to include("#{::Gitlab::Kas.tunnel_url}/")
       end
 
-      context 'when KAS tunnel url is configured without trailing slash' do
-        let_it_be(:kas_tunnel_url) { 'ws://kas.gitlab.example.com/k8s-proxy' }
+      context 'when content_security_policy is disabled' do
+        let(:content_security_policy_enabled) { false }
 
-        it 'adds KAS url to CSP connect-src directive with trailing slash' do
-          expect(kas_csp_connect_src).to include("#{::Gitlab::Kas.tunnel_url}/")
-        end
-
-        context 'when content_security_policy is disabled' do
-          let(:content_security_policy_enabled) { false }
-
-          it 'does not add KAS url to CSP connect-src directive' do
-            expect(kas_csp_connect_src).not_to include("#{::Gitlab::Kas.tunnel_url}/")
-          end
+        it 'does not add KAS url to CSP connect-src directive' do
+          expect(kas_csp_connect_src).not_to include("#{::Gitlab::Kas.tunnel_url}/")
         end
       end
     end

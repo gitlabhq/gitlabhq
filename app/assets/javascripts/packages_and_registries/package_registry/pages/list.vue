@@ -2,6 +2,7 @@
 import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { fetchPolicies } from '~/lib/graphql';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
@@ -38,11 +39,13 @@ export default {
       sort: '',
       filters: {},
       mutationLoading: false,
+      pageParams: {},
     };
   },
   apollo: {
     packagesResource: {
       query: getPackagesQuery,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.queryVariables;
       },
@@ -72,6 +75,7 @@ export default {
         packageName: this.filters?.packageName,
         packageType: this.filters?.packageType,
         first: GRAPHQL_PAGE_SIZE,
+        ...this.pageParams,
       };
     },
     graphqlResource() {
@@ -120,37 +124,22 @@ export default {
       }
     },
     handleSearchUpdate({ sort, filters }) {
+      this.pageParams = {};
       this.sort = sort;
       this.filters = { ...filters };
     },
-    updateQuery(_, { fetchMoreResult }) {
-      return fetchMoreResult;
-    },
     fetchNextPage() {
-      const variables = {
-        ...this.queryVariables,
+      this.pageParams = {
         first: GRAPHQL_PAGE_SIZE,
-        last: null,
         after: this.pageInfo?.endCursor,
       };
-
-      this.$apollo.queries.packagesResource.fetchMore({
-        variables,
-        updateQuery: this.updateQuery,
-      });
     },
     fetchPreviousPage() {
-      const variables = {
-        ...this.queryVariables,
+      this.pageParams = {
         first: null,
         last: GRAPHQL_PAGE_SIZE,
         before: this.pageInfo?.startCursor,
       };
-
-      this.$apollo.queries.packagesResource.fetchMore({
-        variables,
-        updateQuery: this.updateQuery,
-      });
     },
   },
   i18n: {

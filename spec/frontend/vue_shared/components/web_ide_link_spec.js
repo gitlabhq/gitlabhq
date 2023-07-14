@@ -85,7 +85,7 @@ describe('vue_shared/components/web_ide_link', () => {
 
   let wrapper;
 
-  function createComponent(props, { mountFn = shallowMountExtended, glFeatures = {} } = {}) {
+  function createComponent(props, { mountFn = shallowMountExtended, slots = {} } = {}) {
     const fakeApollo = createMockApollo([
       [getWritableForksQuery, jest.fn().mockResolvedValue(getWritableForksResponse)],
     ]);
@@ -98,9 +98,7 @@ describe('vue_shared/components/web_ide_link', () => {
         forkPath,
         ...props,
       },
-      provide: {
-        glFeatures,
-      },
+      slots,
       stubs: {
         GlModal: stubComponent(GlModal, {
           template: `
@@ -213,6 +211,27 @@ describe('vue_shared/components/web_ide_link', () => {
     createComponent(props);
 
     expect(findActionsButton().props('actions')).toEqual(expectedActions);
+  });
+
+  it('bubbles up shown and hidden events triggered by actions button component', () => {
+    createComponent();
+
+    expect(wrapper.emitted('shown')).toBe(undefined);
+    expect(wrapper.emitted('hidden')).toBe(undefined);
+
+    findActionsButton().vm.$emit('shown');
+    findActionsButton().vm.$emit('hidden');
+
+    expect(wrapper.emitted('shown')).toHaveLength(1);
+    expect(wrapper.emitted('hidden')).toHaveLength(1);
+  });
+
+  it('exposes a default slot', () => {
+    const slotContent = 'default slot content';
+
+    createComponent({}, { slots: { default: slotContent } });
+
+    expect(wrapper.text()).toContain(slotContent);
   });
 
   describe('when pipeline editor action is available', () => {

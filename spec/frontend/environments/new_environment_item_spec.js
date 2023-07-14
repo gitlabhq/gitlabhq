@@ -537,11 +537,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('should request agent data when the environment is visible if the feature flag is enabled', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
-        provideData: {
-          glFeatures: {
-            kasUserAccessProject: true,
-          },
-        },
         apolloProvider: createApolloProvider(agent),
       });
 
@@ -553,12 +548,11 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
     });
 
-    it('should request agent data with kubernetes namespace when `kasUserAccessProject` and `kubernetesNamespaceForEnvironment` feature flags are enabled', async () => {
+    it('should request agent data with kubernetes namespace when `kubernetesNamespaceForEnvironment` feature flag is enabled', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
         provideData: {
           glFeatures: {
-            kasUserAccessProject: true,
             kubernetesNamespaceForEnvironment: true,
           },
         },
@@ -573,14 +567,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
     });
 
-    it('should render if the feature flag is enabled and the environment has an agent associated', async () => {
+    it('should render if the environment has an agent associated', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
-        provideData: {
-          glFeatures: {
-            kasUserAccessProject: true,
-          },
-        },
         apolloProvider: createApolloProvider(agent),
       });
 
@@ -592,12 +581,11 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
     });
 
-    it('should render with the namespace if `kasUserAccessProject` and `kubernetesNamespaceForEnvironment` feature flags are enabled and the environment has an agent associated', async () => {
+    it('should render with the namespace if `kubernetesNamespaceForEnvironment` feature flag is enabled and the environment has an agent associated', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
         provideData: {
           glFeatures: {
-            kasUserAccessProject: true,
             kubernetesNamespaceForEnvironment: true,
           },
         },
@@ -613,26 +601,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
     });
 
-    it('should not render if the feature flag is not enabled', async () => {
-      wrapper = createWrapper({
-        propsData: { environment: resolvedEnvironment },
-        apolloProvider: createApolloProvider(agent),
-      });
-
-      await expandCollapsedSection();
-
-      expect(queryResponseHandler).not.toHaveBeenCalled();
-      expect(findKubernetesOverview().exists()).toBe(false);
-    });
-
     it('should not render if the environment has no agent object', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
-        provideData: {
-          glFeatures: {
-            kasUserAccessProject: true,
-          },
-        },
         apolloProvider: createApolloProvider(),
       });
 

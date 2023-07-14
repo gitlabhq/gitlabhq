@@ -16,6 +16,8 @@ delivery from customer launch.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an example of feature flags in action, see [Feature Flags configuration, instrumentation and use](https://www.youtube.com/watch?v=ViA6suScxkE).
 
+You can also explore feature flags with a [click-through demo](https://go.gitlab.com/YKuzLt).
+
 NOTE:
 To contribute to the development of the GitLab product, view
 [this feature flag content](../development/feature_flags/index.md) instead.

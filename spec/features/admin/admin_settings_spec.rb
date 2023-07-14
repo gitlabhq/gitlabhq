@@ -383,20 +383,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           end
         end
 
-        context 'when the `slack_app_self_managed` flag is disabled' do
-          before do
-            stub_feature_flags(slack_app_self_managed: false)
-            visit general_admin_application_settings_path
-          end
-
-          it 'does not display any sections' do
-            expect(page).not_to have_selector('.as-slack')
-            expect(page).not_to have_content(configure_heading)
-            expect(page).not_to have_content(create_heading)
-            expect(page).not_to have_content(update_heading)
-          end
-        end
-
         it 'changes the settings' do
           page.within('.as-slack') do
             check 'Enable GitLab for Slack app'

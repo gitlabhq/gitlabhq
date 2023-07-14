@@ -415,7 +415,7 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`CONSUL_PASSWORD_HASH`](#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information) before executing the next step.
 
-1. One each node, edit the `/etc/gitlab/gitlab.rb` configuration file and replace values noted in the `# START user configuration` section as below:
+1. On each node, edit the `/etc/gitlab/gitlab.rb` configuration file and replace values noted in the `# START user configuration` section as below:
 
    ```ruby
    # Disable all components except PgBouncer and Consul agent
@@ -864,7 +864,7 @@ patroni['remove_data_directory_on_rewind_failure'] = false
 patroni['remove_data_directory_on_diverged_timelines'] = false
 ```
 
-[The upstream documentation is always more up to date](https://patroni.readthedocs.io/en/latest/SETTINGS.html#postgresql), but the table below should provide a minimal overview of functionality.
+[The upstream documentation is always more up to date](https://patroni.readthedocs.io/en/latest/patroni_configuration.html), but the table below should provide a minimal overview of functionality.
 
 |Setting|Overview|
 |-|-|

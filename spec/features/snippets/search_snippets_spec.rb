@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Search Snippets', :js, feature_category: :source_code_management do
+RSpec.describe 'Search Snippets', :js, feature_category: :global_search do
   it 'user searches for snippets by title' do
     public_snippet = create(:personal_snippet, :public, title: 'Beginning and Middle')
     private_snippet = create(:personal_snippet, :private, title: 'Middle and End')

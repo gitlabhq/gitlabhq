@@ -1,7 +1,4 @@
 - gitlab_com = Gitlab.com?
-
-- return unless Feature.enabled?(:slack_app_self_managed) || gitlab_com
-
 - expanded = integration_expanded?('slack_app_')
 
 %section.settings.as-slack.no-animate#js-slack-settings{ class: ('expanded' if expanded) }

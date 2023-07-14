@@ -4,6 +4,8 @@
 require 'bundler/inline'
 
 gemfile do
+  source 'https://rubygems.org'
+
   gem 'rspec_flaky', path: 'gems/rspec_flaky'
 end
 

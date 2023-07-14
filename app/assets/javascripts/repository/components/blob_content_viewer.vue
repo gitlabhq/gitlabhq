@@ -7,10 +7,11 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constant
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { redirectTo, getLocationHash } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
+import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
@@ -226,6 +227,9 @@ export default {
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
     },
+    projectIdAsNumber() {
+      return getIdFromGraphQLId(this.project?.id);
+    },
   },
   watch: {
     // Watch the URL 'plain' query value to know if the viewer needs changing.
@@ -356,6 +360,8 @@ export default {
             :gitpod-url="blobInfo.gitpodBlobUrl"
             :show-gitpod-button="gitpodEnabled"
             :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+            :project-path="projectPath"
+            :project-id="projectIdAsNumber"
             :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
             :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
             is-blob

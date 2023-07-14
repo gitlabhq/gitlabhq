@@ -11,42 +11,6 @@ RSpec.describe Gitlab::Kas::UserAccess, feature_category: :deployment_management
     end
 
     it { is_expected.to be true }
-
-    context 'when flag kas_user_access is disabled' do
-      before do
-        stub_feature_flags(kas_user_access: false)
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
-  describe '.enabled_for?' do
-    subject { described_class.enabled_for?(agent) }
-
-    let(:agent) { build(:cluster_agent) }
-
-    before do
-      allow(::Gitlab::Kas).to receive(:enabled?).and_return true
-    end
-
-    it { is_expected.to be true }
-
-    context 'when flag kas_user_access is disabled' do
-      before do
-        stub_feature_flags(kas_user_access: false)
-      end
-
-      it { is_expected.to be false }
-    end
-
-    context 'when flag kas_user_access_project is disabled' do
-      before do
-        stub_feature_flags(kas_user_access_project: false)
-      end
-
-      it { is_expected.to be false }
-    end
   end
 
   describe '.{encrypt,decrypt}_public_session_id' do

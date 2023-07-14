@@ -688,6 +688,16 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
       end
     end
 
+    context 'when user does not have permissions for scope' do
+      it 'returns an empty array' do
+        project.project_feature.update!(issues_access_level: Gitlab::VisibilityLevel::PRIVATE)
+
+        get api(endpoint, user), params: { scope: 'issues', search: 'awesome' }
+
+        expect(json_response).to be_empty
+      end
+    end
+
     context 'when project does not exist' do
       it 'returns 404 error' do
         get api('/projects/0/search', user), params: { scope: 'issues', search: 'awesome' }

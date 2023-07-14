@@ -13,7 +13,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   before_action only: [:index, :edit, :new] do
-    push_frontend_feature_flag(:kas_user_access_project, @project)
     push_frontend_feature_flag(:kubernetes_namespace_for_environment)
   end
 

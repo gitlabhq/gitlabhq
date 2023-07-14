@@ -185,7 +185,7 @@ module API
 
             # Load agent
             agent = ::Clusters::Agent.find(params[:agent_id])
-            unauthorized!('Feature disabled for agent') unless ::Gitlab::Kas::UserAccess.enabled_for?(agent)
+            unauthorized!('Feature disabled for agent') unless ::Gitlab::Kas::UserAccess.enabled?
 
             service_response = ::Clusters::Agents::AuthorizeProxyUserService.new(user, agent).execute
             render_api_error!(service_response[:message], service_response[:reason]) unless service_response.success?

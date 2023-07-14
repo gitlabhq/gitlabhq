@@ -173,18 +173,11 @@ export default {
         item.text.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },
-    isKasUserAccessAvailable() {
-      return this.glFeatures?.kasUserAccessProject;
-    },
     isKasKubernetesNamespaceAvailable() {
       return this.glFeatures?.kubernetesNamespaceForEnvironment;
     },
     showNamespaceSelector() {
-      return Boolean(
-        this.isKasUserAccessAvailable &&
-          this.isKasKubernetesNamespaceAvailable &&
-          this.selectedAgentId,
-      );
+      return Boolean(this.isKasKubernetesNamespaceAvailable && this.selectedAgentId);
     },
     namespaceDropdownToggleText() {
       return this.selectedNamespace || this.$options.i18n.namespaceHelpText;

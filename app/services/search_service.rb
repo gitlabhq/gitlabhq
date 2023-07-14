@@ -102,16 +102,6 @@ class SearchService
       end
   end
 
-  def show_elasticsearch_tabs?
-    # overridden in EE
-    false
-  end
-
-  def show_epics?
-    # overridden in EE
-    false
-  end
-
   def global_search_enabled_for_scope?
     return false if show_snippets? && Feature.disabled?(:global_search_snippet_titles_tab, current_user, type: :ops)
 

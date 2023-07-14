@@ -20285,7 +20285,7 @@ CREATE TABLE pm_advisories (
     CONSTRAINT check_bed97fa77a CHECK ((char_length(cvss_v3) <= 128)),
     CONSTRAINT check_e4bfd3ffbf CHECK ((char_length(title) <= 256)),
     CONSTRAINT check_fee880f7aa CHECK ((char_length(description) <= 8192)),
-    CONSTRAINT chk_rails_e73af9de76 CHECK ((cardinality(urls) <= 10))
+    CONSTRAINT chk_rails_e73af9de76 CHECK ((cardinality(urls) <= 20))
 );
 
 CREATE SEQUENCE pm_advisories_id_seq

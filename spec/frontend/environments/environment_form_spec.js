@@ -44,7 +44,6 @@ describe('~/environments/components/form.vue', () => {
 
   const createWrapperWithApollo = ({
     propsData = {},
-    kasUserAccessProject = false,
     kubernetesNamespaceForEnvironment = false,
     queryResult = null,
   } = {}) => {
@@ -74,7 +73,6 @@ describe('~/environments/components/form.vue', () => {
       provide: {
         ...PROVIDE,
         glFeatures: {
-          kasUserAccessProject,
           kubernetesNamespaceForEnvironment,
         },
       },
@@ -303,15 +301,9 @@ describe('~/environments/components/form.vue', () => {
       expect(findNamespaceSelector().exists()).toBe(false);
     });
 
-    it("doesn't render namespace selector if `kasUserAccessProject` feature flag is disabled", () => {
-      wrapper = createWrapperWithApollo();
-      expect(findNamespaceSelector().exists()).toBe(false);
-    });
-
-    describe('when `kasUserAccessProject` and `kubernetesNamespaceForEnvironment` feature flags are enabled', () => {
+    describe('when `kubernetesNamespaceForEnvironment` feature flag is enabled', () => {
       beforeEach(() => {
         wrapper = createWrapperWithApollo({
-          kasUserAccessProject: true,
           kubernetesNamespaceForEnvironment: true,
         });
       });
@@ -410,7 +402,6 @@ describe('~/environments/components/form.vue', () => {
 
         beforeEach(async () => {
           wrapper = createWrapperWithApollo({
-            kasUserAccessProject: true,
             kubernetesNamespaceForEnvironment: true,
             queryResult: jest.fn().mockRejectedValueOnce(error),
           });
@@ -439,7 +430,6 @@ describe('~/environments/components/form.vue', () => {
     beforeEach(() => {
       wrapper = createWrapperWithApollo({
         propsData: { environment: environmentWithAgent },
-        kasUserAccessProject: true,
         kubernetesNamespaceForEnvironment: true,
       });
     });
@@ -473,7 +463,6 @@ describe('~/environments/components/form.vue', () => {
     beforeEach(() => {
       wrapper = createWrapperWithApollo({
         propsData: { environment: environmentWithAgentAndNamespace },
-        kasUserAccessProject: true,
         kubernetesNamespaceForEnvironment: true,
       });
     });

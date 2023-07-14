@@ -547,18 +547,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
-    it 'returns 401 when global flag is disabled' do
-      stub_feature_flags(kas_user_access: false)
-
-      deployment_project.add_member(user, :developer)
-      token = new_token
-      public_id = stub_user_session(user, token)
-      access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
-      send_request(params: { agent_id: agent.id, access_type: 'session_cookie', access_key: access_key, csrf_token: mask_token(token) })
-
-      expect(response).to have_gitlab_http_status(:unauthorized)
-    end
-
     it 'returns 401 when user id is not found in session' do
       deployment_project.add_member(user, :developer)
       token = new_token

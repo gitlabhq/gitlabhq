@@ -165,14 +165,8 @@ export default {
     rolloutStatus() {
       return this.environment?.rolloutStatus;
     },
-    isKubernetesOverviewAvailable() {
-      return this.glFeatures?.kasUserAccessProject;
-    },
     isKubernetesNamespaceAvailable() {
       return this.glFeatures?.kubernetesNamespaceForEnvironment;
-    },
-    showKubernetesOverview() {
-      return Boolean(this.isKubernetesOverviewAvailable && this.clusterAgent);
     },
   },
   methods: {
@@ -184,7 +178,7 @@ export default {
       }
     },
     getClusterAgent() {
-      if (!this.isKubernetesOverviewAvailable || this.clusterAgent) return;
+      if (this.clusterAgent) return;
 
       this.$apollo.addSmartQuery('environmentClusterAgent', {
         variables() {
@@ -377,7 +371,7 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div v-if="showKubernetesOverview" :class="$options.kubernetesOverviewClasses">
+      <div v-if="clusterAgent" :class="$options.kubernetesOverviewClasses">
         <kubernetes-overview :cluster-agent="clusterAgent" :namespace="kubernetesNamespace" />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">

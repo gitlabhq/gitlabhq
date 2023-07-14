@@ -2531,8 +2531,9 @@
         - "scripts/rspec_helpers.sh"
     - <<: *if-merge-request
       changes:
-        - "gems/gitlab-rspec"
-        - "gems/rspec_flaky"
+        - "gems/gitlab-rspec/**/*"
+        - "gems/rspec_flaky/**/*"
+        - "scripts/flaky_examples/prune-old-flaky-examples"
 
 ###################
 # workhorse rules #

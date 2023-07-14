@@ -23,6 +23,7 @@ export const i18n = {
 };
 
 export default {
+  name: 'CEWebIdeLink',
   components: {
     ActionsButton,
     GlModal,
@@ -319,7 +320,11 @@ export default {
       :toggle-text="$options.i18n.toggleText"
       :variant="isBlob ? 'confirm' : 'default'"
       :category="isBlob ? 'primary' : 'secondary'"
-    />
+      @hidden="$emit('hidden')"
+      @shown="$emit('shown')"
+    >
+      <slot></slot>
+    </actions-button>
     <gl-modal
       v-if="computedShowGitpodButton && !gitpodEnabled"
       v-model="showEnableGitpodModal"

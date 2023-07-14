@@ -34,11 +34,13 @@ module RuboCop
       class StrongMemoizeAttr < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        MSG = 'Use `strong_memoize_attr`, instead of using `strong_memoize` directly.'
+        STRONG_MEMOIZE_MSG = 'Use `strong_memoize_attr`, instead of using `strong_memoize` directly.'
+        STRONG_MEMOIZE_WITH_MSG =
+          'Use `strong_memoize_attr`, instead of using `strong_memoize_with` without parameters.'
 
         def_node_matcher :strong_memoize?, <<~PATTERN
           (block
-            $(send nil? :strong_memoize
+            $(send nil? {:strong_memoize | :strong_memoize_with}
               (sym _)
             )
             (args)
@@ -58,7 +60,14 @@ module RuboCop
 
           corrector = autocorrect_pure_definitions(node.parent, body) if node.parent.def_type?
 
-          add_offense(send_node, &corrector)
+          message = case send_node.method_name
+                    when :strong_memoize
+                      STRONG_MEMOIZE_MSG
+                    when :strong_memoize_with
+                      STRONG_MEMOIZE_WITH_MSG
+                    end
+
+          add_offense(send_node, message: message, &corrector)
         end
 
         private

@@ -172,18 +172,6 @@ module ProjectsHelper
     project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
   end
 
-  def project_search_tabs?(tab)
-    return false unless @project.present?
-
-    abilities = Array(search_tab_ability_map[tab])
-
-    if @project.respond_to?(:each) # support multi-project select
-      @project.any? { |project| abilities.any? { |ability| can?(current_user, ability, project) } }
-    else
-      abilities.any? { |ability| can?(current_user, ability, @project) }
-    end
-  end
-
   def can_change_visibility_level?(project, current_user)
     can?(current_user, :change_visibility_level, project)
   end
@@ -612,41 +600,6 @@ module ProjectsHelper
 
     link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
     s_(str).html_safe % { provider: provider, link_start: link_start, link_end: '</a>'.html_safe }
-  end
-
-  def tab_ability_map
-    {
-      cycle_analytics: :read_cycle_analytics,
-      environments: :read_environment,
-      metrics_dashboards: :metrics_dashboard,
-      milestones: :read_milestone,
-      snippets: :read_snippet,
-      settings: :admin_project,
-      builds: :read_build,
-      clusters: :read_cluster,
-      serverless: :read_cluster,
-      terraform: :read_terraform_state,
-      error_tracking: :read_sentry_issue,
-      alert_management: :read_alert_management_alert,
-      incidents: :read_issue,
-      labels: :read_label,
-      issues: :read_issue,
-      project_members: :read_project_member,
-      wiki: :read_wiki,
-      feature_flags: :read_feature_flag,
-      analytics: :read_analytics
-    }
-  end
-
-  def search_tab_ability_map
-    @search_tab_ability_map ||= tab_ability_map.merge(
-      blobs: :read_code,
-      commits: :read_code,
-      merge_requests: :read_merge_request,
-      notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
-      users: :read_project_member,
-      wiki_blobs: :read_wiki
-    )
   end
 
   def project_lfs_status(project)

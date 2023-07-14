@@ -6,10 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Slack app **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed instances in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `slack_app_self_managed`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `slack_app_self_managed`. On GitLab.com, this feature is available.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed instances in GitLab 16.2.
 
 NOTE:
 This page contains information about configuring the GitLab for Slack app on GitLab.com. For administrator documentation, see [GitLab for Slack app administration](../../admin_area/settings/slack_app.md).
@@ -20,9 +17,10 @@ you run in Slack is run by your linked GitLab user.
 
 ## Install the GitLab for Slack app
 
-Prerequisite:
+Prerequisites:
 
 - You must have the [appropriate permissions to add apps to your Slack workspace](https://slack.com/help/articles/202035138-Add-apps-to-your-Slack-workspace).
+- On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature](../../admin_area/settings/slack_app.md). On GitLab.com, this feature is available.
 
 In GitLab 15.0 and later, the GitLab for Slack app uses
 [granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
@@ -34,7 +32,7 @@ To install the GitLab for Slack app from project integration settings:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
-1. Select **GitLab for Slack app**. On self-managed GitLab, an administrator must first [enable the integration](../../admin_area/settings/slack_app.md).
+1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**.
 1. On the Slack confirmation page, select **Allow**.
 
@@ -109,7 +107,7 @@ By default, slash commands expect a project full path. To create a shorter proje
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
-1. Select **GitLab for Slack app**. On self-managed GitLab, an administrator must first [enable the integration](../../admin_area/settings/slack_app.md).
+1. Select **GitLab for Slack app**.
 1. The current **Project Alias**, if any, is displayed. To edit this value,
    select **Edit**.
 1. Enter your desired alias, and select **Save changes**.

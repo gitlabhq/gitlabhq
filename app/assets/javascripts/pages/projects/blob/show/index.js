@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import TableOfContents from '~/blob/components/table_contents.vue';
 import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
@@ -70,6 +71,7 @@ if (viewBlobEl) {
     resourceId,
     userId,
     explainCodeAvailable,
+    ...dataset
   } = viewBlobEl.dataset;
 
   // eslint-disable-next-line no-new
@@ -85,6 +87,7 @@ if (viewBlobEl) {
       resourceId,
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
+      ...provideWebIdeLink(dataset),
     },
     render(createElement) {
       return createElement(BlobContentViewer, {

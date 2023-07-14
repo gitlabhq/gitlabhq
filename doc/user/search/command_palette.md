@@ -22,7 +22,7 @@ To open the command palette:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**).
 1. Type one of the special characters:
 
-   - <kbd>></kbd> - Use to create a new object or to find a menu item.
-   - <kbd>@</kbd> - Search for user.
-   - <kbd>:</kbd> - Search for project.
+   - <kbd>></kbd> - Create a new object or find a menu item.
+   - <kbd>@</kbd> - Search for a user.
+   - <kbd>:</kbd> - Search for a project.
    - <kbd>/</kbd> - Search for project files in the default repository branch.
