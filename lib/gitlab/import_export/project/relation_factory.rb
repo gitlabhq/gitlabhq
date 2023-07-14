@@ -93,7 +93,7 @@ module Gitlab
           when :notes, :Note then setup_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
-          when :issues then setup_issue
+          when :issues then setup_work_item
           when :'Ci::PipelineSchedule' then setup_pipeline_schedule
           when :'ProtectedBranch::MergeAccessLevel' then setup_protected_branch_access_level
           when :'ProtectedBranch::PushAccessLevel' then setup_protected_branch_access_level
@@ -169,13 +169,11 @@ module Gitlab
           end
         end
 
-        def setup_issue
+        def setup_work_item
           @relation_hash['relative_position'] = compute_relative_position
 
-          issue_type = @relation_hash['issue_type']
+          issue_type = @relation_hash.delete('issue_type')
           @relation_hash['work_item_type'] ||= ::WorkItems::Type.default_by_type(issue_type) if issue_type
-          # Make sure issue_type is in sync with work_item_type if either was provided in the export file
-          @relation_hash['issue_type'] = @relation_hash['work_item_type'].base_type if @relation_hash['work_item_type']
         end
 
         def setup_release

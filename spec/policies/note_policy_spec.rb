@@ -271,7 +271,7 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
             end
 
             context 'when noteable is issue' do
-              let(:noteable) { create(:work_item, :issue, project: project) }
+              let(:noteable) { create(:work_item, project: project) }
               let(:note) { create(:note, system: true, noteable: noteable, author: user, project: project) }
 
               it_behaves_like 'user can read the note'

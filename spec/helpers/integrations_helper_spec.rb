@@ -275,7 +275,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
 
     with_them do
       before do
-        issue.assign_attributes(issue_type: issue_type, work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.assign_attributes(work_item_type: WorkItems::Type.default_by_type(issue_type))
         issue.save!(validate: false)
       end
 

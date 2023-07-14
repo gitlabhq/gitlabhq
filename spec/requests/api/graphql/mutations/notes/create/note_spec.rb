@@ -105,7 +105,7 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
 
       context 'as work item' do
         let_it_be(:project) { create(:project) }
-        let_it_be(:noteable) { create(:work_item, :issue, project: project) }
+        let_it_be(:noteable) { create(:work_item, project: project) }
 
         context 'when using internal param' do
           let(:variables_extra) { { internal: true } }

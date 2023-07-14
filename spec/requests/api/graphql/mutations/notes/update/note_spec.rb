@@ -41,7 +41,7 @@ RSpec.describe 'Updating a Note', feature_category: :team_planning do
     it_behaves_like 'a Note mutation update only with quick actions'
 
     context 'for work item' do
-      let(:noteable) { create(:work_item, :issue) }
+      let(:noteable) { create(:work_item) }
       let(:note) { create(:note, noteable: noteable, project: noteable.project, note: original_body) }
 
       it_behaves_like 'a Note mutation updates a note successfully'

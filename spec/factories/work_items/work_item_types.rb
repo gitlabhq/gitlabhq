@@ -23,6 +23,11 @@ FactoryBot.define do
       namespace { nil }
     end
 
+    trait :issue do
+      base_type { WorkItems::Type.base_types[:issue] }
+      icon_name { 'issue-type-issue' }
+    end
+
     trait :incident do
       base_type { WorkItems::Type.base_types[:incident] }
       icon_name { 'issue-type-incident' }

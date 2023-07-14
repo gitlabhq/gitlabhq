@@ -510,7 +510,9 @@ class Group < Namespace
                               members_with_parents(only_active_users: false)
                             end
 
-    members_from_hiearchy.all_owners.left_outer_joins(:user).merge(User.without_project_bot)
+    members_from_hiearchy.all_owners.left_outer_joins(:user)
+      .merge(User.without_project_bot)
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455")
   end
 
   def ldap_synced?
@@ -694,7 +696,7 @@ class Group < Namespace
                         .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
                         .reorder(nil),
                       project_users_with_descendants
-                    ])
+                    ]).allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") # failed in spec/tasks/gitlab/user_management_rake_spec.rb
   end
 
   def users_count
@@ -707,6 +709,7 @@ class Group < Namespace
     User
       .joins(projects: :group)
       .where(namespaces: { id: self_and_descendants.select(:id) })
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455")
   end
 
   # Return the highest access level for a user
@@ -973,12 +976,14 @@ class Group < Namespace
   end
 
   def max_member_access(user_ids)
-    Gitlab::SafeRequestLoader.execute(
-      resource_key: max_member_access_for_resource_key(User),
-      resource_ids: user_ids,
-      default_value: Gitlab::Access::NO_ACCESS
-    ) do |user_ids|
-      members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") do
+      Gitlab::SafeRequestLoader.execute(
+        resource_key: max_member_access_for_resource_key(User),
+        resource_ids: user_ids,
+        default_value: Gitlab::Access::NO_ACCESS
+      ) do |user_ids|
+        members_with_parents.where(user_id: user_ids).group(:user_id).maximum(:access_level)
+      end
     end
   end
 

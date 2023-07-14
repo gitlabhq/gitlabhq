@@ -32,10 +32,9 @@ module Issues
     end
 
     def change_work_item_type(issue)
-      return unless issue.changed_attributes['issue_type']
+      return unless params[:issue_type].present?
 
-      issue_type = params[:issue_type] || ::Issue::DEFAULT_ISSUE_TYPE
-      type_id = find_work_item_type_id(issue_type)
+      type_id = find_work_item_type_id(params[:issue_type])
 
       issue.work_item_type_id = type_id
     end
@@ -180,15 +179,21 @@ module Issues
     end
 
     def handle_issue_type_change(issue)
-      return unless issue.previous_changes.include?('issue_type')
+      return unless issue.previous_changes.include?('work_item_type_id')
 
       do_handle_issue_type_change(issue)
     end
 
     def do_handle_issue_type_change(issue)
-      SystemNoteService.change_issue_type(issue, current_user, issue.issue_type_before_last_save)
+      old_work_item_type = ::WorkItems::Type.find(issue.work_item_type_id_before_last_save).base_type
+      SystemNoteService.change_issue_type(issue, current_user, old_work_item_type)
 
       ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
+    end
+
+    override :allowed_update_params
+    def allowed_update_params(params)
+      super.except(:issue_type)
     end
   end
 end

@@ -44,7 +44,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       context 'when work item type is not the default Issue' do
         before do
           task_type = WorkItems::Type.default_by_type(:task)
-          work_item.update_columns(issue_type: task_type.base_type, work_item_type_id: task_type.id)
+          work_item.update_columns(work_item_type_id: task_type.id)
         end
 
         it 'does not apply the quick action' do
@@ -55,7 +55,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
 
       context 'when work item type is the default Issue' do
-        let(:issue) { create(:work_item, :issue, description: '') }
+        let(:issue) { create(:work_item, description: '') }
 
         it 'applies the quick action' do
           expect do

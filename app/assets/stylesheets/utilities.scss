@@ -42,7 +42,7 @@
 // Override Bootstrap class with offset for system-header and
 // performance bar when present
 .fixed-top {
-  top: $calc-application-bars-height;
+  top: $calc-system-headers-height;
 }
 
 .gl-children-ml-sm-3 > * {

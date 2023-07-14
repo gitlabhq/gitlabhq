@@ -502,8 +502,9 @@ $pages-group-name-color: #4c4e54;
 /*
  * Calculated heights
  */
-$calc-application-bars-height: calc(var(--system-header-height) + var(--performance-bar-height));
-$calc-application-header-height: calc(#{$header-height} + #{$calc-application-bars-height} + var(--top-bar-height));
+$calc-system-headers-height: calc(var(--system-header-height) + var(--performance-bar-height));
+$calc-application-bars-height: calc(#{$header-height} + #{$calc-system-headers-height});
+$calc-application-header-height: calc(#{$calc-application-bars-height} + var(--top-bar-height));
 $calc-application-footer-height: var(--system-footer-height);
 $calc-application-viewport-height: calc(100vh - #{$calc-application-header-height} - #{$calc-application-footer-height});
 

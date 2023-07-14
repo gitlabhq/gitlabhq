@@ -38,7 +38,14 @@ module ProtectedRefAccess
   included do
     scope :maintainer, -> { where(access_level: Gitlab::Access::MAINTAINER) }
     scope :developer, -> { where(access_level: Gitlab::Access::DEVELOPER) }
-    scope :for_role, -> { non_role_types.present? ? where.missing(*non_role_types) : all }
+    scope :for_role, -> {
+      if non_role_types.present?
+        where.missing(*non_role_types)
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417457")
+      else
+        all
+      end
+    }
 
     protected_ref_fk = "#{module_parent.model_name.singular}_id"
     validates :access_level,

@@ -19,8 +19,7 @@ RSpec.describe Mutations::Issues::Create do
       description: 'new description',
       confidential: true,
       due_date: Date.tomorrow,
-      discussion_locked: true,
-      issue_type: 'issue'
+      discussion_locked: true
     }
   end
 
@@ -29,7 +28,8 @@ RSpec.describe Mutations::Issues::Create do
       project_path: project.full_path,
       milestone_id: milestone.to_global_id,
       labels: [project_label1.title, project_label2.title, new_label1, new_label2],
-      assignee_ids: [assignee1.to_global_id, assignee2.to_global_id]
+      assignee_ids: [assignee1.to_global_id, assignee2.to_global_id],
+      issue_type: 'issue'
     }.merge(expected_attributes)
   end
 

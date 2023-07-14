@@ -20,7 +20,7 @@ RSpec.describe Issuable::DiscussionsListService, feature_category: :team_plannin
     it_behaves_like 'listing issuable discussions', :guest, 1, 7
 
     context 'without notes widget' do
-      let_it_be(:issuable) { create(:work_item, :issue, project: project) }
+      let_it_be(:issuable) { create(:work_item, project: project) }
 
       before do
         WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)

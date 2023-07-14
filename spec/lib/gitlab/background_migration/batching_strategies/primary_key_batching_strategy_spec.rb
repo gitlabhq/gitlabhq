@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy, '#next_batch' do
+RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchingStrategy,
+  '#next_batch', feature_category: :database do
   let(:batching_strategy) { described_class.new(connection: ActiveRecord::Base.connection) }
   let(:namespaces) { table(:namespaces) }
 
@@ -64,7 +65,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
     context 'when scope has a join which makes the column name ambiguous' do
       let(:job_class) do
         Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
-          scope_to ->(r) { r.joins('LEFT JOIN users ON users.id = namespaces.owner_id') }
+          scope_to ->(r) { r.joins('LEFT JOIN namespaces as parents ON parents.id = namespaces.parent_id') }
         end
       end
 

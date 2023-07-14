@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This module tries to discover and prevent cross-joins across tables
-# This will forbid usage of tables between CI and main database
+# This will forbid usage of tables of different gitlab_schemas
 # on a same query unless explicitly allowed by. This will change execution
 # from a given point to allow cross-joins. The state will be cleared
 # on a next test run.

@@ -1204,6 +1204,11 @@ msgid_plural "%{strong_start}%{tag_count}%{strong_end} Tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{strong_start}%{terraform_states_count}%{strong_end} Terraform State"
+msgid_plural "%{strong_start}%{terraform_states_count}%{strong_end} Terraform States"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{tabname} changed"
 msgstr ""
 
@@ -14023,6 +14028,9 @@ msgstr ""
 msgid "DORA4Metrics|Failed to load comparison chart for Namespace: %{fullPath}"
 msgstr ""
 
+msgid "DORA4Metrics|Failed to load labels matching the filter: %{labels}"
+msgstr ""
+
 msgid "DORA4Metrics|Filtered by"
 msgstr ""
 
@@ -14682,6 +14690,9 @@ msgid "Date range limited to %{number} days"
 msgstr ""
 
 msgid "Date range must be shorter than %{max_range} days."
+msgstr ""
+
+msgid "Date range too large"
 msgstr ""
 
 msgid "Date to enact enforcement on newly created namespaces"
@@ -24814,6 +24825,9 @@ msgid "Invalid date format. Please use UTC format as YYYY-MM-DD"
 msgstr ""
 
 msgid "Invalid date range"
+msgstr ""
+
+msgid "Invalid dates set"
 msgstr ""
 
 msgid "Invalid feature"

@@ -51,6 +51,7 @@ module Milestoneish
   def issue_participants_visible_by_user(user)
     User.joins(:issue_assignees)
       .where('issue_assignees.issue_id' => issues_visible_to_user(user).select(:id))
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417457")
       .distinct
   end
 

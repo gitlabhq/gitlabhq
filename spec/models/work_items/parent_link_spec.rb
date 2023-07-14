@@ -51,8 +51,8 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
           it 'validates if child can be added to the parent' do
             parent_type = WorkItems::Type.default_by_type(parent_type_sym)
             child_type = WorkItems::Type.default_by_type(child_type_sym)
-            parent = build(:work_item, issue_type: parent_type_sym, work_item_type: parent_type, project: project)
-            child = build(:work_item, issue_type: child_type_sym, work_item_type: child_type, project: project)
+            parent = build(:work_item, work_item_type: parent_type, project: project)
+            child = build(:work_item, work_item_type: child_type, project: project)
             link = build(:parent_link, work_item: child, work_item_parent: parent)
 
             expect(link.valid?).to eq(is_valid)

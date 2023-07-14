@@ -71,7 +71,7 @@ When deleting users, you can either:
 
 An alternative to deleting is [blocking a user](../../admin_area/moderate_users.md#block-a-user).
 
-When a user is deleted from an [abuse report](../../admin_area/review_abuse_reports.md) or spam log, these associated
+When a user is deleted from an [abuse report](../../../administration/review_abuse_reports.md) or spam log, these associated
 records are always removed.
 
 The deleting associated records option can be requested in the [API](../../../api/users.md#user-deletion) as well as

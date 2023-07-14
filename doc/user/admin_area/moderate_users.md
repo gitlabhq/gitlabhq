@@ -76,7 +76,7 @@ GitLab administrators can block and unblock users.
 To completely prevent access of a user to the GitLab instance,
 administrators can choose to block the user.
 
-Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
+Users can be blocked [via an abuse report](../../administration/review_abuse_reports.md#blocking-users),
 by removing them in LDAP, or directly from the Admin Area. To do this:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).

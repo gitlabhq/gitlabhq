@@ -281,24 +281,24 @@ changes to prepare the codebase for data split.
 
 One iteration describes one quarter's worth of work.
 
-1. Iteration 1 - FY24Q1
+1. [Iteration 1](https://gitlab.com/groups/gitlab-org/-/epics/9667) - FY24Q1
 
     - Data access layer: Initial Admin Area settings are shared across cluster.
     - Essential workflows: Allow to share cluster-wide data with database-level data access layer
 
-1. Iteration 2 - FY24Q2
+1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - FY24Q2
 
     - Essential workflows: User accounts are shared across cluster.
     - Essential workflows: User can create group.
 
-1. Iteration 3 - FY24Q3
+1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - FY24Q3
 
     - Essential workflows: User can create project.
     - Essential workflows: User can push to Git repository.
     - Cell deployment: Extend GitLab Dedicated to support GCP
     - Routing: Technology.
 
-1. Iteration 4 - FY24Q4
+1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - FY24Q4
 
     - Essential workflows: User can run CI pipeline.
     - Essential workflows: User can create issue, merge request, and merge it after it is green.

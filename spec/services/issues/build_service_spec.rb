@@ -205,7 +205,6 @@ RSpec.describe Issues::BuildService, feature_category: :team_planning do
             issue = build_issue(**issue_params)
 
             expect(issue.work_item_type_id).to eq(work_item_type_id)
-            expect(issue.attributes['issue_type']).to eq(resulting_issue_type)
           end
         end
       end

@@ -7,7 +7,6 @@ FactoryBot.define do
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }
-    issue_type { :issue }
     association :work_item_type, :default
 
     trait :confidential do
@@ -27,23 +26,23 @@ FactoryBot.define do
       closed_at { Time.now }
     end
 
+    trait :issue do
+      association :work_item_type, :default, :issue
+    end
+
     trait :task do
-      issue_type { :task }
       association :work_item_type, :default, :task
     end
 
     trait :incident do
-      issue_type { :incident }
       association :work_item_type, :default, :incident
     end
 
     trait :requirement do
-      issue_type { :requirement }
       association :work_item_type, :default, :requirement
     end
 
     trait :test_case do
-      issue_type { :test_case }
       association :work_item_type, :default, :test_case
     end
 
@@ -52,12 +51,10 @@ FactoryBot.define do
     end
 
     trait :objective do
-      issue_type { :objective }
       association :work_item_type, :default, :objective
     end
 
     trait :key_result do
-      issue_type { :key_result }
       association :work_item_type, :default, :key_result
     end
 

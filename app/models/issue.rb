@@ -56,6 +56,8 @@ class Issue < ApplicationRecord
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
 
+  ignore_column :issue_type, remove_with: '16.4', remove_after: '2023-08-22'
+
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
 
@@ -133,12 +135,6 @@ class Issue < ApplicationRecord
   validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
-  # using a custom validation since we are overwriting the `issue_type` method to use the work_item_types table
-  validate :issue_type_attribute_present
-
-  enum issue_type: WorkItems::Type.base_types
-  # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/402699
-  include ::Issues::ForbidIssueTypeColumnUsage
 
   alias_method :issuing_parent, :project
   alias_attribute :issuing_parent_id, :project_id
@@ -254,7 +250,6 @@ class Issue < ApplicationRecord
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
-  before_save :check_issue_type_in_sync!
 
   after_save :ensure_metrics!, unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
@@ -760,40 +755,6 @@ class Issue < ApplicationRecord
 
   private
 
-  def check_issue_type_in_sync!
-    # We might have existing records out of sync, so we need to skip this check unless the value is changed
-    # so those records can still be updated until we fix them and remove the issue_type column
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/403158
-    return unless (changes.keys & %w[issue_type work_item_type_id]).any?
-
-    # Do not replace the use of attributes with `issue_type` here
-    if attributes['issue_type'] != work_item_type.base_type
-      error = IssueTypeOutOfSyncError.new(
-        <<~ERROR
-          Issue `issue_type` out of sync with `work_item_type_id` column.
-          `issue_type` must be equal to `work_item.base_type`.
-          You can assign the correct work_item_type like this for example:
-
-          Issue.new(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
-
-          More details in https://gitlab.com/gitlab-org/gitlab/-/issues/338005
-        ERROR
-      )
-
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
-        error,
-        issue_type: attributes['issue_type'],
-        work_item_type_id: work_item_type_id
-      )
-    end
-  end
-
-  def issue_type_attribute_present
-    return if attributes['issue_type'].present?
-
-    errors.add(:issue_type, 'Must be present')
-  end
-
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?
 
@@ -854,9 +815,7 @@ class Issue < ApplicationRecord
   def ensure_work_item_type
     return if work_item_type_id.present? || work_item_type_id_change&.last.present?
 
-    # TODO: We should switch to DEFAULT_ISSUE_TYPE here when the issue_type column is dropped
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/402700
-    self.work_item_type = WorkItems::Type.default_by_type(attributes['issue_type'])
+    self.work_item_type = WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
   end
 
   def allowed_work_item_type_change

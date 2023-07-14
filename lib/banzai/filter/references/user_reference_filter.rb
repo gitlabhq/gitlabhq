@@ -65,10 +65,13 @@ module Banzai
         # The keys of this Hash are the namespace paths, the values the
         # corresponding Namespace objects.
         def namespaces
-          @namespaces ||= Namespace.eager_load(:owner, :route)
-                                   .where_full_path_in(usernames)
-                                   .index_by(&:full_path)
-                                   .transform_keys(&:downcase)
+          cross_join_issue = "https://gitlab.com/gitlab-org/gitlab/-/issues/417466"
+          Gitlab::Database.allow_cross_joins_across_databases(url: cross_join_issue) do
+            @namespaces ||= Namespace.eager_load(:owner, :route)
+                            .where_full_path_in(usernames)
+                            .index_by(&:full_path)
+                            .transform_keys(&:downcase)
+          end
         end
 
         # Returns all usernames referenced in the current document.

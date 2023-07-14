@@ -30,7 +30,7 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
   end
 
   context 'when noteable is a WorkItem' do
-    let!(:work_item) { create(:work_item, :issue, project: project, author: user) }
+    let!(:work_item) { create(:work_item, project: project, author: user) }
     let!(:work_item_note) { create(:discussion_note_on_issue, noteable: work_item, project: project, author: user) }
 
     let(:parent) { project }

@@ -532,7 +532,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     before do
-      issue_a.update_columns(issue_type: WorkItems::Type.base_types[:incident], work_item_type_id: incident_type.id)
+      issue_a.update_columns(work_item_type_id: incident_type.id)
     end
 
     it 'returns the escalation status values' do

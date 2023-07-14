@@ -304,22 +304,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   describe 'validations' do
     subject { work_item.valid? }
 
-    describe 'issue_type' do
-      let(:work_item) { build(:work_item, issue_type: issue_type) }
-
-      context 'when a valid type' do
-        let(:issue_type) { :issue }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'empty type' do
-        let(:issue_type) { nil }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-
     describe 'confidentiality' do
       let_it_be(:project) { create(:project) }
 

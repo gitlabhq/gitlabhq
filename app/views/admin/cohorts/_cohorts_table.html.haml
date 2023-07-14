@@ -2,7 +2,7 @@
 .bs-callout.clearfix
   %p
     = s_("Cohorts|User cohorts are shown for the last %{months_included} months. Only users with activity are counted in the 'New users' column; inactive users are counted separately.") % { months_included: @cohorts[:months_included] }
-    = link_to sprite_icon('question-o'), help_page_path('user/admin_area/user_cohorts', anchor: 'cohorts'), title: 'About this feature', target: '_blank', rel: 'noopener noreferrer'
+    = link_to sprite_icon('question-o'), help_page_path('administration/user_cohorts', anchor: 'cohorts'), title: 'About this feature', target: '_blank', rel: 'noopener noreferrer'
 
 .table-holder.d-xl-table
   %table.table

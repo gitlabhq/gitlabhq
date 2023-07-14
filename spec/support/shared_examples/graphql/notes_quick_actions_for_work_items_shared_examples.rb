@@ -160,7 +160,7 @@ RSpec.shared_examples 'work item supports type change via quick actions' do
   let(:body) { "Updating type.\n/type Issue" }
 
   before do
-    noteable.update!(work_item_type: task_type, issue_type: task_type.base_type)
+    noteable.update!(work_item_type: task_type)
   end
 
   it 'updates type' do

@@ -55,7 +55,7 @@ FactoryBot.define do
     end
 
     trait :for_issue do
-      target { association(:issue, issue_type: :issue) }
+      target { association(:issue) }
       target_type { 'Issue' }
     end
 

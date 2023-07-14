@@ -51,9 +51,7 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
           issue.reload
-        end.to change { issue.work_item_type.base_type }.from('issue').to('incident').and(
-          change(issue, :issue_type).from('issue').to('incident')
-        )
+        end.to change { issue.work_item_type.base_type }.from('issue').to('incident')
       end
     end
 

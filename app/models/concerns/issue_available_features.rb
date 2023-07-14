@@ -19,7 +19,7 @@ module IssueAvailableFeatures
   end
 
   included do
-    scope :with_feature, ->(feature) { where(issue_type: available_features_for_issue_types[feature]) }
+    scope :with_feature, ->(feature) { with_issue_type(available_features_for_issue_types[feature]) }
   end
 
   def issue_type_supports?(feature)

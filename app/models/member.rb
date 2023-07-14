@@ -66,6 +66,7 @@ class Member < ApplicationRecord
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
     .select('members.*', 'invited_user.state as invited_user_state')
+    .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
   end
 
   scope :in_hierarchy, ->(source) do
@@ -174,7 +175,10 @@ class Member < ApplicationRecord
   scope :by_access_level, -> (access_level) { active.where(access_level: access_level) }
   scope :all_by_access_level, -> (access_level) { where(access_level: access_level) }
 
-  scope :preload_user_and_notification_settings, -> { preload(user: :notification_settings) }
+  scope :preload_user_and_notification_settings, -> do
+    preload(user: :notification_settings)
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
+  end
 
   scope :with_source_id, ->(source_id) { where(source_id: source_id) }
   scope :including_source, -> { includes(:source) }
@@ -288,7 +292,9 @@ class Member < ApplicationRecord
 
   class << self
     def search(query)
-      scope = joins(:user).merge(User.search(query, use_minimum_char_limit: false))
+      scope = joins(:user)
+                .merge(User.search(query, use_minimum_char_limit: false))
+                .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
 
       return scope unless Gitlab::Pagination::Keyset::Order.keyset_aware?(scope)
 
@@ -347,6 +353,7 @@ class Member < ApplicationRecord
 
     def left_join_users
       left_outer_joins(:user)
+        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
     end
 
     def access_for_user_ids(user_ids)

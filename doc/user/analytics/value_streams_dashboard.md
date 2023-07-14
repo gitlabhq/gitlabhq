@@ -76,7 +76,8 @@ For example, the parameter `query=gitlab-org/gitlab-ui,gitlab-org/plan-stage` di
 
 ### Using YAML configuration
 
-To change the default content of the page, you need to create a YAML configuration file in a project of your choice. Query parameters can still be used to override the YAML configuration.
+To customize the default content of the page, you need to create a YAML configuration file in a project of your choice. In this file you can define various settings and parameters, such as title, description, and number of panels and labels filters. The file is schema-driven and managed with version control systems like Git. This enables tracking and maintaining a history of configuration changes, reverting to previous versions if necessary, and collaborating effectively with team members.
+Query parameters can still be used to override the YAML configuration.
 
 First, you need to set up the project.
 
@@ -107,12 +108,25 @@ description: 'Custom description'
 #   title - Change the title of the panel. [optional]
 #   data.namespace - The Group or Project path to use for the chart panel.
 #   data.exclude_metrics - Hide rows by metric ID from the chart panel.
+#   data.filter_labels -
+#     Only show results for data that matches the queried label(s). If multiple labels are provided,
+#     only a single label needs to match for the data to be included in the results.
+#     Compatible metrics (other metrics will be automatically excluded):
+#       * lead_time
+#       * cycle_time
+#       * issues
+#       * issues_completed
+#       * merge_request_throughput
+#     (This option is dependant on the `vsd_graphql_dora_and_flow_metrics` feature.)
 panels:
   - title: 'My Custom Project'
     data:
       namespace: group/my-custom-project
   - data:
       namespace: group/another-project
+      filter_labels:
+        - in_development
+        - in_review
   - title: 'My Custom Group'
     data:
       namespace: group/my-custom-group
@@ -130,6 +144,9 @@ panels:
     - data:
         namespace: my-group
   ```
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
 
 ## Dashboard metrics and drill-down reports
 
