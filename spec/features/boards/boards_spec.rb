@@ -74,7 +74,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
       let_it_be(:a_plus, reload: true)      { create(:label, project: project, name: 'A+') }
       let_it_be(:list1, reload: true)       { create(:list, board: board, label: planning, position: 0) }
       let_it_be(:list2, reload: true)       { create(:list, board: board, label: development, position: 1) }
-      let_it_be(:backlog_list, reload: true) { create(:backlog_list, board: board) }
 
       let_it_be(:confidential_issue, reload: true) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
       let_it_be(:issue1, reload: true) { create(:labeled_issue, project: project, title: 'aaa', description: '111', assignees: [user], labels: [planning], relative_position: 8) }

@@ -33,6 +33,10 @@ RSpec.shared_examples 'board lists create mutation' do
       describe 'backlog list' do
         let(:list_create_params) { { backlog: true } }
 
+        before do
+          board.lists.backlog.delete_all
+        end
+
         it 'creates one and only one backlog' do
           expect { subject }.to change { board.lists.backlog.count }.by(1)
           expect(board.lists.backlog.first.list_type).to eq 'backlog'

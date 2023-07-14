@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning do
   let_it_be(:project)        { create(:project, :public) }
   let_it_be(:board)          { create(:board, project: project) }
-  let_it_be(:backlog_list)   { create(:backlog_list, board: board) }
   let_it_be(:label)          { create(:label, project: project, name: 'Label 1') }
   let_it_be(:list)           { create(:list, board: board, label: label, position: 0) }
   let_it_be(:user)           { create(:user) }
@@ -179,8 +178,6 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
       end
 
       context 'when backlog list already exists' do
-        let_it_be(:backlog_list) { create(:backlog_list, board: group_board) }
-
         it 'does not display new issue button in open list' do
           expect(first('.board')).not_to have_button('Create new issue')
         end
@@ -204,14 +201,16 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
       end
 
       context 'when backlog does not exist' do
+        before do
+          group_board.lists.backlog.delete_all
+        end
+
         it 'display new issue button in label list' do
           expect(board_list_header).to have_button('Create new issue')
         end
       end
 
       context 'project select dropdown' do
-        let_it_be(:backlog_list) { create(:backlog_list, board: group_board) }
-
         before do
           page.within(board_list_header) do
             click_button 'Create new issue'

@@ -24568,6 +24568,7 @@ Represents a progress widget.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetprogressprogress"></a>`progress` | [`Int`](#int) | Progress of the work item. |
 | <a id="workitemwidgetprogresstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+| <a id="workitemwidgetprogressupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last progress update. |
 
 ### `WorkItemWidgetRequirementLegacy`
 
@@ -29477,7 +29478,7 @@ A time-frame defined as a closed inclusive range of two dates.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetprogressinputprogress"></a>`progress` | [`Int!`](#int) | Progress of the work item. |
+| <a id="workitemwidgetprogressinputcurrentvalue"></a>`currentValue` | [`Int!`](#int) | Current progress value of the work item. |
 
 ### `WorkItemWidgetStartAndDueDateUpdateInput`
 

@@ -37,7 +37,7 @@
       .form-text.gl-text-gray-500.gl-pl-6
         %p.gl-mb-3= s_('AdminSettings|Registration Features include:')
         - email_from_gitlab_path = help_page_path('user/admin_area/email_from_gitlab')
-        - repo_size_limit_path = help_page_path('user/admin_area/settings/account_and_limit_settings', anchor: 'repository-size-limit')
+        - repo_size_limit_path = help_page_path('administration/settings/account_and_limit_settings', anchor: 'repository-size-limit')
         - restrict_ip_path = help_page_path('user/group/access_and_permissions', anchor: 'restrict-group-access-by-ip-address')
         - email_from_gitlab_link = link_start % { url: email_from_gitlab_path }
         - repo_size_limit_link = link_start % { url: repo_size_limit_path }

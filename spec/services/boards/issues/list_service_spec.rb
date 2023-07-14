@@ -20,10 +20,10 @@ RSpec.describe Boards::Issues::ListService, feature_category: :team_planning do
       let_it_be(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
       let_it_be(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
 
-      let_it_be(:backlog) { create(:backlog_list, board: board) }
+      let_it_be(:backlog) { board.lists.backlog.first }
       let_it_be(:list1)   { create(:list, board: board, label: development, position: 0) }
       let_it_be(:list2)   { create(:list, board: board, label: testing, position: 1) }
-      let_it_be(:closed)  { create(:closed_list, board: board) }
+      let_it_be(:closed)  { board.lists.closed.first }
 
       let_it_be(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
       let_it_be(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
@@ -109,10 +109,10 @@ RSpec.describe Boards::Issues::ListService, feature_category: :team_planning do
       let(:p2_project1) { create(:label, title: 'P2_project1', project: project1, priority: 2) }
       let(:p3_project1) { create(:label, title: 'P3_project1', project: project1, priority: 3) }
 
-      let!(:backlog) { create(:backlog_list, board: board) }
+      let!(:backlog) { board.lists.backlog.first }
       let!(:list1)   { create(:list, board: board, label: development, position: 0) }
       let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
-      let!(:closed)  { create(:closed_list, board: board) }
+      let!(:closed)  { board.lists.closed.first }
 
       let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
       let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2, p2_project]) }
@@ -145,7 +145,6 @@ RSpec.describe Boards::Issues::ListService, feature_category: :team_planning do
       context 'when the group is an ancestor' do
         let(:parent) { create(:group) }
         let(:group) { create(:group, parent: parent) }
-        let!(:backlog) { create(:backlog_list, board: board) }
         let(:board) { create(:board, group: parent) }
 
         before do
@@ -161,7 +160,6 @@ RSpec.describe Boards::Issues::ListService, feature_category: :team_planning do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :empty_repo) }
     let_it_be(:board) { create(:board, project: project) }
-    let_it_be(:backlog) { create(:backlog_list, board: board) }
 
     let(:issue) { create(:issue, project: project, relative_position: nil) }
 

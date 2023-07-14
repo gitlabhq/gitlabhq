@@ -29,13 +29,13 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
       # Uniqueness spec saves integration with `validate: false` otherwise.
       subject { create(:alert_management_http_integration, :legacy) }
 
-      it { is_expected.to validate_uniqueness_of(:endpoint_identifier).scoped_to(:project_id, :active) }
+      it { is_expected.to validate_uniqueness_of(:endpoint_identifier).scoped_to(:project_id) }
     end
 
     context 'when inactive' do
       subject { create(:alert_management_http_integration, :legacy, :inactive) }
 
-      it { is_expected.not_to validate_uniqueness_of(:endpoint_identifier).scoped_to(:project_id, :active) }
+      it { is_expected.to validate_uniqueness_of(:endpoint_identifier).scoped_to(:project_id) }
     end
 
     context 'payload_attribute_mapping' do

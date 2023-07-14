@@ -243,7 +243,7 @@ If you have a larger project, consider [using a Rake task](../../../administrati
 Administrators can set the maximum import file size one of two ways:
 
 - With the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
-- In the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md#max-import-size).
+- In the [Admin Area UI](../../../administration/settings/account_and_limit_settings.md#max-import-size).
 
 The default is `0` (unlimited).
 

@@ -84,7 +84,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Reference Architecture information:
   - [Zero downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades)
 - Repositories:
-  - [Repository size limit](../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit)
+  - [Repository size limit](../administration/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:
     - [Pull mirroring](../user/project/repository/mirror/pull.md) outside repositories in a GitLab repository
     - [Overwrite diverged branches](../user/project/repository/mirror/pull.md#overwrite-diverged-branches)

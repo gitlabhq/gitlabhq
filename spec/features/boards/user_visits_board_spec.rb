@@ -62,7 +62,6 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :team_planning
   context "project boards" do
     stub_feature_flags(apollo_boards: false)
     let_it_be(:board) { create_default(:board, project: project) }
-    let_it_be(:backlog_list) { create_default(:backlog_list, board: board) }
 
     let(:board_path) { project_boards_path(project, params) }
 
@@ -72,7 +71,6 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :team_planning
   context "group boards" do
     stub_feature_flags(apollo_boards: false)
     let_it_be(:board) { create_default(:board, group: group) }
-    let_it_be(:backlog_list) { create_default(:backlog_list, board: board) }
 
     let(:board_path) { group_boards_path(group, params) }
 

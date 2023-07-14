@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'capybara/dsl'
-
 module QA
   module Vendor
     module SamlIdp
       module Page
-        class Login < Page::Base
+        class Login < Vendor::Page::Base
           def login(username, password)
             QA::Runtime::Logger.debug("Logging into SAMLIdp with username: #{username} and password:#{password}")
 

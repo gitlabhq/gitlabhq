@@ -21,7 +21,7 @@ module AlertManagement
     validates :name, presence: true, length: { maximum: 255 }
     validates :type_identifier, presence: true
     validates :endpoint_identifier, presence: true, length: { maximum: 255 }, format: { with: /\A[A-Za-z0-9-]+\z/ }
-    validates :endpoint_identifier, uniqueness: { scope: [:project_id, :active] }, if: :active?
+    validates :endpoint_identifier, uniqueness: { scope: [:project_id] }
     validates :payload_attribute_mapping, json_schema: { filename: 'http_integration_payload_attribute_mapping' }
 
     before_validation :prevent_token_assignment

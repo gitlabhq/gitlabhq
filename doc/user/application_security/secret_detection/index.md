@@ -40,7 +40,7 @@ contains more than 100 patterns.
 
 Most Secret Detection patterns search for specific types of secrets.
 Many services add prefixes or other structural details to their secrets so they can be identified if they're leaked.
-For example, GitLab [adds a `glpat-` prefix](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix) to project, group, and personal access tokens by default.
+For example, GitLab [adds a `glpat-` prefix](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) to project, group, and personal access tokens by default.
 
 To provide more reliable, high-confidence results, Secret Detection only looks for passwords or other unstructured secrets in specific contexts like URLs.
 
@@ -621,7 +621,7 @@ The check is always on; you don't have to set it up.
 Your text is checked for the following secret types:
 
 - GitLab [personal access tokens](../../../security/token_overview.md#personal-access-tokens)
-  - If a [personal access token prefix](../../../user/admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
+  - If a [personal access token prefix](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
 - GitLab [feed tokens](../../../security/token_overview.md#feed-token)
 
 This feature is separate from Secret Detection scanning, which checks your Git repository for leaked secrets.

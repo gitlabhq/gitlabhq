@@ -1830,8 +1830,12 @@ class User < ApplicationRecord
     Project.where(id: events).not_aimed_for_deletion
   end
 
+  # Returns true if the user can be removed, false otherwise.
+  # A user can be removed if they do not own any groups where they are the sole owner
+  # Method `none?` is used to ensure faster retrieval, See https://gitlab.com/gitlab-org/gitlab/-/issues/417105
+
   def can_be_removed?
-    !solo_owned_groups.present?
+    solo_owned_groups.none?
   end
 
   def can_remove_self?

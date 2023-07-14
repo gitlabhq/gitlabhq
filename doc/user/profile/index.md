@@ -354,7 +354,7 @@ By default, you are signed out of GitLab after seven days (10080 minutes) of ina
 window, whichever comes first.
 
 GitLab administrators can
-[change this default](../admin_area/settings/account_and_limit_settings.md#customize-the-default-session-duration).
+[change this default](../../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration).
 
 ### Stay signed in indefinitely
 
@@ -365,7 +365,7 @@ To remain signed in indefinitely, select the **Remember me** checkbox on the Git
 You remain signed in because, although the server sets a session time of one week, your browser stores a secure token
 that enables automatic reauthentication.
 
-GitLab administrators can [turn off the **Remember me** setting](../admin_area/settings/account_and_limit_settings.md#session-duration) for environments
+GitLab administrators can [turn off the **Remember me** setting](../../administration/settings/account_and_limit_settings.md#session-duration) for environments
 that require sessions to expire periodically for security or compliance purposes.
 
 ### Cookies used for sign-in

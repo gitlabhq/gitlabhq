@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'capybara/dsl'
-require 'benchmark'
-
 module QA
   module Vendor
     module Github
       module Page
-        class Login < Page::Base
+        class Login < Vendor::Page::Base
           def login
             fill_in 'login', with: QA::Runtime::Env.github_username
             fill_in 'password', with: QA::Runtime::Env.github_password

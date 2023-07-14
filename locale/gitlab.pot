@@ -1946,6 +1946,9 @@ msgstr ""
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say `The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?` and wait for another question."
 msgstr ""
 
+msgid "AI|Explain your rating (optional)"
+msgstr ""
+
 msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
 msgstr ""
 
@@ -7467,6 +7470,9 @@ msgid "Billings|Error validating card details"
 msgstr ""
 
 msgid "Billings|Free groups are limited to %{number} seats."
+msgstr ""
+
+msgid "Billings|Free seats used"
 msgstr ""
 
 msgid "Billings|Free tier and trial groups can invite a maximum of 20 members per day."

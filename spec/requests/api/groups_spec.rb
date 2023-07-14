@@ -1092,14 +1092,14 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       context 'with owned' do
-        let(:group) { create(:group) }
+        let_it_be(:group) { create(:group) }
 
-        let(:project1) { create(:project, group: group) }
-        let(:project1_guest) { create(:user) }
-        let(:project1_owner) { create(:user) }
-        let(:project1_maintainer) { create(:user) }
+        let_it_be(:project1) { create(:project, group: group) }
+        let_it_be(:project1_guest) { create(:user) }
+        let_it_be(:project1_owner) { create(:user) }
+        let_it_be(:project1_maintainer) { create(:user) }
 
-        let(:project2) { create(:project, group: group) }
+        let_it_be(:project2) { create(:project, group: group) }
 
         before do
           project1.add_guest(project1_guest)

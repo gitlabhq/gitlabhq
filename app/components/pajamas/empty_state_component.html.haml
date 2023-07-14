@@ -1,0 +1,29 @@
+- empty_state_class = @compact ? 'gl-flex-direction-row gl-align-items-center' : 'gl-text-center gl-flex-direction-column'
+
+%section.gl-display-flex.empty-state{ **@empty_state_options, class: empty_state_class }
+  - if @svg_path.present?
+    - image_class = @compact ? 'gl-display-none gl-sm-display-block gl-px-4' : 'gl-max-w-full'
+    %div{ class: image_class }
+      = image_tag @svg_path, alt: "", class: 'gl-dark-invert-keep-hue'
+
+  - content_wrapper_class = @compact ? 'gl-flex-grow-1 gl-flex-basis-0 gl-px-4' : 'gl-max-w-full gl-m-auto pl-p-5'
+  %div{ class: content_wrapper_class }
+    - title_class = @compact ? 'gl-mt-0' : 'gl-my-3'
+    %h1.gl-font-size-h-display.gl-line-height-36{ class: title_class }
+      = @title
+
+    - if description?
+      %p.gl-mt-3{ 'data-testid': 'empty-state-description' }
+        = description
+
+    - if @primary_button_text.present? || @secondary_button_text.present?
+      - button_wrapper_class = @compact.present? ? '' : 'gl-justify-content-center'
+      .gl-display-flex.gl-flex-wrap{ class: button_wrapper_class }
+
+        - if @primary_button_text.present?
+          = render Pajamas::ButtonComponent.new(variant: :confirm, href: @primary_button_link, button_options: { class: 'gl-ml-0!' }) do
+            = @primary_button_text
+
+        - if @secondary_button_text.present?
+          = render Pajamas::ButtonComponent.new(variant: :default, href: @secondary_button_link, button_options: { class: ('gl-ml-0!' unless @primary_button_text.present?) }) do
+            = @secondary_button_text

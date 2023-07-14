@@ -12,7 +12,6 @@ RSpec.describe 'Issue boards sidebar labels select', :js, feature_category: :tea
   context 'group boards' do
     context 'in the top-level group board' do
       let_it_be(:group_board) { create(:board, group: group) }
-      let_it_be(:board_list) { create(:backlog_list, board: group_board) }
 
       before do
         stub_feature_flags(apollo_boards: false)

@@ -43,6 +43,7 @@ module QA
           element :github_login_button
           element :oidc_login_button
           element :gitlab_oauth_login_button
+          element :facebook_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -184,6 +185,11 @@ module QA
         def sign_in_with_github
           set_initial_password_if_present
           click_element :github_login_button
+        end
+
+        def sign_in_with_facebook
+          set_initial_password_if_present
+          click_element :facebook_login_button
         end
 
         def sign_in_with_saml

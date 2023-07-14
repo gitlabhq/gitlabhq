@@ -162,22 +162,14 @@ cannot guarantee that upgrading between major versions is seamless.
 
 A *major* upgrade requires the following steps:
 
-1. Start by identifying a [supported upgrade path](#upgrade-paths). This is essential for a successful *major* version upgrade.
-1. Upgrade to the latest minor version of the preceding major version.
-1. Upgrade to the "dot zero" release of the next major version (`X.0.Z`).
-1. Optional. Follow the [upgrade path](#upgrade-paths), and proceed with upgrading to newer releases of that major version.
-
-It's also important to ensure that any [background migrations have been fully completed](background_migrations.md)
-before upgrading to a new major version.
-
-If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
-[ensure all advanced search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version in
-your current version
-before proceeding with the major version upgrade.
-
-If your GitLab instance has any runners associated with it, it is very
-important to upgrade GitLab Runner to match the GitLab minor version that was
-upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
+1. Identify a [supported upgrade path](#upgrade-paths).
+1. Ensure that any [background migrations have been fully completed](background_migrations.md)
+   before upgrading to a new major version.
+1. If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md), then
+   before proceeding with the major version upgrade, [ensure that all advanced search migrations are completed](#checking-for-pending-advanced-search-migrations).
+1. If your GitLab instance has any runners associated with it, it is very
+   important to upgrade them to match the current GitLab version. This ensures
+   [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
 ## Upgrade paths
 

@@ -9,7 +9,7 @@ RSpec.describe Boards::Lists::ListService, feature_category: :team_planning do
   RSpec.shared_examples 'FOSS lists only' do
     context 'when board contains a non FOSS list' do
       # This scenario may happen when there used to be an EE license and user downgraded
-      let!(:backlog_list) { create_backlog_list(board) }
+      let_it_be(:backlog_list) { board.lists.backlog.first }
       let_it_be(:milestone) { create(:milestone, group: group) }
       let_it_be(:assignee_list) do
         list = build(:list, board: board, user_id: user.id, list_type: List.list_types[:assignee], position: 0)
@@ -58,10 +58,6 @@ RSpec.describe Boards::Lists::ListService, feature_category: :team_planning do
 
       it_behaves_like 'lists list service'
       it_behaves_like 'FOSS lists only'
-    end
-
-    def create_backlog_list(board)
-      create(:backlog_list, board: board)
     end
   end
 end

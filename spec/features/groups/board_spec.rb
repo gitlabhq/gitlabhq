@@ -50,7 +50,6 @@ RSpec.describe 'Group Boards', feature_category: :team_planning do
   context "when user is a Reporter in one of the group's projects", :js do
     let_it_be(:board) { create(:board, group: group) }
 
-    let_it_be(:backlog_list) { create(:backlog_list, board: board) }
     let_it_be(:group_label1) { create(:group_label, title: "bug", group: group) }
     let_it_be(:group_label2) { create(:group_label, title: "dev", group: group) }
     let_it_be(:list1) { create(:list, board: board, label: group_label1, position: 0) }
