@@ -11890,7 +11890,7 @@ msgstr ""
 msgid "Component name '%{component}' must not start with '%{prefix}'"
 msgstr ""
 
-msgid "Component type '%s' is not yet supported"
+msgid "Component type '%{type}' is not yet supported"
 msgstr ""
 
 msgid "Components must have a 'name'"
@@ -18280,7 +18280,7 @@ msgstr ""
 msgid "Event tag (optional)"
 msgstr ""
 
-msgid "Event type '%s' is not yet supported"
+msgid "Event type '%{type}' is not yet supported"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
@@ -24836,7 +24836,7 @@ msgstr ""
 msgid "Introducing Your DevOps Reports"
 msgstr ""
 
-msgid "Invalid 'schemaVersion' '%s'"
+msgid "Invalid 'schemaVersion' '%{schema_version}'"
 msgstr ""
 
 msgid "Invalid Insights config file detected"
@@ -29748,7 +29748,7 @@ msgstr ""
 msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
-msgid "Multiple components(%s) have 'gl/inject-editor' attribute"
+msgid "Multiple components '%{name}' have 'gl/inject-editor' attribute"
 msgstr ""
 
 msgid "Multiple integrations of a single type are not supported for this project"
@@ -37118,7 +37118,7 @@ msgstr ""
 msgid "Prompt users to upload SSH keys"
 msgstr ""
 
-msgid "Property 'dedicatedPod' of component '%s' is not yet supported"
+msgid "Property 'dedicatedPod' of component '%{name}' is not yet supported"
 msgstr ""
 
 msgid "Protect"

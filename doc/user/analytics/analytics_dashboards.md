@@ -32,7 +32,29 @@ The following data sources are configured for analytics dashboards:
 
 - [Product analytics](../product_analytics/index.md)
 
-### View project dashboards
+## Dashboards designer
+
+> Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+NOTE:
+This feature does not work in conjunction with the `product_analytics_snowplow_support` feature flag.
+
+You can use the dashboards designer to:
+
+- Create custom dashboards
+- Rename custom dashboards
+- Add visualizations to new and existing custom dashboards
+- Resize or move panels within custom dashboards
+
+You cannot edit the built-in dashboards labeled as `By GitLab`.
+To edit these dashboards you should create a new custom dashboard which uses the same visualizations.
+
+## View project dashboards
 
 To view a list of dashboards for a project:
 
@@ -40,7 +62,46 @@ To view a list of dashboards for a project:
 1. Select **Analyze > Dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
-### Define a dashboard
+## Change the location of dashboards
+
+You can change the location of your project or group dashboards.
+
+### Group dashboards
+
+NOTE:
+This feature will be connected to group-level dashboards as part of [issue #411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572).
+
+To change the location of a group's dashboards:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project you want to store your dashboard files in.
+   The project must belong to the group for which you create the dashboards.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Settings > General**.
+1. Expand **Analytics**.
+1. In the **Analytics Dashboards** section, select your dashboard files project.
+1. Select **Save changes**.
+
+### Project dashboards
+
+Dashboards are usually defined in the project where the analytics data is being retrieved from.
+However, you can also have a separate project for dashboards.
+This is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
+
+NOTE:
+You can share dashboards only between projects that are located in the same group.
+
+To change the location of project dashboards:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project,
+   or select **Create new...** (**{plus}**) and **New project/repository**
+   to create the project to store your dashboard files.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and find the analytics project.
+1. Select **Settings > General**.
+1. Expand **Analytics**.
+1. In the **Analytics Dashboards** section, select your dashboard files project.
+1. Select **Save changes**.
+
+## Define a dashboard
 
 To define a dashboard:
 
@@ -67,7 +128,7 @@ and one visualization (line chart) that applies to all dashboards, the file stru
 │  └── example_line_chart.yaml
 ```
 
-### Define a chart visualization
+## Define a chart visualization
 
 You can define different charts, and add visualization options to some of them:
 
@@ -91,65 +152,7 @@ create a `line_chart.yaml` file with the following required fields:
 - data
 - options
 
-### Change the location of project dashboards
-
-Dashboards are usually defined in the project where analytics data is being retrieved.
-However, you can also have a separate project for dashboards.
-This is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
-
-NOTE:
-You can share dashboards only between projects that are located in the same group.
-
-To change the location of project dashboards:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project,
-   or select **Create new** (**{plus}**) and **New project/repository**
-   to create the project to store your dashboard files.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and find the project you want to use the dashboards for.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
-1. In the **Analytics Dashboards** section, select the project that contains the dashboard files.
-1. Select **Save changes**.
-
-### Change the location of group dashboards
-
-NOTE:
-This feature will be connected to group-level dashboards in [issue 411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572).
-
-If you want to use dashboards for a group, you must store the dashboard files in a project that belongs to that group.
-You can change the source project of a group's dashboards at any time.
-
-To change the location of a group's dashboards:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. Select **Settings > General**.
-1. Expand **Analytics**.
-1. In the **Analytics Dashboards** section, select the project that contains the dashboard files.
-1. Select **Save changes**.
-
-## Dashboards designer
-
-> Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-NOTE:
-This feature does not work in conjunction with the `product_analytics_snowplow_support` feature flag.
-
-You can use the dashboards designer to:
-
-- Create custom dashboards
-- Rename custom dashboards
-- Add visualizations to new and existing custom dashboards
-- Resize or move panels within custom dashboards
-
-You cannot edit the built-in dashboards labeled as `By GitLab`.
-To edit these dashboards you should create a new custom dashboard which uses the same visualizations.
-
-### Create a custom dashboard
+## Create a custom dashboard
 
 To create a custom dashboard:
 
@@ -161,7 +164,7 @@ To create a custom dashboard:
 1. Optional. Drag or resize the selected panel how you prefer.
 1. Select **Save**.
 
-### Edit a custom dashboard
+## Edit a custom dashboard
 
 You can edit your custom dashboard's title and add or resize visualizations within the dashboard designer.
 

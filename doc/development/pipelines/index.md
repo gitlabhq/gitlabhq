@@ -660,7 +660,7 @@ The token is stored in the `RUBY3_1_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
 Our test suite runs against Redis 6 as GitLab.com runs on Redis 6 and
 [Omnibus defaults to Redis 6 for new installs and upgrades](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/software/redis.rb).
 
-We do run our test suite against Redis 5 on `nightly` scheduled pipelines, specifically when running backward-compatible and forward-compatible PostgreSQL jobs.
+We do run our test suite against Redis 7 on `nightly` scheduled pipelines, specifically when running forward-compatible PostgreSQL 15 jobs.
 
 #### Current versions testing
 
@@ -668,7 +668,7 @@ We do run our test suite against Redis 5 on `nightly` scheduled pipelines, speci
 | ------ | ------------------ |
 | MRs    | 6 |
 | `default branch` (non-scheduled pipelines) | 6 |
-| `nightly` scheduled pipelines | 5 |
+| `nightly` scheduled pipelines | 7 |
 
 ### Single database testing
 

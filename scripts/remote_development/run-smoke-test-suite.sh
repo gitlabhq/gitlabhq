@@ -31,22 +31,27 @@ printf "${Color_Off}"
 
 printf "${BBlue}Running Remote Development backend specs${Color_Off}\n\n"
 
-# NOTE: For some reason this test started causing the following spec file in the list to blow up with
-#       "Failed to write to log, write log/workhorse-test.log: file already closed". Just removing
-#       it for now.
-# ee/spec/graphql/api/workspace_spec.rb
-
 bin/spring rspec -r spec_helper \
 ee/spec/features/remote_development/workspaces_spec.rb \
 ee/spec/finders/remote_development/workspaces_finder_spec.rb \
+ee/spec/graphql/api/workspace_spec.rb \
 ee/spec/graphql/types/query_type_spec.rb \
 ee/spec/graphql/types/remote_development/workspace_type_spec.rb \
 ee/spec/graphql/types/subscription_type_spec.rb \
 ee/spec/lib/remote_development/agent_config/main_integration_spec.rb \
 ee/spec/lib/remote_development/unmatched_result_error_spec.rb \
-ee/spec/lib/remote_development/workspaces/create/create_processor_spec.rb \
-ee/spec/lib/remote_development/workspaces/create/devfile_processor_spec.rb \
-ee/spec/lib/remote_development/workspaces/create/devfile_validator_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/authorizer_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/creator_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/devfile_fetcher_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/devfile_flattener_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/editor_component_injector_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/main_integration_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/main_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/post_flatten_devfile_validator_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/pre_flatten_devfile_validator_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/project_cloner_component_injector_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/volume_component_injector_spec.rb \
+ee/spec/lib/remote_development/workspaces/create/volume_definer_spec.rb \
 ee/spec/lib/remote_development/workspaces/reconcile/actual_state_calculator_spec.rb \
 ee/spec/lib/remote_development/workspaces/reconcile/agent_info_parser_spec.rb \
 ee/spec/lib/remote_development/workspaces/reconcile/agent_info_spec.rb \

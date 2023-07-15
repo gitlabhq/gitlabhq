@@ -218,39 +218,48 @@
     POSTGRES_HOST_AUTH_METHOD: trust
 
 .db-services:
-  services: &db-services
+  services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}-pgvector-0.4.1
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=256"]
       alias: postgres
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
+
+.db-services-with-redis-6:
+  services:
+    - !reference [.db-services, services]
     - name: redis:6.2-alpine
+
+.db-services-with-redis-7:
+  services:
+    - !reference [.db-services, services]
+    - name: redis:7.0-alpine
 
 .use-pg12:
   extends:
     - .pg-base-variables
-    - .db-services
+    - .db-services-with-redis-6
   variables:
     PG_VERSION: "12"
 
 .use-pg13:
   extends:
     - .pg-base-variables
-    - .db-services
+    - .db-services-with-redis-6
   variables:
     PG_VERSION: "13"
 
 .use-pg14:
   extends:
     - .pg-base-variables
-    - .db-services
+    - .db-services-with-redis-6
   variables:
     PG_VERSION: "14"
 
 .use-pg15:
   extends:
     - .pg-base-variables
-    - .db-services
+    - .db-services-with-redis-7
   variables:
     PG_VERSION: "15"
 
@@ -269,7 +278,7 @@
     - .pg-base-variables
     - .zoekt-variables
   services:
-    - !reference [.db-services, services]
+    - !reference [.db-services-with-redis-6, services]
     - !reference [.zoekt-services, services]
     - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
@@ -299,7 +308,7 @@
     - .pg-base-variables
     - .zoekt-variables
   services:
-    - !reference [.db-services, services]
+    - !reference [.db-services-with-redis-6, services]
     - !reference [.zoekt-services, services]
     - name: elasticsearch:8.6.2
   variables:
@@ -326,7 +335,7 @@
     - .pg-base-variables
     - .zoekt-variables
   services:
-    - !reference [.db-services, services]
+    - !reference [.db-services-with-redis-6, services]
     - !reference [.zoekt-services, services]
     - name: opensearchproject/opensearch:1.3.5
       alias: elasticsearch
@@ -352,7 +361,7 @@
     - .pg-base-variables
     - .zoekt-variables
   services:
-    - !reference [.db-services, services]
+    - !reference [.db-services-with-redis-6, services]
     - !reference [.zoekt-services, services]
     - name: opensearchproject/opensearch:2.2.1
       alias: elasticsearch

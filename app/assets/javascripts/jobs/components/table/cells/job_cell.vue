@@ -71,7 +71,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-text-truncate">
+    <div class="gl-text-truncate gl-mb-2">
       <gl-link
         v-if="canReadJob"
         class="gl-text-blue-600!"
@@ -92,7 +92,7 @@ export default {
       />
 
       <div
-        class="gl-display-flex gl-text-gray-700 gl-align-items-center gl-lg-justify-content-start gl-justify-content-end"
+        class="gl-display-flex gl-text-gray-700 gl-align-items-center gl-lg-justify-content-start gl-justify-content-end gl-mt-2"
       >
         <div
           v-if="jobRef"

@@ -110,34 +110,33 @@ export default {
 </script>
 
 <template>
-  <div class="row gl-mt-3 js-preferences-form js-search-settings-section">
-    <div v-if="integrationViews.length" class="col-sm-12">
-      <hr data-testid="profile-preferences-integrations-rule" />
-    </div>
-    <div v-if="integrationViews.length" class="col-lg-4">
-      <h4 class="gl-mt-0" data-testid="profile-preferences-integrations-heading">
-        {{ $options.i18n.integrations }}
-      </h4>
-      <p>
+  <div class="gl-display-contents js-preferences-form">
+    <div
+      v-if="integrationViews.length"
+      class="settings-section gl-border-t gl-pt-6! js-search-settings-section"
+    >
+      <div class="settings-sticky-header">
+        <div class="settings-sticky-header-inner">
+          <h4 class="gl-my-0" data-testid="profile-preferences-integrations-heading">
+            {{ $options.i18n.integrations }}
+          </h4>
+        </div>
+      </div>
+      <p class="gl-text-secondary">
         {{ $options.i18n.integrationsDescription }}
       </p>
+      <div>
+        <integration-view
+          v-for="view in integrationViews"
+          :key="view.name"
+          :help-link="view.help_link"
+          :message="view.message"
+          :message-url="view.message_url"
+          :config="$options.integrationViewConfigs[view.name]"
+        />
+      </div>
     </div>
-    <div v-if="integrationViews.length" class="col-lg-8">
-      <integration-view
-        v-for="view in integrationViews"
-        :key="view.name"
-        :help-link="view.help_link"
-        :message="view.message"
-        :message-url="view.message_url"
-        :config="$options.integrationViewConfigs[view.name]"
-      />
-    </div>
-
-    <div class="col-lg-4"></div>
-    <div class="col-lg-8">
-      <hr />
-    </div>
-    <div class="col-sm-12 js-hide-when-nothing-matches-search">
+    <div class="settings-sticky-footer js-hide-when-nothing-matches-search">
       <gl-button
         category="primary"
         variant="confirm"

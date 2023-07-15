@@ -128,24 +128,6 @@
   }
 }
 
-.gl-md-w-15 {
-  @include gl-media-breakpoint-up(md) {
-    width: $gl-spacing-scale-15;
-  }
-}
-
-.gl-md-w-20 {
-  @include gl-media-breakpoint-up(md) {
-    width: $gl-spacing-scale-20;
-  }
-}
-
-.gl-md-w-30 {
-  @include gl-media-breakpoint-up(md) {
-    width: $gl-spacing-scale-30;
-  }
-}
-
 .gl-fill-orange-500 {
   fill: $orange-500;
 }
