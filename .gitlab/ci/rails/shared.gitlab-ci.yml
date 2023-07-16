@@ -30,6 +30,10 @@ include:
   variables:
     USE_REDIS_CLUSTER: "false"
 
+.clusterwide-db:
+  variables:
+    CLUSTERWIDE_DB: "true"
+
 .single-db:
   variables:
     DECOMPOSED_DB: "false"

@@ -77,6 +77,9 @@
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
+.if-merge-request-labels-run-clusterwide-db: &if-merge-request-labels-run-clusterwide-db
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-clusterwide-db/'
+
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
@@ -1600,6 +1603,10 @@
     - <<: *if-default-refs
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+
+.rails:rules:clusterwide-db:
+  rules:
+    - <<: *if-merge-request-labels-run-clusterwide-db
 
 .rails:rules:single-redis:
   rules:
