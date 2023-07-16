@@ -403,6 +403,8 @@ module Gitlab
       end
 
       def revoke_token_family(token)
+        return unless Feature.enabled?(:pat_reuse_detection)
+
         PersonalAccessTokens::RevokeTokenFamilyService.new(token).execute
       end
     end
