@@ -199,8 +199,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
 
 NOTE:
-Security training is not available in an offline environment because it uses content from
-third-party vendors. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
+Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
 any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/).
 GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
 

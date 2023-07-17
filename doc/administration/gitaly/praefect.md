@@ -19,6 +19,10 @@ Configure Gitaly Cluster using either:
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
 
+NOTE:
+Gitaly Cluster is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
+[epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+
 ## Requirements
 
 The minimum recommended configuration for a Gitaly Cluster requires:
