@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Managing Kubernetes secrets in a GitOps workflow
+# Managing Kubernetes secrets in a GitOps workflow (deprecated)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/406545) in GitLab 16.2.
+To manage cluster resources with GitOps, you should use the [Flux integration](../../../clusters/agent/gitops.md).
 
 You should never store Kubernetes secrets in unencrypted form in a `git` repository. If you use a GitOps workflow, you can follow these steps to securely manage your secrets.
 

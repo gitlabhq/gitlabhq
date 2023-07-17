@@ -59,6 +59,10 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /ee/app/finders/
 /rubocop/rubocop-migrations.yml
 
+[Create::IDE - Remote Development Scripts] @gitlab-org/maintainers/remote-development/backend
+# This entry must occur before `/scripts/` in order to be matched first
+/scripts/remote_development/
+
 [Engineering Productivity] @gl-quality/eng-prod
 /.gitlab-ci.yml
 /.gitlab/ci/
@@ -1448,8 +1452,7 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/elastic/migrate/
 /ee/spec/support/elastic.rb
 
-[Create::IDE - Remote Development Backend]  @gitlab-org/maintainers/remote-development/backend
-
+[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/remote-development/backend
 /ee/app/models/remote_development/
 /ee/app/policies/remote_development/
 /ee/app/finders/remote_development/
@@ -1474,10 +1477,8 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/services/remote_development/
 /ee/lib/remote_development/
 /qa/qa/specs/features/ee/browser_ui/3_create/remote_development/
-/scripts/remote_development/
 
-[Create::IDE - Remote Development Frontend]  @gitlab-org/maintainers/remote-development/frontend
-
+[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
 /ee/app/views/remote_development/
 /ee/app/assets/javascripts/remote_development/
 /ee/app/assets/javascripts/pages/remote_development/

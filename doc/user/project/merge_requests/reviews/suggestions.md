@@ -76,11 +76,11 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `content_editor_on_issues`.
 On GitLab.com, this feature is available.
 
-When you insert suggestions using the WYSIWYG
-[rich text editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/), you can step
+When you insert suggestions, you can use the WYSIWYG
+[rich text editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/) to move
 up and down the source file's line numbers in the UI.
 
-To add or subtract changed lines, next to **From lines**, select **+** or **-**.
+To add or subtract changed lines, next to **From line**, select **+** or **-**.
 
 ![Multi-line suggestion preview](img/suggest_changes_v16_2.png)
 

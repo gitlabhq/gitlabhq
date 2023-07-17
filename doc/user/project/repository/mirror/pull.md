@@ -55,13 +55,14 @@ After you configure a GitLab repository as a pull mirror:
 
 ## Configure pull mirroring
 
-Prerequisite:
+Prerequisites:
 
 - If your remote repository is on GitHub and you have
   [two-factor authentication (2FA) configured](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa),
   create a [personal access token for GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
   with the `repo` scope. If 2FA is enabled, this personal access
   token serves as your GitHub password.
+- [GitLab Silent Mode](../../../../administration/silent_mode/index.md) is not enabled.
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.

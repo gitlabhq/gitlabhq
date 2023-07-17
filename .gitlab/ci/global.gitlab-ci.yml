@@ -382,6 +382,24 @@
   variables:
     PG_VERSION: "15"
 
+.use-pg14-clickhouse23:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-14-pgvector-0.4.1
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+      alias: postgres
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+      alias: rediscluster # configure connections in config/redis.yml
+    - name: redis:6.2-alpine
+    - name: clickhouse/clickhouse-server:23-alpine
+      alias: clickhouse
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "14"
+    CLICKHOUSE_USER: clickhouse
+    CLICKHOUSE_PASSWORD: clickhouse
+    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    CLICKHOUSE_DB: gitlab_clickhouse_test
+
 .use-kaniko:
   image:
     name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:kaniko

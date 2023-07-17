@@ -2066,6 +2066,11 @@
       changes: *code-backstage-patterns
       when: always
 
+.rails:rules:clickhouse-changes:
+  rules:
+    - <<: *if-merge-request
+      changes: ["**/*click_house*"]
+
 #########################
 # Static analysis rules #
 #########################

@@ -266,6 +266,11 @@ rspec fast_spec_helper:
     # Load fast_spec_helper as well just in case there are no specs available.
     - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
 
+rspec unit clickhouse:
+  extends:
+    - .rspec-base-pg14-clickhouse23
+    - .rails:rules:clickhouse-changes
+
 gitlab:setup:
   extends: .db-job-base
   variables:
@@ -1190,7 +1195,7 @@ rspec-ee system pg15 es8:
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt"
+    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
 
 rspec fail-fast:
   extends:

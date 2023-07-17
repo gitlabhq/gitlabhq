@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :service_ping do
   describe '.uncached_data' do
+    let(:aggregate) { instance_double('Gitlab::Usage::Metrics::Aggregates::Aggregate') }
+
     subject { described_class.uncached_data }
 
     around do |example|
@@ -13,6 +15,11 @@ RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :servi
     end
 
     before do
+      # stub time-consuming and unnecessary computation
+      allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).and_return(1)
+      allow(Gitlab::Usage::Metrics::Aggregates::Aggregate).to receive(:new).and_return(aggregate)
+      allow(aggregate).to receive(:calculate_count_for_aggregation).and_return(1)
+
       allow_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
         allow(batch_counter).to receive(:transaction_open?).and_return(false)
       end

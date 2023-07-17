@@ -95,6 +95,9 @@ You can also manually trigger an update:
 - According to [the pull mirroring interval limit](../../../../administration/instance_limits.md#pull-mirroring-interval)
   set by the administrator on self-managed instances.
 
+NOTE:
+[GitLab Silent Mode](../../../../administration/silent_mode/index.md) disables both push and pull updates.
+
 ### Force an update
 
 While mirrors are scheduled to update automatically, you can force an immediate update unless:

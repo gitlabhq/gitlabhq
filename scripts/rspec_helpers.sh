@@ -123,7 +123,7 @@ function rspec_simple_job_with_retry () {
 function rspec_db_library_code() {
   local db_files="spec/lib/gitlab/database/"
 
-  rspec_simple_job_with_retry "-- ${db_files}"
+  rspec_simple_job_with_retry "--tag ~click_house -- ${db_files}"
 }
 
 # Below is the list of options (https://linuxcommand.org/lc3_man_pages/seth.html)

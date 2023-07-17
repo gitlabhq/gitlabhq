@@ -29,8 +29,8 @@
 
     If you've already dismissed a vulnerability finding from one of the deprecated analyzers, the replacement attempts to respect your previous dismissal. The system behavior depends on:
 
-    - whether you’ve excluded the Semgrep-based analyzer from running in the past.
-    - which analyzer first discovered the vulnerabilities shown in the project’s Vulnerability Report.
+    - whether you've excluded the Semgrep-based analyzer from running in the past.
+    - which analyzer first discovered the vulnerabilities shown in the project's Vulnerability Report.
 
     See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
 

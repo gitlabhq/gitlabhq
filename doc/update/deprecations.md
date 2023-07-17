@@ -710,6 +710,24 @@ The [`gitlab-runner exec`](https://docs.gitlab.com/runner/commands/#gitlab-runne
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### The pull-based deployment features of the GitLab agent for Kubernetes is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.2</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/406545).
+</div>
+
+We are deprecating the built-in pull-based deployment features of the GitLab agent for Kubernetes in favor of Flux and related integrations.
+
+The GitLab agent for Kubernetes **is not deprecated**. This change affects only the pull-based functionality of the agent. All other functionality will remain intact, and GitLab will continue to support the agent for Kubernetes.
+
+If you use the agent for pull-based deployments, you should [migrate to Flux](https://docs.gitlab.com/ee/user/clusters/agent/gitops/agent.html#migrate-to-flux). Because Flux is a mature CNCF project for GitOps, we decided to [integrate Flux with GitLab in February 2023](https://about.gitlab.com/blog/2023/02/08/why-did-we-choose-to-integrate-fluxcd-with-gitlab/).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Trigger jobs can mirror downstream pipeline status exactly
 
 <div class="deprecation-notes">
@@ -2622,8 +2640,8 @@ This change will be reflected in the automatic language detection portion of the
 
 If you've already dismissed a vulnerability finding from one of the deprecated analyzers, the replacement attempts to respect your previous dismissal. The system behavior depends on:
 
-- whether you’ve excluded the Semgrep-based analyzer from running in the past.
-- which analyzer first discovered the vulnerabilities shown in the project’s Vulnerability Report.
+- whether you've excluded the Semgrep-based analyzer from running in the past.
+- which analyzer first discovered the vulnerabilities shown in the project's Vulnerability Report.
 
 See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
 
@@ -3283,7 +3301,7 @@ You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#e
 tokens before GitLab 15.0 is released:
 
 1. Edit the application.
-1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don’t expire.
+1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don't expire.
 
 </div>
 
@@ -3372,7 +3390,10 @@ If you rely on Java 8 being present in the analyzer environment, you must take a
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/359133).
 </div>
 
-As Advanced Search migrations usually require support multiple code paths for a long period of time, it’s important to clean those up when we safely can. We use GitLab major version upgrades as a safe time to remove backward compatibility for indices that have not been fully migrated. See the [upgrade documentation](https://docs.gitlab.com/ee/update/index.html#upgrading-to-a-new-major-version) for details.
+As Advanced Search migrations usually require support multiple code paths for a long period of time,
+it's important to clean those up when we safely can. We use GitLab major version upgrades as a safe
+time to remove backward compatibility for indices that have not been fully migrated. See the
+[upgrade documentation](https://docs.gitlab.com/ee/update/index.html#upgrading-to-a-new-major-version) for details.
 
 </div>
 
@@ -3737,7 +3758,7 @@ To simplify setting a test coverage pattern, in GitLab 15.0 the
 [project setting for test coverage parsing](https://docs.gitlab.com/ee/ci/pipelines/settings.html#add-test-coverage-results-using-project-settings-removed)
 is being removed.
 
-Instead, using the project’s `.gitlab-ci.yml`, provide a regular expression with the `coverage` keyword to set
+Instead, using the project's `.gitlab-ci.yml`, provide a regular expression with the `coverage` keyword to set
 testing coverage results in merge requests.
 
 </div>

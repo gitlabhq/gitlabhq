@@ -71,6 +71,10 @@ Incoming emails still raise issues, but the users who sent the emails to [Servic
 
 Triggering webhook tests via the UI results in HTTP status 500 responses.
 
+### Remote mirrors
+
+Updates on [remote mirrors](../../user/project/repository/mirror/index.md) (pushing to, and pulling from them) are suppressed.
+
 ### Integrations
 
 Executable [integrations](../../user/project/integrations/index.md) are suppressed.

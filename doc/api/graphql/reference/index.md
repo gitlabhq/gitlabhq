@@ -12126,6 +12126,19 @@ Representation of a GitLab user.
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
 | <a id="achievementuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Recipients for the achievement. |
 
+### `AddOnPurchase`
+
+Represents AddOn purchase for Namespace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="addonpurchaseassignedquantity"></a>`assignedQuantity` | [`Int!`](#int) | Number of seats assigned. |
+| <a id="addonpurchaseid"></a>`id` | [`GitlabSubscriptionsAddOnPurchaseID!`](#gitlabsubscriptionsaddonpurchaseid) | ID of AddOnPurchase. |
+| <a id="addonpurchasename"></a>`name` | [`String!`](#string) | Name of AddOn. |
+| <a id="addonpurchasepurchasedquantity"></a>`purchasedQuantity` | [`Int!`](#int) | Number of seats purchased. |
+
 ### `AgentConfiguration`
 
 Configuration details for an Agent.
@@ -15989,6 +16002,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupachievementsids"></a>`ids` | [`[AchievementsAchievementID!]`](#achievementsachievementid) | Filter achievements by IDs. |
 
+##### `Group.addOnPurchase`
+
+AddOnPurchase associated with the namespace.
+
+Returns [`AddOnPurchase`](#addonpurchase).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
+
 ##### `Group.billableMembersCount`
 
 Number of billable users in the group.
@@ -19191,6 +19216,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceachievementsids"></a>`ids` | [`[AchievementsAchievementID!]`](#achievementsachievementid) | Filter achievements by IDs. |
+
+##### `Namespace.addOnPurchase`
+
+AddOnPurchase associated with the namespace.
+
+Returns [`AddOnPurchase`](#addonpurchase).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
 
 ##### `Namespace.complianceFrameworks`
 
@@ -27543,6 +27580,12 @@ An example `GeoBaseRegistryID` is: `"gid://gitlab/Geo::BaseRegistry/1"`.
 A `GitlabErrorTrackingDetailedErrorID` is a global ID. It is encoded as a string.
 
 An example `GitlabErrorTrackingDetailedErrorID` is: `"gid://gitlab/Gitlab::ErrorTracking::DetailedError/1"`.
+
+### `GitlabSubscriptionsAddOnPurchaseID`
+
+A `GitlabSubscriptionsAddOnPurchaseID` is a global ID. It is encoded as a string.
+
+An example `GitlabSubscriptionsAddOnPurchaseID` is: `"gid://gitlab/GitlabSubscriptions::AddOnPurchase/1"`.
 
 ### `GlobalID`
 

@@ -1,0 +1,13 @@
+- title: "The pull-based deployment features of the GitLab agent for Kubernetes is deprecated"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.2"
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: nagyv-gitlab  # (required) GitLab username of the person reporting the change
+  stage: deploy
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/406545
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    We are deprecating the built-in pull-based deployment features of the GitLab agent for Kubernetes in favor of Flux and related integrations.
+
+    The GitLab agent for Kubernetes **is not deprecated**. This change affects only the pull-based functionality of the agent. All other functionality will remain intact, and GitLab will continue to support the agent for Kubernetes.
+
+    If you use the agent for pull-based deployments, you should [migrate to Flux](https://docs.gitlab.com/ee/user/clusters/agent/gitops/agent.html#migrate-to-flux). Because Flux is a mature CNCF project for GitOps, we decided to [integrate Flux with GitLab in February 2023](https://about.gitlab.com/blog/2023/02/08/why-did-we-choose-to-integrate-fluxcd-with-gitlab/).

@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using GitOps with the agent for Kubernetes **(FREE)**
+# Using GitOps with the agent for Kubernetes (deprecated) **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
@@ -12,9 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346585) to make the `id` attribute optional in GitLab 15.7.
 > - Specifying a branch, tag, or commit reference to fetch the Kubernetes manifest files [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4516) in GitLab 15.7.
 
-NOTE:
-From GitLab 15.10, you should use [Flux](../gitops.md) for GitOps. For more information, see
-[this announcement blog post](https://about.gitlab.com/blog/2023/02/08/why-did-we-choose-to-integrate-fluxcd-with-gitlab/).
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/406545) in GitLab 16.2. You should use the [Flux integration](../gitops.md) for GitOps.
 
 This diagram shows the repositories and main actors in a GitOps deployment:
 
@@ -125,7 +124,7 @@ To get the most out of your Flux integration, see the [Flux Kustomization CRD](h
 
 To update a Kubernetes cluster by using GitOps, complete the following steps.
 
-1. Ensure you have a working Kubernetes cluster, and that the manifests or [Helm charts](helm.md) are in a GitLab project.
+1. Ensure you have a working Kubernetes cluster, and that the manifests are in a GitLab project.
 1. In the same project, [register and install the GitLab agent](../install/index.md).
 1. Configure the agent configuration file so that the agent monitors the project for changes to the Kubernetes manifests.
    Use the [GitOps configuration reference](#gitops-configuration-reference) for guidance.
@@ -208,7 +207,6 @@ are checked for drift. This facilitates the use of in-cluster controllers to mod
 
 ## Related topics
 
-- [Deploying Helm charts with the GitOps workflow](helm.md)
 - [GitOps working examples for training and demos](https://gitlab.com/groups/guided-explorations/gl-k8s-agent/gitops/-/wikis/home)
 - [Self-paced classroom workshop](https://gitlab-for-eks.awsworkshop.io) (Uses AWS EKS, but you can use for other Kubernetes clusters)
 - [Managing Kubernetes secrets in a GitOps workflow](secrets_management.md)
