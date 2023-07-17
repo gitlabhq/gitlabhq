@@ -135,7 +135,7 @@ For more information about the aggregation type of each feature, see the [`commo
 
 | data_source            | time_frame | aggregation    | Description                                     |
 |------------------------|------------|----------------|-------------------------------------------------|
-| any                    | `none`     | not applicable | A type of data that’s not tracked over time, such as settings and configuration information |
+| any                    | `none`     | not applicable | A type of data that's not tracked over time, such as settings and configuration information |
 | `database`             | `all`      | not applicable | The whole time the metric has been active (all-time interval) |
 | `database`             | `7d`       | not applicable | 9 days ago to 2 days ago |
 | `database`             | `28d`      | not applicable | 30 days ago to 2 days ago |

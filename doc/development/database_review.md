@@ -151,9 +151,7 @@ Include in the MR description:
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
   <https://paste.depesz.com> and using regular quotes
-<!-- vale gitlab.NonStandardQuotes = NO -->
-  (for example, `"projects"."id"`) and avoiding smart quotes (for example, `“projects”.“id”`).
-<!-- vale gitlab.NonStandardQuotes = YES -->
+  (for example, `"projects"."id"`) and avoiding smart quotes (for example, `"projects"."id"`).
 - In case of queries generated dynamically by using parameters, there should be one raw SQL query for each variation.
 
   For example, a finder for issues that may take as a parameter an optional filter on projects,

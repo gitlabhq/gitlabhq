@@ -55,7 +55,7 @@ To add a story:
 
 ## Using GitLab REST and GraphQL APIs
 
-You can write stories for components that use either GitLab’s [REST](../../api/rest/index.md) or
+You can write stories for components that use either the GitLab [REST](../../api/rest/index.md) or
 [GraphQL](../../api/graphql/index.md) APIs.
 
 ### Set up API access token and GitLab instance URL
@@ -72,7 +72,7 @@ a starting point.
 
 1. Set the `API_ACCESS_TOKEN` variable to the access token that you created.
 
-1. Set the `GITLAB_URL` variable to the GitLab instance’s domain URL, for example: `http://gdk.test:3000`.
+1. Set the `GITLAB_URL` variable to the GitLab instance's domain URL, for example: `http://gdk.test:3000`.
 
 1. Start or restart your storybook.
 
@@ -80,7 +80,7 @@ You can also use the GitLab API Access panel in the Storybook UI to set the GitL
 
 ### Set up API access in your stories
 
-You should apply the `withGitLabAPIAccess` decorator to the stories that will consume GitLab’s APIs. This decorator
+You should apply the `withGitLabAPIAccess` decorator to the stories that will consume GitLab APIs. This decorator
 will display a badge indicating that the story won't work without providing the API access parameters:
 
 ```javascript

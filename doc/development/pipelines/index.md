@@ -214,7 +214,7 @@ graph LR
 
 ## Merge Trains
 
-### Why do we need to have a “stable” master branch to enable merge trains?
+### Why do we need to have a "stable" master branch to enable merge trains?
 
 If the master branch is unstable (i.e. CI/CD pipelines for the master branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **cancelled** and **added back to the train**, which would create a lot of delays if the merge train is long.
 

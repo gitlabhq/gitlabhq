@@ -417,7 +417,7 @@ There are a number of potential causes and solutions for this error message.
 
 #### Kerberos integration not using a dedicated port
 
-GitLab CI/CD doesn’t work with a Kerberos-enabled GitLab instance unless the Kerberos integration
+GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the Kerberos integration
 is configured to [use a dedicated port](kerberos.md#http-git-access-with-kerberos-token-passwordless-authentication).
 
 #### Lack of connectivity between client machine and Kerberos server

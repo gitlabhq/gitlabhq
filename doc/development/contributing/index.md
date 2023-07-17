@@ -71,7 +71,7 @@ To write and test your code, you will use the GitLab Development Kit.
 Now [Open a merge request](../../user/project/merge_requests/creating_merge_requests.md)
 to merge your code and its documentation. The earlier you open a merge request, the sooner
 you can get feedback. You can [mark it as a draft](../../user/project/merge_requests/drafts.md)
-to signal that you’re not done yet.
+to signal that you're not done yet.
 
 1. In the merge request, fill out all the information requested in the template,
    like why you are introducing these changes and a link to the issue this merge request is attempting to close/fix.

@@ -215,14 +215,13 @@ export default {
       </gl-form-group>
       <gl-form-group data-testid="release-notes">
         <label for="release-notes">{{ __('Release notes') }}</label>
-        <div class="bordered-box pr-3 pl-3">
+        <div class="common-note-form">
           <markdown-field
             :can-attach-file="true"
             :markdown-preview-path="markdownPreviewPath"
             :markdown-docs-path="markdownDocsPath"
             :add-spacing-classes="false"
             :textarea-value="formattedReleaseNotes"
-            class="gl-mt-3 gl-mb-3"
           >
             <template #textarea>
               <textarea
