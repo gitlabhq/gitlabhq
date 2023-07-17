@@ -124,7 +124,7 @@ different scopes:
 
 - Use the instance-level prefix to make requests in the scope of the entire instance.
 - Use the project-level prefix to make requests in a single project's scope.
-- Use the group-level prefix to make requests in a group’s scope.
+- Use the group-level prefix to make requests in a group's scope.
 
 The examples in this document all use the project-level prefix.
 

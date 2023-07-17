@@ -12,7 +12,7 @@ participating-stages: []
 
 ## Problem Summary
 
-Our overarching goal is to improve the reliability and throughput of GitLab’s
+Our overarching goal is to improve the reliability and throughput of the GitLab
 database review process. The current process requires merge request authors to
 manually provide query plans and raw SQL when introducing new queries or
 updating existing queries. This is both time consuming and error prone.

@@ -78,7 +78,7 @@ With the goals established above, we also want to establish what specific things
 - We do not aim to support ingesting Prometheus exemplars in our first iteration, though we do aim to account for them in our design from the beginning.
 
 NOTE:
-Worth noting that we intend to model exemplars the same way we’re modeling metric-labels, so building on top of the same data structure should help implementt support for metadata/exemplars rather easily.
+Worth noting that we intend to model exemplars the same way we're modeling metric-labels, so building on top of the same data structure should help implementt support for metadata/exemplars rather easily.
 
 ## Proposal
 
@@ -86,14 +86,14 @@ We intend to use GitLab Observability Backend as a framework for the Metrics imp
 
 ![Architecture](supported-deployments.png)
 
-From a development perspective, what’s been marked as our “Application Server” above needs to be developed as a part of this proposal while the remaining peripheral components either already exist or can be provisioned via existing code in `scheduler`/`tenant-operator`.
+From a development perspective, what's been marked as our "Application Server" above needs to be developed as a part of this proposal while the remaining peripheral components either already exist or can be provisioned via existing code in `scheduler`/`tenant-operator`.
 
 **On the write path**, we expect to receive incoming data via `HTTP`/`gRPC` `Ingress` similar to what we do for our existing services, for example, errortracking, tracing.
 
 NOTE:
 Additionally, since we intend to ingest data via Prometheus `remote_write` API, the received data will be Protobuf-encoded, Snappy-compressed. All received data therefore needs to be decompressed & decoded to turn it into a set of `prompb.TimeSeries` objects, which the rest of our components interact with.
 
-We also need to make sure to avoid writing a lot of small writes into Clickhouse, therefore it’d be prudent to batch data before writing it into Clickhouse.
+We also need to make sure to avoid writing a lot of small writes into Clickhouse, therefore it'd be prudent to batch data before writing it into Clickhouse.
 
 We must also make sure ingestion remains decoupled with `Storage` so as to reduce undue dependence on a given storage implementation. While we do intend to use Clickhouse as our backing storage for any foreseeable future, this ensures we do not tie ourselves in into Clickhouse too much should future business requirements warrant the usage of a different backend/technology. A good way to implement this in Go would be our implementations adhering to a standard interface, the following for example:
 
@@ -177,7 +177,7 @@ Keeping inline with our current operational structure, we intend to deploy the m
 ```sql
 CREATE TABLE IF NOT EXISTS samples ON CLUSTER '{cluster}' (
   series_id UUID,
-  timestamp DateTime64(3, ‘UTC’) CODEC(Delta(4), ZSTD),
+  timestamp DateTime64(3, 'UTC') CODEC(Delta(4), ZSTD),
   value Float64 CODEC(Gorilla, ZSTD)
 ) ENGINE = ReplicatedMergeTree()
 PARTITION BY toYYYYMMDD(timestamp)
@@ -189,7 +189,7 @@ ORDER BY (series_id, timestamp)
 ```sql
 CREATE TABLE IF NOT EXISTS samples_metadata ON CLUSTER '{cluster}' (
   series_id UUID,
-  timestamp DateTime64(3, ‘UTC’) CODEC(Delta(4), ZSTD),
+  timestamp DateTime64(3, 'UTC') CODEC(Delta(4), ZSTD),
   metadata Map(String, String) CODEC(ZSTD),
 ) ENGINE = ReplicatedMergeTree()
 PARTITION BY toYYYYMMDD(timestamp)
@@ -207,7 +207,7 @@ PRIMARY KEY (labels, series_id)
 ```
 
 ```sql
-CREATE TABLE IF NOT EXISTS group_to_series ON CLUSTER ‘{cluster}’ (
+CREATE TABLE IF NOT EXISTS group_to_series ON CLUSTER '{cluster}'' (
   group_id Uint64,
   series_id UUID,
 ) ORDER BY (group_id, series_id)
@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS group_to_series ON CLUSTER ‘{cluster}’ (
 
 - sharding considerations for a given tenant when ingesting/persisting data if we intend to co-locate data specific to multiple tenants within the same database tables. To simplify things, segregating tenant-specific data to their own dedicated set of tables would make a lot of sense.
 
-- structural considerations for “timestamps” when ingesting data across tenants.
+- structural considerations for "timestamps" when ingesting data across tenants.
 
 - creation_time vs ingestion_time
 
@@ -228,7 +228,7 @@ Slightly non-trivial but we can potentially investigate the possibility of using
 
 ### Pros - multiple tables
 
-- Normalised data structuring allows for efficient storage of data, removing any redundancy across multiple samples for a given timeseries. Evidently, for the “samples” schema, we expect to store 32 bytes of data per metric point.
+- Normalised data structuring allows for efficient storage of data, removing any redundancy across multiple samples for a given timeseries. Evidently, for the "samples" schema, we expect to store 32 bytes of data per metric point.
 
 - Better search complexity when filtering timeseries by labels/metadata, via the use of better indexed columns.
 
@@ -256,7 +256,7 @@ Therefore, we estimate to use 32 bytes per sample ingested.
 
 ### Compression - multiple tables
 
-Inspecting the amount of compression we’re able to get with the given design on our major schemas, we see it as a good starting point. Following measurements for both primary tables:
+Inspecting the amount of compression we're able to get with the given design on our major schemas, we see it as a good starting point. Following measurements for both primary tables:
 
 **Schema**: `labels_to_series` containing close to 12k unique `series_id`, each mapping to a set of 10-12 label string pairs
 
@@ -309,7 +309,7 @@ Query id: 04219cea-06ea-4c5f-9287-23cb23c023d2
 
 ### Performance - multiple tables
 
-From profiling our reference implementation, it can also be noted that most of our time right now is spent in the application writing data to Clickhouse and/or its related operations. A “top” pprof profile sampled from the implementation looked like:
+From profiling our reference implementation, it can also be noted that most of our time right now is spent in the application writing data to Clickhouse and/or its related operations. A "top" pprof profile sampled from the implementation looked like:
 
 ```shell
 (pprof) top
@@ -330,26 +330,26 @@ Showing top 10 nodes out of 58
 
 As is evident above from our preliminary analysis, writing data into Clickhouse can be a potential bottleneck. Therefore, on the write path, it'd be prudent to batch our writes into Clickhouse so as to reduce the amount of work the application server ends up doing making the ingestion path more efficient.
 
-On the read path, it’s also possible to parallelize reads for the samples table either by `series_id` OR by blocks of time between the queried start and end timestamps.
+On the read path, it's also possible to parallelize reads for the samples table either by `series_id` OR by blocks of time between the queried start and end timestamps.
 
 ### Caveats
 
 - When dropping labels from already existing metrics, we treat their new counterparts as completely new series and hence attribute them to a new `series_id`. This avoids having to merge series data and/or values. The old series, if not actively written into, should eventually fall off their retention and get deleted.
 
-- We have not yet accounted for any data aggregation. Our assumption is that the backing store (in Clickhouse) should allow us to keep a “sufficient” amount of data in its raw form and that we should be able to query against it within our query latency SLOs.
+- We have not yet accounted for any data aggregation. Our assumption is that the backing store (in Clickhouse) should allow us to keep a "sufficient" amount of data in its raw form and that we should be able to query against it within our query latency SLOs.
 
 ### **Rejected alternative**: Single, centralized table
 
 ### single, centralized data table
 
 ```sql
-CREATE TABLE IF NOT EXISTS metrics ON CLUSTER ‘{cluster}’ (
+CREATE TABLE IF NOT EXISTS metrics ON CLUSTER '{cluster}' (
   group_id UInt64,
   name LowCardinality(String) CODEC(ZSTD),
   labels Map(String, String) CODEC(ZSTD),
   metadata Map(String, String) CODEC(ZSTD),
   value Float64 CODEC (Gorilla, ZSTD),
-  timestamp DateTime64(3, ‘UTC’) CODEC(Delta(4),ZSTD)
+  timestamp DateTime64(3, 'UTC') CODEC(Delta(4),ZSTD)
 ) ENGINE = ReplicatedMergeTree()
 PARTITION BY toYYYYMMDD(timestamp)
 ORDER BY (group_id, name, timestamp);
@@ -365,7 +365,7 @@ ORDER BY (group_id, name, timestamp);
 
 - Huge redundancy built into the data structure since attributes such as name, labels, metadata are stored repeatedly for each sample collected.
 
-- Non-trivial complexity to search timeseries with values for labels/metadata given how they’re stored when backed by Maps/Arrays.
+- Non-trivial complexity to search timeseries with values for labels/metadata given how they're stored when backed by Maps/Arrays.
 
 - High query latencies by virtue of having to scan large amounts of data per query made.
 
@@ -487,7 +487,9 @@ We should only store data for a predetermined period of time, post which we eith
 
 ### Data access via SQL
 
-While our corpus of data is PromQL-queryable, it would be prudent to make sure we make the SQL interface “generally available” as well. This capability opens up multiple possibilities to query resident data and allows our users to slice and dice their datasets whichever way they prefer to and/or need to.
+While our corpus of data is PromQL-queryable, it would be prudent to make sure we make the SQL interface
+"generally available" as well. This capability opens up multiple possibilities to query resident data and
+allows our users to slice and dice their datasets whichever way they prefer to and/or need to.
 
 #### Challenges
 
@@ -573,7 +575,7 @@ To account for newer writes when maintaining this cache:
 
 - Have TTLs on the keys, jittered per key so as to rebuild them frequently enough to account for new writes.
 
-Once we know which timeseries we’re querying for, from there, we can easily look up all samples via the following query:
+Once we know which timeseries we're querying for, from there, we can easily look up all samples via the following query:
 
 ```sql
 SELECT *
@@ -593,13 +595,13 @@ yielding all timeseries samples we were interested in.
 We then render these into an array of `prometheus.QueryResult` object(s) and return back to the caller as a `prometheus.ReadResponse` object.
 
 NOTE:
-The queries have been broken down into multiple queries only during our early experimentation/iteration, it’d be prudent to use subqueries within the same roundtrip to the database going forward into production/benchmarking.
+The queries have been broken down into multiple queries only during our early experimentation/iteration, it'd be prudent to use subqueries within the same roundtrip to the database going forward into production/benchmarking.
 
 ## Production Readiness
 
 ### Batching
 
-Considering we’ll need to batch data before ingesting large volumes of small writes into Clickhouse, the design must account for app-local persistence to allow it to locally batch incoming data before landing it into Clickhouse in batches of a predetermined size in order to increase performance and allow the table engine to continue to persist data successfully.
+Considering we'll need to batch data before ingesting large volumes of small writes into Clickhouse, the design must account for app-local persistence to allow it to locally batch incoming data before landing it into Clickhouse in batches of a predetermined size in order to increase performance and allow the table engine to continue to persist data successfully.
 
 We have considered the following alternatives to implement app-local batching:
 
@@ -624,7 +626,7 @@ We propose the following three dimensions be tested while benchmarking the propo
 - On-disk storage requirements (accounting for replication if applicable)
 - Mean query response times
 
-For understanding performance, we’ll need to first compile a list of such queries given the data we ingest for our tests. Clickhouse query logging is super helpful while doing this.
+For understanding performance, we'll need to first compile a list of such queries given the data we ingest for our tests. Clickhouse query logging is super helpful while doing this.
 
 NOTE:
 Ideally, we aim to benchmark the system to be able to ingest >1M metric points/sec while consistently serving most queries under <1 sec.

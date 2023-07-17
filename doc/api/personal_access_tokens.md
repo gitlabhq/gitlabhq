@@ -235,21 +235,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   - Token with the specified ID does not exist.
 - `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
 
-### Automatic reuse detection
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395352) in GitLab 16.2
-
-For each rotated token, the previous and now revoked token is referenced. This
-chain of references defines a token family. In a token family, only the latest
-token is active, and all other tokens in that family are revoked.
-
-When a revoked token from a token family is used in an authentication attempt,
-that attempt fails and the active token from the token family gets revoked.
-This mechanism helps to prevent compromise when a personal access token is
-leaked.
-
-Automatic reuse detection is enabled for API requests.
-
 ## Revoke a personal access token
 
 Revoke a personal access token by either:

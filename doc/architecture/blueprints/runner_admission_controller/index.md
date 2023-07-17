@@ -21,7 +21,7 @@ An admission controller can be registered to the GitLab instance and receive a p
 
 To comply with the segregation of duties, organizational policy, or security requirements, customers in financial services, the US federal government market segment, or other highly regulated industries must ensure that only authorized users can use runners associated with particular CI job environments.
 
-In this context, using the term environments is not equivalent to the definition of the environment used in the GitLab CI environments and deployments documentation. Using the definition from the [SLSA guide](https://slsa.dev/spec/v0.1/terminology), an environment is the "machine, container, VM, or similar in which the job runs.”
+In this context, using the term environments is not equivalent to the definition of the environment used in the GitLab CI environments and deployments documentation. Using the definition from the [SLSA guide](https://slsa.dev/spec/v0.1/terminology), an environment is the "machine, container, VM, or similar in which the job runs."
 
 An additional requirement comes from the Remote Computing Enablement (RCE) group at [Lawrence Livermore National Laboratory](https://hpc.llnl.gov/). In this example, users must have a user ID on the target Runner CI build environment for the CI job to run. To simplify administration across the entire user base, RCE needs to be able to associate a Runner with a GitLab user entity.
 

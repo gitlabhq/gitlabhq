@@ -1,19 +1,27 @@
 .ProseMirror {
+  width: calc(100% - 4px);
   padding-top: $gl-spacing-scale-4;
-  padding-left: $gl-spacing-scale-5;
+  padding-left: calc(#{$gl-spacing-scale-5} - 2px);
   padding-right: $gl-spacing-scale-5;
+  margin: 2px;
   min-height: 140px;
   max-height: 55vh;
   position: static;
   overflow-y: auto;
   transition: box-shadow ease-in-out 0.15s;
 
+  .gl-dark & {
+    width: calc(100% - 6px);
+    margin: 2px 3px;
+    padding-left: calc(#{$gl-spacing-scale-5} - 3px);
+  }
+
   ::selection {
     background-color: transparent;
   }
 
   &:focus {
-    @include gl-focus($inset: true);
+    @include gl-focus;
   }
 
   &:not(.ProseMirror-hideselection) .content-editor-selection,

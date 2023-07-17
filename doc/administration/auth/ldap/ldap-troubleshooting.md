@@ -447,7 +447,7 @@ A displayed error can identify the problem and point to a solution. For example,
 
 ```ruby
 irb(main):018:0> group.members.map(&:errors).map(&:full_messages)
-=> [["The member's email address is not allowed for this group. Go to the group’s &#39;Settings &gt; General&#39; page, and check &#39;Restrict membership by email domain&#39;."]]
+=> [["The member's email address is not allowed for this group. Go to the group's &#39;Settings &gt; General&#39; page, and check &#39;Restrict membership by email domain&#39;."]]
 ```
 
 This error showed that an Administrator chose to [restrict group membership by email domain](../../../user/group/access_and_permissions.md#restrict-group-access-by-domain),
