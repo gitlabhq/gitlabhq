@@ -11,7 +11,7 @@ GitLab instance.
 
 General notes:
 
-- If possible, we recommend you test out the upgrade in a test environment before
+- If possible, you should test out the upgrade in a test environment before
   updating your production instance. Ideally, your test environment should mimic
   your production environment as closely as possible.
 - If [working with Support](https://about.gitlab.com/support/scheduling-upgrade-assistance/)
@@ -84,7 +84,7 @@ to roll back GitLab to a working state if there's a problem with the upgrade:
 
 ### Restore GitLab
 
-If you have a test environment that mimics your production one, we recommend testing the restoration to ensure that everything works as you expect.
+If you have a test environment that mimics your production one, you should test the restoration to ensure that everything works as you expect.
 
 To restore your GitLab backup:
 

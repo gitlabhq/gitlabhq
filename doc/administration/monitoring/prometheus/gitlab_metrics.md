@@ -471,7 +471,6 @@ Some basic Ruby runtime metrics are available:
 | `puma_pool_capacity`              | Gauge   | 12.0  | Number of requests the worker is capable of taking right now |
 | `puma_max_threads`                | Gauge   | 12.0  | Maximum number of worker threads |
 | `puma_idle_threads`               | Gauge   | 12.0  | Number of spawned threads which are not processing a request |
-| `puma_killer_terminations_total`  | Gauge   | 12.0  | Number of workers terminated by PumaWorkerKiller |
 
 ## Redis metrics
 

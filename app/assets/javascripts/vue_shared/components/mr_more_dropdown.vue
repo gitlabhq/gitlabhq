@@ -231,10 +231,12 @@ export default {
       :auto-close="false"
     >
       <template #toggle>
-        <div class="gl-min-h-7 gl-mb-2 gl-md-mb-0!" :aria-label="$options.i18n.mergeRequestActions">
+        <div class="gl-min-h-7 gl-mb-2 gl-md-mb-0!">
           <gl-button
             class="gl-md-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full"
             category="secondary"
+            :aria-label="$options.i18n.mergeRequestActions"
+            :title="$options.i18n.mergeRequestActions"
           >
             <span class="">{{ $options.i18n.mergeRequestActions }}</span>
             <gl-icon class="dropdown-chevron" name="chevron-down" />
@@ -243,6 +245,8 @@ export default {
             class="gl-display-none gl-md-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-ml-3"
             category="tertiary"
             icon="ellipsis_v"
+            :aria-label="$options.i18n.mergeRequestActions"
+            :title="$options.i18n.mergeRequestActions"
           />
         </div>
       </template>

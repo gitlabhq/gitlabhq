@@ -21,8 +21,7 @@ the [Upgrading from CE to EE](upgrading_from_ce_to_ee.md) documentation.
 
 ## Upgrading to a new major version
 
-Major versions are reserved for backwards incompatible changes. We recommend that
-you first upgrade to the latest available minor version of your current major version.
+Major versions are reserved for backwards incompatible changes. You should first upgrade to the latest available minor version of your current major version.
 Follow the [Upgrade Recommendations](../policy/maintenance.md#upgrade-recommendations)
 to identify the ideal upgrade path.
 
@@ -108,7 +107,7 @@ rm go1.19.10.linux-amd64.tar.gz
 To check you are running the minimum required Git version, see
 [Git versions](../install/installation.md#software-requirements).
 
-From GitLab 13.6, we recommend you use the
+From GitLab 13.6, you should use the
 [Git version provided by Gitaly](https://gitlab.com/gitlab-org/gitaly/-/issues/2729)
 that:
 

@@ -196,6 +196,7 @@ module QA
           project.add_name_uuid = false
           project.name = 'imported-project'
           project.github_personal_access_token = Runtime::Env.github_access_token
+          project.additional_access_tokens = Runtime::Env.github_additional_access_tokens
           project.github_repository_path = github_repo
           project.personal_namespace = user.username
           project.api_client = Runtime::API::Client.new(user: user)
