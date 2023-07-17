@@ -3,10 +3,19 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InternalEvents from '~/tracking/internal_events';
 import { GITLAB_INTERNAL_EVENT_CATEGORY, SERVICE_PING_SCHEMA } from '~/tracking/constants';
+import * as utils from '~/tracking/utils';
+import { Tracker } from '~/tracking/tracker';
 
 jest.mock('~/api', () => ({
   trackRedisHllUserEvent: jest.fn(),
 }));
+
+jest.mock('~/tracking/utils', () => ({
+  ...jest.requireActual('~/tracking/utils'),
+  getInternalEventHandlers: jest.fn(),
+}));
+
+Tracker.enabled = jest.fn();
 
 describe('InternalEvents', () => {
   describe('track_event', () => {
@@ -58,6 +67,34 @@ describe('InternalEvents', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
       expect(trackEventSpy).toHaveBeenCalledWith(event);
+    });
+  });
+
+  describe('bindInternalEventDocument', () => {
+    it('should not bind event handlers if tracker is not enabled', () => {
+      Tracker.enabled.mockReturnValue(false);
+      const result = InternalEvents.bindInternalEventDocument();
+      expect(result).toEqual([]);
+      expect(utils.getInternalEventHandlers).not.toHaveBeenCalled();
+    });
+
+    it('should not bind event handlers if already bound', () => {
+      Tracker.enabled.mockReturnValue(true);
+      document.internalEventsTrackingBound = true;
+      const result = InternalEvents.bindInternalEventDocument();
+      expect(result).toEqual([]);
+      expect(utils.getInternalEventHandlers).not.toHaveBeenCalled();
+    });
+
+    it('should bind event handlers when not bound yet', () => {
+      Tracker.enabled.mockReturnValue(true);
+      document.internalEventsTrackingBound = false;
+      const addEventListenerMock = jest.spyOn(document, 'addEventListener');
+
+      const result = InternalEvents.bindInternalEventDocument();
+
+      expect(addEventListenerMock).toHaveBeenCalledWith('click', expect.any(Function));
+      expect(result).toEqual({ name: 'click', func: expect.any(Function) });
     });
   });
 });

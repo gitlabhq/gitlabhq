@@ -77,8 +77,8 @@ You can configure the following security controls:
 
 You can configure the following security controls:
 
-- [License Scanning](../../../user/compliance/license_scanning_of_cyclonedx_files/index.md)
-  - Can be configured with `.gitlab-ci.yml`. For more details, read [License Scanning](../../../user/compliance/license_scanning_of_cyclonedx_files/index.md#enable-license-scanning).
+- [License Compliance](../../../user/compliance/license_compliance/index.md)
+  - Can be configured with `.gitlab-ci.yml`. For more details, read [License Compliance](../../../user/compliance/license_compliance/index.md#enable-license-compliance).
 
 - [Security Training](../../../user/application_security/vulnerabilities/index.md#enable-security-training-for-vulnerabilities)
   - Enable **Security training** for the current project. For more details, read [security training](../../../user/application_security/vulnerabilities/index.md#enable-security-training-for-vulnerabilities).

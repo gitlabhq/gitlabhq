@@ -163,7 +163,7 @@ The time limit to resolve all files is 30 seconds.
     pipeline run, the new pipeline uses the changed configuration.
 - You can have up to 150 includes per pipeline by default, including [nested](includes.md#use-nested-includes). Additionally:
   - In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) self-managed users can
-    change the [maximum includes](../../user/admin_area/settings/continuous_integration.md#maximum-includes) value.
+    change the [maximum includes](../../administration/settings/continuous_integration.md#maximum-includes) value.
   - In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
     In nested includes, the same file can be included multiple times, but duplicated includes
     count towards the limit.
@@ -353,7 +353,7 @@ The order of the items in `stages` defines the execution order for jobs:
 
 If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
 There must be at least one other job in a different stage. `.pre` and `.post` stages
-can be used in [required pipeline configuration](../../user/admin_area/settings/continuous_integration.md#required-pipeline-configuration)
+can be used in [required pipeline configuration](../../administration/settings/continuous_integration.md#required-pipeline-configuration)
 to define compliance jobs that must run before or after project pipeline jobs.
 
 **Keyword type**: Global keyword.
@@ -843,7 +843,7 @@ they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
   [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-  or [instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+  or [instance-wide](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
 accessible anymore.
@@ -875,7 +875,7 @@ job:
 **Additional details**:
 
 - The expiration time period begins when the artifact is uploaded and stored on GitLab.
-  If the expiry time is not defined, it defaults to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration).
+  If the expiry time is not defined, it defaults to the [instance wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration).
 - To override the expiration date and protect artifacts from being automatically deleted:
   - Select **Keep** on the job page.
   - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of

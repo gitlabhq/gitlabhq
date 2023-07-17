@@ -75,7 +75,7 @@
             = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
             %p.form-text.text-muted
               = _("The maximum file size in megabytes for individual job artifacts.")
-              = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
+              = link_to sprite_icon('question-o'), help_page_path('administration/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
 
         = f.submit _('Save changes'), pajamas_button: true
 

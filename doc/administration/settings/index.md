@@ -58,12 +58,12 @@ The **General** settings contain:
 
 The **CI/CD** settings contain:
 
-- [Continuous Integration and Deployment](../../user/admin_area/settings/continuous_integration.md) -
+- [Continuous Integration and Deployment](../../administration/settings/continuous_integration.md) -
   Auto DevOps, runners and job artifacts.
-- [Required pipeline configuration](../../user/admin_area/settings/continuous_integration.md#required-pipeline-configuration) -
+- [Required pipeline configuration](../../administration/settings/continuous_integration.md#required-pipeline-configuration) -
   Set an instance-wide auto included [pipeline configuration](../../ci/yaml/index.md).
   This pipeline configuration is run after the project's own configuration.
-- [Package Registry](../../user/admin_area/settings/continuous_integration.md#package-registry-configuration) -
+- [Package Registry](../../administration/settings/continuous_integration.md#package-registry-configuration) -
   Settings related to the use and experience of using the GitLab Package Registry. Some
   [risks are involved](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries)
   in enabling some of these settings.

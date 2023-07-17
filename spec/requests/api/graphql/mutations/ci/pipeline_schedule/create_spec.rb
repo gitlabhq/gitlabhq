@@ -70,7 +70,7 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
 
   # Move this from `shared_context` to `context` when `ci_refactoring_pipeline_schedule_create_service` is removed.
   shared_context 'when authorized' do # rubocop:disable RSpec/ContextWording
-    before do
+    before_all do
       project.add_developer(user)
     end
 

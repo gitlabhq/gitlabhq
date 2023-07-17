@@ -871,7 +871,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
           get api(endpoint, user), params: { scope: 'wiki_blobs', search: 'awesome' }
         end
 
-        it_behaves_like 'response is correct', schema: 'public_api/v4/blobs'
+        it_behaves_like 'response is correct', schema: 'public_api/v4/wiki_blobs'
 
         it_behaves_like 'ping counters', scope: :wiki_blobs
 

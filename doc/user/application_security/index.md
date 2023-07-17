@@ -124,7 +124,7 @@ To enable all GitLab Security scanning tools, with default settings, enable
 - [Auto Secret Detection](../../topics/autodevops/stages.md#auto-secret-detection)
 - [Auto DAST](../../topics/autodevops/stages.md#auto-dast)
 - [Auto Dependency Scanning](../../topics/autodevops/stages.md#auto-dependency-scanning)
-- [Auto License Scanning](../../topics/autodevops/stages.md#auto-license-scanning)
+- [Auto License Compliance](../../topics/autodevops/stages.md#auto-license-compliance)
 - [Auto Container Scanning](../../topics/autodevops/stages.md#auto-container-scanning)
 
 While you cannot directly customize Auto DevOps, you can [include the Auto DevOps template in your project's `.gitlab-ci.yml` file](../../topics/autodevops/customize.md#customize-gitlab-ciyml).
@@ -417,6 +417,7 @@ For more information about overriding security jobs, see:
 - [Overriding Container Scanning jobs](container_scanning/index.md#overriding-the-container-scanning-template).
 - [Overriding Secret Detection jobs](secret_detection/index.md#configure-scan-settings).
 - [Overriding DAST jobs](dast/proxy-based.md#customize-dast-settings).
+- [Overriding License Compliance jobs](../compliance/license_compliance/index.md#overriding-the-template).
 
 All the security scanning tools define their stage, so this error can occur with all of them.
 

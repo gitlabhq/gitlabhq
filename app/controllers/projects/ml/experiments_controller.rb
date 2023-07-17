@@ -5,7 +5,8 @@ module Projects
     class ExperimentsController < ::Projects::ApplicationController
       include Projects::Ml::ExperimentsHelper
 
-      before_action :check_feature_enabled
+      before_action :check_read, only: [:show, :index]
+      before_action :check_write, only: [:destroy]
       before_action :set_experiment, only: [:show, :destroy]
 
       feature_category :mlops
@@ -55,8 +56,12 @@ module Projects
 
       private
 
-      def check_feature_enabled
+      def check_read
         render_404 unless can?(current_user, :read_model_experiments, @project)
+      end
+
+      def check_write
+        render_404 unless can?(current_user, :write_model_experiments, @project)
       end
 
       def set_experiment

@@ -292,7 +292,8 @@ Example response:
     "id": null,
     "ref": "master",
     "startline": 5,
-    "project_id": 6
+    "project_id": 6,
+    "group_id": null
   }
 ]
 ```
@@ -682,7 +683,8 @@ Example response:
     "id": null,
     "ref": "master",
     "startline": 5,
-    "project_id": 6
+    "project_id": 6,
+    "group_id": 1
   }
 ]
 ```
@@ -1094,7 +1096,8 @@ Example response:
     "id": null,
     "ref": "master",
     "startline": 5,
-    "project_id": 6
+    "project_id": 6,
+    "group_id": 1
   }
 ]
 ```

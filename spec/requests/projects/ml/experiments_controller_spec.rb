@@ -15,13 +15,17 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   let(:ff_value) { true }
   let(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
   let(:experiment_iid) { experiment.iid }
-  let(:model_experiments_enabled) { true }
+  let(:read_model_experiments) { true }
+  let(:write_model_experiments) { true }
 
   before do
     allow(Ability).to receive(:allowed?).and_call_original
     allow(Ability).to receive(:allowed?)
                         .with(user, :read_model_experiments, project)
-                        .and_return(model_experiments_enabled)
+                        .and_return(read_model_experiments)
+    allow(Ability).to receive(:allowed?)
+                        .with(user, :write_model_experiments, project)
+                        .and_return(write_model_experiments)
 
     sign_in(user)
   end
@@ -40,9 +44,9 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     end
   end
 
-  shared_examples '404 when model experiments is unavailable' do
+  shared_examples 'requires read_model_experiments' do
     context 'when user does not have access' do
-      let(:model_experiments_enabled) { false }
+      let(:read_model_experiments) { false }
 
       it_behaves_like 'renders 404'
     end
@@ -100,7 +104,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
       end
     end
 
-    it_behaves_like '404 when model experiments is unavailable' do
+    it_behaves_like 'requires read_model_experiments' do
       before do
         list_experiments
       end
@@ -211,7 +215,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         end
 
         it_behaves_like '404 if experiment does not exist'
-        it_behaves_like '404 when model experiments is unavailable'
+        it_behaves_like 'requires read_model_experiments'
       end
     end
 
@@ -243,7 +247,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         end
 
         it_behaves_like '404 if experiment does not exist'
-        it_behaves_like '404 when model experiments is unavailable'
+        it_behaves_like 'requires read_model_experiments'
       end
     end
   end
@@ -268,7 +272,14 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     end
 
     it_behaves_like '404 if experiment does not exist'
-    it_behaves_like '404 when model experiments is unavailable'
+
+    describe 'requires write_model_experiments' do
+      let(:write_model_experiments) { false }
+
+      it 'is 404' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   private

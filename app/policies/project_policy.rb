@@ -905,6 +905,10 @@ class ProjectPolicy < BasePolicy
     enable :read_model_experiments
   end
 
+  rule { can?(:reporter_access) & model_experiments_enabled }.policy do
+    enable :write_model_experiments
+  end
+
   rule { ~admin & created_and_owned_by_banned_user }.policy do
     prevent :read_project
   end

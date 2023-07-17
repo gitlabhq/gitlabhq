@@ -249,12 +249,12 @@ concatenate them into a single file. Use either:
 
 > Introduced in GitLab 12.8.
 
-The License Compliance report collects [Licenses](../../user/compliance/license_scanning_of_cyclonedx_files/index.md). The License
+The License Compliance report collects [Licenses](../../user/compliance/license_compliance/index.md). The License
 Compliance report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [license compliance widget](../../user/compliance/license_scanning_of_cyclonedx_files/index.md).
+- The merge request [license compliance widget](../../user/compliance/license_compliance/index.md).
 - The [license list](../../user/compliance/license_list.md).
 
 ## `artifacts:reports:load_performance` **(PREMIUM)**

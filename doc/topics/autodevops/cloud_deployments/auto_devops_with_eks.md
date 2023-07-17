@@ -180,7 +180,7 @@ The jobs are separated into stages:
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
   - The `license_scanning` job searches the application's dependencies to determine each of their
     licenses and is allowed to fail
-    ([Auto License Scanning](../stages.md#auto-license-scanning))
+    ([Auto License Compliance](../stages.md#auto-license-compliance))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
   To learn more, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).

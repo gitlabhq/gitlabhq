@@ -6,6 +6,7 @@ import {
   LOAD_ACTION_ATTR_SELECTOR,
   URLS_CACHE_STORAGE_KEY,
   REFERRER_TTL,
+  INTERNAL_EVENTS_SELECTOR,
 } from './constants';
 
 export const addExperimentContext = (opts) => {
@@ -67,6 +68,23 @@ export const createEventPayload = (el, { suffix = '' } = {}) => {
     action,
     data: omitBy(data, isUndefined),
   };
+};
+
+export const createInternalEventPayload = (el) => {
+  const { eventTracking } = el?.dataset || {};
+
+  return eventTracking;
+};
+
+export const InternalEventHandler = (e, func) => {
+  const el = e.target.closest(INTERNAL_EVENTS_SELECTOR);
+
+  if (!el) {
+    return;
+  }
+  const event = createInternalEventPayload(el);
+
+  func(event);
 };
 
 export const eventHandler = (e, func, opts = {}) => {

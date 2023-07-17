@@ -88,7 +88,7 @@ On GitLab.com, [shared runners](index.md) are enabled in all projects by
 default.
 
 On self-managed instances of GitLab, an administrator can
-[enable them for all new projects](../../user/admin_area/settings/continuous_integration.md#enable-shared-runners-for-new-projects).
+[enable them for all new projects](../../administration/settings/continuous_integration.md#enable-shared-runners-for-new-projects).
 
 For existing projects, an administrator must
 [install](https://docs.gitlab.com/runner/install/index.html) and
@@ -434,7 +434,7 @@ You can edit a project runner from any of the projects it's enabled for.
 The modifications, which include unlocking and editing tags and the description,
 affect all projects that use the runner.
 
-An administrator can [enable the runner for multiple projects](../../user/admin_area/settings/continuous_integration.md#enable-a-project-runner-for-multiple-projects).
+An administrator can [enable the runner for multiple projects](../../administration/settings/continuous_integration.md#enable-a-project-runner-for-multiple-projects).
 
 ### Prevent a project runner from being enabled for other projects
 

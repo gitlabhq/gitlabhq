@@ -4,6 +4,8 @@ import {
   addExperimentContext,
   addReferrersCacheEntry,
   filterOldReferrersCacheEntries,
+  InternalEventHandler,
+  createInternalEventPayload,
 } from '~/tracking/utils';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { REFERRER_TTL, URLS_CACHE_STORAGE_KEY } from '~/tracking/constants';
@@ -93,6 +95,41 @@ describe('~/tracking/utils', () => {
         expect(cache).toHaveLength(2);
         expect(cache[0].referrer).toBe(TEST_HOST);
         expect(cache[0].timestamp).toBeDefined();
+      });
+    });
+
+    describe('createInternalEventPayload', () => {
+      it('should return event name from element', () => {
+        const mockEl = { dataset: { eventTracking: 'click' } };
+        const result = createInternalEventPayload(mockEl);
+        expect(result).toEqual('click');
+      });
+    });
+
+    describe('InternalEventHandler', () => {
+      it.each([
+        ['should call the provided function with the correct event payload', 'click', true],
+        [
+          'should not call the provided function if the closest matching element is not found',
+          null,
+          false,
+        ],
+      ])('%s', (_, payload, shouldCallFunc) => {
+        const mockFunc = jest.fn();
+        const mockEl = payload ? { dataset: { eventTracking: payload } } : null;
+        const mockEvent = {
+          target: {
+            closest: jest.fn().mockReturnValue(mockEl),
+          },
+        };
+
+        InternalEventHandler(mockEvent, mockFunc);
+
+        if (shouldCallFunc) {
+          expect(mockFunc).toHaveBeenCalledWith(payload);
+        } else {
+          expect(mockFunc).not.toHaveBeenCalled();
+        }
       });
     });
   });

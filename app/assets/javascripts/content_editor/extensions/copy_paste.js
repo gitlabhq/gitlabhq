@@ -8,6 +8,7 @@ import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';
 import { ALERT_EVENT, EXTENSION_PRIORITY_HIGHEST } from '../constants';
 import CodeBlockHighlight from './code_block_highlight';
+import CodeSuggestion from './code_suggestion';
 import Diagram from './diagram';
 import Frontmatter from './frontmatter';
 
@@ -15,7 +16,12 @@ const TEXT_FORMAT = 'text/plain';
 const GFM_FORMAT = 'text/x-gfm';
 const HTML_FORMAT = 'text/html';
 const VS_CODE_FORMAT = 'vscode-editor-data';
-const CODE_BLOCK_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name];
+const CODE_BLOCK_NODE_TYPES = [
+  CodeBlockHighlight.name,
+  CodeSuggestion.name,
+  Diagram.name,
+  Frontmatter.name,
+];
 
 function parseHTML(schema, html) {
   const parser = new DOMParser();

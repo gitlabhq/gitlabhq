@@ -134,7 +134,11 @@ gdk-qa-smoke-with-load-balancer:
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
-  allow_failure: true
+  artifacts:
+    paths:
+      - log
+    expire_in: 7 days
+    when: always
   rules:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
@@ -147,7 +151,6 @@ gdk-qa-reliable:
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-  allow_failure: true
   rules:
     - when: always
 
@@ -159,7 +162,11 @@ gdk-qa-reliable-with-load-balancer:
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-  allow_failure: true
+  artifacts:
+    paths:
+      - log
+    expire_in: 7 days
+    when: always
   rules:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
@@ -172,7 +179,6 @@ gdk-qa-non-blocking:
   variables:
     QA_SCENARIO: Test::Instance::NonBlocking
     QA_RUN_TYPE: gdk-qa-non-blocking
-  allow_failure: true
   rules:
     - when: manual
 

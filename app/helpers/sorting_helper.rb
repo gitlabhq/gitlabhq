@@ -2,6 +2,7 @@
 
 module SortingHelper
   include SortingTitlesValuesHelper
+  include ButtonHelper
 
   # rubocop: disable Metrics/AbcSize
   def sort_options_hash
@@ -167,10 +168,6 @@ module SortingHelper
     }
   end
 
-  def sortable_item(item, path, sorted_by)
-    link_to item, path, class: sorted_by == item ? 'is-active' : ''
-  end
-
   def issuable_sort_option_overrides
     {
       sort_value_oldest_created => sort_value_created_date,
@@ -275,7 +272,7 @@ module SortingHelper
   end
 
   def sort_direction_button(reverse_url, reverse_sort, sort_value)
-    link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn rspec-reverse-sort'
+    link_class = 'has-tooltip reverse-sort-btn rspec-reverse-sort'
     icon = sort_direction_icon(sort_value)
     url = reverse_url
 
@@ -284,9 +281,7 @@ module SortingHelper
       link_class += ' disabled'
     end
 
-    link_to(url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
-      sprite_icon(icon)
-    end
+    link_button_to nil, url, class: link_class, title: s_('SortOptions|Sort direction'), icon: icon
   end
 
   def issuable_sort_direction_button(sort_value)

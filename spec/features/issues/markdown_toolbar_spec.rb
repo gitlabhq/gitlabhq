@@ -35,4 +35,17 @@ RSpec.describe 'Issue markdown toolbar', :js, feature_category: :team_planning d
 
     expect(find_field('Comment').value).to eq("test\n_underline_\n")
   end
+
+  it "makes sure bold works fine after preview" do
+    fill_in 'Comment', with: "test"
+
+    click_button 'Preview'
+    click_button 'Continue editing'
+
+    page.evaluate_script('document.getElementById("note-body").setSelectionRange(0, 4)')
+
+    click_button 'Add bold text'
+
+    expect(find_field('Comment').value).to eq("**test**")
+  end
 end

@@ -603,7 +603,7 @@ Plan.default.actual_limits.update!(project_ci_variables: 10000)
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
-[maximum artifact size setting](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size)
+[maximum artifact size setting](../administration/settings/continuous_integration.md#maximum-artifacts-size)
 with the instance limit for the given artifact type, and choosing the smaller value.
 
 Limits are set in megabytes, so the smallest possible value that can be defined is `1 MB`.

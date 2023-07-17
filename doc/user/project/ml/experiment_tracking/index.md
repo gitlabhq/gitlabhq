@@ -14,6 +14,12 @@ On GitLab.com, this feature is enabled on all projects.
 NOTE:
 Model experiment tracking is an [experimental feature](../../../../policy/experiment-beta-support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
 
+ACCESS LEVEL:
+Model experiments [visibility level](../../../public_access.md) can be set to public, private or disabled. This options can
+be configured under `Settings > General > Visibility, project features, permissions > Model experiments`. Users must have
+at least [Reporter role](../../../permissions.md#roles) to modify or delete experiments
+and candidate data.
+
 When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature
 engineering to improve the performance of the model. Keeping track of all this metadata and the associated
 artifacts so that the data scientist can later replicate the experiment is not trivial. Machine learning experiment
@@ -63,10 +69,6 @@ See [MLflow client compatibility](mlflow_client.md) for more information
 on how to use GitLab as a backend for the MLflow Client.
 
 ## Explore model candidates
-
-Prerequisites:
-
-- You must have at least the Developer role to view experiment data.
 
 To list the current active experiments, either go to `https/-/ml/experiments` or:
 

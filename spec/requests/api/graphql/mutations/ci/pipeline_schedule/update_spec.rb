@@ -64,7 +64,7 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
   end
 
   context 'when authorized' do
-    before do
+    before_all do
       project.add_developer(user)
     end
 

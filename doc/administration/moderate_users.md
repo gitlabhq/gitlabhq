@@ -156,7 +156,7 @@ Personal projects, and group and user history of the deactivated user are left i
 
 NOTE:
 Users are notified about account deactivation if
-[user deactivation emails](../user/admin_area/settings/email.md#user-deactivation-emails) are enabled.
+[user deactivation emails](../administration/settings/email.md#user-deactivation-emails) are enabled.
 
 A user can be deactivated from the Admin Area. To do this:
 

@@ -178,6 +178,167 @@ For example, for a component repository located at `gitlab-org/dast` on `gitlab.
 - If a tag is named the same as a commit SHA that exists, like `e3262fdd0914fa823210cdb79a8c421e2cef79d8`,
   the commit SHA takes precedence over the tag.
 
+### Best practices
+
+#### Avoid using global keywords
+
+When using [global keywords](../yaml/index.md#global-keywords) all jobs in the
+pipeline are affected. Using these keywords in a component affects all jobs in a
+pipeline, whether they are directly defined in the main `.gitlab-ci.yml` or
+in any included components.
+
+To make the composition of pipelines more deterministic, either:
+
+- Duplicate the default configuration for each job.
+- Use [`extends`](../yaml/index.md#extends) feature within the component.
+
+```yaml
+##
+# BAD
+default:
+  image: ruby:3.0
+
+rspec:
+  script: bundle exec rspec
+```
+
+```yaml
+##
+# GOOD
+rspec:
+  image: ruby:3.0
+  script: bundle exec rspec
+```
+
+#### Replace hard-coded values with inputs
+
+A typical hard-coded value found in CI templates is `stage:` value. Such hard coded values may force the user
+of the component to know and adapt the pipeline to such implementation details.
+
+For example, if `stage: test` is hard-coded for a job in a component, the pipeline using the component must
+define the `test` stage. Additionally, if the user of the component want to customize the stage value it has
+to override the configuration:
+
+```yaml
+##
+# BAD: In order to use different stage name you need to override all the jobs
+# included by the component.
+include:
+  - component: gitlab.com/gitlab-org/ruby-test@1.0
+
+stages: [verify, deploy]
+
+unit-test:
+  stage: verify
+
+integration-test:
+  stage: verify
+```
+
+```yaml
+##
+# BAD: In order to use the component correctly you need to define the stage
+# that is hard-coded in it.
+include:
+  - component: gitlab.com/gitlab-org/ruby-test@1.0
+
+stages: [test, deploy]
+```
+
+To improve this we can use [input parameters](../yaml/includes.md#define-input-parameters-with-specinputs)
+allowing the user of a component to inject values that can be customized:
+
+```yaml
+##
+# GOOD: We don't need to know the implementation details of a component and instead we can
+# rely on the inputs.
+include:
+  - component: gitlab.com/gitlab-org/ruby-test@1.0
+    inputs:
+      stage: verify
+
+stages: [verify, deploy]
+
+##
+# inside the component YAML:
+spec:
+  inputs:
+    stage:
+      default: test
+---
+unit-test:
+  stage: $[[ inputs.stage ]]
+  script: echo unit tests
+
+integration-test:
+  stage: $[[ inputs.stage ]]
+  script: echo integration tests
+```
+
+#### Prefer inputs over variables
+
+If variables are only used for YAML evaluation (for example `rules`) and not by the Runner
+execution, it's advised to use inputs instead.
+Inputs are explicitly defined in the component's contract and they are better validated
+than variables.
+
+For example, if a required input is not passed an error is returned as soon as the component
+is being used. By contrast, if a variable is not defined, it's value is empty.
+
+```yaml
+##
+# BAD: you need to configure an environment variable for a custom value that doesn't need
+# to be used on the Runner 
+unit-test:
+  image: $MY_COMPONENT_X_IMAGE
+  script: echo unit tests
+
+integration-test:
+  image: $MY_COMPONENT_X_IMAGE
+  script: echo integration tests
+
+##
+# Usage:
+include:
+  - component: gitlab.com/gitlab-org/ruby-test@1.0
+
+variables:
+  MY_COMPONENT_X_IMAGE: ruby:3.2
+```
+
+```yaml
+##
+# GOOD: we define a customizable value and accept it as input
+spec:
+  inputs:
+    image:
+      default: ruby:3.0
+---
+unit-test:
+  image: $[[ inputs.image ]]
+  script: echo unit tests
+
+integration-test:
+  image: $[[ inputs.image ]]
+  script: echo integration tests
+
+##
+# Usage:
+include:
+  - component: gitlab.com/gitlab-org/ruby-test@1.0
+    inputs:
+      image: ruby:3.2
+```
+
+#### Use semantic versioning
+
+When tagging and releasing new versions of components we recommend using [semantic versioning](https://semver.org)
+which is the standard for communicating bugfixes, minor and major or breaking changes.
+
+We recommend adopting at least the `MAJOR.MINOR` format.
+
+For example: `2.1`, `1.0.0`, `1.0.0-alpha`, `2.1.3`, `3.0.0-rc.1`.
+
 ## CI/CD Catalog
 
 The CI/CD Catalog is a list of [components repositories](#components-repository),
@@ -201,3 +362,15 @@ To mark a project as a catalog resource:
 
 NOTE:
 This action is not reversible.
+
+## Convert a CI template to component
+
+Any existing CI template, that you share with other projects via `include:` syntax, can be converted to a CI component.
+
+1. Decide whether you want the component to be part of an existing [components repository](#components-repository), 
+   if you want to logically group components together. Create and setup a [components repository](#components-repository) otherwise.
+1. Create a YAML file in the components repository according to the expected [directory structure](#directory-structure).
+1. Copy the content of the template YAML file into the new component YAML file.
+1. Refactor the component YAML to follow the [best practices](#best-practices) for components.
+1. Leverage the `.gitlab-ci.yml` in the components repository to [test changes to the component](#test-a-component).
+1. Tag and [release the component](#release-a-component).

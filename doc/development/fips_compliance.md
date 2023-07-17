@@ -60,6 +60,7 @@ listed here that also do not work properly in FIPS mode:
 - [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
 - [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
 - [Dynamic Application Security Testing (DAST)](../user/application_security/dast/proxy-based.md) supports a reduced set of analyzers. The proxy-based analyzer is not available in FIPS mode today, however browser-based DAST, DAST API, and DAST API Fuzzing images are available.
+- [License compliance](../user/compliance/license_compliance/index.md).
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
   for yarn projects.
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)

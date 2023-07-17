@@ -2,6 +2,8 @@ import API from '~/api';
 
 import Tracking from './tracking';
 import { GITLAB_INTERNAL_EVENT_CATEGORY, SERVICE_PING_SCHEMA } from './constants';
+import { Tracker } from './tracker';
+import { InternalEventHandler } from './utils';
 
 const InternalEvents = {
   /**
@@ -32,6 +34,24 @@ const InternalEvents = {
         },
       },
     };
+  },
+  /**
+   * Attaches event handlers for data-attributes powered events.
+   *
+   * @param {HTMLElement} parent - element containing data-attributes
+   * @returns {Object} handler - object containing name of the event and its corresponding function
+   */
+  bindInternalEventDocument(parent = document) {
+    if (!Tracker.enabled() || parent.internalEventsTrackingBound) {
+      return [];
+    }
+
+    // eslint-disable-next-line no-param-reassign
+    parent.internalEventsTrackingBound = true;
+
+    const handler = { name: 'click', func: (e) => InternalEventHandler(e, this.track_event) };
+    parent.addEventListener(handler.name, handler.func);
+    return handler;
   },
 };
 

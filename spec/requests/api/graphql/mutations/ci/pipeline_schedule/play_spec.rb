@@ -37,13 +37,13 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
       expect(graphql_errors[0]['message'])
         .to eq(
           "The resource that you are attempting to access does not exist " \
-            "or you don't have permission to perform this action"
+          "or you don't have permission to perform this action"
         )
     end
   end
 
   context 'when authorized', :sidekiq_inline do
-    before do
+    before_all do
       project.add_maintainer(user)
       pipeline_schedule.update_columns(next_run_at: 2.hours.ago)
     end

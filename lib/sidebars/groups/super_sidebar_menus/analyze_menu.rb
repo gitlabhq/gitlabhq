@@ -17,6 +17,7 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           [
+            :dashboards_analytics,
             :cycle_analytics,
             :ci_cd_analytics,
             :contribution_analytics,

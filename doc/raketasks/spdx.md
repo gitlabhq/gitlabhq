@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # SPDX license list import Rake task **(ULTIMATE SELF)**
 
 GitLab provides a Rake task for uploading a fresh copy of the [SPDX license list](https://spdx.org/licenses/)
-to a GitLab instance. This list is needed for matching the names of [License approval policies](../user/compliance/license_approval_policies.md).
+to a GitLab instance. This list is needed for matching the names of [License Compliance policies](../user/compliance/license_compliance/index.md).
 
 To import a fresh copy of the PDX license list, run:
 

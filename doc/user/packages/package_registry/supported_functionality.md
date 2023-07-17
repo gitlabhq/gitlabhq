@@ -57,12 +57,12 @@ Requests for packages not found in your GitLab project are forwarded to the publ
 
 | Package type                                          | Supports request forwarding |
 |-------------------------------------------------------|-----------------------------|
-| [Maven (with `mvn`)](../maven_repository/index.md)    | [Yes (disabled by default)](../../admin_area/settings/continuous_integration.md#maven-forwarding) |
-| [Maven (with `gradle`)](../maven_repository/index.md) | [Yes (disabled by default)](../../admin_area/settings/continuous_integration.md#maven-forwarding) |
-| [Maven (with `sbt`)](../maven_repository/index.md)    | [Yes (disabled by default)](../../admin_area/settings/continuous_integration.md#maven-forwarding) |
-| [npm](../npm_registry/index.md)                       | [Yes](../../admin_area/settings/continuous_integration.md#npm-forwarding) |
+| [Maven (with `mvn`)](../maven_repository/index.md)    | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#maven-forwarding) |
+| [Maven (with `gradle`)](../maven_repository/index.md) | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#maven-forwarding) |
+| [Maven (with `sbt`)](../maven_repository/index.md)    | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#maven-forwarding) |
+| [npm](../npm_registry/index.md)                       | [Yes](../../../administration/settings/continuous_integration.md#npm-forwarding) |
 | [NuGet](../nuget_repository/index.md)                 | N                           |
-| [PyPI](../pypi_repository/index.md)                   | [Yes](../../admin_area/settings/continuous_integration.md#pypi-forwarding) |
+| [PyPI](../pypi_repository/index.md)                   | [Yes](../../../administration/settings/continuous_integration.md#pypi-forwarding) |
 | [Generic packages](../generic_packages/index.md)      | N                           |
 | [Terraform](../terraform_module_registry/index.md)    | N                           |
 | [Composer](../composer_repository/index.md)           | N                           |
@@ -86,7 +86,7 @@ To reduce the associated security risks, before deleting a package you can:
 
 - Verify the package is not being actively used.
 - Disable request forwarding:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../admin_area/settings/continuous_integration.md#package-registry-configuration) of the Admin Area.
+  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the Admin Area.
   - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
 
 ## Allow or prevent duplicates **(FREE)**

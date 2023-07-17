@@ -30,13 +30,13 @@ RSpec.describe 'PipelineScheduleDelete', feature_category: :continuous_integrati
       expect(graphql_errors[0]['message'])
         .to eq(
           "The resource that you are attempting to access does not exist " \
-            "or you don't have permission to perform this action"
+          "or you don't have permission to perform this action"
         )
     end
   end
 
   context 'when authorized' do
-    before do
+    before_all do
       project.add_maintainer(user)
     end
 
