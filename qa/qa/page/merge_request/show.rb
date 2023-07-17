@@ -368,6 +368,7 @@ module QA
         end
 
         def merge_immediately!
+          close_rich_text_promo_popover_if_present
           retry_until(reload: true, sleep_interval: 1, max_attempts: 12) do
             if has_element?(:merge_moment_dropdown)
               click_element(:merge_moment_dropdown, skip_finished_loading_check: true)

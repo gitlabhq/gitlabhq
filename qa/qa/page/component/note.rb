@@ -150,6 +150,7 @@ module QA
 
         def start_discussion(text)
           fill_element :comment_field, text
+          close_rich_text_promo_popover_if_present
           within_element(:comment_button) { click_button(class: 'gl-new-dropdown-toggle') }
           click_element :discussion_menu_item
           click_element :comment_button
