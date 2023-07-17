@@ -80,19 +80,19 @@ When you save a new policy, GitLab validates its contents against [this JSON sch
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
 the following sections and tables provide an alternative.
 
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `scan_execution_policy` | `array` of scan execution policy |  | List of scan execution policies (maximum 5) |
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `scan_execution_policy` | `array` of scan execution policy | true |  | List of scan execution policies (maximum 5) |
 
 ## Scan execution policy schema
 
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `name` | `string` |  | Name of the policy. Maximum of 255 characters.|
-| `description` (optional) | `string` |  | Description of the policy. |
-| `enabled` | `boolean` | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
-| `rules` | `array` of rules |  | List of rules that the policy applies. |
-| `actions` | `array` of actions |  | List of actions that the policy enforces. |
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
+| `description` (optional) | `string` | true |  | Description of the policy. |
+| `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
+| `rules` | `array` of rules | true |  | List of rules that the policy applies. |
+| `actions` | `array` of actions | true |  | List of actions that the policy enforces. |
 
 ## `pipeline` rule type
 
@@ -104,11 +104,11 @@ On GitLab.com, this feature is not available.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `type` | `string` | `pipeline` | The rule's type. |
-| `branches` <sup>1</sup> | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
-| `branch_type` <sup>1</sup> | `string` | `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `type` | `string` | true | `pipeline` | The rule's type. |
+| `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist |  `default`, `protected` or `all` | The types of branches the given policy applies to. |
 
 1. You must specify only one of `branches` or `branch_type`.
 
@@ -122,14 +122,14 @@ On GitLab.com, this feature is not available.
 
 This rule enforces the defined actions and schedules a scan on the provided date/time.
 
-| Field      | Type | Possible values | Description |
-|------------|------|-----------------|-------------|
-| `type`     | `string` | `schedule` | The rule's type. |
-| `branches` <sup>1</sup> | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
-| `branch_type` <sup>1</sup> | `string` | `default`, `protected` or `all` | The types of branches the given policy applies to. |
-| `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
-| `timezone` | `string` | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
-| `agents` <sup>1</sup>   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
+| Field      | Type | Required | Possible values | Description |
+|------------|------|----------|-----------------|-------------|
+| `type`     | `string` | true | `schedule` | The rule's type. |
+| `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| `cadence`  | `string` | true | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
+| `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
+| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
 
@@ -158,9 +158,9 @@ When using the `schedule` rule type in conjunction with the `branches` field, no
 
 Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).
 
-| Field        | Type                | Possible values          | Description |
-|--------------|---------------------|--------------------------|-------------|
-| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces are scanned. |
+| Field        | Type                | Required | Possible values          | Description |
+|--------------|---------------------|----------|--------------------------|-------------|
+| `namespaces` | `array` of `string` | true | The namespace that is scanned. If empty, all namespaces are scanned. |
 
 #### Policy example
 

@@ -365,3 +365,19 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
   end
 end
 ```
+
+## Best practices
+
+- Maintain [CE & EE separation and compatibility](ee_features.md#separation-of-ee-code-in-the-backend):
+  - Define the event class and publish the event in the same code where the event always occurs (CE or EE).
+    - If the event occurs as a result of a CE feature, the event class must both be defined and published in CE.
+      Likewise if the event occurs as a result of an EE feature, the event class must both be defined and published in EE.
+  - Define subscribers that depends on the event in the same code where the dependent feature exists (CE or EE).
+    - You can have an event published in CE (for example `Projects::ProjectCreatedEvent`) and a subscriber that depends
+      on this event defined in EE (for example `Security::SyncSecurityPolicyWorker`).
+- Define the event class and publish the event within the same bounded context (top-level Ruby namespace).
+  - A given bounded context should only publish events related to its own context.
+- Evaluate signal/noise ratio when subscribing to an event. How many events do you process vs ignore
+  within the subscriber? Consider using [conditional dispatch](#conditional-dispatch-of-events)
+  if you are interested in only a small subset of events. Balance between executing synchronous checks with
+  conditional dispatch or schedule potentially redundant workers.
