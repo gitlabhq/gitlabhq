@@ -473,7 +473,7 @@ export default {
             </template>
           </gl-sprintf>
         </gl-alert>
-        <div v-if="showFileDiscussions" class="gl-border-b" data-testid="file-discussions">
+        <div v-if="showFileDiscussions" data-testid="file-discussions">
           <div class="diff-file-discussions-wrapper">
             <diff-discussions
               v-if="fileDiscussions.length"

@@ -74,7 +74,7 @@ You can use slash commands to run common GitLab operations. Replace `<project>` 
 - You must authorize your Slack user on GitLab.com when you run your first slash command.
 - You can [create a shorter project alias](#create-a-project-alias-for-slash-commands) for slash commands.
 
-**For [Slack slash commands](slack_slash_commands.md) on self-managed GitLab, [Mattermost slash commands](mattermost_slash_commands.md), and [ChatOps](../../../ci/chatops/index.md)**, do not add `gitlab` at the beginning of the command.
+**For [Slack slash commands](slack_slash_commands.md) on self-managed GitLab, [Mattermost slash commands](mattermost_slash_commands.md), and [ChatOps](../../../ci/chatops/index.md)**, replace `/gitlab` with the slash command trigger name configured for your integration.
 
 The following slash commands are available:
 

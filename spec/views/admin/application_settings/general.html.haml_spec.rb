@@ -96,7 +96,10 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
 
       it 'expects display token and reset token to be available' do
         expect(rendered).to have_content(app_settings.error_tracking_access_token)
-        expect(rendered).to have_button('Reset error tracking access token')
+        expect(rendered).to have_link(
+          'Reset error tracking access token',
+          href: reset_error_tracking_access_token_admin_application_settings_url
+        )
       end
     end
 

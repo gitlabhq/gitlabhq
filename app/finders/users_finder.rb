@@ -99,13 +99,11 @@ class UsersFinder
     users.active
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_external_identity(users)
-    return users unless current_user&.can_admin_all_resources? && params[:extern_uid] && params[:provider]
+    return users unless params[:extern_uid] && params[:provider]
 
-    users.joins(:identities).merge(Identity.with_extern_uid(params[:provider], params[:extern_uid]))
+    users.by_provider_and_extern_uid(params[:provider], params[:extern_uid])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_external(users)

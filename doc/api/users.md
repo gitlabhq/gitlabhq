@@ -285,6 +285,12 @@ For example:
 GET /users?extern_uid=1234567&provider=github
 ```
 
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) have the `scim` provider available:
+
+```plaintext
+GET /users?extern_uid=1234567&provider=scim
+```
+
 You can search users by creation date time range with:
 
 ```plaintext

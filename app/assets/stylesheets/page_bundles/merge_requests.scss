@@ -1276,20 +1276,12 @@ $tabs-holder-z-index: 250;
 .diff-file-discussions-wrapper {
   @include gl-w-full;
 
-  max-width: 800px;
-
-  .diff-discussions > .notes {
-    @include gl-p-5;
-  }
-
   .diff-discussions:not(:first-child) >.notes {
     @include gl-pt-0;
   }
 
   .note-discussion {
-    @include gl-rounded-base;
-
-    border: 1px solid var(--gray-100, $gray-100) !important;
+    border-bottom: 1px solid var(--gray-100, $gray-100) !important;
   }
 
   .discussion-collapsible {

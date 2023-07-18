@@ -210,7 +210,8 @@ export default {
       return fileResolvedFromAvailableSource || null;
     },
     isMRDiffView() {
-      return this.line && !this.isOverviewTab;
+      const isFileComment = this.note.position?.position_type === 'file';
+      return !this.isOverviewTab && (this.line || isFileComment);
     },
   },
   created() {
