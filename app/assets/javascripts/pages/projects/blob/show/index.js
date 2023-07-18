@@ -11,7 +11,7 @@ import createDefaultClient from '~/lib/graphql';
 import initBlob from '~/pages/projects/init_blob';
 import ForkInfo from '~/repository/components/fork_info.vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
-import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';

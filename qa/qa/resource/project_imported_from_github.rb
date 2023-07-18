@@ -69,7 +69,7 @@ module QA
             single_endpoint_notes_import: full_notes_import,
             attachments_import: attachments_import
           }
-        }
+        }.compact
       end
 
       def transform_api_resource(api_resource)

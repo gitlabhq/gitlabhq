@@ -2,7 +2,7 @@
 import { GlButtonGroup, GlButton, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
-import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
