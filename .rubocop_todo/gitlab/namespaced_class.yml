@@ -808,6 +808,7 @@ Gitlab/NamespacedClass:
     - 'app/workers/purge_dependency_proxy_cache_worker.rb'
     - 'app/workers/reactive_caching_worker.rb'
     - 'app/workers/rebase_worker.rb'
+    - 'app/workers/redis_migration_worker.rb'
     - 'app/workers/remote_mirror_notification_worker.rb'
     - 'app/workers/remove_expired_group_links_worker.rb'
     - 'app/workers/remove_expired_members_worker.rb'

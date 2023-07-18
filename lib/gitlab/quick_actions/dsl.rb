@@ -61,7 +61,7 @@ module Gitlab
         # Example:
         #
         #   explanation do |arguments|
-        #     "Adds label(s) #{arguments.join(' ')}"
+        #     "Adds labels #{arguments.join(' ')}"
         #   end
         #   command :command_key do |arguments|
         #     # Awesome code block
@@ -76,7 +76,7 @@ module Gitlab
         # Example:
         #
         #   execution_message do |arguments|
-        #     "Added label(s) #{arguments.join(' ')}"
+        #     "Added labels #{arguments.join(' ')}"
         #   end
         #   command :command_key do |arguments|
         #     # Awesome code block

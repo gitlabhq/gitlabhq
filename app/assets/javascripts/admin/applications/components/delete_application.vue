@@ -26,7 +26,7 @@ export default {
   methods: {
     buttonEvent(e) {
       e.preventDefault();
-      this.show(e.target.dataset);
+      this.show(e.currentTarget.dataset);
     },
     show(dataset) {
       const { name, path } = dataset;

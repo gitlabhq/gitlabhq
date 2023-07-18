@@ -33,7 +33,8 @@ module Gitlab
         EXEMPT_WORKER_NAMES = %w[BackgroundMigrationWorker
                                  BackgroundMigration::CiDatabaseWorker
                                  Database::BatchedBackgroundMigrationWorker
-                                 Database::BatchedBackgroundMigration::CiDatabaseWorker].to_set
+                                 Database::BatchedBackgroundMigration::CiDatabaseWorker
+                                 RedisMigrationWorker].to_set
 
         JOB_STATUS_KEY = 'size_limiter'
 

@@ -2,27 +2,27 @@
 - add_page_specific_style 'page_bundles/profile'
 - @force_desktop_expanded_sidebar = true
 
-.row.gl-mt-3.js-search-settings-section
-  .col-lg-4
-    %h4.gl-mt-0
-      = page_title
-    %p
-      = _('SSH keys allow you to establish a secure connection between your computer and GitLab.')
-    %br
-    %h4.gl-mt-0
-      = _('SSH Fingerprints')
-    %p
-      - config_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_instance_configuration_url }
-      = html_escape(s_('SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}.')) % { config_link_start: config_link_start, config_link_end: '</a>'.html_safe }
-  .col-lg-8
-    %h5.gl-mt-0
-      = _('Add an SSH key')
-    %p
-      - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/ssh.md') }
-      = _('Add an SSH key for secure access to GitLab. %{help_link_start}Learn more.%{help_link_end}').html_safe % {help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
-    = render 'form'
-    %hr
-    %h5
-      = _('Your SSH keys (%{count})') % { count: @keys.count }
-    .gl-mb-3
-      = render 'key_table'
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
+  %p.gl-text-secondary
+    = _('SSH keys allow you to establish a secure connection between your computer and GitLab.')
+    - config_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_instance_configuration_url }
+    = html_escape(s_('SSH fingerprints verify that the client is connecting to the correct host. Check the %{config_link_start}current instance configuration%{config_link_end}.')) % { config_link_start: config_link_start, config_link_end: '</a>'.html_safe }
+
+  %h5.gl-font-lg.gl-mt-0
+    = _('Add an SSH key')
+  %p
+    - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/ssh.md') }
+    = _('Add an SSH key for secure access to GitLab. %{help_link_start}Learn more%{help_link_end}.').html_safe % {help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
+  = render 'form'
+
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = _('Your SSH keys (%{count})') % { count: @keys.count }
+  .gl-mb-3
+    = render 'key_table'

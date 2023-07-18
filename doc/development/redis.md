@@ -285,3 +285,48 @@ This is used by the
 [`RepositorySetCache`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/repository_set_cache.rb)
 to provide a convenient way to use sets to cache repository data like branch
 names.
+
+## Background migration
+
+Redis-based migrations involve using the `SCAN` command to scan the entire Redis instance for certain key patterns.
+For large Redis instances, the migration might [exceed the time limit](migration_style_guide.md#how-long-a-migration-should-take)
+for regular or post-deployment migrations. [`RedisMigrationWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/redis_migration_worker.rb)
+performs long-running Redis migrations as a background migration.
+
+To perform a background migration by creating a class:
+
+```ruby
+module Gitlab
+  module BackgroundMigration
+    module Redis
+      class BackfillCertainKey
+        def perform(keys)
+        # implement logic to clean up or backfill keys
+        end
+
+        def scan_match_pattern
+        # define the match pattern for the `SCAN` command
+        end
+
+        def redis
+        # define the exact Redis instance
+        end
+      end
+    end
+  end
+end
+```
+
+To trigger the worker through a post-deployment migration:
+
+```ruby
+class ExampleBackfill < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
+  MIGRATION='BackfillCertainKey'
+
+  def up
+    queue_redis_migration_job(MIGRATION)
+  end
+end
+```

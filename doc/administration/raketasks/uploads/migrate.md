@@ -30,24 +30,24 @@ These [individual Rake tasks](#individual-rake-tasks) are described in the next 
 
 To migrate all uploads from local storage to object storage, run:
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-gitlab-rake "gitlab:uploads:migrate:all"
-```
+  ```shell
+  gitlab-rake "gitlab:uploads:migrate:all"
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
-```
+  ```shell
+  sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
+  ```
 
 You can optionally track progress and verify that all uploads migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
-- `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
+- `sudo gitlab-rails dbconsole` for Linux package installations running GitLab 14.1 and earlier.
+- `sudo gitlab-rails dbconsole --database main` for Linux package installations running GitLab 14.2 and later.
+- `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
 
 Verify `objectstg` below (where `store=2`) has count of all artifacts:
 
@@ -92,7 +92,9 @@ the default batch size:
 
 The following shows how to run `gitlab:uploads:migrate` for individual types of uploads.
 
-**Omnibus Installation**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 # gitlab-rake gitlab:uploads:migrate[uploader_class, model_class, mount_point]
@@ -120,7 +122,7 @@ gitlab-rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
 gitlab-rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action, :image_v432x230]"
 ```
 
-**Source Installation**
+:::TabTitle Self-compiled (source)
 
 Use `RAILS_ENV=production` for every task.
 
@@ -150,6 +152,8 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeReque
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[DesignManagement::DesignV432x230Uploader, DesignManagement::Action]"
 ```
 
+::EndTabs
+
 ## Migrate to local storage
 
 If you need to disable [object storage](../../object_storage.md) for any reason, you must first
@@ -172,17 +176,17 @@ Keep in mind the task name in this case is `gitlab:uploads:migrate_to_local`.
 
 To migrate uploads from object storage to local storage, run the following Rake task:
 
-**Omnibus GitLab installation**
+- Linux package installations:
 
-```shell
-gitlab-rake "gitlab:uploads:migrate_to_local:all"
-```
+  ```shell
+  gitlab-rake "gitlab:uploads:migrate_to_local:all"
+  ```
 
-**Source installation**
+- Self-compiled installations:
 
-```shell
-sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate_to_local:all
-```
+  ```shell
+  sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate_to_local:all
+  ```
 
 After running the Rake task, you can disable object storage by undoing the changes described
 in the instructions to [configure object storage](../../uploads.md#using-object-storage).

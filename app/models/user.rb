@@ -170,8 +170,11 @@ class User < ApplicationRecord
   has_many :following_users, foreign_key: :followee_id, class_name: 'Users::UserFollowUser'
   has_many :followers, through: :following_users
 
-  # Groups
+  # Namespaces
   has_many :members
+  has_many :member_namespaces, through: :members
+
+  # Groups
   has_many :group_members, -> { where(requested_at: nil).where("access_level >= ?", Gitlab::Access::GUEST) }, class_name: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :groups_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :group_members, source: :group

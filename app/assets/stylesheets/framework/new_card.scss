@@ -29,6 +29,7 @@
   }
 
   &-title {
+    @include gl-display-flex;
     @include gl-font-base;
     @include gl-font-weight-bold;
     @include gl-relative;

@@ -125,13 +125,13 @@ export default {
       >
         <div class="table-section section-10" role="gridcell">
           <div class="table-mobile-header" role="rowheader">{{ s__('FeatureFlags|ID') }}</div>
-          <div class="table-mobile-content js-feature-flag-id">
+          <div class="table-mobile-content gl-text-left js-feature-flag-id">
             {{ featureFlagIidText(featureFlag) }}
           </div>
         </div>
         <div class="table-section section-10" role="gridcell">
           <div class="table-mobile-header" role="rowheader">{{ s__('FeatureFlags|Status') }}</div>
-          <div class="table-mobile-content">
+          <div class="table-mobile-content gl-text-left">
             <gl-toggle
               v-if="featureFlag.update_path"
               :value="featureFlag.active"
@@ -156,9 +156,11 @@ export default {
           <div class="table-mobile-header" role="rowheader">
             {{ s__('FeatureFlags|Feature flag') }}
           </div>
-          <div class="table-mobile-content d-flex flex-column js-feature-flag-title">
+          <div
+            class="table-mobile-content gl-text-left gl-display-flex flex-column js-feature-flag-title gl-mr-5"
+          >
             <div class="gl-display-flex gl-align-items-center">
-              <div class="feature-flag-name text-monospace text-truncate">
+              <div class="feature-flag-name text-monospace text-wrap gl-word-break-word">
                 {{ featureFlag.name }}
               </div>
               <div class="feature-flag-description">
@@ -178,7 +180,7 @@ export default {
             {{ s__('FeatureFlags|Environment Specs') }}
           </div>
           <div
-            class="table-mobile-content d-flex flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
+            class="table-mobile-content gl-text-left d-flex flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
           >
             <strategy-label
               v-for="strategy in featureFlag.strategies"

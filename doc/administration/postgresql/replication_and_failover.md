@@ -4,21 +4,21 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
+# PostgreSQL replication and failover for Linux package installations **(PREMIUM SELF)**
 
 If you're a Free user of GitLab self-managed, consider using a cloud-hosted solution.
 This document doesn't cover installations from source.
 
 If a setup with replication and failover isn't what you were looking for, see
 the [database configuration document](https://docs.gitlab.com/omnibus/settings/database.html)
-for the Omnibus GitLab packages.
+for the Linux packages.
 
 It's recommended to read this document fully before attempting to configure PostgreSQL with
 replication and failover for GitLab.
 
 ## Architecture
 
-The Omnibus GitLab recommended configuration for a PostgreSQL cluster with
+The Linux pacakage-recommended configuration for a PostgreSQL cluster with
 replication failover requires:
 
 - A minimum of three PostgreSQL nodes.
@@ -73,9 +73,9 @@ sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
 NOTE:
-As of GitLab 13.3, PostgreSQL 12 is shipped with Omnibus GitLab. Clustering for PostgreSQL 12 is supported only with
+As of GitLab 13.3, PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
 Patroni. See the [Patroni](#patroni) section for further details. Starting with GitLab 14.0, only PostgreSQL 12 is
-shipped with Omnibus GitLab, and thus Patroni becomes mandatory for replication and failover.
+shipped with Linux package installations, and thus Patroni becomes mandatory for replication and failover.
 
 ### Database node
 
@@ -152,7 +152,7 @@ This is why you need:
 
 When using default setup, minimum configuration requires:
 
-- `CONSUL_USERNAME`. The default user for Omnibus GitLab is `gitlab-consul`
+- `CONSUL_USERNAME`. The default user for Linux package installations is `gitlab-consul`
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of Consul username/password pair. It can be generated with:
 
@@ -192,7 +192,7 @@ server nodes on hand.
 
 You need the following password information for the application's database user:
 
-- `POSTGRESQL_USERNAME`. The default user for Omnibus GitLab is `gitlab`
+- `POSTGRESQL_USERNAME`. The default user for Linux package installations is `gitlab`
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
 - `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
   It can be generated with:
@@ -212,7 +212,7 @@ You need the following password information for the Patroni API:
 
 When using a default setup, the minimum configuration requires:
 
-- `PGBOUNCER_USERNAME`. The default user for Omnibus GitLab is `pgbouncer`
+- `PGBOUNCER_USERNAME`. The default user for Linux package installations is `pgbouncer`
 - `PGBOUNCER_PASSWORD`. This is a password for PgBouncer service.
 - `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of PgBouncer username/password pair. It can be generated with:
 
@@ -230,10 +230,9 @@ Few things to remember about the service itself:
   - `/etc/gitlab/gitlab.rb`: hashed, and in plain text
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
 
-### Installing Omnibus GitLab
+### Installing the Linux package
 
-First, make sure to [download/install](https://about.gitlab.com/install/)
-Omnibus GitLab **on each node**.
+First, make sure to [download and install](https://about.gitlab.com/install/) the Linux package **on each node**.
 
 Make sure you install the necessary dependencies from step 1,
 add GitLab package repository from step 2.
@@ -373,7 +372,7 @@ patroni['tls_key_password'] = 'private-key-password' # This is the plain-text pa
 ```
 
 If you are using a self-signed certificate or an internal CA, you need to either disable the TLS verification or pass the certificate of the
-internal CA, otherwise you may run into an unexpected error when using the `gitlab-ctl patroni ....` commands. Omnibus ensures that Patroni API
+internal CA, otherwise you may run into an unexpected error when using the `gitlab-ctl patroni ....` commands. The Linux package ensures that Patroni API
 clients honor this configuration.
 
 TLS certificate verification is enabled by default. To disable it:
@@ -845,7 +844,7 @@ configured determines the amount of tolerable data loss.
 WARNING:
 Replication is not a backup strategy! There is no replacement for a well-considered and tested backup solution.
 
-Omnibus GitLab defaults [`synchronous_commit`](https://www.postgresql.org/docs/11/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) to `on`.
+Linux package installations default [`synchronous_commit`](https://www.postgresql.org/docs/11/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) to `on`.
 
 ```ruby
 postgresql['synchronous_commit'] = 'on'
@@ -854,7 +853,7 @@ gitlab['geo-postgresql']['synchronous_commit'] = 'on'
 
 #### Customizing Patroni failover behavior
 
-Omnibus GitLab exposes several options allowing more control over the [Patroni restoration process](#recovering-the-patroni-cluster).
+Linux package installations expose several options allowing more control over the [Patroni restoration process](#recovering-the-patroni-cluster).
 
 Each option is shown below with its default value in `/etc/gitlab/gitlab.rb`.
 
@@ -996,7 +995,9 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
 
 ### Upgrading PostgreSQL major version in a Patroni cluster
 
-As of GitLab 14.1, PostgreSQL 12.6 and 13.3 are both shipped with Omnibus GitLab by default. As of GitLab 15.0, PostgreSQL 13 is the default. If you want to upgrade to PostgreSQL 13 in versions prior to GitLab 15.0, you must ask for it explicitly.
+As of GitLab 14.1, PostgreSQL 12.6 and 13.3 are both shipped with the Linux package by default. As of GitLab 15.0,
+PostgreSQL 13 is the default. If you want to upgrade to PostgreSQL 13 in versions prior to GitLab 15.0, you must ask for
+it explicitly.
 
 WARNING:
 The procedure for upgrading PostgreSQL in a Patroni cluster is different than when upgrading using repmgr.
@@ -1466,9 +1467,9 @@ Workarounds:
 - If set to enforcing, SELinux may also prevent these operations. Verify the issue is fixed by setting
   SELinux to permissive.
 
-Patroni first shipped in Omnibus GitLab 13.1, along with a build of Python 3.7.
+Patroni first shipped in the Linux package for GitLab 13.1, along with a build of Python 3.7.
 The code which causes this was removed in Python 3.8: this fix shipped in
-[Omnibus GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5547)
+[the Linux package for GitLab 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5547)
 and later, removing the need for a workaround.
 
 ### Errors running `gitlab-ctl`

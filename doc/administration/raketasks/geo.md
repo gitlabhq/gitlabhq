@@ -18,17 +18,17 @@ next repository sync in a **secondary** node:
 
 This is equivalent of running `git repack -d` on a _bare_ repository.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake geo:git:housekeeping:incremental_repack
-```
+  ```shell
+  sudo gitlab-rake geo:git:housekeeping:incremental_repack
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rake geo:git:housekeeping:incremental_repack RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H bundle exec rake geo:git:housekeeping:incremental_repack RAILS_ENV=production
+  ```
 
 ### Full Repack
 
@@ -36,48 +36,48 @@ This is equivalent of running `git repack -d -A --pack-kept-objects` on a
 _bare_ repository which optionally, writes a reachability bitmap index
 when this is enabled in GitLab.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake geo:git:housekeeping:full_repack
-```
+  ```shell
+  sudo gitlab-rake geo:git:housekeeping:full_repack
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rake geo:git:housekeeping:full_repack RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H bundle exec rake geo:git:housekeeping:full_repack RAILS_ENV=production
+  ```
 
 ### GC
 
 This is equivalent of running `git gc` on a _bare_ repository, optionally writing
 a reachability bitmap index when this is enabled in GitLab.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake geo:git:housekeeping:gc
-```
+  ```shell
+  sudo gitlab-rake geo:git:housekeeping:gc
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rake geo:git:housekeeping:gc RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H bundle exec rake geo:git:housekeeping:gc RAILS_ENV=production
+  ```
 
 ## Remove orphaned project registries
 
 Under certain conditions your project registry can contain obsolete records, you
 can remove them using the Rake task `geo:run_orphaned_project_registry_cleaner`:
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake geo:run_orphaned_project_registry_cleaner
-```
+  ```shell
+  sudo gitlab-rake geo:run_orphaned_project_registry_cleaner
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-sudo -u git -H bundle exec rake geo:run_orphaned_project_registry_cleaner RAILS_ENV=production
-```
+  ```shell
+  sudo -u git -H bundle exec rake geo:run_orphaned_project_registry_cleaner RAILS_ENV=production
+  ```

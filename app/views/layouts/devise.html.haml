@@ -60,7 +60,7 @@
                     %p
                       = _('This is a self-managed instance of GitLab.')
 
-              .col-md-6.order-1.new-session-forms-container{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
+              .col-md-6.order-1{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
                 = yield
 
         = render 'devise/shared/footer'

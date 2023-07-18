@@ -17,7 +17,7 @@ export default {
 
 <template>
   <div>
-    <gl-button v-gl-modal="$options.ADD_NAMESPACE_MODAL_ID" category="primary" variant="info">
+    <gl-button v-gl-modal="$options.ADD_NAMESPACE_MODAL_ID" category="primary" variant="confirm">
       {{ s__('JiraConnect|Link groups') }}
     </gl-button>
     <add-namespace-modal />

@@ -78,7 +78,7 @@ export const DROPDOWN_ORDER = SEARCH_RESULTS_ORDER;
 
 export const SEARCH_LABELS = s__('GlobalSearch|Search labels');
 
-export const DROPDOWN_HEADER = s__('GlobalSearch|Label(s)');
+export const DROPDOWN_HEADER = s__('GlobalSearch|Labels');
 
 export const AGGREGATIONS_ERROR_MESSAGE = s__('GlobalSearch|Fetching aggregations error.');
 

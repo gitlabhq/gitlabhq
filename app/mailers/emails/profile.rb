@@ -86,7 +86,7 @@ module Emails
       @token_names = token_names
       @target_url = profile_personal_access_tokens_url
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens have expired")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your personal access tokens have expired")))
     end
 
     def access_token_revoked_email(user, token_name, source = nil)

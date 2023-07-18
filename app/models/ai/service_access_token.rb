@@ -4,6 +4,9 @@ module Ai
   class ServiceAccessToken < ApplicationRecord
     self.table_name = 'service_access_tokens'
 
+    scope :expired, -> { where('expires_at < :now', now: Time.current) }
+    scope :for_category, ->(category) { where(category: category) }
+
     attr_encrypted :token,
       mode: :per_attribute_iv,
       key: Settings.attr_encrypted_db_key_base_32,

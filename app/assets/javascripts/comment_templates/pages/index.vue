@@ -52,10 +52,12 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-mt-0 gl-font-lg">
-      {{ __('Add new comment template') }}
-    </h5>
-    <create-form @saved="refetchSavedReplies" />
+    <div class="settings-section">
+      <h5 class="gl-mt-0 gl-font-lg">
+        {{ __('Add new comment template') }}
+      </h5>
+      <create-form @saved="refetchSavedReplies" />
+    </div>
     <list
       :loading="$apollo.queries.savedReplies.loading"
       :saved-replies="savedReplies"

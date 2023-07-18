@@ -1,11 +1,12 @@
 - page_title _('Authentication log')
 - @force_desktop_expanded_sidebar = true
 
-.row.gl-mt-3.js-search-settings-section
-  .col-lg-4
-    %h4.gl-mt-0
-      = page_title
-    %p
-      = _('This is a security log of authentication events involving your account.')
-  .col-lg-8
-    = render 'event_table', events: @events
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
+  %p.gl-text-secondary
+    = _('This is a security log of authentication events involving your account.')
+
+  = render 'event_table', events: @events

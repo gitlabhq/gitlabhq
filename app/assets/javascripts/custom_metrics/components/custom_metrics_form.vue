@@ -76,7 +76,7 @@ export default {
         @formValidation="formValidation"
       />
       <div class="form-actions">
-        <gl-button variant="success" category="primary" :disabled="!formIsValid" @click="submit">
+        <gl-button variant="confirm" category="primary" :disabled="!formIsValid" @click="submit">
           {{ saveButtonText }}
         </gl-button>
         <gl-button class="float-right" :href="editIntegrationPath">{{ __('Cancel') }}</gl-button>

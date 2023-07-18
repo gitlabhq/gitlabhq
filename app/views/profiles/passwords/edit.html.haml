@@ -2,9 +2,11 @@
 - page_title _('Password')
 - @force_desktop_expanded_sidebar = true
 
-.gl-mt-3.js-search-settings-section
-  %h4.gl-my-0
-    = page_title
+.settings-section.js-search-settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
   %p.gl-text-secondary
     - if @user.password_automatically_set
       = _('Change your password.')

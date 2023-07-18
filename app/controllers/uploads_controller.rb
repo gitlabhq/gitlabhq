@@ -29,7 +29,7 @@ class UploadsController < ApplicationController
   before_action :authorize_create_access!, only: [:create, :authorize]
   before_action :verify_workhorse_api!, only: [:authorize]
 
-  feature_category :team_planning
+  feature_category :groups_and_projects
 
   def self.model_classes
     MODEL_CLASSES

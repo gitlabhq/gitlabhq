@@ -33,7 +33,7 @@ Parameters:
 bundle exec rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"
 ```
 
-If you're running Omnibus, run the following Rake task:
+If you're running a Linux package installation, run the following Rake task:
 
 ```shell
 gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimport, /path/to/file.tar.gz]"

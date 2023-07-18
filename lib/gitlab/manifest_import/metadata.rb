@@ -20,16 +20,6 @@ module Gitlab
             multi.set(hashtag_key_for('group_id'), group_id, ex: EXPIRY_TIME)
           end
         end
-
-        # writing into older key (without hash tags) to be removed in a subsequent release
-        Gitlab::Redis::SharedState.with do |redis|
-          Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-            redis.multi do |multi|
-              multi.set(key_for('repositories'), Gitlab::Json.dump(repositories), ex: EXPIRY_TIME)
-              multi.set(key_for('group_id'), group_id, ex: EXPIRY_TIME)
-            end
-          end
-        end
       end
 
       def repositories

@@ -168,6 +168,29 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
       end
 
+      context 'when issue template is provided' do
+        let_it_be(:files) { { '.gitlab/issue_templates/Default.md' => 'Default template contents' } }
+        let_it_be_with_reload(:project) { create(:project, :custom_repo, group: group, files: files).tap { |project| project.add_guest(user) } }
+
+        context 'when description is blank' do
+          it 'sets template contents as description when description is blank' do
+            opts[:description] = ''
+
+            expect(result).to be_success
+            expect(issue).to be_persisted
+            expect(issue).to have_attributes(description: 'Default template contents')
+          end
+        end
+
+        context 'when description is not blank' do
+          it 'does not apply template when description is not blank' do
+            expect(result).to be_success
+            expect(issue).to be_persisted
+            expect(issue).to have_attributes(description: 'please fix')
+          end
+        end
+      end
+
       context 'when skip_system_notes is true' do
         let(:issue) { described_class.new(container: project, current_user: user, params: opts).execute(skip_system_notes: true) }
 

@@ -13,17 +13,17 @@ GitLab provides Rake tasks for general maintenance.
 This command gathers information about your GitLab installation and the system it runs on.
 These may be useful when asking for help or reporting issues. In a multi-node environment, run this command on nodes running GitLab Rails to avoid PostgreSQL socket errors.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:env:info
-```
+  ```shell
+  sudo gitlab-rake gitlab:env:info
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-bundle exec rake gitlab:env:info RAILS_ENV=production
-```
+  ```shell
+  bundle exec rake gitlab:env:info RAILS_ENV=production
+  ```
 
 Example output:
 
@@ -76,17 +76,17 @@ installations: a license cannot be installed into GitLab Community Edition.
 These may be useful when raising tickets with Support, or for programmatically
 checking your license parameters.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:license:info
-```
+  ```shell
+  sudo gitlab-rake gitlab:license:info
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-bundle exec rake gitlab:license:info RAILS_ENV=production
-```
+  ```shell
+  bundle exec rake gitlab:license:info RAILS_ENV=production
+  ```
 
 Example output:
 
@@ -117,24 +117,24 @@ If you're running Geo, see also the [Geo Health check Rake task](../geo/replicat
 
 You may also have a look at our troubleshooting guides for:
 
-- [GitLab](../troubleshooting/index.md)
-- [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html#troubleshooting)
+- [GitLab](../troubleshooting/index.md).
+- [Linux package installations](https://docs.gitlab.com/omnibus/index.html#troubleshooting).
 
 Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 
 To run `gitlab:check`, run:
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:check
-```
+  ```shell
+  sudo gitlab-rake gitlab:check
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-bundle exec rake gitlab:check RAILS_ENV=production
-```
+  ```shell
+  bundle exec rake gitlab:check RAILS_ENV=production
+  ```
 
 Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 
@@ -190,18 +190,18 @@ for example, if after an upgrade you receive `Permission denied (publickey)` whe
 and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs/index.md#gitlab-shelllog).
 To rebuild `authorized_keys`, run:
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:shell:setup
-```
+  ```shell
+  sudo gitlab-rake gitlab:shell:setup
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
-```
+  ```shell
+  cd /home/git/gitlab
+  sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
+  ```
 
 Example output:
 
@@ -216,18 +216,18 @@ Do you want to continue (yes/no)? yes
 If for some reason the dashboard displays the wrong information, you might want to
 clear Redis' cache. To do this, run:
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake cache:clear
-```
+  ```shell
+  sudo gitlab-rake cache:clear
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
-```
+  ```shell
+  cd /home/git/gitlab
+  sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
+  ```
 
 ## Precompile the assets
 
@@ -235,24 +235,24 @@ Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
 This Rake task only applies to source installations. [Read more](../../update/package/index.md#missing-asset-files)
-about troubleshooting this problem when running the Omnibus GitLab package.
-The guidance for Omnibus GitLab might be applicable for Kubernetes and Docker Omnibus
+about troubleshooting this problem when running the Linux package.
+The guidance for Linux package might be applicable for Kubernetes and Docker
 deployments of GitLab, though in general, container-based installations
 don't have issues with missing assets.
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
-```
+  ```shell
+  cd /home/git/gitlab
+  sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
+  ```
 
-For omnibus versions, the unoptimized assets (JavaScript, CSS) are frozen at
-the release of upstream GitLab. The omnibus version includes optimized versions
+For Linux package installations, the unoptimized assets (JavaScript, CSS) are frozen at
+the release of upstream GitLab. The Linux package installation includes optimized versions
 of those assets. Unless you are modifying the JavaScript / CSS code on your
 production machine after installing the package, there should be no reason to redo
 `rake gitlab:assets:compile` on the production machine. If you suspect that assets
-have been corrupted, you should reinstall the omnibus package.
+have been corrupted, you should reinstall the Linux package.
 
 ## Check TCP connectivity to a remote site
 
@@ -261,18 +261,18 @@ service on another machine (for example a PostgreSQL or web server)
 to troubleshoot proxy issues.
 A Rake task is included to help you with this.
 
-**Omnibus Installation**
+- Linux package installations:
 
-```shell
-sudo gitlab-rake gitlab:tcp_check[example.com,80]
-```
+  ```shell
+  sudo gitlab-rake gitlab:tcp_check[example.com,80]
+  ```
 
-**Source Installation**
+- Self-compiled installations:
 
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
-```
+  ```shell
+  cd /home/git/gitlab
+  sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
+  ```
 
 ## Clear exclusive lease (DANGER)
 

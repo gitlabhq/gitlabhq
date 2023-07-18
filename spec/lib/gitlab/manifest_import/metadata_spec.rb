@@ -13,11 +13,11 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
 
   let_it_be(:hashtag_repositories_key) { 'manifest_import:metadata:user:{1}:repositories' }
   let_it_be(:hashtag_group_id_key) { 'manifest_import:metadata:user:{1}:group_id' }
+  let_it_be(:repositories_key) { 'manifest_import:metadata:user:1:repositories' }
+  let_it_be(:group_id_key) { 'manifest_import:metadata:user:1:group_id' }
 
   describe '#save' do
     let(:status) { described_class.new(user) }
-    let_it_be(:repositories_key) { 'manifest_import:metadata:user:1:repositories' }
-    let_it_be(:group_id_key) { 'manifest_import:metadata:user:1:group_id' }
 
     subject { status.save(repositories, 2) }
 
@@ -27,8 +27,6 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
       Gitlab::Redis::SharedState.with do |redis|
         expect(redis.ttl(hashtag_repositories_key)).to be_within(5).of(described_class::EXPIRY_TIME)
         expect(redis.ttl(hashtag_group_id_key)).to be_within(5).of(described_class::EXPIRY_TIME)
-        expect(redis.ttl(repositories_key)).to be_within(5).of(described_class::EXPIRY_TIME)
-        expect(redis.ttl(group_id_key)).to be_within(5).of(described_class::EXPIRY_TIME)
       end
     end
   end
@@ -52,10 +50,8 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
     it 'reads non-hash-tagged keys if hash-tag keys are missing' do
       status = described_class.new(user)
 
-      status.save(repositories, 2)
-
       Gitlab::Redis::SharedState.with do |redis|
-        redis.unlink(hashtag_repositories_key)
+        redis.set(repositories_key, Gitlab::Json.dump(repositories))
       end
 
       expect(status.repositories).to eq(repositories)
@@ -81,13 +77,9 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
     it 'reads non-hash-tagged keys if hash-tag keys are missing' do
       status = described_class.new(user)
 
-      status.save(repositories, 2)
+      Gitlab::Redis::SharedState.with { |redis| redis.set(group_id_key, 2) }
 
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.unlink(hashtag_group_id_key)
-      end
-
-      expect(status.repositories).to eq(repositories)
+      expect(status.group_id).to eq(2)
     end
   end
 end

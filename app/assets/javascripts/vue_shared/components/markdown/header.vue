@@ -39,6 +39,7 @@ export default {
       default: null,
     },
     editorAiActions: { default: () => [] },
+    mrGeneratedContent: { default: null },
   },
   props: {
     previewMarkdown: {
@@ -208,19 +209,13 @@ export default {
     replaceTextarea(text) {
       const { description, descriptionForSha } = this.$options.i18n;
       const headSha = document.getElementById('merge_request_diff_head_sha').value;
-      const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
       const addendum = headSha
         ? sprintf(descriptionForSha, { revision: truncateSha(headSha) })
         : description;
 
-      if (textArea) {
-        textArea.value = '';
-        updateText({
-          textArea,
-          tag: `${text}\n\n---\n\n_${addendum}_`,
-          cursorOffset: 0,
-          wrap: false,
-        });
+      if (this.mrGeneratedContent) {
+        this.mrGeneratedContent.setGeneratedContent(`${text}\n\n---\n\n_${addendum}_`);
+        this.mrGeneratedContent.showWarning();
       }
     },
     switchPreview() {

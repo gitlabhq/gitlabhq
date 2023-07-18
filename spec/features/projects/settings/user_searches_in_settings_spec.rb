@@ -26,14 +26,6 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
     it_behaves_like 'can highlight results', 'third-party applications'
   end
 
-  context 'in Webhooks page' do
-    before do
-      visit project_hooks_path(project)
-    end
-
-    it_behaves_like 'can highlight results', 'Secret token'
-  end
-
   context 'in Access Tokens page' do
     before do
       visit project_settings_access_tokens_path(project)

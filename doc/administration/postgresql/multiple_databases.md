@@ -65,7 +65,7 @@ copy the database across.
 
 1. Configure GitLab to [use multiple databases](#set-up-multiple-databases).
 
-### Existing Omnibus installation
+### Existing Linux package installations
 
 1. Stop GitLab, except for PostgreSQL:
 
@@ -152,7 +152,7 @@ the other way around.
    sudo service gitlab restart
    ```
 
-### Omnibus GitLab installations
+### Linux package installations
 
 1. For existing installations,
    [migrate the data](#migrate-existing-installations) first.

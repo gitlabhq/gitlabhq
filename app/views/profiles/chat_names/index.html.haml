@@ -2,29 +2,27 @@
 - @hide_search_settings = true
 - @force_desktop_expanded_sidebar = true
 
-.row.gl-mt-5.js-search-settings-section
-  .col-lg-4
-    %h4.gl-mt-0
-      = page_title
-    %p
-      = _('You can see your chat accounts.')
+.settings-section.js-search-settings-section.gl-mt-3
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
 
-  .col-lg-8
-    %h5.gl-mt-0
-      = sprintf(_('Active chat names (%{count})'), { count: @chat_names.size })
+  %h5.gl-font-lg.gl-mt-0
+    = sprintf(_('Active chat names (%{count})'), { count: @chat_names.size })
 
-    - if @chat_names.present?
-      .table-responsive
-        %table.table
-          %thead
-            %tr
-              %th= _('Team domain')
-              %th= _('Nickname')
-              %th= _('Last used')
-              %th
-          %tbody
-            = render @chat_names
+  - if @chat_names.present?
+    .table-responsive
+      %table.table
+        %thead
+          %tr
+            %th= _('Team domain')
+            %th= _('Nickname')
+            %th= _('Last used')
+            %th
+        %tbody
+          = render @chat_names
 
-    - else
-      .settings-message.text-center
-        = _("You don't have any active chat names.")
+  - else
+    .gl-text-secondary.settings-message
+      = _("You don't have any active chat names.")

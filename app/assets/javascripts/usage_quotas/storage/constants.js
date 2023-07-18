@@ -65,13 +65,16 @@ export const PROJECT_STORAGE_TYPES = [
 ];
 
 export const projectHelpPaths = {
-  containerRegistry: helpPagePath(
-    'user/packages/container_registry/reduce_container_registry_storage',
-  ),
   usageQuotas: helpPagePath('user/usage_quotas'),
   usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
     anchor: 'namespace-storage-limit',
   }),
+  lfsObjects: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git', {
+    anchor: 'repository-cleanup',
+  }),
+  containerRegistry: helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage',
+  ),
   buildArtifacts: helpPagePath('ci/pipelines/job_artifacts', {
     anchor: 'when-job-artifacts-are-deleted',
   }),

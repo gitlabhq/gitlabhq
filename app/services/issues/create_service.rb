@@ -51,6 +51,7 @@ module Issues
 
       # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user
+      assign_description_from_template(issue)
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
         Issues::PlacementWorker.perform_async(nil, issue.project_id)
@@ -126,6 +127,35 @@ module Issues
       contacts.concat extra_params[:cc] unless extra_params[:cc].nil?
 
       set_crm_contacts(issue, contacts)
+    end
+
+    def assign_description_from_template(issue)
+      return if issue.description.present?
+
+      # Find the exact name for the default template (if the project has one).
+      # Since there are multiple possibilities regarding the capitalization(s) that the
+      # default template file name can have, getting the exact template name here will
+      # allow us to extract the contents later, and bail early if the project does not have
+      # a default template
+      templates = TemplateFinder.all_template_names(project, :issues)
+      template = templates.values.flatten.find { |tmpl| tmpl[:name].casecmp?('default') }
+
+      return unless template
+
+      begin
+        default_template = TemplateFinder.build(
+          :issues,
+          issue.project,
+          {
+            name: template[:name],
+            source_template_project_id: issue.project.id
+          }
+        ).execute
+      rescue ::Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
+        nil
+      end
+
+      issue.description = default_template.content if default_template.present?
     end
   end
 end

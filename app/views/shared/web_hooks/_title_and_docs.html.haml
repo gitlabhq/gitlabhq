@@ -1,7 +1,9 @@
 - webhooks_link_start = '<a href="%{url}">'.html_safe % { url: help_page_path(hook.help_path) }
 
-%h4.gl-my-0
-  = page_title
+.settings-sticky-header
+  .settings-sticky-header-inner
+    %h4.gl-my-0
+      = page_title
 
 - if @project
   - integrations_link_start = '<a href="%{url}">'.html_safe % { url: scoped_integrations_path(project: @project) }

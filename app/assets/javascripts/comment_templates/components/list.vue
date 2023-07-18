@@ -44,14 +44,18 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-t gl-pt-4">
+  <div class="settings-section">
     <gl-loading-icon v-if="loading" size="lg" />
     <template v-else>
-      <h5 class="gl-font-lg" data-testid="title">
-        <gl-sprintf :message="__('My comment templates (%{count})')">
-          <template #count>{{ count }}</template>
-        </gl-sprintf>
-      </h5>
+      <div class="settings-sticky-header">
+        <div class="settings-sticky-header-inner">
+          <h4 class="gl-my-0" data-testid="title">
+            <gl-sprintf :message="__('My comment templates (%{count})')">
+              <template #count>{{ count }}</template>
+            </gl-sprintf>
+          </h4>
+        </div>
+      </div>
       <ul class="gl-list-style-none gl-p-0 gl-m-0">
         <list-item v-for="template in savedReplies" :key="template.id" :template="template" />
       </ul>

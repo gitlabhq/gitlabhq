@@ -86,9 +86,13 @@
   }
 }
 
-.settings-section:first-of-type,
+.settings-section,
 .settings-section-no-bottom + .settings-section {
   @include gl-pt-0;
+}
+
+.settings-section ~ .settings-section {
+  @include gl-pt-6;
 }
 
 .settings-section:not(.settings-section-no-bottom) + .settings-section {

@@ -1,24 +1,30 @@
 - file_hooks = Gitlab::FileHook.files
 
-.gl-mt-7
-  %h4.gl-my-0
-    = _('File Hooks')
+.settings-section
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = _('File Hooks')
   %p.gl-text-secondary
     = _('File hooks are similar to system hooks but are executed as files instead of sending data to a URL.')
     = link_to _('For more information, see the File Hooks documentation.'), help_page_path('administration/file_hooks')
 
   .gl-mb-3
-    - if file_hooks.any?
-      = render Pajamas::CardComponent.new do |c|
-        - c.with_header do
-          = _('File Hooks (%{count})') % { count: file_hooks.count }
-        - c.with_body do
-          %ul.content-list
-            - file_hooks.each do |file|
-              %li
-                .monospace
-                  = File.basename(file)
-    - else
-      = render Pajamas::CardComponent.new do |c|
-        - c.with_body do
-          .nothing-here-block= _('No file hooks found.')
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header'}, body_options: { class: 'gl-new-card-body'}) do |c|
+      - c.with_header do
+        .gl-new-card-title-wrapper
+          %h3.gl-new-card-title
+            = _('File Hooks')
+            %span.gl-new-card-count
+              = sprite_icon('hook', css_class: 'gl-mr-2')
+              #{file_hooks.count}
+      - c.with_body do
+        .gl-new-card-content
+          - if file_hooks.any?
+            %ul.content-list{ class: 'gl-my-n3!' }
+              - file_hooks.each do |file|
+                %li.label-list-item
+                  .monospace
+                    = File.basename(file)
+          - else
+            .gl-new-card-empty.gl-text-center= _('No file hooks found.')

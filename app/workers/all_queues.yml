@@ -3486,6 +3486,15 @@
   :weight: 2
   :idempotent: false
   :tags: []
+- :name: redis_migration
+  :worker_name: RedisMigrationWorker
+  :feature_category: :redis
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: releases_create_evidence
   :worker_name: Releases::CreateEvidenceWorker
   :feature_category: :release_evidence
