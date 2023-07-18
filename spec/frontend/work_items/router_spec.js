@@ -53,6 +53,7 @@ describe('Work items router', () => {
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
         WorkItemNotes: true,
+        WorkItemAwardEmoji: true,
       },
     });
   };

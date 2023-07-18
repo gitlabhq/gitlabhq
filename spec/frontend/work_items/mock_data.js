@@ -68,6 +68,38 @@ export const mockAwardEmojiThumbsDown = {
 
 export const mockAwardsWidget = {
   nodes: [mockAwardEmojiThumbsUp, mockAwardEmojiThumbsDown],
+  pageInfo: {
+    hasNextPage: false,
+    hasPreviousPage: false,
+    startCursor: null,
+    endCursor: null,
+    __typename: 'PageInfo',
+  },
+  __typename: 'AwardEmojiConnection',
+};
+
+export const mockMoreThanDefaultAwardEmojisWidget = {
+  nodes: [
+    mockAwardEmojiThumbsUp,
+    mockAwardEmojiThumbsDown,
+    { ...mockAwardEmojiThumbsUp, name: 'one' },
+    { ...mockAwardEmojiThumbsUp, name: 'two' },
+    { ...mockAwardEmojiThumbsUp, name: 'three' },
+    { ...mockAwardEmojiThumbsUp, name: 'four' },
+    { ...mockAwardEmojiThumbsUp, name: 'five' },
+    { ...mockAwardEmojiThumbsUp, name: 'six' },
+    { ...mockAwardEmojiThumbsUp, name: 'seven' },
+    { ...mockAwardEmojiThumbsUp, name: 'eight' },
+    { ...mockAwardEmojiThumbsUp, name: 'nine' },
+    { ...mockAwardEmojiThumbsUp, name: 'ten' },
+  ],
+  pageInfo: {
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: null,
+    endCursor: 'endCursor',
+    __typename: 'PageInfo',
+  },
   __typename: 'AwardEmojiConnection',
 };
 

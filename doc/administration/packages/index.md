@@ -55,7 +55,7 @@ guides you through the process.
 
 When downloading packages as dependencies in downstream projects, many requests are made through the
 Packages API. You may therefore reach enforced user and IP rate limits. To address this issue, you
-can define specific rate limits for the Packages API. For more details, see [Package Registry Rate Limits](../../user/admin_area/settings/package_registry_rate_limits.md).
+can define specific rate limits for the Packages API. For more details, see [Package Registry Rate Limits](../settings/package_registry_rate_limits.md).
 
 ## Enable or disable the Package Registry
 

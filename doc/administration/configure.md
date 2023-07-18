@@ -35,7 +35,7 @@ Customize and configure your self-managed GitLab installation.
 - [Agent server for Kubernetes](../administration/clusters/kas.md)
 - [Server hooks](../administration/server_hooks.md)
 - [Terraform state](../administration/terraform_state.md)
-- [Terraform limits](../user/admin_area/settings/terraform_limits.md)
+- [Terraform limits](settings/terraform_limits.md)
 - [Packages](../administration/packages/index.md)
 - [Web terminals](../administration/integration/terminal.md)
 - [Wikis](../administration/wikis/index.md)

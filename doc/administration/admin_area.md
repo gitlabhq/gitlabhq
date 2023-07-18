@@ -196,7 +196,7 @@ You must be an administrator to manually add emails to users:
 
 ## User cohorts
 
-The [Cohorts](../user/admin_area/user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
+The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
 
 ## Prevent a user from creating groups
 

@@ -173,9 +173,9 @@ documentation URL requests as needed. For example, if your GitLab version is
 14.5:
 
 - The GitLab documentation URL becomes `http://0.0.0.0:4000/14.5/`.
-- The link in GitLab displays as `<instance_url>/help/user/admin_area/settings/help_page#destination-requirements`.
+- The link in GitLab displays as `<instance_url>/help/administration/settings/help_page#destination-requirements`.
 - When you select the link, you are redirected to
-`http://0.0.0.0:4000/14.5/ee/user/admin_area/settings/help_page/#destination-requirements`.
+`http://0.0.0.0:4000/14.5/ee/administration/settings/help_page/#destination-requirements`.
 
 To test the setting, in GitLab, select a **Learn more** link. For example:
 

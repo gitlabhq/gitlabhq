@@ -2279,7 +2279,13 @@ msgstr ""
 msgid "AbuseReport|Confirmed violation of a copyright or a trademark"
 msgstr ""
 
+msgid "AbuseReport|Copyright or trademark violation"
+msgstr ""
+
 msgid "AbuseReport|Credit card"
+msgstr ""
+
+msgid "AbuseReport|Crypto Mining"
 msgstr ""
 
 msgid "AbuseReport|Delete user"
@@ -2309,6 +2315,9 @@ msgstr ""
 msgid "AbuseReport|Last login"
 msgstr ""
 
+msgid "AbuseReport|Malware"
+msgstr ""
+
 msgid "AbuseReport|Member since"
 msgstr ""
 
@@ -2319,6 +2328,18 @@ msgid "AbuseReport|No user found"
 msgstr ""
 
 msgid "AbuseReport|Normal location"
+msgstr ""
+
+msgid "AbuseReport|Offensive or Abusive"
+msgstr ""
+
+msgid "AbuseReport|Other"
+msgstr ""
+
+msgid "AbuseReport|Personal information or credentials"
+msgstr ""
+
+msgid "AbuseReport|Phishing"
 msgstr ""
 
 msgid "AbuseReport|Phone"
@@ -2358,6 +2379,9 @@ msgid "AbuseReport|Snippets"
 msgstr ""
 
 msgid "AbuseReport|Something else"
+msgstr ""
+
+msgid "AbuseReport|Spam"
 msgstr ""
 
 msgid "AbuseReport|Tier"
@@ -6371,9 +6395,6 @@ msgstr ""
 msgid "Assign labels"
 msgstr ""
 
-msgid "Assign myself"
-msgstr ""
-
 msgid "Assign reviewer"
 msgstr ""
 
@@ -6393,6 +6414,9 @@ msgid "Assign to commenting user"
 msgstr ""
 
 msgid "Assign to me"
+msgstr ""
+
+msgid "Assign yourself"
 msgstr ""
 
 msgid "Assigned"
@@ -9243,9 +9267,6 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
-msgid "Changes are shown as if the %{b_open}source%{b_close} revision was being merged into the %{b_open}target%{b_close} revision."
-msgstr ""
-
 msgid "Changes saved."
 msgstr ""
 
@@ -11536,9 +11557,6 @@ msgstr ""
 msgid "Compare %{oldCommitId}...%{newCommitId}"
 msgstr ""
 
-msgid "Compare Git revisions"
-msgstr ""
-
 msgid "Compare GitLab editions"
 msgstr ""
 
@@ -11566,10 +11584,7 @@ msgstr ""
 msgid "Compare with previous version"
 msgstr ""
 
-msgid "CompareBranches|%{source_branch} and %{target_branch} are the same."
-msgstr ""
-
-msgid "CompareBranches|There isn't anything to compare."
+msgid "CompareRevisions|%{source_branch} and %{target_branch} are the same."
 msgstr ""
 
 msgid "CompareRevisions|Branches"
@@ -11618,6 +11633,9 @@ msgid "CompareRevisions|Swap revisions"
 msgstr ""
 
 msgid "CompareRevisions|Tags"
+msgstr ""
+
+msgid "CompareRevisions|There isn't anything to compare."
 msgstr ""
 
 msgid "CompareRevisions|There was an error while loading the branch/tag list. Please try again."
@@ -48118,9 +48136,6 @@ msgstr ""
 msgid "To see this project's operational details, contact an owner of group %{groupName} to upgrade the plan. You can also remove the project from the dashboard."
 msgstr ""
 
-msgid "To see what's changed or create a merge request, choose a branch or tag (like %{branch}), or enter a commit (like %{sha})."
-msgstr ""
-
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
 msgstr ""
 
@@ -52295,6 +52310,9 @@ msgid "WorkItem|Something went wrong while copying the %{workItemType} reference
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching milestones. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while fetching work item award emojis. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while promoting the %{workItemType}. Please try again."

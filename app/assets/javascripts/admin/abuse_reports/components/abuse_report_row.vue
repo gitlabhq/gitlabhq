@@ -5,12 +5,14 @@ import { queryToObject } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { SORT_UPDATED_AT } from '../constants';
+import AbuseCategory from './abuse_category.vue';
 
 export default {
   name: 'AbuseReportRow',
   components: {
     GlLink,
     ListItem,
+    AbuseCategory,
   },
   props: {
     report: {
@@ -44,13 +46,24 @@ export default {
 <template>
   <list-item data-testid="abuse-report-row">
     <template #left-primary>
-      <gl-link :href="report.reportPath" class="gl-font-weight-normal gl-mb-2" data-testid="title">
+      <gl-link
+        :href="report.reportPath"
+        class="gl-font-weight-normal gl-pt-4 gl-text-gray-900"
+        data-testid="abuse-report-title"
+      >
         {{ title }}
       </gl-link>
     </template>
+    <template #left-secondary>
+      <abuse-category
+        :category="report.category"
+        class="gl-mt-2 gl-mb-3"
+        data-testid="abuse-report-category"
+      />
+    </template>
 
     <template #right-secondary>
-      <div data-testid="abuse-report-date">{{ displayDate }}</div>
+      <div class="gl-mt-7" data-testid="abuse-report-date">{{ displayDate }}</div>
     </template>
   </list-item>
 </template>

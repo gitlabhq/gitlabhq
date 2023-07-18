@@ -21,7 +21,7 @@ Read more about [configuring rate limits](../security/rate_limits.md).
 
 This setting limits the request rate to the issue creation endpoint.
 
-Read more about [issue creation rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md).
+Read more about [issue creation rate limits](settings/rate_limit_on_issues_creation.md).
 
 - **Default rate limit**: Disabled by default.
 
@@ -29,7 +29,7 @@ Read more about [issue creation rate limits](../user/admin_area/settings/rate_li
 
 This setting limits the request rate per user or IP.
 
-Read more about [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md).
+Read more about [User and IP rate limits](settings/user_and_ip_rate_limits.md).
 
 - **Default rate limit**: Disabled by default.
 
@@ -37,7 +37,7 @@ Read more about [User and IP rate limits](../user/admin_area/settings/user_and_i
 
 This setting limits the request rate per endpoint.
 
-Read more about [raw endpoint rate limits](../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
+Read more about [raw endpoint rate limits](settings/rate_limits_on_raw_endpoints.md).
 
 - **Default rate limit**: 300 requests per project, per commit and per file path.
 
@@ -59,14 +59,14 @@ GitLab rate limits the following paths by default:
 '/admin/session'
 ```
 
-Read more about [protected path rate limits](../user/admin_area/settings/protected_paths.md).
+Read more about [protected path rate limits](settings/protected_paths.md).
 
 - **Default rate limit**: After 10 requests, the client must wait 60 seconds before trying again.
 
 ### Package Registry
 
 This setting limits the request rate on the Packages API per user or IP. For more information, see
-[Package Registry Rate Limits](../user/admin_area/settings/package_registry_rate_limits.md).
+[Package Registry Rate Limits](settings/package_registry_rate_limits.md).
 
 - **Default rate limit**: Disabled by default.
 
@@ -86,7 +86,7 @@ requests per user. For more information, read
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75918) in GitLab 14.6. [Feature flag `files_api_throttling`](https://gitlab.com/gitlab-org/gitlab/-/issues/338903) removed.
 
 This setting limits the request rate on the Packages API per user or IP address. For more information, read
-[Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md).
+[Files API rate limits](settings/files_api_rate_limits.md).
 
 - **Default rate limit**: Disabled by default.
 
@@ -95,7 +95,7 @@ This setting limits the request rate on the Packages API per user or IP address.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
 
 This setting limits the request rate on deprecated API endpoints per user or IP address. For more information, read
-[Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md).
+[Deprecated API rate limits](settings/deprecated_api_rate_limits.md).
 
 - **Default rate limit**: Disabled by default.
 
@@ -112,7 +112,7 @@ This setting limits the import/export actions for groups and projects.
 | Group Export            | 6                             |
 | Group Export Download   | 1                             |
 
-Read more about [import/export rate limits](../user/admin_area/settings/import_export_rate_limits.md).
+Read more about [import/export rate limits](settings/import_export_rate_limits.md).
 
 ### Member Invitations
 
@@ -171,7 +171,7 @@ This endpoint has been requested too many times. Try again later.
 
 This setting limits the request rate to the pipeline creation endpoints.
 
-Read more about [pipeline creation rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md).
+Read more about [pipeline creation rate limits](settings/rate_limit_on_pipelines_creation.md).
 
 ## Gitaly concurrency limit
 
@@ -800,7 +800,7 @@ Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 
 This setting limits the number of inbound alert payloads over a period of time.
 
-Read more about [incident management rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md).
+Read more about [incident management rate limits](settings/rate_limit_on_pipelines_creation.md).
 
 ### Prometheus Alert JSON payloads
 
@@ -945,7 +945,7 @@ More information can be found in these documentations:
 Total number of changes (branches or tags) in a single push to determine whether
 individual push events or a bulk push event are created.
 
-More information can be found in the [Push event activities limit and bulk push events documentation](../user/admin_area/settings/push_event_activities_limit.md).
+More information can be found in the [Push event activities limit and bulk push events documentation](settings/push_event_activities_limit.md).
 
 ## Package Registry Limits
 

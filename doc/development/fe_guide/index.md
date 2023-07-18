@@ -77,7 +77,11 @@ Now that our values have been defined, we can base our goals on these values and
 - Improve our pipelines speed
 - Build a better set of shared components with documentation
 
-## Browser Support
+### Frontend onboarding course
+
+The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.  
+
+### Browser Support
 
 For supported browsers, see our [requirements](../../install/requirements.md#supported-web-browsers).
 

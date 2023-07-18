@@ -18,10 +18,8 @@
       %p
         = s_('SlackIntegration|You must do this step only once.')
       %p
-        = link_to slack_app_manifest_share_admin_application_settings_path, class: 'btn btn-default gl-button' do
-          = image_tag 'illustrations/slack_logo.svg', class: 'gl-w-9! gl-h-9! gl-my-n4! gl-ml-n4 gl-mr-n2!'
-          %strong.gl-button-text
-            = s_("SlackIntegration|Create Slack app")
+        = render Pajamas::ButtonComponent.new(href: slack_app_manifest_share_admin_application_settings_path) do
+          = s_("SlackIntegration|Create Slack app")
       %hr
     %h5
       = s_('SlackIntegration|Step 2: Configure the app settings')

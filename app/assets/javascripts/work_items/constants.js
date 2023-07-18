@@ -79,6 +79,10 @@ export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
   'WorkItem|Something went wrong when fetching iterations. Please try again.',
 );
 
+export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
+  'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
+);
+
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
@@ -192,6 +196,7 @@ export const FORM_TYPES = {
 
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
 export const DEFAULT_PAGE_SIZE_NOTES = 30;
+export const DEFAULT_PAGE_SIZE_EMOJIS = 100;
 
 export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';
 

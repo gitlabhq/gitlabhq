@@ -125,6 +125,29 @@ The `cube_analytics` data type connects to the Cube instance defined when [produ
 All filters and queries are sent to the Cube instance and the returned data is processed by the
 product analytics data source to be rendered by the appropriate visualizations.
 
+### Filling missing data
+
+- Introduced in GitLab 16.3 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.
+
+When [exporting data](#raw-data-export) or [viewing dashboards](../analytics/analytics_dashboards.md#view-project-dashboards),
+if there is no data for a given day, the missing data is autofilled with `0`.
+
+This approach has the following benefits:
+
+- The visualization's day axis matches the selected date range, removing ambiguity about missing data.
+- Data exports have rows for the entire date range, making data analysis easier.
+
+However, this approach also has the following limitations:
+
+- The `day` [granularity](https://cube.dev/docs/product/apis-integrations/rest-api/query-format) must be used.
+  All other granularities are not supported at this time.
+- It only fills a date range defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter.
+  - The date selector in the UI already uses this filter.
+- The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
+  returns 20 data points, with the missing data filled by `0`.
+
+[Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
+
 ## Funnel analysis
 
 Use funnel analysis to understand the flow of users through your application, and where

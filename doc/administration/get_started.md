@@ -85,7 +85,7 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 - Set up [email notification for unknown sign-ins](settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins).
 - Configure [user and IP rate limits](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
 - Limit [webhooks local access](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#webhooks).
-- Set [rate limits for protected paths](../user/admin_area/settings/protected_paths.md).
+- Set [rate limits for protected paths](settings/protected_paths.md).
 - Sign up for [Security Alerts](https://about.gitlab.com/company/preference-center/) from the Communication Preference Center.
 - Keep track of security best practices on our [blog page](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/).
 
@@ -236,10 +236,10 @@ Rate limits also improve the security of your application.
 
 You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
 
-- Define [issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
-- Enforce [user and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md) for unauthenticated web requests.
-- Review the [rate limit on raw endpoints](../user/admin_area/settings/rate_limits_on_raw_endpoints.md). The default setting is 300 requests per minute for raw file access.
-- Review the [import/export rate limits](../user/admin_area/settings/import_export_rate_limits.md) of the six active defaults.
+- Define [issues rate limits](settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
+- Enforce [user and IP rate limits](settings/user_and_ip_rate_limits.md) for unauthenticated web requests.
+- Review the [rate limit on raw endpoints](settings/rate_limits_on_raw_endpoints.md). The default setting is 300 requests per minute for raw file access.
+- Review the [import/export rate limits](settings/import_export_rate_limits.md) of the six active defaults.
 
 For more information about API and rate limits, see our [API page](../api/rest/index.md).
 

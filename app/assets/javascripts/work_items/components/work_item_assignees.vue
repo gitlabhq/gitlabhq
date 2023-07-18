@@ -340,7 +340,7 @@ export default {
             class="assign-myself"
             data-testid="assign-self"
             @click.stop="assignToCurrentUser"
-            >{{ __('Assign myself') }}</gl-button
+            >{{ __('Assign yourself') }}</gl-button
           >
         </div>
       </template>

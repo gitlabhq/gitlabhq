@@ -754,8 +754,8 @@ This file is located at:
 
 This log records:
 
-- Requests over the [Rate Limit](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
-- [Protected paths](../../user/admin_area/settings/protected_paths.md) abusive requests.
+- Requests over the [Rate Limit](../settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
+- [Protected paths](../settings/protected_paths.md) abusive requests.
 - In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and later,
   user ID and username, if available.
 
