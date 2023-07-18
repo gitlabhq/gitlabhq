@@ -310,7 +310,7 @@ For a web developer writing a webpage for your company's website:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available per user, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
+To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
 On GitLab.com, this feature is enabled for GitLab team members only.
 
 To understand the history of a merge request, filter its activity feed to show you

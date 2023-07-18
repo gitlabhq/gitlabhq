@@ -18,7 +18,7 @@ For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitl
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flags](../administration/feature_flags.md) named `work_items`.
+an administrator can [disable the feature flags](../administration/feature_flags.md) named `work_items`.
 On GitLab.com, this feature is available.
 
 Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.
@@ -294,7 +294,7 @@ To set issue weight of a task:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
 On GitLab.com, this feature is available.
 
 You can add a task to an [iteration](group/iterations/index.md).

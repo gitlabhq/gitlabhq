@@ -337,7 +337,7 @@ and update steps for closing and reopening issues, incidents, and epics -->
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125173) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `move_close_into_dropdown`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `move_close_into_dropdown`.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `move_close_into_dropdown`.
 On GitLab.com, this feature is not available.
 
 When this feature flag is enabled, in the upper-right corner,
@@ -473,7 +473,7 @@ To filter the list of issues:
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
 On GitLab.com, this feature is available.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)

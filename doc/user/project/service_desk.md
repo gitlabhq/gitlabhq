@@ -865,7 +865,7 @@ HTML emails show HTML formatting, such as:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`.
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`.
 On GitLab.com, this feature is available.
 
 If a comment contains any attachments and their total size is less than or equal to 10 MB, these

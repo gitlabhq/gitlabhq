@@ -224,7 +224,7 @@ To render an OpenAPI file:
 FLAG:
 On self-managed GitLab, by default GitLab uses the `du -sk` command to determine the size of a repository. GitLab can use either
 `git-rev-list` (enabled with feature flag `gitaly_revlist_for_repo_size`) or `git-cat-file` (enabled with feature flag
-`gitaly_catfile_repo_size`) instead. To switch between different calculation methods, ask an administrator to
+`gitaly_catfile_repo_size`) instead. To switch between different calculation methods, an administrator can
 [enable or disable](../../../administration/feature_flags.md) these feature flags.
 
 The **Project overview** page shows the size of all files in the repository. The size is

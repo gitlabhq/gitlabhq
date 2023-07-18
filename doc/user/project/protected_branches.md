@@ -116,7 +116,7 @@ The protected branch displays in the list of protected branches.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
-To make it available, ask an administrator to
+To make it available, an administrator can
 [enable the feature flag](../../administration/feature_flags.md)
 named `group_protected_branches`. On GitLab.com, this feature is not available.
 

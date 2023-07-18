@@ -490,7 +490,7 @@ Your changes are automatically saved.
 ### Request forwarding to Maven Central
 
 FLAG:
-By default this feature is not available for self-managed. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
+By default this feature is not available for self-managed. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
 This feature is not available for SaaS users.
 
 When a Maven package is not found in the Package Registry, the request is forwarded

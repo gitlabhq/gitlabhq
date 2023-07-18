@@ -30,7 +30,7 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 
 On self-managed GitLab, by default [migrating group items](#migrated-group-items) is not available. To show the
-feature, ask an administrator to [enable it in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
+feature, an administrator can [enable it in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
 
 Migrating groups by direct transfer copies the groups from one place to another. You can:
 

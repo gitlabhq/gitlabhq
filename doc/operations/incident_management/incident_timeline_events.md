@@ -88,7 +88,7 @@ of an incident.
 > [Introduced]([issue-link](https://gitlab.com/gitlab-org/gitlab/-/issues/365489)) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 

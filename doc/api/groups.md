@@ -950,7 +950,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 FLAG:
 On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
-To make them available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+To make them available, an administrator can [enable the feature flag](../administration/feature_flags.md)
 named `limit_unique_project_downloads_per_namespace_user`.
 
 Updates the project group. Only available to group owners and administrators.

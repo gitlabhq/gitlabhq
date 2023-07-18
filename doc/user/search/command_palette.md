@@ -14,7 +14,7 @@ find an object more quickly.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `command_palette`.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `command_palette`.
 On GitLab.com, this feature is available.
 
 ## Open the command palette

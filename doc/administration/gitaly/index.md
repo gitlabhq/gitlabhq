@@ -638,7 +638,7 @@ code. This re-introduced code is informally referred to as the "Rugged patches".
 
 FLAG:
 On self-managed GitLab, by default automatic detection of whether Rugged should be used (per storage) is not available.
-To make it available, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named
+To make it available, an administrator can [disable the feature flag](../../administration/feature_flags.md) named
 `skip_rugged_auto_detect`.
 
 The Ruby methods that perform direct Git access are behind

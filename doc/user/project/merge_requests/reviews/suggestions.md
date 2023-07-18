@@ -73,7 +73,7 @@ suggestion.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `content_editor_on_issues`.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `content_editor_on_issues`.
 On GitLab.com, this feature is available.
 
 When you insert suggestions, you can use the WYSIWYG

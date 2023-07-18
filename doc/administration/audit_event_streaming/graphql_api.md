@@ -119,7 +119,7 @@ The header is created if the returned `errors` object is empty.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
@@ -267,7 +267,7 @@ If the resulting list is empty, then audit streaming is not enabled for that gro
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
@@ -391,7 +391,7 @@ The header is deleted if the returned `errors` object is empty.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
@@ -525,7 +525,7 @@ The header is deleted if the returned `errors` object is empty.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:

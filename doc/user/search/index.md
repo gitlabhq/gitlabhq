@@ -105,7 +105,7 @@ To filter code search results by one or more languages:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
 
 Archived projects are included in search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
 
@@ -117,7 +117,7 @@ To include archived projects with `search_projects_hide_archived` enabled, you m
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. On GitLab.com, this feature is not available.
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. On GitLab.com, this feature is not available.
 
 Issues in archived projects are included in search results by default. To exclude issues in archived projects, ensure the `search_issues_hide_archived_projects` flag is enabled.
 

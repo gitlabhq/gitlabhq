@@ -93,7 +93,7 @@ repository imports under the namespace of the user who started the import proces
 
 FLAG:
 On self-managed GitLab and GitLab.com, by default this feature is not available. To make it
-available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md)
+available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
 named `bitbucket_server_user_mapping_by_username`. This feature is not ready for production use.
 
 With this feature enabled, the importer tries to find a user in the GitLab user database with the

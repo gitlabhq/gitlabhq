@@ -204,7 +204,7 @@ and is planned for removal in 17.0. This change is a breaking change.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `anonymous_visual_review_feedback`.
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `anonymous_visual_review_feedback`.
 
 With Visual Reviews, members of any team (Product, Design, Quality, and so on) can provide feedback comments through a form in your review apps. The comments are added to the merge request that triggered the review app.
 

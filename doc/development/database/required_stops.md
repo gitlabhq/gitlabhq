@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Adding required stops
 
-Required stops should only be added when it is deemed absolutely necessary, due to their
+[Required stops](../../update/index.md#upgrade-paths) should only be added when it is deemed absolutely necessary, because of their
 disruptive effect on customers. Before adding a required stop, consider if any
 alternative approaches exist to avoid a required stop. Sometimes a required
 stop is unavoidable. In those cases, follow the instructions below.

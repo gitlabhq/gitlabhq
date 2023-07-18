@@ -206,7 +206,7 @@ Archived designs are not permanently lost. You can browse
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default the rich text editor is available. To hide it, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
+On self-managed GitLab, by default the rich text editor is available. To hide it, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `content_editor_on_issues`.
 On GitLab.com, this feature is available.
 
 When this feature is enabled, you can use the Markdown and rich text editor in design descriptions.

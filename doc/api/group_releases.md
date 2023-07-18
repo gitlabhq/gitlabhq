@@ -12,7 +12,7 @@ NOTE:
 For more information about the project releases API, see [Releases API](releases/index.md).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `group_releases_finder_inoperator`.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `group_releases_finder_inoperator`.
 
 ## List group releases
 

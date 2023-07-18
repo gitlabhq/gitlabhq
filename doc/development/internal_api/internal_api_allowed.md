@@ -91,7 +91,7 @@ same manner as the standard repositories, and is more prone to the refs issue.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `parallel_push_checks`.
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `parallel_push_checks`.
 On GitLab.com, by default this feature is not available. To make it available
 per project, ask GitLab.com administrator to
 [enable the feature flag](../../administration/feature_flags.md) named `parallel_push_checks`.

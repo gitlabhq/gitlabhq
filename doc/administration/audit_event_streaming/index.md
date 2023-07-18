@@ -56,7 +56,7 @@ To add streaming destinations to a top-level group:
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
@@ -118,7 +118,7 @@ To list the streaming destinations for a top-level group:
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
@@ -177,7 +177,7 @@ To update a streaming destination's custom HTTP headers:
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
@@ -252,7 +252,7 @@ To delete only the custom HTTP headers for a streaming destination:
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:
@@ -330,7 +330,7 @@ To list streaming destinations and see the verification tokens:
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, ask an administrator to [disable the feature flag](../feature_flags.md) named
+On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
 `ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
 
 Prerequisites:

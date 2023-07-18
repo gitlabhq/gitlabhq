@@ -275,7 +275,7 @@ for both the `/data` and `/data/` URL paths.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the Pages feature flag](../../../administration/pages/index.md#use-environment-variables)
+an administrator can [enable the Pages feature flag](../../../administration/pages/index.md#use-environment-variables)
 `FF_CONFIGURABLE_ROOT_DIR="true"`. On GitLab.com, this feature is available.
 
 By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder

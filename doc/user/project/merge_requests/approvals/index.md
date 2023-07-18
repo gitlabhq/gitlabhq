@@ -113,7 +113,7 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
+an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
 
 Whenever an approval rule cannot be satisfied, the rule is displayed as **Auto approved**. This applies to the following conditions:
 

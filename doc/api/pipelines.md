@@ -20,7 +20,7 @@ Read more on [pagination](rest/index.md#pagination).
 
 FLAG:
 On self-managed GitLab, by default the `name` field is not available.
-To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md)
 named `pipeline_name_in_api`. This feature is not ready for production use.
 On GitLab.com, this feature is not available.
 
@@ -91,7 +91,7 @@ Example of response
 
 FLAG:
 On self-managed GitLab, by default the `name` field is not available.
-To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md)
 named `pipeline_name_in_api`. This feature is not ready for production use.
 On GitLab.com, this feature is not available.
 
@@ -290,7 +290,7 @@ Sample response:
 
 FLAG:
 On self-managed GitLab, by default the `name` field is not available.
-To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md)
 named `pipeline_name_in_api`. This feature is not ready for production use.
 On GitLab.com, this feature is not available.
 

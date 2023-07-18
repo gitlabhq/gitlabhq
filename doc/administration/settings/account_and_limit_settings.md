@@ -221,7 +221,7 @@ Users can select the **Remember me** checkbox on sign-in, and their session will
 > - It's deployed behind a feature flag, disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. This feature is not ready for production use. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. This feature is not ready for production use. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
 
 GitLab administrators can choose to customize the session duration (in minutes) for Git operations when 2FA is enabled. The default is 15 and this can be set to a value between 1 and 10080.
 
