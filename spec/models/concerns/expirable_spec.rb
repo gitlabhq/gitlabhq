@@ -12,7 +12,7 @@ RSpec.describe Expirable do
   end
 
   describe '.expired' do
-    it { expect(ProjectMember.expired).to match_array([expired]) }
+    it { expect(ProjectMember.expired).to contain_exactly(expired) }
 
     it 'scopes the query when multiple models are expirable' do
       expired_access_token = create(:personal_access_token, :expired, user: no_expire.user)

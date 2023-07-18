@@ -5,7 +5,6 @@ import {
   GlButton,
   GlDisclosureDropdown,
   GlLink,
-  GlIcon,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
@@ -32,10 +31,9 @@ export default {
     deleteCommentText: __('Delete comment'),
   },
   components: {
-    EmojiPicker,
     DesignNoteAwardsList,
     DesignReplyForm,
-    GlIcon,
+    EmojiPicker,
     GlAvatar,
     GlAvatarLink,
     GlButton,
@@ -296,22 +294,7 @@ export default {
           :right="false"
           data-testid="note-emoji-button"
           @click="handleAwardEmoji"
-        >
-          <template #button-content>
-            <gl-icon
-              class="award-control-icon-neutral gl-button-icon gl-icon"
-              name="slight-smile"
-            />
-            <gl-icon
-              class="award-control-icon-positive gl-button-icon gl-icon gl-left-3!"
-              name="smiley"
-            />
-            <gl-icon
-              class="award-control-icon-super-positive gl-button-icon gl-icon gl-left-3!"
-              name="smile"
-            />
-          </template>
-        </emoji-picker>
+        />
         <gl-button
           v-if="isEditingAndHasPermissions"
           v-gl-tooltip

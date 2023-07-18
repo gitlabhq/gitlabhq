@@ -143,7 +143,7 @@ export default {
 
       <!-- The double condition is only here temporarily for back-compatibility reasons. Will be removed in next iteration https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2275 -->
       <div
-        v-if="spinnerVariant && skeletonHidden"
+        v-else-if="spinnerVariant && skeletonHidden"
         data-testid="content-wrapper"
         class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-flex-align-items-stretch"
       >

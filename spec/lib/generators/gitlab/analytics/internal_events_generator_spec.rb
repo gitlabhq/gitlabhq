@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       "milestone" => "13.9",
       "introduced_by_url" => mr,
       "time_frame" => "7d",
-      "data_source" => "redis_hll",
+      "data_source" => "internal_events",
       "data_category" => "optional",
       "instrumentation_class" => "RedisHLLMetric",
       "distribution" => %w[ce ee],

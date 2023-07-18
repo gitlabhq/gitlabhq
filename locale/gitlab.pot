@@ -29170,6 +29170,39 @@ msgstr ""
 msgid "Mi"
 msgstr ""
 
+msgid "Microsoft|Client ID"
+msgstr ""
+
+msgid "Microsoft|Client secret"
+msgstr ""
+
+msgid "Microsoft|Enable Microsoft Azure integration for this group"
+msgstr ""
+
+msgid "Microsoft|Graph API endpoint"
+msgstr ""
+
+msgid "Microsoft|Login API endpoint"
+msgstr ""
+
+msgid "Microsoft|Microsoft Azure Integration"
+msgstr ""
+
+msgid "Microsoft|Microsoft Azure integration settings failed to save. %{errors}"
+msgstr ""
+
+msgid "Microsoft|Microsoft Azure integration settings were successfully updated."
+msgstr ""
+
+msgid "Microsoft|Tenant ID"
+msgstr ""
+
+msgid "Microsoft|Use the default value, unless you're using Azure AD for US Government or Azure AD China operated by 22Vianet."
+msgstr ""
+
+msgid "Microsoft|Use the default value, unless you're using using Microsoft Graph for US Government or Microsoft Graph China operated by 22Vianet."
+msgstr ""
+
 msgid "Migrated %{success_count}/%{total_count} files."
 msgstr ""
 
@@ -43348,7 +43381,7 @@ msgstr ""
 msgid "SlackIntegration|GitLab slash commands"
 msgstr ""
 
-msgid "SlackIntegration|Install GitLab for Slack app"
+msgid "SlackIntegration|Install GitLab for Slack app…"
 msgstr ""
 
 msgid "SlackIntegration|Interact with GitLab without leaving your Slack workspace!"
@@ -43360,7 +43393,7 @@ msgstr ""
 msgid "SlackIntegration|Project alias"
 msgstr ""
 
-msgid "SlackIntegration|Reinstall GitLab for Slack app"
+msgid "SlackIntegration|Reinstall GitLab for Slack app…"
 msgstr ""
 
 msgid "SlackIntegration|Remove project"
@@ -49346,7 +49379,7 @@ msgstr ""
 msgid "UsageQuotas|An error occurred loading the transfer data. Please refresh the page to try again."
 msgstr ""
 
-msgid "UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. After namespace container deduplication, the total of all unique containers is added to the namespace storage total."
+msgid "UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr ""
 
 msgid "UsageQuotas|Namespace transfer data used"

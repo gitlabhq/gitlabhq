@@ -135,7 +135,8 @@
         "redis_hll",
         "prometheus",
         "system",
-        "license"
+        "license",
+        "internal_events"
       ]
     },
     "data_category": {

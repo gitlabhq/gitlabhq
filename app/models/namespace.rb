@@ -424,6 +424,10 @@ class Namespace < ApplicationRecord
     false
   end
 
+  def all_project_ids
+    all_projects.pluck(:id)
+  end
+
   def all_project_ids_except(ids)
     all_projects.where.not(id: ids).pluck(:id)
   end

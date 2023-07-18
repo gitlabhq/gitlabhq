@@ -163,7 +163,7 @@ export default {
         {{ __('Contains only whitespace changes.') }}
         <gl-button
           category="tertiary"
-          variant="info"
+          variant="confirm"
           size="small"
           class="gl-ml-3"
           data-testid="diff-load-file-button"

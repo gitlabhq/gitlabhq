@@ -1,7 +1,6 @@
 <script>
 import {
   GlTooltipDirective,
-  GlIcon,
   GlButton,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
@@ -30,15 +29,14 @@ export default {
   },
   name: 'NoteActions',
   components: {
-    GlIcon,
-    ReplyButton,
-    TimelineEventButton,
+    AbuseCategorySelector,
+    EmojiPicker: () => import('~/emoji/components/picker.vue'),
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+    ReplyButton,
+    TimelineEventButton,
     UserAccessRoleBadge,
-    EmojiPicker: () => import('~/emoji/components/picker.vue'),
-    AbuseCategorySelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -323,19 +321,7 @@ export default {
       toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
       data-testid="note-emoji-button"
       @click="setAwardEmoji"
-    >
-      <template #button-content>
-        <gl-icon class="award-control-icon-neutral gl-button-icon gl-icon" name="slight-smile" />
-        <gl-icon
-          class="award-control-icon-positive gl-button-icon gl-icon gl-left-3!"
-          name="smiley"
-        />
-        <gl-icon
-          class="award-control-icon-super-positive gl-button-icon gl-icon gl-left-3!"
-          name="smile"
-        />
-      </template>
-    </emoji-picker>
+    />
     <reply-button
       v-if="showReply"
       ref="replyButton"

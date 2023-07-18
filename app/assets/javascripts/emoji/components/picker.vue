@@ -107,7 +107,17 @@ export default {
       @hidden="$emit('hidden')"
     >
       <template #button-content>
-        <slot name="button-content"></slot>
+        <slot name="button-content">
+          <gl-icon class="award-control-icon-neutral gl-button-icon gl-icon" name="slight-smile" />
+          <gl-icon
+            class="award-control-icon-positive gl-button-icon gl-icon gl-left-3!"
+            name="smiley"
+          />
+          <gl-icon
+            class="award-control-icon-super-positive gl-button-icon gl-icon gl-left-3!"
+            name="smile"
+          />
+        </slot>
         <span class="gl-sr-only">{{ __('Add reaction') }}</span>
       </template>
       <gl-search-box-by-type

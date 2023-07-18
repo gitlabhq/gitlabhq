@@ -17,7 +17,8 @@ import {
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import commitCreate from '~/ci/pipeline_editor/graphql/mutations/commit_ci_file.mutation.graphql';
 import getCurrentBranch from '~/ci/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
-import updatePipelineEtag from '~/ci/pipeline_editor/graphql/mutations/client/update_pipeline_etag.mutation.graphql';
+import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
+
 import {
   mockCiConfigPath,
   mockCiYml,
@@ -253,18 +254,20 @@ describe('Pipeline Editor | Commit section', () => {
   describe('when the commit returns a different etag path', () => {
     beforeEach(async () => {
       createComponentWithApollo();
-      jest.spyOn(wrapper.vm.$apollo, 'mutate');
+      jest.spyOn(mockApollo.clients.defaultClient.cache, 'writeQuery');
+
       mockMutateCommitData.mockResolvedValue(mockCommitCreateResponseNewEtag);
       await submitCommit();
     });
 
-    it('calls the client mutation to update the etag', () => {
-      // 1:Commit submission, 2:etag update, 3:currentBranch update, 4:lastCommit update
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(4);
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenNthCalledWith(2, {
-        mutation: updatePipelineEtag,
-        variables: {
-          pipelineEtag: mockCommitCreateResponseNewEtag.data.commitCreate.commitPipelinePath,
+    it('calls the client mutation to update the etag in the cache', () => {
+      expect(mockApollo.clients.defaultClient.cache.writeQuery).toHaveBeenCalledWith({
+        query: getPipelineEtag,
+        data: {
+          etags: {
+            __typename: 'EtagValues',
+            pipeline: mockCommitCreateResponseNewEtag.data.commitCreate.commitPipelinePath,
+          },
         },
       });
     });

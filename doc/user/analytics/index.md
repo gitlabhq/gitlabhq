@@ -27,7 +27,7 @@ GitLab provides several analytics features at the group level. Some of these fea
 - [Issue](../group/issues_analytics/index.md)
 - [Productivity](productivity_analytics.md)
 - [Repositories](../group/repositories_analytics/index.md)
-- [Value Stream](../group/value_stream_analytics/index.md)
+- [Value Stream Management Analytics](value_stream_analytics.md), and [Value Stream Management Dashboard](value_streams_dashboard.md)
 
 ## Project-level analytics
 
@@ -43,7 +43,7 @@ You can use GitLab to review analytics at the project level. Some of these featu
 - [Merge Request](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
   [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
 - [Repository](repository_analytics.md)
-- [Value Stream](value_stream_analytics.md)
+- [Value Stream Management Analytics](value_stream_analytics.md), and [Value Stream Management Dashboard](value_streams_dashboard.md)
 
 ### Remove project analytics from the left sidebar
 

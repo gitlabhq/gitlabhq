@@ -13,17 +13,10 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-## Dashboards
+Analytics dashboards help you visualize the collected data.
+You can use built-in dashboards or create your own with custom visualizations.
 
-Each project can have an unlimited number of dashboards, only limited by the instances [repository size limits](../project/repository/reducing_the_repo_size_using_git.md#storage-limits).
-These dashboards are defined using the GitLab YAML schema, and stored in the `.gitlab/analytics/dashboards/` directory of a project repository.
-The dashboard file name and containing directory should be the same, for example `my_dashboard/my_dashboard.yaml`. For more information see [defining a dashboard](#define-a-dashboard).
-Each dashboard can reference one or more [visualizations](#define-a-chart-visualization), which are shared across dashboards.
-
-Project maintainers can enforce approval rules on dashboard changes using features such as [code owners](../project/codeowners/index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
-Your dashboard files are versioned in source control with the rest of a project's code.
-
-### Data sources
+## Data sources
 
 A data source is a connection to a database or collection of data which can be used by your dashboard
 filters and visualizations to query and retrieve results.
@@ -32,7 +25,30 @@ The following data sources are configured for analytics dashboards:
 
 - [Product analytics](../product_analytics/index.md)
 
-## Dashboards designer
+## Built-in dashboards
+
+To help you get started with analytics, GitLab provides two built-in dashboards with predefined visualizations:
+
+- **Audience**, which displays metrics related to traffic, such as number of users and sessions.
+- **Behavior**, which displays metrics related to user activity, such as number of page views and events.
+
+These dashboards are labeled **By GitLab**, and you cannot edit them.
+Instead, you can create a custom dashboard with a similar style.
+
+## Custom dashboards
+
+With custom dashboards, you can design and create visualizations for the metrics that are most relevant to your use case.
+You can create custom dashboards with the dashboard designer.
+
+- Each project can have an unlimited number of dashboards.
+The only limitation might be the [repository size limit](../project/repository/reducing_the_repo_size_using_git.md#storage-limits).
+- Each dashboard can reference one or more [visualizations](#define-a-chart-visualization).
+- Visualizations are shared across dashboards.
+
+Project maintainers can enforce approval rules on dashboard changes with features such as [code owners](../project/codeowners/index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
+Your dashboard files are versioned in source control with the rest of a project's code.
+
+## Dashboard designer
 
 > Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
 
@@ -44,19 +60,16 @@ This feature is not ready for production use.
 NOTE:
 This feature does not work in conjunction with the `product_analytics_snowplow_support` feature flag.
 
-You can use the dashboards designer to:
+You can use the dashboard designer to:
 
-- Create custom dashboards
-- Rename custom dashboards
-- Add visualizations to new and existing custom dashboards
-- Resize or move panels within custom dashboards
-
-You cannot edit the built-in dashboards labeled as `By GitLab`.
-To edit these dashboards you should create a new custom dashboard which uses the same visualizations.
+- Create custom dashboards.
+- Rename custom dashboards.
+- Add visualizations to new and existing custom dashboards.
+- Resize or move panels in custom dashboards.
 
 ## View project dashboards
 
-To view a list of dashboards for a project:
+To view a list of dashboards (both built-in and custom) for a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Analyze > Dashboards**.
@@ -166,7 +179,7 @@ To create a custom dashboard:
 
 ## Edit a custom dashboard
 
-You can edit your custom dashboard's title and add or resize visualizations within the dashboard designer.
+You can edit your custom dashboard's title and add or resize visualizations in the dashboard designer.
 
 To edit an existing custom dashboard:
 
@@ -194,4 +207,4 @@ If a dashboard panel displays an error message:
 
 - Check your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization)
 configurations, and make sure they are set up correctly.
-- For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid. 
+- For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid.

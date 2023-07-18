@@ -75,7 +75,7 @@ Prerequisites:
 To create a release in the Releases page:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. On the left sidebar, select **Build > Releases** and select **New release**.
+1. On the left sidebar, select **Deploy > Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
      results in a validation error.
