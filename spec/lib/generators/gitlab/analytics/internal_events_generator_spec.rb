@@ -195,6 +195,14 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
         end
       end
 
+      context 'with unique value passed with a dot' do
+        it 'creates a metric definition file using the template' do
+          described_class.new([], options.merge(unique: 'user.id')).invoke_all
+
+          expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
+        end
+      end
+
       context 'without at least one tier available' do
         it 'raises error' do
           expect { described_class.new([], options.merge(tiers: [])).invoke_all }

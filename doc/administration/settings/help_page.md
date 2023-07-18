@@ -95,8 +95,8 @@ When redirecting `/help`, GitLab:
 - Appends `.html` to the URL, and removes `.md` if necessary.
 
 For example, if the URL is set to `https://docs.gitlab.com`, requests for
-`/help/user/admin_area/settings/help_page.md` redirect to:
-`https://docs.gitlab.com/${VERSION}/ee/user/admin_area/settings/help_page.html`.
+`/help/administration/settings/help_page.md` redirect to:
+`https://docs.gitlab.com/${VERSION}/ee/administration/settings/help_page.html`.
 
 <!-- ## Troubleshooting
 

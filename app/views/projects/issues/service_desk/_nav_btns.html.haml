@@ -7,12 +7,13 @@
 
 .nav-controls.issues-nav-controls.gl-font-size-0
   - if @can_bulk_update
-    = button_tag _("Bulk edit"), class: "gl-button btn btn-default gl-mr-3 js-bulk-update-toggle"
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mr-3 js-bulk-update-toggle' }) do
+      = _("Bulk edit")
   - if show_new_issue_link?(@project)
-    = link_to _("New issue"), new_project_issue_path(@project,
-                                                  issue: { milestone_id: finder.milestones.first.try(:id) }),
-                                                  class: "gl-button btn btn-confirm gl-mr-3",
-                                                  id: "new_issue_link"
+    = render Pajamas::ButtonComponent.new(variant: :confirm,
+                                          href: new_project_issue_path(@project, issue: { milestone_id: finder.milestones.first.try(:id) }),
+                                          button_options: { id: 'new_issue_link', class: 'gl-mr-3' }) do
+      = _("New issue")
 
 .dropdown.gl-dropdown
   = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret has-tooltip gl-display-none! gl-md-display-inline-flex!", data: { toggle: 'dropdown', title: _('Actions') } do

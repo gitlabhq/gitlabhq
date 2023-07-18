@@ -2,7 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management do
+RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
   include ProjectForksHelper
 
   let_it_be(:base_time) { Time.now }

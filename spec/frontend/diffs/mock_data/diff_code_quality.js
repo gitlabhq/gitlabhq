@@ -3,31 +3,37 @@ export const multipleFindingsArrCodeQualityScale = [
     severity: 'minor',
     description: 'mocked minor Issue',
     line: 2,
+    scale: 'codeQuality',
   },
   {
     severity: 'major',
     description: 'mocked major Issue',
     line: 3,
+    scale: 'codeQuality',
   },
   {
     severity: 'info',
     description: 'mocked info Issue',
     line: 3,
+    scale: 'codeQuality',
   },
   {
     severity: 'critical',
     description: 'mocked critical Issue',
     line: 3,
+    scale: 'codeQuality',
   },
   {
     severity: 'blocker',
     description: 'mocked blocker Issue',
     line: 3,
+    scale: 'codeQuality',
   },
   {
     severity: 'unknown',
     description: 'mocked unknown Issue',
     line: 3,
+    scale: 'codeQuality',
   },
 ];
 
@@ -36,31 +42,37 @@ export const multipleFindingsArrSastScale = [
     severity: 'low',
     description: 'mocked low Issue',
     line: 2,
+    scale: 'sast',
   },
   {
     severity: 'medium',
     description: 'mocked medium Issue',
     line: 3,
+    scale: 'sast',
   },
   {
     severity: 'info',
     description: 'mocked info Issue',
     line: 3,
+    scale: 'sast',
   },
   {
     severity: 'high',
     description: 'mocked high Issue',
     line: 3,
+    scale: 'sast',
   },
   {
     severity: 'critical',
     description: 'mocked critical Issue',
     line: 3,
+    scale: 'sast',
   },
   {
     severity: 'unknown',
     description: 'mocked unknown Issue',
     line: 3,
+    scale: 'sast',
   },
 ];
 

@@ -11,6 +11,12 @@ module QA
             fill_in 'username', with: username
             fill_in 'password', with: password
             click_on 'Login'
+
+            if Runtime::Env.super_sidebar_enabled?
+              QA::Page::Main::Menu.perform(&:enable_new_navigation)
+            else
+              QA::Page::Main::Menu.perform(&:disable_new_navigation)
+            end
           end
 
           def login_if_required(username, password)

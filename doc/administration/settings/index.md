@@ -37,15 +37,15 @@ To access the **Admin Area**:
 
 The **General** settings contain:
 
-- [Visibility and access controls](../../user/admin_area/settings/visibility_and_access_controls.md) - Set default and
+- [Visibility and access controls](../settings/visibility_and_access_controls.md) - Set default and
  restrict visibility levels. Configure import sources and Git access protocol.
-- [Account and limit](../../user/admin_area/settings/account_and_limit_settings.md) - Set projects and maximum size limits,
+- [Account and limit](../settings/account_and_limit_settings.md) - Set projects and maximum size limits,
  session duration, user options, and check feature availability for namespace plan.
-- [Diff limits](../../user/admin_area/diff_limits.md) - Diff content limits.
-- [Sign-up restrictions](../../user/admin_area/settings/sign_up_restrictions.md) - Configure the way a user creates a new account.
-- [Sign in restrictions](../../user/admin_area/settings/sign_in_restrictions.md) - Set requirements for a user to sign in.
+- [Diff limits](../diff_limits.md) - Diff content limits.
+- [Sign-up restrictions](../settings/sign_up_restrictions.md) - Configure the way a user creates a new account.
+- [Sign in restrictions](../settings/sign_in_restrictions.md) - Set requirements for a user to sign in.
  Enable mandatory two-factor authentication.
-- [Terms of Service and Privacy Policy](../../user/admin_area/settings/terms.md) - Include a Terms of Service agreement
+- [Terms of Service and Privacy Policy](../settings/terms.md) - Include a Terms of Service agreement
  and Privacy Policy that all users must accept.
 - [External Authentication](../../administration/settings/external_authorization.md#configuration) - External Classification Policy Authorization.
 - [Web terminal](../integration/terminal.md#limiting-websocket-connection-time) -
@@ -92,7 +92,7 @@ The **Integrations** settings contain:
   to receive invite email bounce events from Mailgun, if it is your email provider.
 - [PlantUML](../integration/plantuml.md) - Allow rendering of PlantUML
   diagrams in documents.
-- [Customer experience improvement and third-party offers](../../user/admin_area/settings/third_party_offers.md) -
+- [Customer experience improvement and third-party offers](../settings/third_party_offers.md) -
   Control the display of customer experience improvement content and third-party offers.
 - [Snowplow](../../development/internal_analytics/snowplow/index.md) - Configure the Snowplow integration.
 - [Google GKE](../../user/project/clusters/add_gke_clusters.md) - Google GKE integration enables
@@ -110,7 +110,7 @@ The **Metrics and profiling** settings contain:
   Enable and configure Grafana.
 - [Profiling - Performance bar](../monitoring/performance/performance_bar.md#enable-the-performance-bar-for-non-administrators) -
   Enable access to the Performance Bar for non-administrator users in a given group.
-- [Usage statistics](../../user/admin_area/settings/usage_statistics.md) - Enable or disable version check and Service Ping.
+- [Usage statistics](../settings/usage_statistics.md) - Enable or disable version check and Service Ping.
 
 ### Network
 
@@ -118,31 +118,31 @@ The **Network** settings contain:
 
 - Performance optimization - Various settings that affect GitLab performance, including:
   - [Write to `authorized_keys` file](../operations/fast_ssh_key_lookup.md#set-up-fast-lookup).
-  - [Push event activities limit and bulk push events](../../user/admin_area/settings/push_event_activities_limit.md).
-- [User and IP rate limits](../../user/admin_area/settings/user_and_ip_rate_limits.md) - Configure limits for web and API requests.
+  - [Push event activities limit and bulk push events](../settings/push_event_activities_limit.md).
+- [User and IP rate limits](../settings/user_and_ip_rate_limits.md) - Configure limits for web and API requests.
   These rate limits can be overridden:
-  - [Package Registry Rate Limits](../../user/admin_area/settings/package_registry_rate_limits.md) - Configure specific
+  - [Package Registry Rate Limits](../settings/package_registry_rate_limits.md) - Configure specific
     limits for Packages API requests that supersede the user and IP rate limits.
-  - [Git LFS Rate Limits](../../user/admin_area/settings/git_lfs_rate_limits.md) - Configure specific limits for
+  - [Git LFS Rate Limits](../settings/git_lfs_rate_limits.md) - Configure specific limits for
     Git LFS requests that supersede the user and IP rate limits.
-  - [Files API Rate Limits](../../user/admin_area/settings/files_api_rate_limits.md) - Configure specific limits for
+  - [Files API Rate Limits](../settings/files_api_rate_limits.md) - Configure specific limits for
     Files API requests that supersede the user and IP rate limits.
   - [Search rate limits](../instance_limits.md#search-rate-limit) - Configure global search request rate limits for authenticated and unauthenticated users.
-  - [Deprecated API Rate Limits](../../user/admin_area/settings/deprecated_api_rate_limits.md) - Configure specific limits
+  - [Deprecated API Rate Limits](../settings/deprecated_api_rate_limits.md) - Configure specific limits
     for deprecated API requests that supersede the user and IP rate limits.
 - [Outbound requests](../../security/webhooks.md) - Allow requests to the local network from webhooks and integrations, or deny all outbound requests.
-- [Protected Paths](../../user/admin_area/settings/protected_paths.md) - Configure paths to be protected by Rack Attack.
+- [Protected Paths](../settings/protected_paths.md) - Configure paths to be protected by Rack Attack.
 - [Incident Management Limits](../../operations/incident_management/index.md) - Limit the
   number of inbound alerts that can be sent to a project.
-- [Notes creation limit](../../user/admin_area/settings/rate_limit_on_notes_creation.md) - Set a rate limit on the note creation requests.
-- [Get single user limit](../../user/admin_area/settings/rate_limit_on_users_api.md) - Set a rate limit on users API endpoint to get a user by ID.
-- [Projects API rate limits for unauthenticated requests](../../user/admin_area/settings/rate_limit_on_projects_api.md) - Set a rate limit on Projects list API endpoint for unauthenticated requests.
+- [Notes creation limit](../settings/rate_limit_on_notes_creation.md) - Set a rate limit on the note creation requests.
+- [Get single user limit](../settings/rate_limit_on_users_api.md) - Set a rate limit on users API endpoint to get a user by ID.
+- [Projects API rate limits for unauthenticated requests](../settings/rate_limit_on_projects_api.md) - Set a rate limit on Projects list API endpoint for unauthenticated requests.
 
 ### Preferences
 
 The **Preferences** settings contain:
 
-- [Email](../../user/admin_area/settings/email.md) - Various email settings.
+- [Email](../settings/email.md) - Various email settings.
 - [What's new](../whats-new.md) - Configure **What's new** drawer and content.
 - [Help page](help_page.md) - Help page text and support page URL.
 - [Pages](../pages/index.md#custom-domain-verification) -
@@ -153,7 +153,7 @@ The **Preferences** settings contain:
 - Localization:
   - [Default first day of the week](../../user/profile/preferences.md).
   - [Time tracking](../../user/project/time_tracking.md#limit-displayed-units-to-hours).
-- [Sidekiq Job Limits](../../user/admin_area/settings/sidekiq_job_limits.md) - Limit the size of Sidekiq jobs stored in Redis.
+- [Sidekiq Job Limits](../settings/sidekiq_job_limits.md) - Limit the size of Sidekiq jobs stored in Redis.
 
 ### Reporting
 
@@ -161,10 +161,10 @@ The **Reporting** settings contain:
 
 - Spam and Anti-bot protection:
   - Anti-spam services, such as [reCAPTCHA](../../integration/recaptcha.md),
-    [Akismet](../../integration/akismet.md), or [Spamcheck](../../user/admin_area/reporting/spamcheck.md).
-  - [IP address restrictions](../../user/admin_area/reporting/ip_addr_restrictions.md).
-- [Abuse reports](../../user/admin_area/review_abuse_reports.md) - Set notification email for abuse reports.
-- [Git abuse rate limit](../../user/admin_area/reporting/git_abuse_rate_limit.md) - Configure Git abuse rate limit settings. **(ULTIMATE SELF)**
+    [Akismet](../../integration/akismet.md), or [Spamcheck](../reporting/spamcheck.md).
+  - [IP address restrictions](../reporting/ip_addr_restrictions.md).
+- [Abuse reports](../review_abuse_reports.md) - Set notification email for abuse reports.
+- [Git abuse rate limit](../reporting/git_abuse_rate_limit.md) - Configure Git abuse rate limit settings. **(ULTIMATE SELF)**
 
 ### Repository
 
@@ -192,7 +192,7 @@ The **Repository** settings contain:
 The **Templates** settings contain:
 
 - [Templates](instance_template_repository.md#configuration) - Set instance-wide template repository.
-- [Custom project templates](../../user/admin_area/custom_project_templates.md) - Select the custom project template source group.
+- [Custom project templates](../custom_project_templates.md) - Select the custom project template source group.
 
 ## Default first day of the week
 

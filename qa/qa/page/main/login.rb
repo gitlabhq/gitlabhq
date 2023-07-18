@@ -103,6 +103,12 @@ module QA
             click_element :sign_in_button
           end
 
+          if Runtime::Env.super_sidebar_enabled?
+            Page::Main::Menu.perform(&:enable_new_navigation)
+          else
+            Page::Main::Menu.perform(&:disable_new_navigation)
+          end
+
           Page::Main::Menu.perform(&:signed_in?)
         end
 
@@ -263,7 +269,11 @@ module QA
 
           wait_for_gitlab_to_respond
 
-          Page::Main::Menu.perform(&:enable_new_navigation) if Runtime::Env.super_sidebar_enabled?
+          if Runtime::Env.super_sidebar_enabled?
+            Page::Main::Menu.perform(&:enable_new_navigation)
+          else
+            Page::Main::Menu.perform(&:disable_new_navigation)
+          end
 
           wait_for_gitlab_to_respond
 

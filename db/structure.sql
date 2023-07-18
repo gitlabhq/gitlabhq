@@ -16740,6 +16740,28 @@ CREATE TABLE group_wiki_repositories (
     CONSTRAINT check_07f1c81806 CHECK ((char_length(disk_path) <= 80))
 );
 
+CREATE TABLE group_wiki_repository_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    group_wiki_repository_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_14d288436d CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE group_wiki_repository_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE group_wiki_repository_states_id_seq OWNED BY group_wiki_repository_states.id;
+
 CREATE TABLE historical_data (
     id integer NOT NULL,
     date date,
@@ -25449,6 +25471,8 @@ ALTER TABLE ONLY group_import_states ALTER COLUMN group_id SET DEFAULT nextval('
 
 ALTER TABLE ONLY group_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('group_repository_storage_moves_id_seq'::regclass);
 
+ALTER TABLE ONLY group_wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('group_wiki_repository_states_id_seq'::regclass);
+
 ALTER TABLE ONLY historical_data ALTER COLUMN id SET DEFAULT nextval('historical_data_id_seq'::regclass);
 
 ALTER TABLE ONLY identities ALTER COLUMN id SET DEFAULT nextval('identities_id_seq'::regclass);
@@ -27556,6 +27580,9 @@ ALTER TABLE ONLY group_repository_storage_moves
 
 ALTER TABLE ONLY group_wiki_repositories
     ADD CONSTRAINT group_wiki_repositories_pkey PRIMARY KEY (group_id);
+
+ALTER TABLE ONLY group_wiki_repository_states
+    ADD CONSTRAINT group_wiki_repository_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY historical_data
     ADD CONSTRAINT historical_data_pkey PRIMARY KEY (id);
@@ -31419,6 +31446,16 @@ CREATE INDEX index_group_vulnerability_reads_common_finder_query_desc ON vulnera
 CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_repositories USING btree (disk_path);
 
 CREATE INDEX index_group_wiki_repositories_on_shard_id ON group_wiki_repositories USING btree (shard_id);
+
+CREATE INDEX index_group_wiki_repository_states_failed_verification ON group_wiki_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_group_wiki_repository_states_needs_verification ON group_wiki_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE UNIQUE INDEX index_group_wiki_repository_states_on_group_wiki_repository_id ON group_wiki_repository_states USING btree (group_wiki_repository_id);
+
+CREATE INDEX index_group_wiki_repository_states_on_verification_state ON group_wiki_repository_states USING btree (verification_state);
+
+CREATE INDEX index_group_wiki_repository_states_pending_verification ON group_wiki_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX index_groups_on_parent_id_id ON namespaces USING btree (parent_id, id) WHERE ((type)::text = 'Group'::text);
 
@@ -37287,6 +37324,9 @@ ALTER TABLE ONLY required_code_owners_sections
 
 ALTER TABLE ONLY namespace_ldap_settings
     ADD CONSTRAINT fk_rails_82cd0ad4bb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_wiki_repository_states
+    ADD CONSTRAINT fk_rails_832511c9f1 FOREIGN KEY (group_wiki_repository_id) REFERENCES group_wiki_repositories(group_id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_enabled_grants
     ADD CONSTRAINT fk_rails_8336ce35af FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

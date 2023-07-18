@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # IP whitelist **(FREE SELF)**
 
-GitLab provides some [monitoring endpoints](../../user/admin_area/monitoring/health_check.md)
+GitLab provides some [monitoring endpoints](health_check.md)
 that provide health check information when probed.
 
 To control access to those endpoints via IP whitelisting, you can add single

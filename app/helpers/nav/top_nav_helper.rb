@@ -195,7 +195,7 @@ module Nav
           active: active_nav_link?(controller: 'admin/dashboard'),
           icon: 'admin',
           href: admin_root_path,
-          data: { testid: 'admin_area_link', **menu_data_tracking_attrs(title) }
+          data: { qa_selector: 'admin_area_link', **menu_data_tracking_attrs(title) }
         )
       end
 

@@ -807,7 +807,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
           end
         end
 
-        describe 'to one project' do
+        describe 'to one project', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
           describe 'when user is authenticated' do
             describe 'when user has push access to the project' do
               before do

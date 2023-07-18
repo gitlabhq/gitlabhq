@@ -185,7 +185,7 @@ module Gitlab
       end
 
       def key_path(time_frame)
-        "count_distinct_#{options[:unique]}_from_#{event}_#{time_frame}"
+        "count_distinct_#{options[:unique].sub('.', '_')}_from_#{event}_#{time_frame}"
       end
 
       def metric_file_path(time_frame)

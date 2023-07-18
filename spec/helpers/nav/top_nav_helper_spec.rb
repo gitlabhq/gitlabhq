@@ -375,7 +375,7 @@ RSpec.describe Nav::TopNavHelper do
       it 'has admin as first :secondary item' do
         expected_admin_item = ::Gitlab::Nav::TopNavMenuItem.build(
           data: {
-            testid: 'admin_area_link',
+            qa_selector: 'admin_area_link',
             **menu_data_tracking_attrs('admin')
           },
           id: 'admin',

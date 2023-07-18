@@ -757,7 +757,7 @@ For more information, see the [GitLab API user method documentation](https://pyt
 You can configure OIDC group membership to:
 
 - Require users to be members of a certain group.
-- Assign users [external](../../user/admin_area/external_users.md), administrator or
+- Assign users [external](../external_users.md), administrator or
   [auditor](../auditor_users.md) roles based on group membership.
 
 GitLab checks these groups on each sign in and updates user attributes as necessary.
@@ -845,12 +845,12 @@ For self-compiled installations:
 ### External groups
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
-response to identify users as [external users](../../user/admin_area/external_users.md)
+response to identify users as [external users](../external_users.md)
 based on group membership, configure GitLab to identify:
 
 - Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
 - Which group memberships should identify a user as an
-  [external user](../../user/admin_area/external_users.md), using the
+  [external user](../external_users.md), using the
  `external_groups` setting.
 
 For Linux package installations:

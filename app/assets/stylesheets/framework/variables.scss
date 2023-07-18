@@ -467,7 +467,6 @@ $ide-statusbar-height: 25px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $container-text-max-width: 540px;
-$gl-avatar-size: 40px;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
 $border-radius-large: 8px;
@@ -707,7 +706,6 @@ $environment-logs-difference-md-up: calc(#{$header-height} + #{$environment-logs
 * Avatar
 */
 $avatar-radius: 50%;
-$gl-avatar-size: 40px;
 $gl-avatar-border-opacity: 0.1;
 
 /*

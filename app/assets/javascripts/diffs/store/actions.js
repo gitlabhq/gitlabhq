@@ -6,7 +6,6 @@ import {
   scrollToElement,
 } from '~/lib/utils/common_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
-import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -60,7 +59,6 @@ import {
   ERROR_DISMISSING_SUGESTION_POPOVER,
 } from '../i18n';
 import eventHub from '../event_hub';
-import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
 import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
@@ -179,7 +177,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
   };
   const hash = window.location.hash.replace('#', '').split('diff-content-').pop();
   let totalLoaded = 0;
-  let scrolledVirtualScroller = false;
+  let scrolledVirtualScroller = hash === '';
 
   commit(types.SET_BATCH_LOADING_STATE, 'loading');
   commit(types.SET_RETRIEVING_BATCHES, true);
@@ -251,8 +249,6 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         return nextPage;
       })
       .then((nextPage) => {
-        dispatch('startRenderDiffsQueue');
-
         if (nextPage) {
           return getBatch(nextPage);
         }
@@ -385,10 +381,6 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
     const file = state.diffFiles.find((f) => f.file_hash === discussion.diff_file.file_hash);
 
     if (file) {
-      if (!file.renderIt) {
-        commit(types.RENDER_FILE, file);
-      }
-
       if (file.viewer.automaticallyCollapsed) {
         notesEventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
         scrollToElement(document.getElementById(file.file_hash));
@@ -405,46 +397,6 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
     }
   }
 };
-
-export const startRenderDiffsQueue = ({ state, commit }) => {
-  const diffFilesToRender = state.diffFiles.filter(
-    (file) =>
-      !file.renderIt &&
-      file.viewer &&
-      (!isCollapsed(file) || file.viewer.name !== diffViewerModes.text),
-  );
-  let currentDiffFileIndex = 0;
-
-  const checkItem = () => {
-    const nextFile = diffFilesToRender[currentDiffFileIndex];
-
-    if (nextFile) {
-      let retryCount = 0;
-      currentDiffFileIndex += 1;
-      commit(types.RENDER_FILE, nextFile);
-
-      const requestIdle = () =>
-        requestIdleCallback((idleDeadline) => {
-          // Wait for at least 5ms before trying to render
-          // or for 5 tries and then force render the file
-          if (idleDeadline.timeRemaining() >= 5 || retryCount > 4) {
-            checkItem();
-          } else {
-            requestIdle();
-            retryCount += 1;
-          }
-        });
-
-      requestIdle();
-    }
-  };
-
-  if (diffFilesToRender.length) {
-    checkItem();
-  }
-};
-
-export const setRenderIt = ({ commit }, file) => commit(types.RENDER_FILE, file);
 
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
@@ -846,7 +798,7 @@ export const toggleFullDiff = ({ dispatch, commit, getters, state }, filePath) =
   }
 };
 
-export function switchToFullDiffFromRenamedFile({ commit, dispatch }, { diffFile }) {
+export function switchToFullDiffFromRenamedFile({ commit }, { diffFile }) {
   return axios
     .get(diffFile.context_lines_path, {
       params: {
@@ -873,8 +825,6 @@ export function switchToFullDiffFromRenamedFile({ commit, dispatch }, { diffFile
         },
       });
       commit(types.SET_CURRENT_VIEW_DIFF_FILE_LINES, { filePath: diffFile.file_path, lines });
-
-      dispatch('startRenderDiffsQueue');
     });
 }
 

@@ -3,6 +3,7 @@
 return unless File.exist?(Rails.root.join('config/click_house.yml'))
 
 raw_config = Rails.application.config_for(:click_house)
+
 return if raw_config.blank?
 
 ClickHouse::Client.configure do |config|

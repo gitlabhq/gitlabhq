@@ -1,0 +1,10 @@
+---
+table_name: group_wiki_repository_states
+description: Separate table for group wiki verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126753
+milestone: '16.3'
+feature_categories:
+- geo_replication
+classes:
+- Geo::GroupWikiRepositoryState
+gitlab_schema: gitlab_main

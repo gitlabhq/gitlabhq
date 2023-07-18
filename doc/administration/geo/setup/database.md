@@ -75,7 +75,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/user/admin_area/geo_nodes.html#common-settings
+   ## https://docs.gitlab.com/ee/administration/geo_nodes.html#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```

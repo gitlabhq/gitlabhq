@@ -25,9 +25,9 @@ module ClickHouse
     ConfigurationError = Class.new(Error)
     DatabaseError = Class.new(Error)
 
-    def self.execute(query, database, configuration = self.configuration)
-      db = configuration.databases[database]
-      raise ConfigurationError, "The database '#{database}' is not configured" unless db
+    # Executes a SELECT database query
+    def self.select(query, database, configuration = self.configuration)
+      db = lookup_database(configuration, database)
 
       response = configuration.http_post_proc.call(
         db.uri.to_s,
@@ -38,6 +38,27 @@ module ClickHouse
       raise DatabaseError, response.body unless response.success?
 
       Formatter.format(configuration.json_parser.parse(response.body))
+    end
+
+    # Executes any kinds of database query without returning any data (INSERT, DELETE)
+    def self.execute(query, database, configuration = self.configuration)
+      db = lookup_database(configuration, database)
+
+      response = configuration.http_post_proc.call(
+        db.uri.to_s,
+        db.headers,
+        query
+      )
+
+      raise DatabaseError, response.body unless response.success?
+
+      true
+    end
+
+    private_class_method def self.lookup_database(configuration, database)
+      configuration.databases[database].tap do |db|
+        raise ConfigurationError, "The database '#{database}' is not configured" unless db
+      end
     end
   end
 end

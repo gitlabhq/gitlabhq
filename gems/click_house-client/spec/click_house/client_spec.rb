@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ClickHouse::Client do
-  describe '#execute' do
+  describe '#select' do
     # Assuming we have a DB table with the following schema
     #
     # CREATE TABLE issues (
@@ -39,7 +39,7 @@ RSpec.describe ClickHouse::Client do
     end
 
     it 'parses the results and returns the data as array of hashes' do
-      result = described_class.execute('SELECT * FROM issues', :test_db, configuration)
+      result = described_class.select('SELECT * FROM issues', :test_db, configuration)
 
       timestamp1 = ActiveSupport::TimeZone["UTC"].parse('2023-06-21 13:33:44')
       timestamp2 = ActiveSupport::TimeZone["UTC"].parse('2023-06-21 13:33:50')
@@ -73,7 +73,7 @@ RSpec.describe ClickHouse::Client do
     context 'when the DB is not configured' do
       it 'raises erro' do
         expect do
-          described_class.execute('SELECT * FROM issues', :different_db, configuration)
+          described_class.select('SELECT * FROM issues', :different_db, configuration)
         end.to raise_error(ClickHouse::Client::ConfigurationError, /not configured/)
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe ClickHouse::Client do
 
       it 'raises error' do
         expect do
-          described_class.execute('SELECT * FROM issues', :test_db, configuration)
+          described_class.select('SELECT * FROM issues', :test_db, configuration)
         end.to raise_error(ClickHouse::Client::DatabaseError, 'some error')
       end
     end

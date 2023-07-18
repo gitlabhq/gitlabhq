@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_workflow do
   include MergeRequestDiffHelpers
   include RepoHelpers
+  include ContentEditorHelpers
 
   let(:project) { create(:project, :repository) }
   let(:merge_request) do
@@ -128,6 +129,30 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
   context 'when adding comments' do
     include_examples 'comment on merge request file'
+
+    context 'when adding a diff suggestion in rich text editor' do
+      it 'works on the Overview tab' do
+        click_diff_line(find_by_scrolling("[id='#{sample_commit.line_code}']"))
+
+        page.within('.js-discussion-note-form') do
+          fill_in(:note_note, with: "```suggestion:-0+0\nchanged line\n```")
+          find('.js-comment-button').click
+        end
+
+        visit(merge_request_path(merge_request))
+        close_rich_text_promo_popover_if_present
+
+        page.within('.notes .discussion') do
+          find('.js-vue-discussion-reply').click
+          click_button "Switch to rich text editing"
+          click_button "Insert suggestion"
+        end
+
+        within '[data-testid="content-editor"]' do
+          expect(page).to have_content('Suggested change From line')
+        end
+      end
+    end
   end
 
   context 'when adding multiline comments' do

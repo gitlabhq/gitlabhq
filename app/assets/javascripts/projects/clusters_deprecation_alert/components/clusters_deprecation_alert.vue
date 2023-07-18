@@ -10,6 +10,7 @@ export default {
   },
   inject: ['message'],
   docsLink: helpPagePath('user/infrastructure/clusters/migrate_to_gitlab_agent.md'),
+  deprecationEpic: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8',
 };
 </script>
 <template>
@@ -17,6 +18,9 @@ export default {
     <gl-sprintf :message="message">
       <template #link="{ content }">
         <gl-link :href="$options.docsLink">{{ content }}</gl-link>
+      </template>
+      <template #deprecationLink="{ content }">
+        <gl-link :href="$options.deprecationEpic">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </gl-alert>

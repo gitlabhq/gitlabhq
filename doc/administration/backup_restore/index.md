@@ -42,7 +42,7 @@ a non-packaged Redis instance, or non-packaged Sidekiq.
 Prerequisites:
 
 - Some time before your migration, consider notifying your users of upcoming
-  scheduled maintenance with a [broadcast message banner](../../user/admin_area/broadcast_messages.md).
+  scheduled maintenance with a [broadcast message banner](../broadcast_messages.md).
 - Ensure your backups are complete and current. Create a complete system-level backup, or
   take a snapshot of all servers involved in the migration, in case destructive commands
   (like `rm`) are run incorrectly.
@@ -214,7 +214,7 @@ To prepare the new server:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Remove the scheduled maintenance [broadcast message banner](../../user/admin_area/broadcast_messages.md).
+1. Remove the scheduled maintenance [broadcast message banner](../broadcast_messages.md).
 
 ## Additional notes
 

@@ -270,7 +270,7 @@ If only one protocol is enabled:
 - GitLab shows a tooltip when you hover over the protocol for the URL, if user action
   (such as adding a SSH key or setting a password) is required:
 
-  ![Project URL with SSH only access](../../user/admin_area/settings/img/restricted_url.png)
+  ![Project URL with SSH only access](../settings/img/restricted_url.png)
 
 GitLab only allows Git actions for the protocols you select.
 
@@ -293,7 +293,7 @@ For example, if:
 - You want clone URLs that look like `https://git.example.com/gitlab/foo/bar.git` instead,
   you can set this setting to `https://git.example.com/gitlab/`.
 
-![Custom Git clone URL for HTTP](../../user/admin_area/settings/img/custom_git_clone_url_for_https_v12_4.png)
+![Custom Git clone URL for HTTP](../settings/img/custom_git_clone_url_for_https_v12_4.png)
 
 To specify a custom Git clone URL for HTTP(S):
 
@@ -321,7 +321,7 @@ This option is enabled by default. By disabling it, both
 [pull mirroring](../../user/project/repository/mirror/pull.md) and [push mirroring](../../user/project/repository/mirror/push.md) no longer
 work in every repository. They can only be re-enabled by an administrator user on a per-project basis.
 
-![Mirror settings](../../user/admin_area/settings/img/mirror_settings_v15_7.png)
+![Mirror settings](../settings/img/mirror_settings_v15_7.png)
 
 ## Configure globally-allowed IP address ranges
 

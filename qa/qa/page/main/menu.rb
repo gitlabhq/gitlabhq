@@ -33,6 +33,9 @@ module QA
           view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
             element :super_sidebar_search_button
             element :stop_impersonation_btn
+            element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
           end
 
           view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
@@ -278,7 +281,19 @@ module QA
         def enable_new_navigation
           Runtime::Logger.info("Enabling super sidebar!")
           return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
+
           return Runtime::Logger.info("Super sidebar is already enabled") if has_css?('[data-testid="super-sidebar"]')
+
+          within_user_menu { click_element(:new_navigation_toggle) }
+        end
+
+        def disable_new_navigation
+          Runtime::Logger.info("Disabling super sidebar!")
+          return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
+
+          unless has_css?('[data-testid="super-sidebar"]')
+            return Runtime::Logger.info("Super sidebar is already disabled")
+          end
 
           within_user_menu { click_element(:new_navigation_toggle) }
         end

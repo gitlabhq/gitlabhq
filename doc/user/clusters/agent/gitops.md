@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/395364) in GitLab 16.1 to prioritize Flux for GitOps.
 
 GitLab integrates [Flux](https://fluxcd.io/flux/) for GitOps.
-To get started with Flux, see the [Flux for GitOps tutorial](gitops/flux_tutorial.md)`
+To get started with Flux, see the [Flux for GitOps tutorial](gitops/flux_tutorial.md).
 
 With GitOps, you can manage containerized clusters and applications from a Git repository that:
 
@@ -76,12 +76,8 @@ For additional repository structure recommendations, see the [Flux documentation
 
 ## Immediate Git repository reconciliation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`.
-On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126527) in GitLab 16.2.
 
 Usually, the Flux source controller reconciles Git repositories at configured intervals.
 This can cause delays between a `git push` and the reconciliation of the cluster state, and results in

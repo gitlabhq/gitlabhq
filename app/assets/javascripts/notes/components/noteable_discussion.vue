@@ -89,7 +89,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters([
       'convertedDisscussionIds',
       'getNoteableData',
@@ -98,8 +97,16 @@ export default {
       'getUserData',
     ]),
     diffFile() {
-      if (!this.discussion.diff_file) return null;
-      return this.getDiffFileByHash(this.discussion.diff_file.file_hash);
+      const diffFile = this.discussion.diff_file;
+      if (!diffFile) return null;
+
+      return {
+        ...diffFile,
+        view_path: window.location.href.replace(
+          /\/-\/merge_requests.*/,
+          `/-/blob/${diffFile.content_sha}/${diffFile.new_path}`,
+        ),
+      };
     },
     currentUser() {
       return this.getUserData;

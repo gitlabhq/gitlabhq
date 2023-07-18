@@ -137,8 +137,8 @@ gdk-qa-smoke-with-load-balancer:
   artifacts:
     paths:
       - log
-    expire_in: 7 days
-    when: always
+    reports:
+      dotenv: ""
   rules:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
@@ -165,8 +165,8 @@ gdk-qa-reliable-with-load-balancer:
   artifacts:
     paths:
       - log
-    expire_in: 7 days
-    when: always
+    reports:
+      dotenv: ""
   rules:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
