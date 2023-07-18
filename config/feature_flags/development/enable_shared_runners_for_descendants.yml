@@ -1,8 +1,0 @@
----
-name: enable_shared_runners_for_descendants
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124728
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416379
-milestone: '16.2'
-type: development
-group: group::runner
-default_enabled: false

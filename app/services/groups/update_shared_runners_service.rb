@@ -54,8 +54,6 @@ module Groups
         shared_runners_enabled: enabled,
         allow_descendants_override_disabled_shared_runners: false)
 
-      return if enabled && Feature.disabled?(:enable_shared_runners_for_descendants, group)
-
       group_ids = group.descendants
       unless group_ids.empty?
         Group.by_id(group_ids).update_all(

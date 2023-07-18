@@ -17,10 +17,11 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
 
     it 'returns all strategies in preference order' do
       if Gitlab.ee?
-        is_expected.to eq(
-          [AutoMergeService::STRATEGY_MERGE_TRAIN,
+        is_expected.to contain_exactly(
+          AutoMergeService::STRATEGY_MERGE_TRAIN,
            AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_PIPELINE_SUCCEEDS,
-           AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS])
+           AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
+           AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
       else
         is_expected.to eq([AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS])
       end
@@ -74,11 +75,15 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
       merge_request.update_head_pipeline
     end
 
-    it 'returns preferred strategy' do
+    it 'returns preferred strategy', if: Gitlab.ee? do
+      is_expected.to eq('merge_when_checks_pass')
+    end
+
+    it 'returns preferred strategy', unless: Gitlab.ee? do
       is_expected.to eq('merge_when_pipeline_succeeds')
     end
 
-    context 'when the head piipeline succeeded' do
+    context 'when the head pipeline succeeded' do
       let(:pipeline_status) { :success }
 
       it 'returns available strategies' do
@@ -142,7 +147,11 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     context 'when strategy is not specified' do
       let(:strategy) {}
 
-      it 'chooses the most preferred strategy' do
+      it 'chooses the most preferred strategy', if: Gitlab.ee? do
+        is_expected.to eq(:merge_when_checks_pass)
+      end
+
+      it 'chooses the most preferred strategy', unless: Gitlab.ee? do
         is_expected.to eq(:merge_when_pipeline_succeeds)
       end
     end

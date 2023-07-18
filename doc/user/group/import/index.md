@@ -66,6 +66,8 @@ transfer.
 
 ### Limits
 
+Hardcoded limits apply on migration by direct transfer.
+
 | Limit       | Description                                                                                                                                                                     |
 |:------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 6           | Maximum number of migrations permitted by a destination GitLab instance per minute per user. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9. |

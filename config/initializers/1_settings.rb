@@ -840,15 +840,18 @@ Gitlab.ee do
   Settings.cron_jobs['abandoned_trial_emails'] ||= {}
   Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
   Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
-  Settings.cron_jobs['package_metadata_sync_worker'] ||= {}
-  Settings.cron_jobs['package_metadata_sync_worker']['cron'] ||= "*/5 * * * *"
-  Settings.cron_jobs['package_metadata_sync_worker']['job_class'] = 'PackageMetadata::SyncWorker'
+  Settings.cron_jobs['package_metadata_licenses_sync_worker'] ||= {}
+  Settings.cron_jobs['package_metadata_licenses_sync_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['package_metadata_licenses_sync_worker']['job_class'] = 'PackageMetadata::LicensesSyncWorker'
   Settings.cron_jobs['compliance_violations_consistency_worker'] ||= {}
   Settings.cron_jobs['compliance_violations_consistency_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['compliance_violations_consistency_worker']['job_class'] = 'ComplianceManagement::MergeRequests::ComplianceViolationsConsistencyWorker'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
+  Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
+  Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'
 
   Gitlab.com do
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= {}

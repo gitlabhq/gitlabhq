@@ -311,6 +311,7 @@ let shouldExcludeFromCompliling = (modulePath) =>
 if (EXPLICIT_VUE_VERSION) {
   Object.assign(alias, {
     '@gitlab/ui/scss_to_js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/scss_to_js'),
+    '@gitlab/ui/dist/tokens/js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/dist/tokens/js'),
     '@gitlab/ui/dist': '@gitlab/ui/src',
     '@gitlab/ui': '@gitlab/ui/src',
   });

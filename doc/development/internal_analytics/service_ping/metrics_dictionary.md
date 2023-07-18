@@ -150,7 +150,7 @@ For more information about the aggregation type of each feature, see the [`commo
 We use the following categories to classify a metric:
 
 - `operational`: Required data for operational purposes.
-- `optional`: Default value for a metric. Data that is optional to collect. This can be [enabled or disabled](../../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics) in the Admin Area.
+- `optional`: Default value for a metric. Data that is optional to collect. This can be [enabled or disabled](../../../administration/settings/usage_statistics.md#enable-or-disable-usage-statistics) in the Admin Area.
 - `subscription`: Data related to licensing.
 - `standard`: Standard set of identifiers that are included when collecting data.
 

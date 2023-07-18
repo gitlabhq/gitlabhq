@@ -6,10 +6,8 @@ info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering pr
 
 # Machine learning model experiments **(FREE)**
 
-FLAG:
-On self-managed GitLab, model experiment tracking is disabled by default.
-To enable the feature, ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`.
-On GitLab.com, this feature is enabled on all projects.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 15.11 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default. To enable the feature, ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95373) in GitLab 16.2.
 
 NOTE:
 Model experiment tracking is an [experimental feature](../../../../policy/experiment-beta-support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.

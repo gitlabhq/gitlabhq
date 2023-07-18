@@ -45,7 +45,17 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
           subject
 
           expect(merge_request).to be_auto_merge_enabled
-          expect(merge_request.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+
+          if Gitlab.ee?
+            expect(merge_request.auto_merge_strategy).to(
+              eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
+            )
+          else
+            expect(merge_request.auto_merge_strategy).to(
+              eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+            )
+          end
+
           expect(merge_request).not_to be_merged
         end
       end
@@ -108,7 +118,11 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
         merge_request.update_head_pipeline
       end
 
-      it 'fetches perferred auto merge strategy' do
+      it 'fetches preferred auto merge strategy', if: Gitlab.ee? do
+        is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
+      end
+
+      it 'fetches preferred auto merge strategy', unless: Gitlab.ee? do
         is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
       end
     end

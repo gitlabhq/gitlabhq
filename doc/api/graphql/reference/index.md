@@ -26199,6 +26199,7 @@ Representation of whether a GitLab merge request can be merged.
 | ----- | ----------- |
 | <a id="mergestrategyenumadd_to_merge_train_when_pipeline_succeeds"></a>`ADD_TO_MERGE_TRAIN_WHEN_PIPELINE_SUCCEEDS` | Use the add_to_merge_train_when_pipeline_succeeds merge strategy. |
 | <a id="mergestrategyenummerge_train"></a>`MERGE_TRAIN` | Use the merge_train merge strategy. |
+| <a id="mergestrategyenummerge_when_checks_pass"></a>`MERGE_WHEN_CHECKS_PASS` | Use the merge_when_checks_pass merge strategy. |
 | <a id="mergestrategyenummerge_when_pipeline_succeeds"></a>`MERGE_WHEN_PIPELINE_SUCCEEDS` | Use the merge_when_pipeline_succeeds merge strategy. |
 
 ### `MilestoneSort`

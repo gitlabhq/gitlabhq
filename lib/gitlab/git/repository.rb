@@ -406,20 +406,13 @@ module Gitlab
         return [] if newrevs.empty?
 
         newrevs = newrevs.uniq.sort
-        if Feature.enabled?(:fix_new_blobs_memoization, container)
-          @new_blobs ||= {}
-          @new_blobs[newrevs] ||= blobs(
-            ['--not', '--all', '--not'] + newrevs,
-            with_paths: true,
-            dynamic_timeout: dynamic_timeout
-          ).to_a
-        else
-          @new_blobs ||= Hash.new do |h, revs|
-            h[revs] = blobs(['--not', '--all', '--not'] + newrevs, with_paths: true, dynamic_timeout: dynamic_timeout)
-          end
 
-          @new_blobs[newrevs]
-        end
+        @new_blobs ||= {}
+        @new_blobs[newrevs] ||= blobs(
+          ['--not', '--all', '--not'] + newrevs,
+          with_paths: true,
+          dynamic_timeout: dynamic_timeout
+        ).to_a
       end
 
       # List blobs reachable via a set of revisions. Supports the

@@ -96,11 +96,8 @@ the following sections and tables provide an alternative.
 
 ## `pipeline` rule type
 
-> The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_type`.
-On GitLab.com, this feature is not available.
+> - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
+> - The `branch_type` field was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413062) in GitLab 16.2.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -114,11 +111,8 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 ## `schedule` rule type
 
-> The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_type`.
-On GitLab.com, this feature is not available.
+> - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
+> - The `branch_type` field was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413062) in GitLab 16.2.
 
 This rule enforces the defined actions and schedules a scan on the provided date/time.
 

@@ -3259,6 +3259,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#skipped_mergeable_checks' do
+    subject { build_stubbed(:merge_request).skipped_mergeable_checks(options) }
+
+    where(:options, :skip_ci_check) do
+      {}                              | false
+      { auto_merge_requested: false } | false
+      { auto_merge_requested: true }  | true
+    end
+
+    with_them do
+      it { is_expected.to include(skip_ci_check: skip_ci_check) }
+    end
+  end
+
   describe '#check_mergeability' do
     let(:mergeability_service) { double }
 

@@ -67,22 +67,6 @@ RSpec.describe Groups::UpdateSharedRunnersService, feature_category: :groups_and
               .and change { sub_group.shared_runners_enabled }.from(false).to(true)
               .and change { project.shared_runners_enabled }.from(false).to(true)
           end
-
-          context 'when enable_shared_runners_for_descendants feature flag is disabled' do
-            before do
-              stub_feature_flags(enable_shared_runners_for_descendants: false)
-            end
-
-            it 'enables shared Runners only for itself' do
-              expect do
-                expect(subject[:status]).to eq(:success)
-
-                reload_models(group, sub_group, project)
-              end.to change { group.shared_runners_enabled }.from(false).to(true)
-                .and not_change { sub_group.shared_runners_enabled }.from(false)
-                .and not_change { project.shared_runners_enabled }.from(false)
-            end
-          end
         end
 
         context 'when group has pending builds' do

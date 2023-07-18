@@ -20327,7 +20327,7 @@ CREATE TABLE pm_affected_packages (
     updated_at timestamp with time zone NOT NULL,
     purl_type smallint NOT NULL,
     package_name text NOT NULL,
-    distro_version text,
+    distro_version text DEFAULT ''::text NOT NULL,
     solution text,
     affected_range text NOT NULL,
     fixed_versions text[] DEFAULT '{}'::text[],

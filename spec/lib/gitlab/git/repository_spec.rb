@@ -1176,44 +1176,25 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     subject { repository.new_blobs(newrevs) }
 
     describe 'memoization' do
-      context 'when the fix_new_blobs_memoization feature flag is disabled' do
-        before do
-          stub_feature_flags(fix_new_blobs_memoization: false)
-        end
-
-        context 'when called with different revisions' do
-          it 'calls blobs with the same arguments and memoizes the result' do # for documenting bug behaviour
-            expect(repository).to receive(:blobs).twice.with(["--not", "--all", "--not", "revision1"], kind_of(Hash))
-              .and_return(['first_result'], ['second_result'])
-            expect(repository.new_blobs(['revision1'])).to eq(['first_result'])
-            expect(repository.new_blobs(['revision2'])).to eq(['second_result'])
-            expect(repository.new_blobs(['revision1'])).to eq(['first_result'])
-            expect(repository.new_blobs(['revision2'])).to eq(['second_result'])
-          end
-        end
+      before do
+        allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision1"], kind_of(Hash))
+          .and_return(['first result'])
+        repository.new_blobs(['revision1'])
       end
 
-      context 'when the fix_new_blobs_memoization feature flag is enabled' do
+      it 'calls blobs only once' do
+        expect(repository.new_blobs(['revision1'])).to eq(['first result'])
+      end
+
+      context 'when called with a different revision' do
         before do
-          allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision1"], kind_of(Hash))
-            .and_return(['first result'])
-          repository.new_blobs(['revision1'])
+          allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision2"], kind_of(Hash))
+            .and_return(['second result'])
+          repository.new_blobs(['revision2'])
         end
 
-        it 'calls blobs only once' do
-          expect(repository.new_blobs(['revision1'])).to eq(['first result'])
-        end
-
-        context 'when called with a different revision' do
-          before do
-            allow(repository).to receive(:blobs).once.with(["--not", "--all", "--not", "revision2"], kind_of(Hash))
-              .and_return(['second result'])
-            repository.new_blobs(['revision2'])
-          end
-
-          it 'memoizes the different arguments' do
-            expect(repository.new_blobs(['revision2'])).to eq(['second result'])
-          end
+        it 'memoizes the different arguments' do
+          expect(repository.new_blobs(['revision2'])).to eq(['second result'])
         end
       end
     end

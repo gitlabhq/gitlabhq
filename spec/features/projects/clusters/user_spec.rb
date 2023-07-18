@@ -25,7 +25,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :deployment_management do
     before do
       visit project_clusters_path(project)
 
-      click_button(class: 'dropdown-toggle-split')
+      click_button(class: 'gl-new-dropdown-toggle')
       click_link 'Connect a cluster (certificate - deprecated)'
     end
 

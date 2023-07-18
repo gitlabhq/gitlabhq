@@ -21,14 +21,14 @@ To see DevOps Reports:
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
 
 NOTE:
-To see the DevOps score, you must activate your GitLab instance's [Service Ping](../../user/admin_area/settings/usage_statistics.md#service-ping). DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
+To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
 
 You can use the DevOps score to compare your DevOps status to other organizations.
 
 The DevOps Score tab displays usage of major GitLab features on your instance over
 the last 30 days, averaged over the number of billable users in that time period.
 You can also see the Leader usage score, calculated from top-performing instances based on
-[Service Ping data](../../user/admin_area/settings/usage_statistics.md#service-ping) that GitLab has collected.
+[Service Ping data](../settings/usage_statistics.md#service-ping) that GitLab has collected.
 Your score is compared to the lead score of each feature and then expressed
 as a percentage at the bottom of said feature. Your overall **DevOps Score** is an average of your
 feature scores.

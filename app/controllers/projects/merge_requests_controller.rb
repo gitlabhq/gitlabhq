@@ -508,7 +508,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def merge!
     # Disable the CI check if auto_merge_strategy is specified since we have
     # to wait until CI completes to know
-    unless @merge_request.mergeable?(skip_ci_check: auto_merge_requested?)
+    skipped_checks = @merge_request.skipped_mergeable_checks(
+      auto_merge_requested: auto_merge_requested?,
+      auto_merge_strategy: params[:auto_merge_strategy]
+    )
+
+    unless @merge_request.mergeable?(**skipped_checks)
       return :failed
     end
 

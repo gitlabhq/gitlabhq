@@ -15,6 +15,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
 > - APIs for custom HTTP headers for instance level streaming destinations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404560) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
+> - User-specified destination name API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413894) in GitLab 16.2.
 
 Audit event streaming destinations can be maintained using a GraphQL API.
 
@@ -39,6 +40,7 @@ mutation {
     errors
     externalAuditEventDestination {
       id
+      name
       destinationUrl
       verificationToken
       group {
@@ -60,6 +62,28 @@ mutation {
     errors
     externalAuditEventDestination {
       id
+      name
+      destinationUrl
+      verificationToken
+      group {
+        name
+      }
+    }
+  }
+}
+```
+
+You can optionally specify your own destination name (instead of the default GitLab-generated one) using the GraphQL
+`externalAuditEventDestinationCreate`
+mutation. Name length must not exceed 72 characters and trailing whitespace are not trimmed. This value should be unique scoped to a group. For example:
+
+```graphql
+mutation {
+  externalAuditEventDestinationCreate(input: { destinationUrl: "https://mydomain.io/endpoint/ingest", name: "destination-name-here", groupPath: "my-group" }) {
+    errors
+    externalAuditEventDestination {
+      id
+      name
       destinationUrl
       verificationToken
       group {
@@ -112,6 +136,7 @@ mutation {
     instanceExternalAuditEventDestination {
       destinationUrl
       id
+      name
       verificationToken
     }
   }
@@ -122,6 +147,24 @@ Event streaming is enabled if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
+
+You can optionally specify your own destination name (instead of the default GitLab-generated one) using the GraphQL
+`instanceExternalAuditEventDestinationCreate`
+mutation. Name length must not exceed 72 characters and trailing whitespace are not trimmed. This value should be unique. For example:
+
+```graphql
+mutation {
+  instanceExternalAuditEventDestinationCreate(input: { destinationUrl: "https://mydomain.io/endpoint/ingest", name: "destination-name-here"}) {
+    errors
+    instanceExternalAuditEventDestination {
+      destinationUrl
+      id
+      name
+      verificationToken
+    }
+  }
+}
+```
 
 Instance administrators can add an HTTP header using the GraphQL `auditEventsStreamingInstanceHeadersCreate` mutation. You can retrieve the destination ID
 by [listing all the streaming destinations](#list-streaming-destinations) for the instance or from the mutation above.
@@ -201,6 +244,7 @@ query {
         destinationUrl
         verificationToken
         id
+        name
         headers {
           nodes {
             key
@@ -238,6 +282,7 @@ query {
   instanceExternalAuditEventDestinations {
     nodes {
       id
+      name
       destinationUrl
       verificationToken
       headers {
@@ -304,8 +349,20 @@ by [listing all the custom HTTP headers](#list-streaming-destinations) for the g
 
 ```graphql
 mutation {
-  externalAuditEventDestinationDestroy(input: { id: destination }) {
+  externalAuditEventDestinationUpdate(input: { 
+    id:"gid://gitlab/AuditEvents::ExternalAuditEventDestination/1", 
+    destinationUrl: "https://www.new-domain.com/webhook",
+    name: "destination-name"} ) {
     errors
+    externalAuditEventDestination {
+      id
+      name
+      destinationUrl
+      verificationToken
+      group {
+        name
+      }
+    }
   }
 }
 ```
@@ -347,11 +404,15 @@ by [listing all the external destinations](#list-streaming-destinations) for the
 
 ```graphql
 mutation {
-  instanceExternalAuditEventDestinationUpdate(input: { id: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1", destinationUrl: "https://www.new-domain.com/webhook"}) {
+  instanceExternalAuditEventDestinationUpdate(input: { 
+    id: "gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1",
+    destinationUrl: "https://www.new-domain.com/webhook",
+    name: "destination-name"}) {
     errors
     instanceExternalAuditEventDestination {
       destinationUrl
       id
+      name
       verificationToken
     }
   }

@@ -539,7 +539,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, updates, message = service.execute(content, issuable)
 
         expect(updates).to eq(merge: merge_request.diff_head_sha)
-        expect(message).to eq('Scheduled to merge this merge request (Merge when pipeline succeeds).')
+
+        if Gitlab.ee?
+          expect(message).to eq('Scheduled to merge this merge request (Merge when checks pass).')
+        else
+          expect(message).to eq('Scheduled to merge this merge request (Merge when pipeline succeeds).')
+        end
       end
     end
 

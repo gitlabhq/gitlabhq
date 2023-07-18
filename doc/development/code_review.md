@@ -400,6 +400,8 @@ Maintainers are the DRI of assuring that the acceptance criteria of a merge requ
 In general, [quality is everyone's responsibility](https://about.gitlab.com/handbook/engineering/quality/),
 but maintainers of an MR are held responsible for **ensuring** that an MR meets those general quality standards.
 
+This includes [avoiding the creation of technical debt in follow-up issues](contributing/issue_workflow.md#technical-debt-in-follow-up-issues).
+
 If a maintainer feels that an MR is substantial enough, or requires a [domain expert](#domain-experts),
 maintainers have the discretion to request a review from another reviewer, or maintainer. Here are some
 examples of maintainers proactively doing this during review:
