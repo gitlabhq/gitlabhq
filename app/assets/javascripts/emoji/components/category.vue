@@ -55,7 +55,7 @@ export default {
       />
     </template>
     <p v-else>
-      {{ s__('AwardEmoji|No emojis found.') }}
+      {{ s__('AwardEmoji|No emoji found.') }}
     </p>
   </gl-intersection-observer>
 </template>

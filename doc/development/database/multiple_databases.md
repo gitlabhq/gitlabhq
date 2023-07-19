@@ -628,3 +628,56 @@ If this task was run against a GitLab setup that uses only a single database
 for both `gitlab_main` and `gitlab_ci` tables, then no tables will be locked.
 
 To undo the operation, run the opposite Rake task: `gitlab:db:unlock_writes`.
+
+## Truncating tables
+
+When the databases `main` and `ci` are fully split, we can free up disk
+space by truncating tables. This results in a smaller data set: For example,
+the data in `users` table on CI database is no longer read and also no
+longer updated. So this data can be removed by truncating the tables.
+
+For this purpose, GitLab provides two Rake tasks, one for each database:
+
+- `gitlab:db:truncate_legacy_tables:main` will truncate the CI tables in Main database.
+- `gitlab:db:truncate_legacy_tables:ci` will truncate the Main tables in CI database.
+
+NOTE:
+These tasks can only be run when the tables in the database are
+[locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
+
+WARNING:
+The examples in this section use `DRY_RUN=true`. This ensures no data is actually
+truncated. GitLab highly recommends to have a backup available before you run any of
+these tasks without `DRY_RUN=true`.
+
+These tasks have the option to see what they do without actually changing the
+data:
+
+```shell
+$ sudo DRY_RUN=true gitlab-rake gitlab:db:truncate_legacy_tables:main
+I, [2023-07-14T17:08:06.665151 #92505]  INFO -- : DRY RUN:
+I, [2023-07-14T17:08:06.761586 #92505]  INFO -- : Truncating legacy tables for the database main
+I, [2023-07-14T17:08:06.761709 #92505]  INFO -- : SELECT set_config('lock_writes.ci_build_needs', 'false', false)
+I, [2023-07-14T17:08:06.765272 #92505]  INFO -- : SELECT set_config('lock_writes.ci_build_pending_states', 'false', false)
+I, [2023-07-14T17:08:06.768220 #92505]  INFO -- : SELECT set_config('lock_writes.ci_build_report_results', 'false', false)
+[...]
+I, [2023-07-14T17:08:06.957294 #92505]  INFO -- : TRUNCATE TABLE ci_build_needs, ci_build_pending_states, ci_build_report_results, ci_build_trace_chunks, ci_build_trace_metadata, ci_builds, ci_builds_metadata, ci_builds_runner_session, ci_cost_settings, ci_daily_build_group_report_results, ci_deleted_objects, ci_editor_ai_conversation_messages, ci_freeze_periods, ci_group_variables, ci_instance_variables, ci_job_artifact_states, ci_job_artifacts, ci_job_token_project_scope_links, ci_job_variables, ci_minutes_additional_packs, ci_namespace_mirrors, ci_namespace_monthly_usages, ci_partitions, ci_pending_builds, ci_pipeline_artifacts, ci_pipeline_chat_data, ci_pipeline_messages, ci_pipeline_metadata, ci_pipeline_schedule_variables, ci_pipeline_schedules, ci_pipeline_variables, ci_pipelines, ci_pipelines_config, ci_platform_metrics, ci_project_mirrors, ci_project_monthly_usages, ci_refs, ci_resource_groups, ci_resources, ci_runner_machines, ci_runner_namespaces, ci_runner_projects, ci_runner_versions, ci_runners, ci_running_builds, ci_secure_file_states, ci_secure_files, ci_sources_pipelines, ci_sources_projects, ci_stages, ci_subscriptions_projects, ci_trigger_requests, ci_triggers, ci_unit_test_failures, ci_unit_tests, ci_variables, external_pull_requests, p_ci_builds, p_ci_builds_metadata, p_ci_job_annotations, p_ci_runner_machine_builds, taggings, tags RESTRICT
+```
+
+The tasks will first find out the tables that need to be truncated. Truncation will
+happen in stages because we need to limit the amount of data removed in one database
+transaction. The tables are processed in a specific order depending on the definition
+of the foreign keys. The number of tables processed in one stage can be changed by
+adding a number when invoking the task. The default value is 5:
+
+```shell
+sudo DRY_RUN=true gitlab-rake gitlab:db:truncate_legacy_tables:main\[10\]
+```
+
+It is also possible to limit the number of tables to be truncated by setting the `UNTIL_TABLE`
+variable. For example in this case, the process will stop when `ci_unit_test_failures` has been
+truncated:
+
+```shell
+sudo DRY_RUN=true UNTIL_TABLE=ci_unit_test_failures gitlab-rake gitlab:db:truncate_legacy_tables:main
+```

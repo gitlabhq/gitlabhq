@@ -499,7 +499,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
         expect(result).to eq({
           status: :error,
-          message: "Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'."
+          message: "Name can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'."
         })
       end
     end

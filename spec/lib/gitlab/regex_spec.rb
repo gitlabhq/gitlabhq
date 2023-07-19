@@ -65,13 +65,13 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
   describe '.project_name_regex_message' do
     subject { described_class.project_name_regex_message }
 
-    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'.") }
+    it { is_expected.to eq("can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'.") }
   end
 
   describe '.group_name_regex_message' do
     subject { described_class.group_name_regex_message }
 
-    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
+    it { is_expected.to eq("can contain only letters, digits, emoji, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
   end
 
   describe '.bulk_import_destination_namespace_path_regex_message' do

@@ -47,7 +47,7 @@ module Mutations
         argument :award_emoji_widget,
                  ::Types::WorkItems::Widgets::AwardEmojiUpdateInputType,
                  required: false,
-                 description: 'Input for award emoji widget.'
+                 description: 'Input for emoji reactions widget.'
       end
     end
   end

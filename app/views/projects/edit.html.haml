@@ -25,7 +25,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default award emoji.')
+    %p= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions.')
 
   .settings-content
     = form_for @project, html: { multipart: true, class: "sharing-permissions-form", id: reduce_visibility_form_id }, authenticity_token: true do |f|

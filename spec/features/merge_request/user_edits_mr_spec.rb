@@ -184,11 +184,6 @@ RSpec.describe 'Merge request > User edits MR', feature_category: :code_review_w
       it 'allows to unselect "Remove source branch"', :js do
         expect(merge_request.merge_params['force_remove_source_branch']).to be_truthy
 
-        begin
-          visit edit_project_merge_request_path(target_project, merge_request)
-        rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError
-        end
-
         uncheck 'Delete source branch when merge request is accepted'
 
         click_button 'Save changes'

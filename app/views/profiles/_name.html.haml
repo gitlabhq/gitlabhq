@@ -4,6 +4,6 @@
   %small.form-text.text-gl-muted
     = s_("Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you.") % { provider_label: attribute_provider_label(:name) }
 - else
-  = form.text_field :name, class: 'gl-form-input form-control', required: true, title: s_("Profiles|Using emojis in names seems fun, but please try to set a status message instead")
+  = form.text_field :name, class: 'gl-form-input form-control', required: true, title: s_("Profiles|Using emoji in names seems fun, but please try to set a status message instead")
   %small.form-text.text-gl-muted
     = s_("Profiles|Enter your name, so people you know can recognize you.")

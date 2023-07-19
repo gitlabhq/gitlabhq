@@ -221,7 +221,7 @@ module Types
 
     field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
       null: true,
-      description: 'List of award emojis associated with the merge request.'
+      description: 'List of emoji reactions associated with the merge request.'
 
     field :prepared_at, Types::TimeType, null: true,
                                          description: 'Timestamp of when the merge request was prepared.'

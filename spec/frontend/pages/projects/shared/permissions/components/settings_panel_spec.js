@@ -678,7 +678,7 @@ describe('Settings Panel', () => {
   });
 
   describe('Default award emojis', () => {
-    it('should show the "Show default award emojis" input', () => {
+    it('should show the "Show default emoji reactions" input', () => {
       wrapper = mountComponent();
 
       expect(findShowDefaultAwardEmojis().exists()).toBe(true);

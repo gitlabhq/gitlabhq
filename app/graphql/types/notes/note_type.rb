@@ -43,7 +43,7 @@ module Types
 
       field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
         null: true,
-        description: 'List of award emojis associated with the note.'
+        description: 'List of emoji reactions associated with the note.'
 
       field :confidential, GraphQL::Types::Boolean,
         null: true,

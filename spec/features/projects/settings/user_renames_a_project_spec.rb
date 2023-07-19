@@ -61,7 +61,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
       it 'shows error for invalid project name' do
         change_name(project, '🧮 foo bar ☁️')
         expect(page).to have_field 'Project name', with: '🧮 foo bar ☁️'
-        expect(page).not_to have_content "Name can contain only letters, digits, emojis '_', '.', dash and space. It must start with letter, digit, emoji or '_'."
+        expect(page).not_to have_content "Name can contain only letters, digits, emoji '_', '.', dash and space. It must start with letter, digit, emoji or '_'."
       end
     end
   end

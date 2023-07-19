@@ -1020,10 +1020,10 @@ export default {
         v-model="showDefaultAwardEmojis"
         name="project[project_setting_attributes][show_default_award_emojis]"
       >
-        {{ s__('ProjectSettings|Show default award emojis') }}
+        {{ s__('ProjectSettings|Show default emoji reactions') }}
         <template #help>{{
           s__(
-            'ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets.',
+            'ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets.',
           )
         }}</template>
       </gl-form-checkbox>

@@ -6968,7 +6968,7 @@ msgstr ""
 msgid "Awaiting user signup"
 msgstr ""
 
-msgid "AwardEmoji|No emojis found."
+msgid "AwardEmoji|No emoji found."
 msgstr ""
 
 msgid "Back"
@@ -9694,7 +9694,7 @@ msgstr ""
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
-msgid "Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default award emoji."
+msgid "Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions."
 msgstr ""
 
 msgid "Choose what content you want to see on a group’s overview page."
@@ -11202,9 +11202,6 @@ msgid "CodeOwners|Show all"
 msgstr ""
 
 msgid "CodeOwner|Pattern"
-msgstr ""
-
-msgid "CodeQuality|New code quality degradations on this line"
 msgstr ""
 
 msgid "CodeSuggestionsAlert|Code faster and more efficiently with AI-powered code suggestions in VS Code. 13 languages are supported, including JavaScript, Python, Go, Java, and Kotlin. Enable Code Suggestions in your %{preference_link_start}user profile preferences%{link_end} or %{docs_link_start}see the documentation%{link_end} to learn more."
@@ -24911,7 +24908,7 @@ msgstr ""
 msgid "Invalid hash"
 msgstr ""
 
-msgid "Invalid input, please avoid emojis"
+msgid "Invalid input, please avoid emoji"
 msgstr ""
 
 msgid "Invalid login or password"
@@ -29844,7 +29841,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-msgid "Name can contain only lowercase or uppercase letters, digits, emojis, spaces, dots, underscores, dashes, or pluses."
+msgid "Name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses."
 msgstr ""
 
 msgid "Name can't be blank"
@@ -29895,13 +29892,13 @@ msgstr ""
 msgid "NamespaceLimits|%{linkStart}%{username}%{linkEnd} changed the limit to %{limit} at %{date}"
 msgstr ""
 
-msgid "NamespaceLimits|Add minimum free storage amount (in GiB) that will be used to enforce storage usage for namespaces on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
+msgid "NamespaceLimits|Add minimum free storage amount (in MiB) that will be used to enforce storage usage for namespaces on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
 msgstr ""
 
-msgid "NamespaceLimits|Add minimum free storage amount (in GiB) that will be used to set the dashboard limit for namespaces on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
+msgid "NamespaceLimits|Add minimum free storage amount (in MiB) that will be used to set the dashboard limit for namespaces on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
 msgstr ""
 
-msgid "NamespaceLimits|Add minimum free storage amount (in GiB) that will be used to show notifications for namespace on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
+msgid "NamespaceLimits|Add minimum free storage amount (in MiB) that will be used to show notifications for namespace on free plan. To remove the limit, set the value to 0 and click \"Update limit\" button."
 msgstr ""
 
 msgid "NamespaceLimits|Confirm deletion"
@@ -34961,10 +34958,10 @@ msgstr ""
 msgid "ProductAnalytics|All Sessions Compared"
 msgstr ""
 
-msgid "ProductAnalytics|An error occured while loading the %{panelTitle} panel."
+msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
 msgstr ""
 
-msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
+msgid "ProductAnalytics|An error occurred while loading the %{panelTitle} panel."
 msgstr ""
 
 msgid "ProductAnalytics|Analyze your product with Product Analytics"
@@ -35543,7 +35540,7 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
-msgid "Profiles|Using emojis in names seems fun, but please try to set a status message instead"
+msgid "Profiles|Using emoji in names seems fun, but please try to set a status message instead"
 msgstr ""
 
 msgid "Profiles|Website url"
@@ -36113,7 +36110,7 @@ msgstr ""
 msgid "ProjectSettings|Allow anyone to pull from Package Registry"
 msgstr ""
 
-msgid "ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets."
+msgid "ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets."
 msgstr ""
 
 msgid "ProjectSettings|Analytics"
@@ -36437,7 +36434,7 @@ msgstr ""
 msgid "ProjectSettings|Share code with others outside the project."
 msgstr ""
 
-msgid "ProjectSettings|Show default award emojis"
+msgid "ProjectSettings|Show default emoji reactions"
 msgstr ""
 
 msgid "ProjectSettings|Show link to create or view a merge request when pushing from the command line"
@@ -46711,7 +46708,7 @@ msgstr ""
 msgid "There was a problem fetching branches."
 msgstr ""
 
-msgid "There was a problem fetching emojis."
+msgid "There was a problem fetching emoji."
 msgstr ""
 
 msgid "There was a problem fetching epics."

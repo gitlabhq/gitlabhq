@@ -122,7 +122,7 @@ describe('EmojiToken', () => {
 
         it('calls `createAlert`', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message: 'There was a problem fetching emojis.',
+            message: 'There was a problem fetching emoji.',
           });
         });
 

@@ -328,7 +328,7 @@ module Gitlab
     end
 
     def project_name_regex_message
-      "can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. " \
+      "can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces. " \
       "It must start with a letter, digit, emoji, or '_'."
     end
 
@@ -350,7 +350,7 @@ module Gitlab
     end
 
     def group_name_regex_message
-      "can contain only letters, digits, emojis, '_', '.', dash, space, parenthesis. " \
+      "can contain only letters, digits, emoji, '_', '.', dash, space, parenthesis. " \
       "It must start with letter, digit, emoji or '_'."
     end
 

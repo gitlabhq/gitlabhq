@@ -279,8 +279,20 @@ Dangerfile
 
 ^[Product Analytics] @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_visualization_designer.vue
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/dashboards_list.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualization_designer/selectors/product_analytics/
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/column_chart.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/data_table.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/single_stat.vue
 /ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/
+/ee/app/assets/javascripts/analytics/analytics_dashboards/index.js
+/ee/app/assets/javascripts/analytics/analytics_dashboards/router.js
+/ee/app/assets/javascripts/analytics/analytics_dashboards/constants.js
+/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_product_analytics_dashboards.query.graphql
+/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_product_analytics_dashboard.query.graphql
+/ee/app/assets/javascripts/analytics/analytics_dashboards/graphql/queries/get_all_product_analytics_visualizations.query.graphql
 /ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/customizable_dashboard.vue
 /ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
 /ee/app/assets/javascripts/product_analytics/
