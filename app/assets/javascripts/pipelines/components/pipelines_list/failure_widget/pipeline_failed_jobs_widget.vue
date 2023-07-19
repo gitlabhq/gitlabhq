@@ -31,6 +31,10 @@ export default {
       required: true,
       type: String,
     },
+    projectPath: {
+      required: true,
+      type: String,
+    },
   },
   data() {
     return {
@@ -100,6 +104,7 @@ export default {
         v-if="isExpanded"
         :is-pipeline-active="isPipelineActive"
         :pipeline-iid="pipelineIid"
+        :project-path="projectPath"
         @failed-jobs-count="setFailedJobsCount"
       />
     </gl-collapse>

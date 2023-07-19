@@ -5,6 +5,7 @@ import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineOperations from '~/pipelines/components/pipelines_list/pipeline_operations.vue';
 import PipelineTriggerer from '~/pipelines/components/pipelines_list/pipeline_triggerer.vue';
 import PipelineUrl from '~/pipelines/components/pipelines_list/pipeline_url.vue';
@@ -74,6 +75,7 @@ describe('Pipelines Table', () => {
   const findTimeAgo = () => wrapper.findComponent(PipelinesTimeago);
   const findActions = () => wrapper.findComponent(PipelineOperations);
 
+  const findPipelineFailureWidget = () => wrapper.findComponent(PipelineFailedJobsWidget);
   const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findStatusTh = () => wrapper.findByTestId('status-th');
   const findPipelineTh = () => wrapper.findByTestId('pipeline-th');
@@ -189,6 +191,7 @@ describe('Pipelines Table', () => {
 
           it('does not render', () => {
             expect(findTableRows()).toHaveLength(1);
+            expect(findPipelineFailureWidget().exists()).toBe(false);
           });
         });
 
@@ -197,8 +200,21 @@ describe('Pipelines Table', () => {
             beforeEach(() => {
               createComponent({ pipelines: [pipeline] }, provideWithDetails);
             });
+
             it('renders', () => {
               expect(findTableRows()).toHaveLength(2);
+              expect(findPipelineFailureWidget().exists()).toBe(true);
+            });
+
+            it('passes the expected props', () => {
+              expect(findPipelineFailureWidget().props()).toStrictEqual({
+                failedJobsCount: pipeline.failed_builds.length,
+                isPipelineActive: pipeline.active,
+                pipelineIid: pipeline.iid,
+                pipelinePath: pipeline.path,
+                // Make sure the forward slash was removed
+                projectPath: 'frontend-fixtures/pipelines-project',
+              });
             });
           });
 
@@ -212,6 +228,7 @@ describe('Pipelines Table', () => {
 
             it('does not render', () => {
               expect(findTableRows()).toHaveLength(1);
+              expect(findPipelineFailureWidget().exists()).toBe(false);
             });
           });
         });

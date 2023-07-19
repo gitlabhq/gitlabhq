@@ -104,12 +104,14 @@ You can view which pipeline published the package, and the commit and user who t
 ### To import packages
 
 If you already have packages built in a different registry, you can import them
-into your GitLab package registry with the [Packages Importer](https://gitlab.com/gitlab-org/ci-cd/package-stage/pkgs_importer)
+into your GitLab package registry with the [Packages Importer](https://gitlab.com/gitlab-org/ci-cd/package-stage/pkgs_importer).
 
 The Packages Importer runs a CI/CD pipeline that [can import these package types](https://gitlab.com/gitlab-org/ci-cd/package-stage/pkgs_importer#formats-supported):
 
+- Maven
 - NPM
 - NuGet
+- PyPI
 
 ## Reduce storage usage
 

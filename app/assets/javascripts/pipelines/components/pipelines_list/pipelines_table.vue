@@ -1,5 +1,6 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -146,6 +147,9 @@ export default {
       const downstream = pipeline.triggered;
       return keepLatestDownstreamPipelines(downstream);
     },
+    getProjectPath(item) {
+      return cleanLeadingSeparator(item.project.full_path);
+    },
     failedJobsCount(pipeline) {
       return pipeline?.failed_builds?.length || 0;
     },
@@ -225,6 +229,7 @@ export default {
           :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"
+          :project-path="getProjectPath(item)"
         />
       </template>
     </gl-table-lite>

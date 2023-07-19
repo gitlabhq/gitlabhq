@@ -13,6 +13,7 @@ describe('PipelineFailedJobsWidget component', () => {
     isPipelineActive: false,
     pipelineIid: 1,
     pipelinePath: '/pipelines/1',
+    projectPath: 'namespace/project/',
   };
 
   const defaultProvide = {

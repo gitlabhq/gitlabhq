@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['BranchRule'] do
+RSpec.describe GitlabSchema.types['BranchRule'], feature_category: :source_code_management do
   include GraphqlHelpers
 
   subject { described_class }

@@ -327,8 +327,8 @@ rspec:deprecations:
     GIT_STRATEGY: none
   image: alpine:3.17
   script:
-    - mkdir -p coverage deprecations rspec
-    - ls coverage/ deprecations/ rspec/
+    - mkdir -p coverage deprecations rspec auto_explain
+    - ls coverage/ deprecations/ rspec/ auto_explain/
   artifacts:
     expire_in: 7d
     when: always
@@ -336,6 +336,7 @@ rspec:deprecations:
       - coverage/
       - deprecations/
       - rspec/
+      - auto_explain/
 
 rspec:artifact-collector unit:
   extends:
@@ -545,6 +546,23 @@ rspec:flaky-tests-report:
     expire_in: 31d
     paths:
       - rspec/
+
+rspec:merge-auto-explain-logs:
+  extends:
+    - .coverage-base
+    - .rails:rules:rspec-merge-auto-explain-logs
+  stage: post-test
+  needs: !reference ["rspec:coverage", "needs"]
+  before_script:
+    - source scripts/utils.sh
+    - source scripts/rspec_helpers.sh
+  script:
+    - merge_auto_explain_logs
+  artifacts:
+    name: auto-explain-logs
+    expire_in: 31d
+    paths:
+      - auto_explain/
 
 # EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################

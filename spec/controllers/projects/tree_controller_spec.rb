@@ -90,8 +90,15 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
         context 'and explicitly requesting a branch' do
           let(:ref_type) { 'heads' }
 
+          it 'checks for tree with ref_type' do
+            allow(project.repository).to receive(:tree).and_call_original
+            expect(project.repository).to receive(:tree).with(id, '', ref_type: 'heads').and_call_original
+            request
+          end
+
           it 'finds the branch' do
             expect(requested_ref_double).not_to receive(:find)
+
             request
             expect(response).to be_ok
           end
@@ -99,6 +106,12 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
 
         context 'and explicitly requesting a tag' do
           let(:ref_type) { 'tags' }
+
+          it 'checks for tree with ref_type' do
+            allow(project.repository).to receive(:tree).and_call_original
+            expect(project.repository).to receive(:tree).with(id, '', ref_type: 'tags').and_call_original
+            request
+          end
 
           it 'finds the tag' do
             expect(requested_ref_double).not_to receive(:find)
@@ -110,7 +123,13 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
     end
 
     context "valid branch, no path" do
-      let(:id) { 'master' }
+      let(:id) { 'flatten-dir' }
+
+      it 'checks for tree without ref_type' do
+        allow(project.repository).to receive(:tree).and_call_original
+        expect(project.repository).to receive(:tree).with(RepoHelpers.another_sample_commit.id, '').and_call_original
+        request
+      end
 
       it 'responds with success' do
         request

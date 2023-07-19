@@ -23100,6 +23100,9 @@ msgstr ""
 msgid "IdentityVerification|The code is incorrect. Enter it again, or send a new code."
 msgstr ""
 
+msgid "IdentityVerification|There was a problem with the credit card details you entered. Use a different credit card and try again."
+msgstr ""
+
 msgid "IdentityVerification|Verification code"
 msgstr ""
 

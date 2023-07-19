@@ -26,11 +26,10 @@ describe('FailedJobsList component', () => {
     graphqlResourceEtag: 'api/graphql',
     isPipelineActive: false,
     pipelineIid: 1,
-    pipelinePath: '/pipelines/1',
+    projectPath: 'namespace/project/',
   };
 
   const defaultProvide = {
-    fullPath: 'namespace/project/',
     graphqlPath: 'api/graphql',
   };
 
@@ -63,6 +62,21 @@ describe('FailedJobsList component', () => {
 
   beforeEach(() => {
     mockFailedJobsResponse = jest.fn();
+  });
+
+  describe('on mount', () => {
+    beforeEach(() => {
+      mockFailedJobsResponse.mockResolvedValue(failedJobsMock);
+      createComponent();
+    });
+
+    it('fires the graphql query', () => {
+      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
+      expect(mockFailedJobsResponse).toHaveBeenCalledWith({
+        fullPath: defaultProps.projectPath,
+        pipelineIid: defaultProps.pipelineIid,
+      });
+    });
   });
 
   describe('when loading failed jobs', () => {

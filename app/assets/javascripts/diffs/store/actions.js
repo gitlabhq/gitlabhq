@@ -425,7 +425,9 @@ export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
   // works. If we focus the comment form on mount and the comment form gets removed and then
   // added again the page will scroll in unexpected ways
   setTimeout(() => {
-    const el = document.querySelector(`[data-line-code="${lineCode}"] textarea`);
+    const el = document.querySelector(
+      `[data-line-code="${lineCode}"] textarea, [data-line-code="${lineCode}"] [contenteditable="true"]`,
+    );
 
     if (!el) return;
 

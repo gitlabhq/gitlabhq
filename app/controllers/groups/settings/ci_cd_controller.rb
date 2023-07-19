@@ -14,7 +14,6 @@ module Groups
       feature_category :continuous_integration
 
       before_action do
-        push_frontend_feature_flag(:ci_group_env_scope_graphql, group)
         push_frontend_feature_flag(:ci_variables_pages, current_user)
       end
 

@@ -89,6 +89,9 @@
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
+.if-merge-request-labels-record-queries: &if-merge-request-labels-record-queries
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:record-queries/'
+
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
@@ -2023,6 +2026,15 @@
   rules:
     - <<: *if-merge-request-labels-run-on-pg12
     - !reference [".rails:rules:default-branch-schedule-nightly--code-backstage-default-rules", rules]
+
+.rails:rules:rspec-merge-auto-explain-logs:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-record-queries
 
 .rails:rules:default-branch-schedule-nightly--code-backstage-default-rules:
   rules:

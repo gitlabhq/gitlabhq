@@ -23,15 +23,6 @@ export default {
     graphqlId() {
       return convertToGraphQLId(TYPENAME_GROUP, this.groupId);
     },
-    queriesAvailable() {
-      if (this.glFeatures.ciGroupEnvScopeGraphql) {
-        return this.$options.queryData;
-      }
-
-      return {
-        ciVariables: this.$options.queryData.ciVariables,
-      };
-    },
   },
   mutationData: {
     [ADD_MUTATION_ACTION]: addGroupVariable,
@@ -59,6 +50,6 @@ export default {
     entity="group"
     :full-path="groupPath"
     :mutation-data="$options.mutationData"
-    :query-data="queriesAvailable"
+    :query-data="$options.queryData"
   />
 </template>

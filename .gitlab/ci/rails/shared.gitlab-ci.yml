@@ -96,6 +96,7 @@ include:
     expire_in: 31d
     when: always
     paths:
+      - auto_explain/
       - coverage/
       - crystalball/
       - deprecations/

@@ -19,7 +19,7 @@ export default {
     GlLoadingIcon,
     FailedJobDetails,
   },
-  inject: ['fullPath', 'graphqlPath'],
+  inject: ['graphqlPath'],
   props: {
     isPipelineActive: {
       required: true,
@@ -27,6 +27,10 @@ export default {
     },
     pipelineIid: {
       type: Number,
+      required: true,
+    },
+    projectPath: {
+      type: String,
       required: true,
     },
   },
@@ -46,7 +50,7 @@ export default {
       pollInterval: POLL_INTERVAL,
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.projectPath,
           pipelineIid: this.pipelineIid,
         };
       },
