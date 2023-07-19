@@ -117,9 +117,7 @@ RSpec.describe 'Dashboard Projects', feature_category: :groups_and_projects do
     it 'shows the empty state when there are no starred projects' do
       visit(starred_dashboard_projects_path)
 
-      element = page.find('.row.empty-state')
-
-      expect(element).to have_content("You don't have starred projects yet.")
+      expect(page).to have_text(s_("StarredProjectsEmptyState|You don't have starred projects yet."))
     end
 
     it 'shows only starred projects' do

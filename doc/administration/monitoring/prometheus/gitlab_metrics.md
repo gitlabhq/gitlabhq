@@ -170,6 +170,16 @@ The following metrics are available:
 | `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_apdex_success_total` | Counter | 14.4 | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
+| `job_register_attempts_failed_total` | Counter | 9.5 | Counts the times a runner fails to register a job |
+| `job_register_attempts_total` | Counter | 9.5 | Counts the times a runner tries to register a job |
+| `job_queue_duration_seconds` | Histogram | 9.5 | Request handling execution time |
+| `gitlab_ci_queue_operations_total` | Counter | 16.3 | Counts all the operations that are happening inside a queue |
+| `gitlab_ci_queue_depth_total` | Histogram | 16.3 | Size of a CI/CD builds queue in relation to the operation result |
+| `gitlab_ci_queue_size_total` | Histogram | 16.3 | Size of initialized CI/CD builds queue |
+| `gitlab_ci_current_queue_size` | Gauge | 16.3 | Current size of initialized CI/CD builds queue |
+| `gitlab_ci_queue_iteration_duration_seconds` | Histogram | 16.3 | Time it takes to find a build in CI/CD queue |
+| `gitlab_ci_queue_retrieval_duration_seconds` | Histogram | 16.3 | Time it takes to execute a SQL query to retrieve builds queue |
+| `gitlab_ci_queue_active_runners_total` | Histogram | 16.3 | The amount of active runners that can process queue in a project |
 
 ## Metrics controlled by a feature flag
 
@@ -178,6 +188,13 @@ The following metrics can be controlled by feature flags:
 | Metric                                                         | Feature flag                                                       |
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
+| `gitlab_ci_queue_depth_total` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_size` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_size_total` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_iteration_duration_seconds` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_current_queue_size` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_retrieval_duration_seconds` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_active_runners_total` | `gitlab_ci_builds_queuing_metrics` |
 
 ## Praefect metrics
 

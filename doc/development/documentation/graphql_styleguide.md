@@ -9,7 +9,7 @@ description: "Writing styles, markup, formatting, and other standards for GraphQ
 # Creating a GraphQL example page
 
 GraphQL APIs are different from [RESTful APIs](restful_api_styleguide.md). Reference
-information is generated in our [GraphQL reference](../../api/graphql/reference/index.md).
+information is generated in our [GraphQL API resources](../../api/graphql/reference/index.md) page.
 
 However, it's helpful to include examples on how to use GraphQL for different
 *use cases*, with samples that readers can use directly in the

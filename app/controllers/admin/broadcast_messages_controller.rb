@@ -11,13 +11,13 @@ module Admin
     urgency :low
 
     def index
-      @broadcast_message = BroadcastMessage.new
+      @broadcast_message = System::BroadcastMessage.new
     end
 
     def edit; end
 
     def create
-      @broadcast_message = BroadcastMessage.new(broadcast_message_params)
+      @broadcast_message = System::BroadcastMessage.new(broadcast_message_params)
       success = @broadcast_message.save
 
       respond_to do |format|
@@ -69,18 +69,18 @@ module Admin
     end
 
     def preview
-      @broadcast_message = BroadcastMessage.new(broadcast_message_params)
+      @broadcast_message = System::BroadcastMessage.new(broadcast_message_params)
       render plain: render_broadcast_message(@broadcast_message), status: :ok
     end
 
     protected
 
     def find_broadcast_message
-      @broadcast_message = BroadcastMessage.find(params[:id])
+      @broadcast_message = System::BroadcastMessage.find(params[:id])
     end
 
     def find_broadcast_messages
-      @broadcast_messages = BroadcastMessage.order(ends_at: :desc).page(params[:page]) # rubocop: disable CodeReuse/ActiveRecord
+      @broadcast_messages = System::BroadcastMessage.order(ends_at: :desc).page(params[:page]) # rubocop: disable CodeReuse/ActiveRecord
     end
 
     def broadcast_message_params

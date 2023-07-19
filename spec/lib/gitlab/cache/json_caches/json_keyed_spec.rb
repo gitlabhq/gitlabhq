@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Cache::JsonCaches::JsonKeyed, feature_category: :shared d
           current_cache = { '_other_revision_' => '_other_value_' }.merge(nested_cache_result).to_json
           allow(backend).to receive(:read).with(expanded_key).and_return(current_cache)
 
-          expect(cache.read(key, BroadcastMessage)).to eq(broadcast_message)
+          expect(cache.read(key, System::BroadcastMessage)).to eq(broadcast_message)
         end
       end
     end

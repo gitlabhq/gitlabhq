@@ -246,7 +246,7 @@ RSpec.describe API::BroadcastMessages, :aggregate_failures, feature_category: :o
         delete api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end.to change { BroadcastMessage.count }.by(-1)
+      end.to change { System::BroadcastMessage.count }.by(-1)
     end
   end
 end

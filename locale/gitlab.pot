@@ -44482,7 +44482,7 @@ msgstr ""
 msgid "StatusCheck|Status checks all passed"
 msgstr ""
 
-msgid "StatusCheck|Status checks are API calls to external systems that request the status of an external requirement. %{linkStart}Learn more.%{linkEnd}"
+msgid "StatusCheck|Status checks are API calls to external systems that request the status of an external requirement."
 msgstr ""
 
 msgid "StatusCheck|Status checks are being fetched"

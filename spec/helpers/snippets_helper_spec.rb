@@ -33,7 +33,7 @@ RSpec.describe SnippetsHelper do
     end
 
     def download_link(url)
-      "<a class=\"gl-button btn btn-default\" target=\"_blank\" rel=\"noopener noreferrer\" title=\"Open raw\" href=\"#{url}\">#{external_snippet_icon('doc-code')}</a>"
+      "<a rel=\"noopener noreferrer\" title=\"Open raw\" class=\"gl-button btn btn-md btn-default \" target=\"_blank\" href=\"#{url}\"><span class=\"gl-button-text\">\n#{external_snippet_icon('doc-code')}\n</span>\n\n</a>"
     end
   end
 
@@ -60,7 +60,7 @@ RSpec.describe SnippetsHelper do
     end
 
     def download_link(url)
-      "<a class=\"gl-button btn btn-default\" target=\"_blank\" title=\"Download\" rel=\"noopener noreferrer\" href=\"#{url}?inline=false\">#{external_snippet_icon('download')}</a>"
+      "<a rel=\"noopener noreferrer\" title=\"Download\" class=\"gl-button btn btn-md btn-default \" target=\"_blank\" href=\"#{url}?inline=false\"><span class=\"gl-button-text\">\n#{external_snippet_icon('download')}\n</span>\n\n</a>"
     end
   end
 
@@ -102,7 +102,7 @@ RSpec.describe SnippetsHelper do
     end
 
     def copy_button(blob_id)
-      "<button class=\"gl-button btn btn-default copy-to-clipboard-btn\" title=\"Copy snippet contents\" onclick=\"copyToClipboard(&#39;.blob-content[data-blob-id=&quot;#{blob_id}&quot;] &gt; pre&#39;)\">#{external_snippet_icon('copy-to-clipboard')}</button>"
+      "<button title=\"Copy snippet contents\" onclick=\"copyToClipboard(&#39;.blob-content[data-blob-id=&quot;#{blob_id}&quot;] &gt; pre&#39;)\" type=\"button\" class=\"gl-button btn btn-md btn-default \"><span class=\"gl-button-text\">\n#{external_snippet_icon('copy-to-clipboard')}\n</span>\n\n</button>"
     end
   end
 

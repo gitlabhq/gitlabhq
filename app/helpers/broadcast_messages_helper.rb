@@ -4,7 +4,7 @@ module BroadcastMessagesHelper
   include Gitlab::Utils::StrongMemoize
 
   def current_broadcast_banner_messages
-    BroadcastMessage.current_banner_messages(
+    System::BroadcastMessage.current_banner_messages(
       current_path: request.path,
       user_access_level: current_user_access_level_for_project_or_group
     ).select do |message|
@@ -13,7 +13,7 @@ module BroadcastMessagesHelper
   end
 
   def current_broadcast_notification_message
-    not_hidden_messages = BroadcastMessage.current_notification_messages(
+    not_hidden_messages = System::BroadcastMessage.current_notification_messages(
       current_path: request.path,
       user_access_level: current_user_access_level_for_project_or_group
     ).select do |message|
@@ -51,7 +51,7 @@ module BroadcastMessagesHelper
   end
 
   def target_access_level_options
-    BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS.map do |access_level|
+    System::BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS.map do |access_level|
       [Gitlab::Access.human_access(access_level), access_level]
     end
   end

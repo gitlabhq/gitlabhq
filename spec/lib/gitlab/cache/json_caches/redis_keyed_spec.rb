@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Cache::JsonCaches::RedisKeyed, feature_category: :shared 
         allow(backend).to receive(:read).with(expanded_key).and_return(true)
 
         expect(Gitlab::Json).to receive(:parse).with("true").and_call_original
-        expect(cache.read(key, BroadcastMessage)).to eq(true)
+        expect(cache.read(key, System::BroadcastMessage)).to eq(true)
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Cache::JsonCaches::RedisKeyed, feature_category: :shared 
         allow(backend).to receive(:read).with(expanded_key).and_return(false)
 
         expect(Gitlab::Json).to receive(:parse).with("false").and_call_original
-        expect(cache.read(key, BroadcastMessage)).to eq(false)
+        expect(cache.read(key, System::BroadcastMessage)).to eq(false)
       end
     end
   end

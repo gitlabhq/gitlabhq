@@ -396,6 +396,18 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
 
       include_examples 'N+1 query check', skip_cached: false
     end
+
+    context 'when requesting diffStats' do
+      let(:requested_fields) { ['diffStats { path }'] }
+
+      before do
+        create_list(:merge_request_diff, 2, merge_request: merge_request_a)
+        create_list(:merge_request_diff, 2, merge_request: merge_request_b)
+        create_list(:merge_request_diff, 2, merge_request: merge_request_c)
+      end
+
+      include_examples 'N+1 query check', skip_cached: false
+    end
   end
 
   describe 'performance' do

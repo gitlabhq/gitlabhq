@@ -10,7 +10,7 @@ module API
     resource :broadcast_messages do
       helpers do
         def find_message
-          BroadcastMessage.find(params[:id])
+          System::BroadcastMessage.find(params[:id])
         end
       end
 
@@ -22,7 +22,7 @@ module API
         use :pagination
       end
       get do
-        messages = BroadcastMessage.all.order_id_desc
+        messages = System::BroadcastMessage.all.order_id_desc
 
         present paginate(messages), with: Entities::BroadcastMessage
       end
@@ -40,16 +40,16 @@ module API
         optional :target_access_levels,
                  type: Array[Integer],
                  coerce_with: Validations::Types::CommaSeparatedToIntegerArray.coerce,
-                 values: BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS,
+                 values: System::BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS,
                  desc: 'Target user roles'
         optional :target_path, type: String, desc: 'Target path'
-        optional :broadcast_type, type: String, values: BroadcastMessage.broadcast_types.keys, desc: 'Broadcast type. Defaults to banner', default: -> { 'banner' }
+        optional :broadcast_type, type: String, values: System::BroadcastMessage.broadcast_types.keys, desc: 'Broadcast type. Defaults to banner', default: -> { 'banner' }
         optional :dismissable, type: Boolean, desc: 'Is dismissable'
       end
       post do
         authenticated_as_admin!
 
-        message = BroadcastMessage.create(declared_params(include_missing: false))
+        message = System::BroadcastMessage.create(declared_params(include_missing: false))
 
         if message.persisted?
           present message, with: Entities::BroadcastMessage
@@ -85,10 +85,10 @@ module API
         optional :target_access_levels,
                  type: Array[Integer],
                  coerce_with: Validations::Types::CommaSeparatedToIntegerArray.coerce,
-                 values: BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS,
+                 values: System::BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS,
                  desc: 'Target user roles'
         optional :target_path, type: String, desc: 'Target path'
-        optional :broadcast_type, type: String, values: BroadcastMessage.broadcast_types.keys, desc: 'Broadcast Type'
+        optional :broadcast_type, type: String, values: System::BroadcastMessage.broadcast_types.keys, desc: 'Broadcast Type'
         optional :dismissable, type: Boolean, desc: 'Is dismissable'
       end
       put ':id' do

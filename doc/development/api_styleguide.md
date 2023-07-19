@@ -51,7 +51,7 @@ params do
   optional :per_page, type: Integer, desc: 'Number of messages per page'
 end
 get do
-  messages = BroadcastMessage.all
+  messages = System::BroadcastMessage.all
 
   present paginate(messages), with: Entities::BroadcastMessage
 end

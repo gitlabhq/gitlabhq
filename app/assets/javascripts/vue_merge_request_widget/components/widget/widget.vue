@@ -22,8 +22,15 @@ const WIDGET_PREFIX = 'Widget';
 const MISSING_RESPONSE_HEADERS =
   'MR Widget: raesponse object should contain status and headers object. Make sure to include that in your `fetchCollapsedData` and `fetchExpandedData` functions.';
 
+const LOADING_STATE_COLLAPSED = 'collapsed';
+const LOADING_STATE_EXPANDED = 'expanded';
+const LOADING_STATE_STATUS_ICON = 'status_icon';
+
 export default {
   MISSING_RESPONSE_HEADERS,
+  LOADING_STATE_COLLAPSED,
+  LOADING_STATE_EXPANDED,
+  LOADING_STATE_STATUS_ICON,
 
   components: {
     ActionButtons,
@@ -55,6 +62,24 @@ export default {
       type: String,
       required: false,
       default: __('Loading'),
+    },
+    // Use this property when you need to control the loading state from the
+    // parent component.
+    loadingState: {
+      type: String,
+      required: false,
+      default: undefined,
+      validator: (s) => {
+        if (!s) {
+          return true;
+        }
+
+        return [
+          LOADING_STATE_EXPANDED,
+          LOADING_STATE_COLLAPSED,
+          LOADING_STATE_STATUS_ICON,
+        ].includes(s);
+      },
     },
     errorText: {
       type: String,
@@ -158,7 +183,7 @@ export default {
     return {
       isExpandedForTheFirstTime: true,
       isCollapsed: true,
-      isLoading: true,
+      isLoadingCollapsedContent: true,
       isLoadingExpandedContent: false,
       summaryError: null,
       contentError: null,
@@ -166,6 +191,12 @@ export default {
     };
   },
   computed: {
+    isSummaryLoading() {
+      return this.isLoadingCollapsedContent || this.loadingState === LOADING_STATE_COLLAPSED;
+    },
+    shouldShowLoadingIcon() {
+      return this.isSummaryLoading || this.loadingState === LOADING_STATE_STATUS_ICON;
+    },
     generatedSummary() {
       return generateText(this.summary?.title || '');
     },
@@ -192,7 +223,7 @@ export default {
       },
       immediate: true,
     },
-    isLoading(newValue) {
+    isLoadingCollapsedContent(newValue) {
       this.$emit('is-loading', newValue);
     },
   },
@@ -202,7 +233,7 @@ export default {
     }
   },
   async mounted() {
-    this.isLoading = true;
+    this.isLoadingCollapsedContent = true;
     this.telemetryHub?.viewed();
 
     try {
@@ -213,7 +244,7 @@ export default {
       this.summaryError = this.errorText;
     }
 
-    this.isLoading = false;
+    this.isLoadingCollapsedContent = false;
   },
   methods: {
     onActionClick(action) {
@@ -306,7 +337,7 @@ export default {
       <status-icon
         :level="1"
         :name="widgetName"
-        :is-loading="isLoading"
+        :is-loading="shouldShowLoadingIcon"
         :icon-name="summaryStatusIcon"
       />
       <div
@@ -316,9 +347,9 @@ export default {
         <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
           <span v-if="summaryError">{{ summaryError }}</span>
           <slot v-else name="summary"
-            ><div v-safe-html="isLoading ? loadingText : generatedSummary"></div>
+            ><div v-safe-html="isSummaryLoading ? loadingText : generatedSummary"></div>
             <div
-              v-if="!isLoading && generatedSubSummary"
+              v-if="!isSummaryLoading && generatedSubSummary"
               v-safe-html="generatedSubSummary"
               class="gl-font-sm gl-text-gray-700"
             ></div
@@ -356,7 +387,7 @@ export default {
           </slot>
         </div>
         <div
-          v-if="isCollapsible && !isLoading"
+          v-if="isCollapsible && !isSummaryLoading"
           class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
         >
           <gl-button

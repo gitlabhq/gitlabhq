@@ -74,7 +74,7 @@ module Gitlab
         end
 
         def observe_queue_depth(queue, size)
-          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
+          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, type: :ops)
 
           if !Rails.env.production? && !QUEUE_DEPTH_HISTOGRAMS.include?(queue)
             raise ArgumentError, "unknown queue depth label: #{queue}"
@@ -84,7 +84,7 @@ module Gitlab
         end
 
         def observe_queue_size(size_proc, runner_type)
-          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
+          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, type: :ops)
 
           size = size_proc.call.to_f
           self.class.queue_size_total.observe({ runner_type: runner_type }, size)
@@ -96,7 +96,7 @@ module Gitlab
 
           result = yield
 
-          return result unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
+          return result unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, type: :ops)
 
           seconds = ::Gitlab::Metrics::System.monotonic_time - start_time
 
@@ -121,7 +121,7 @@ module Gitlab
         end
 
         def self.observe_active_runners(runners_proc)
-          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
+          return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics, type: :ops)
 
           queue_active_runners_total.observe({}, runners_proc.call.to_f)
         end
@@ -133,7 +133,7 @@ module Gitlab
         def self.failed_attempt_counter
           strong_memoize(:failed_attempt_counter) do
             name = :job_register_attempts_failed_total
-            comment = 'Counts the times a runner tries to register a job'
+            comment = 'Counts the times a runner fails to register a job'
 
             Gitlab::Metrics.counter(name, comment)
           end

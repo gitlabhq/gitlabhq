@@ -229,7 +229,7 @@ RSpec.describe API::API, feature_category: :system_access do
           expect(data.stringify_keys).not_to include('meta.project', 'meta.root_namespace', 'meta.user')
         end
 
-        expect(BroadcastMessage).to receive(:all).and_raise('An error!')
+        expect(System::BroadcastMessage).to receive(:all).and_raise('An error!')
 
         get(api('/broadcast_messages'))
 

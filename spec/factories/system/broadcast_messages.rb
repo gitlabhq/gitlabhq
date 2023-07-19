@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :broadcast_message do
+  factory :broadcast_message, class: 'System::BroadcastMessage' do
     message { "MyText" }
     starts_at { 1.day.ago }
     ends_at { 1.day.from_now }

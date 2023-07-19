@@ -102,7 +102,7 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
   end
 
   describe '#broadcast_message' do
-    let(:current_broadcast_message) { BroadcastMessage.new(message: 'Current Message') }
+    let(:current_broadcast_message) { System::BroadcastMessage.new(message: 'Current Message') }
 
     it 'returns nil when no current message' do
       expect(helper.broadcast_message(nil)).to be_nil

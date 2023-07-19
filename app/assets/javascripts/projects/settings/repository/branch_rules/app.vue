@@ -74,7 +74,7 @@ export default {
       class="gl-mt-5"
       data-qa-selector="add_branch_rule_button"
       category="secondary"
-      variant="info"
+      variant="confirm"
       >{{ $options.i18n.addBranchRule }}</gl-button
     >
 
