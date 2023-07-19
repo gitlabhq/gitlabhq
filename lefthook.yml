@@ -44,7 +44,7 @@ pre-push:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --config .rubocop.yml --parallel --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
     sidekiq-queues:
       tags: backend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -134,7 +134,7 @@ auto-fix:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --config .rubocop.yml --parallel --autocorrect --force-exclusion {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --autocorrect --force-exclusion {files}
     gettext:
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true

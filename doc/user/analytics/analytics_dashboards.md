@@ -69,6 +69,10 @@ You can use the dashboard designer to:
 
 ## View project dashboards
 
+Prerequisite:
+
+- You must have at least the Developer role for the project.
+
 To view a list of dashboards (both built-in and custom) for a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.

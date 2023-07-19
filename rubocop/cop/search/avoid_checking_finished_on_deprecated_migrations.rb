@@ -20,11 +20,15 @@ module RuboCop
 
       class AvoidCheckingFinishedOnDeprecatedMigrations < RuboCop::Cop::Base
         MSG = 'Migration is deprecated and can not be used with `migration_has_finished?`.'
+        DEPRECATED_MIGRATIONS = [
+          :backfill_project_permissions_in_blobs_using_permutations,
+          :backfill_archived_on_issues
+        ].freeze
 
         def_node_matcher :deprecated_migration?, <<~PATTERN
           (send
             (const (const {nil? cbase} :Elastic) :DataMigrationService) :migration_has_finished?
-              (sym :backfill_project_permissions_in_blobs_using_permutations))
+              (sym {#{DEPRECATED_MIGRATIONS.map { |m| ":#{m}" }.join(' ')}}))
         PATTERN
 
         RESTRICT_ON_SEND = %i[migration_has_finished?].freeze

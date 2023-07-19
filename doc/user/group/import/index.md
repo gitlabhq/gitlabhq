@@ -77,7 +77,6 @@ Hardcoded limits apply on migration by direct transfer.
 | 50 MB       | Maximum length an NDJSON row can have.                                                                                                                                          |
 | 5 minutes   | Maximum number of seconds until an empty export status on source instance is raised.                                                                                            |
 | 8 hours     | Time until migration times out.                                                                                                                                                 |
-| 90 minutes  | Time the destination is waiting for export to complete.                                                                                                                         |
 
 You can test the maximum relation size limit using these APIs:
 

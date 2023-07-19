@@ -1,3 +1,11 @@
+# We need to ignore exclusions defined in parent RuboCop configuration
+# (AllCops/Exclude: 'gems/**/*') if RuboCop cop is run within `gems/...`.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/417281
+<%
+  relative_path = ENV['PWD'].delete_prefix(File.expand_path('../..')) 
+  RuboCop::ConfigLoader.ignore_parent_exclusion = relative_path.start_with?('/gems/')
+%>
+---
 inherit_gem:
   gitlab-styles:
     - rubocop-default.yml

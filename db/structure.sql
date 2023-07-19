@@ -12968,8 +12968,7 @@ CREATE TABLE chat_names (
     chat_name character varying,
     last_used_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    integration_id integer
+    updated_at timestamp without time zone NOT NULL
 );
 
 CREATE SEQUENCE chat_names_id_seq

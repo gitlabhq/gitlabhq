@@ -9,6 +9,7 @@ module BulkImports
     feature_category :importers
     sidekiq_options retry: false, dead: false
     worker_has_external_dependencies!
+    worker_resource_boundary :memory
 
     def perform(batch_id)
       @batch = ::BulkImports::BatchTracker.find(batch_id)

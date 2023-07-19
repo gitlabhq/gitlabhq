@@ -48,12 +48,12 @@ export default {
 </script>
 
 <template>
-  <span>
+  <span class="gl-mr-2">
     <gl-icon
       v-gl-tooltip.hover="showTooltipOnHover"
       :name="iconName"
       :title="workItemTooltipTitle"
-      class="gl-mr-2 gl-text-secondary"
+      class="gl-text-secondary"
     />
     <span v-if="workItemTypeName" :class="{ 'gl-sr-only': !showText }">{{ workItemTypeName }}</span>
   </span>

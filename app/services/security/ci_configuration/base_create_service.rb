@@ -15,12 +15,13 @@ module Security
         if project.repository.empty? && !(@params && @params[:initialize_with_sast])
           docs_link = ActionController::Base.helpers.link_to _('add at least one file to the repository'),
                               Rails.application.routes.url_helpers.help_page_url('user/project/repository/index.md',
-                                                                                 anchor: 'add-files-to-a-repository'),
+                                                                                anchor: 'add-files-to-a-repository'),
                               target: '_blank',
                               rel: 'noopener noreferrer'
-          raise Gitlab::Graphql::Errors::MutationError,
-                Gitlab::Utils::ErrorMessage.to_user_facing(
-                  _(format('You must %s before using Security features.', docs_link.html_safe)).html_safe)
+
+          return ServiceResponse.error(
+            message: _(format('You must %s before using Security features.', docs_link)).html_safe
+          )
         end
 
         project.repository.add_branch(current_user, branch_name, project.default_branch)
@@ -59,8 +60,7 @@ module Security
         YAML.safe_load(@gitlab_ci_yml) if @gitlab_ci_yml
       rescue Psych::BadAlias
         raise Gitlab::Graphql::Errors::MutationError,
-        Gitlab::Utils::ErrorMessage.to_user_facing(
-          _(".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."))
+          _(".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually.")
       rescue Psych::Exception => e
         Gitlab::AppLogger.error("Failed to process existing .gitlab-ci.yml: #{e.message}")
         raise Gitlab::Graphql::Errors::MutationError,

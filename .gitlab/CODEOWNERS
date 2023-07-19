@@ -509,7 +509,11 @@ lib/gitlab/checks/**
 /doc/administration/review_abuse_reports.md @phillipwells
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @aqualls @msedlakjakubowski
+/doc/administration/settings/continuous_integration.md @marcel.amirault
 /doc/administration/settings/deprecated_api_rate_limits.md @aqualls @msedlakjakubowski
+/doc/administration/settings/email.md @msedlakjakubowski
+/doc/administration/settings/external_authorization.md @jglassman1
+/doc/administration/settings/files_api_rate_limits.md @aqualls @msedlakjakubowski
 /doc/administration/settings/git_lfs_rate_limits.md @aqualls @msedlakjakubowski
 /doc/administration/settings/gitaly_timeouts.md @eread
 /doc/administration/settings/import_export_rate_limits.md @eread @ashrafkhamis
@@ -527,8 +531,10 @@ lib/gitlab/checks/**
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @aqualls @msedlakjakubowski
 /doc/administration/settings/scim_setup.md @jglassman1
 /doc/administration/settings/security_and_compliance.md @rdickenson
+/doc/administration/settings/slack_app.md @eread @ashrafkhamis
 /doc/administration/settings/terraform_limits.md @phillipwells
 /doc/administration/settings/third_party_offers.md @lciutacu
+/doc/administration/settings/usage_statistics.md @lciutacu
 /doc/administration/settings/visibility_and_access_controls.md @aqualls @msedlakjakubowski
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
@@ -723,6 +729,7 @@ lib/gitlab/checks/**
 /doc/development/application_limits.md @axil
 /doc/development/audit_event_guide/ @eread
 /doc/development/auto_devops.md @phillipwells
+/doc/development/avoiding_required_stops.md @axil
 /doc/development/backend/ @sselhorn
 /doc/development/backend/create_source_code_be/ @aqualls @msedlakjakubowski
 /doc/development/build_test_package.md @axil
@@ -860,12 +867,6 @@ lib/gitlab/checks/**
 /doc/tutorials/scan_result_policy/ @rdickenson
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
-/doc/user/admin_area/settings/continuous_integration.md @marcel.amirault
-/doc/user/admin_area/settings/email.md @msedlakjakubowski
-/doc/user/admin_area/settings/external_authorization.md @jglassman1
-/doc/user/admin_area/settings/files_api_rate_limits.md @aqualls @msedlakjakubowski
-/doc/user/admin_area/settings/slack_app.md @eread @ashrafkhamis
-/doc/user/admin_area/settings/usage_statistics.md @lciutacu
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson

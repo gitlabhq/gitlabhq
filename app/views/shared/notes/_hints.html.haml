@@ -16,15 +16,15 @@
           = sprite_icon('paperclip', css_class: 'gl-icon gl-vertical-align-text-bottom')
         %span.uploading-error-message
           -# Populated by app/assets/javascripts/dropzone_input.js
-        %button.btn.gl-button.btn-link.gl-vertical-align-baseline.retry-uploading-link
+        = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'retry-uploading-link' }) do
           %span.gl-button-text
             = _("Try again")
         = _("or")
-        %button.btn.gl-button.btn-link.attach-new-file.markdown-selector.gl-vertical-align-baseline
+        = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'attach-new-file markdown-selector' }) do
           %span.gl-button-text
             = _("attach a new file")
         = _(".")
 
-      %button.btn.gl-button.btn-link.button-cancel-uploading-files.gl-vertical-align-baseline.hide
+      = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'button-cancel-uploading-files hide' }) do
         %span.gl-button-text
           = _("Cancel")

@@ -45,8 +45,13 @@ RSpec.describe Security::CiConfiguration::SastCreateService, :snowplow,
 
       let(:params) { { initialize_with_sast: false } }
 
-      it 'raises an error' do
-        expect { result }.to raise_error(Gitlab::Graphql::Errors::MutationError)
+      it 'returns a ServiceResponse error' do
+        expect(result).to be_kind_of(ServiceResponse)
+        expect(result.status).to eq(:error)
+        expect(result.message).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
+                                     'href="http://localhost/help/user/project/repository/index.md#' \
+                                     'add-files-to-a-repository">add at least one file to the ' \
+                                     'repository</a> before using Security features.')
       end
     end
 

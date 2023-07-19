@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed instances in GitLab 16.2.
 
 NOTE:
-This page contains information about configuring the GitLab for Slack app on GitLab.com. For administrator documentation, see [GitLab for Slack app administration](../../admin_area/settings/slack_app.md).
+This page contains information about configuring the GitLab for Slack app on GitLab.com. For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
 
 The GitLab for Slack app is a native Slack app that provides [slash commands](#slash-commands) and [notifications](#slack-notifications)
 in your Slack workspace. GitLab links your Slack user with your GitLab user so that any command
@@ -176,7 +176,7 @@ The following events are available for Slack notifications:
 
 ### GitLab for Slack app does not appear in the list of integrations
 
-The GitLab for Slack app might not appear in the list of integrations. To have the GitLab for Slack app on your self-managed instance, an administrator must [enable the integration](../../admin_area/settings/slack_app.md). On GitLab.com, the GitLab for Slack app is available by default.
+The GitLab for Slack app might not appear in the list of integrations. To have the GitLab for Slack app on your self-managed instance, an administrator must [enable the integration](../../../administration/settings/slack_app.md). On GitLab.com, the GitLab for Slack app is available by default.
 
 The GitLab for Slack app is enabled at the project level only. Support for the app at the group and instance levels is proposed in [issue 391526](https://gitlab.com/gitlab-org/gitlab/-/issues/391526).
 
@@ -197,7 +197,7 @@ As a workaround, ensure:
 
 ### Slash commands return `/gitlab failed with the error "dispatch_failed"` in Slack
 
-Slash commands might return `/gitlab failed with the error "dispatch_failed"` in Slack. To resolve this issue, ensure an administrator has properly configured the [GitLab for Slack app settings](../../admin_area/settings/slack_app.md) on your self-managed instance.
+Slash commands might return `/gitlab failed with the error "dispatch_failed"` in Slack. To resolve this issue, ensure an administrator has properly configured the [GitLab for Slack app settings](../../../administration/settings/slack_app.md) on your self-managed instance.
 
 ### Notifications are not received to a channel
 

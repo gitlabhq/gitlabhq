@@ -66,6 +66,9 @@ export const PROJECT_STORAGE_TYPES = [
 
 export const projectHelpPaths = {
   usageQuotas: helpPagePath('user/usage_quotas'),
+  usageQuotasProjectStorageLimit: helpPagePath('user/usage_quotas', {
+    anchor: 'project-storage-limit',
+  }),
   usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
     anchor: 'namespace-storage-limit',
   }),

@@ -137,7 +137,7 @@ rubocop:
         select_existing_files < "${RSPEC_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
         # Skip running RuboCop if there's no target files
         if [ -s "${RUBOCOP_TARGET_FILES}" ]; then
-          run_timed_command "fail_on_warnings bundle exec rubocop --config .rubocop.yml --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"
+          run_timed_command "fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"
         else
           echoinfo "Nothing interesting changed for RuboCop. Skipping."
         fi
@@ -177,7 +177,7 @@ feature-flags-usage:
   script:
     # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
     # the cache would prevent these files from being created.
-    - run_timed_command "fail_on_warnings bundle exec rubocop --config .rubocop.yml --only Gitlab/MarkUsedFeatureFlags --cache false"
+    - run_timed_command "fail_on_warnings bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false"
   artifacts:
     expire_in: 31d
     when: always

@@ -707,7 +707,7 @@ module Types
 
       if project.repository.empty?
         raise Gitlab::Graphql::Errors::MutationError,
-            Gitlab::Utils::ErrorMessage.to_user_facing(_(format('You must %s before using Security features.', add_file_docs_link.html_safe)).html_safe)
+              _(format('You must %s before using Security features.', add_file_docs_link.html_safe)).html_safe
       end
 
       ::Security::CiConfiguration::SastParserService.new(object).configuration

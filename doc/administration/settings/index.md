@@ -52,7 +52,7 @@ The **General** settings contain:
  Set max session time for web terminal.
 - [FLoC](floc.md) - Enable or disable
  [Federated Learning of Cohorts (FLoC)](https://en.wikipedia.org/wiki/Federated_Learning_of_Cohorts) tracking.
-- [GitLab for Slack app](../../user/admin_area/settings/slack_app.md) - Enable and configure the GitLab for Slack app.
+- [GitLab for Slack app](slack_app.md) - Enable and configure the GitLab for Slack app.
 
 ### CI/CD
 

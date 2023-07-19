@@ -21,7 +21,7 @@
         .gl-mb-3
           %h5.gl-mt-0
             = _("Upload object map")
-          %button.gl-button.btn.btn-default.js-choose-file{ type: "button" }
+          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-file' }) do
             = _("Choose a file")
           %span.gl-ml-3.js-filename
             = _("No file selected")

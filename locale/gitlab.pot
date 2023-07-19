@@ -7205,9 +7205,6 @@ msgstr ""
 msgid "Be careful. Renaming a project's repository can have unintended side effects."
 msgstr ""
 
-msgid "Because you are over the %{free_user_limit} user limit, your top-level group, including any subgroups and projects, will be placed in a %{readonly_link_start}read-only state%{link_end} soon. To retain write access, reduce the number of users of your top-level group to %{free_user_limit} or less, or purchase a paid tier. To minimize the impact to your operations, GitLab is offering a %{promotion_link_start}one-time discount%{link_end} for a new purchase of a one-year subscription of GitLab Premium SaaS."
-msgstr ""
-
 msgid "Because you enabled auto-banning, we have also automatically banned this user from %{scope}. If this is a mistake, you can %{link_start}unban them%{link_end}."
 msgstr ""
 
@@ -25055,9 +25052,6 @@ msgstr ""
 msgid "InviteMembersModal|GitLab is better with colleagues!"
 msgstr ""
 
-msgid "InviteMembersModal|GitLab will enforce this limit in the future. If you are over %{dashboardLimit} users when enforcement begins, your top-level group will be placed in a %{freeUserLimitLinkStart}read-only state%{freeUserLimitLinkEnd}. To avoid being placed in a read-only state, reduce your top-level group to %{dashboardLimit} users or less, or purchase a paid tier."
-msgstr ""
-
 msgid "InviteMembersModal|How about inviting a colleague or two to join you?"
 msgstr ""
 
@@ -25142,9 +25136,6 @@ msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{
 msgstr ""
 
 msgid "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}"
-msgstr ""
-
-msgid "InviteMembersModal|Your top-level group %{namespaceName} is over the %{dashboardLimit} user limit."
 msgstr ""
 
 msgid "InviteMembers|Invite a group"
@@ -46525,9 +46516,6 @@ msgstr ""
 msgid "The time period in seconds that the maximum requests per project limit applies to."
 msgstr ""
 
-msgid "The top-level group, including any subgroups and projects, will be placed into a %{link_start}read-only%{link_end} state soon. To retain write access, ask your top-level group Owner to %{reduce_link_start}reduce the number of users%{link_end} to %{free_user_limit} or less. An Owner of the top-level group can also start a free trial or upgrade to a paid tier, which do not have user limits. The Owners of the top-level group have also been notified."
-msgstr ""
-
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
@@ -49532,7 +49520,7 @@ msgstr ""
 msgid "UsageQuota|Precise calculation of Container Registry storage size is delayed because it is too large for synchronous estimation. Precise evaluation will be scheduled within 24 hours."
 msgstr ""
 
-msgid "UsageQuota|Project storage included in %{planName} subscription"
+msgid "UsageQuota|Projects under this namespace have %{planLimit} of storage. %{linkStart}How are limits applied?%{linkEnd}"
 msgstr ""
 
 msgid "UsageQuota|Recalculate repository usage"
@@ -49565,6 +49553,9 @@ msgstr ""
 msgid "UsageQuota|Storage"
 msgstr ""
 
+msgid "UsageQuota|Storage per project included in %{planName} subscription"
+msgstr ""
+
 msgid "UsageQuota|Storage type"
 msgstr ""
 
@@ -49587,6 +49578,9 @@ msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage
 msgstr ""
 
 msgid "UsageQuota|The table below shows usage since %{usageSince}"
+msgstr ""
+
+msgid "UsageQuota|This namespace has %{planLimit} of storage. %{linkStart}How are limits applied?%{linkEnd}"
 msgstr ""
 
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
@@ -53646,9 +53640,6 @@ msgid "Your top-level group %{namespace_name} has reached the %{free_limit} user
 msgstr ""
 
 msgid "Your top-level group %{namespace_name} is over the %{free_limit} user limit and has been placed in a read-only state."
-msgstr ""
-
-msgid "Your top-level group %{namespace_name} will move to a read-only state soon"
 msgstr ""
 
 msgid "Your top-level group is over the user limit and has been placed in a read-only state."

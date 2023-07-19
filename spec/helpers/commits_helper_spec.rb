@@ -91,22 +91,22 @@ RSpec.describe CommitsHelper do
     let(:node) { Nokogiri::HTML.parse(helper.diff_mode_swap_button(keyword, 'abc')).at_css('a') }
 
     context 'for rendered' do
-      it 'renders the correct select-rendered button' do
+      it 'renders the correct select-rendered button', :aggregate_failures do
         expect(node[:title]).to eq('Display rendered diff')
         expect(node['data-file-hash']).to eq('abc')
         expect(node['data-diff-toggle-entity']).to eq('renderedButton')
-        expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-text-icon')
+        expect(node.xpath("//a/span/svg")[0]["data-testid"]).to eq('doc-text-icon')
       end
     end
 
     context 'for raw' do
       let(:keyword) { 'raw' }
 
-      it 'renders the correct select-raw button' do
+      it 'renders the correct select-raw button', :aggregate_failures do
         expect(node[:title]).to eq('Display raw diff')
         expect(node['data-file-hash']).to eq('abc')
         expect(node['data-diff-toggle-entity']).to eq('rawButton')
-        expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-code-icon')
+        expect(node.xpath("//a/span/svg")[0]["data-testid"]).to eq('doc-code-icon')
       end
     end
   end

@@ -52,7 +52,7 @@ rubocop:
   rules:
     - exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.rubocop.yml"]
   script:
-    - bundle exec rubocop --config .rubocop.yml
+    - bundle exec rubocop
 
 rspec:
   extends: .ruby_matrix

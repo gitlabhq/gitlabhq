@@ -62,12 +62,21 @@ To create a workspace:
 The workspace might take a few minutes to start. To access the workspace, under **Preview**, select the workspace link.
 You also have access to the terminal and can install any necessary dependencies.
 
+## Workspaces and projects
+
+A workspace is scoped to a project. When you create a workspace, you must:
+
+- Assign the workspace to a specific project.
+- Select a project with a `.devfile.yaml` file.
+
+The workspace can then interact with the GitLab API based on the permissions granted to the current user.
+
 ## Deleting data associated with a workspace
 
 When you delete a project, agent, user, or token associated with a workspace:
 
 - The workspace is deleted from the user interface.
-- In the Kubernetes cluster, the running workspace resources become orphaned.
+- In the Kubernetes cluster, the running workspace resources become orphaned and are not automatically deleted.
 
 To clean up orphaned resources, an administrator must manually delete the workspace in Kubernetes.
 

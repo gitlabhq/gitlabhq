@@ -3,6 +3,7 @@ import {
   GlIcon,
   GlBadge,
   GlButton,
+  GlSprintf,
   GlTooltipDirective,
   GlAvatarLink,
   GlAvatarLabeled,
@@ -11,7 +12,7 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { issuableStatusText, STATUS_OPEN } from '~/issues/constants';
 import { isExternal } from '~/lib/utils/url_utility';
-import { n__, sprintf } from '~/locale';
+import { __, n__, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -24,6 +25,7 @@ export default {
     GlButton,
     GlAvatarLink,
     GlAvatarLabeled,
+    GlSprintf,
     TimeAgoTooltip,
     WorkItemTypeIcon,
   },
@@ -92,6 +94,11 @@ export default {
     badgeVariant() {
       return this.issuableState === STATUS_OPEN ? 'success' : 'info';
     },
+    createdMessage() {
+      return this.showWorkItemTypeIcon
+        ? __('created %{timeAgo} by %{author}')
+        : __('Created %{timeAgo} by %{author}');
+    },
     authorId() {
       return getIdFromGraphQLId(`${this.author.id}`);
     },
@@ -130,67 +137,62 @@ export default {
 
 <template>
   <div class="detail-page-header gl-flex-direction-column gl-sm-flex-direction-row">
-    <div class="detail-page-header-body">
-      <gl-badge class="issuable-status-badge gl-mr-3" :variant="badgeVariant">
+    <div class="detail-page-header-body gl-flex-wrap">
+      <gl-badge class="gl-mr-2" :variant="badgeVariant">
         <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
-        <span class="gl-display-none gl-sm-display-block gl-ml-2">
+        <span class="gl-display-none gl-sm-display-block" :class="{ 'gl-ml-2': statusIcon }">
           <slot name="status-badge">{{ badgeText }}</slot>
         </span>
       </gl-badge>
-      <div class="issuable-meta gl-display-flex! gl-align-items-center gl-flex-wrap">
-        <div v-if="blocked" data-testid="blocked" class="issuable-warning-icon inline">
-          <gl-icon name="lock" :aria-label="__('Blocked')" />
-        </div>
-        <confidentiality-badge
-          v-if="confidential"
-          :issuable-type="issuableType"
-          :workspace-type="workspaceType"
-        />
-        <span>
-          <template v-if="showWorkItemTypeIcon">
-            <work-item-type-icon :work-item-type="issuableType" show-text />
-            {{ __('created') }}
-          </template>
-          <template v-else>
-            {{ __('Created') }}
-          </template>
-          <time-ago-tooltip data-testid="startTimeItem" :time="createdAt" />
-          {{ __('by') }}
-        </span>
-        <gl-avatar-link
-          data-testid="avatar"
-          :data-user-id="authorId"
-          :data-username="author.username"
-          :data-name="author.name"
-          :href="author.webUrl"
-          target="_blank"
-          class="js-user-link gl-vertical-align-middle gl-ml-2"
-        >
-          <gl-avatar-labeled
-            :size="24"
-            :src="author.avatarUrl"
-            :label="author.name"
-            :class="[{ 'gl-display-none': !isAuthorExternal }, 'gl-sm-display-inline-flex gl-mx-1']"
+      <span v-if="blocked" class="issuable-warning-icon" data-testid="blocked">
+        <gl-icon name="lock" :aria-label="__('Blocked')" />
+      </span>
+      <confidentiality-badge
+        v-if="confidential"
+        :issuable-type="issuableType"
+        :workspace-type="workspaceType"
+      />
+      <work-item-type-icon v-if="showWorkItemTypeIcon" :work-item-type="issuableType" show-text />
+      <gl-sprintf :message="createdMessage">
+        <template #timeAgo>
+          <time-ago-tooltip class="gl-mx-2" :time="createdAt" />
+        </template>
+        <template #author>
+          <gl-avatar-link
+            :data-user-id="authorId"
+            :data-username="author.username"
+            :data-name="author.name"
+            :href="author.webUrl"
+            class="js-user-link gl-vertical-align-middle gl-mx-2"
           >
-            <template #meta>
-              <gl-icon v-if="isAuthorExternal" name="external-link" class="gl-ml-1" />
-            </template>
-          </gl-avatar-labeled>
-          <strong v-if="author.username" class="author gl-display-inline gl-sm-display-none!"
-            >@{{ author.username }}</strong
-          >
-        </gl-avatar-link>
-        <span
-          v-if="taskCompletionStatus && hasTasks"
-          data-testid="task-status"
-          class="gl-display-none gl-md-display-block gl-lg-display-inline-block"
-          >{{ taskStatusString }}</span
-        >
-      </div>
+            <gl-avatar-labeled
+              :size="24"
+              :src="author.avatarUrl"
+              :label="author.name"
+              :class="[
+                { 'gl-display-none': !isAuthorExternal },
+                'gl-sm-display-inline-flex gl-mx-1',
+              ]"
+            >
+              <template #meta>
+                <gl-icon v-if="isAuthorExternal" name="external-link" class="gl-ml-1" />
+              </template>
+            </gl-avatar-labeled>
+            <strong v-if="author.username" class="author gl-display-inline gl-sm-display-none!"
+              >@{{ author.username }}</strong
+            >
+          </gl-avatar-link>
+        </template>
+      </gl-sprintf>
+      <span
+        v-if="taskCompletionStatus && hasTasks"
+        data-testid="task-status"
+        class="gl-display-none gl-md-display-block gl-lg-display-inline-block"
+        >{{ taskStatusString }}</span
+      >
       <gl-button
-        data-testid="sidebar-toggle"
         icon="chevron-double-lg-left"
-        class="d-block d-sm-none gutter-toggle issuable-gutter-toggle"
+        class="gutter-toggle gl-display-block gl-sm-display-none!"
         :aria-label="__('Expand sidebar')"
         @click="handleRightSidebarToggleClick"
       />
