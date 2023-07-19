@@ -253,7 +253,7 @@ GitLab forwards the spam to Akismet.
 
 ### Reduce snippets repository size
 
-Because versioned snippets are considered as part of the [namespace storage size](../user/admin_area/settings/account_and_limit_settings.md),
+Because versioned snippets are considered as part of the [namespace storage size](../administration/settings/account_and_limit_settings.md),
 it's recommended to keep snippets' repositories as compact as possible.
 
 For more information about tools to compact repositories,

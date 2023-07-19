@@ -21,7 +21,7 @@ module RuboCop
         MSG = 'Use `#help_page_url` instead of directly including link. ' \
               'See https://docs.gitlab.com/ee/development/documentation/#linking-to-help-in-ruby.'
 
-        DOCS_URL_REGEXP = %r{https://docs.gitlab.com/ee/[\w#%./-]+}.freeze
+        DOCS_URL_REGEXP = %r{https://docs.gitlab.com/ee/[\w#%./-]+}
 
         def on_str(node)
           match = DOCS_URL_REGEXP.match(node.source)

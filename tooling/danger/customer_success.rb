@@ -11,8 +11,8 @@ module Tooling
         The following files require a review:
       MSG
 
-      FILE_PATH_REGEX = %r{((ee|jh)/)?config/metrics/.+\.yml}.freeze
-      CATEGORY_CHANGED = /data_category: operational/i.freeze
+      FILE_PATH_REGEX = %r{((ee|jh)/)?config/metrics/.+\.yml}
+      CATEGORY_CHANGED = /data_category: operational/i
 
       def build_message
         return unless impacted?

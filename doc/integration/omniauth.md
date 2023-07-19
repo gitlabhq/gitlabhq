@@ -309,7 +309,7 @@ To enable automatic linking for SAML, see the [SAML setup instructions](saml.md#
 ## Create an external providers list
 
 You can define a list of external OmniAuth providers.
-Users who create accounts or sign in to GitLab through the listed providers do not get access to [internal projects](../user/public_access.md#internal-projects-and-groups) and are marked as [external users](../user/admin_area/external_users.md).
+Users who create accounts or sign in to GitLab through the listed providers do not get access to [internal projects](../user/public_access.md#internal-projects-and-groups) and are marked as [external users](../administration/external_users.md).
 
 To define the external providers list, use the full name of the provider,
 for example, `google_oauth2` for Google. For provider names, see the

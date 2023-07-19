@@ -20,7 +20,7 @@ module RuboCop
         include QAHelpers
         include CodeReuseHelpers
 
-        SELECTORS = /\.qa-\w+|data-qa-\w+/.freeze
+        SELECTORS = /\.qa-\w+|data-qa-\w+/
         MESSAGE = %(Do not use `%s` as this is reserved for the end-to-end specs. Use a different selector or a data-testid instead.)
 
         def on_str(node)

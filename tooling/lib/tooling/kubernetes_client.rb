@@ -6,7 +6,7 @@ require_relative '../../../lib/gitlab/popen' unless defined?(Gitlab::Popen)
 
 module Tooling
   class KubernetesClient
-    K8S_ALLOWED_NAMESPACES_REGEX = /^review-(?!apps).+/.freeze
+    K8S_ALLOWED_NAMESPACES_REGEX = /^review-(?!apps).+/
     CommandFailedError           = Class.new(StandardError)
 
     def cleanup_namespaces_by_created_at(created_before:)

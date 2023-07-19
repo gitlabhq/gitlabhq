@@ -17909,7 +17909,8 @@ CREATE TABLE member_roles (
     base_access_level integer NOT NULL,
     read_code boolean DEFAULT false,
     read_vulnerability boolean DEFAULT false NOT NULL,
-    admin_vulnerability boolean DEFAULT false NOT NULL
+    admin_vulnerability boolean DEFAULT false NOT NULL,
+    read_dependency boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE member_roles_id_seq

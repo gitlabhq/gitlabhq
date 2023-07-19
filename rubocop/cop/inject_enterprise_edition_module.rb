@@ -20,7 +20,7 @@ module RuboCop
 
       DISALLOW_METHODS = Set.new(%i[include extend prepend]).freeze
 
-      COMMENT_OR_EMPTY_LINE = /^\s*(#.*|$)/.freeze
+      COMMENT_OR_EMPTY_LINE = /^\s*(#.*|$)/
 
       CHECK_LINE_METHODS_REGEXP = Regexp.union((CHECK_LINE_METHODS + DISALLOW_METHODS).map(&:to_s) + [COMMENT_OR_EMPTY_LINE]).freeze
 

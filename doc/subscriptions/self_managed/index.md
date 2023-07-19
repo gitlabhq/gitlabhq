@@ -101,7 +101,7 @@ The user must not be assigned any other role, anywhere in the instance.
 NOTE:
 If a user creates a project, they are assigned the Maintainer or Owner role.
 To prevent a user from creating projects, as an administrator, you can mark the user
-as [external](../../user/admin_area/external_users.md).
+as [external](../../administration/external_users.md).
 
 ## Tips for managing users and subscription seats
 
@@ -119,7 +119,7 @@ GitLab has several features which can help you manage the number of users:
 - Enable `block_auto_created_users` for new sign-ups via [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or [OmniAuth](../../integration/omniauth.md#configure-common-settings).
 - Enable the [User cap](../../administration/settings/sign_up_restrictions.md#user-cap)
   option. **Available in GitLab 13.7 and later**.
-- [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new
+- [Disable new sign-ups](../../administration/settings/sign_up_restrictions.md), and instead manage new
   users manually.
 - View a breakdown of users by role in the [Users statistics](../../administration/admin_area.md#users-statistics) page.
 
@@ -421,7 +421,7 @@ The following is emailed to you:
   [**View invoices**](https://customers.gitlab.com/receipts).
 - A new activation code for your license.
 
-[Add the activation code](../../user/admin_area/license.md) to your instance.
+[Add the activation code](../../administration/license.md) to your instance.
 The new tier takes effect when the new license is activated.
 
 ## Add or change the contacts for your subscription

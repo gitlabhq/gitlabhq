@@ -14,7 +14,7 @@ You can set it with the `visibility` field in the snippet.
 Constants for snippet visibility levels are:
 
 - **Private**: The snippet is visible only to project members.
-- **Internal**: The snippet is visible for any authenticated user except [external users](../user/admin_area/external_users.md).
+- **Internal**: The snippet is visible for any authenticated user except [external users](../administration/external_users.md).
 - **Public**: The snippet can be accessed without any authentication.
 
 NOTE:

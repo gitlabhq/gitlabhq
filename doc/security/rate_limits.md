@@ -31,21 +31,21 @@ similarly mitigated by a rate limit.
 
 You can set these rate limits in the Admin Area of your instance:
 
-- [Import/Export rate limits](../user/admin_area/settings/import_export_rate_limits.md)
-- [Issue rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md)
-- [Note rate limits](../user/admin_area/settings/rate_limit_on_notes_creation.md)
-- [Protected paths](../user/admin_area/settings/protected_paths.md)
-- [Raw endpoints rate limits](../user/admin_area/settings/rate_limits_on_raw_endpoints.md)
-- [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md)
-- [Package registry rate limits](../user/admin_area/settings/package_registry_rate_limits.md)
-- [Git LFS rate limits](../user/admin_area/settings/git_lfs_rate_limits.md)
-- [Rate limits on Git SSH operations](../user/admin_area/settings/rate_limits_on_git_ssh_operations.md)
-- [Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md)
-- [Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md)
+- [Import/Export rate limits](../administration/settings/import_export_rate_limits.md)
+- [Issue rate limits](../administration/settings/rate_limit_on_issues_creation.md)
+- [Note rate limits](../administration/settings/rate_limit_on_notes_creation.md)
+- [Protected paths](../administration/settings/protected_paths.md)
+- [Raw endpoints rate limits](../administration/settings/rate_limits_on_raw_endpoints.md)
+- [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md)
+- [Package registry rate limits](../administration/settings/package_registry_rate_limits.md)
+- [Git LFS rate limits](../administration/settings/git_lfs_rate_limits.md)
+- [Rate limits on Git SSH operations](../administration/settings/rate_limits_on_git_ssh_operations.md)
+- [Files API rate limits](../administration/settings/files_api_rate_limits.md)
+- [Deprecated API rate limits](../administration/settings/deprecated_api_rate_limits.md)
 - [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
-- [Pipeline rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md)
-- [Incident management rate limits](../user/admin_area/settings/incident_management_rate_limits.md)
-- [Unauthenticated access to Projects List API rate limits](../user/admin_area/settings/rate_limit_on_projects_api.md)
+- [Pipeline rate limits](../administration/settings/rate_limit_on_pipelines_creation.md)
+- [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
+- [Unauthenticated access to Projects List API rate limits](../administration/settings/rate_limit_on_projects_api.md)
 
 You can set these rate limits using the Rails console:
 

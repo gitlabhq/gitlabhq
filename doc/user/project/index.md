@@ -68,7 +68,7 @@ For this reason, the creation date of imported objects can be older than the cre
 
 Custom project templates are available at:
 
-- The [instance-level](../../user/admin_area/custom_project_templates.md)
+- The [instance-level](../../administration/custom_project_templates.md)
 - The [group-level](../../user/group/custom_project_templates.md)
 
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.

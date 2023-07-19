@@ -119,7 +119,7 @@ and:
 
 - Does not have an [allowlist or denylist](../administration/settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains).
 - Does not [require administrator approval for new sign ups](../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
-- Does not have additional [sign up restrictions](../user/admin_area/settings/sign_up_restrictions.md).
+- Does not have additional [sign up restrictions](../administration/settings/sign_up_restrictions.md).
 
 Otherwise, authentication is required.
 

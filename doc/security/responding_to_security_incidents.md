@@ -45,7 +45,7 @@ If you suspect that your GitLab instance has been compromised, consider taking t
 
 - [Review the audit events](../administration/audit_events.md) available to you for suspicious account behavior.
 - [Review all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in [Suspected compromised user account](#suspected-compromised-user-account) if necessary.
-- Review the [Credentials Inventory](../user/admin_area/credentials_inventory.md), if available to you.
+- Review the [Credentials Inventory](../administration/credentials_inventory.md), if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database,
   CI/CD pipelines, or elsewhere.
 - Upgrade to the latest version of GitLab and adopt a plan to upgrade after every security patch release.

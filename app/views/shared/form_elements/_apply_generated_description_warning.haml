@@ -5,9 +5,9 @@
         = sprite_icon("close")
 
       %p
-        = _("AI|Replace the existing description with an AI-generated description? Any changes you have made will be lost.")
+        = s_("AI|Replace the existing description with an AI-generated description? Any changes you have made will be lost.")
 
       = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3 js-ai-override-description' }) do
-        = _("AI|Apply AI-generated description")
+        = s_("AI|Apply AI-generated description")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-cancel-btn' }) do
         = _("Cancel")

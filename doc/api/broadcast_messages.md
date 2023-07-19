@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - > `target_access_levels` [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
 - > `color` parameter [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95829) in GitLab 15.6.
 
-Broadcast messages API operates on [broadcast messages](../user/admin_area/broadcast_messages.md).
+Broadcast messages API operates on [broadcast messages](../administration/broadcast_messages.md).
 
 As of GitLab 12.8, GET requests do not require authentication. All other broadcast message API endpoints are accessible only to administrators. Non-GET requests by:
 

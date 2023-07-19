@@ -21,7 +21,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - [Code owners](../user/project/codeowners/index.md)
 - Description templates:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
-- [Email from GitLab](../user/admin_area/email_from_gitlab.md)
+- [Email from GitLab](../administration/email_from_gitlab.md)
 - Groups:
   - [Creating group memberships via CN](../user/group/access_and_permissions.md#create-group-links-via-cn)
   - [Group push rules](../user/group/access_and_permissions.md#group-push-rules)

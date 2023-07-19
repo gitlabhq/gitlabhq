@@ -26,7 +26,7 @@ Put files for a specific product area into the related folder:
 | Directory             | Contents |
 |:----------------------|:------------------|
 | `doc/user/`           | Documentation for users. Anything that can be done in the GitLab user interface goes here, including usage of the `/admin` interface. |
-| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. Administrator settings in the GitLab user interface are under `doc/user/admin_area/`. |
+| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. Administrator settings in the GitLab user interface are under `doc/administration/`. |
 | `doc/api/`            | Documentation for the API. |
 | `doc/development/`    | Documentation related to the development of GitLab, whether contributing code or documentation. Related process and style guides should go here. |
 | `doc/legal/`          | Legal documents about contributing to GitLab. |
@@ -61,14 +61,9 @@ When working with directories and files:
    - `doc/user/profile/` should contain all profile related documentation.
      Every page you would navigate under `/profile` should have its own document,
      for example, `account.md`, `applications.md`, or `emails.md`.
-   - `doc/user/admin_area/` should contain all administrator-related
-     documentation describing what can be achieved by accessing the GitLab
-     administrator interface (not to be confused with `doc/administration` where
-     server access is required).
-     - Every category under `/admin/application_settings/` should have its
-      own document located at `doc/user/admin_area/settings/`. For example,
-      the **Visibility and Access Controls** category should have a document
-      located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. In the `doc/administration/` directory: all administrator-related
+     documentation for administrators, including admin tasks done in both
+    the UI and on the backend servers.
 
 If you're unsure where to place a document or a content addition, this shouldn't
 stop you from authoring and contributing. Use your best judgment, and then ask

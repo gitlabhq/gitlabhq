@@ -121,7 +121,7 @@ select the **Disabled feed token** checkbox.
 If all of your users are coming from specific IP addresses, use **Global-allowed IP ranges**
 to specifically allow only those addresses.
 
-For more details on **Visibility and access control**, see [visibility and access controls](../user/admin_area/settings/visibility_and_access_controls.md).
+For more details on **Visibility and access control**, see [visibility and access controls](../administration/settings/visibility_and_access_controls.md).
 For information on SSH settings, see
 [SSH keys restrictions](../security/ssh_keys_restrictions.md).
 
@@ -134,7 +134,7 @@ restricted. Account avatars can be manually uploaded by users.
 The settings in this section are intended to help enforce a custom implementation
 of your own specific standards on your users. As the various scenarios are too many
 and too varied, you should review the
-[account and limit settings documentation](../user/admin_area/settings/account_and_limit_settings.md)
+[account and limit settings documentation](../administration/settings/account_and_limit_settings.md)
 and apply changes to enforce your own policies.
 
 ### Sign-up restrictions
@@ -158,7 +158,7 @@ email addresses, then list that domain in **Allowed domains for sign-ups**. This
 prevents those with email addresses in other domains from signing up.
 
 For more detailed information, see
-[sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md).
+[sign-up restrictions](../administration/settings/sign_up_restrictions.md).
 
 ### Sign-in restrictions
 
@@ -176,7 +176,7 @@ In **Email notification for unknown sign-ins**, ensure that **Enable email notif
 is selected. This sends an email to users when a sign-in occurs from an unrecognized location.
 
 For more detailed information, see
-[sign-in restrictions](../user/admin_area/settings/sign_in_restrictions.md).
+[sign-in restrictions](../administration/settings/sign_in_restrictions.md).
 
 ## Integrations
 

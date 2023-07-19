@@ -209,10 +209,10 @@ Refer to this index if these features aren't working as expected, or if you'd li
 For advanced CI/CD teams, project templates can enable the reuse of pipeline configurations,
 as well as encourage inner sourcing.
 
-In self-managed GitLab instances, you can build an [Instance Template Repository](../../user/admin_area/settings/instance_template_repository.md).
+In self-managed GitLab instances, you can build an [Instance Template Repository](../../administration/settings/instance_template_repository.md).
 Development teams across the whole organization can select templates from a dropdown list.
 A group maintainer or a group owner is able to set a group to use as the source for the
-[custom project templates](../../user/admin_area/custom_project_templates.md). This can
+[custom project templates](../../administration/custom_project_templates.md). This can
 be used by all projects in the group. An instance administrator can set a group as
 the source for [instance project templates](../../user/group/custom_project_templates.md),
 which can be used by projects in that instance.

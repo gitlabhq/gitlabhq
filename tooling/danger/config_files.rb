@@ -8,7 +8,7 @@ module Tooling
     module ConfigFiles
       include ::Tooling::Danger::Suggestor
 
-      MISSING_INTRODUCED_BY_REGEX = /^\+?(?<attr_name>\s*introduced_by_url):\s*$/.freeze
+      MISSING_INTRODUCED_BY_REGEX = /^\+?(?<attr_name>\s*introduced_by_url):\s*$/
 
       CONFIG_DIRS = %w[
         config/feature_flags

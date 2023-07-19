@@ -351,7 +351,7 @@ after the limits change in January, 2021:
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and
-[raw endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md).
+[raw endpoints](../../administration/settings/rate_limits_on_raw_endpoints.md).
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most

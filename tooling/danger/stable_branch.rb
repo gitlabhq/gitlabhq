@@ -5,7 +5,7 @@ module Tooling
     module StableBranch
       VersionApiError = Class.new(StandardError)
 
-      STABLE_BRANCH_REGEX = %r{\A(?<version>\d+-\d+)-stable-ee\z}.freeze
+      STABLE_BRANCH_REGEX = %r{\A(?<version>\d+-\d+)-stable-ee\z}
       FAILING_PACKAGE_AND_TEST_STATUSES = %w[manual canceled].freeze
 
       # rubocop:disable Lint/MixedRegexpCaptureTypes
@@ -16,7 +16,7 @@ module Tooling
         (-(?<rc>rc(?<rc_number>\d*)))?
         (-\h+\.\h+)?
         (-ee|\.ee\.\d+)?\z
-      }x.freeze
+      }x
       # rubocop:enable Lint/MixedRegexpCaptureTypes
 
       MAINTENANCE_POLICY_URL = 'https://docs.gitlab.com/ee/policy/maintenance.html'

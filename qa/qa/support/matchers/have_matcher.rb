@@ -8,6 +8,7 @@ module QA
           auto_devops_container
           element
           file_content
+          file_name
           assignee
           child_pipeline
           linked_pipeline

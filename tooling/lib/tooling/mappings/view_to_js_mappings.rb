@@ -10,10 +10,10 @@ module Tooling
       include Helpers::PredictiveTestsHelper
 
       # The HTML attribute value pattern we're looking for to match an HTML file to a JS file.
-      HTML_ATTRIBUTE_VALUE_REGEXP = /js-[-\w]+/.freeze
+      HTML_ATTRIBUTE_VALUE_REGEXP = /js-[-\w]+/
 
       # Search for Rails partials included in an HTML file
-      RAILS_PARTIAL_INVOCATION_REGEXP = %r{(?:render|render_if_exists)(?: |\()(?:partial: ?)?['"]([\w/-]+)['"]}.freeze
+      RAILS_PARTIAL_INVOCATION_REGEXP = %r{(?:render|render_if_exists)(?: |\()(?:partial: ?)?['"]([\w/-]+)['"]}
 
       def initialize(
         changed_files_pathname, predictive_tests_pathname,

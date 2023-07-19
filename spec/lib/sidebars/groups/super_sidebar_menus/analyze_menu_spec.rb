@@ -15,6 +15,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::AnalyzeMenu, feature_categor
   it 'defines list of NilMenuItem placeholders' do
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
+      :analytics_dashboards,
       :dashboards_analytics,
       :cycle_analytics,
       :ci_cd_analytics,
