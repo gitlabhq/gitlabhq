@@ -5,6 +5,8 @@ import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
 import Heading from '~/content_editor/extensions/heading';
 import Bold from '~/content_editor/extensions/bold';
+import BulletList from '~/content_editor/extensions/bullet_list';
+import ListItem from '~/content_editor/extensions/list_item';
 import Italic from '~/content_editor/extensions/italic';
 import { VARIANT_DANGER } from '~/alert';
 import eventHubFactory from '~/helpers/event_hub_factory';
@@ -36,6 +38,8 @@ describe('content_editor/extensions/copy_paste', () => {
   let loading;
   let heading;
   let codeBlock;
+  let bulletList;
+  let listItem;
   let renderMarkdown;
   let resolveRenderMarkdownPromise;
   let resolveRenderMarkdownPromiseAndWait;
@@ -65,12 +69,14 @@ describe('content_editor/extensions/copy_paste', () => {
         Diagram,
         Frontmatter,
         Heading,
+        BulletList,
+        ListItem,
         CopyPaste.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
       ],
     });
 
     ({
-      builders: { doc, p, bold, italic, heading, loading, codeBlock },
+      builders: { doc, p, bold, italic, heading, loading, codeBlock, bulletList, listItem },
     } = createDocBuilder({
       tiptapEditor,
       names: {
@@ -78,6 +84,8 @@ describe('content_editor/extensions/copy_paste', () => {
         italic: { markType: Italic.name },
         loading: { nodeType: Loading.name },
         heading: { nodeType: Heading.name },
+        bulletList: { nodeType: BulletList.name },
+        listItem: { nodeType: ListItem.name },
         codeBlock: { nodeType: CodeBlockHighlight.name },
       },
     }));
@@ -303,11 +311,33 @@ describe('content_editor/extensions/copy_paste', () => {
 
         await triggerPasteEventHandlerAndWaitForTransaction(
           buildClipboardEvent({
-            types: ['text/x-gfm'],
+            types: ['text/x-gfm', 'text/plain', 'text/html'],
             data: {
               'text/x-gfm': '**bold text**',
               'text/plain': 'irrelevant text',
               'text/html': '<div>some random irrelevant html</div>',
+            },
+          }),
+        );
+        await resolveRenderMarkdownPromiseAndWait(resolvedValue);
+
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      });
+    });
+
+    describe('when pasting a single code block with lang=markdown', () => {
+      it('process the textContent as markdown, ignoring the htmlContent', async () => {
+        const resolvedValue = '<ul><li>Cat</li><li>Dog</li><li>Turtle</li></ul>';
+        const expectedDoc = doc(
+          bulletList(listItem(p('Cat')), listItem(p('Dog')), listItem(p('Turtle'))),
+        );
+
+        await triggerPasteEventHandlerAndWaitForTransaction(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': '- Cat\n- Dog\n- Turtle\n',
+              'text/html': `<meta charset='utf-8'><pre class="code highlight" lang="markdown"><span id="LC1" class="line" lang="markdown"><span class="p">-</span> Cat</span>\n<span id="LC2" class="line" lang="markdown"><span class="p">-</span> Dog</span>\n<span id="LC3" class="line" lang="markdown"><span class="p">-</span> Turtle</span>\n</pre>`,
             },
           }),
         );

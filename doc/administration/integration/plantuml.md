@@ -291,6 +291,14 @@ The default URL is different when using this approach. The Docker-based image
 makes the service available at the root URL, with no relative path. Adjust
 the configuration below accordingly.
 
+#### `404` error when opening the PlantUML page in the browser
+
+You might get a `404` error when visiting `https://gitlab.example.com/-/plantuml/`, when the PlantUML
+server is set up [in Debian or Ubuntu](#debianubuntu).
+
+This can happen even when the integration is working.
+It does not necessarily indicate a problem with your PlantUML server or configuration.
+
 ### Configure PlantUML security
 
 PlantUML has features that allow fetching network resources. If you self-host the

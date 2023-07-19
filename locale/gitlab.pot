@@ -7553,6 +7553,9 @@ msgstr ""
 msgid "Billings|Your account has been validated"
 msgstr ""
 
+msgid "Billing|%{plan} SaaS Plan seats used"
+msgstr ""
+
 msgid "Billing|%{user} was successfully approved"
 msgstr ""
 
@@ -7625,6 +7628,12 @@ msgid "Billing|Project invite"
 msgstr ""
 
 msgid "Billing|Remove user %{username} from your subscription"
+msgstr ""
+
+msgid "Billing|Subscription end"
+msgstr ""
+
+msgid "Billing|Subscription start"
 msgstr ""
 
 msgid "Billing|To ensure all members can access the group when your trial ends, you can upgrade to a paid tier."

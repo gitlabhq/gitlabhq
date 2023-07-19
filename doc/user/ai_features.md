@@ -128,6 +128,8 @@ Review the drawer on the right-hand side of your screen.
 
 ![How to use Explain this Vulnerability Experiment](img/explain_this_vulnerability.png)
 
+View a [click-through demo](https://go.gitlab.com/0qIe3O).
+
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
 ### GitLab Duo Chat **(ULTIMATE SAAS)**

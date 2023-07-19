@@ -12,6 +12,15 @@ RSpec.describe Ai::ServiceAccessToken, type: :model, feature_category: :applicat
     end
   end
 
+  describe '.active', :freeze_time do
+    let_it_be(:expired_token) { create(:service_access_token, :code_suggestions, :expired) }
+    let_it_be(:active_token) {  create(:service_access_token, :code_suggestions, :active) }
+
+    it 'selects all active tokens' do
+      expect(described_class.active).to match_array([active_token])
+    end
+  end
+
   # There is currently only one category, please expand this test when a new category is added.
   describe '.for_category' do
     let(:code_suggestions_token) { create(:service_access_token, :code_suggestions) }

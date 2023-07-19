@@ -39,7 +39,7 @@ developed and tested. We aim to be compatible with most external
 
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_nodes.html#common-settings
+   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```

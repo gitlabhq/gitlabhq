@@ -44,9 +44,11 @@ In general, for topic titles:
 
 - Be clear and direct. Make every word count.
 - Use articles and prepositions.
-- Follow [capitalization](../styleguide/index.md#capitalization) guidelines.
+- Follow [capitalization](../styleguide/index.md#topic-titles) guidelines.
 - Do not repeat text from earlier topic titles. For example, if the page is about merge requests,
   instead of `Troubleshooting merge requests`, use only `Troubleshooting`.
+- Avoid using hyphens to separate information. 
+  For example, instead of `Internal analytics - Architecture`, use `Internal analytics architecture` or `Architecture of internal analytics`.
 
 See also [guidelines for heading levels in Markdown](../styleguide/index.md#heading-levels-in-markdown).
 

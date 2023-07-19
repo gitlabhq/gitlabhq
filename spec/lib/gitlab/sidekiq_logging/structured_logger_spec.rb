@@ -463,11 +463,12 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       let(:expected_end_payload) do
         end_payload.merge(
           'urgency' => 'high',
-          'target_duration_s' => 10
+          'target_duration_s' => 10,
+          'target_scheduling_latency_s' => 10
         )
       end
 
-      it 'logs job done with urgency and target_duration_s fields' do
+      it 'logs job done with urgency, target_duration_s and target_scheduling_latency_s fields' do
         travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
