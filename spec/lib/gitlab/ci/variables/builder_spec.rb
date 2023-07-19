@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         { key: 'CI_PAGES_DOMAIN',
           value: Gitlab.config.pages.host },
         { key: 'CI_PAGES_URL',
-          value: project.pages_url },
+          value: Gitlab::Pages::UrlBuilder.new(project).pages_url },
         { key: 'CI_API_V4_URL',
           value: API::Helpers::Version.new('v4').root_url },
         { key: 'CI_API_GRAPHQL_URL',

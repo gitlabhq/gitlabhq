@@ -128,7 +128,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
-  // quarantine flaky spec:https://gitlab.com/gitlab-org/gitlab/-/issues/412618
+  // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/412618
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('passes render_quick_actions param to renderMarkdownPath if quick actions are enabled', async () => {
     buildWrapper({ propsData: { supportsQuickActions: true } });
@@ -139,7 +139,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(mock.history.post[0].url).toContain(`render_quick_actions=true`);
   });
 
-  // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/411565
+  // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/411565
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled', async () => {
     buildWrapper({ propsData: { supportsQuickActions: false } });
@@ -213,7 +213,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(findMarkdownField().find('textarea').attributes('disabled')).toBe(undefined);
     });
 
-    // quarantine flaky spec: https://gitlab.com/gitlab-org/gitlab/-/issues/404734
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/404734
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('disables content editor when disabled prop is true', async () => {
       buildWrapper({ propsData: { disabled: true } });

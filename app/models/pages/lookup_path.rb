@@ -46,7 +46,7 @@ module Pages
     strong_memoize_attr :source
 
     def prefix
-      if project.pages_namespace_url == project.pages_url
+      if url_builder.namespace_pages?
         '/'
       else
         "#{project.full_path.delete_prefix(trim_prefix)}/"
@@ -55,9 +55,7 @@ module Pages
     strong_memoize_attr :prefix
 
     def unique_host
-      return unless project.project_setting.pages_unique_domain_enabled?
-
-      project.pages_unique_host
+      url_builder.unique_host
     end
     strong_memoize_attr :unique_host
 
@@ -76,5 +74,10 @@ module Pages
       project.pages_metadatum.pages_deployment
     end
     strong_memoize_attr :deployment
+
+    def url_builder
+      Gitlab::Pages::UrlBuilder.new(project)
+    end
+    strong_memoize_attr :url_builder
   end
 end

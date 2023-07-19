@@ -8516,6 +8516,29 @@ The edge type for [`ComplianceFramework`](#complianceframework).
 | <a id="complianceframeworkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="complianceframeworkedgenode"></a>`node` | [`ComplianceFramework`](#complianceframework) | The item at the end of the edge. |
 
+#### `ComplianceStandardsAdherenceConnection`
+
+The connection type for [`ComplianceStandardsAdherence`](#compliancestandardsadherence).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancestandardsadherenceconnectionedges"></a>`edges` | [`[ComplianceStandardsAdherenceEdge]`](#compliancestandardsadherenceedge) | A list of edges. |
+| <a id="compliancestandardsadherenceconnectionnodes"></a>`nodes` | [`[ComplianceStandardsAdherence]`](#compliancestandardsadherence) | A list of nodes. |
+| <a id="compliancestandardsadherenceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ComplianceStandardsAdherenceEdge`
+
+The edge type for [`ComplianceStandardsAdherence`](#compliancestandardsadherence).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancestandardsadherenceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="compliancestandardsadherenceedgenode"></a>`node` | [`ComplianceStandardsAdherence`](#compliancestandardsadherence) | The item at the end of the edge. |
+
 #### `ComplianceViolationConnection`
 
 The connection type for [`ComplianceViolation`](#complianceviolation).
@@ -13673,6 +13696,21 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkname"></a>`name` | [`String!`](#string) | Name of the compliance framework. |
 | <a id="complianceframeworkpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**. |
 
+### `ComplianceStandardsAdherence`
+
+Compliance standards adherence for a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancestandardsadherencecheckname"></a>`checkName` | [`ComplianceStandardsAdherenceCheckName!`](#compliancestandardsadherencecheckname) | Name of the check for the compliance standard. |
+| <a id="compliancestandardsadherenceid"></a>`id` | [`ID!`](#id) | Compliance standards adherence ID. |
+| <a id="compliancestandardsadherenceproject"></a>`project` | [`Project!`](#project) | Project adhering to the compliance standard. |
+| <a id="compliancestandardsadherencestandard"></a>`standard` | [`ComplianceStandardsAdherenceStandard!`](#compliancestandardsadherencestandard) | Name of the compliance standard. |
+| <a id="compliancestandardsadherencestatus"></a>`status` | [`ComplianceStandardsAdherenceStatus!`](#compliancestandardsadherencestatus) | Status of the compliance standards adherence. |
+| <a id="compliancestandardsadherenceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the adherence was updated. |
+
 ### `ComplianceViolation`
 
 Compliance violation associated with a merged merge request.
@@ -16608,6 +16646,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouppackagespackagetype"></a>`packageType` | [`PackageTypeEnum`](#packagetypeenum) | Filter a package by type. |
 | <a id="grouppackagessort"></a>`sort` | [`PackageGroupSort`](#packagegroupsort) | Sort packages by this criteria. |
 | <a id="grouppackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
+
+##### `Group.projectComplianceStandardsAdherence`
+
+Compliance standards adherence for the projects in a group and its subgroups.
+
+Returns [`ComplianceStandardsAdherenceConnection`](#compliancestandardsadherenceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupprojectcompliancestandardsadherencefilters"></a>`filters` | [`ComplianceStandardsAdherenceInput`](#compliancestandardsadherenceinput) | Filters applied when retrieving compliance standards adherence. |
 
 ##### `Group.projects`
 
@@ -25199,6 +25253,31 @@ ComplianceFramework of a project for filtering.
 | <a id="complianceframeworkpresencefilterany"></a>`ANY` | Any compliance framework is assigned. |
 | <a id="complianceframeworkpresencefilternone"></a>`NONE` | No compliance framework is assigned. |
 
+### `ComplianceStandardsAdherenceCheckName`
+
+Name of the check for the compliance standard.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_author"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_AUTHOR` | Prevent approval by merge request author. |
+
+### `ComplianceStandardsAdherenceStandard`
+
+Name of the compliance standard.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="compliancestandardsadherencestandardgitlab"></a>`GITLAB` | Gitlab. |
+
+### `ComplianceStandardsAdherenceStatus`
+
+Status of the compliance standards adherence.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="compliancestandardsadherencestatusfail"></a>`FAIL` | Fail. |
+| <a id="compliancestandardsadherencestatussuccess"></a>`SUCCESS` | Success. |
+
 ### `ComplianceViolationReason`
 
 Reason for the compliance violation.
@@ -28950,6 +29029,16 @@ Attributes for defining a CI/CD variable.
 | <a id="complianceframeworkinputdescription"></a>`description` | [`String`](#string) | New description for the compliance framework. |
 | <a id="complianceframeworkinputname"></a>`name` | [`String`](#string) | New name for the compliance framework. |
 | <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**. |
+
+### `ComplianceStandardsAdherenceInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancestandardsadherenceinputcheckname"></a>`checkName` | [`ComplianceStandardsAdherenceCheckName`](#compliancestandardsadherencecheckname) | Name of the check for the compliance standard. |
+| <a id="compliancestandardsadherenceinputprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter compliance standards adherence by project. |
+| <a id="compliancestandardsadherenceinputstandard"></a>`standard` | [`ComplianceStandardsAdherenceStandard`](#compliancestandardsadherencestandard) | Name of the compliance standard. |
 
 ### `ComplianceViolationInput`
 

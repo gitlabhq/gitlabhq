@@ -1,5 +1,5 @@
 - verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
-- dns_record = "#{domain_presenter.domain} ALIAS #{domain_presenter.project.pages_subdomain}.#{Settings.pages.host}."
+- dns_record = "#{domain_presenter.domain} ALIAS #{pages_subdomain(domain_presenter.project)}.#{Settings.pages.host}."
 
 .form-group.border-section
   .row

@@ -60,7 +60,7 @@ describe('RelatedIssuesRoot', () => {
           await createComponent();
         });
 
-        // Quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/417177
+        // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/417177
         // eslint-disable-next-line jest/no-disabled-tests
         it.skip('removes related issue on API success', async () => {
           mock.onDelete(issuable1.referencePath).reply(HTTP_STATUS_OK, { issues: [] });

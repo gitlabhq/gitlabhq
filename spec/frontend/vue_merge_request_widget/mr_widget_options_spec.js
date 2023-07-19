@@ -175,7 +175,7 @@ describe('MrWidgetOptions', () => {
       return createComponent();
     });
 
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/385238
+    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/385238
     // eslint-disable-next-line jest/no-disabled-tests
     describe.skip('data', () => {
       it('should instantiate Store and Service', () => {
@@ -186,6 +186,7 @@ describe('MrWidgetOptions', () => {
 
     describe('computed', () => {
       describe('componentName', () => {
+        // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/409365
         // eslint-disable-next-line jest/no-disabled-tests
         it.skip.each`
           ${'merged'}      | ${'mr-widget-merged'}

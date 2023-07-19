@@ -2899,7 +2899,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_DEFAULT_BRANCH', value: project.default_branch, public: true, masked: false },
           { key: 'CI_CONFIG_PATH', value: project.ci_config_path_or_default, public: true, masked: false },
           { key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host, public: true, masked: false },
-          { key: 'CI_PAGES_URL', value: project.pages_url, public: true, masked: false },
+          { key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(project).pages_url, public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_SERVER', value: Gitlab.host_with_port, public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX',
             value: "#{Gitlab.host_with_port}/#{project.namespace.root_ancestor.path.downcase}#{DependencyProxy::URL_SUFFIX}",

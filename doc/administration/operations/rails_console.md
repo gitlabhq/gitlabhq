@@ -208,7 +208,7 @@ Adding a semicolon(`;`) and a follow-up statement at the end of a statement prev
 
 ```ruby
 puts ActiveRecord::Base.descendants; :ok
-Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
+Project.select(&:pages_deployed?).each {|p| puts p.path }; true
 ```
 
 ## Get or store the result of last operation

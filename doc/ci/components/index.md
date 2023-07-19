@@ -169,7 +169,7 @@ containing:
 For example, for a component repository located at `gitlab-org/dast` on `gitlab.com`:
 
 - The path `gitlab.com/gitlab-org/dast` tries to load the `template.yml` from the root directory.
-- The path `gitalb.com/gitlab-org/dast/api-scan` tries to load the `template.yml` from the `/api-scan` directory.
+- The path `gitlab.com/gitlab-org/dast/api-scan` tries to load the `template.yml` from the `/api-scan` directory.
 
 **Additional notes:**
 

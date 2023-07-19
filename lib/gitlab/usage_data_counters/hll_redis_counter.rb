@@ -115,7 +115,7 @@ module Gitlab
           if Feature.enabled?(:use_metric_definitions_for_events_list)
             events = Gitlab::Usage::MetricDefinition.not_removed.values.map do |d|
               d.attributes[:options] && d.attributes[:options][:events]
-            end.flatten.compact
+            end.flatten.compact.uniq
 
             events.map do |e|
               { name: e }.with_indifferent_access
@@ -132,7 +132,7 @@ module Gitlab
         end
 
         def known_events_names
-          known_events.map { |event| event[:name] }
+          @known_events_names ||= known_events.map { |event| event[:name] }
         end
 
         def event_for(event_name)

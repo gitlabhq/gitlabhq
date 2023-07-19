@@ -9,6 +9,7 @@ module Banzai
           Filter::SanitizationFilter,
           Filter::AssetProxyFilter,
           Filter::EmojiFilter,
+          Filter::CustomEmojiFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
           *reference_filters

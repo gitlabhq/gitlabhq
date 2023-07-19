@@ -2218,42 +2218,6 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_url(with_unique_domain: false)
-    return pages_unique_url if with_unique_domain && pages_unique_domain_enabled?
-
-    url = pages_namespace_url
-    url_path = full_path.partition('/').last
-    namespace_url = "#{Settings.pages.protocol}://#{url_path}".downcase
-
-    if Rails.env.development?
-      url_without_port = URI.parse(url)
-      url_without_port.port = nil
-
-      return url if url_without_port.to_s == namespace_url
-    end
-
-    # If the project path is the same as host, we serve it as group page
-    return url if url == namespace_url
-
-    "#{url}/#{url_path}"
-  end
-
-  def pages_unique_url
-    pages_url_for(project_setting.pages_unique_domain)
-  end
-
-  def pages_unique_host
-    URI(pages_unique_url).host
-  end
-
-  def pages_namespace_url
-    pages_url_for(pages_subdomain)
-  end
-
-  def pages_subdomain
-    full_path.partition('/').first
-  end
-
   def pages_path
     # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
     File.join(Settings.pages.path, full_path)
@@ -2500,7 +2464,7 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: pages_url)
+      variables.append(key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(self).pages_url)
     end
   end
 
@@ -3258,18 +3222,6 @@ class Project < ApplicationRecord
   end
 
   private
-
-  def pages_unique_domain_enabled?
-    Feature.enabled?(:pages_unique_domain, self) &&
-      project_setting.pages_unique_domain_enabled?
-  end
-
-  def pages_url_for(domain)
-    # The host in URL always needs to be downcased
-    Gitlab.config.pages.url.sub(%r{^https?://}) do |prefix|
-      "#{prefix}#{domain}."
-    end.downcase
-  end
 
   # overridden in EE
   def project_group_links_with_preload

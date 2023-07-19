@@ -185,7 +185,7 @@ After the long-term quarantining MR has reached production, you should revert th
 For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:
 
 ```javascript
-// https://gitlab.com/gitlab-org/gitlab/-/issues/56789
+// quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/56789
 // eslint-disable-next-line jest/no-disabled-tests
 it.skip('should throw an error', () => {
   expect(response).toThrowError(expected_error)
@@ -196,6 +196,12 @@ This means it is skipped unless the test suit is run with `--runInBand` Jest com
 
 ```shell
 jest --runInBand
+```
+
+A list of files with quarantined specs in them can be found with the command:
+
+```shell
+yarn jest:quarantine
 ```
 
 For both test frameworks, make sure to add the `~"quarantined test"` label to the issue.

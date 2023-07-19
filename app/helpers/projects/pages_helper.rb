@@ -7,5 +7,17 @@ module Projects
         (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https) &&
         project.can_create_custom_domains?
     end
+
+    def pages_subdomain(project)
+      Gitlab::Pages::UrlBuilder
+        .new(project)
+        .project_namespace
+    end
+
+    def build_pages_url(project, with_unique_domain:)
+      Gitlab::Pages::UrlBuilder
+        .new(project)
+        .pages_url(with_unique_domain: with_unique_domain)
+    end
   end
 end
